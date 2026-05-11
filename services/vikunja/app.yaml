@@ -35,7 +35,6 @@ spec:
           mountPath: /app/vikunja/files
           name: vikunja-files
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -43,7 +42,6 @@ spec:
           mountPath: /db
           name: vikunja-db
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     name: vikunja

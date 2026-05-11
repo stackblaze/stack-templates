@@ -34,7 +34,6 @@ spec:
           size: 1Gi
         primary: null
         rootPassword: root
-        storageClass: standard
         username: root
       name: limesurvey-mysql
       spec: null
@@ -64,7 +63,6 @@ spec:
     mountPath: /var/www/html
     name: limesurvey-volume
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '8082'
     repository: adamzammit/limesurvey

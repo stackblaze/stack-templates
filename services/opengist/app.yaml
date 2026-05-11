@@ -25,7 +25,6 @@ spec:
     mountPath: /root/.opengist
     name: opengist-volume
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '6157'
     repository: ghcr.io/thomiceli/opengist

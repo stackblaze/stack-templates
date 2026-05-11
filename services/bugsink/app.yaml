@@ -48,7 +48,6 @@ spec:
                               rootPassword: bugsink
                               username: bugsink
                           global:
-                              storageClass: standard
                           image:
                               tag: "8.1"
                           primary:

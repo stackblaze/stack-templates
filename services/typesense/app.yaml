@@ -30,7 +30,6 @@ spec:
     mountPath: /data
     name: typesense-data
     size: 1Gi
-    storageClass: null
   image:
     containerPort: '8108'
     repository: typesense/typesense

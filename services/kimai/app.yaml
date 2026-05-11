@@ -33,7 +33,6 @@ spec:
           mountPath: /opt/kimai/var/data
           name: kimai-data-volume
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -41,7 +40,6 @@ spec:
           mountPath: /opt/kimai/var/plugins
           name: kimai-plugins-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons:
         - displayName: MySQL
@@ -64,7 +62,6 @@ spec:
                               rootPassword: kimai
                               username: kimai
                           global:
-                              storageClass: standard
                           primary:
                               persistence:
                                   accessModes:

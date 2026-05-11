@@ -60,7 +60,6 @@ spec:
                                       password: fider
                                       postgresPassword: fider
                                       username: fider
-                              storageClass: standard
                           primary:
                               persistence:
                                   size: 1Gi

@@ -37,7 +37,6 @@ spec:
           mountPath: /zipline/uploads
           name: zipline-uploads-volume
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -45,7 +44,6 @@ spec:
           mountPath: /zipline/public
           name: zipline-public-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons:
         - displayName: Postgresql
@@ -68,7 +66,6 @@ spec:
                                       password: zipline
                                       postgresPassword: zipline
                                       username: zipline
-                              storageClass: standard
                           primary:
                               persistence:
                                   size: 1Gi

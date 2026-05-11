@@ -31,7 +31,6 @@ spec:
     mountPath: /var/www/app/data
     name: kanboard-data-volume
     size: 1Gi
-    storageClass: standard
   - accessMode: ReadWriteOnce
     accessModes:
     - ReadWriteOnce
@@ -39,7 +38,6 @@ spec:
     mountPath: /var/www/app/plugins
     name: kanboard-plugins-volume
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '80'
     pullPolicy: Always

@@ -33,7 +33,6 @@ spec:
             global:
               redis:
                 password: changeme
-              storageClass: standard
             master:
               persistence:
                 size: 1Gi
@@ -67,7 +66,6 @@ spec:
             directoryPerDB: false
             disableJavascript: false
             global:
-              storageClass: standard
             persistence:
               size: 1Gi
             replicaCount: 1

@@ -26,7 +26,6 @@ spec:
     mountPath: /data
     name: planning-poker-volume
     size: 1Gi
-    storageClass: default
   image:
     containerPort: '8000'
     repository: axeleroy/self-host-planning-poker

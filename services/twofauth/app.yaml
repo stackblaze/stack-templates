@@ -39,7 +39,6 @@ spec:
           mountPath: /2fauth
           name: twofauth-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     web:

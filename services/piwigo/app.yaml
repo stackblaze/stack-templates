@@ -27,7 +27,6 @@ spec:
           mountPath: /config
           name: piwigo-config-volume
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -35,7 +34,6 @@ spec:
           mountPath: /gallery
           name: piwigo-gallery-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons:
         - displayName: MySQL
@@ -58,7 +56,6 @@ spec:
                               rootPassword: piwigo
                               username: piwigo
                           global:
-                              storageClass: standard
                           primary:
                               persistence:
                                   accessModes:

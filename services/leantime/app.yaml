@@ -39,7 +39,6 @@ spec:
               rootPassword: leantime
               username: leantime
             global:
-              storageClass: standard
             primary:
               persistence:
                 accessModes:

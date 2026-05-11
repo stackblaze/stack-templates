@@ -25,7 +25,6 @@ spec:
           mountPath: /var/www/html/.spaces
           name: cockpit-spaces
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -33,7 +32,6 @@ spec:
           mountPath: /var/www/html/storage/data
           name: cockpit-storage-data
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -41,7 +39,6 @@ spec:
           mountPath: /var/www/html/storage/uploads
           name: cockpit-storage-uploads
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     name: cockpit

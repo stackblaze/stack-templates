@@ -43,7 +43,6 @@ spec:
           mountPath: /data
           name: tolgee-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons:
         - displayName: Postgresql
@@ -66,7 +65,6 @@ spec:
                                       password: tolgee
                                       postgresPassword: tolgee
                                       username: tolgee
-                              storageClass: standard
                           primary:
                               persistence:
                                   size: 1Gi

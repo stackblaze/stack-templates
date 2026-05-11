@@ -25,7 +25,6 @@ spec:
           mountPath: /app/data
           name: lunalytics-data
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -33,7 +32,6 @@ spec:
           mountPath: /app/logs
           name: lunalytics-logs
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     name: lunalytics

@@ -33,7 +33,6 @@ spec:
           mountPath: /app/db
           name: libtranslate-db-volume
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -41,7 +40,6 @@ spec:
           mountPath: /home/libretranslate/.local
           name: libtranslate-models-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     web:

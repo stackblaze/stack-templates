@@ -51,7 +51,6 @@ spec:
                                       password: logto
                                       postgresPassword: logto
                                       username: logto
-                              storageClass: standard
                           primary:
                               persistence:
                                   size: 1Gi

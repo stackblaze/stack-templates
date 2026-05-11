@@ -40,7 +40,6 @@ spec:
                   password: atuin
                   postgresPassword: atuin
                   username: atuin
-              storageClass: standard
             primary:
               persistence:
                 size: 1Gi

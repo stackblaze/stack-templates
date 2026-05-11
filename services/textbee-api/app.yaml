@@ -68,7 +68,6 @@ spec:
                           directoryPerDB: true
                           disableJavascript: false
                           global:
-                              storageClass: standard
                           persistence:
                               size: 1Gi
                           replicaCount: 1

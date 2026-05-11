@@ -50,7 +50,6 @@ spec:
           mountPath: /upload
           name: postiz-upload-volume
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -58,7 +57,6 @@ spec:
           mountPath: /config
           name: postiz-config-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons:
         - displayName: Postgresql
@@ -81,7 +79,6 @@ spec:
                                       password: postiz
                                       postgresPassword: postiz
                                       username: postiz
-                              storageClass: standard
                           primary:
                               persistence:
                                   size: 1Gi
@@ -104,7 +101,6 @@ spec:
                           global:
                               redis:
                                   password: postiz
-                              storageClass: standard
                           master:
                               persistence:
                                   size: 1Gi

@@ -37,7 +37,6 @@ spec:
           mountPath: /var/www/html
           name: vvveb-docroot-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons:
         - displayName: MySQL
@@ -60,7 +59,6 @@ spec:
                               rootPassword: vvveb
                               username: vvveb
                           global:
-                              storageClass: standard
                           primary:
                               persistence:
                                   accessModes:

@@ -28,7 +28,6 @@ spec:
     mountPath: /app/statusnook-data
     name: statusnook-volume
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '8000'
     pullPolicy: Always

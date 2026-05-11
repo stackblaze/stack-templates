@@ -49,7 +49,6 @@ spec:
           mountPath: /config
           name: speedtest-tracker-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     web:

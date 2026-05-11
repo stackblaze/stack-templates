@@ -60,7 +60,6 @@ spec:
     mountPath: /data/db
     name: fief-db-volume
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '8000'
     pullPolicy: Always

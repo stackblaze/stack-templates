@@ -36,7 +36,6 @@ spec:
                   password: rallly
                   postgresPassword: rallly
                   username: rallly
-              storageClass: standard
             primary:
               persistence:
                 size: 1Gi

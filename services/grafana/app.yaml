@@ -29,7 +29,6 @@ spec:
     mountPath: /var/lib/grafana
     name: grafana-data
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '3000'
     repository: grafana/grafana-oss

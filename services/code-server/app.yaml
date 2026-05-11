@@ -37,7 +37,6 @@ spec:
     mountPath: /config
     name: code-server-config
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: 8080
     pullPolicy: Always

@@ -27,7 +27,6 @@ spec:
           mountPath: /app/db/sqlite
           name: ciao-db-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     web:

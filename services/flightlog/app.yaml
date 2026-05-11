@@ -29,7 +29,6 @@ spec:
           mountPath: /var/flightlog/database
           name: flightlog-db-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     web:

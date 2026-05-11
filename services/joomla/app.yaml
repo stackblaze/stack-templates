@@ -36,7 +36,6 @@ spec:
                   password: joomla
                   postgresPassword: joomla
                   username: joomla
-              storageClass: standard
             primary:
               persistence:
                 size: 1Gi
@@ -54,14 +53,12 @@ spec:
     mountPath: /var/www/html
     name: joomla-volume
     size: 1Gi
-    storageClass: standard
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/run/apache2
     name: joomla-rundir
     size: 1Mi
-    storageClass: standard
   image:
     containerPort: '80'
     repository: joomla

@@ -38,7 +38,6 @@ spec:
                   password: afffine
                   postgresPassword: postgres
                   username: affine
-              storageClass: standard
             primary:
               persistence:
                 size: 1Gi
@@ -61,7 +60,6 @@ spec:
             global:
               redis:
                 password: affine
-              storageClass: standard
             master:
               persistence:
                 size: 1Gi
@@ -96,7 +94,6 @@ spec:
     mountPath: /root/.affine
     name: affine-volume
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '3010'
     pullPolicy: Always

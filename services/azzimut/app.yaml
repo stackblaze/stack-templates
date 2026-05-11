@@ -54,7 +54,6 @@ spec:
                                       password: azimutt
                                       postgresPassword: azimutt
                                       username: azimutt
-                              storageClass: standard
                           primary:
                               persistence:
                                   size: 1Gi

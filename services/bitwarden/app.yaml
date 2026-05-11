@@ -38,7 +38,6 @@ spec:
                   password: bitwarden
                   postgresPassword: bitwarden
                   username: bitwarden
-              storageClass: standard
             primary:
               persistence:
                 size: 1Gi
@@ -69,7 +68,6 @@ spec:
     mountPath: /etc/bitwarden
     name: bitwarden
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: 8080
     pullPolicy: Always

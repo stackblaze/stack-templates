@@ -37,7 +37,6 @@ spec:
               rootPassword: rootpw
               username: photoview
             global:
-              storageClass: default
             primary:
               persistence:
                 accessModes:
@@ -67,7 +66,6 @@ spec:
     mountPath: /photoview/images
     name: photoview-images
     size: 1Gi
-    storageClass: default
   image:
     containerPort: '8080'
     repository: viktorstrate/photoview

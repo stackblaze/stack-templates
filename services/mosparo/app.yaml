@@ -37,7 +37,6 @@ spec:
               rootPassword: mysecret
               username: mosparo
             global:
-              storageClass: standard
             primary:
               persistence:
                 accessModes:
@@ -59,7 +58,6 @@ spec:
     mountPath: /mosparo-data
     name: mosparo-volume
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '80'
     repository: mosparo/mosparo
