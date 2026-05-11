@@ -36,7 +36,6 @@ spec:
                   password: calcom
                   postgresPassword: calcom
                   username: calcom
-              storageClass: standard
             primary:
               persistence:
                 size: 1Gi

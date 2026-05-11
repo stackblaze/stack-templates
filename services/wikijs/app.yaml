@@ -30,7 +30,6 @@ spec:
     mountPath: /wiki/data
     name: wikijs-data
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '3000'
     repository: ghcr.io/requarks/wiki

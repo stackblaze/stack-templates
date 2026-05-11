@@ -29,7 +29,6 @@ spec:
           mountPath: /space
           name: silverbullet-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     web:

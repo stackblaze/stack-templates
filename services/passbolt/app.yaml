@@ -35,7 +35,6 @@ spec:
               rootPassword: changeme
               username: passbolt
             global:
-              storageClass: standard
             primary:
               persistence:
                 accessModes:

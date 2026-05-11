@@ -26,7 +26,6 @@ spec:
     mountPath: /www/assets
     name: homer-data
     size: 300Mi
-    storageClass: standard
   image:
     containerPort: '8080'
     repository: b4bz/homer

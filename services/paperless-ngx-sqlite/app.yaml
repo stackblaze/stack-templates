@@ -33,7 +33,6 @@ spec:
           mountPath: /usr/src/paperless/export
           name: paperless-export-volume
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -41,7 +40,6 @@ spec:
           mountPath: /usr/src/paperless/consume
           name: paperless-consume-volume
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -49,7 +47,6 @@ spec:
           mountPath: /usr/src/paperless/media
           name: paperless-media-volume
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -57,7 +54,6 @@ spec:
           mountPath: /usr/src/paperless/data
           name: paperless-data-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons:
         - displayName: Redis
@@ -77,7 +73,6 @@ spec:
                           global:
                               redis:
                                   password: paperless
-                              storageClass: standard
                           master:
                               persistence:
                                   size: 1Gi

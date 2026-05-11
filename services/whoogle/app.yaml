@@ -26,14 +26,12 @@ spec:
     mountPath: /var/lib
     name: whoogle-tor
     size: 1Gi
-    storageClass: standard
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /whoogle/app/static/build
     name: whoogle-build
     size: 20Mi
-    storageClass: standard
   image:
     containerPort: '5000'
     repository: benbusby/whoogle-search

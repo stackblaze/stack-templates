@@ -60,7 +60,6 @@ spec:
                                       password: airbroke
                                       postgresPassword: airbroke
                                       username: airbroke
-                              storageClass: standard
                           primary:
                               persistence:
                                   size: 1Gi

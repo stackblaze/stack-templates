@@ -56,7 +56,6 @@ spec:
                                       password: documenso
                                       postgresPassword: documenso
                                       username: documenso
-                              storageClass: standard
                           primary:
                               persistence:
                                   size: 1Gi

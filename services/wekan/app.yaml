@@ -43,7 +43,6 @@ spec:
           mountPath: WRITABLE_PATH
           name: wekan-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons:
         - displayName: MongoDB
@@ -72,7 +71,6 @@ spec:
                           directoryPerDB: false
                           disableJavascript: false
                           global:
-                              storageClass: standard
                           persistence:
                               size: 1Gi
                           replicaCount: 1

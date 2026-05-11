@@ -31,7 +31,6 @@ spec:
     mountPath: /var/lib/databag
     name: databag-data
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '7000'
     pullPolicy: Always

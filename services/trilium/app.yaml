@@ -26,7 +26,6 @@ spec:
     mountPath: /home/node/trilium-data
     name: trilium-data
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '8080'
     repository: zadam/trilium

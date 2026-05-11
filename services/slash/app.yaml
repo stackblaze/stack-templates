@@ -27,7 +27,6 @@ spec:
           mountPath: /var/opt/slash
           name: slash-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     web:

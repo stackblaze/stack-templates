@@ -26,7 +26,6 @@ spec:
     mountPath: /data
     name: vaultwarden-data
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '80'
     repository: vaultwarden/server

@@ -32,7 +32,6 @@ spec:
     mountPath: /data/_timetagger
     name: timetagger-data
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '8080'
     repository: ghcr.io/almarklein/timetagger

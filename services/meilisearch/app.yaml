@@ -26,7 +26,6 @@ spec:
     mountPath: /meili_data
     name: meilidata-volume
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '7700'
     repository: getmeili/meilisearch

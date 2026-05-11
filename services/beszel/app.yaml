@@ -27,7 +27,6 @@ spec:
           mountPath: /beszel_data
           name: beszel-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     web:

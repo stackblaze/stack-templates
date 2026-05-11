@@ -67,7 +67,6 @@ spec:
           mountPath: /app/docker-data/
           name: twenty-data-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons:
         - displayName: Postgresql
@@ -90,7 +89,6 @@ spec:
                                       password: twenty
                                       postgresPassword: twenty
                                       username: twenty
-                              storageClass: standard
                           primary:
                               persistence:
                                   size: 1Gi
@@ -113,7 +111,6 @@ spec:
                           global:
                               redis:
                                   password: twenty
-                              storageClass: standard
                           master:
                               persistence:
                                   size: 1Gi

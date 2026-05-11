@@ -36,7 +36,6 @@ spec:
                   password: postgres
                   postgresPassword: postgres
                   username: postgres
-              storageClass: standard
             primary:
               persistence:
                 size: 1Gi

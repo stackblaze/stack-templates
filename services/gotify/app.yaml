@@ -34,7 +34,6 @@ spec:
     mountPath: /app/data
     name: gotify-volume
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '8080'
     repository: gotify/server

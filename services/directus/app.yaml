@@ -37,7 +37,6 @@ spec:
           mountPath: /directus/database
           name: directus-db-volume
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -45,7 +44,6 @@ spec:
           mountPath: /directus/uploads
           name: directus-uploads-volume
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -53,7 +51,6 @@ spec:
           mountPath: /directus/extensions
           name: directus-extensions-volume
           size: 1Gi
-          storageClass: standard
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -61,7 +58,6 @@ spec:
           mountPath: /directus/templates
           name: directus-templates-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     web:

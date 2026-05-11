@@ -26,14 +26,12 @@ spec:
     mountPath: /usr/src/app/weights
     name: weights
     size: 70Gi
-    storageClass: standard
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /data/db
     name: datadb
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '8008'
     repository: ghcr.io/serge-chat/serge

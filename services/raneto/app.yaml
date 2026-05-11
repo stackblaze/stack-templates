@@ -28,7 +28,6 @@ spec:
           mountPath: /config
           name: raneto-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     web:

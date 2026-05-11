@@ -40,7 +40,6 @@ spec:
     mountPath: /var/data
     name: slink-volume
     size: 10Gi
-    storageClass: standard
   image:
     containerPort: '2000'
     pullPolicy: Always

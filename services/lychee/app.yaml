@@ -45,7 +45,6 @@ spec:
     mountPath: /local/db
     name: lychee-db-volume
     size: 1Gi
-    storageClass: standard
   - accessMode: ReadWriteOnce
     accessModes:
     - ReadWriteOnce
@@ -53,7 +52,6 @@ spec:
     mountPath: /uploads
     name: lychee-upload-volume
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '80'
     pullPolicy: Always

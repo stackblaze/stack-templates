@@ -26,7 +26,6 @@ spec:
     mountPath: /data
     name: homebox-data
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '7745'
     repository: ghcr.io/hay-kot/homebox

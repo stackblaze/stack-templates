@@ -36,7 +36,6 @@ spec:
                   password: etherpad
                   postgresPassword: etherpad
                   username: etherpad
-              storageClass: standard
             primary:
               persistence:
                 size: 1Gi

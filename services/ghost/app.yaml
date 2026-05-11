@@ -36,7 +36,6 @@ spec:
               rootPassword: ghost
               username: ghost
             global:
-              storageClass: standard
             primary:
               persistence:
                 accessModes:
@@ -64,7 +63,6 @@ spec:
     mountPath: /var/lib/ghost/content
     name: ghost-volume
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '2368'
     repository: ghost

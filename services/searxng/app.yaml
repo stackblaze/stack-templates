@@ -31,7 +31,6 @@ spec:
           mountPath: /etc/searxng
           name: searxng-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     web:

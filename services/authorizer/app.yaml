@@ -32,7 +32,6 @@ spec:
     mountPath: /database
     name: authorizer-data-volume
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '8080'
     repository: lakhansamani/authorizer

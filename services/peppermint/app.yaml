@@ -50,7 +50,6 @@ spec:
                                       password: peppermint
                                       postgresPassword: peppermint
                                       username: peppermint
-                              storageClass: standard
                           primary:
                               persistence:
                                   size: 1Gi

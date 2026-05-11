@@ -33,7 +33,6 @@ spec:
           mountPath: /data
           name: workout-tracker-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     web:

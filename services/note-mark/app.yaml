@@ -33,7 +33,6 @@ spec:
     mountPath: /data
     name: note-mark-data-volume
     size: 1Gi
-    storageClass: standard
   image:
     containerPort: '8000'
     pullPolicy: Always

@@ -36,7 +36,6 @@ spec:
                   password: umami
                   postgresPassword: umamiroot
                   username: umami
-              storageClass: standard
             primary:
               persistence:
                 size: 1Gi

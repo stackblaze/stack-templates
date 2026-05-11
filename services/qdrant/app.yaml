@@ -27,7 +27,6 @@ spec:
           mountPath: /qdrant/storage
           name: qdrant-volume
           size: 1Gi
-          storageClass: standard
     cronjobs: []
     addons: []
     web:
