@@ -5830,18 +5830,61 @@
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
       "dirname": "chatpad"
+    },
+    {
+      "name": "dotcms",
+      "description": "Hybrid headless content management system for building modern websites, apps and digital experiences with a Java-based, API-first platform.",
+      "source": "https://github.com/dotCMS/core",
+      "icon": "https://avatars.githubusercontent.com/u/1005263?s=200&v=4",
+      "website": "https://www.dotcms.com/",
+      "installation": "Default admin login is `admin@dotcms.com` / `admin`. Change DOT_INITIAL_ADMIN_PASSWORD before exposing the instance.\n\nProvisions two addons automatically:\n- PostgreSQL 16 (`dotcms-postgres`) \u2014 dotCMS supports PostgreSQL 13-16.\n- OpenSearch 1.3.x (`dotcms-opensearch`) \u2014 dotCMS does not support OpenSearch 2.x or 3.x. Do not bump the image tag.\n\nFirst boot takes 2-5 minutes while dotCMS initializes the schema and indices. Wait for both addons to become Ready before the dotCMS pod will pass its startup checks.",
+      "architecture": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "categories": [
+        "cms",
+        "work",
+        "productivity"
+      ],
+      "screenshots": [
+        "https://www.dotcms.com/dA/cd72e798-1e69/1000w/dotcms-edit-mode.png"
+      ],
+      "links": [
+        "https://dev.dotcms.com/docs/",
+        "https://github.com/dotCMS/core"
+      ],
+      "addons": [
+        "KuberoPostgresql",
+        "KuberoOpenSearch"
+      ],
+      "stars": 943,
+      "forks": 480,
+      "watchers": 82,
+      "issues": 830,
+      "last_updated": "2026-05-13T20:54:53Z",
+      "last_pushed": "2026-05-13T21:02:14Z",
+      "created_at": "2012-03-15T15:24:14Z",
+      "size": 1146977,
+      "language": "Java",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dotcms/app.yaml",
+      "status": "active",
+      "license": "Other",
+      "spdx_id": "NOASSERTION",
+      "dirname": "dotcms"
     }
   ],
   "categories": {
     "data": 15,
-    "work": 57,
-    "productivity": 21,
+    "work": 58,
+    "productivity": 22,
     "utilities": 53,
     "security": 14,
     "dashboard": 4,
     "admin": 13,
     "collaboration": 14,
-    "cms": 8,
+    "cms": 9,
     "development": 45,
     "accessories": 14,
     "monitoring": 13,
@@ -5877,9 +5920,9 @@
     "administration": 1
   },
   "stats": {
-    "total": 172,
+    "total": 173,
     "categories": 42,
     "gitops": 2,
-    "stars": 3263163
+    "stars": 3264106
   }
 }
