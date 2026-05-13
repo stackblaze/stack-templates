@@ -39,7 +39,7 @@ spec:
             primary:
               persistence:
                 accessModes:
-                - ReadWriteMany
+                - ReadWriteOnce
                 size: 1Gi
   cronjobs: []
   deploymentstrategy: docker
