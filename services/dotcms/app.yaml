@@ -14,6 +14,8 @@ metadata:
       - **OpenSearch 1.3.x** (`dotcms-opensearch`) — dotCMS does *not* support OpenSearch 2.x or 3.x. Do not bump the image tag.
 
       First boot takes 2–5 minutes while dotCMS initializes the schema and indices. Wait for both addons to become Ready before the dotCMS pod will pass its startup checks.
+
+      The web pod is sized for `-Xmx2g` (4Gi memory limit). Do not deploy on the default small tier — Java will OOM at 512Mi.
     kubero.dev/template.links: '["https://dev.dotcms.com/docs/", "https://github.com/dotCMS/core"]'
     kubero.dev/template.screenshots: '["https://www.dotcms.com/dA/cd72e798-1e69/1000w/dotcms-edit-mode.png"]'
     kubero.dev/template.source: "https://github.com/dotCMS/core"
@@ -135,6 +137,24 @@ spec:
                   network.host: 0.0.0.0
                   discovery.type: single-node
                   plugins.security.disabled: true
+  podsize:
+    name: medium
+    description: 'Medium (CPU: 1, Memory: 2Gi request / 4Gi limit) — required for CMS_JAVA_OPTS -Xmx2g'
+    default: false
+    resources:
+      requests:
+        memory: 2Gi
+        cpu: 1000m
+      limits:
+        memory: 4Gi
+        cpu: 2000m
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 1000m
+    limits:
+      memory: 4Gi
+      cpu: 2000m
   web:
     replicaCount: 1
   worker:
