@@ -27,7 +27,16 @@ spec:
           value: postgres://mattermost:mattermost@mattermost-postgresql:5432/mattermost?sslmode=disable&connect_timeout=10
         - name: TZ
           value: Etc/UTC
-    extraVolumes: []
+    extraVolumes:
+        # Mattermost file storage (uploads/plugins) on the shared RWX class so
+        # it persists across restarts and can be shared if scaled out.
+        - accessModes:
+            - ReadWriteMany
+          storageClass: shared
+          emptyDir: false
+          mountPath: /mattermost/data
+          name: mattermost-data
+          size: 5Gi
     cronjobs: []
     addons:
         - displayName: Postgresql
@@ -44,6 +53,7 @@ spec:
                   spec:
                       postgresql:
                           global:
+                              storageClass: fast
                               postgresql:
                                   auth:
                                       database: mattermost
@@ -52,6 +62,7 @@ spec:
                                       username: mattermost
                           primary:
                               persistence:
+                                  storageClass: fast
                                   size: 5Gi
           version:
               latest: 0.1.5
