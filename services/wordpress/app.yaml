@@ -12,7 +12,7 @@ metadata:
     kubero.dev/template.source: https://github.com/WordPress/WordPress
     kubero.dev/template.categories: '["cms"]'
     kubero.dev/template.title: WordPress
-    kubero.dev/template.website: https://github.com/benbusby/whoogle-search
+    kubero.dev/template.website: https://wordpress.org
   name: wordpress
 spec:
   addons:
@@ -36,35 +36,43 @@ spec:
               rootPassword: wordpress
               username: wordpress
             global:
+              # Database on block storage (RWO) — never on the shared NFS class.
+              storageClass: block
             primary:
               persistence:
                 accessModes:
                 - ReadWriteOnce
+                storageClass: block
                 size: 1Gi
   cronjobs: []
   deploymentstrategy: docker
+  # Official WordPress image env vars (WORDPRESS_DB_*), not the bitnami
+  # WORDPRESS_DATABASE_* names.
   envVars:
-  - name: WORDPRESS_DATABASE_HOST
+  - name: WORDPRESS_DB_HOST
     value: mysql2
-  - name: WORDPRESS_DATABASE_USER
+  - name: WORDPRESS_DB_USER
     value: wordpress
-  - name: WORDPRESS_DATABASE_PASSWORD
+  - name: WORDPRESS_DB_PASSWORD
     value: wordpress
-  - name: WORDPRESS_DATABASE_NAME
+  - name: WORDPRESS_DB_NAME
     value: wordpress
+  # Shared content (wp-content: themes/plugins/uploads) on the RWX class so
+  # multiple web replicas can run for HA.
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
+    storageClass: shared
     emptyDir: false
-    mountPath: /bitnami/wordpress
+    mountPath: /var/www/html
     name: wordpress-data
     size: 1Gi
   image:
-    containerPort: '8080'
-    repository: bitnami/wordpress
+    containerPort: '80'
+    repository: wordpress
     tag: latest
   name: wordpress
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
