@@ -114,7 +114,7 @@
     },
     {
       "name": "netbird",
-      "description": "Connect your devices into a secure WireGuard\u00ae-based overlay network with SSO, MFA and granular access controls.",
+      "description": "Connect your devices into a secure WireGuard®-based overlay network with SSO, MFA and granular access controls.",
       "source": "https://github.com/netbirdio/netbird",
       "icon": "https://avatars.githubusercontent.com/u/100464677",
       "website": "https://netbird.io/",
@@ -709,7 +709,7 @@
     },
     {
       "name": "activepieces",
-      "description": "Your friendliest open source all-in-one automation tool \u2728 Workflow automation tool 100+ integration / Enterprise automation tool / Zapier Alternative",
+      "description": "Your friendliest open source all-in-one automation tool ✨ Workflow automation tool 100+ integration / Enterprise automation tool / Zapier Alternative",
       "source": "https://github.com/activepieces/activepieces",
       "icon": "https://avatars.githubusercontent.com/u/99494700?s=200&v=4",
       "website": "https://www.activepieces.com/",
@@ -3660,7 +3660,7 @@
     },
     {
       "name": "bugsink",
-      "description": "Bugsink is a self-hosted error tracker. It shows you when something breaks in your app and includes all the information you need to debug it\u2014stack traces, request data, logs, and more\u2014without sending anything to a third party.",
+      "description": "Bugsink is a self-hosted error tracker. It shows you when something breaks in your app and includes all the information you need to debug it—stack traces, request data, logs, and more—without sending anything to a third party.",
       "source": "https://github.com/bugsink/bugsink",
       "icon": "https://avatars.githubusercontent.com/u/150733838",
       "website": "https://www.bugsink.com/",
@@ -5837,7 +5837,7 @@
       "source": "https://github.com/dotCMS/core",
       "icon": "https://avatars.githubusercontent.com/u/1005263?s=200&v=4",
       "website": "https://www.dotcms.com/",
-      "installation": "Default admin login is `admin@dotcms.com` / `admin`. Change DOT_INITIAL_ADMIN_PASSWORD before exposing the instance.\n\nProvisions two addons automatically:\n- PostgreSQL 16 (`dotcms-postgres`) \u2014 dotCMS supports PostgreSQL 13-16.\n- OpenSearch 1.3.x (`dotcms-opensearch`) \u2014 dotCMS does not support OpenSearch 2.x or 3.x. Do not bump the image tag.\n\nFirst boot takes 2-5 minutes while dotCMS initializes the schema and indices. Wait for both addons to become Ready before the dotCMS pod will pass its startup checks.",
+      "installation": "Default admin login is `admin@dotcms.com` / `admin`. Change DOT_INITIAL_ADMIN_PASSWORD before exposing the instance.\n\nProvisions two addons automatically:\n- PostgreSQL 16 (`dotcms-postgres`) — dotCMS supports PostgreSQL 13-16.\n- OpenSearch 1.3.x (`dotcms-opensearch`) — dotCMS does not support OpenSearch 2.x or 3.x. Do not bump the image tag.\n\nFirst boot takes 2-5 minutes while dotCMS initializes the schema and indices. Wait for both addons to become Ready before the dotCMS pod will pass its startup checks.",
       "architecture": [
         "linux/amd64",
         "linux/arm64"
@@ -5873,11 +5873,51 @@
       "license": "Other",
       "spdx_id": "NOASSERTION",
       "dirname": "dotcms"
+    },
+    {
+      "name": "mattermost",
+      "description": "Mattermost is an open-source, self-hosted collaboration platform for messaging, file sharing and ChatOps — an alternative to Slack.",
+      "source": "https://github.com/mattermost/mattermost",
+      "icon": "https://avatars.githubusercontent.com/u/9828093?s=200&v=4",
+      "website": "https://mattermost.com/",
+      "installation": "",
+      "architecture": [
+        "arm64",
+        "amd64"
+      ],
+      "categories": [
+        "communication",
+        "work"
+      ],
+      "screenshots": [
+        "https://mattermost.com/wp-content/uploads/2022/02/hero-mattermost-overview.png"
+      ],
+      "links": [
+        "https://docs.mattermost.com/"
+      ],
+      "addons": [
+        "KuberoPostgresql"
+      ],
+      "stars": 36839,
+      "forks": 8631,
+      "watchers": 36839,
+      "issues": 859,
+      "last_updated": "2026-05-25T17:49:44Z",
+      "last_pushed": "2026-05-25T17:54:46Z",
+      "created_at": "2015-06-15T06:50:02Z",
+      "size": 1038860,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/app.yaml",
+      "status": "active",
+      "license": "Other",
+      "spdx_id": "NOASSERTION",
+      "dirname": "mattermost"
     }
   ],
   "categories": {
     "data": 15,
-    "work": 58,
+    "work": 59,
     "productivity": 22,
     "utilities": 53,
     "security": 14,
@@ -5892,7 +5932,7 @@
     "devtool": 1,
     "utility": 6,
     "framework": 2,
-    "communication": 11,
+    "communication": 12,
     "database": 3,
     "api": 1,
     "documentation": 8,
@@ -5920,9 +5960,9 @@
     "administration": 1
   },
   "stats": {
-    "total": 173,
+    "total": 174,
     "categories": 42,
     "gitops": 2,
-    "stars": 3264106
+    "stars": 3300945
   }
 }

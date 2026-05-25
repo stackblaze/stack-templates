@@ -10,7 +10,7 @@ consolidated into a single repo so the catalog has zero runtime dependency on
 
 ## Layout
 
-- **`index.json`** — main catalog (171 services). Each entry's `template`
+- **`index.json`** — main catalog (173 services). Each entry's `template`
   field points at `services/<name>/app.yaml` in this repo.
 - **`index-frameworks.json`** — frameworks catalog (2 entries).
 - **`services/<name>/app.yaml`** — the per-template body kubero pulls when
@@ -64,6 +64,7 @@ them as long as their `dirname` doesn't collide with an upstream entry.
 
 Current fork-only entries:
 - `vikunja` — carried forward from the original stackblaze/kubero fork.
+- `mattermost` — Team Edition (MIT) chat/collaboration server; not in upstream.
 
 ## Editing template bodies
 
