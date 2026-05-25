@@ -19,8 +19,11 @@ spec:
     name: mattermost
     deploymentstrategy: docker
     envVars:
+        # Leave empty so Mattermost derives the URL from the request (each
+        # kubero deploy gets its own minted host). Set a canonical Site URL in
+        # the System Console post-install if you need email/push links.
         - name: MM_SERVICESETTINGS_SITEURL
-          value: http://mattermost.localhost
+          value: ""
         - name: MM_SQLSETTINGS_DRIVERNAME
           value: postgres
         - name: MM_SQLSETTINGS_DATASOURCE
