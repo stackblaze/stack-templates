@@ -38,12 +38,12 @@ spec:
       value: dotcmsdbuser
     - name: DB_PASSWORD
       value: password
+    # The KuberoOpenSearch addon (opensearch-project chart) runs plain HTTP
+    # with no security plugin and exposes the service as 'opensearch'.
     - name: DOT_ES_ENDPOINTS
-      value: "https://dotcms-opensearch-opensearch:9200"
-    - name: DOT_ES_AUTH_BASIC_USER
-      value: admin
-    - name: DOT_ES_AUTH_BASIC_PASSWORD
-      value: admin
+      value: "http://opensearch:9200"
+    - name: DOT_ES_AUTH_TYPE
+      value: "NONE"
     - name: DOT_INITIAL_ADMIN_PASSWORD
       value: admin
     - name: DOT_DOTCMS_CLUSTER_ID
@@ -130,6 +130,15 @@ spec:
                 replicaCount: 0
               dashboards:
                 enabled: false
+  # dotCMS is a JVM app with -Xmx2g; give the container headroom above the heap
+  # (metaspace/threads/direct buffers) or it gets OOMKilled on startup.
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: "2"
+      memory: 3Gi
   web:
     replicaCount: 1
   worker:
