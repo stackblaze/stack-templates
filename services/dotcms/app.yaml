@@ -49,8 +49,11 @@ spec:
     - name: DOT_DOTCMS_CLUSTER_ID
       value: dotcms-production
   extraVolumes:
+    # dotCMS shared assets dir — RWX on the 'shared' class so it can be shared
+    # across nodes for clustering/HA (and persists regardless).
     - accessModes:
-        - ReadWriteOnce
+        - ReadWriteMany
+      storageClass: shared
       emptyDir: false
       mountPath: /data/shared
       name: dotcms-shared
@@ -73,6 +76,7 @@ spec:
               image:
                 tag: "16"
               global:
+                storageClass: fast
                 postgresql:
                   auth:
                     database: dotcms
@@ -81,6 +85,7 @@ spec:
                     username: dotcmsdbuser
               primary:
                 persistence:
+                  storageClass: fast
                   size: 5Gi
     - displayName: OpenSearch
       env: []
@@ -97,6 +102,8 @@ spec:
             opensearch:
               image:
                 tag: "1.3.20"
+              global:
+                storageClass: fast
               security:
                 enabled: true
                 adminPassword: admin
@@ -107,10 +114,12 @@ spec:
                 masterOnly: false
                 replicaCount: 1
                 persistence:
+                  storageClass: fast
                   size: 8Gi
               data:
                 replicaCount: 0
                 persistence:
+                  storageClass: fast
                   size: 8Gi
               ingest:
                 enabled: false
