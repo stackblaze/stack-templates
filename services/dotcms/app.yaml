@@ -26,8 +26,10 @@ spec:
   name: dotcms
   deploymentstrategy: docker
   envVars:
+    # NOTE: the dotCMS image already selects a GC — don't add -XX:+UseG1GC here
+    # ("Multiple garbage collectors selected" -> JVM won't start). Heap only.
     - name: CMS_JAVA_OPTS
-      value: "-Xmx2g"
+      value: "-Xmx1g -XX:MaxMetaspaceSize=512m"
     - name: LANG
       value: C.UTF-8
     - name: TZ
@@ -38,12 +40,12 @@ spec:
       value: dotcmsdbuser
     - name: DB_PASSWORD
       value: password
+    # The KuberoOpenSearch addon (opensearch-project chart) runs plain HTTP
+    # with no security plugin and exposes the service as 'opensearch'.
     - name: DOT_ES_ENDPOINTS
-      value: "https://dotcms-opensearch-opensearch:9200"
-    - name: DOT_ES_AUTH_BASIC_USER
-      value: admin
-    - name: DOT_ES_AUTH_BASIC_PASSWORD
-      value: admin
+      value: "http://opensearch:9200"
+    - name: DOT_ES_AUTH_TYPE
+      value: "NONE"
     - name: DOT_INITIAL_ADMIN_PASSWORD
       value: admin
     - name: DOT_DOTCMS_CLUSTER_ID
@@ -130,6 +132,22 @@ spec:
                 replicaCount: 0
               dashboards:
                 enabled: false
+  # Sized to fit a 2Gi-per-container tenant tier (the cluster LimitRange max):
+  # memory reserved at 2Gi (requests==limits; dotCMS warns against memory
+  # oversubscription) with -Xmx1g + 512m metaspace leaving headroom. dotCMS
+  # supports running under its 4GB recommendation for small instances; bump
+  # both to 4Gi/-Xmx2g on a higher-memory tier.
+  resources:
+    requests:
+      cpu: "1"
+      memory: 2Gi
+    limits:
+      cpu: "2"
+      memory: 2Gi
+  # dotCMS first boot takes 2-5 min — longer than the chart's fixed ~90s startup
+  # probe — so disable the probes here, otherwise it gets killed mid-init.
+  healthcheck:
+    enabled: false
   web:
     replicaCount: 1
   worker:
