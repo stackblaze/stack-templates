@@ -27,7 +27,7 @@ spec:
   deploymentstrategy: docker
   envVars:
     - name: CMS_JAVA_OPTS
-      value: "-Xmx2g"
+      value: "-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC"
     - name: LANG
       value: C.UTF-8
     - name: TZ
@@ -130,15 +130,20 @@ spec:
                 replicaCount: 0
               dashboards:
                 enabled: false
-  # dotCMS is a JVM app with -Xmx2g; give the container headroom above the heap
-  # (metaspace/threads/direct buffers) or it gets OOMKilled on startup.
+  # dotCMS docker recommendation: >=2 CPU and 4GB RAM, with memory fully
+  # reserved (no oversubscription — they warn it crashes the JVM GC otherwise),
+  # so requests==limits on memory (Guaranteed). -Xmx2g + 512m metaspace fits.
   resources:
     requests:
-      cpu: 500m
-      memory: 1Gi
+      cpu: "1"
+      memory: 4Gi
     limits:
       cpu: "2"
-      memory: 3Gi
+      memory: 4Gi
+  # dotCMS first boot takes 2-5 min — longer than the chart's fixed ~90s startup
+  # probe — so disable the probes here, otherwise it gets killed mid-init.
+  healthcheck:
+    enabled: false
   web:
     replicaCount: 1
   worker:
