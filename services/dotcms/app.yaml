@@ -102,8 +102,12 @@ spec:
             opensearch:
               image:
                 tag: "1.3.20"
-              global:
+              # opensearch-project chart uses a top-level persistence block
+              # (it ignores the bitnami-style master/data persistence keys).
+              persistence:
+                enabled: true
                 storageClass: fast
+                size: 10Gi
               security:
                 enabled: true
                 adminPassword: admin
@@ -114,12 +118,10 @@ spec:
                 masterOnly: false
                 replicaCount: 1
                 persistence:
-                  storageClass: fast
                   size: 8Gi
               data:
                 replicaCount: 0
                 persistence:
-                  storageClass: fast
                   size: 8Gi
               ingest:
                 enabled: false
