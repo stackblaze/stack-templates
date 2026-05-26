@@ -1,0 +1,87 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: psono
+    annotations:
+        kubero.dev/template.architecture: '["amd64"]'
+        kubero.dev/template.description: "Psono is an open-source, self-hosted password manager for teams — end-to-end encrypted secret storage with sharing, an admin portal and a REST API."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/29746989?s=200&v=4"
+        kubero.dev/template.installation: "IMPORTANT — before first use, generate unique server keys and set them as env vars (they must NEVER change for the life of the server): run `docker run --rm psono/psono-combo:latest python3 ./psono/manage.py generateserverkeys` and paste the output into PSONO_SECRET_KEY, PSONO_ACTIVATION_LINK_SECRET, PSONO_DB_SECRET, PSONO_EMAIL_SECRET_SALT, PSONO_PRIVATE_KEY and PSONO_PUBLIC_KEY. The web client is served at /, the admin portal at /portal and the server API at /server. The optional file-repository (large file storage) needs a separate psono-fileserver deployment."
+        kubero.dev/template.links: '["https://doc.psono.com/"]'
+        kubero.dev/template.screenshots: '["https://psono.com/static/img/section-3.png"]'
+        kubero.dev/template.source: "https://gitlab.com/psono/psono-combo"
+        kubero.dev/template.categories: '["security", "work"]'
+        kubero.dev/template.title: "Psono"
+        kubero.dev/template.website: "https://psono.com/"
+    labels:
+        manager: kubero
+spec:
+    name: psono
+    deploymentstrategy: docker
+    envVars:
+        # Public URL of the server API. kubero substitutes {{KUBERO_APP_URL}}
+        # with the app's minted https URL at deploy time; the combo serves the
+        # server under /server.
+        - name: PSONO_HOST_URL
+          value: "{{KUBERO_APP_URL}}/server"
+        # Accept requests for the app's host (Django ALLOWED_HOSTS).
+        - name: PSONO_ALLOWED_HOSTS
+          value: "*"
+        # Postgres connection (points at the bundled KuberoPostgresql addon).
+        - name: PSONO_DATABASE_URL
+          value: "postgres://psono:psono@psono-postgresql:5432/psono"
+        # --- Server keys: REPLACE ALL SIX before use (see installation note) ---
+        # Generate with: psono/psono-combo python3 ./psono/manage.py generateserverkeys
+        # These placeholders are NOT secure and must be overridden per instance.
+        - name: PSONO_SECRET_KEY
+          value: "REPLACE_WITH_generateserverkeys_SECRET_KEY"
+        - name: PSONO_ACTIVATION_LINK_SECRET
+          value: "REPLACE_WITH_generateserverkeys_ACTIVATION_LINK_SECRET"
+        - name: PSONO_DB_SECRET
+          value: "REPLACE_WITH_generateserverkeys_DB_SECRET"
+        - name: PSONO_EMAIL_SECRET_SALT
+          value: "REPLACE_WITH_generateserverkeys_EMAIL_SECRET_SALT"
+        - name: PSONO_PRIVATE_KEY
+          value: "REPLACE_WITH_generateserverkeys_PRIVATE_KEY"
+        - name: PSONO_PUBLIC_KEY
+          value: "REPLACE_WITH_generateserverkeys_PUBLIC_KEY"
+    # Combo is stateless — all secret data lives in Postgres. No app volume.
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: psono-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              storageClass: fast
+                              postgresql:
+                                  auth:
+                                      database: psono
+                                      password: psono
+                                      postgresPassword: psono
+                                      username: psono
+                          primary:
+                              persistence:
+                                  storageClass: fast
+                                  size: 5Gi
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        pullPolicy: Always
+        repository: psono/psono-combo
+        tag: latest
