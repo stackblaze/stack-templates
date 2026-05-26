@@ -65,6 +65,8 @@ them as long as their `dirname` doesn't collide with an upstream entry.
 Current fork-only entries:
 - `vikunja` — carried forward from the original stackblaze/kubero fork.
 - `mattermost` — Team Edition (MIT) chat/collaboration server; not in upstream.
+- `psono` — self-hosted password manager (combo CE); the six server keys are
+  generated per-deploy via kubero `{{KUBERO_GEN_*}}` tokens.
 
 ## Editing template bodies
 
