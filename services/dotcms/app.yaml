@@ -13,7 +13,7 @@ metadata:
       - **PostgreSQL 16** via the **CloudNativePG** operator (`dotcms-db`) — dotCMS supports PostgreSQL 13–16. Requires the CloudNativePG operator on the cluster.
       - **OpenSearch 1.3.x** (`dotcms-opensearch`) — dotCMS does *not* support OpenSearch 2.x or 3.x. Do not bump the image tag.
 
-      This is the single-instance tier. For a clustered, failover-capable deployment (3-node Postgres + 2 dotCMS replicas) use the **dotCMS (HA)** template.
+      This is the single-instance tier. For a clustered, failover-capable deployment (3-node Postgres + 2 dotCMS replicas) pick the **High availability** deployment type when installing.
 
       First boot takes 2–5 minutes while dotCMS initializes the schema and indices. Wait for both addons to become Ready before the dotCMS pod will pass its startup checks.
     kubero.dev/template.links: '["https://dev.dotcms.com/docs/", "https://github.com/dotCMS/core"]'
