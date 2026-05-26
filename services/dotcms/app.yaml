@@ -26,8 +26,10 @@ spec:
   name: dotcms
   deploymentstrategy: docker
   envVars:
+    # NOTE: the dotCMS image already selects a GC — don't add -XX:+UseG1GC here
+    # ("Multiple garbage collectors selected" -> JVM won't start). Heap only.
     - name: CMS_JAVA_OPTS
-      value: "-Xmx1g -XX:MaxMetaspaceSize=512m -XX:+UseG1GC"
+      value: "-Xmx1g -XX:MaxMetaspaceSize=512m"
     - name: LANG
       value: C.UTF-8
     - name: TZ
