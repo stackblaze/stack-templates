@@ -1,0 +1,112 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: psono
+    annotations:
+        kubero.dev/template.architecture: '["amd64"]'
+        kubero.dev/template.description: "Psono is an open-source, self-hosted password manager for teams — end-to-end encrypted secret storage with sharing, an admin portal and a REST API."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/29746989?s=200&v=4"
+        kubero.dev/template.installation: "The six server keys are generated uniquely per deploy by kubero and persisted (they never change for the life of the instance) — no manual setup. The web client is served at /, the admin portal at /portal and the server API at /server; create the first admin account via the registration flow. The optional file-repository (large file storage) needs a separate psono-fileserver deployment."
+        kubero.dev/template.links: '["https://doc.psono.com/"]'
+        kubero.dev/template.screenshots: '["https://psono.com/static/img/section-3.png"]'
+        kubero.dev/template.source: "https://gitlab.com/psono/psono-combo"
+        kubero.dev/template.categories: '["security", "work"]'
+        kubero.dev/template.title: "Psono"
+        kubero.dev/template.website: "https://psono.com/"
+    labels:
+        manager: kubero
+spec:
+    name: psono
+    deploymentstrategy: docker
+    envVars:
+        # Public URL of the server API. kubero substitutes {{KUBERO_APP_URL}}
+        # with the app's minted https URL at deploy time; the combo serves the
+        # server under /server.
+        - name: PSONO_HOST_URL
+          value: "{{KUBERO_APP_URL}}/server"
+        # Accept requests for the app's host (Django ALLOWED_HOSTS).
+        - name: PSONO_ALLOWED_HOSTS
+          value: "*"
+        # Postgres connection (points at the bundled CloudNativePG addon's
+        # read-write service).
+        - name: PSONO_DATABASE_URL
+          value: "postgres://psono:psono@psono-postgresql-rw:5432/psono"
+        # --- Server keys: generated uniquely per deploy by kubero and persisted
+        # (they never change for the life of the instance). No manual steps.
+        - name: PSONO_SECRET_KEY
+          value: "{{KUBERO_GEN_ALNUM:64}}"
+        - name: PSONO_ACTIVATION_LINK_SECRET
+          value: "{{KUBERO_GEN_ALNUM:64}}"
+        - name: PSONO_DB_SECRET
+          value: "{{KUBERO_GEN_ALNUM:64}}"
+        - name: PSONO_EMAIL_SECRET_SALT
+          value: "{{KUBERO_GEN_BCRYPT_SALT}}"
+        - name: PSONO_PRIVATE_KEY
+          value: "{{KUBERO_GEN_X25519_SK}}"
+        - name: PSONO_PUBLIC_KEY
+          value: "{{KUBERO_GEN_X25519_PK}}"
+    # Combo is stateless — all secret data lives in Postgres. No app volume.
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: PostgreSQL (CloudNativePG)
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: Cluster
+          resourceDefinitions:
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
+                  metadata:
+                      name: psono-postgresql
+                  spec:
+                      instances: 3
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: psono
+                              owner: psono
+                              secret:
+                                  name: psono-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: psono-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: psono-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: psono
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: psono-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: psono
+                      password: psono
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        pullPolicy: Always
+        repository: psono/psono-combo
+        tag: latest

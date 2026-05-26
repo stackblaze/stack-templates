@@ -16,34 +16,63 @@ metadata:
   name: calcom
 spec:
   addons:
-  - displayName: Kubero Postgresql
+  - displayName: PostgreSQL (CloudNativePG)
     env: []
-    icon: /img/addons/postgresql.png
+    icon: /img/addons/pgsql.svg
     id: kubero-operator
-    kind: KuberoPostgresql
+    kind: Cluster
     resourceDefinitions:
-      KuberoPostgresql:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoPostgresql
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
         metadata:
           name: calcom-postgresql
         spec:
-          postgresql:
-            global:
-              postgresql:
-                auth:
-                  database: postgresql
-                  password: calcom
-                  postgresPassword: calcom
-                  username: calcom
-            primary:
-              persistence:
-                size: 1Gi
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: postgresql
+              owner: calcom
+              secret:
+                name: calcom-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: calcom-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: calcom-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: calcom
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: calcom-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: calcom
+          password: calcom
   cronjobs: []
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgresql://calcom:calcom@calcom-postgresql/postgresql
+    value: postgresql://calcom:calcom@calcom-postgresql-rw/postgresql
   - name: NODE_ENV
     value: production
   - name: NEXT_PUBLIC_LICENSE_CONSENT

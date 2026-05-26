@@ -1,0 +1,99 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Joomla is a free and open-source content management
+      system for publishing web content on websites.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/751633?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://upload.wikimedia.org/wikipedia/commons/9/96/Backend_Joomla_4_en.png"]'
+    kubero.dev/template.source: https://github.com/joomla/joomla-cms
+    kubero.dev/template.categories: '["cms"]'
+    kubero.dev/template.title: Joomla
+    kubero.dev/template.website: https://joomla.org
+  name: joomla
+spec:
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: joomla-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: postgresql
+              owner: joomla
+              secret:
+                name: joomla-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: joomla-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: joomla-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: joomla
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: joomla-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: joomla
+          password: joomla
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: JOOMLA_DB_HOST
+    value: joomla-postgresql-rw
+  - name: JOOMLA_DB_PASSWORD
+    value: joomla
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /var/www/html
+    name: joomla-volume
+    size: 1Gi
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /var/run/apache2
+    name: joomla-rundir
+    size: 1Mi
+  image:
+    containerPort: '80'
+    repository: joomla
+    tag: latest
+  name: joomla
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

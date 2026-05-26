@@ -40,7 +40,7 @@ spec:
         - name: POSTGRES_ADMIN_PASSWORD
           value: twenty
         - name: PG_DATABASE_URL
-          value: postgres://twenty:twenty@twenty-postgresql:5432/twenty
+          value: postgres://twenty:twenty@twenty-postgresql-rw:5432/twenty
         - name: IS_SIGN_UP_DISABLED
           value: "false"
         - name: PASSWORD_RESET_TOKEN_EXPIRES_IN
@@ -69,31 +69,58 @@ spec:
           size: 1Gi
     cronjobs: []
     addons:
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: twenty-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              postgresql:
-                                  auth:
-                                      database: twenty
-                                      password: twenty
-                                      postgresPassword: twenty
-                                      username: twenty
-                          primary:
-                              persistence:
-                                  size: 1Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: twenty
+                              owner: twenty
+                              secret:
+                                  name: twenty-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: twenty-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: twenty-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: twenty
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: twenty-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: twenty
+                      password: twenty
         - displayName: Redis
           env: []
           icon: /img/addons/redis.svg

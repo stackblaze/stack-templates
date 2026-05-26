@@ -18,31 +18,58 @@ metadata:
   name: affine
 spec:
   addons:
-  - displayName: Postgresql
+  - displayName: PostgreSQL (CloudNativePG)
     env: []
-    icon: /img/addons/postgresql.png
+    icon: /img/addons/pgsql.svg
     id: kubero-operator
-    kind: KuberoPostgresql
+    kind: Cluster
     resourceDefinitions:
-      KuberoPostgresql:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoPostgresql
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
         metadata:
           name: affine-postgresql
         spec:
-          postgresql:
-            global:
-              postgresql:
-                auth:
-                  database: postgresql
-                  password: afffine
-                  postgresPassword: postgres
-                  username: affine
-            primary:
-              persistence:
-                size: 1Gi
-    version:
-      latest: 0.0.159
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: postgresql
+              owner: affine
+              secret:
+                name: affine-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: affine-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: affine-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: afffine
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: affine-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: affine
+          password: afffine
   - displayName: Redis
     env: []
     icon: /img/addons/Redis.png
@@ -75,7 +102,7 @@ spec:
   - name: REDIS_SERVER_HOST
     value: affine-redis-master
   - name: DATABASE_URL
-    value: postgres://affine:afffine@affine-postgresql:5432/postgresql
+    value: postgres://affine:afffine@affine-postgresql-rw:5432/postgresql
   - name: NODE_ENV
     value: production
   - name: AFFINE_ADMIN_EMAIL

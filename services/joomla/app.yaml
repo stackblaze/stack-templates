@@ -16,34 +16,63 @@ metadata:
   name: joomla
 spec:
   addons:
-  - displayName: Kubero Postgresql
+  - displayName: PostgreSQL (CloudNativePG)
     env: []
-    icon: /img/addons/postgresql.png
+    icon: /img/addons/pgsql.svg
     id: kubero-operator
-    kind: KuberoPostgresql
+    kind: Cluster
     resourceDefinitions:
-      KuberoPostgresql:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoPostgresql
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
         metadata:
           name: joomla-postgresql
         spec:
-          postgresql:
-            global:
-              postgresql:
-                auth:
-                  database: postgresql
-                  password: joomla
-                  postgresPassword: joomla
-                  username: joomla
-            primary:
-              persistence:
-                size: 1Gi
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: postgresql
+              owner: joomla
+              secret:
+                name: joomla-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: joomla-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: joomla-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: joomla
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: joomla-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: joomla
+          password: joomla
   cronjobs: []
   deploymentstrategy: docker
   envVars:
   - name: JOOMLA_DB_HOST
-    value: joomla-mysql
+    value: joomla-postgresql-rw
   - name: JOOMLA_DB_PASSWORD
     value: joomla
   extraVolumes:

@@ -30,37 +30,64 @@ spec:
         - name: NEXT_PUBLIC_WEBAPP_URL
           value: https://documenso.localhost
         - name: NEXT_PRIVATE_DATABASE_URL
-          value: postgresql://documenso:documenso@documenso-postgresql/docusano
+          value: postgresql://documenso:documenso@documenso-postgresql-rw/docusano
         - name: NEXT_PRIVATE_DIRECT_DATABASE_URL
-          value: postgresql://documenso:documenso@documenso-postgresql/docusano
+          value: postgresql://documenso:documenso@documenso-postgresql-rw/docusano
     extraVolumes: []
     cronjobs: []
     addons:
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: documenso-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              postgresql:
-                                  auth:
-                                      database: documenso
-                                      password: documenso
-                                      postgresPassword: documenso
-                                      username: documenso
-                          primary:
-                              persistence:
-                                  size: 1Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: docusano
+                              owner: documenso
+                              secret:
+                                  name: documenso-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: documenso-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: documenso-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: documenso
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: documenso-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: documenso
+                      password: documenso
     web:
         replicaCount: 1
     worker:

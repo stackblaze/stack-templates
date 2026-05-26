@@ -18,36 +18,65 @@ metadata:
   name: bitwarden
 spec:
   addons:
-  - displayName: Postgresql
+  - displayName: PostgreSQL (CloudNativePG)
     env: []
-    icon: /img/addons/postgresql.png
+    icon: /img/addons/pgsql.svg
     id: kubero-operator
-    kind: KuberoPostgresql
+    kind: Cluster
     resourceDefinitions:
-      KuberoPostgresql:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoPostgresql
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
         metadata:
           name: bitwarden-postgresql
         spec:
-          postgresql:
-            global:
-              postgresql:
-                auth:
-                  database: bitwarden
-                  password: bitwarden
-                  postgresPassword: bitwarden
-                  username: bitwarden
-            primary:
-              persistence:
-                size: 1Gi
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: bitwarden
+              owner: bitwarden
+              secret:
+                name: bitwarden-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: bitwarden-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: bitwarden-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: bitwarden
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: bitwarden-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: bitwarden
+          password: bitwarden
   cronjobs: []
   deploymentstrategy: docker
   envVars:
   - name: BW_DB_PROVIDER
     value: postgresql
   - name: BW_DB_SERVER
-    value: bitwarden-postgresql
+    value: bitwarden-postgresql-rw
   - name: BW_DB_DATABASE
     value: bitwarden
   - name: BW_DB_USERNAME

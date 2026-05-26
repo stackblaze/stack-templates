@@ -56,7 +56,7 @@
         "https://twenty.com/developers"
       ],
       "addons": [
-        "KuberoPostgresql",
+        "Cluster",
         "KuberoRedis"
       ],
       "stars": 45686,
@@ -73,7 +73,20 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "twenty"
+      "dirname": "twenty",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/twenty/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/twenty/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "n8n",
@@ -94,7 +107,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 187423,
       "forks": 57530,
@@ -110,11 +123,24 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "n8n"
+      "dirname": "n8n",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "netbird",
-      "description": "Connect your devices into a secure WireGuard\u00ae-based overlay network with SSO, MFA and granular access controls.",
+      "description": "Connect your devices into a secure WireGuard®-based overlay network with SSO, MFA and granular access controls.",
       "source": "https://github.com/netbirdio/netbird",
       "icon": "https://avatars.githubusercontent.com/u/100464677",
       "website": "https://netbird.io/",
@@ -211,7 +237,7 @@
         "https://community.penpot.app/"
       ],
       "addons": [
-        "KuberoPostgresql",
+        "Cluster",
         "KuberoRedis"
       ],
       "stars": 47473,
@@ -228,7 +254,20 @@
       "status": "active",
       "license": "Mozilla Public License 2.0",
       "spdx_id": "MPL-2.0",
-      "dirname": "penpot-backend"
+      "dirname": "penpot-backend",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-backend/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-backend/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "penpot-exporter",
@@ -323,7 +362,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 13463,
       "forks": 849,
@@ -339,7 +378,20 @@
       "status": "active",
       "license": "Apache License 2.0",
       "spdx_id": "Apache-2.0",
-      "dirname": "unleash"
+      "dirname": "unleash",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/unleash/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/unleash/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "grafana",
@@ -524,7 +576,7 @@
       "screenshots": [],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 3914,
       "forks": 354,
@@ -540,7 +592,20 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "tolgee"
+      "dirname": "tolgee",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tolgee/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tolgee/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "symfony",
@@ -709,7 +774,7 @@
     },
     {
       "name": "activepieces",
-      "description": "Your friendliest open source all-in-one automation tool \u2728 Workflow automation tool 100+ integration / Enterprise automation tool / Zapier Alternative",
+      "description": "Your friendliest open source all-in-one automation tool ✨ Workflow automation tool 100+ integration / Enterprise automation tool / Zapier Alternative",
       "source": "https://github.com/activepieces/activepieces",
       "icon": "https://avatars.githubusercontent.com/u/99494700?s=200&v=4",
       "website": "https://www.activepieces.com/",
@@ -725,7 +790,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql",
+        "Cluster",
         "KuberoRedis"
       ],
       "stars": 22142,
@@ -742,7 +807,20 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "activepieces"
+      "dirname": "activepieces",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/activepieces/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/activepieces/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "qdrant",
@@ -940,7 +1018,7 @@
         "https://github.com/ether/etherpad-lite/blob/develop/doc/docker.md"
       ],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 18310,
       "forks": 3011,
@@ -956,7 +1034,20 @@
       "status": "active",
       "license": "Apache License 2.0",
       "spdx_id": "Apache-2.0",
-      "dirname": "etherpad"
+      "dirname": "etherpad",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/etherpad/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/etherpad/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "docuseal",
@@ -1010,7 +1101,7 @@
         "https://github.com/lukevella/rallly-selfhosted"
       ],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 5078,
       "forks": 511,
@@ -1026,7 +1117,20 @@
       "status": "active",
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
-      "dirname": "rallly"
+      "dirname": "rallly",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rallly/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rallly/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "filestash",
@@ -1080,7 +1184,7 @@
         "https://docs.logto.io/"
       ],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 12005,
       "forks": 799,
@@ -1096,7 +1200,20 @@
       "status": "active",
       "license": "Mozilla Public License 2.0",
       "spdx_id": "MPL-2.0",
-      "dirname": "logto"
+      "dirname": "logto",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/logto/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/logto/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "grav",
@@ -1183,7 +1300,7 @@
         "https://docs.documenso.com/"
       ],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 12835,
       "forks": 2594,
@@ -1199,7 +1316,20 @@
       "status": "active",
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
-      "dirname": "documenso"
+      "dirname": "documenso",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "rsshub",
@@ -1248,7 +1378,7 @@
         "https://docs.affine.pro/docs/hello-bonjour-aloha-%E4%BD%A0%E5%A5%BD"
       ],
       "addons": [
-        "KuberoPostgresql",
+        "Cluster",
         "KuberoRedis"
       ],
       "stars": 68267,
@@ -1265,7 +1395,20 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "affine"
+      "dirname": "affine",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/affine/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/affine/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "postiz",
@@ -1284,7 +1427,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql",
+        "Cluster",
         "KuberoRedis"
       ],
       "stars": 30248,
@@ -1301,7 +1444,20 @@
       "status": "active",
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
-      "dirname": "postiz"
+      "dirname": "postiz",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/postiz/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/postiz/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "trilium",
@@ -1588,7 +1744,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 29670,
       "forks": 838,
@@ -1604,7 +1760,20 @@
       "status": "active",
       "license": "MIT License",
       "spdx_id": "MIT",
-      "dirname": "atuin"
+      "dirname": "atuin",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/atuin/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/atuin/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "joomla",
@@ -1622,7 +1791,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 5081,
       "forks": 3853,
@@ -1638,7 +1807,20 @@
       "status": "active",
       "license": "GNU General Public License v2.0",
       "spdx_id": "GPL-2.0",
-      "dirname": "joomla"
+      "dirname": "joomla",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/joomla/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/joomla/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "bookstack",
@@ -1725,7 +1907,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 18570,
       "forks": 1573,
@@ -1741,7 +1923,20 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "bitwarden"
+      "dirname": "bitwarden",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bitwarden/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bitwarden/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "outline",
@@ -1765,7 +1960,7 @@
       "links": [],
       "addons": [
         "KuberoRedis",
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 38447,
       "forks": 3278,
@@ -1781,7 +1976,20 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "outline"
+      "dirname": "outline",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "ryot",
@@ -1797,7 +2005,7 @@
       "screenshots": null,
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 3272,
       "forks": 111,
@@ -1813,7 +2021,20 @@
       "status": "active",
       "license": "GNU General Public License v3.0",
       "spdx_id": "GPL-3.0",
-      "dirname": "ryot"
+      "dirname": "ryot",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ryot/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ryot/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "paperless-ngx-sqlite",
@@ -1876,7 +2097,7 @@
       ],
       "addons": [
         "KuberoRedis",
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 40537,
       "forks": 2679,
@@ -1892,7 +2113,20 @@
       "status": "active",
       "license": "GNU General Public License v3.0",
       "spdx_id": "GPL-3.0",
-      "dirname": "paperless-ngx-postgresql"
+      "dirname": "paperless-ngx-postgresql",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/paperless-ngx-postgresql/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/paperless-ngx-postgresql/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "homebox",
@@ -1943,7 +2177,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 215,
       "forks": 14,
@@ -1959,7 +2193,20 @@
       "status": "active",
       "license": "MIT License",
       "spdx_id": "MIT",
-      "dirname": "airbroke"
+      "dirname": "airbroke",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/airbroke/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/airbroke/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "dashy",
@@ -2011,7 +2258,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql",
+        "Cluster",
         "KuberoRedis"
       ],
       "stars": 20081,
@@ -2028,7 +2275,20 @@
       "status": "active",
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
-      "dirname": "docmost"
+      "dirname": "docmost",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docmost/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docmost/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "drawdb",
@@ -2148,7 +2408,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 42447,
       "forks": 13180,
@@ -2164,7 +2424,20 @@
       "status": "active",
       "license": "MIT License",
       "spdx_id": "MIT",
-      "dirname": "calcom"
+      "dirname": "calcom",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/calcom/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/calcom/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "speedtest-tracker",
@@ -2289,7 +2562,7 @@
       "screenshots": [],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 3148,
       "forks": 233,
@@ -2305,7 +2578,20 @@
       "status": "active",
       "license": "MIT License",
       "spdx_id": "MIT",
-      "dirname": "zipline"
+      "dirname": "zipline",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zipline/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zipline/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "guitos",
@@ -2422,7 +2708,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 11937,
       "forks": 1260,
@@ -2438,7 +2724,20 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "planka"
+      "dirname": "planka",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/planka/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/planka/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "whiteboard",
@@ -2566,7 +2865,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 4298,
       "forks": 792,
@@ -2582,7 +2881,20 @@
       "status": "active",
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
-      "dirname": "fider"
+      "dirname": "fider",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/fider/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/fider/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "flowise",
@@ -2695,7 +3007,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 36589,
       "forks": 7079,
@@ -2711,7 +3023,20 @@
       "status": "active",
       "license": "MIT License",
       "spdx_id": "MIT",
-      "dirname": "umami"
+      "dirname": "umami",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/umami/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/umami/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "casdoor",
@@ -2934,7 +3259,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 742,
       "forks": 133,
@@ -2950,7 +3275,20 @@
       "status": "active",
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
-      "dirname": "claper"
+      "dirname": "claper",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/claper/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/claper/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "browserless",
@@ -3036,7 +3374,7 @@
       ],
       "links": "https://www.keila.io/docs/configuration",
       "addons": [
-        "KuberoPostgresql",
+        "Cluster",
         "KuberoMail"
       ],
       "stars": 2091,
@@ -3053,7 +3391,20 @@
       "status": "active",
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
-      "dirname": "keila"
+      "dirname": "keila",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keila/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keila/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "corteza",
@@ -3072,7 +3423,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 2069,
       "forks": 498,
@@ -3088,7 +3439,20 @@
       "status": "active",
       "license": "Apache License 2.0",
       "spdx_id": "Apache-2.0",
-      "dirname": "corteza"
+      "dirname": "corteza",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/corteza/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/corteza/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "sshwifty",
@@ -3660,7 +4024,7 @@
     },
     {
       "name": "bugsink",
-      "description": "Bugsink is a self-hosted error tracker. It shows you when something breaks in your app and includes all the information you need to debug it\u2014stack traces, request data, logs, and more\u2014without sending anything to a third party.",
+      "description": "Bugsink is a self-hosted error tracker. It shows you when something breaks in your app and includes all the information you need to debug it—stack traces, request data, logs, and more—without sending anything to a third party.",
       "source": "https://github.com/bugsink/bugsink",
       "icon": "https://avatars.githubusercontent.com/u/150733838",
       "website": "https://www.bugsink.com/",
@@ -4313,7 +4677,7 @@
       "screenshots": [],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 2122,
       "forks": 133,
@@ -4329,7 +4693,20 @@
       "status": "active",
       "license": "MIT License",
       "spdx_id": "MIT",
-      "dirname": "azzimut"
+      "dirname": "azzimut",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/azzimut/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/azzimut/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "convertx",
@@ -4714,7 +5091,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 10066,
       "forks": 2318,
@@ -4730,7 +5107,20 @@
       "status": "active",
       "license": "GNU General Public License v3.0",
       "spdx_id": "GPL-3.0",
-      "dirname": "evershop"
+      "dirname": "evershop",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evershop/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evershop/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "bluesky-pds",
@@ -5622,7 +6012,7 @@
       "screenshots": [],
       "links": [],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 3113,
       "forks": 378,
@@ -5638,7 +6028,20 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "peppermint"
+      "dirname": "peppermint",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/peppermint/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/peppermint/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "sqlpad",
@@ -5837,7 +6240,7 @@
       "source": "https://github.com/dotCMS/core",
       "icon": "https://avatars.githubusercontent.com/u/1005263?s=200&v=4",
       "website": "https://www.dotcms.com/",
-      "installation": "Default admin login is `admin@dotcms.com` / `admin`. Change DOT_INITIAL_ADMIN_PASSWORD before exposing the instance.\n\nProvisions two addons automatically:\n- PostgreSQL 16 via the CloudNativePG operator (`dotcms-db`) \u2014 dotCMS supports PostgreSQL 13-16. Requires the CloudNativePG operator on the cluster.\n- OpenSearch 1.3.x (`dotcms-opensearch`) \u2014 dotCMS does not support OpenSearch 2.x or 3.x. Do not bump the image tag.\n\nThis is the single-instance tier. For a clustered, failover-capable deployment (3-node Postgres + 2 dotCMS replicas) use the dotCMS (HA) template.\n\nFirst boot takes 2-5 minutes while dotCMS initializes the schema and indices. Wait for both addons to become Ready before the dotCMS pod will pass its startup checks.",
+      "installation": "Default admin login is `admin@dotcms.com` / `admin`. Change DOT_INITIAL_ADMIN_PASSWORD before exposing the instance.\n\nProvisions two addons automatically:\n- PostgreSQL 16 via the CloudNativePG operator (`dotcms-db`) — dotCMS supports PostgreSQL 13-16. Requires the CloudNativePG operator on the cluster.\n- OpenSearch 1.3.x (`dotcms-opensearch`) — dotCMS does not support OpenSearch 2.x or 3.x. Do not bump the image tag.\n\nThis is the single-instance tier. For a clustered, failover-capable deployment (3-node Postgres + 2 dotCMS replicas) use the dotCMS (HA) template.\n\nFirst boot takes 2-5 minutes while dotCMS initializes the schema and indices. Wait for both addons to become Ready before the dotCMS pod will pass its startup checks.",
       "architecture": [
         "linux/amd64",
         "linux/arm64"
@@ -5889,7 +6292,7 @@
     },
     {
       "name": "mattermost",
-      "description": "Mattermost is an open-source, self-hosted collaboration platform for messaging, file sharing and ChatOps \u2014 an alternative to Slack.",
+      "description": "Mattermost is an open-source, self-hosted collaboration platform for messaging, file sharing and ChatOps — an alternative to Slack.",
       "source": "https://github.com/mattermost/mattermost",
       "icon": "https://avatars.githubusercontent.com/u/9828093?s=200&v=4",
       "website": "https://mattermost.com/",
@@ -5909,7 +6312,7 @@
         "https://docs.mattermost.com/"
       ],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 36839,
       "forks": 8631,
@@ -5925,7 +6328,20 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "mattermost"
+      "dirname": "mattermost",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "psono",
@@ -5948,7 +6364,7 @@
         "https://doc.psono.com/"
       ],
       "addons": [
-        "KuberoPostgresql"
+        "Cluster"
       ],
       "stars": 0,
       "forks": 0,
@@ -5964,7 +6380,20 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "psono"
+      "dirname": "psono",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/psono/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/psono/app.ha.yaml"
+        }
+      ]
     }
   ],
   "categories": {

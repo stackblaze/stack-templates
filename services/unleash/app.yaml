@@ -16,29 +16,58 @@ metadata:
   name: unleash
 spec:
   addons:
-  - displayName: Kubero Postgresql
+  - displayName: PostgreSQL (CloudNativePG)
     env: []
-    icon: /img/addons/postgresql.png
+    icon: /img/addons/pgsql.svg
     id: kubero-operator
-    kind: KuberoPostgresql
+    kind: Cluster
     resourceDefinitions:
-      KuberoPostgresql:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoPostgresql
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
         metadata:
           name: undleash-postgresql
         spec:
-          postgresql:
-            global:
-              postgresql:
-                auth:
-                  database: postgres
-                  password: postgres
-                  postgresPassword: postgres
-                  username: postgres
-            primary:
-              persistence:
-                size: 1Gi
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: postgres
+              owner: postgres
+              secret:
+                name: undleash-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: undleash-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: undleash-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: postgres
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: undleash-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: postgres
   cronjobs: []
   deploymentstrategy: docker
   envVars:
@@ -51,7 +80,7 @@ spec:
   - name: INIT_CLIENT_API_TOKENS
     value: default:development.unleash-insecure-api-token
   - name: DATABASE_URL
-    value: postgres://postgres:postgres@undleash-postgresql/postgres
+    value: postgres://postgres:postgres@undleash-postgresql-rw/postgres
   extraVolumes: []
   image:
     containerPort: '4242'

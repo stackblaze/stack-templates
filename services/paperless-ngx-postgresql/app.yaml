@@ -26,7 +26,7 @@ spec:
         - name: PAPERLESS_URL
           value: https://paperless-ngx.localhost
         - name: PAPERLESS_DBHOST
-          value: paperless-ngx-postgresql
+          value: paperless-ngx-postgresql-rw
         - name: PAPERLESS_DBNAME
           value: paperless
         - name: PAPERLESS_DBPORT
@@ -98,31 +98,58 @@ spec:
                               replicaCount: 1
           version:
               latest: 0.1.5
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: paperless-ngx-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              postgresql:
-                                  auth:
-                                      database: paperless
-                                      password: paperless
-                                      postgresPassword: paperless
-                                      username: paperless
-                          primary:
-                              persistence:
-                                  size: 1Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: paperless
+                              owner: paperless
+                              secret:
+                                  name: paperless-ngx-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: paperless-ngx-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: paperless-ngx-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: paperless
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: paperless-ngx-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: paperless
+                      password: paperless
     web:
         replicaCount: 1
     worker:

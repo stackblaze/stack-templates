@@ -1,0 +1,119 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Free open source kanban board for workgroups.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/64215741?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/plankanban/planka/master/demo.gif"]'
+    kubero.dev/template.source: https://github.com/plankanban/planka
+    kubero.dev/template.categories: '["productivity", "work", "utilities"]'
+    kubero.dev/template.title: Planka
+    kubero.dev/template.website: https://planka.app/
+  labels:
+    manager: kubero
+  name: planka
+spec:
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: planka-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: postgresql
+              owner: postgresql
+              secret:
+                name: planka-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: planka-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: planka-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: postgresql
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: planka-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgresql
+          password: postgresql
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: SECRET_KEY
+    value: notsecretkey
+  - name: BASE_URL
+    value: http://planka.localhost:80
+  - name: DATABASE_URL
+    value: postgresql://postgresql:postgresql@planka-postgresql-rw/postgresql
+  - name: DEFAULT_ADMIN_EMAIL
+    value: emo@demo.demo
+  - name: DEFAULT_ADMIN_PASSWORD
+    value: demo
+  - name: DEFAULT_ADMIN_NAME
+    value: Demo Demo
+  - name: DEFAULT_ADMIN_USERNAME
+    value: demo
+  extraVolumes:
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/public/user-avatars
+    name: planka-user-avatars
+    size: 0.1Gi
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/public/project-background-images
+    name: planka-project-background-images
+    size: 0.5Gi
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/private/attachments
+    name: planka-attachments
+    size: 1Gi
+  image:
+    containerPort: '1337'
+    repository: ghcr.io/plankanban/planka
+    tag: latest
+  name: planka
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

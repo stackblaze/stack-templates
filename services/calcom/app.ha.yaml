@@ -1,0 +1,96 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: The open source Calendly alternative. You are
+      in charge of your own data, workflow and appearance
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/79145102?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/8019099/176390354-f1bc7069-0341-437a-9bb8-eb41092b4016.gif"]'
+    kubero.dev/template.source: https://github.com/calcom/cal.com
+    kubero.dev/template.categories: '["work", "utilities"]'
+    kubero.dev/template.title: cal.com
+    kubero.dev/template.website: https://cal.com/
+  name: calcom
+spec:
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: calcom-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: postgresql
+              owner: calcom
+              secret:
+                name: calcom-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: calcom-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: calcom-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: calcom
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: calcom-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: calcom
+          password: calcom
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: DATABASE_URL
+    value: postgresql://calcom:calcom@calcom-postgresql-rw/postgresql
+  - name: NODE_ENV
+    value: production
+  - name: NEXT_PUBLIC_LICENSE_CONSENT
+    value: agree
+  - name: NEXTAUTH_SECRET
+    value: palimpalim
+  - name: CALENDSO_ENCRYPTION_KEY
+    value: bumpulum
+  extraVolumes: []
+  image:
+    containerPort: '3000'
+    repository: calcom.docker.scarf.sh/calcom/cal.com
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+    tag: latest
+  name: calcom
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
