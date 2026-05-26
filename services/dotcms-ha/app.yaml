@@ -1,31 +1,30 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-  name: dotcms
+  name: dotcms-ha
   annotations:
     kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
-    kubero.dev/template.description: "Hybrid headless content management system for building modern websites, apps and digital experiences with a Java-based, API-first platform."
+    kubero.dev/template.description: "Hybrid headless CMS — high-availability deployment: 3-node CloudNativePG Postgres with automatic failover and 2 clustered dotCMS replicas on shared RWX storage."
     kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/1005263?s=200&v=4"
     kubero.dev/template.installation: |
       Default admin login is `admin@dotcms.com` / `admin`. Change `DOT_INITIAL_ADMIN_PASSWORD` before exposing the instance.
 
-      Provisions two addons automatically:
-      - **PostgreSQL 16** via the **CloudNativePG** operator (`dotcms-db`) — dotCMS supports PostgreSQL 13–16. Requires the CloudNativePG operator on the cluster.
-      - **OpenSearch 1.3.x** (`dotcms-opensearch`) — dotCMS does *not* support OpenSearch 2.x or 3.x. Do not bump the image tag.
+      **High-availability tier.** Provisions:
+      - **PostgreSQL 16 — 3 instances** via the **CloudNativePG** operator (`dotcms-db`): one primary + two streaming replicas with automatic failover. dotCMS connects to the `dotcms-db-rw` service, which always tracks the current primary. Requires the CloudNativePG operator on the cluster.
+      - **2 dotCMS web replicas** clustered via `DOT_DOTCMS_CLUSTER_ID`, sharing the assets directory on a `ReadWriteMany` volume so both nodes serve the same content and survive a node failure / rolling deploys.
+      - **OpenSearch 1.3.x** (`dotcms-opensearch`) — dotCMS does *not* support OpenSearch 2.x/3.x. Note: this runs as a **single** OpenSearch node (the addon chart pins single-node discovery). The search index is rebuildable, so the data tier (Postgres) and app tier (dotCMS) are HA while search is not yet — reindex from the dotCMS admin if the OpenSearch pod is rescheduled.
 
-      This is the single-instance tier. For a clustered, failover-capable deployment (3-node Postgres + 2 dotCMS replicas) use the **dotCMS (HA)** template.
-
-      First boot takes 2–5 minutes while dotCMS initializes the schema and indices. Wait for both addons to become Ready before the dotCMS pod will pass its startup checks.
+      First boot takes 2–5 minutes while dotCMS initializes the schema and indices. Wait for the Postgres cluster and OpenSearch to become Ready before the dotCMS pods pass their startup checks.
     kubero.dev/template.links: '["https://dev.dotcms.com/docs/", "https://github.com/dotCMS/core"]'
     kubero.dev/template.screenshots: '["https://www.dotcms.com/dA/cd72e798-1e69/1000w/dotcms-edit-mode.png"]'
     kubero.dev/template.source: "https://github.com/dotCMS/core"
     kubero.dev/template.categories: '["cms", "work", "productivity"]'
-    kubero.dev/template.title: "dotCMS"
+    kubero.dev/template.title: "dotCMS (HA)"
     kubero.dev/template.website: "https://www.dotcms.com/"
   labels:
     manager: kubero
 spec:
-  name: dotcms
+  name: dotcms-ha
   deploymentstrategy: docker
   envVars:
     # NOTE: the dotCMS image already selects a GC — don't add -XX:+UseG1GC here
@@ -37,8 +36,8 @@ spec:
     - name: TZ
       value: UTC
     # CloudNativePG publishes the current primary on the `<cluster>-rw`
-    # service and reattaches it across failover, so dotCMS always writes to
-    # the leader. Credentials come from the dotcms-db-app secret below.
+    # service and reattaches it across failover, so all dotCMS replicas
+    # always write to the leader. Credentials come from the dotcms-db-app secret.
     - name: DB_BASE_URL
       value: "jdbc:postgresql://dotcms-db-rw:5432/dotcms"
     - name: DB_USERNAME
@@ -53,11 +52,13 @@ spec:
       value: "NONE"
     - name: DOT_INITIAL_ADMIN_PASSWORD
       value: admin
+    # Shared cluster id ties the two dotCMS pods into one logical cluster so
+    # they coordinate cache invalidation and serve identical content.
     - name: DOT_DOTCMS_CLUSTER_ID
-      value: dotcms-production
+      value: dotcms-ha
   extraVolumes:
-    # dotCMS shared assets dir — RWX on the 'shared' class so it can be shared
-    # across nodes for clustering/HA (and persists regardless).
+    # Shared assets dir on RWX so BOTH dotCMS replicas mount the same content
+    # — required for clustering/HA, not just persistence.
     - accessModes:
         - ReadWriteMany
       storageClass: shared
@@ -71,9 +72,8 @@ spec:
     # was moved behind Broadcom's paid catalog in 2025 and no longer gets
     # free image updates). CNPG is CNCF, Apache-2 and actively maintained.
     # `kind` + the resourceDefinitions key are both `Cluster` so the addon's
-    # status resolves (status path looks up resourceDefinitions[kind] and the
-    # CRD plural for that kind). The operator applies every resourceDefinitions
-    # value as a manifest, so the Cluster CR and its two secrets all get created.
+    # status resolves. The operator applies every resourceDefinitions value as
+    # a manifest, so the Cluster CR and its two secrets all get created.
     - displayName: PostgreSQL (CloudNativePG)
       env: []
       icon: /img/addons/pgsql.svg
@@ -86,16 +86,14 @@ spec:
           metadata:
             name: dotcms-db
           spec:
-            # Single instance for the standard tier. The HA template sets 3.
-            instances: 1
+            # HA: 1 primary + 2 hot standbys with automatic failover.
+            instances: 3
             # dotCMS supports PostgreSQL 13–16; pin 16 (CNPG defaults to 17).
             imageName: ghcr.io/cloudnative-pg/postgresql:16
             primaryUpdateStrategy: unsupervised
             storage:
               storageClass: fast
               size: 5Gi
-            # Keep PG modest so it fits alongside dotCMS + OpenSearch in the
-            # tenant quota; raise for write-heavy production workloads.
             resources:
               requests:
                 cpu: 100m
@@ -174,11 +172,10 @@ spec:
                 replicaCount: 0
               dashboards:
                 enabled: false
-  # Sized to fit a 2Gi-per-container tenant tier (the cluster LimitRange max):
-  # memory reserved at 2Gi (requests==limits; dotCMS warns against memory
-  # oversubscription) with -Xmx1g + 512m metaspace leaving headroom. dotCMS
-  # supports running under its 4GB recommendation for small instances; bump
-  # both to 4Gi/-Xmx2g on a higher-memory tier.
+  # Per-pod sizing (2Gi-per-container tenant tier): memory reserved at 2Gi
+  # (requests==limits; dotCMS warns against memory oversubscription) with
+  # -Xmx1g + 512m metaspace leaving headroom. With 2 replicas the app tier
+  # reserves 2×2Gi; bump both to 4Gi/-Xmx2g on a higher-memory tier.
   resources:
     requests:
       cpu: "1"
@@ -191,7 +188,8 @@ spec:
   healthcheck:
     enabled: false
   web:
-    replicaCount: 1
+    # Two clustered replicas for app-tier HA + zero-downtime rolling deploys.
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
