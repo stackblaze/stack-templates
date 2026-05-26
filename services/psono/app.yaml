@@ -6,7 +6,7 @@ metadata:
         kubero.dev/template.architecture: '["amd64"]'
         kubero.dev/template.description: "Psono is an open-source, self-hosted password manager for teams — end-to-end encrypted secret storage with sharing, an admin portal and a REST API."
         kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/29746989?s=200&v=4"
-        kubero.dev/template.installation: "IMPORTANT — before first use, generate unique server keys and set them as env vars (they must NEVER change for the life of the server): run `docker run --rm psono/psono-combo:latest python3 ./psono/manage.py generateserverkeys` and paste the output into PSONO_SECRET_KEY, PSONO_ACTIVATION_LINK_SECRET, PSONO_DB_SECRET, PSONO_EMAIL_SECRET_SALT, PSONO_PRIVATE_KEY and PSONO_PUBLIC_KEY. The web client is served at /, the admin portal at /portal and the server API at /server. The optional file-repository (large file storage) needs a separate psono-fileserver deployment."
+        kubero.dev/template.installation: "The six server keys are generated uniquely per deploy by kubero and persisted (they never change for the life of the instance) — no manual setup. The web client is served at /, the admin portal at /portal and the server API at /server; create the first admin account via the registration flow. The optional file-repository (large file storage) needs a separate psono-fileserver deployment."
         kubero.dev/template.links: '["https://doc.psono.com/"]'
         kubero.dev/template.screenshots: '["https://psono.com/static/img/section-3.png"]'
         kubero.dev/template.source: "https://gitlab.com/psono/psono-combo"
@@ -30,21 +30,20 @@ spec:
         # Postgres connection (points at the bundled KuberoPostgresql addon).
         - name: PSONO_DATABASE_URL
           value: "postgres://psono:psono@psono-postgresql:5432/psono"
-        # --- Server keys: REPLACE ALL SIX before use (see installation note) ---
-        # Generate with: psono/psono-combo python3 ./psono/manage.py generateserverkeys
-        # These placeholders are NOT secure and must be overridden per instance.
+        # --- Server keys: generated uniquely per deploy by kubero and persisted
+        # (they never change for the life of the instance). No manual steps.
         - name: PSONO_SECRET_KEY
-          value: "REPLACE_WITH_generateserverkeys_SECRET_KEY"
+          value: "{{KUBERO_GEN_ALNUM:64}}"
         - name: PSONO_ACTIVATION_LINK_SECRET
-          value: "REPLACE_WITH_generateserverkeys_ACTIVATION_LINK_SECRET"
+          value: "{{KUBERO_GEN_ALNUM:64}}"
         - name: PSONO_DB_SECRET
-          value: "REPLACE_WITH_generateserverkeys_DB_SECRET"
+          value: "{{KUBERO_GEN_ALNUM:64}}"
         - name: PSONO_EMAIL_SECRET_SALT
-          value: "REPLACE_WITH_generateserverkeys_EMAIL_SECRET_SALT"
+          value: "{{KUBERO_GEN_BCRYPT_SALT}}"
         - name: PSONO_PRIVATE_KEY
-          value: "REPLACE_WITH_generateserverkeys_PRIVATE_KEY"
+          value: "{{KUBERO_GEN_X25519_SK}}"
         - name: PSONO_PUBLIC_KEY
-          value: "REPLACE_WITH_generateserverkeys_PUBLIC_KEY"
+          value: "{{KUBERO_GEN_X25519_PK}}"
     # Combo is stateless — all secret data lives in Postgres. No app volume.
     extraVolumes: []
     cronjobs: []
