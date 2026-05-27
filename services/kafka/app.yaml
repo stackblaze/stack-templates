@@ -1,0 +1,99 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Apache Kafka is a distributed event streaming
+      platform. This template runs a Kafka cluster in KRaft mode (no ZooKeeper) via
+      the Strimzi operator, fronted by the kafbat Kafka UI web console for browsing
+      topics, consumer groups and messages.
+    kubero.dev/template.icon: https://upload.wikimedia.org/wikipedia/commons/0/05/Apache_kafka.svg
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '["https://kafka.apache.org/documentation/","https://strimzi.io/docs/operators/latest/overview","https://github.com/kafbat/kafka-ui"]'
+    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.source: https://github.com/apache/kafka
+    kubero.dev/template.categories: '["messaging"]'
+    kubero.dev/template.title: Apache Kafka
+    kubero.dev/template.website: https://kafka.apache.org
+  name: kafka
+spec:
+  addons:
+  - displayName: Kafka (Strimzi)
+    env: []
+    icon: /img/addons/kafka.svg
+    id: kubero-operator
+    kind: Kafka
+    resourceDefinitions:
+      Kafka:
+        apiVersion: kafka.strimzi.io/v1
+        kind: Kafka
+        metadata:
+          name: kafka-cluster
+        spec:
+          kafka:
+            version: "4.2.0"
+            metadataVersion: "4.2-IV1"
+            listeners:
+            - name: plain
+              port: 9092
+              type: internal
+              tls: false
+            config:
+              offsets.topic.replication.factor: 1
+              transaction.state.log.replication.factor: 1
+              transaction.state.log.min.isr: 1
+              default.replication.factor: 1
+              min.insync.replicas: 1
+          entityOperator:
+            topicOperator: {}
+            userOperator: {}
+      nodePool:
+        apiVersion: kafka.strimzi.io/v1
+        kind: KafkaNodePool
+        metadata:
+          name: dual-role
+          labels:
+            strimzi.io/cluster: kafka-cluster
+        spec:
+          replicas: 1
+          roles:
+          - controller
+          - broker
+          storage:
+            type: jbod
+            volumes:
+            - id: 0
+              type: persistent-claim
+              size: 5Gi
+              class: fast
+              kraftMetadata: shared
+              deleteClaim: true
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 250m
+            limits:
+              memory: 1Gi
+              cpu: "1"
+  cronjobs: []
+  deploymentstrategy: docker
+  # kafbat Kafka UI — points at the Strimzi bootstrap service
+  # (<cluster>-kafka-bootstrap). The cluster CR is named "kafka-cluster", so the
+  # bootstrap service is "kafka-cluster-kafka-bootstrap:9092".
+  envVars:
+  - name: KAFKA_CLUSTERS_0_NAME
+    value: kafka
+  - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+    value: kafka-cluster-kafka-bootstrap:9092
+  - name: DYNAMIC_CONFIG_ENABLED
+    value: "true"
+  extraVolumes: []
+  image:
+    containerPort: '8080'
+    repository: ghcr.io/kafbat/kafka-ui
+    tag: latest
+  name: kafka
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

@@ -6563,6 +6563,44 @@
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/psono/app.ha.yaml"
         }
       ]
+    },
+    {
+      "name": "kafka",
+      "description": "Apache Kafka is a distributed event streaming platform. Runs in KRaft mode via the Strimzi operator, with the kafbat Kafka UI web console.",
+      "source": "https://github.com/apache/kafka",
+      "icon": "https://upload.wikimedia.org/wikipedia/commons/0/05/Apache_kafka.svg",
+      "website": "https://kafka.apache.org",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "messaging"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://kafka.apache.org/documentation/",
+        "https://strimzi.io/docs/operators/latest/overview",
+        "https://github.com/kafbat/kafka-ui"
+      ],
+      "addons": [
+        "Kafka"
+      ],
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kafka/app.yaml",
+      "status": "active",
+      "dirname": "kafka",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kafka/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kafka/app.ha.yaml"
+        }
+      ]
     }
   ],
   "categories": {
@@ -6607,7 +6645,8 @@
     "knowledgebase": 1,
     "log": 1,
     "helpdesk": 1,
-    "administration": 1
+    "administration": 1,
+    "messaging": 1
   },
   "stats": {
     "total": 175,
