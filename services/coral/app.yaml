@@ -16,30 +16,35 @@ metadata:
   name: coral
 spec:
   addons:
-  - displayName: Kubero Redis
+  - displayName: Valkey
     env: []
-    icon: /img/addons/Redis.png
+    icon: /img/addons/redis.svg
     id: kubero-operator
-    kind: KuberoRedis
+    kind: Valkey
     resourceDefinitions:
-      KuberoRedis:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoRedis
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
         metadata:
-          name: coral-redis
+          name: coral-valkey
         spec:
-          redis:
-            architecture: replication
-            global:
-              redis:
-                password: changeme
-            master:
-              persistence:
-                size: 1Gi
-            replica:
-              persistence:
-                size: 1Gi
-              replicaCount: 1
+          version: "8.0"
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
   - displayName: Kubero MongoDB
     env: []
     icon: /img/addons/MongoDB.png
@@ -75,7 +80,7 @@ spec:
   - name: SIGNING_SECRET
     value: change-me-to-make-me-secure
   - name: REDIS_URI
-    value: redis://coral:changeme@coral-redis-master:6379
+    value: redis://rfr-coral-valkey-readwrite:6379
   - name: MONGODB_URI
     value: mongodb://root:changeme@coral-mongodb:27017/?tls=false
   - name: NODE_ENV

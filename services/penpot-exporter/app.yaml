@@ -22,7 +22,7 @@ spec:
         - name: PENPOT_PUBLIC_URI
           value: penpot-frontend
         - name: PENPOT_REDIS_URI
-          value: redis://penpot@penpot-backend-redis-master:6379/0?verifyPeer=NONE
+          value: redis://rfr-penpot-backend-valkey-readwrite:6379/0?verifyPeer=NONE
     extraVolumes: []
     cronjobs: []
     addons: []
