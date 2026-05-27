@@ -39,31 +39,53 @@ spec:
           size: 1Gi
     cronjobs: []
     addons:
-        - displayName: MySQL
+        - displayName: MariaDB
           env: []
           icon: /img/addons/mysql.svg
           id: kubero-operator
-          kind: KuberoMysql
+          kind: MariaDB
           resourceDefinitions:
-              KuberoMysql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoMysql
+              MariaDB:
+                  apiVersion: k8s.mariadb.com/v1alpha1
+                  kind: MariaDB
                   metadata:
                       name: vvveb-mysql
                   spec:
-                      mysql:
-                          auth:
-                              createDatabase: true
-                              database: vvveb
-                              password: vvveb
-                              rootPassword: vvveb
-                              username: vvveb
-                          global:
-                          primary:
-                              persistence:
-                                  accessModes:
-                                      - ReadWriteOnce
-                                  size: 1Gi
+                      rootPasswordSecretKeyRef:
+                          name: vvveb-mysql-root
+                          key: password
+                      database: vvveb
+                      username: vvveb
+                      passwordSecretKeyRef:
+                          name: vvveb-mysql-app
+                          key: password
+                      storage:
+                          size: 5Gi
+                          storageClassName: fast
+                      replicas: 1
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+              rootSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: vvveb-mysql-root
+                  type: Opaque
+                  stringData:
+                      password: vvveb
+              appSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: vvveb-mysql-app
+                  type: Opaque
+                  stringData:
+                      password: vvveb
           version:
               latest: 0.1.5
     web:

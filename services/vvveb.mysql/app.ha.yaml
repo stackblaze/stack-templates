@@ -1,38 +1,41 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: piwigo
+    name: vvveb-mysql
     annotations:
-        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
-        kubero.dev/template.description: "Manage your photos with Piwigo, a full featured open source photo gallery application for the web."
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/9326886"
-        kubero.dev/template.installation: "This app requires a manual step to configure the MySQL database."
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Powerful and easy to use cms to build websites, blogs or ecommerce stores."
+        kubero.dev/template.icon: "https://camo.githubusercontent.com/d9af82329f3a4ace7ba38d2c21120fadbdd77059bc91abdb32e0a4bdb93a0a38/68747470733a2f2f76767665622e636f6d2f61646d696e2f64656661756c742f696d672f6269676c6f676f2e706e67"
+        kubero.dev/template.installation: ""
         kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: '["https://piwigo.org/plugins/piwigo-piwigodotorg//images/home/responsive-screens.png"]'
-        kubero.dev/template.source: "https://github.com/Piwigo/Piwigo"
-        kubero.dev/template.categories: '["utilities"]'
-        kubero.dev/template.title: "Piwigo"
-        kubero.dev/template.website: "https://piwigo.org/"
+        kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/12d4a8128b5faca1db589a968bfd0e501c6671f23deb75e5972f80f89748635a/68747470733a2f2f7777772e76767665622e636f6d2f76767665622d61646d696e2f64617368626f6172642d6c696768742e706e67"]'
+        kubero.dev/template.source: "https://github.com/givanz/Vvveb"
+        kubero.dev/template.categories: '["cms", "e-commerce"]'
+        kubero.dev/template.title: "vvveb"
+        kubero.dev/template.website: "https://www.vvveb.com/"
     labels:
         manager: kubero
 spec:
-    name: piwigo
+    name: vvveb-mysql
     deploymentstrategy: docker
-    envVars: []
+    envVars:
+        - name: DB_USER
+          value: vvveb
+        - name: DB_PASSWORD
+          value: vvveb
+        - name: DB_NAME
+          value: vvveb
+        - name: DB_HOST
+          value: vvveb-mysql
+        - name: DB_ENGINE
+          value: mysql
     extraVolumes:
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
           emptyDir: false
-          mountPath: /config
-          name: piwigo-config-volume
-          size: 1Gi
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /gallery
-          name: piwigo-gallery-volume
+          mountPath: /var/www/html
+          name: vvveb-docroot-volume
           size: 1Gi
     cronjobs: []
     addons:
@@ -46,20 +49,22 @@ spec:
                   apiVersion: k8s.mariadb.com/v1alpha1
                   kind: MariaDB
                   metadata:
-                      name: piwigo-mysql
+                      name: vvveb-mysql
                   spec:
                       rootPasswordSecretKeyRef:
-                          name: piwigo-mysql-root
+                          name: vvveb-mysql-root
                           key: password
-                      database: piwigo
-                      username: piwigo
+                      database: vvveb
+                      username: vvveb
                       passwordSecretKeyRef:
-                          name: piwigo-mysql-app
+                          name: vvveb-mysql-app
                           key: password
                       storage:
                           size: 5Gi
                           storageClassName: fast
-                      replicas: 1
+                      replicas: 3
+                      galera:
+                          enabled: true
                       resources:
                           requests:
                               cpu: 100m
@@ -71,18 +76,18 @@ spec:
                   apiVersion: v1
                   kind: Secret
                   metadata:
-                      name: piwigo-mysql-root
+                      name: vvveb-mysql-root
                   type: Opaque
                   stringData:
-                      password: piwigo
+                      password: vvveb
               appSecret:
                   apiVersion: v1
                   kind: Secret
                   metadata:
-                      name: piwigo-mysql-app
+                      name: vvveb-mysql-app
                   type: Opaque
                   stringData:
-                      password: piwigo
+                      password: vvveb
           version:
               latest: 0.1.5
     web:
@@ -92,5 +97,5 @@ spec:
     image:
         containerPort: "80"
         pullPolicy: Always
-        repository: lscr.io/linuxserver/piwigo
+        repository: vvveb/vvvebcms
         tag: latest
