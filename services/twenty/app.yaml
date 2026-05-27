@@ -30,7 +30,7 @@ spec:
         - name: CACHE_STORAGE_TYPE
           value: redis
         - name: REDIS_URL
-          value: redis://:twenty@twenty-redis-master:6379
+          value: redis://rfr-twenty-valkey-readwrite:6379
         - name: API_RATE_LIMITING_TTL
           value: "100"
         - name: API_RATE_LIMITING_LIMIT
@@ -121,32 +121,35 @@ spec:
                   stringData:
                       username: twenty
                       password: twenty
-        - displayName: Redis
+        - displayName: Valkey
           env: []
           icon: /img/addons/redis.svg
           id: kubero-operator
-          kind: KuberoRedis
+          kind: Valkey
           resourceDefinitions:
-              KuberoRedis:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoRedis
+              Valkey:
+                  apiVersion: rds.valkey.buf.red/v1alpha1
+                  kind: Valkey
                   metadata:
-                      name: twenty-redis
+                      name: twenty-valkey
                   spec:
-                      redis:
-                          architecture: replication
-                          global:
-                              redis:
-                                  password: twenty
-                          master:
-                              persistence:
-                                  size: 1Gi
-                          replica:
-                              persistence:
-                                  size: 1Gi
-                              replicaCount: 1
-          version:
-              latest: 0.1.5
+                      version: "8.0"
+                      arch: replica
+                      replicas:
+                          shards: 1
+                          replicasOfShard: 1
+                      access:
+                          serviceType: ClusterIP
+                      storage:
+                          capacity: 1Gi
+                          storageClassName: fast
+                      resources:
+                          requests:
+                              cpu: 50m
+                              memory: 256Mi
+                          limits:
+                              cpu: 500m
+                              memory: 256Mi
     web:
         replicaCount: 1
     worker:

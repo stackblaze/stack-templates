@@ -22,7 +22,7 @@ spec:
         - name: PAPERLESS_SECRET_KEY
           value: 70zcjuy9cy9NcIrj++eK2FR0E/Kdb3d3VZhRw8UmDSg=
         - name: PAPERLESS_REDIS
-          value: redis://:paperless@paperless-ngx-redis-master:6379
+          value: redis://rfr-paperless-ngx-valkey-readwrite:6379
         - name: PAPERLESS_URL
           value: https://paperless-ngx.localhost
         - name: PAPERLESS_DBHOST
@@ -72,32 +72,35 @@ spec:
           size: 1Gi
     cronjobs: []
     addons:
-        - displayName: Redis
+        - displayName: Valkey
           env: []
           icon: /img/addons/redis.svg
           id: kubero-operator
-          kind: KuberoRedis
+          kind: Valkey
           resourceDefinitions:
-              KuberoRedis:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoRedis
+              Valkey:
+                  apiVersion: rds.valkey.buf.red/v1alpha1
+                  kind: Valkey
                   metadata:
-                      name: paperless-ngx-redis
+                      name: paperless-ngx-valkey
                   spec:
-                      redis:
-                          architecture: replication
-                          global:
-                              redis:
-                                  password: paperless
-                          master:
-                              persistence:
-                                  size: 1Gi
-                          replica:
-                              persistence:
-                                  size: 1Gi
-                              replicaCount: 1
-          version:
-              latest: 0.1.5
+                      version: "8.0"
+                      arch: replica
+                      replicas:
+                          shards: 1
+                          replicasOfShard: 1
+                      access:
+                          serviceType: ClusterIP
+                      storage:
+                          capacity: 1Gi
+                          storageClassName: fast
+                      resources:
+                          requests:
+                              cpu: 50m
+                              memory: 256Mi
+                          limits:
+                              cpu: 500m
+                              memory: 256Mi
         - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg

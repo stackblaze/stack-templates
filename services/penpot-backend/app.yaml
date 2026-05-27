@@ -26,7 +26,7 @@ spec:
         - name: PENPOT_DATABASE_URI
           value: postgresql://penpot-backend-postgresql-rw/penpot
         - name: PENPOT_REDIS_URI
-          value: redis://penpot@penpot-backend-redis-master:6379/0?verifyPeer=NONE
+          value: redis://rfr-penpot-backend-valkey-readwrite:6379/0?verifyPeer=NONE
         - name: PENPOT_TELEMETRY_ENABLED
           value: "true"
         - name: PENPOT_HTTP_SERVER_PORT
@@ -107,32 +107,35 @@ spec:
                   stringData:
                       username: penpot
                       password: penpot
-        - displayName: Redis
+        - displayName: Valkey
           env: []
           icon: /img/addons/redis.svg
           id: kubero-operator
-          kind: KuberoRedis
+          kind: Valkey
           resourceDefinitions:
-              KuberoRedis:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoRedis
+              Valkey:
+                  apiVersion: rds.valkey.buf.red/v1alpha1
+                  kind: Valkey
                   metadata:
-                      name: penpot-backend-redis
+                      name: penpot-backend-valkey
                   spec:
-                      redis:
-                          architecture: replication
-                          global:
-                              redis:
-                                  password: penpot
-                          master:
-                              persistence:
-                                  size: 1Gi
-                          replica:
-                              persistence:
-                                  size: 1Gi
-                              replicaCount: 1
-          version:
-              latest: 0.1.5
+                      version: "8.0"
+                      arch: replica
+                      replicas:
+                          shards: 1
+                          replicasOfShard: 1
+                      access:
+                          serviceType: ClusterIP
+                      storage:
+                          capacity: 1Gi
+                          storageClassName: fast
+                      resources:
+                          requests:
+                              cpu: 50m
+                              memory: 256Mi
+                          limits:
+                              cpu: 500m
+                              memory: 256Mi
     web:
         replicaCount: 0
     worker:

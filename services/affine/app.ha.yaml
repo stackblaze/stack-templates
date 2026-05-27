@@ -70,37 +70,45 @@ spec:
         stringData:
           username: affine
           password: afffine
-  - displayName: Redis
+  - displayName: Valkey
     env: []
-    icon: /img/addons/Redis.png
+    icon: /img/addons/redis.svg
     id: kubero-operator
-    kind: KuberoRedis
+    kind: Valkey
     resourceDefinitions:
-      KuberoRedis:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoRedis
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
         metadata:
-          name: affine-redis
+          name: affine-valkey
         spec:
-          redis:
-            architecture: replication
-            global:
-              redis:
-                password: affine
-            master:
-              persistence:
-                size: 1Gi
-            replica:
-              persistence:
-                size: 1Gi
-              replicaCount: 1
+          version: "8.0"
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          sentinel:
+            replicas: 3
+            quorum: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
   cronjobs: []
   deploymentstrategy: docker
   envVars:
   - name: NODE_OPTIONS
     value: --import=./scripts/register.js
   - name: REDIS_SERVER_HOST
-    value: affine-redis-master
+    value: rfr-affine-valkey-readwrite
   - name: DATABASE_URL
     value: postgres://affine:afffine@affine-postgresql-rw:5432/postgresql
   - name: NODE_ENV
@@ -112,7 +120,7 @@ spec:
   - name: TELEMETRY_ENABLE
     value: 'false'
   - name: REDIS_SERVER_PASSWORD
-    value: affine
+    value: ""
   extraVolumes:
   - accessMode: ReadWriteOnce
     accessModes:

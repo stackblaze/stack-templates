@@ -29,7 +29,7 @@ spec:
         - name: DATABASE_URL
           value: postgresql://postiz:postiz@postiz-postgresql-rw:5432/postiz
         - name: REDIS_URL
-          value: redis://:postiz@postiz-redis-master:6379
+          value: redis://rfr-postiz-valkey-readwrite:6379
         - name: IS_GENERAL
           value: "true"
         - name: STORAGE_PROVIDER
@@ -111,32 +111,38 @@ spec:
                   stringData:
                       username: postiz
                       password: postiz
-        - displayName: Redis
+        - displayName: Valkey
           env: []
           icon: /img/addons/redis.svg
           id: kubero-operator
-          kind: KuberoRedis
+          kind: Valkey
           resourceDefinitions:
-              KuberoRedis:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoRedis
+              Valkey:
+                  apiVersion: rds.valkey.buf.red/v1alpha1
+                  kind: Valkey
                   metadata:
-                      name: postiz-redis
+                      name: postiz-valkey
                   spec:
-                      redis:
-                          architecture: replication
-                          global:
-                              redis:
-                                  password: postiz
-                          master:
-                              persistence:
-                                  size: 1Gi
-                          replica:
-                              persistence:
-                                  size: 1Gi
-                              replicaCount: 1
-          version:
-              latest: 0.1.5
+                      version: "8.0"
+                      arch: failover
+                      replicas:
+                          shards: 1
+                          replicasOfShard: 2
+                      sentinel:
+                          replicas: 3
+                          quorum: 2
+                      access:
+                          serviceType: ClusterIP
+                      storage:
+                          capacity: 1Gi
+                          storageClassName: fast
+                      resources:
+                          requests:
+                              cpu: 50m
+                              memory: 256Mi
+                          limits:
+                              cpu: 500m
+                              memory: 256Mi
     web:
         replicaCount: 1
     worker:
