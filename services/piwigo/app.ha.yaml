@@ -1,44 +1,38 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: kimai
+    name: piwigo
     annotations:
         kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
-        kubero.dev/template.description: "Kimai is a web-based multi-user time-tracking application. Works great for everyone: freelancers, companies, organizations"
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/981996"
-        kubero.dev/template.installation: ""
+        kubero.dev/template.description: "Manage your photos with Piwigo, a full featured open source photo gallery application for the web."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/9326886"
+        kubero.dev/template.installation: "This app requires a manual step to configure the MySQL database."
         kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: "[]"
-        kubero.dev/template.source: "https://github.com/kimai/kimai"
-        kubero.dev/template.categories: '["work", "productivity"]'
-        kubero.dev/template.title: "Kimai"
-        kubero.dev/template.website: "https://www.kimai.org"
+        kubero.dev/template.screenshots: '["https://piwigo.org/plugins/piwigo-piwigodotorg//images/home/responsive-screens.png"]'
+        kubero.dev/template.source: "https://github.com/Piwigo/Piwigo"
+        kubero.dev/template.categories: '["utilities"]'
+        kubero.dev/template.title: "Piwigo"
+        kubero.dev/template.website: "https://piwigo.org/"
     labels:
         manager: kubero
 spec:
-    name: kimai
+    name: piwigo
     deploymentstrategy: docker
-    envVars:
-        - name: ADMINMAIL
-          value: admin@kimai.local
-        - name: ADMINPASS
-          value: changemeplease
-        - name: DATABASE_URL
-          value: mysql://kimai:kimai@kimai-mysql/kimai?charset=utf8mb4
+    envVars: []
     extraVolumes:
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
           emptyDir: false
-          mountPath: /opt/kimai/var/data
-          name: kimai-data-volume
+          mountPath: /config
+          name: piwigo-config-volume
           size: 1Gi
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
           emptyDir: false
-          mountPath: /opt/kimai/var/plugins
-          name: kimai-plugins-volume
+          mountPath: /gallery
+          name: piwigo-gallery-volume
           size: 1Gi
     cronjobs: []
     addons:
@@ -52,20 +46,22 @@ spec:
                   apiVersion: k8s.mariadb.com/v1alpha1
                   kind: MariaDB
                   metadata:
-                      name: kimai-mysql
+                      name: piwigo-mysql
                   spec:
                       rootPasswordSecretKeyRef:
-                          name: kimai-mysql-root
+                          name: piwigo-mysql-root
                           key: password
-                      database: kimai
-                      username: kimai
+                      database: piwigo
+                      username: piwigo
                       passwordSecretKeyRef:
-                          name: kimai-mysql-app
+                          name: piwigo-mysql-app
                           key: password
                       storage:
                           size: 5Gi
                           storageClassName: fast
-                      replicas: 1
+                      replicas: 3
+                      galera:
+                          enabled: true
                       resources:
                           requests:
                               cpu: 100m
@@ -77,24 +73,26 @@ spec:
                   apiVersion: v1
                   kind: Secret
                   metadata:
-                      name: kimai-mysql-root
+                      name: piwigo-mysql-root
                   type: Opaque
                   stringData:
-                      password: kimai
+                      password: piwigo
               appSecret:
                   apiVersion: v1
                   kind: Secret
                   metadata:
-                      name: kimai-mysql-app
+                      name: piwigo-mysql-app
                   type: Opaque
                   stringData:
-                      password: kimai
+                      password: piwigo
+          version:
+              latest: 0.1.5
     web:
         replicaCount: 1
     worker:
         replicaCount: 0
     image:
-        containerPort: "8001"
+        containerPort: "80"
         pullPolicy: Always
-        repository: kimai/kimai2
-        tag: apache
+        repository: lscr.io/linuxserver/piwigo
+        tag: latest

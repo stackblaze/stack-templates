@@ -326,7 +326,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoMysql"
+        "MariaDB"
       ],
       "stars": 21103,
       "forks": 12937,
@@ -342,7 +342,20 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "wordpress"
+      "dirname": "wordpress",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "unleash",
@@ -445,7 +458,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoMysql"
+        "MariaDB"
       ],
       "stars": 52784,
       "forks": 11542,
@@ -461,7 +474,20 @@
       "status": "active",
       "license": "MIT License",
       "spdx_id": "MIT",
-      "dirname": "ghost"
+      "dirname": "ghost",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghost/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghost/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "changedetection",
@@ -945,7 +971,7 @@
       ],
       "links": "https://manual.limesurvey.org/LimeSurvey_Manual",
       "addons": [
-        "KuberoMysql"
+        "MariaDB"
       ],
       "stars": 3593,
       "forks": 1106,
@@ -961,7 +987,20 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "limesurvey"
+      "dirname": "limesurvey",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/limesurvey/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/limesurvey/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "redisinsight",
@@ -1842,7 +1881,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoMysql"
+        "MariaDB"
       ],
       "stars": 18752,
       "forks": 2380,
@@ -1858,7 +1897,20 @@
       "status": "active",
       "license": "MIT License",
       "spdx_id": "MIT",
-      "dirname": "bookstack"
+      "dirname": "bookstack",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bookstack/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bookstack/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "silverbullet",
@@ -2794,7 +2846,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoMysql"
+        "MariaDB"
       ],
       "stars": 9792,
       "forks": 955,
@@ -2810,7 +2862,20 @@
       "status": "active",
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
-      "dirname": "leantime"
+      "dirname": "leantime",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/leantime/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/leantime/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "memos",
@@ -3057,7 +3122,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoMysql"
+        "MariaDB"
       ],
       "stars": 13587,
       "forks": 1673,
@@ -3073,7 +3138,20 @@
       "status": "active",
       "license": "Apache License 2.0",
       "spdx_id": "Apache-2.0",
-      "dirname": "casdoor"
+      "dirname": "casdoor",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/casdoor/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/casdoor/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "maputnik",
@@ -3538,7 +3616,7 @@
       "screenshots": [],
       "links": [],
       "addons": [
-        "KuberoMysql"
+        "MariaDB"
       ],
       "stars": 4641,
       "forks": 775,
@@ -3554,7 +3632,20 @@
       "status": "active",
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
-      "dirname": "kimai"
+      "dirname": "kimai",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kimai/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kimai/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "hopscotch",
@@ -3870,7 +3961,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoMysql"
+        "MariaDB"
       ],
       "stars": 5891,
       "forks": 382,
@@ -3886,7 +3977,20 @@
       "status": "active",
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
-      "dirname": "passbolt"
+      "dirname": "passbolt",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/passbolt/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/passbolt/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "mirotalk-p2p",
@@ -4004,7 +4108,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoMysql"
+        "MariaDB"
       ],
       "stars": 3788,
       "forks": 483,
@@ -4020,7 +4124,20 @@
       "status": "active",
       "license": "GNU General Public License v2.0",
       "spdx_id": "GPL-2.0",
-      "dirname": "piwigo"
+      "dirname": "piwigo",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/piwigo/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/piwigo/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "bugsink",
@@ -4044,7 +4161,7 @@
         "https://www.bugsink.com/docs/"
       ],
       "addons": [
-        "KuberoMysql"
+        "MariaDB"
       ],
       "stars": 1744,
       "forks": 101,
@@ -4060,7 +4177,20 @@
       "status": "active",
       "license": "Other",
       "spdx_id": "NOASSERTION",
-      "dirname": "bugsink"
+      "dirname": "bugsink",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bugsink/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bugsink/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "libtranslate",
@@ -4213,7 +4343,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoMysql"
+        "MariaDB"
       ],
       "stars": 282,
       "forks": 17,
@@ -4229,7 +4359,20 @@
       "status": "active",
       "license": "MIT License",
       "spdx_id": "MIT",
-      "dirname": "mosparo"
+      "dirname": "mosparo",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mosparo/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mosparo/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "vvveb-mysql",
@@ -4248,7 +4391,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoMysql"
+        "MariaDB"
       ],
       "stars": 1062,
       "forks": 197,
@@ -4264,7 +4407,20 @@
       "status": "active",
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
-      "dirname": "vvveb.mysql"
+      "dirname": "vvveb.mysql",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vvveb.mysql/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vvveb.mysql/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "authorizer",
@@ -4449,7 +4605,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoMysql"
+        "MariaDB"
       ],
       "stars": 6430,
       "forks": 464,
@@ -4465,7 +4621,20 @@
       "status": "active",
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
-      "dirname": "photoview"
+      "dirname": "photoview",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/photoview/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/photoview/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "wikijs",
