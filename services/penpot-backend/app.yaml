@@ -24,7 +24,7 @@ spec:
         - name: PENPOT_SMTP_ENABLED
           value: "false"
         - name: PENPOT_DATABASE_URI
-          value: postgresql://penpot-backend-postgresql/penpot
+          value: postgresql://penpot-backend-postgresql-rw/penpot
         - name: PENPOT_REDIS_URI
           value: redis://penpot@penpot-backend-redis-master:6379/0?verifyPeer=NONE
         - name: PENPOT_TELEMETRY_ENABLED
@@ -55,31 +55,58 @@ spec:
           size: 1Gi
     cronjobs: []
     addons:
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: penpot-backend-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              postgresql:
-                                  auth:
-                                      database: penpot
-                                      password: penpot
-                                      postgresPassword: penpot
-                                      username: penpot
-                          primary:
-                              persistence:
-                                  size: 1Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: penpot
+                              owner: penpot
+                              secret:
+                                  name: penpot-backend-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: penpot-backend-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: penpot-backend-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: penpot
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: penpot-backend-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: penpot
+                      password: penpot
         - displayName: Redis
           env: []
           icon: /img/addons/redis.svg

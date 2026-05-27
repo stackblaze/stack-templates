@@ -16,34 +16,63 @@ metadata:
   name: rallly
 spec:
   addons:
-  - displayName: Kubero Postgresql
+  - displayName: PostgreSQL (CloudNativePG)
     env: []
-    icon: /img/addons/postgresql.png
+    icon: /img/addons/pgsql.svg
     id: kubero-operator
-    kind: KuberoPostgresql
+    kind: Cluster
     resourceDefinitions:
-      KuberoPostgresql:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoPostgresql
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
         metadata:
           name: rallly-postgresql
         spec:
-          postgresql:
-            global:
-              postgresql:
-                auth:
-                  database: postgresql
-                  password: rallly
-                  postgresPassword: rallly
-                  username: rallly
-            primary:
-              persistence:
-                size: 1Gi
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: postgresql
+              owner: rallly
+              secret:
+                name: rallly-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: rallly-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: rallly-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: rallly
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: rallly-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: rallly
+          password: rallly
   cronjobs: []
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgres://rallly:rallly@rallly-postgresql:5432/postgresql
+    value: postgres://rallly:rallly@rallly-postgresql-rw:5432/postgresql
   - name: SECRET_PASSWORD
     value: replace-me-now-with-a-own-secret
   extraVolumes: []

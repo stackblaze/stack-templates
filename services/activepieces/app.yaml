@@ -19,31 +19,58 @@ metadata:
   name: activepieces
 spec:
   addons:
-  - displayName: Postgresql
+  - displayName: PostgreSQL (CloudNativePG)
     env: []
-    icon: /img/addons/postgresql.png
+    icon: /img/addons/pgsql.svg
     id: kubero-operator
-    kind: KuberoPostgresql
+    kind: Cluster
     resourceDefinitions:
-      KuberoPostgresql:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoPostgresql
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
         metadata:
           name: activepieces-postgresql
         spec:
-          postgresql:
-            global:
-              postgresql:
-                auth:
-                  database: postgresql
-                  password: activepieces
-                  postgresPassword: admin
-                  username: activepieces
-            primary:
-              persistence:
-                size: 1Gi
-    version:
-      latest: 0.0.151
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: postgresql
+              owner: activepieces
+              secret:
+                name: activepieces-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: activepieces-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: activepieces-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: activepieces
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: activepieces-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: activepieces
+          password: activepieces
   - displayName: Redis
     env: []
     icon: /img/addons/Redis.png
@@ -102,7 +129,7 @@ spec:
   - name: AP_TEMPLATES_SOURCE_URL
     value: https://cloud.activepieces.com/api/v1/flow-templates
   - name: AP_POSTGRES_HOST
-    value: activepieces-postgresql
+    value: activepieces-postgresql-rw
   - name: AP_POSTGRES_PORT
     value: '5432'
   - name: AP_REDIS_PASSWORD

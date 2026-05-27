@@ -22,7 +22,7 @@ spec:
         - name: SECRET_KEY_BASE
           value: 1wOVZ9rWAqPcbVZdilZzBPLXFKNrUmLUzX0q9Z02LpOy2jVWZwa6ee4fU81tuN+W
         - name: DATABASE_URL
-          value: postgres://azimutt:azimutt@azimutt-postgresql/azimutt
+          value: postgres://azimutt:azimutt@azimutt-postgresql-rw/azimutt
         - name: PHX_SERVER
           value: "true"
         - name: PHX_HOST
@@ -34,31 +34,58 @@ spec:
     extraVolumes: []
     cronjobs: []
     addons:
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: azimutt-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              postgresql:
-                                  auth:
-                                      database: azimutt
-                                      password: azimutt
-                                      postgresPassword: azimutt
-                                      username: azimutt
-                          primary:
-                              persistence:
-                                  size: 1Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: azimutt
+                              owner: azimutt
+                              secret:
+                                  name: azimutt-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: azimutt-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: azimutt-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: azimutt
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: azimutt-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: azimutt
+                      password: azimutt
     web:
         replicaCount: 1
     worker:

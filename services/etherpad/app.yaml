@@ -16,29 +16,58 @@ metadata:
   name: etherpad
 spec:
   addons:
-  - displayName: Kubero Postgresql
+  - displayName: PostgreSQL (CloudNativePG)
     env: []
-    icon: /img/addons/postgresql.png
+    icon: /img/addons/pgsql.svg
     id: kubero-operator
-    kind: KuberoPostgresql
+    kind: Cluster
     resourceDefinitions:
-      KuberoPostgresql:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoPostgresql
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
         metadata:
           name: etherpad-postgresql
         spec:
-          postgresql:
-            global:
-              postgresql:
-                auth:
-                  database: postgresql
-                  password: etherpad
-                  postgresPassword: etherpad
-                  username: etherpad
-            primary:
-              persistence:
-                size: 1Gi
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: postgresql
+              owner: etherpad
+              secret:
+                name: etherpad-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: etherpad-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: etherpad-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: etherpad
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: etherpad-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: etherpad
+          password: etherpad
   cronjobs: []
   deploymentstrategy: docker
   envVars:
@@ -51,7 +80,7 @@ spec:
   - name: DB_NAME
     value: postgresql
   - name: DB_HOST
-    value: etherpad-postgresql
+    value: etherpad-postgresql-rw
   - name: DB_PORT
     value: '5432'
   extraVolumes: []

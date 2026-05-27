@@ -24,37 +24,64 @@ spec:
         - name: APP_SECRET
           value: 0LZiQBLw4WvqPlz4cz8RsHJlxNiSqM9B48y4ChyJ5v1oA0L/TPIqRjQNdPZN3iEG
         - name: DATABASE_URL
-          value: postgresql://docmost:docmost@docmost-postgresql:5432/docmost?schema=public
+          value: postgresql://docmost:docmost@docmost-postgresql-rw:5432/docmost?schema=public
         - name: REDIS_URL
           value: redis://:docmost@docmost-redis-master:6379
     extraVolumes: []
     cronjobs: []
     addons:
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: docmost-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              postgresql:
-                                  auth:
-                                      database: docmost
-                                      password: docmost
-                                      postgresPassword: docmost
-                                      username: docmost
-                          primary:
-                              persistence:
-                                  size: 1Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: docmost
+                              owner: docmost
+                              secret:
+                                  name: docmost-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: docmost-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: docmost-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: docmost
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: docmost-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: docmost
+                      password: docmost
         - displayName: Redis
           env: []
           icon: /img/addons/redis.svg

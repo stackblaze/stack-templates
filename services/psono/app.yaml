@@ -27,9 +27,10 @@ spec:
         # Accept requests for the app's host (Django ALLOWED_HOSTS).
         - name: PSONO_ALLOWED_HOSTS
           value: "*"
-        # Postgres connection (points at the bundled KuberoPostgresql addon).
+        # Postgres connection (points at the bundled CloudNativePG addon's
+        # read-write service).
         - name: PSONO_DATABASE_URL
-          value: "postgres://psono:psono@psono-postgresql:5432/psono"
+          value: "postgres://psono:psono@psono-postgresql-rw:5432/psono"
         # --- Server keys: generated uniquely per deploy by kubero and persisted
         # (they never change for the life of the instance). No manual steps.
         - name: PSONO_SECRET_KEY
@@ -48,33 +49,58 @@ spec:
     extraVolumes: []
     cronjobs: []
     addons:
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: psono-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              storageClass: fast
-                              postgresql:
-                                  auth:
-                                      database: psono
-                                      password: psono
-                                      postgresPassword: psono
-                                      username: psono
-                          primary:
-                              persistence:
-                                  storageClass: fast
-                                  size: 5Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: psono
+                              owner: psono
+                              secret:
+                                  name: psono-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: psono-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: psono-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: psono
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: psono-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: psono
+                      password: psono
     web:
         replicaCount: 1
     worker:

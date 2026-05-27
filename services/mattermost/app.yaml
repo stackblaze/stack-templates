@@ -27,7 +27,7 @@ spec:
         - name: MM_SQLSETTINGS_DRIVERNAME
           value: postgres
         - name: MM_SQLSETTINGS_DATASOURCE
-          value: postgres://mattermost:mattermost@mattermost-postgresql:5432/mattermost?sslmode=disable&connect_timeout=10
+          value: postgres://mattermost:mattermost@mattermost-postgresql-rw:5432/mattermost?sslmode=disable&connect_timeout=10
         - name: TZ
           value: Etc/UTC
     extraVolumes:
@@ -42,33 +42,58 @@ spec:
           size: 5Gi
     cronjobs: []
     addons:
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: mattermost-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              storageClass: fast
-                              postgresql:
-                                  auth:
-                                      database: mattermost
-                                      password: mattermost
-                                      postgresPassword: mattermost
-                                      username: mattermost
-                          primary:
-                              persistence:
-                                  storageClass: fast
-                                  size: 5Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: mattermost
+                              owner: mattermost
+                              secret:
+                                  name: mattermost-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: mattermost-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: mattermost-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: mattermost
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: mattermost-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: mattermost
+                      password: mattermost
     web:
         replicaCount: 1
     worker:

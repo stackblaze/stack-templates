@@ -22,7 +22,7 @@ spec:
         - name: VIRTUAL_HOST
           value: corteza.localhost
         - name: DB_DSN
-          value: postgres://corteza:corteza@corteza-postgresql:5432/corteza?sslmode=disable
+          value: postgres://corteza:corteza@corteza-postgresql-rw:5432/corteza?sslmode=disable
         - name: HTTP_WEBAPP_ENABLED
           value: "true"
         - name: ACTIONLOG_ENABLED
@@ -30,31 +30,58 @@ spec:
     extraVolumes: []
     cronjobs: []
     addons:
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: corteza-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              postgresql:
-                                  auth:
-                                      database: corteza
-                                      password: corteza
-                                      postgresPassword: corteza
-                                      username: corteza
-                          primary:
-                              persistence:
-                                  size: 1Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: corteza
+                              owner: corteza
+                              secret:
+                                  name: corteza-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: corteza-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: corteza-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: corteza
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: corteza-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: corteza
+                      password: corteza
     web:
         replicaCount: 1
     worker:

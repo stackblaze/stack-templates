@@ -30,7 +30,7 @@ spec:
         - name: TOLGEE_POSTGRES_AUTOSTART_ENABLED
           value: "false"
         - name: SPRING_DATASOURCE_URL
-          value: jdbc:postgresql://tolgee-postgresql:5432/tolgee
+          value: jdbc:postgresql://tolgee-postgresql-rw:5432/tolgee
         - name: SPRING_DATASOURCE_USERNAME
           value: tolgee
         - name: SPRING_DATASOURCE_PASSWORD
@@ -45,31 +45,58 @@ spec:
           size: 1Gi
     cronjobs: []
     addons:
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: tolgee-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              postgresql:
-                                  auth:
-                                      database: tolgee
-                                      password: tolgee
-                                      postgresPassword: tolgee
-                                      username: tolgee
-                          primary:
-                              persistence:
-                                  size: 1Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: tolgee
+                              owner: tolgee
+                              secret:
+                                  name: tolgee-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: tolgee-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: tolgee-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: tolgee
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: tolgee-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: tolgee
+                      password: tolgee
     web:
         replicaCount: 1
     worker:

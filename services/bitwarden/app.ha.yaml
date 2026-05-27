@@ -1,0 +1,109 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open source password management solutions for
+      individuals, teams, and business organizations.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/15990069?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/bitwarden/brand/main/screenshots/apps-combo-logo.png"]'
+    kubero.dev/template.source: https://github.com/bitwarden/server
+    kubero.dev/template.categories: '["security", "utilities"]'
+    kubero.dev/template.title: Bitwarden
+    kubero.dev/template.website: https://bitwarden.com/
+  labels:
+    manager: kubero
+  name: bitwarden
+spec:
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: bitwarden-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: bitwarden
+              owner: bitwarden
+              secret:
+                name: bitwarden-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: bitwarden-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: bitwarden-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: bitwarden
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: bitwarden-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: bitwarden
+          password: bitwarden
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: BW_DB_PROVIDER
+    value: postgresql
+  - name: BW_DB_SERVER
+    value: bitwarden-postgresql-rw
+  - name: BW_DB_DATABASE
+    value: bitwarden
+  - name: BW_DB_USERNAME
+    value: bitwarden
+  - name: BW_DB_PASSWORD
+    value: bitwarden
+  - name: BW_DOMAIN
+    value: bitwarden.localhost
+  - name: BW_INSTALLATION_ID
+    value: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+  - name: BW_INSTALLATION_KEY
+    value: XXXXXXXXXXXXXXXXXXXX
+  extraVolumes:
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /etc/bitwarden
+    name: bitwarden
+    size: 1Gi
+  image:
+    containerPort: 8080
+    pullPolicy: Always
+    repository: bitwarden/self-host
+    tag: beta
+  name: bitwarden
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

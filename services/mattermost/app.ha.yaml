@@ -1,0 +1,105 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: mattermost
+    annotations:
+        kubero.dev/template.architecture: '["arm64", "amd64"]'
+        kubero.dev/template.description: "Mattermost is an open-source, self-hosted collaboration platform for messaging, file sharing and ChatOps — an alternative to Slack."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/9828093?s=200&v=4"
+        kubero.dev/template.installation: "Ships the MIT-licensed Team Edition. After the first boot open the Site URL and create the initial admin account at /signup_user_complete. Set MM_SERVICESETTINGS_SITEURL to your public URL before going live."
+        kubero.dev/template.links: '["https://docs.mattermost.com/"]'
+        kubero.dev/template.screenshots: '["https://mattermost.com/wp-content/uploads/2022/02/hero-mattermost-overview.png"]'
+        kubero.dev/template.source: "https://github.com/mattermost/mattermost"
+        kubero.dev/template.categories: '["communication", "work"]'
+        kubero.dev/template.title: "Mattermost"
+        kubero.dev/template.website: "https://mattermost.com/"
+    labels:
+        manager: kubero
+spec:
+    name: mattermost
+    deploymentstrategy: docker
+    envVars:
+        # kubero substitutes {{KUBERO_APP_URL}} with the app's minted public URL
+        # (https://<host>) at deploy time, so the Site URL is correct on every
+        # deploy without manual patching.
+        - name: MM_SERVICESETTINGS_SITEURL
+          value: "{{KUBERO_APP_URL}}"
+        - name: MM_SQLSETTINGS_DRIVERNAME
+          value: postgres
+        - name: MM_SQLSETTINGS_DATASOURCE
+          value: postgres://mattermost:mattermost@mattermost-postgresql-rw:5432/mattermost?sslmode=disable&connect_timeout=10
+        - name: TZ
+          value: Etc/UTC
+    extraVolumes:
+        # Mattermost file storage (uploads/plugins) on the shared RWX class so
+        # it persists across restarts and can be shared if scaled out.
+        - accessModes:
+            - ReadWriteMany
+          storageClass: shared
+          emptyDir: false
+          mountPath: /mattermost/data
+          name: mattermost-data
+          size: 5Gi
+    cronjobs: []
+    addons:
+        - displayName: PostgreSQL (CloudNativePG)
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: Cluster
+          resourceDefinitions:
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
+                  metadata:
+                      name: mattermost-postgresql
+                  spec:
+                      instances: 3
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: mattermost
+                              owner: mattermost
+                              secret:
+                                  name: mattermost-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: mattermost-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: mattermost-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: mattermost
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: mattermost-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: mattermost
+                      password: mattermost
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "8065"
+        pullPolicy: Always
+        repository: mattermost/mattermost-team-edition
+        tag: latest

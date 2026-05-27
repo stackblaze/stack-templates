@@ -16,34 +16,63 @@ metadata:
   name: umami
 spec:
   addons:
-  - displayName: Kubero Postgresql
+  - displayName: PostgreSQL (CloudNativePG)
     env: []
-    icon: /img/addons/postgresql.png
+    icon: /img/addons/pgsql.svg
     id: kubero-operator
-    kind: KuberoPostgresql
+    kind: Cluster
     resourceDefinitions:
-      KuberoPostgresql:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoPostgresql
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
         metadata:
           name: umami-umami
         spec:
-          postgresql:
-            global:
-              postgresql:
-                auth:
-                  database: umami
-                  password: umami
-                  postgresPassword: umamiroot
-                  username: umami
-            primary:
-              persistence:
-                size: 1Gi
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: umami
+              owner: umami
+              secret:
+                name: umami-umami-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: umami-umami-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: umami-umami-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: umami
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: umami-umami-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: umami
+          password: umami
   cronjobs: []
   deploymentstrategy: umami
   envVars:
   - name: DATABASE_URL
-    value: postgresql://umami:umami@umami-umami-postgresql:5432/umami
+    value: postgresql://umami:umami@umami-umami-rw:5432/umami
   - name: DATABASE_TYPE
     value: postgresql
   - name: HASH_SALT

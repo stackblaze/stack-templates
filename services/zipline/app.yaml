@@ -28,7 +28,7 @@ spec:
         - name: CORE_PORT
           value: "3000"
         - name: CORE_DATABASE_URL
-          value: postgres://zipline:zipline@zipline-postgresql:5432/zipline
+          value: postgres://zipline:zipline@zipline-postgresql-rw:5432/zipline
     extraVolumes:
         - accessMode: ReadWriteOnce
           accessModes:
@@ -46,31 +46,58 @@ spec:
           size: 1Gi
     cronjobs: []
     addons:
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: zipline-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              postgresql:
-                                  auth:
-                                      database: zipline
-                                      password: zipline
-                                      postgresPassword: zipline
-                                      username: zipline
-                          primary:
-                              persistence:
-                                  size: 1Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: zipline
+                              owner: zipline
+                              secret:
+                                  name: zipline-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: zipline-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: zipline-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: zipline
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: zipline-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: zipline
+                      password: zipline
     web:
         replicaCount: 1
     worker:

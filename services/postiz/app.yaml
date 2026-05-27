@@ -27,7 +27,7 @@ spec:
           value: random string that is unique to every install - just type random
               characters here!
         - name: DATABASE_URL
-          value: postgresql://postiz:postiz@postiz-postgresql:5432/postiz
+          value: postgresql://postiz:postiz@postiz-postgresql-rw:5432/postiz
         - name: REDIS_URL
           value: redis://:postiz@postiz-redis-master:6379
         - name: IS_GENERAL
@@ -59,31 +59,58 @@ spec:
           size: 1Gi
     cronjobs: []
     addons:
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: postiz-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              postgresql:
-                                  auth:
-                                      database: postgresql
-                                      password: postiz
-                                      postgresPassword: postiz
-                                      username: postiz
-                          primary:
-                              persistence:
-                                  size: 1Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: postiz
+                              owner: postiz
+                              secret:
+                                  name: postiz-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: postiz-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: postiz-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: postiz
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: postiz-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postiz
+                      password: postiz
         - displayName: Redis
           env: []
           icon: /img/addons/redis.svg

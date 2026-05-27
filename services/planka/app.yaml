@@ -17,29 +17,58 @@ metadata:
   name: planka
 spec:
   addons:
-  - displayName: Postgresql
+  - displayName: PostgreSQL (CloudNativePG)
     env: []
-    icon: /img/addons/postgresql.png
+    icon: /img/addons/pgsql.svg
     id: kubero-operator
-    kind: KuberoPostgresql
+    kind: Cluster
     resourceDefinitions:
-      KuberoPostgresql:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoPostgresql
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
         metadata:
           name: planka-postgresql
         spec:
-          postgresql:
-            global:
-              postgresql:
-                auth:
-                  database: postgresql
-                  password: postgresql
-                  postgresPassword: postgresql
-                  username: planka
-            primary:
-              persistence:
-                size: 1Gi
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: postgresql
+              owner: postgresql
+              secret:
+                name: planka-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: planka-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: planka-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: postgresql
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: planka-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgresql
+          password: postgresql
   cronjobs: []
   deploymentstrategy: docker
   envVars:
@@ -48,7 +77,7 @@ spec:
   - name: BASE_URL
     value: http://planka.localhost:80
   - name: DATABASE_URL
-    value: postgresql://postgresql:postgresql@planka-postgresql/postgresql
+    value: postgresql://postgresql:postgresql@planka-postgresql-rw/postgresql
   - name: DEFAULT_ADMIN_EMAIL
     value: emo@demo.demo
   - name: DEFAULT_ADMIN_PASSWORD

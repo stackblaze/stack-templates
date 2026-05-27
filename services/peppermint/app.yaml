@@ -24,37 +24,64 @@ spec:
         - name: DB_PASSWORD
           value: peppermint
         - name: DB_HOST
-          value: peppermint-postgresql
+          value: peppermint-postgresql-rw
         - name: SECRET
           value: peppermint4life
     extraVolumes: []
     cronjobs: []
     addons:
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: peppermint-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              postgresql:
-                                  auth:
-                                      database: peppermint
-                                      password: peppermint
-                                      postgresPassword: peppermint
-                                      username: peppermint
-                          primary:
-                              persistence:
-                                  size: 1Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: peppermint
+                              owner: peppermint
+                              secret:
+                                  name: peppermint-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: peppermint-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: peppermint-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: peppermint
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: peppermint-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: peppermint
+                      password: peppermint
     web:
         replicaCount: 1
     worker:

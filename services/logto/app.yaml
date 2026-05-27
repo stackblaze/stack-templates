@@ -21,7 +21,7 @@ spec:
     deploymentstrategy: docker
     envVars:
         - name: DB_URL
-          value: postgresql://postgres:logto@logto-postgresql:5432/logto
+          value: postgresql://postgres:logto@logto-postgresql-rw:5432/logto
         - name: TRUST_PROXY_HEADER
           value: "1"
         - name: ENDPOINT
@@ -31,31 +31,58 @@ spec:
     extraVolumes: []
     cronjobs: []
     addons:
-        - displayName: Postgresql
+        - displayName: PostgreSQL (CloudNativePG)
           env: []
           icon: /img/addons/pgsql.svg
           id: kubero-operator
-          kind: KuberoPostgresql
+          kind: Cluster
           resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
+              Cluster:
+                  apiVersion: postgresql.cnpg.io/v1
+                  kind: Cluster
                   metadata:
                       name: logto-postgresql
                   spec:
-                      postgresql:
-                          global:
-                              postgresql:
-                                  auth:
-                                      database: postgresql
-                                      password: logto
-                                      postgresPassword: logto
-                                      username: logto
-                          primary:
-                              persistence:
-                                  size: 1Gi
-          version:
-              latest: 0.1.5
+                      instances: 1
+                      imageName: ghcr.io/cloudnative-pg/postgresql:16
+                      primaryUpdateStrategy: unsupervised
+                      storage:
+                          storageClass: fast
+                          size: 5Gi
+                      resources:
+                          requests:
+                              cpu: 100m
+                              memory: 256Mi
+                          limits:
+                              cpu: "1"
+                              memory: 1Gi
+                      bootstrap:
+                          initdb:
+                              database: logto
+                              owner: postgres
+                              secret:
+                                  name: logto-postgresql-app
+                      enableSuperuserAccess: true
+                      superuserSecret:
+                          name: logto-postgresql-superuser
+              superuserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: logto-postgresql-superuser
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: logto
+              appUserSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: logto-postgresql-app
+                  type: kubernetes.io/basic-auth
+                  stringData:
+                      username: postgres
+                      password: logto
     web:
         replicaCount: 1
     worker:

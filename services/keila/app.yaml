@@ -17,31 +17,58 @@ metadata:
   name: keila
 spec:
   addons:
-  - displayName: Postgresql
+  - displayName: PostgreSQL (CloudNativePG)
     env: []
-    icon: /img/addons/postgresql.png
+    icon: /img/addons/pgsql.svg
     id: kubero-operator
-    kind: KuberoPostgresql
+    kind: Cluster
     resourceDefinitions:
-      KuberoPostgresql:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoPostgresql
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
         metadata:
           name: keila-postgresql
         spec:
-          postgresql:
-            global:
-              postgresql:
-                auth:
-                  database: postgresql
-                  password: keila
-                  postgresPassword: keila
-                  username: keila
-            primary:
-              persistence:
-                size: 1Gi
-    version:
-      latest: 0.0.159
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: postgresql
+              owner: postgres
+              secret:
+                name: keila-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: keila-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: keila-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: keila
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: keila-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: keila
   - displayName: Haraka Mail Server
     env: []
     icon: /img/addons/Haraka.png
@@ -85,7 +112,7 @@ spec:
   - name: SECRET_KEY_BASE
     value: EiHaPZPt+t8SA9MuAIeVixPhDJI1T+XhYr1S54PcOAxNh+Z30PNWM/WSIhfREUvo
   - name: DB_URL
-    value: postgres://postgres:keila@keila-postgresql/postgresql
+    value: postgres://postgres:keila@keila-postgresql-rw/postgresql
   - name: MAILER_SMTP_HOST
     value: keila-haraka:8025
   - name: MAILER_SMTP_USER
