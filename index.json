@@ -6568,7 +6568,7 @@
       "name": "kafka",
       "description": "Apache Kafka is a distributed event streaming platform. Runs in KRaft mode via the Strimzi operator, with the kafbat Kafka UI web console.",
       "source": "https://github.com/apache/kafka",
-      "icon": "https://upload.wikimedia.org/wikipedia/commons/0/05/Apache_kafka.svg",
+      "icon": "/img/addons/kafka.svg",
       "website": "https://kafka.apache.org",
       "installation": "",
       "architecture": [],

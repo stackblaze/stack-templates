@@ -7,7 +7,7 @@ metadata:
       platform. This template runs a Kafka cluster in KRaft mode (no ZooKeeper) via
       the Strimzi operator, fronted by the kafbat Kafka UI web console for browsing
       topics, consumer groups and messages.
-    kubero.dev/template.icon: https://upload.wikimedia.org/wikipedia/commons/0/05/Apache_kafka.svg
+    kubero.dev/template.icon: /img/addons/kafka.svg
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '["https://kafka.apache.org/documentation/","https://strimzi.io/docs/operators/latest/overview","https://github.com/kafbat/kafka-ui"]'
     kubero.dev/template.screenshots: 'null'
