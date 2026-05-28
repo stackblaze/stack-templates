@@ -29,13 +29,19 @@ spec:
   deploymentstrategy: git
   buildstrategy: nixpacks
   buildpack: nodejs
+  gitrepo:
+    ssh_url: git@github.com:stackblaze-adam/preview-demo.git
+    clone_url: https://github.com/stackblaze-adam/preview-demo.git
+    default_branch: main
+    private: false
+    admin: false
   envVars:
     - name: NODE_ENV
       value: production
     - name: PORT
       value: "8080"
     - name: DATABASE_URL
-      value: postgres://preview:preview@preview-demo-postgresql:5432/preview
+      value: postgres://preview:preview@{{KUBERO_APP_NAME}}-postgresql:5432/preview
   extraVolumes: []
   cronjobs: []
   addons:
@@ -49,7 +55,7 @@ spec:
           apiVersion: application.kubero.dev/v1alpha1
           kind: KuberoPostgresql
           metadata:
-            name: preview-demo-postgresql
+            name: "{{KUBERO_APP_NAME}}-postgresql"
           spec:
             postgresql:
               global:
