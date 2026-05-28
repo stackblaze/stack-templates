@@ -51,6 +51,8 @@ spec:
                   metadata:
                       name: vvveb-mysql
                   spec:
+                      metrics:
+                        enabled: true
                       rootPasswordSecretKeyRef:
                           name: vvveb-mysql-root
                           key: password

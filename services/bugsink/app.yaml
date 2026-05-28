@@ -40,6 +40,8 @@ spec:
                   metadata:
                       name: bugsink-mysql
                   spec:
+                      metrics:
+                        enabled: true
                       rootPasswordSecretKeyRef:
                           name: bugsink-mysql-root
                           key: password

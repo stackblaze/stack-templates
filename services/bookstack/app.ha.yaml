@@ -30,6 +30,8 @@ spec:
         metadata:
           name: bookstack-mysql
         spec:
+          metrics:
+            enabled: true
           rootPasswordSecretKeyRef:
             name: bookstack-mysql-root
             key: password

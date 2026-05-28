@@ -27,6 +27,8 @@ spec:
         metadata:
           name: passbolt-mysql
         spec:
+          metrics:
+            enabled: true
           rootPasswordSecretKeyRef:
             name: passbolt-mysql-root
             key: password

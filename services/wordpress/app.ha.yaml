@@ -28,6 +28,8 @@ spec:
         metadata:
           name: wordpress-mariadb
         spec:
+          metrics:
+            enabled: true
           rootPasswordSecretKeyRef:
             name: wordpress-mariadb-root
             key: password

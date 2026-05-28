@@ -28,6 +28,8 @@ spec:
         metadata:
           name: ghost-mysql
         spec:
+          metrics:
+            enabled: true
           rootPasswordSecretKeyRef:
             name: ghost-mysql-root
             key: password

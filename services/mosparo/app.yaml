@@ -29,6 +29,8 @@ spec:
         metadata:
           name: mosparo-mysql
         spec:
+          metrics:
+            enabled: true
           rootPasswordSecretKeyRef:
             name: mosparo-mysql-root
             key: password

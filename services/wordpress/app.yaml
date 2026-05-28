@@ -28,6 +28,8 @@ spec:
         metadata:
           name: "{{KUBERO_APP_NAME}}-mariadb"
         spec:
+          metrics:
+            enabled: true
           rootPasswordSecretKeyRef:
             name: "{{KUBERO_APP_NAME}}-mariadb-root"
             key: password

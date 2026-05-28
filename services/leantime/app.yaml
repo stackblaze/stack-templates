@@ -31,6 +31,8 @@ spec:
         metadata:
           name: leantime-mysql
         spec:
+          metrics:
+            enabled: true
           rootPasswordSecretKeyRef:
             name: leantime-mysql-root
             key: password

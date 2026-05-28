@@ -48,6 +48,8 @@ spec:
                   metadata:
                       name: piwigo-mysql
                   spec:
+                      metrics:
+                        enabled: true
                       rootPasswordSecretKeyRef:
                           name: piwigo-mysql-root
                           key: password

@@ -30,6 +30,8 @@ spec:
         metadata:
           name: limesurvey-mysql
         spec:
+          metrics:
+            enabled: true
           rootPasswordSecretKeyRef:
             name: limesurvey-mysql-root
             key: password

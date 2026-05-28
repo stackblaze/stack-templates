@@ -54,6 +54,8 @@ spec:
                   metadata:
                       name: kimai-mysql
                   spec:
+                      metrics:
+                        enabled: true
                       rootPasswordSecretKeyRef:
                           name: kimai-mysql-root
                           key: password

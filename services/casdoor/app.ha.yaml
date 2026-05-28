@@ -28,6 +28,8 @@ spec:
         metadata:
           name: casdoor-mysql
         spec:
+          metrics:
+            enabled: true
           rootPasswordSecretKeyRef:
             name: casdoor-mysql-root
             key: password
