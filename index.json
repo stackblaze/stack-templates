@@ -1,34 +1,6 @@
 {
   "services": [
     {
-      "name": "preview-demo",
-      "description": "Minimal Node.js git app with PostgreSQL for testing Stackblaze preview environments (PR clones app + addon + env rebinding).",
-      "source": "https://github.com/stackblaze-adam/preview-demo",
-      "icon": "https://avatars.githubusercontent.com/u/958072",
-      "website": "https://github.com/stackblaze-adam/preview-demo",
-      "installation": "Enable Preview environments (Auto) on the pipeline, optionally set seed SQL to .kubero/preview-seed.sql, then open a PR on the repo.",
-      "architecture": ["linux/amd64", "linux/arm64"],
-      "categories": ["development", "testing"],
-      "screenshots": [],
-      "links": ["https://github.com/stackblaze-adam/preview-demo"],
-      "addons": ["KuberoPostgresql"],
-      "stars": 0,
-      "forks": 0,
-      "watchers": 0,
-      "issues": 0,
-      "last_updated": "2026-05-28T00:00:00Z",
-      "last_pushed": "2026-05-28T00:00:00Z",
-      "created_at": "2026-05-28T00:00:00Z",
-      "size": 4,
-      "language": "JavaScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/preview-demo/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "preview-demo"
-    },
-    {
       "name": "metabase",
       "description": "Metabase is the easy, open-source way for everyone in your company to ask questions and learn from data.",
       "source": "https://github.com/metabase/metabase",
@@ -435,41 +407,6 @@
       ]
     },
     {
-      "name": "grafana",
-      "description": "Grafana open source software enables you to query, visualize, alert on, and explore your metrics, logs, and traces wherever they are stored.",
-      "source": "https://github.com/grafana/grafana",
-      "icon": "https://raw.githubusercontent.com/devicons/devicon/1119b9f84c0290e0f0b38982099a2bd027a48bf1/icons/grafana/grafana-original.svg",
-      "website": "https://grafana.com/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "monitoring",
-        "debug",
-        "dashboard"
-      ],
-      "screenshots": [
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Grafana_screenshot.png/800px-Grafana_screenshot.png",
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Grafana_dashboard.png/800px-Grafana_dashboard.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 73669,
-      "forks": 13858,
-      "watchers": 73669,
-      "issues": 3647,
-      "last_updated": "2026-05-11T12:39:13Z",
-      "last_pushed": "2026-05-11T12:46:17Z",
-      "created_at": "2013-12-11T15:59:56Z",
-      "size": 1641451,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/grafana/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "grafana"
-    },
-    {
       "name": "ghost",
       "description": "Ghost is a powerful app for new-media creators to publish, share, and grow a business around their content.",
       "source": "https://github.com/TryGhost/Ghost",
@@ -582,39 +519,6 @@
       "dirname": "kuma"
     },
     {
-      "name": "trailbase",
-      "description": "A fast, open-source application server with type-safe APIs, including an admin interface.",
-      "source": "https://github.com/trailbaseio/trailbase",
-      "icon": "https://avatars.githubusercontent.com/u/176172021",
-      "website": "https://www.trailbase.io/",
-      "installation": "",
-      "architecture": [
-        "linux/amd64"
-      ],
-      "categories": [
-        "devtool",
-        "utility"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 5095,
-      "forks": 158,
-      "watchers": 5095,
-      "issues": 40,
-      "last_updated": "2026-05-11T10:19:42Z",
-      "last_pushed": "2026-05-11T12:40:24Z",
-      "created_at": "2024-10-29T09:39:33Z",
-      "size": 22061,
-      "language": "Rust",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/trailbase/app.yaml",
-      "status": "active",
-      "license": "Open Software License 3.0",
-      "spdx_id": "OSL-3.0",
-      "dirname": "trailbase"
-    },
-    {
       "name": "tolgee",
       "description": "Developer & translator friendly web-based localization platform",
       "source": "https://github.com/tolgee/tolgee-platform",
@@ -660,70 +564,6 @@
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tolgee/app.ha.yaml"
         }
       ]
-    },
-    {
-      "name": "symfony",
-      "description": "Symfony is a PHP framework for web and console applications and a set of reusable PHP components.",
-      "source": "https://github.com/symfony/symfony",
-      "icon": "https://avatars.githubusercontent.com/u/143937?s=200&v=4",
-      "website": "https://symfony.com",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "framework",
-        "development"
-      ],
-      "screenshots": null,
-      "links": [],
-      "addons": [],
-      "stars": 31043,
-      "forks": 9822,
-      "watchers": 31043,
-      "issues": 503,
-      "last_updated": "2026-05-11T10:38:27Z",
-      "last_pushed": "2026-05-11T12:36:42Z",
-      "created_at": "2010-01-04T14:21:21Z",
-      "size": 326047,
-      "language": "PHP",
-      "gitops": true,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/symfony/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "symfony"
-    },
-    {
-      "name": "meilisearch",
-      "description": "A lightning-fast search engine that fits effortlessly into your apps, websites, and workflow ",
-      "source": "https://github.com/meilisearch/meilisearch",
-      "icon": "https://www.meilisearch.com/apple-touch-icon.png",
-      "website": "https://www.meilisearch.com/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "accessories",
-        "development"
-      ],
-      "screenshots": [
-        "https://github.com/meilisearch/meilisearch/raw/main/assets/demo-light.gif"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 57496,
-      "forks": 2539,
-      "watchers": 57496,
-      "issues": 297,
-      "last_updated": "2026-05-11T12:07:13Z",
-      "last_pushed": "2026-05-11T12:34:46Z",
-      "created_at": "2018-04-23T11:45:28Z",
-      "size": 89147,
-      "language": "Rust",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/meilisearch/app.yaml",
-      "status": "active",
-      "license": "Other",
-      "spdx_id": "NOASSERTION",
-      "dirname": "meilisearch"
     },
     {
       "name": "rocketchat",
@@ -796,37 +636,6 @@
       "dirname": "directus"
     },
     {
-      "name": "nats",
-      "description": "Connective Technology for Adaptive Edge & Distributed Systems",
-      "source": "https://github.com/nats-io/nats-server",
-      "icon": "https://avatars.githubusercontent.com/u/10203055?s=200&v=4",
-      "website": "https://nats.io",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "accessories",
-        "development"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 19766,
-      "forks": 1791,
-      "watchers": 19766,
-      "issues": 493,
-      "last_updated": "2026-05-11T12:32:52Z",
-      "last_pushed": "2026-05-11T12:31:13Z",
-      "created_at": "2012-10-29T16:12:24Z",
-      "size": 58833,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nats/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "nats"
-    },
-    {
       "name": "activepieces",
       "description": "Your friendliest open source all-in-one automation tool ✨ Workflow automation tool 100+ integration / Enterprise automation tool / Zapier Alternative",
       "source": "https://github.com/activepieces/activepieces",
@@ -875,36 +684,6 @@
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/activepieces/app.ha.yaml"
         }
       ]
-    },
-    {
-      "name": "qdrant",
-      "description": "High-performance, massive-scale Vector Database and Vector Search Engine for the next generation of AI. Also available in the cloud",
-      "source": "https://github.com/qdrant/qdrant",
-      "icon": "https://avatars.githubusercontent.com/u/73504361",
-      "website": "https://qdrant.tech/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "database"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 31224,
-      "forks": 2252,
-      "watchers": 31224,
-      "issues": 557,
-      "last_updated": "2026-05-11T12:49:43Z",
-      "last_pushed": "2026-05-11T12:22:24Z",
-      "created_at": "2020-05-30T21:37:01Z",
-      "size": 52117,
-      "language": "Rust",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/qdrant/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "qdrant"
     },
     {
       "name": "gitea",
@@ -1029,41 +808,6 @@
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/limesurvey/app.ha.yaml"
         }
       ]
-    },
-    {
-      "name": "redisinsight",
-      "description": "Redis Insight is a visual tool that provides capabilities to design, develop, and optimize your Redis application.",
-      "source": "https://github.com/RedisInsight/RedisInsight",
-      "icon": "https://avatars.githubusercontent.com/u/87389211",
-      "website": "https://redis.com/redis-enterprise/redis-insight/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "data",
-        "development",
-        "admin",
-        "debug"
-      ],
-      "screenshots": [
-        "https://github.com/RedisInsight/RedisInsight/raw/main/.github/redisinsight_browser.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 8445,
-      "forks": 461,
-      "watchers": 8445,
-      "issues": 68,
-      "last_updated": "2026-05-11T11:45:57Z",
-      "last_pushed": "2026-05-11T12:14:18Z",
-      "created_at": "2021-07-30T09:20:35Z",
-      "size": 84386,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/redisinsight/app.yaml",
-      "status": "active",
-      "license": "Other",
-      "spdx_id": "NOASSERTION",
-      "dirname": "redisinsight"
     },
     {
       "name": "etherpad",
@@ -1561,73 +1305,6 @@
       "dirname": "trilium"
     },
     {
-      "name": "semaphore",
-      "description": "Modern UI and powerful API for Ansible, Terraform, OpenTofu, PowerShell and other DevOps tools.",
-      "source": "https://github.com/semaphoreui/semaphore",
-      "icon": "https://avatars.githubusercontent.com/u/98574287",
-      "website": "https://semaphoreui.com/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "development",
-        "admin"
-      ],
-      "screenshots": [
-        "https://user-images.githubusercontent.com/914224/134777345-8789d9e4-ff0d-439c-b80e-ddc56b74fcee.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 13588,
-      "forks": 1253,
-      "watchers": 13588,
-      "issues": 956,
-      "last_updated": "2026-05-11T11:02:21Z",
-      "last_pushed": "2026-05-11T10:43:16Z",
-      "created_at": "2014-08-23T22:43:31Z",
-      "size": 69073,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/semaphore/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "semaphore"
-    },
-    {
-      "name": "web-check",
-      "description": "All-in-one OSINT tool for analysing any website web",
-      "source": "https://github.com/Lissy93/web-check",
-      "icon": "https://camo.githubusercontent.com/e081ebebf2ef1dbe9ecffa081063db7c9f696e5913d75699f7d2968a186d0d72/68747470733a2f2f692e6962622e636f2f7131675a4e32702f7765622d636865636b2d6c6f676f2e706e67",
-      "website": "https://web-check.xyz/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "security",
-        "monitoring",
-        "web"
-      ],
-      "screenshots": [
-        "https://camo.githubusercontent.com/5848c091c38749d187599505b7c2e1c9e4689dbc93e9c438ed785528da891d49/68747470733a2f2f692e6962622e636f2f72306a584e36732f7765622d636865636b2e706e67"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 33070,
-      "forks": 2663,
-      "watchers": 33070,
-      "issues": 81,
-      "last_updated": "2026-05-11T11:48:07Z",
-      "last_pushed": "2026-05-11T10:03:33Z",
-      "created_at": "2023-06-25T14:32:11Z",
-      "size": 27951,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/web-check/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "web-check"
-    },
-    {
       "name": "appsmith",
       "description": "Low code project to build admin panels, internal tools, and dashboards. Integrates with 15+ databases and any API.",
       "source": "https://github.com/appsmithorg/appsmith",
@@ -1696,39 +1373,6 @@
       "dirname": "languagetool"
     },
     {
-      "name": "typesense",
-      "description": "Typesense is a fast, typo-tolerant open-source search engine optimized for instant, relevant search results.",
-      "source": "https://github.com/typesense/typesense",
-      "icon": "https://typesense.org/_nuxt/img/typesense_logo.1be34dd.svg",
-      "website": "https://typesense.org",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "data",
-        "accessories"
-      ],
-      "screenshots": [
-        "https://github.com/typesense/typesense/blob/v28/assets/typesense_books_demo.gif?raw=true"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 25804,
-      "forks": 885,
-      "watchers": 25804,
-      "issues": 797,
-      "last_updated": "2026-05-11T09:48:57Z",
-      "last_pushed": "2026-05-11T09:48:49Z",
-      "created_at": "2017-01-18T08:01:47Z",
-      "size": 14732,
-      "language": "C++",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typesense/app.yaml",
-      "status": "active",
-      "license": "GNU General Public License v3.0",
-      "spdx_id": "GPL-3.0",
-      "dirname": "typesense"
-    },
-    {
       "name": "excalidraw",
       "description": "An open source virtual hand-drawn style whiteboard. Collaborative and end-to-end encrypted.",
       "source": "https://github.com/excalidraw/excalidraw",
@@ -1761,38 +1405,6 @@
       "license": "MIT License",
       "spdx_id": "MIT",
       "dirname": "excalidraw"
-    },
-    {
-      "name": "cyberchef",
-      "description": "CyberChef is a simple, intuitive web app for carrying out all manner of \"cyber\" operations within a web browser.",
-      "source": "https://github.com/gchq/CyberChef",
-      "icon": "https://www.freepnglogos.com/uploads/chef-png/chef-icon-33.png",
-      "website": "https://github.com/gchq/CyberChef",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "security",
-        "development",
-        "utilities"
-      ],
-      "screenshots": null,
-      "links": [],
-      "addons": [],
-      "stars": 34804,
-      "forks": 3938,
-      "watchers": 34804,
-      "issues": 551,
-      "last_updated": "2026-05-11T12:03:52Z",
-      "last_pushed": "2026-05-11T09:00:38Z",
-      "created_at": "2016-11-28T10:34:07Z",
-      "size": 88429,
-      "language": "JavaScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cyberchef/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "cyberchef"
     },
     {
       "name": "atuin",
@@ -2240,55 +1852,6 @@
       "dirname": "homebox"
     },
     {
-      "name": "airbroke",
-      "description": "A lightweight, Airbrake-compatible, PostgreSQL-based Open Source Error Catcher",
-      "source": "https://github.com/icoretech/airbroke",
-      "icon": "https://raw.githubusercontent.com/icoretech/airbroke/refs/heads/main/public/logo.svg",
-      "website": "https://airbroke.icorete.ch/",
-      "installation": "After installation you need to login into the pod and run the following command: `npx prisma migrate deploy`",
-      "architecture": [],
-      "categories": [
-        "development",
-        "monitoring",
-        "ai"
-      ],
-      "screenshots": [
-        "https://github.com/icoretech/airbroke/raw/main/public/aidemo.gif"
-      ],
-      "links": [],
-      "addons": [
-        "Cluster"
-      ],
-      "stars": 215,
-      "forks": 14,
-      "watchers": 215,
-      "issues": 3,
-      "last_updated": "2026-05-10T21:14:51Z",
-      "last_pushed": "2026-05-10T21:15:11Z",
-      "created_at": "2023-05-05T14:20:57Z",
-      "size": 609649,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/airbroke/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "airbroke",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/airbroke/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/airbroke/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "dashy",
       "description": "Dashy helps you organize your self-hosted services by making them accessible from a single place.",
       "source": "https://github.com/Lissy93/dashy",
@@ -2371,40 +1934,6 @@
       ]
     },
     {
-      "name": "drawdb",
-      "description": "Free, simple, and intuitive online database diagram editor and SQL generator.",
-      "source": "https://github.com/drawdb-io/drawdb",
-      "icon": "https://avatars.githubusercontent.com/u/139706923?s=200&v=4",
-      "website": "https://drawdb.app/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "development",
-        "data",
-        "admin"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/drawdb-io/.github/main/profile/assets/cover.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 37184,
-      "forks": 3006,
-      "watchers": 37184,
-      "issues": 214,
-      "last_updated": "2026-05-11T12:13:44Z",
-      "last_pushed": "2026-05-10T15:40:58Z",
-      "created_at": "2023-07-16T17:09:20Z",
-      "size": 7022,
-      "language": "JavaScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/drawdb/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "drawdb"
-    },
-    {
       "name": "gotify",
       "description": "Gotify is a simple server for sending and receiving messages (in real time per WebSocket)",
       "source": "https://github.com/gotify/server",
@@ -2436,40 +1965,6 @@
       "license": "Other",
       "spdx_id": "NOASSERTION",
       "dirname": "gotify"
-    },
-    {
-      "name": "searxng",
-      "description": "SearXNG is a free internet metasearch engine which aggregates results from various search services and databases. Users are neither tracked nor profiled.",
-      "source": "https://github.com/searxng/searxng",
-      "icon": "https://avatars.githubusercontent.com/u/80454229",
-      "website": "https://docs.searxng.org/",
-      "installation": "",
-      "architecture": [
-        "linux/amd64",
-        "linux/arm64",
-        "linux/arm/v7"
-      ],
-      "categories": [
-        "utility"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 29803,
-      "forks": 2851,
-      "watchers": 29803,
-      "issues": 212,
-      "last_updated": "2026-05-11T12:24:48Z",
-      "last_pushed": "2026-05-10T13:35:25Z",
-      "created_at": "2021-04-12T15:18:15Z",
-      "size": 114756,
-      "language": "Python",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "searxng"
     },
     {
       "name": "calcom",
@@ -2520,42 +2015,6 @@
       ]
     },
     {
-      "name": "speedtest-tracker",
-      "description": "Speedtest Tracker is a self-hosted application that monitors the performance and uptime of your internet connection.",
-      "source": "https://github.com/alexjustesen/speedtest-tracker",
-      "icon": "https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/speedtest-tracker-logo.png",
-      "website": "https://speedtest-tracker.dev/",
-      "installation": "Generate an APP_KEY and set the APP_URL environment variable to the domain you will be hosting the application on. Use this site to generate the App Key : https://generate-random.org/laravel-key-generator?count=1",
-      "architecture": [
-        "linux/amd64",
-        "linux/arm64"
-      ],
-      "categories": [
-        "monitoring",
-        "utilities"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://docs.speedtest-tracker.dev/"
-      ],
-      "addons": [],
-      "stars": 5631,
-      "forks": 221,
-      "watchers": 5631,
-      "issues": 52,
-      "last_updated": "2026-05-10T06:44:38Z",
-      "last_pushed": "2026-05-10T07:29:18Z",
-      "created_at": "2022-09-11T13:39:20Z",
-      "size": 21394,
-      "language": "PHP",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/speedtest-tracker/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "speedtest-tracker"
-    },
-    {
       "name": "wekan",
       "description": "The Open Source kanban board",
       "source": "https://github.com/wekan/wekan",
@@ -2591,41 +2050,6 @@
       "license": "MIT License",
       "spdx_id": "MIT",
       "dirname": "wekan"
-    },
-    {
-      "name": "phpmyadmin",
-      "description": "phpMyAdmin is a free software tool written in PHP, intended to handle the admin of MySQL and MariaDB over the Web.",
-      "source": "https://github.com/phpmyadmin/phpmyadmin",
-      "icon": "https://avatars.githubusercontent.com/u/1351977?s=200&v=4",
-      "website": "https://www.phpmyadmin.net/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "data",
-        "admin",
-        "development",
-        "debug"
-      ],
-      "screenshots": [
-        "https://upload.wikimedia.org/wikipedia/commons/1/13/PhpMyAdmin-main-en.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 7865,
-      "forks": 3575,
-      "watchers": 7865,
-      "issues": 876,
-      "last_updated": "2026-05-11T06:40:31Z",
-      "last_pushed": "2026-05-10T00:55:35Z",
-      "created_at": "2012-01-19T13:21:52Z",
-      "size": 2444720,
-      "language": "PHP",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/phpmyadmin/app.yaml",
-      "status": "active",
-      "license": "GNU General Public License v2.0",
-      "spdx_id": "GPL-2.0",
-      "dirname": "phpmyadmin"
     },
     {
       "name": "zipline",
@@ -3051,39 +2475,6 @@
       "dirname": "dokuwiki"
     },
     {
-      "name": "daily-stars-explorer",
-      "description": "Explore star trends showing daily stars and go beyond the 40k-star limit.",
-      "source": "https://github.com/emanuelef/daily-stars-explorer",
-      "icon": "https://avatars.githubusercontent.com/u/8088857?s=200&v=4",
-      "website": "https://github.com/emanuelef/daily-stars-explorer",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "development",
-        "utilities"
-      ],
-      "screenshots": [
-        "https://github.com/emanuelef/daily-stars-explorer/assets/48717/9402696a-0f23-445c-a4fe-29a10c18bc3e"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 356,
-      "forks": 12,
-      "watchers": 356,
-      "issues": 6,
-      "last_updated": "2026-05-09T08:56:05Z",
-      "last_pushed": "2026-05-09T08:56:02Z",
-      "created_at": "2023-09-22T16:01:55Z",
-      "size": 2110,
-      "language": "JavaScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/daily-stars-explorer/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "daily-stars-explorer"
-    },
-    {
       "name": "umami",
       "description": "Umami is a simple, fast, privacy-focused alternative to Google Analytics.",
       "source": "https://github.com/umami-software/umami",
@@ -3182,39 +2573,6 @@
       ]
     },
     {
-      "name": "maputnik",
-      "description": "A free and open visual editor for the Mapbox GL styles targeted at developers and map designers.",
-      "source": "https://github.com/maputnik/editor",
-      "icon": "https://avatars.githubusercontent.com/u/22297422?s=200&v=4",
-      "website": "https://maputnik.github.io/editor/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "accessories",
-        "development"
-      ],
-      "screenshots": [
-        "https://camo.githubusercontent.com/e417a4c766f2f3245803f93ed2bdad17d13f20d114330e2436f91ecfadd1e7bf/68747470733a2f2f6a2e676966732e636f6d2f6b3567384f4a2e676966"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 2533,
-      "forks": 459,
-      "watchers": 2533,
-      "issues": 99,
-      "last_updated": "2026-05-10T07:12:19Z",
-      "last_pushed": "2026-05-09T02:25:08Z",
-      "created_at": "2016-09-08T17:52:22Z",
-      "size": 243685,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/maputnik/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "maputnik"
-    },
-    {
       "name": "concrete5",
       "description": "Concrete CMS is an open source CMS built by people from around the world.",
       "source": "https://github.com/concretecms/concretecms",
@@ -3245,108 +2603,6 @@
       "license": "MIT License",
       "spdx_id": "MIT",
       "dirname": "concrete5"
-    },
-    {
-      "name": "mongodb-express",
-      "description": "Web-based MongoDB admin interface written with Node.js, Express and Bootstrap3",
-      "source": "https://github.com/mongo-express/mongo-express",
-      "icon": "https://avatars.githubusercontent.com/u/17328297?s=200&v=4",
-      "website": "https://github.com/mongo-express/mongo-express",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "data",
-        "development",
-        "admin"
-      ],
-      "screenshots": [
-        "http://i.imgur.com/XiYhblA.png",
-        "http://i.imgur.com/XWcIgY1.png",
-        "https://imgur.com/UmGSr3x.png",
-        "https://imgur.com/lL38abn.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 5961,
-      "forks": 1017,
-      "watchers": 5961,
-      "issues": 180,
-      "last_updated": "2026-05-10T19:19:13Z",
-      "last_pushed": "2026-05-09T01:39:45Z",
-      "created_at": "2012-04-23T20:11:25Z",
-      "size": 15962,
-      "language": "JavaScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mongodb-express/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "mongodb-express"
-    },
-    {
-      "name": "pgadmin",
-      "description": "pgAdmin is the most popular and feature rich Open Source admin and development platform for PostgreSQL.",
-      "source": "https://github.com/pgadmin-org/pgadmin4",
-      "icon": "https://avatars.githubusercontent.com/u/113517144?s=200&v=4",
-      "website": "https://www.pgadmin.org",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "data",
-        "development",
-        "admin",
-        "debug"
-      ],
-      "screenshots": null,
-      "links": [],
-      "addons": [],
-      "stars": 3604,
-      "forks": 852,
-      "watchers": 3604,
-      "issues": 465,
-      "last_updated": "2026-05-11T11:52:01Z",
-      "last_pushed": "2026-05-09T00:55:47Z",
-      "created_at": "2017-02-20T11:54:13Z",
-      "size": 365663,
-      "language": "Python",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pgadmin/app.yaml",
-      "status": "active",
-      "license": "Other",
-      "spdx_id": "NOASSERTION",
-      "dirname": "pgadmin"
-    },
-    {
-      "name": "code-server",
-      "description": "Run VS Code on any machine anywhere and access it in the browser.",
-      "source": "https://github.com/coder/code-server",
-      "icon": "https://avatars.githubusercontent.com/u/95932066?s=200&v=4",
-      "website": "https://coder.com",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "development"
-      ],
-      "screenshots": [
-        "https://github.com/coder/code-server/raw/main/docs/assets/screenshot-1.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 77484,
-      "forks": 6659,
-      "watchers": 77484,
-      "issues": 154,
-      "last_updated": "2026-05-11T12:39:32Z",
-      "last_pushed": "2026-05-08T21:16:52Z",
-      "created_at": "2019-02-27T16:50:41Z",
-      "size": 54595,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/code-server/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "code-server"
     },
     {
       "name": "claper",
@@ -3395,41 +2651,6 @@
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/claper/app.ha.yaml"
         }
       ]
-    },
-    {
-      "name": "browserless",
-      "description": "Deploy headless browsers in Docker. Run on our cloud or bring your own. Free for non-commercial uses.",
-      "source": "https://github.com/browserless/browserless",
-      "icon": "https://avatars.githubusercontent.com/u/51244358",
-      "website": "https://browserless.io/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "testing",
-        "development"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/browserless/browserless/main/assets/debugger.png"
-      ],
-      "links": [
-        "https://docs.browserless.io/"
-      ],
-      "addons": [],
-      "stars": 13127,
-      "forks": 1008,
-      "watchers": 13127,
-      "issues": 49,
-      "last_updated": "2026-05-11T06:33:42Z",
-      "last_pushed": "2026-05-08T15:37:18Z",
-      "created_at": "2017-11-17T04:35:31Z",
-      "size": 103987,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/browserless/app.yaml",
-      "status": "active",
-      "license": "Other",
-      "spdx_id": "NOASSERTION",
-      "dirname": "browserless"
     },
     {
       "name": "metube",
@@ -3561,39 +2782,6 @@
       ]
     },
     {
-      "name": "sshwifty",
-      "description": "Sshwifty is a SSH and Telnet connector made for the Web",
-      "source": "https://github.com/nirui/sshwifty",
-      "icon": "https://raw.githubusercontent.com/meienberger/runtipi-appstore/master/apps/sshwifty/metadata/logo.jpg",
-      "website": "https://sshwifty-demo.nirui.org",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "admin",
-        "utilities"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/nirui/sshwifty/master/Screenshot.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 3084,
-      "forks": 398,
-      "watchers": 3084,
-      "issues": 42,
-      "last_updated": "2026-05-11T04:44:26Z",
-      "last_pushed": "2026-05-08T14:10:15Z",
-      "created_at": "2019-08-07T03:43:18Z",
-      "size": 15743,
-      "language": "JavaScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sshwifty/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "sshwifty"
-    },
-    {
       "name": "slink",
       "description": "Self-hosted image sharing service.",
       "source": "https://github.com/andrii-kryvoviaz/slink",
@@ -3676,72 +2864,6 @@
       ]
     },
     {
-      "name": "hopscotch",
-      "description": "Open source API development ecosystem",
-      "source": "https://github.com/hoppscotch/hoppscotch",
-      "icon": "https://avatars.githubusercontent.com/u/56705483?s=200&v=4",
-      "website": "https://hoppscotch.io",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "development",
-        "development"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/hoppscotch/hoppscotch/main/packages/hoppscotch-common/public/images/banner-light.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 79157,
-      "forks": 5864,
-      "watchers": 79157,
-      "issues": 718,
-      "last_updated": "2026-05-11T09:57:29Z",
-      "last_pushed": "2026-05-08T11:40:16Z",
-      "created_at": "2019-08-21T13:15:24Z",
-      "size": 97323,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hopscotch/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "hopscotch"
-    },
-    {
-      "name": "beszel",
-      "description": "Lightweight server monitoring hub with historical data, docker stats, and alerts.",
-      "source": "https://github.com/henrygd/beszel",
-      "icon": "https://raw.githubusercontent.com/henrygd/beszel/refs/heads/main/beszel/site/public/static/favicon.svg",
-      "website": "https://github.com/henrygd/beszel",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "monitoring",
-        "debug"
-      ],
-      "screenshots": [
-        "https://camo.githubusercontent.com/49a777d47b027b633444519e4d9f62b1327e3155e511760b8029124c7ff03d91/68747470733a2f2f68656e727967642d6173736574732e622d63646e2e6e65742f6265737a656c2f73637265656e73686f742e706e67"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 21771,
-      "forks": 777,
-      "watchers": 21771,
-      "issues": 254,
-      "last_updated": "2026-05-11T12:49:30Z",
-      "last_pushed": "2026-05-08T11:22:59Z",
-      "created_at": "2024-07-07T21:36:28Z",
-      "size": 8819,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/beszel/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "beszel"
-    },
-    {
       "name": "workout-tracker",
       "description": "A workout tracking web application for personal use (or family, friends), geared towards running and other GPX-based activities",
       "source": "https://github.com/jovandeginste/workout-tracker",
@@ -3768,104 +2890,6 @@
       "license": "Other",
       "spdx_id": "NOASSERTION",
       "dirname": "workout-tracker"
-    },
-    {
-      "name": "neko",
-      "description": "A self hosted virtual browser that runs in docker and uses WebRTC.",
-      "source": "https://github.com/m1k1o/neko",
-      "icon": "https://neko.m1k1o.net/img/logo.png",
-      "website": "https://neko.m1k1o.net/",
-      "installation": "This app requires specials ports to be open on your cluster: 52000-52100/udp",
-      "architecture": [
-        "linux/amd64",
-        "linux/arm64"
-      ],
-      "categories": [
-        "collaboration"
-      ],
-      "screenshots": [
-        "https://neko.m1k1o.net/img/intro.gif"
-      ],
-      "links": [
-        "https://github.com/m1k1o/neko/blob/master/docker-compose.yaml"
-      ],
-      "addons": [],
-      "stars": 20887,
-      "forks": 1492,
-      "watchers": 20887,
-      "issues": 175,
-      "last_updated": "2026-05-11T09:55:30Z",
-      "last_pushed": "2026-05-08T08:28:24Z",
-      "created_at": "2020-03-14T20:46:07Z",
-      "size": 91413,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/neko/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "neko"
-    },
-    {
-      "name": "gotenberg",
-      "description": "A developer-friendly API for converting numerous document formats into PDF files, and more!",
-      "source": "https://github.com/gotenberg/gotenberg",
-      "icon": "https://avatars.githubusercontent.com/u/66820499",
-      "website": "https://gotenberg.dev/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "accessories"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 12025,
-      "forks": 789,
-      "watchers": 12025,
-      "issues": 43,
-      "last_updated": "2026-05-11T10:34:53Z",
-      "last_pushed": "2026-05-08T02:53:24Z",
-      "created_at": "2018-03-23T14:05:59Z",
-      "size": 22997,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/gotenberg/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "gotenberg"
-    },
-    {
-      "name": "dockerregistry",
-      "description": "The Registry is a stateless, highly scalable server side application that stores and lets you distribute Docker images.",
-      "source": "https://github.com/distribution/distribution",
-      "icon": "https://avatars.githubusercontent.com/u/5429470?s=200&v=4",
-      "website": "https://docs.docker.com/registry/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "utilities",
-        "development"
-      ],
-      "screenshots": null,
-      "links": [],
-      "addons": [],
-      "stars": 10413,
-      "forks": 2734,
-      "watchers": 10413,
-      "issues": 488,
-      "last_updated": "2026-05-11T06:39:47Z",
-      "last_pushed": "2026-05-08T01:14:12Z",
-      "created_at": "2014-12-22T23:49:26Z",
-      "size": 48590,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dockerregistry/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "dockerregistry"
     },
     {
       "name": "coral",
@@ -4087,37 +3111,6 @@
       "dirname": "twofauth"
     },
     {
-      "name": "laravel",
-      "description": "Laravel is a web application framework with expressive, elegant syntax.",
-      "source": "https://github.com/laravel/laravel",
-      "icon": "https://avatars.githubusercontent.com/u/958072?s=200&v=4",
-      "website": "https://laravel.com",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "framework",
-        "development"
-      ],
-      "screenshots": null,
-      "links": [],
-      "addons": [],
-      "stars": 84227,
-      "forks": 24706,
-      "watchers": 84227,
-      "issues": 31,
-      "last_updated": "2026-05-11T09:25:01Z",
-      "last_pushed": "2026-05-06T13:38:35Z",
-      "created_at": "2011-06-08T03:06:08Z",
-      "size": 10991,
-      "language": "Blade",
-      "gitops": true,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/laravel/app.yaml",
-      "status": "active",
-      "license": "Unknown",
-      "spdx_id": "-",
-      "dirname": "laravel"
-    },
-    {
       "name": "piwigo",
       "description": "Manage your photos with Piwigo, a full featured open source photo gallery application for the web.",
       "source": "https://github.com/Piwigo/Piwigo",
@@ -4168,59 +3161,6 @@
       ]
     },
     {
-      "name": "bugsink",
-      "description": "Bugsink is a self-hosted error tracker. It shows you when something breaks in your app and includes all the information you need to debug it—stack traces, request data, logs, and more—without sending anything to a third party.",
-      "source": "https://github.com/bugsink/bugsink",
-      "icon": "https://avatars.githubusercontent.com/u/150733838",
-      "website": "https://www.bugsink.com/",
-      "installation": "",
-      "architecture": [
-        "linux/amd64",
-        "linux/arm64"
-      ],
-      "categories": [
-        "utilities",
-        "development"
-      ],
-      "screenshots": [
-        "https://www.bugsink.com/static/images/JsonSchemaDefinitionExceptionHome.69dcef47aec9.webp"
-      ],
-      "links": [
-        "https://www.bugsink.com/docs/"
-      ],
-      "addons": [
-        "MariaDB"
-      ],
-      "stars": 1744,
-      "forks": 101,
-      "watchers": 1744,
-      "issues": 135,
-      "last_updated": "2026-05-11T11:24:48Z",
-      "last_pushed": "2026-05-06T06:08:44Z",
-      "created_at": "2024-08-21T06:19:56Z",
-      "size": 6188,
-      "language": "Python",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bugsink/app.yaml",
-      "status": "active",
-      "license": "Other",
-      "spdx_id": "NOASSERTION",
-      "dirname": "bugsink",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bugsink/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bugsink/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "libtranslate",
       "description": "Free and Open Source Machine Translation API. Self-hosted, offline capable and easy to setup.",
       "source": "https://github.com/LibreTranslate/LibreTranslate",
@@ -4252,72 +3192,6 @@
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
       "dirname": "libretranslate"
-    },
-    {
-      "name": "it-tools",
-      "description": "Collection of handy online tools for developers, with great UX.",
-      "source": "https://github.com/CorentinTh/it-tools",
-      "icon": "https://raw.githubusercontent.com/CorentinTh/it-tools/main/public/mstile-144x144.png",
-      "website": "https://it-tools.tech/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "development",
-        "utilities"
-      ],
-      "screenshots": null,
-      "links": [],
-      "addons": [],
-      "stars": 38487,
-      "forks": 4840,
-      "watchers": 38487,
-      "issues": 785,
-      "last_updated": "2026-05-11T11:20:31Z",
-      "last_pushed": "2026-05-05T18:57:38Z",
-      "created_at": "2020-04-05T11:50:24Z",
-      "size": 13733,
-      "language": "Vue",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/it-tools/app.yaml",
-      "status": "active",
-      "license": "GNU General Public License v3.0",
-      "spdx_id": "GPL-3.0",
-      "dirname": "it-tools"
-    },
-    {
-      "name": "lunalytics",
-      "description": "Open source monitoring tool built with Node.js",
-      "source": "https://github.com/ksjaay/lunalytics",
-      "icon": "https://raw.githubusercontent.com/KSJaay/Lunalytics/refs/heads/main/public/logo.svg",
-      "website": "https://lunalytics.xyz",
-      "installation": "",
-      "architecture": [
-        "linux/amd64",
-        "linux/arm64"
-      ],
-      "categories": [
-        "monitoring"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/KSJaay/Lunalytics/refs/heads/main/docs/public/demo.gif"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 728,
-      "forks": 37,
-      "watchers": 728,
-      "issues": 21,
-      "last_updated": "2026-05-05T17:03:47Z",
-      "last_pushed": "2026-05-05T17:41:39Z",
-      "created_at": "2023-11-20T00:30:18Z",
-      "size": 44769,
-      "language": "JavaScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lunalytics/app.yaml",
-      "status": "active",
-      "license": "Other",
-      "spdx_id": "NOASSERTION",
-      "dirname": "lunalytics"
     },
     {
       "name": "lychee",
@@ -4583,41 +3457,6 @@
       "dirname": "moodist"
     },
     {
-      "name": "promlens",
-      "description": "The query builder, analyzer, and explainer for Prometheus PromQL",
-      "source": "https://github.com/prometheus/promlens",
-      "icon": "https://avatars.githubusercontent.com/u/3380462",
-      "website": "https://promlens.com/",
-      "installation": "",
-      "architecture": [
-        "linux/amd64",
-        "linux/arm64/v8",
-        "linux/arm/v7"
-      ],
-      "categories": [
-        "admin",
-        "development"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 673,
-      "forks": 48,
-      "watchers": 673,
-      "issues": 30,
-      "last_updated": "2026-04-15T18:11:58Z",
-      "last_pushed": "2026-05-02T01:32:40Z",
-      "created_at": "2022-10-08T18:03:24Z",
-      "size": 2817,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/promlens/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "promlens"
-    },
-    {
       "name": "photoview",
       "description": "Photoview is a simple and user-friendly photo gallery that is made for photographers and aims to provide an easy and fast way to navigate directories.",
       "source": "https://github.com/photoview/photoview",
@@ -4698,68 +3537,6 @@
       "dirname": "wikijs"
     },
     {
-      "name": "gatus",
-      "description": "Gatus is a service that allows you to monitor the availability and latency of your services and expose this information a beautiful dashboard.",
-      "source": "https://github.com/TwiN/gatus",
-      "icon": "https://raw.githubusercontent.com/TwiN/gatus/9e46e3972d382c62ebf954eb109b3c856d33bd58/web/app/public/logo-192x192.png",
-      "website": "https://gatus.io/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "monitoring"
-      ],
-      "screenshots": [
-        "https://github.com/TwiN/gatus/raw/master/.github/assets/dashboard-dark.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 10896,
-      "forks": 730,
-      "watchers": 10896,
-      "issues": 308,
-      "last_updated": "2026-05-11T11:36:55Z",
-      "last_pushed": "2026-05-01T07:12:37Z",
-      "created_at": "2019-09-04T02:35:40Z",
-      "size": 36820,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/gatus/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "gatus"
-    },
-    {
-      "name": "chartmuseum",
-      "description": "ChartMuseum is an open-source Helm Chart Repository server written in Go.",
-      "source": "https://github.com/helm/chartmuseum",
-      "icon": "https://avatars.githubusercontent.com/u/30879152?s=200&v=4",
-      "website": "https://chartmuseum.com/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "accessories"
-      ],
-      "screenshots": null,
-      "links": [],
-      "addons": [],
-      "stars": 3823,
-      "forks": 405,
-      "watchers": 3823,
-      "issues": 113,
-      "last_updated": "2026-05-05T04:07:18Z",
-      "last_pushed": "2026-04-30T18:17:01Z",
-      "created_at": "2017-09-19T05:48:21Z",
-      "size": 23131,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chartmuseum/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "chartmuseum"
-    },
-    {
       "name": "illa",
       "description": "ILLA is a robust open source low-code platform for developers to build internal tools.",
       "source": "https://github.com/illacloud/illa-builder",
@@ -4792,39 +3569,6 @@
       "license": "Apache License 2.0",
       "spdx_id": "Apache-2.0",
       "dirname": "illa"
-    },
-    {
-      "name": "go-httpbin",
-      "description": "A reasonably complete and well-tested golang port of httpbin, with zero dependencies outside the go stdlib.",
-      "source": "https://github.com/mccutchen/go-httpbin",
-      "icon": "https://httpwg.org/assets/http.svg",
-      "website": "https://httpbingo.org",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "debug",
-        "development"
-      ],
-      "screenshots": [
-        "https://cdn.hashnode.com/res/hashnode/image/upload/v1650233795205/xWudUDZjZ.png?auto=compress,format&format=webp"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 844,
-      "forks": 173,
-      "watchers": 844,
-      "issues": 10,
-      "last_updated": "2026-05-08T09:59:30Z",
-      "last_pushed": "2026-04-29T01:40:16Z",
-      "created_at": "2016-08-29T06:20:42Z",
-      "size": 958,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/go-httpbin/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "go-httpbin"
     },
     {
       "name": "homarr",
@@ -4937,38 +3681,6 @@
       "dirname": "convertx"
     },
     {
-      "name": "screego",
-      "description": "Screen sharing for developers",
-      "source": "https://github.com/screego/server",
-      "icon": "https://avatars.githubusercontent.com/u/72201776",
-      "website": "https://screego.net",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "collaboration",
-        "work",
-        "development"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 10369,
-      "forks": 708,
-      "watchers": 10369,
-      "issues": 14,
-      "last_updated": "2026-05-11T07:37:51Z",
-      "last_pushed": "2026-04-25T08:33:58Z",
-      "created_at": "2020-07-16T18:46:51Z",
-      "size": 1393,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/screego/app.yaml",
-      "status": "active",
-      "license": "GNU General Public License v3.0",
-      "spdx_id": "GPL-3.0",
-      "dirname": "screego"
-    },
-    {
       "name": "archivebox",
       "description": "ArchiveBox is a powerful, self-hosted internet archiving solution to collect, save, and view websites offline.",
       "source": "https://github.com/ArchiveBox/ArchiveBox",
@@ -5036,40 +3748,6 @@
       "dirname": "kanboard"
     },
     {
-      "name": "jsoncrack",
-      "description": "Innovative and open-source visualization application that transforms various data formats, such as JSON, YAML, XML, CSV and more, into interactive graphs.",
-      "source": "https://github.com/AykutSarac/jsoncrack.com",
-      "icon": "https://avatars.githubusercontent.com/u/48101043",
-      "website": "https://jsoncrack.com",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "development",
-        "work",
-        "utilities"
-      ],
-      "screenshots": [
-        "https://github.com/AykutSarac/jsoncrack.com/raw/main/public/assets/editor.webp"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 43933,
-      "forks": 3535,
-      "watchers": 43933,
-      "issues": 35,
-      "last_updated": "2026-05-11T08:46:04Z",
-      "last_pushed": "2026-04-22T20:59:11Z",
-      "created_at": "2022-01-30T15:25:18Z",
-      "size": 42009,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jsoncrack/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "jsoncrack"
-    },
-    {
       "name": "pairdrop",
       "description": "PairDrop: Transfer Files Cross-Platform. No Setup, No Signup.",
       "source": "https://github.com/schlagmichdoch/PairDrop",
@@ -5104,74 +3782,6 @@
       "dirname": "pairdrop"
     },
     {
-      "name": "whoogle",
-      "description": "Whoogle is a self-hosted, ad-free, privacy-respecting metasearch engine.",
-      "source": "https://github.com/benbusby/whoogle-search",
-      "icon": "https://preview.redd.it/4alqumb2xqi81.png?width=192&format=png&auto=webp&s=05f078627d3b9d7f1f82e002d5388efc6ee3c63a",
-      "website": "https://github.com/benbusby/whoogle-search",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "utilities",
-        "work"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/screenshot_desktop.png",
-        "https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/screenshot_mobile.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 11500,
-      "forks": 1038,
-      "watchers": 11500,
-      "issues": 1,
-      "last_updated": "2026-05-11T11:08:52Z",
-      "last_pushed": "2026-04-21T21:56:20Z",
-      "created_at": "2020-01-21T20:22:33Z",
-      "size": 2882,
-      "language": "Python",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/whoogle/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "whoogle"
-    },
-    {
-      "name": "elasticvue",
-      "description": "Elasticsearch gui for the browser",
-      "source": "https://github.com/cars10/elasticvue",
-      "icon": "https://avatars.githubusercontent.com/u/6764390",
-      "website": "https://elasticvue.com/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "data",
-        "development",
-        "admin"
-      ],
-      "screenshots": [
-        "https://static.cars10k.de/demo.gif"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 2651,
-      "forks": 195,
-      "watchers": 2651,
-      "issues": 18,
-      "last_updated": "2026-05-11T06:49:15Z",
-      "last_pushed": "2026-04-19T19:20:46Z",
-      "created_at": "2017-08-08T14:20:32Z",
-      "size": 17464,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/elasticvue/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "elasticvue"
-    },
-    {
       "name": "homer",
       "description": "A dead simple static HOMepage for your servER to keep your services on hand, from a simple yaml configuration file.",
       "source": "https://github.com/bastienwirtz/homer",
@@ -5203,40 +3813,6 @@
       "license": "Apache License 2.0",
       "spdx_id": "Apache-2.0",
       "dirname": "homer"
-    },
-    {
-      "name": "ciao",
-      "description": "HTTP checks & tests (private & public) monitoring - check the status of your URL",
-      "source": "https://github.com/brotandgames/ciao",
-      "icon": "https://avatars.githubusercontent.com/u/43862266",
-      "website": "https://brotandgames.com/ciao/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "monitoring",
-        "debug",
-        "work"
-      ],
-      "screenshots": [
-        "https://camo.githubusercontent.com/881ea1d50deb09a27562a6719031c9d02362249bfd2e0dac545e9eea3c1c1a16/68747470733a2f2f62726f74616e6467616d65732e636f6d2f6173736574732f6369616f2d636865636b732e706e67"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 1966,
-      "forks": 108,
-      "watchers": 1966,
-      "issues": 2,
-      "last_updated": "2026-05-09T19:26:14Z",
-      "last_pushed": "2026-04-17T22:34:21Z",
-      "created_at": "2019-07-15T18:39:05Z",
-      "size": 3104,
-      "language": "Ruby",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ciao/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "ciao"
     },
     {
       "name": "databag",
@@ -5350,40 +3926,6 @@
       "dirname": "bluesky-pds"
     },
     {
-      "name": "chartdb",
-      "description": "A database diagrams editor to visualize and design your DB with a single query.",
-      "source": "https://github.com/chartdb/chartdb",
-      "icon": "https://avatars.githubusercontent.com/u/177466511?s=200&v=4",
-      "website": "https://chartdb.io/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "admin",
-        "data",
-        "development"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/chartdb/chartdb/main/public/chartdb.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 22161,
-      "forks": 1392,
-      "watchers": 22161,
-      "issues": 152,
-      "last_updated": "2026-05-11T12:33:52Z",
-      "last_pushed": "2026-04-15T00:48:22Z",
-      "created_at": "2024-08-05T07:19:19Z",
-      "size": 68649,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chartdb/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "chartdb"
-    },
-    {
       "name": "doccano",
       "description": "Open source annotation tool for machine learning practitioners.",
       "source": "https://github.com/doccano/doccano",
@@ -5450,38 +3992,6 @@
       "license": "GNU General Public License v3.0",
       "spdx_id": "GPL-3.0",
       "dirname": "timetagger"
-    },
-    {
-      "name": "kener",
-      "description": "Kener is a Modern Self hosted Status Page",
-      "source": "https://github.com/rajnandan1/kener",
-      "icon": "https://kener.ing/logo.png",
-      "website": "https://www.kener.ing",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "monitoring"
-      ],
-      "screenshots": [
-        "https://camo.githubusercontent.com/8d4f2ea8ac5a6200ad87e39a21be25c5b279d540a886db131a076ef69227ca7a/68747470733a2f2f6b656e65722e696e672f73732e706e67"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 4921,
-      "forks": 271,
-      "watchers": 4921,
-      "issues": 63,
-      "last_updated": "2026-05-11T05:31:13Z",
-      "last_pushed": "2026-04-09T04:51:50Z",
-      "created_at": "2023-12-01T15:39:00Z",
-      "size": 38981,
-      "language": "Svelte",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kener/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "kener"
     },
     {
       "name": "textbee-api",
@@ -5691,42 +4201,6 @@
       "dirname": "raneto"
     },
     {
-      "name": "firefox",
-      "description": "Start a Firefox web browser in a Docker container",
-      "source": "https://github.com/jlesage/docker-firefox",
-      "icon": "https://avatars.githubusercontent.com/u/109460230",
-      "website": "https://www.mozilla.org/en-US/firefox/new/",
-      "installation": "",
-      "architecture": [
-        "linux/amd64",
-        "linux/arm64",
-        "linux/arm/v7",
-        "linux/386"
-      ],
-      "categories": [
-        "security",
-        "utility"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 2459,
-      "forks": 421,
-      "watchers": 2459,
-      "issues": 90,
-      "last_updated": "2026-05-10T12:40:00Z",
-      "last_pushed": "2026-03-14T20:55:32Z",
-      "created_at": "2018-02-15T01:23:41Z",
-      "size": 211,
-      "language": "Shell",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefox/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "firefox"
-    },
-    {
       "name": "tasksmd",
       "description": "A self-hosted, file based task management board that supports Markdown syntax.",
       "source": "https://github.com/BaldissaraMatheus/Tasks.md",
@@ -5829,74 +4303,6 @@
       "dirname": "traggo"
     },
     {
-      "name": "caddygen",
-      "description": "CaddyGen is a user-friendly web interface for generating Caddy server configurations. ",
-      "source": "https://github.com/DeanWard/CaddyGen",
-      "icon": "https://avatars.githubusercontent.com/u/12955528",
-      "website": "https://caddygen.site/",
-      "installation": "",
-      "architecture": [
-        "linux/amd64",
-        "linux/arm64"
-      ],
-      "categories": [
-        "utility"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 432,
-      "forks": 29,
-      "watchers": 432,
-      "issues": 7,
-      "last_updated": "2026-04-27T01:47:23Z",
-      "last_pushed": "2026-02-15T18:26:17Z",
-      "created_at": "2025-01-07T15:00:34Z",
-      "size": 118,
-      "language": "Vue",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/caddygen/app.yaml",
-      "status": "active",
-      "license": "Unknown",
-      "spdx_id": "-",
-      "dirname": "caddygen"
-    },
-    {
-      "name": "redis-commander",
-      "description": "Redis management tool written in node.js",
-      "source": "https://github.com/joeferner/redis-commander",
-      "icon": "https://avatars.githubusercontent.com/u/1529926",
-      "website": "http://joeferner.github.io/redis-commander/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "data",
-        "development",
-        "admin",
-        "debug"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/joeferner/redis-commander/master/docs/GUI_EXAMPLE.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 3982,
-      "forks": 501,
-      "watchers": 3982,
-      "issues": 73,
-      "last_updated": "2026-05-11T05:40:41Z",
-      "last_pushed": "2026-02-12T15:26:34Z",
-      "created_at": "2012-06-18T14:30:04Z",
-      "size": 4933,
-      "language": "JavaScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/redis-commander/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "redis-commander"
-    },
-    {
       "name": "planning-poker",
       "description": "A hassle-free Planning Poker application to deploy on your NAS.",
       "source": "https://github.com/axeleroy/self-host-planning-poker",
@@ -5967,37 +4373,6 @@
       "dirname": "shiori"
     },
     {
-      "name": "registry-ui",
-      "description": "The simplest and most complete UI for your private registry",
-      "source": "https://github.com/Joxit/docker-registry-ui",
-      "icon": "https://avatars.githubusercontent.com/u/5429470?s=200&v=4",
-      "website": "https://joxit.dev/docker-registry-ui/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "development",
-        "utilities"
-      ],
-      "screenshots": null,
-      "links": [],
-      "addons": [],
-      "stars": 3422,
-      "forks": 360,
-      "watchers": 3422,
-      "issues": 40,
-      "last_updated": "2026-05-11T11:41:56Z",
-      "last_pushed": "2026-01-19T23:28:31Z",
-      "created_at": "2016-04-09T19:40:26Z",
-      "size": 14116,
-      "language": "Riot",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/registry-ui/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "registry-ui"
-    },
-    {
       "name": "kubectl",
       "description": "Run kubectl command in web browser",
       "source": "https://github.com/KubeOperator/webkubectl",
@@ -6064,37 +4439,6 @@
       "license": "MIT License",
       "spdx_id": "MIT",
       "dirname": "chibisafe"
-    },
-    {
-      "name": "screen-sharing",
-      "description": "Share your screen with one simple room code. No downloads or sign-ups required.",
-      "source": "https://github.com/tonghohin/screen-sharing",
-      "icon": "https://avatars.githubusercontent.com/u/6596480",
-      "website": "https://share-your-screen.vercel.app/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "communication",
-        "work"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 1690,
-      "forks": 135,
-      "watchers": 1690,
-      "issues": 5,
-      "last_updated": "2026-04-25T04:16:27Z",
-      "last_pushed": "2025-12-07T19:04:48Z",
-      "created_at": "2024-11-04T16:55:19Z",
-      "size": 444,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/screen-sharing/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "screen-sharing"
     },
     {
       "name": "fief",
@@ -6241,72 +4585,6 @@
       ]
     },
     {
-      "name": "sqlpad",
-      "description": "SQLPad is a web-based SQL editor that allows you to write queries, visualize data, and share your results.",
-      "source": "https://github.com/sqlpad/sqlpad",
-      "icon": "https://avatars.githubusercontent.com/u/67432073?s=48&v=4",
-      "website": "https://getsqlpad.com/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "data",
-        "development",
-        "work"
-      ],
-      "screenshots": [
-        "https://user-images.githubusercontent.com/303966/99915755-32f78e80-2ccb-11eb-9f74-b18846d6108d.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 5184,
-      "forks": 815,
-      "watchers": 5184,
-      "issues": 0,
-      "last_updated": "2026-05-10T01:23:18Z",
-      "last_pushed": "2025-08-23T07:25:44Z",
-      "created_at": "2014-05-29T03:09:24Z",
-      "size": 33356,
-      "language": "JavaScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sqlpad/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "sqlpad"
-    },
-    {
-      "name": "statping-ng",
-      "description": "An updated drop-in replacement for statping - Status Page for monitoring your websites and applications with beautiful graphs, analytics, and plugins.",
-      "source": "https://github.com/statping-ng/statping-ng",
-      "icon": "https://avatars.githubusercontent.com/u/88886654?s=200&v=4",
-      "website": "https://statping-ng.github.io",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "monitoring"
-      ],
-      "screenshots": [
-        "https://camo.githubusercontent.com/2e6247a73a3ef41ee0884415c6ec63c9caa4d9dc8fdb4a8ecf64342b00a29a0f/68747470733a2f2f7374617470696e672d6e672e6769746875622e696f2f6173736574732f65787465726e616c2f736c61636b2d6e6f74696665722e706e67"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 1967,
-      "forks": 191,
-      "watchers": 1967,
-      "issues": 193,
-      "last_updated": "2026-05-11T04:39:57Z",
-      "last_pushed": "2025-06-04T20:21:10Z",
-      "created_at": "2021-07-08T10:50:00Z",
-      "size": 29698,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/statping-ng/app.yaml",
-      "status": "active",
-      "license": "GNU General Public License v3.0",
-      "spdx_id": "GPL-3.0",
-      "dirname": "statping-ng"
-    },
-    {
       "name": "anse",
       "description": "Supercharged experience for multiple models such as ChatGPT, DALL-E and Stable Diffusion.",
       "source": "https://github.com/anse-app/anse",
@@ -6336,68 +4614,6 @@
       "license": "MIT License",
       "spdx_id": "MIT",
       "dirname": "anse"
-    },
-    {
-      "name": "adminerevo",
-      "description": "Database management in a single PHP file",
-      "source": "https://github.com/adminerevo/adminerevo",
-      "icon": "https://avatars.githubusercontent.com/u/132262423",
-      "website": "https://docs.adminerevo.org/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "database",
-        "administration",
-        "development"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 760,
-      "forks": 54,
-      "watchers": 760,
-      "issues": 62,
-      "last_updated": "2026-05-05T20:49:59Z",
-      "last_pushed": "2025-01-24T11:24:39Z",
-      "created_at": "2023-05-01T09:55:14Z",
-      "size": 9047,
-      "language": "PHP",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/adminerevo/app.yaml",
-      "status": "active",
-      "license": "Other",
-      "spdx_id": "NOASSERTION",
-      "dirname": "adminerevo"
-    },
-    {
-      "name": "statusnook",
-      "description": "StatusNook is a simple status page for your services.",
-      "source": "https://github.com/goksan/statusnook",
-      "icon": "https://www.svgrepo.com/show/310016/status.svg",
-      "website": "https://statusnook.com",
-      "installation": "Admin account is created with the first website visit",
-      "architecture": [],
-      "categories": [
-        "monitoring"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 976,
-      "forks": 27,
-      "watchers": 976,
-      "issues": 12,
-      "last_updated": "2026-05-08T13:47:16Z",
-      "last_pushed": "2024-10-31T14:27:53Z",
-      "created_at": "2024-04-24T13:02:50Z",
-      "size": 3373,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/statusnook/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "statusnook"
     },
     {
       "name": "chatpad",
@@ -6589,44 +4805,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/psono/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "kafka",
-      "description": "Apache Kafka is a distributed event streaming platform. Runs in KRaft mode via the Strimzi operator, with the kafbat Kafka UI web console.",
-      "source": "https://github.com/apache/kafka",
-      "icon": "/img/addons/kafka.svg",
-      "website": "https://kafka.apache.org",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "messaging"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://kafka.apache.org/documentation/",
-        "https://strimzi.io/docs/operators/latest/overview",
-        "https://github.com/kafbat/kafka-ui"
-      ],
-      "addons": [
-        "Kafka"
-      ],
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kafka/app.yaml",
-      "status": "active",
-      "dirname": "kafka",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kafka/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kafka/app.ha.yaml"
         }
       ]
     }
