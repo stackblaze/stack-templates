@@ -17,6 +17,8 @@ consolidated into a single repo so the catalog has zero runtime dependency on
   pulls on install.
 - **`services/<name>/app.ha.yaml`** — high-availability variant (when
   applicable). Listed in `index.json` under `deploymentTypes`.
+- **`qa-status.json`** — QA pass overrides for the catalog table in this
+  README (regenerate with `scripts/generate-qa-table.py`).
 - Icons are remote URLs in `index.json` (`icon`) and in each YAML
   (`kubero.dev/template.icon`); there is no separate build step.
 
@@ -47,6 +49,172 @@ Galera, multi-instance CNPG, or Valkey failover in `app.yaml`.
 When adding a new template, always ship `app.yaml` + `app.ha.yaml` when the
 app uses a stateful addon that supports clustering. Use
 `scripts/generate-top10-templates.py` as a reference for addon helpers.
+
+<!-- qa-table:start -->
+## QA status
+
+Whether each catalog template has been validated by QA on a live Kubero
+cluster. **No** = not yet tested; **Yes** = QA verified; **—** = no HA
+variant in the catalog.
+
+To record a QA pass, edit `qa-status.json` and re-run
+`python scripts/generate-qa-table.py`:
+
+| App | Standard | HA |
+|-----|:--------:|:---:|
+| activepieces | No | No |
+| affine | No | No |
+| anse | No | — |
+| appflowy | No | No |
+| appsmith | No | — |
+| archivebox | No | — |
+| atuin | No | No |
+| authorizer | No | — |
+| azimutt | No | No |
+| bitwarden | No | No |
+| bluesky-pds | No | — |
+| bookstack | No | No |
+| calcom | No | No |
+| casdoor | No | No |
+| changedetection | No | — |
+| chatpad | No | — |
+| chatwoot | No | No |
+| chibisafe | No | — |
+| claper | No | No |
+| cockpit | No | — |
+| concrete5 | No | — |
+| convertx | No | — |
+| coral | No | — |
+| corteza | No | No |
+| cryptpad | No | No |
+| dashy | No | — |
+| databag | No | — |
+| directus | No | — |
+| discourse | No | No |
+| doccano | No | — |
+| docmost | No | No |
+| documenso | No | No |
+| docuseal | No | — |
+| dokuwiki | No | — |
+| dotcms | No | No |
+| easyappointments | No | No |
+| etherpad | No | No |
+| evershop | No | No |
+| excalidraw | No | — |
+| fider | No | No |
+| fief | No | — |
+| filestash | No | — |
+| flightlog | No | — |
+| flowise | No | — |
+| formbricks | No | No |
+| freshrss | No | No |
+| ghost | No | No |
+| gitea | No | — |
+| glpi | No | No |
+| gotify | No | — |
+| grav | No | — |
+| guitos | No | — |
+| hedgedoc | No | No |
+| homarr | No | — |
+| homebox | No | — |
+| homer | No | — |
+| humhub | No | No |
+| illa | No | — |
+| immich | No | No |
+| infisical | No | No |
+| jellyfin | No | No |
+| joomla | No | No |
+| kanboard | No | — |
+| keila | No | No |
+| kimai | No | No |
+| kotaemon | No | — |
+| kroki | No | No |
+| kubectl | No | — |
+| kuma | No | — |
+| languagetool | No | — |
+| leantime | No | No |
+| libtranslate | No | — |
+| limesurvey | No | No |
+| linkwarden | No | No |
+| logto | No | No |
+| lychee | No | — |
+| matomo | No | No |
+| mattermost | No | No |
+| mealie | No | No |
+| memos | No | — |
+| metabase | No | — |
+| metube | No | — |
+| microbin | No | — |
+| mirotalk-p2p | No | — |
+| moodist | No | — |
+| mosparo | No | No |
+| n8n | No | No |
+| netbird | No | — |
+| netbox | No | No |
+| nextcloud | No | No |
+| nocodb | No | — |
+| nodebb | No | No |
+| note-mark | No | — |
+| ntfy | No | — |
+| opengist | No | — |
+| openproject | No | No |
+| outline | No | No |
+| pairdrop | No | — |
+| paperless-ngx | No | No |
+| paperless-ngx-sqlite | No | — |
+| passbolt | No | No |
+| password-pusher | No | No |
+| penpot | No | No |
+| penpot-backend | No | No |
+| penpot-exporter | No | — |
+| penpot-frontend | No | — |
+| peppermint | No | No |
+| photoview | No | No |
+| piwigo | No | No |
+| plane | No | No |
+| planka | No | No |
+| planning-poker | No | — |
+| plausible | No | No |
+| postiz | No | No |
+| presentator | No | — |
+| psono | No | No |
+| rallly | No | No |
+| raneto | No | — |
+| rocketchat | No | — |
+| rsshub | No | — |
+| ryot | No | No |
+| serge | No | — |
+| serpbear | No | — |
+| shiori | No | — |
+| silverbullet | No | — |
+| slash | No | — |
+| slink | No | — |
+| stirlingpdf | No | — |
+| superset | No | No |
+| syncthing | No | No |
+| tasksmd | No | — |
+| textbee | No | — |
+| textbee-api | No | — |
+| timetagger | No | — |
+| tolgee | No | No |
+| traggo | No | — |
+| trilium | No | — |
+| twenty | No | No |
+| twofauth | No | — |
+| typebot | No | No |
+| umami | No | No |
+| unleash | No | No |
+| vaultwarden | No | — |
+| vikunja | No | No |
+| vvveb-mysql | No | No |
+| wekan | No | — |
+| whiteboard | No | — |
+| wikijs | No | — |
+| wordpress | No | No |
+| workout-tracker | No | — |
+| zipline | No | No |
+| zulip | No | No |
+<!-- qa-table:end -->
 
 ## Wiring Kubero to this catalog
 
