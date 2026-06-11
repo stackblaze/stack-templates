@@ -1,0 +1,138 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: appflowy
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source Notion alternative — self-hosted workspace for notes, docs, and collaboration.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/86002201?s=200&v=4
+    kubero.dev/template.installation: Minimal API backend only. Deploy gotrue, minio, and appflowy-web from the AppFlowy-Cloud
+      docker-compose in the same pipeline for a complete self-hosted stack.
+    kubero.dev/template.links: '["https://appflowy-io-appflowy.mintlify.app/self-hosting/installation"]'
+    kubero.dev/template.screenshots: '["https://appflowy.io/_next/static/media/appflowy-logo.0a1a0b0b.png"]'
+    kubero.dev/template.source: https://github.com/AppFlowy-IO/AppFlowy-Cloud
+    kubero.dev/template.categories: '["productivity", "work", "collaboration"]'
+    kubero.dev/template.title: AppFlowy
+    kubero.dev/template.website: https://appflowy.io/
+  labels:
+    manager: kubero
+spec:
+  name: appflowy
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: appflowy-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: appflowy
+              owner: appflowy
+              secret:
+                name: appflowy-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: appflowy-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: appflowy-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: appflowy
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: appflowy-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: appflowy
+          password: appflowy
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: appflowy-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: APPFLOWY_DATABASE_URL
+    value: postgres://appflowy:appflowy@appflowy-postgresql-rw:5432/appflowy
+  - name: APPFLOWY_REDIS_URI
+    value: redis://rfr-appflowy-valkey-readwrite:6379
+  - name: APPFLOWY_CLOUD_BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: APPFLOWY_GOTRUE_JWT_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: APPFLOWY_GOTRUE_BASE_URL
+    value: '{{KUBERO_APP_URL}}/gotrue'
+  - name: APPFLOWY_S3_USE_MINIO
+    value: 'true'
+  - name: APPFLOWY_S3_MINIO_URL
+    value: http://minio:9000
+  - name: APPFLOWY_S3_ACCESS_KEY
+    value: minioadmin
+  - name: APPFLOWY_S3_SECRET_KEY
+    value: minioadmin
+  - name: APPFLOWY_S3_BUCKET
+    value: appflowy
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: appflowyinc/appflowy_cloud
+    tag: latest

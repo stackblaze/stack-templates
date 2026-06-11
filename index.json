@@ -5828,27 +5828,538 @@
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vikunja/app.ha.yaml"
         }
       ]
+    },
+    {
+      "name": "netbox",
+      "description": "NetBox is the leading open-source DCIM and IP address management platform for network infrastructure.",
+      "source": "https://github.com/netbox-community/netbox",
+      "icon": "https://avatars.githubusercontent.com/u/44905828?s=200&v=4",
+      "website": "https://netbox.dev/",
+      "installation": "Rotate SECRET_KEY and DB passwords before production. Deploy a netbox-worker using the same image with `rqworker` for background jobs.",
+      "architecture": [],
+      "categories": [
+        "utilities",
+        "work",
+        "development"
+      ],
+      "screenshots": [
+        "https://netbox.dev/static/netbox_logo.svg"
+      ],
+      "links": [
+        "https://docs.netbox.dev/"
+      ],
+      "addons": [
+        "Cluster",
+        "Valkey"
+      ],
+      "stars": 18000,
+      "forks": 1800,
+      "watchers": 18000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/netbox/app.yaml",
+      "status": "active",
+      "license": "Apache License 2.0",
+      "spdx_id": "Apache-2.0",
+      "dirname": "netbox",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/netbox/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/netbox/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "kroki",
+      "description": "Creates diagrams from textual descriptions — unified API for PlantUML, Mermaid, Graphviz, and more.",
+      "source": "https://github.com/yuzutech/kroki",
+      "icon": "https://avatars.githubusercontent.com/u/4894788?s=200&v=4",
+      "website": "https://kroki.io/",
+      "installation": "No database required. Optionally set KROKI_SAFE_MODE=secure for production.",
+      "architecture": [],
+      "categories": [
+        "utilities",
+        "development",
+        "documentation"
+      ],
+      "screenshots": [
+        "https://kroki.io/assets/img/kroki-logo.png"
+      ],
+      "links": [
+        "https://docs.kroki.io/"
+      ],
+      "addons": [],
+      "stars": 4000,
+      "forks": 400,
+      "watchers": 4000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "Java",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kroki/app.yaml",
+      "status": "active",
+      "license": "MIT License",
+      "spdx_id": "MIT",
+      "dirname": "kroki",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kroki/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kroki/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "superset",
+      "description": "Modern data exploration and visualization platform — enterprise-ready business intelligence.",
+      "source": "https://github.com/apache/superset",
+      "icon": "https://avatars.githubusercontent.com/u/47359?s=200&v=4",
+      "website": "https://superset.apache.org/",
+      "installation": "Generate SUPERSET_SECRET_KEY with openssl rand -base64 42. Run superset db upgrade && superset init once after first deploy if the UI does not load.",
+      "architecture": [],
+      "categories": [
+        "data",
+        "utilities",
+        "work"
+      ],
+      "screenshots": [
+        "https://superset.apache.org/img/superset-logo-horiz.svg"
+      ],
+      "links": [
+        "https://superset.apache.org/docs/intro"
+      ],
+      "addons": [
+        "Cluster",
+        "Valkey"
+      ],
+      "stars": 65000,
+      "forks": 6500,
+      "watchers": 65000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/superset/app.yaml",
+      "status": "active",
+      "license": "Apache License 2.0",
+      "spdx_id": "Apache-2.0",
+      "dirname": "superset",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/superset/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/superset/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "appflowy",
+      "description": "Open-source Notion alternative — self-hosted workspace for notes, docs, and collaboration.",
+      "source": "https://github.com/AppFlowy-IO/AppFlowy-Cloud",
+      "icon": "https://avatars.githubusercontent.com/u/86002201?s=200&v=4",
+      "website": "https://appflowy.io/",
+      "installation": "Minimal API backend only. Deploy gotrue, minio, and appflowy-web from the AppFlowy-Cloud docker-compose in the same pipeline for a complete self-hosted stack.",
+      "architecture": [],
+      "categories": [
+        "productivity",
+        "work",
+        "collaboration"
+      ],
+      "screenshots": [
+        "https://appflowy.io/_next/static/media/appflowy-logo.0a1a0b0b.png"
+      ],
+      "links": [
+        "https://appflowy-io-appflowy.mintlify.app/self-hosting/installation"
+      ],
+      "addons": [
+        "Cluster",
+        "Valkey"
+      ],
+      "stars": 5000,
+      "forks": 500,
+      "watchers": 5000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "Rust",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/appflowy/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "appflowy",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/appflowy/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/appflowy/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "cryptpad",
+      "description": "Collaborative office suite — end-to-end encrypted docs, sheets, and kanban boards.",
+      "source": "https://github.com/cryptpad/cryptpad",
+      "icon": "https://avatars.githubusercontent.com/u/76949612?s=200&v=4",
+      "website": "https://cryptpad.org/",
+      "installation": "Set CPAD_MAIN_DOMAIN and CPAD_SANDBOX_DOMAIN to two distinct HTTPS origins. First boot runs npm build and may take several minutes.",
+      "architecture": [],
+      "categories": [
+        "collaboration",
+        "documentation",
+        "work"
+      ],
+      "screenshots": [
+        "https://cryptpad.org/customize/logo/banner.png"
+      ],
+      "links": [
+        "https://docs.cryptpad.org/"
+      ],
+      "addons": [],
+      "stars": 7000,
+      "forks": 700,
+      "watchers": 7000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "JavaScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cryptpad/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "cryptpad",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cryptpad/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cryptpad/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "glpi",
+      "description": "IT service management and asset tracking — helpdesk, inventory, and CMDB in one platform.",
+      "source": "https://github.com/glpi-project/glpi",
+      "icon": "https://avatars.githubusercontent.com/u/13361707?s=200&v=4",
+      "website": "https://glpi-project.org/",
+      "installation": "GLPI auto-installs when all GLPI_DB_* variables are set. Default login admin/glpi — change immediately.",
+      "architecture": [],
+      "categories": [
+        "work",
+        "helpdesk",
+        "utilities"
+      ],
+      "screenshots": [
+        "https://glpi-project.org/images/glpi.png"
+      ],
+      "links": [
+        "https://help.glpi-project.org/"
+      ],
+      "addons": [
+        "MariaDB"
+      ],
+      "stars": 5000,
+      "forks": 500,
+      "watchers": 5000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "PHP",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/glpi/app.yaml",
+      "status": "active",
+      "license": "GNU General Public License v3.0",
+      "spdx_id": "GPL-3.0",
+      "dirname": "glpi",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/glpi/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/glpi/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "humhub",
+      "description": "Flexible open-source social network kit for private communities and team collaboration.",
+      "source": "https://github.com/humhub/humhub",
+      "icon": "https://avatars.githubusercontent.com/u/6262639?s=200&v=4",
+      "website": "https://www.humhub.com/",
+      "installation": "Set HUMHUB_HOST to your public hostname. Set HUMHUB_ADMIN_PASSWORD before first boot for auto-install.",
+      "architecture": [],
+      "categories": [
+        "communication",
+        "social",
+        "work"
+      ],
+      "screenshots": [
+        "https://www.humhub.com/static/img/humhub-logo.png"
+      ],
+      "links": [
+        "https://docs.humhub.org/"
+      ],
+      "addons": [
+        "MariaDB"
+      ],
+      "stars": 7000,
+      "forks": 700,
+      "watchers": 7000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "PHP",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/humhub/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "humhub",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/humhub/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/humhub/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "easyappointments",
+      "description": "Open-source appointment scheduler for service providers — booking pages, calendars, and notifications.",
+      "source": "https://github.com/alextselegidis/easyappointments",
+      "icon": "https://avatars.githubusercontent.com/u/4527441?s=200&v=4",
+      "website": "https://easyappointments.org/",
+      "installation": "Set BASE_URL to your public URL before first visit. Complete admin setup on first login.",
+      "architecture": [],
+      "categories": [
+        "utilities",
+        "work",
+        "productivity"
+      ],
+      "screenshots": [
+        "https://easyappointments.org/img/logo.png"
+      ],
+      "links": [
+        "https://easyappointments.org/documentation/"
+      ],
+      "addons": [
+        "MariaDB"
+      ],
+      "stars": 4000,
+      "forks": 400,
+      "watchers": 4000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "PHP",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/easyappointments/app.yaml",
+      "status": "active",
+      "license": "GNU General Public License v3.0",
+      "spdx_id": "GPL-3.0",
+      "dirname": "easyappointments",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/easyappointments/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/easyappointments/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "password-pusher",
+      "description": "Securely share passwords and files with expiring links — open-source alternative to one-time secret services.",
+      "source": "https://github.com/pglombardo/PasswordPusher",
+      "icon": "https://avatars.githubusercontent.com/u/395132?s=200&v=4",
+      "website": "https://pwpush.com/",
+      "installation": "Generate PWPUSH_MASTER_KEY before production. Set TLS_DOMAIN for automatic HTTPS if supported.",
+      "architecture": [],
+      "categories": [
+        "security",
+        "utilities"
+      ],
+      "screenshots": [
+        "https://pwpush.com/assets/pwpush-logo.png"
+      ],
+      "links": [
+        "https://docs.pwpush.com/docs/installation/"
+      ],
+      "addons": [
+        "Cluster"
+      ],
+      "stars": 3000,
+      "forks": 300,
+      "watchers": 3000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "Ruby",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/password-pusher/app.yaml",
+      "status": "active",
+      "license": "Other",
+      "spdx_id": "NOASSERTION",
+      "dirname": "password-pusher",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/password-pusher/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/password-pusher/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "zulip",
+      "description": "Powerful open-source team chat organized into topic-based threads — an alternative to Slack.",
+      "source": "https://github.com/zulip/zulip",
+      "icon": "https://avatars.githubusercontent.com/u/4921959?s=200&v=4",
+      "website": "https://zulip.com/",
+      "installation": "Set SETTING_EXTERNAL_HOST and SECRETS_secret_key before first boot. Initial startup can take 5–10 minutes while Zulip configures all services.",
+      "architecture": [],
+      "categories": [
+        "communication",
+        "work",
+        "collaboration"
+      ],
+      "screenshots": [
+        "https://zulip.com/static/images/landing-page/zulip-hero.png"
+      ],
+      "links": [
+        "https://zulip.readthedocs.io/projects/docker/"
+      ],
+      "addons": [
+        "Cluster",
+        "Valkey",
+        "KuberoAddonRabbitmq",
+        "KuberoAddonMemcached"
+      ],
+      "stars": 22000,
+      "forks": 2200,
+      "watchers": 22000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zulip/app.yaml",
+      "status": "active",
+      "license": "Other",
+      "spdx_id": "NOASSERTION",
+      "dirname": "zulip",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zulip/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zulip/app.ha.yaml"
+        }
+      ]
     }
   ],
   "categories": {
-    "work": 81,
-    "utilities": 68,
-    "productivity": 36,
-    "collaboration": 21,
-    "development": 15,
-    "communication": 16,
-    "security": 13,
+    "work": 89,
+    "utilities": 74,
+    "productivity": 38,
+    "collaboration": 24,
+    "development": 17,
+    "communication": 18,
+    "security": 14,
     "cms": 9,
-    "documentation": 12,
+    "documentation": 14,
     "accessories": 8,
     "ai": 6,
-    "data": 9,
-    "social": 8,
+    "data": 10,
+    "social": 9,
     "dashboard": 3,
     "media": 6,
     "admin": 2,
     "e-commerce": 2,
-    "helpdesk": 2,
+    "helpdesk": 3,
     "homepage": 2,
     "management": 2,
     "monitoring": 2,
@@ -5872,7 +6383,7 @@
     "translation": 1
   },
   "stats": {
-    "total": 142,
+    "total": 152,
     "categories": 42,
     "gitops": 2,
     "stars": 3300945

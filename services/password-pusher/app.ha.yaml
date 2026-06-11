@@ -1,0 +1,101 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: password-pusher
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Securely share passwords and files with expiring links — open-source alternative to one-time
+      secret services.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/395132?s=200&v=4
+    kubero.dev/template.installation: Generate PWPUSH_MASTER_KEY before production. Set TLS_DOMAIN for automatic HTTPS if
+      supported.
+    kubero.dev/template.links: '["https://docs.pwpush.com/docs/installation/"]'
+    kubero.dev/template.screenshots: '["https://pwpush.com/assets/pwpush-logo.png"]'
+    kubero.dev/template.source: https://github.com/pglombardo/PasswordPusher
+    kubero.dev/template.categories: '["security", "utilities"]'
+    kubero.dev/template.title: Password Pusher
+    kubero.dev/template.website: https://pwpush.com/
+  labels:
+    manager: kubero
+spec:
+  name: password-pusher
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: pwpush-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: pwpush
+              owner: pwpush
+              secret:
+                name: pwpush-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: pwpush-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: pwpush-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: pwpush
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: pwpush-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: pwpush
+          password: pwpush
+  envVars:
+  - name: DATABASE_URL
+    value: postgres://pwpush:pwpush@pwpush-postgresql-rw:5432/pwpush
+  - name: PWPUSH_MASTER_KEY
+    value: replace-with-generated-master-key
+  - name: PWP__ALLOW_ANONYMOUS
+    value: 'true'
+  - name: PWP__ENABLE_URL_PUSHES
+    value: 'true'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /opt/PasswordPusher/storage
+    name: pwpush-storage
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '5100'
+    pullPolicy: Always
+    repository: pglombardo/pwpush
+    tag: stable

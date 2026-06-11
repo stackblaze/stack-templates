@@ -1,0 +1,136 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: superset
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Modern data exploration and visualization platform — enterprise-ready business intelligence.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/47359?s=200&v=4
+    kubero.dev/template.installation: Generate SUPERSET_SECRET_KEY with openssl rand -base64 42. Run superset db upgrade &&
+      superset init once after first deploy if the UI does not load.
+    kubero.dev/template.links: '["https://superset.apache.org/docs/intro"]'
+    kubero.dev/template.screenshots: '["https://superset.apache.org/img/superset-logo-horiz.svg"]'
+    kubero.dev/template.source: https://github.com/apache/superset
+    kubero.dev/template.categories: '["data", "utilities", "work"]'
+    kubero.dev/template.title: Apache Superset
+    kubero.dev/template.website: https://superset.apache.org/
+  labels:
+    manager: kubero
+spec:
+  name: superset
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: superset-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: superset
+              owner: superset
+              secret:
+                name: superset-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: superset-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: superset-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: superset
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: superset-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: superset
+          password: superset
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: superset-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: SUPERSET_SECRET_KEY
+    value: replace-with-openssl-rand-base64-42
+  - name: DATABASE_DIALECT
+    value: postgresql
+  - name: DATABASE_HOST
+    value: superset-postgresql-rw
+  - name: DATABASE_PORT
+    value: '5432'
+  - name: DATABASE_DB
+    value: superset
+  - name: DATABASE_USER
+    value: superset
+  - name: DATABASE_PASSWORD
+    value: superset
+  - name: REDIS_HOST
+    value: rfr-superset-valkey-readwrite
+  - name: REDIS_PORT
+    value: '6379'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8088'
+    pullPolicy: Always
+    repository: apache/superset
+    tag: latest

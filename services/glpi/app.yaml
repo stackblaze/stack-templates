@@ -1,0 +1,99 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: glpi
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: IT service management and asset tracking — helpdesk, inventory, and CMDB in one platform.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/13361707?s=200&v=4
+    kubero.dev/template.installation: GLPI auto-installs when all GLPI_DB_* variables are set. Default login admin/glpi —
+      change immediately.
+    kubero.dev/template.links: '["https://help.glpi-project.org/"]'
+    kubero.dev/template.screenshots: '["https://glpi-project.org/images/glpi.png"]'
+    kubero.dev/template.source: https://github.com/glpi-project/glpi
+    kubero.dev/template.categories: '["work", "helpdesk", "utilities"]'
+    kubero.dev/template.title: GLPI
+    kubero.dev/template.website: https://glpi-project.org/
+  labels:
+    manager: kubero
+spec:
+  name: glpi
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: glpi-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: glpi-mysql-root
+            key: password
+          database: glpi
+          username: glpi
+          passwordSecretKeyRef:
+            name: glpi-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: glpi-mysql-root
+        type: Opaque
+        stringData:
+          password: glpi
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: glpi-mysql-app
+        type: Opaque
+        stringData:
+          password: glpi
+  envVars:
+  - name: GLPI_DB_HOST
+    value: glpi-mysql
+  - name: GLPI_DB_PORT
+    value: '3306'
+  - name: GLPI_DB_NAME
+    value: glpi
+  - name: GLPI_DB_USER
+    value: glpi
+  - name: GLPI_DB_PASSWORD
+    value: glpi
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/glpi
+    name: glpi-data
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: glpi/glpi
+    tag: latest

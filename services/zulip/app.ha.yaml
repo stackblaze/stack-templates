@@ -1,0 +1,218 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: zulip
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Powerful open-source team chat organized into topic-based threads — an alternative to
+      Slack.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4921959?s=200&v=4
+    kubero.dev/template.installation: Set SETTING_EXTERNAL_HOST and SECRETS_secret_key before first boot. Initial startup
+      can take 5–10 minutes while Zulip configures all services.
+    kubero.dev/template.links: '["https://zulip.readthedocs.io/projects/docker/"]'
+    kubero.dev/template.screenshots: '["https://zulip.com/static/images/landing-page/zulip-hero.png"]'
+    kubero.dev/template.source: https://github.com/zulip/zulip
+    kubero.dev/template.categories: '["communication", "work", "collaboration"]'
+    kubero.dev/template.title: Zulip
+    kubero.dev/template.website: https://zulip.com/
+  labels:
+    manager: kubero
+spec:
+  name: zulip
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: zulip-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: zulip
+              owner: zulip
+              secret:
+                name: zulip-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: zulip-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: zulip-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: zulip
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: zulip-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: zulip
+          password: zulip
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: zulip-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  - displayName: RabbitMQ
+    env: []
+    icon: /img/addons/rabbitmq.svg
+    id: kubero-operator
+    kind: KuberoAddonRabbitmq
+    resourceDefinitions:
+      KuberoAddonRabbitmq:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoAddonRabbitmq
+        metadata:
+          name: zulip-rabbitmq
+        spec:
+          rabbitmq:
+            image:
+              tag: '4'
+            replicaCount: 3
+            serviceMonitor:
+              enabled: false
+            clusterDomain: cluster.local
+            plugins: []
+            authentication:
+              user:
+                value: zulip
+              password:
+                value: zulip
+              erlangCookie:
+                value: zulip_erlang_cookie
+            options:
+              memoryHighWatermark:
+                enabled: false
+                type: relative
+                value: 0.4
+              memory: {}
+            managementPlugin:
+              enabled: false
+            prometheusPlugin:
+              enabled: true
+            storage:
+              volumeName: rabbitmq-volume
+              requestedSize: 1Gi
+              className: fast
+              accessModes:
+              - ReadWriteOnce
+  - displayName: Memcached
+    env: []
+    icon: /img/addons/memcached.svg
+    id: kubero-operator
+    kind: KuberoAddonMemcached
+    resourceDefinitions:
+      KuberoAddonMemcached:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoAddonMemcached
+        metadata:
+          name: zulip-memcached
+        spec:
+          memcached:
+            image:
+              tag: 1.6.39
+            replicaCount: 3
+            config:
+              memoryLimit: 128
+              maxConnections: 1024
+              extraArgs: []
+              verbosity: 0
+            resources: {}
+  envVars:
+  - name: SETTING_EXTERNAL_HOST
+    value: zulip.localhost
+  - name: SETTING_ZULIP_ADMINISTRATOR
+    value: admin@example.com
+  - name: SETTING_REMOTE_POSTGRES_HOST
+    value: zulip-postgresql-rw
+  - name: SETTING_RABBITMQ_HOST
+    value: zulip-rabbitmq
+  - name: SETTING_REDIS_HOST
+    value: rfr-zulip-valkey-readwrite
+  - name: SETTING_MEMCACHED_LOCATION
+    value: zulip-memcached:11211
+  - name: SECRETS_postgres_password
+    value: zulip
+  - name: SECRETS_rabbitmq_password
+    value: zulip
+  - name: SECRETS_redis_password
+    value: ''
+  - name: SECRETS_memcached_password
+    value: ''
+  - name: SECRETS_secret_key
+    value: replace-with-openssl-rand-hex-50
+  - name: POSTGRES_DB
+    value: zulip
+  - name: POSTGRES_USER
+    value: zulip
+  - name: POSTGRES_PASSWORD
+    value: zulip
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /data
+    name: zulip-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: ghcr.io/zulip/zulip-server
+    tag: 10.2-1

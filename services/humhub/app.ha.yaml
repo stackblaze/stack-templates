@@ -1,0 +1,115 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: humhub
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Flexible open-source social network kit for private communities and team collaboration.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/6262639?s=200&v=4
+    kubero.dev/template.installation: Set HUMHUB_HOST to your public hostname. Set HUMHUB_ADMIN_PASSWORD before first boot
+      for auto-install.
+    kubero.dev/template.links: '["https://docs.humhub.org/"]'
+    kubero.dev/template.screenshots: '["https://www.humhub.com/static/img/humhub-logo.png"]'
+    kubero.dev/template.source: https://github.com/humhub/humhub
+    kubero.dev/template.categories: '["communication", "social", "work"]'
+    kubero.dev/template.title: HumHub
+    kubero.dev/template.website: https://www.humhub.com/
+  labels:
+    manager: kubero
+spec:
+  name: humhub
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: humhub-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: humhub-mysql-root
+            key: password
+          database: humhub
+          username: humhub
+          passwordSecretKeyRef:
+            name: humhub-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: humhub-mysql-root
+        type: Opaque
+        stringData:
+          password: humhub
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: humhub-mysql-app
+        type: Opaque
+        stringData:
+          password: humhub
+  envVars:
+  - name: HUMHUB_DB_HOST
+    value: humhub-mysql
+  - name: HUMHUB_DB_NAME
+    value: humhub
+  - name: HUMHUB_DB_USER
+    value: humhub
+  - name: HUMHUB_DB_PASSWORD
+    value: humhub
+  - name: HUMHUB_PROTO
+    value: https
+  - name: HUMHUB_HOST
+    value: humhub.localhost
+  - name: HUMHUB_ADMIN_LOGIN
+    value: admin
+  - name: HUMHUB_ADMIN_EMAIL
+    value: admin@example.com
+  - name: HUMHUB_ADMIN_PASSWORD
+    value: change-me
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/localhost/htdocs/protected/config
+    name: humhub-config
+    size: 1Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/localhost/htdocs/uploads
+    name: humhub-uploads
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: mriedmann/humhub
+    tag: stable

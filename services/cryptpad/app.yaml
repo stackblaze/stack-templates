@@ -1,0 +1,64 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: cryptpad
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Collaborative office suite — end-to-end encrypted docs, sheets, and kanban boards.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/76949612?s=200&v=4
+    kubero.dev/template.installation: Set CPAD_MAIN_DOMAIN and CPAD_SANDBOX_DOMAIN to two distinct HTTPS origins. First boot
+      runs npm build and may take several minutes.
+    kubero.dev/template.links: '["https://docs.cryptpad.org/"]'
+    kubero.dev/template.screenshots: '["https://cryptpad.org/customize/logo/banner.png"]'
+    kubero.dev/template.source: https://github.com/cryptpad/cryptpad
+    kubero.dev/template.categories: '["collaboration", "documentation", "work"]'
+    kubero.dev/template.title: CryptPad
+    kubero.dev/template.website: https://cryptpad.org/
+  labels:
+    manager: kubero
+spec:
+  name: cryptpad
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: CPAD_MAIN_DOMAIN
+    value: '{{KUBERO_APP_URL}}'
+  - name: CPAD_SANDBOX_DOMAIN
+    value: https://sandbox.example.com
+  - name: CPAD_CONF
+    value: /cryptpad/config/config.js
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /cryptpad/blob
+    name: cryptpad-blob
+    size: 2Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /cryptpad/block
+    name: cryptpad-block
+    size: 2Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /cryptpad/data
+    name: cryptpad-data
+    size: 2Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /cryptpad/datastore
+    name: cryptpad-files
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: cryptpad/cryptpad
+    tag: latest

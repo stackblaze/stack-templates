@@ -1,0 +1,103 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: easyappointments
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source appointment scheduler for service providers — booking pages, calendars, and
+      notifications.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4527441?s=200&v=4
+    kubero.dev/template.installation: Set BASE_URL to your public URL before first visit. Complete admin setup on first login.
+    kubero.dev/template.links: '["https://easyappointments.org/documentation/"]'
+    kubero.dev/template.screenshots: '["https://easyappointments.org/img/logo.png"]'
+    kubero.dev/template.source: https://github.com/alextselegidis/easyappointments
+    kubero.dev/template.categories: '["utilities", "work", "productivity"]'
+    kubero.dev/template.title: Easy!Appointments
+    kubero.dev/template.website: https://easyappointments.org/
+  labels:
+    manager: kubero
+spec:
+  name: easyappointments
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: easyappointments-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: easyappointments-mysql-root
+            key: password
+          database: easyappointments
+          username: easyappointments
+          passwordSecretKeyRef:
+            name: easyappointments-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: easyappointments-mysql-root
+        type: Opaque
+        stringData:
+          password: easyappointments
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: easyappointments-mysql-app
+        type: Opaque
+        stringData:
+          password: easyappointments
+  envVars:
+  - name: BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: DEBUG_MODE
+    value: 'FALSE'
+  - name: DB_HOST
+    value: easyappointments-mysql
+  - name: DB_NAME
+    value: easyappointments
+  - name: DB_USERNAME
+    value: easyappointments
+  - name: DB_PASSWORD
+    value: easyappointments
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html
+    name: easyappointments-data
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: alextselegidis/easyappointments
+    tag: latest
