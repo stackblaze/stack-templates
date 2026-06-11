@@ -1,0 +1,43 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: syncthing
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Continuous file synchronization — decentralized alternative to proprietary sync services.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/7628018?s=200&v=4
+    kubero.dev/template.installation: Access the web UI to pair devices and configure sync folders.
+    kubero.dev/template.links: '["https://docs.syncthing.net/"]'
+    kubero.dev/template.screenshots: '["https://docs.syncthing.net/_images/gs1-gui.png"]'
+    kubero.dev/template.source: https://github.com/syncthing/syncthing
+    kubero.dev/template.categories: '["storage", "utilities"]'
+    kubero.dev/template.title: Syncthing
+    kubero.dev/template.website: https://syncthing.net/
+  labels:
+    manager: kubero
+spec:
+  name: syncthing
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: PUID
+    value: '1000'
+  - name: PGID
+    value: '1000'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/syncthing
+    name: syncthing-config
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8384'
+    pullPolicy: Always
+    repository: syncthing/syncthing
+    tag: latest

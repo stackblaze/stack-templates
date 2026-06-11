@@ -1,0 +1,107 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: mealie
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted recipe manager and meal planner with a clean, modern interface.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/92342333?s=200&v=4
+    kubero.dev/template.installation: Set BASE_URL to your public URL. Default login is created on first visit.
+    kubero.dev/template.links: '["https://docs.mealie.io/"]'
+    kubero.dev/template.screenshots: '["https://docs.mealie.io/assets/img/home-screen.png"]'
+    kubero.dev/template.source: https://github.com/mealie-recipes/mealie
+    kubero.dev/template.categories: '["utilities", "productivity"]'
+    kubero.dev/template.title: Mealie
+    kubero.dev/template.website: https://mealie.io/
+  labels:
+    manager: kubero
+spec:
+  name: mealie
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: mealie-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: mealie
+              owner: mealie
+              secret:
+                name: mealie-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: mealie-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: mealie-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: mealie
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: mealie-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: mealie
+          password: mealie
+  envVars:
+  - name: BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: DB_ENGINE
+    value: postgres
+  - name: POSTGRES_SERVER
+    value: mealie-postgresql-rw
+  - name: POSTGRES_PORT
+    value: '5432'
+  - name: POSTGRES_USER
+    value: mealie
+  - name: POSTGRES_PASSWORD
+    value: mealie
+  - name: POSTGRES_DB
+    value: mealie
+  - name: TZ
+    value: Etc/UTC
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/data
+    name: mealie-data
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '9000'
+    pullPolicy: Always
+    repository: ghcr.io/mealie-recipes/mealie
+    tag: latest

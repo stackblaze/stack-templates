@@ -1,0 +1,100 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: matomo
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Full-featured PHP analytics platform — privacy-focused alternative to Google Analytics.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/698038?s=200&v=4
+    kubero.dev/template.installation: Complete the web setup wizard using the MariaDB credentials from this template.
+    kubero.dev/template.links: '["https://matomo.org/docs/"]'
+    kubero.dev/template.screenshots: '["https://matomo.org/wp-content/uploads/2020/10/matomo-dashboard.png"]'
+    kubero.dev/template.source: https://github.com/matomo-org/matomo
+    kubero.dev/template.categories: '["data", "utilities", "work"]'
+    kubero.dev/template.title: Matomo
+    kubero.dev/template.website: https://matomo.org/
+  labels:
+    manager: kubero
+spec:
+  name: matomo
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: matomo-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: matomo-mysql-root
+            key: password
+          database: matomo
+          username: matomo
+          passwordSecretKeyRef:
+            name: matomo-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: matomo-mysql-root
+        type: Opaque
+        stringData:
+          password: matomo
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: matomo-mysql-app
+        type: Opaque
+        stringData:
+          password: matomo
+  envVars:
+  - name: MATOMO_DATABASE_ADAPTER
+    value: mysql
+  - name: MATOMO_DATABASE_HOST
+    value: matomo-mysql
+  - name: MATOMO_DATABASE_USERNAME
+    value: matomo
+  - name: MATOMO_DATABASE_PASSWORD
+    value: matomo
+  - name: MATOMO_DATABASE_DBNAME
+    value: matomo
+  - name: MATOMO_DATABASE_TABLES_PREFIX
+    value: matomo_
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html
+    name: matomo-data
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: matomo
+    tag: latest

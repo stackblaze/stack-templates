@@ -1,0 +1,98 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: freshrss
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted RSS feed aggregator — lightweight and extensible.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/9414285?s=200&v=4
+    kubero.dev/template.installation: Auto-install runs once on first boot via FRESHRSS_INSTALL. Change the default admin
+      password after login.
+    kubero.dev/template.links: '["https://freshrss.github.io/FreshRSS/en/"]'
+    kubero.dev/template.screenshots: '["https://freshrss.github.io/FreshRSS/img/FreshRSS-logo.png"]'
+    kubero.dev/template.source: https://github.com/FreshRSS/FreshRSS
+    kubero.dev/template.categories: '["utilities", "productivity"]'
+    kubero.dev/template.title: FreshRSS
+    kubero.dev/template.website: https://freshrss.org/
+  labels:
+    manager: kubero
+spec:
+  name: freshrss
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: freshrss-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: freshrss-mysql-root
+            key: password
+          database: freshrss
+          username: freshrss
+          passwordSecretKeyRef:
+            name: freshrss-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: freshrss-mysql-root
+        type: Opaque
+        stringData:
+          password: freshrss
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: freshrss-mysql-app
+        type: Opaque
+        stringData:
+          password: freshrss
+  envVars:
+  - name: TZ
+    value: Etc/UTC
+  - name: CRON_MIN
+    value: 13,43
+  - name: FRESHRSS_INSTALL
+    value: --default-user admin --default-password change-me --db-type mysql --db-host freshrss-mysql --db-user freshrss --db-password
+      freshrss --db-base freshrss
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/FreshRSS/data
+    name: freshrss-data
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: freshrss/freshrss
+    tag: latest

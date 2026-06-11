@@ -1,0 +1,122 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: nodebb
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Next-generation forum software — powerful, mobile-ready, and fully customizable.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4449608?s=200&v=4
+    kubero.dev/template.installation: First boot runs automated setup via NODEBB_* env vars. Change admin password after login.
+      Remove SETUP env or set to empty after successful initialization.
+    kubero.dev/template.links: '["https://docs.nodebb.org/"]'
+    kubero.dev/template.screenshots: '["https://nodebb.org/assets/images/nodebb-screenshot.png"]'
+    kubero.dev/template.source: https://github.com/NodeBB/NodeBB
+    kubero.dev/template.categories: '["communication", "social", "work"]'
+    kubero.dev/template.title: NodeBB
+    kubero.dev/template.website: https://nodebb.org/
+  labels:
+    manager: kubero
+spec:
+  name: nodebb
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: nodebb-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: nodebb
+              owner: nodebb
+              secret:
+                name: nodebb-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: nodebb-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: nodebb-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: nodebb
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: nodebb-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: nodebb
+          password: nodebb
+  envVars:
+  - name: SETUP
+    value: 'true'
+  - name: NODEBB_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: NODEBB_PORT
+    value: '4567'
+  - name: NODEBB_ADMIN_USERNAME
+    value: admin
+  - name: NODEBB_ADMIN_PASSWORD
+    value: change-me-on-first-login
+  - name: NODEBB_ADMIN_EMAIL
+    value: admin@example.com
+  - name: NODEBB_DB
+    value: postgres
+  - name: NODEBB_DB_HOST
+    value: nodebb-postgresql-rw
+  - name: NODEBB_DB_PORT
+    value: '5432'
+  - name: NODEBB_DB_USER
+    value: nodebb
+  - name: NODEBB_DB_PASSWORD
+    value: nodebb
+  - name: NODEBB_DB_NAME
+    value: nodebb
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /usr/src/app/public/uploads
+    name: nodebb-uploads
+    size: 2Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /opt/config
+    name: nodebb-config
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '4567'
+    pullPolicy: Always
+    repository: ghcr.io/nodebb/nodebb
+    tag: latest

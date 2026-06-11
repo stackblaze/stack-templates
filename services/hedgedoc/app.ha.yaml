@@ -1,0 +1,101 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: hedgedoc
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Collaborative markdown editor for real-time notes, docs, and knowledge sharing.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/67865462?s=200&v=4
+    kubero.dev/template.installation: Set CMD_DOMAIN to your public hostname and CMD_SESSION_SECRET to a random string.
+    kubero.dev/template.links: '["https://docs.hedgedoc.org/"]'
+    kubero.dev/template.screenshots: '["https://hedgedoc.org/img/screenshot.png"]'
+    kubero.dev/template.source: https://github.com/hedgedoc/hedgedoc
+    kubero.dev/template.categories: '["documentation", "collaboration", "work"]'
+    kubero.dev/template.title: HedgeDoc
+    kubero.dev/template.website: https://hedgedoc.org/
+  labels:
+    manager: kubero
+spec:
+  name: hedgedoc
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: hedgedoc-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: hedgedoc
+              owner: hedgedoc
+              secret:
+                name: hedgedoc-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: hedgedoc-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: hedgedoc-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: hedgedoc
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: hedgedoc-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: hedgedoc
+          password: hedgedoc
+  envVars:
+  - name: CMD_DB_URL
+    value: postgres://hedgedoc:hedgedoc@hedgedoc-postgresql-rw:5432/hedgedoc
+  - name: CMD_DOMAIN
+    value: hedgedoc.localhost
+  - name: CMD_PROTOCOL_USESSL
+    value: 'true'
+  - name: CMD_URL_ADDPORT
+    value: 'false'
+  - name: CMD_SESSION_SECRET
+    value: replace-with-openssl-rand-hex-32
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /hedgedoc/public/uploads
+    name: hedgedoc-uploads
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: quay.io/hedgedoc/hedgedoc
+    tag: 1.10.8

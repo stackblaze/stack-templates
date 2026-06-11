@@ -5325,24 +5325,527 @@
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-frontend/app.ha.yaml"
         }
       ]
+    },
+    {
+      "name": "jellyfin",
+      "description": "Free software media system that puts you in control of managing and streaming your movies, TV, and music.",
+      "source": "https://github.com/jellyfin/jellyfin",
+      "icon": "https://avatars.githubusercontent.com/u/45698031?s=200&v=4",
+      "website": "https://jellyfin.org/",
+      "installation": "Mount media under /media or add libraries pointing to your storage after first login.",
+      "architecture": [],
+      "categories": [
+        "media",
+        "utilities"
+      ],
+      "screenshots": [
+        "https://jellyfin.org/images/screenshots/home.png"
+      ],
+      "links": [
+        "https://jellyfin.org/docs/"
+      ],
+      "addons": [],
+      "stars": 35000,
+      "forks": 3500,
+      "watchers": 35000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "C#",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jellyfin/app.yaml",
+      "status": "active",
+      "license": "GNU General Public License v2.0",
+      "spdx_id": "GPL-2.0",
+      "dirname": "jellyfin",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jellyfin/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jellyfin/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "formbricks",
+      "description": "Open-source Qualtrics alternative for in-product micro-surveys and experience management.",
+      "source": "https://github.com/formbricks/formbricks",
+      "icon": "https://avatars.githubusercontent.com/u/105877416?s=200&v=4",
+      "website": "https://formbricks.com/",
+      "installation": "Generate NEXTAUTH_SECRET, ENCRYPTION_KEY, CRON_SECRET, HUB_API_KEY, and CUBEJS_API_SECRET with openssl rand -hex 32 before production use.",
+      "architecture": [],
+      "categories": [
+        "automation",
+        "utilities",
+        "work"
+      ],
+      "screenshots": [
+        "https://formbricks.com/images/og-image.png"
+      ],
+      "links": [
+        "https://formbricks.com/docs/self-hosting/setup/docker"
+      ],
+      "addons": [
+        "Cluster",
+        "Valkey"
+      ],
+      "stars": 12000,
+      "forks": 1200,
+      "watchers": 12000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/formbricks/app.yaml",
+      "status": "active",
+      "license": "Other",
+      "spdx_id": "NOASSERTION",
+      "dirname": "formbricks",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/formbricks/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/formbricks/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "openproject",
+      "description": "Web-based project management system for location-independent team collaboration.",
+      "source": "https://github.com/opf/openproject",
+      "icon": "https://avatars.githubusercontent.com/u/1756674?s=200&v=4",
+      "website": "https://www.openproject.org/",
+      "installation": "Set OPENPROJECT_HOST__NAME to your public hostname before first boot.",
+      "architecture": [],
+      "categories": [
+        "productivity",
+        "work",
+        "collaboration"
+      ],
+      "screenshots": [
+        "https://www.openproject.org/assets/images/enterprise/home/hero-screenshot-2024.png"
+      ],
+      "links": [
+        "https://www.openproject.org/docs/"
+      ],
+      "addons": [
+        "Cluster"
+      ],
+      "stars": 12000,
+      "forks": 1200,
+      "watchers": 12000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "Ruby",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openproject/app.yaml",
+      "status": "active",
+      "license": "GNU General Public License v3.0",
+      "spdx_id": "GPL-3.0",
+      "dirname": "openproject",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openproject/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openproject/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "matomo",
+      "description": "Full-featured PHP analytics platform — privacy-focused alternative to Google Analytics.",
+      "source": "https://github.com/matomo-org/matomo",
+      "icon": "https://avatars.githubusercontent.com/u/698038?s=200&v=4",
+      "website": "https://matomo.org/",
+      "installation": "Complete the web setup wizard using the MariaDB credentials from this template.",
+      "architecture": [],
+      "categories": [
+        "data",
+        "utilities",
+        "work"
+      ],
+      "screenshots": [
+        "https://matomo.org/wp-content/uploads/2020/10/matomo-dashboard.png"
+      ],
+      "links": [
+        "https://matomo.org/docs/"
+      ],
+      "addons": [
+        "MariaDB"
+      ],
+      "stars": 20000,
+      "forks": 2000,
+      "watchers": 20000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "PHP",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/matomo/app.yaml",
+      "status": "active",
+      "license": "GNU General Public License v3.0",
+      "spdx_id": "GPL-3.0",
+      "dirname": "matomo",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/matomo/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/matomo/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "mealie",
+      "description": "Self-hosted recipe manager and meal planner with a clean, modern interface.",
+      "source": "https://github.com/mealie-recipes/mealie",
+      "icon": "https://avatars.githubusercontent.com/u/92342333?s=200&v=4",
+      "website": "https://mealie.io/",
+      "installation": "Set BASE_URL to your public URL. Default login is created on first visit.",
+      "architecture": [],
+      "categories": [
+        "utilities",
+        "productivity"
+      ],
+      "screenshots": [
+        "https://docs.mealie.io/assets/img/home-screen.png"
+      ],
+      "links": [
+        "https://docs.mealie.io/"
+      ],
+      "addons": [
+        "Cluster"
+      ],
+      "stars": 8000,
+      "forks": 800,
+      "watchers": 8000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mealie/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "mealie",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mealie/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mealie/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "nodebb",
+      "description": "Next-generation forum software — powerful, mobile-ready, and fully customizable.",
+      "source": "https://github.com/NodeBB/NodeBB",
+      "icon": "https://avatars.githubusercontent.com/u/4449608?s=200&v=4",
+      "website": "https://nodebb.org/",
+      "installation": "First boot runs automated setup via NODEBB_* env vars. Change admin password after login. Remove SETUP env or set to empty after successful initialization.",
+      "architecture": [],
+      "categories": [
+        "communication",
+        "social",
+        "work"
+      ],
+      "screenshots": [
+        "https://nodebb.org/assets/images/nodebb-screenshot.png"
+      ],
+      "links": [
+        "https://docs.nodebb.org/"
+      ],
+      "addons": [
+        "Cluster"
+      ],
+      "stars": 14000,
+      "forks": 1400,
+      "watchers": 14000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "JavaScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nodebb/app.yaml",
+      "status": "active",
+      "license": "GNU General Public License v3.0",
+      "spdx_id": "GPL-3.0",
+      "dirname": "nodebb",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nodebb/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nodebb/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "syncthing",
+      "description": "Continuous file synchronization — decentralized alternative to proprietary sync services.",
+      "source": "https://github.com/syncthing/syncthing",
+      "icon": "https://avatars.githubusercontent.com/u/7628018?s=200&v=4",
+      "website": "https://syncthing.net/",
+      "installation": "Access the web UI to pair devices and configure sync folders.",
+      "architecture": [],
+      "categories": [
+        "storage",
+        "utilities"
+      ],
+      "screenshots": [
+        "https://docs.syncthing.net/_images/gs1-gui.png"
+      ],
+      "links": [
+        "https://docs.syncthing.net/"
+      ],
+      "addons": [],
+      "stars": 70000,
+      "forks": 7000,
+      "watchers": 70000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "Go",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/syncthing/app.yaml",
+      "status": "active",
+      "license": "Mozilla Public License 2.0",
+      "spdx_id": "MPL-2.0",
+      "dirname": "syncthing",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/syncthing/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/syncthing/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "hedgedoc",
+      "description": "Collaborative markdown editor for real-time notes, docs, and knowledge sharing.",
+      "source": "https://github.com/hedgedoc/hedgedoc",
+      "icon": "https://avatars.githubusercontent.com/u/67865462?s=200&v=4",
+      "website": "https://hedgedoc.org/",
+      "installation": "Set CMD_DOMAIN to your public hostname and CMD_SESSION_SECRET to a random string.",
+      "architecture": [],
+      "categories": [
+        "documentation",
+        "collaboration",
+        "work"
+      ],
+      "screenshots": [
+        "https://hedgedoc.org/img/screenshot.png"
+      ],
+      "links": [
+        "https://docs.hedgedoc.org/"
+      ],
+      "addons": [
+        "Cluster"
+      ],
+      "stars": 7000,
+      "forks": 700,
+      "watchers": 7000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hedgedoc/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "hedgedoc",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hedgedoc/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hedgedoc/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "freshrss",
+      "description": "Self-hosted RSS feed aggregator — lightweight and extensible.",
+      "source": "https://github.com/FreshRSS/FreshRSS",
+      "icon": "https://avatars.githubusercontent.com/u/9414285?s=200&v=4",
+      "website": "https://freshrss.org/",
+      "installation": "Auto-install runs once on first boot via FRESHRSS_INSTALL. Change the default admin password after login.",
+      "architecture": [],
+      "categories": [
+        "utilities",
+        "productivity"
+      ],
+      "screenshots": [
+        "https://freshrss.github.io/FreshRSS/img/FreshRSS-logo.png"
+      ],
+      "links": [
+        "https://freshrss.github.io/FreshRSS/en/"
+      ],
+      "addons": [
+        "MariaDB"
+      ],
+      "stars": 15000,
+      "forks": 1500,
+      "watchers": 15000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "PHP",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freshrss/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "freshrss",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freshrss/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freshrss/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "vikunja",
+      "description": "The open-source to-do app — organize tasks, projects, and teams on all platforms.",
+      "source": "https://github.com/go-vikunja/vikunja",
+      "icon": "https://avatars.githubusercontent.com/u/41270016?s=200&v=4",
+      "website": "https://vikunja.io/",
+      "installation": "Set VIKUNJA_SERVICE_PUBLICURL and rotate VIKUNJA_SERVICE_JWTSECRET before production use.",
+      "architecture": [],
+      "categories": [
+        "productivity",
+        "work",
+        "utilities"
+      ],
+      "screenshots": [
+        "https://vikunja.io/images/screenshot.png"
+      ],
+      "links": [
+        "https://vikunja.io/docs/"
+      ],
+      "addons": [
+        "Cluster"
+      ],
+      "stars": 9000,
+      "forks": 900,
+      "watchers": 9000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "Go",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vikunja/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "vikunja",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vikunja/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vikunja/app.ha.yaml"
+        }
+      ]
     }
   ],
   "categories": {
-    "work": 63,
-    "utilities": 47,
-    "productivity": 24,
-    "collaboration": 15,
+    "work": 81,
+    "utilities": 68,
+    "productivity": 36,
+    "collaboration": 21,
     "development": 15,
-    "communication": 13,
+    "communication": 16,
     "security": 13,
     "cms": 9,
-    "documentation": 9,
+    "documentation": 12,
     "accessories": 8,
     "ai": 6,
-    "data": 6,
-    "social": 5,
+    "data": 9,
+    "social": 8,
     "dashboard": 3,
-    "media": 3,
+    "media": 6,
     "admin": 2,
     "e-commerce": 2,
     "helpdesk": 2,
@@ -5350,12 +5853,12 @@
     "management": 2,
     "monitoring": 2,
     "notification": 2,
-    "storage": 2,
+    "storage": 5,
     "utility": 2,
     "CMS": 1,
     "access": 1,
     "api": 1,
-    "automation": 1,
+    "automation": 4,
     "crm": 1,
     "database": 1,
     "debug": 1,
@@ -5369,7 +5872,7 @@
     "translation": 1
   },
   "stats": {
-    "total": 132,
+    "total": 142,
     "categories": 42,
     "gitops": 2,
     "stars": 3300945

@@ -1,0 +1,136 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: formbricks
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source Qualtrics alternative for in-product micro-surveys and experience management.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/105877416?s=200&v=4
+    kubero.dev/template.installation: Generate NEXTAUTH_SECRET, ENCRYPTION_KEY, CRON_SECRET, HUB_API_KEY, and CUBEJS_API_SECRET
+      with openssl rand -hex 32 before production use.
+    kubero.dev/template.links: '["https://formbricks.com/docs/self-hosting/setup/docker"]'
+    kubero.dev/template.screenshots: '["https://formbricks.com/images/og-image.png"]'
+    kubero.dev/template.source: https://github.com/formbricks/formbricks
+    kubero.dev/template.categories: '["automation", "utilities", "work"]'
+    kubero.dev/template.title: Formbricks
+    kubero.dev/template.website: https://formbricks.com/
+  labels:
+    manager: kubero
+spec:
+  name: formbricks
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: formbricks-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: formbricks
+              owner: formbricks
+              secret:
+                name: formbricks-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: formbricks-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: formbricks-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: formbricks
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: formbricks-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: formbricks
+          password: formbricks
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: formbricks-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: WEBAPP_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: NEXTAUTH_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: DATABASE_URL
+    value: postgresql://formbricks:formbricks@formbricks-postgresql-rw:5432/formbricks?schema=public
+  - name: REDIS_URL
+    value: redis://rfr-formbricks-valkey-readwrite:6379
+  - name: NEXTAUTH_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: ENCRYPTION_KEY
+    value: replace-with-openssl-rand-hex-32
+  - name: CRON_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: HUB_API_KEY
+    value: replace-with-openssl-rand-hex-32
+  - name: CUBEJS_API_SECRET
+    value: replace-with-openssl-rand-hex-32
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: ghcr.io/formbricks/formbricks
+    tag: latest

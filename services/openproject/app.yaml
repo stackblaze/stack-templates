@@ -1,0 +1,99 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: openproject
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Web-based project management system for location-independent team collaboration.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1756674?s=200&v=4
+    kubero.dev/template.installation: Set OPENPROJECT_HOST__NAME to your public hostname before first boot.
+    kubero.dev/template.links: '["https://www.openproject.org/docs/"]'
+    kubero.dev/template.screenshots: '["https://www.openproject.org/assets/images/enterprise/home/hero-screenshot-2024.png"]'
+    kubero.dev/template.source: https://github.com/opf/openproject
+    kubero.dev/template.categories: '["productivity", "work", "collaboration"]'
+    kubero.dev/template.title: OpenProject
+    kubero.dev/template.website: https://www.openproject.org/
+  labels:
+    manager: kubero
+spec:
+  name: openproject
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: openproject-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: openproject
+              owner: openproject
+              secret:
+                name: openproject-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: openproject-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: openproject-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: openproject
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: openproject-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: openproject
+          password: openproject
+  envVars:
+  - name: OPENPROJECT_HTTPS
+    value: 'true'
+  - name: OPENPROJECT_HOST__NAME
+    value: openproject.localhost
+  - name: DATABASE_URL
+    value: postgresql://openproject:openproject@openproject-postgresql-rw:5432/openproject
+  - name: OPENPROJECT_SECRET_KEY_BASE
+    value: replace-with-openssl-rand-hex-64
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/openproject/assets
+    name: openproject-assets
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: openproject/openproject
+    tag: 16-slim
