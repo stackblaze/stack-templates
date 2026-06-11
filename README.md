@@ -10,12 +10,43 @@ consolidated into a single repo so the catalog has zero runtime dependency on
 
 ## Layout
 
-- **`index.json`** — main catalog (173 services). Each entry's `template`
-  field points at `services/<name>/app.yaml` in this repo.
+- **`index.json`** — main catalog. Each entry's `template` field points at
+  `services/<name>/app.yaml` in this repo.
 - **`index-frameworks.json`** — frameworks catalog (2 entries).
-- **`services/<name>/app.yaml`** — the per-template body kubero pulls when
-  the user clicks Install. Each entry typically also has `service.yaml` and
-  a `logo.svg`.
+- **`services/<name>/app.yaml`** — standard (minimal) deployment body Kubero
+  pulls on install.
+- **`services/<name>/app.ha.yaml`** — high-availability variant (when
+  applicable). Listed in `index.json` under `deploymentTypes`.
+- Icons are remote URLs in `index.json` (`icon`) and in each YAML
+  (`kubero.dev/template.icon`); there is no separate build step.
+
+## Standard vs high availability
+
+Every template that needs a database or cache should use **Kubero addons**
+(PostgreSQL, MariaDB, Valkey, ClickHouse, etc.) — even the **Standard**
+variant. Standard does **not** mean “no database” or an embedded DB in the
+app container.
+
+| | Standard (`app.yaml`) | High availability (`app.ha.yaml`) |
+|---|---|---|
+| Addons | Yes — minimal topology | Same addon kinds, HA topology |
+| PostgreSQL (CNPG) | `instances: 1` | `instances: 3` |
+| MariaDB | `replicas: 1` | `replicas: 3` + Galera |
+| Valkey | `arch: replica`, single shard | `arch: failover` + Sentinel |
+| App `web.replicaCount` | Usually `1` | Usually `1` (HA is in the data layer) |
+
+Catalog entries expose both via `deploymentTypes` in `index.json`:
+
+- **`standard`** (default) — lower cost entry; single-node addons.
+- **`ha`** — same app image and env; addons scaled for production resilience.
+
+Users start on Standard and can move to HA when their plan allows (redeploy
+with the HA deployment type or migrate the addon footprint). Do not put
+Galera, multi-instance CNPG, or Valkey failover in `app.yaml`.
+
+When adding a new template, always ship `app.yaml` + `app.ha.yaml` when the
+app uses a stateful addon that supports clustering. Use
+`scripts/generate-top10-templates.py` as a reference for addon helpers.
 
 ## Wiring Kubero to this catalog
 

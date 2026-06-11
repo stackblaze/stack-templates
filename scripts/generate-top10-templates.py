@@ -1,5 +1,16 @@
 #!/usr/bin/env python3
-"""Generate Kubero templates for the top-10 Elest.io gap apps."""
+"""Generate Kubero templates for batch catalog additions.
+
+Standard vs HA convention (all templates in this repo follow this):
+
+- Standard (app.yaml): use Kubero addons (Postgres, MariaDB, Valkey, …) in
+  minimal single-node form — NOT empty addons, NOT HA.
+- HA (app.ha.yaml): same app spec; scale addons only (CNPG instances: 3,
+  MariaDB Galera, Valkey failover + Sentinel). Keep web.replicaCount at 1
+  unless the app itself requires workers.
+
+See README.md § "Standard vs high availability" for the full table.
+"""
 
 from __future__ import annotations
 
