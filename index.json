@@ -140,7 +140,7 @@
     },
     {
       "name": "netbird",
-      "description": "Connect your devices into a secure WireGuard®-based overlay network with SSO, MFA and granular access controls.",
+      "description": "Connect your devices into a secure WireGuardÂ®-based overlay network with SSO, MFA and granular access controls.",
       "source": "https://github.com/netbirdio/netbird",
       "icon": "https://avatars.githubusercontent.com/u/100464677",
       "website": "https://netbird.io/",
@@ -637,7 +637,7 @@
     },
     {
       "name": "activepieces",
-      "description": "Your friendliest open source all-in-one automation tool ✨ Workflow automation tool 100+ integration / Enterprise automation tool / Zapier Alternative",
+      "description": "Your friendliest open source all-in-one automation tool âœ¨ Workflow automation tool 100+ integration / Enterprise automation tool / Zapier Alternative",
       "source": "https://github.com/activepieces/activepieces",
       "icon": "https://avatars.githubusercontent.com/u/99494700?s=200&v=4",
       "website": "https://www.activepieces.com/",
@@ -4653,7 +4653,7 @@
       "source": "https://github.com/dotCMS/core",
       "icon": "https://avatars.githubusercontent.com/u/1005263?s=200&v=4",
       "website": "https://www.dotcms.com/",
-      "installation": "Default admin login is `admin@dotcms.com` / `admin`. Change DOT_INITIAL_ADMIN_PASSWORD before exposing the instance.\n\nProvisions two addons automatically:\n- PostgreSQL 16 via the CloudNativePG operator (`dotcms-db`) — dotCMS supports PostgreSQL 13-16. Requires the CloudNativePG operator on the cluster.\n- OpenSearch 1.3.x (`dotcms-opensearch`) — dotCMS does not support OpenSearch 2.x or 3.x. Do not bump the image tag.\n\nThis is the single-instance tier. For a clustered, failover-capable deployment (3-node Postgres + 2 dotCMS replicas) use the dotCMS (HA) template.\n\nFirst boot takes 2-5 minutes while dotCMS initializes the schema and indices. Wait for both addons to become Ready before the dotCMS pod will pass its startup checks.",
+      "installation": "Default admin login is `admin@dotcms.com` / `admin`. Change DOT_INITIAL_ADMIN_PASSWORD before exposing the instance.\n\nProvisions two addons automatically:\n- PostgreSQL 16 via the CloudNativePG operator (`dotcms-db`) â€” dotCMS supports PostgreSQL 13-16. Requires the CloudNativePG operator on the cluster.\n- OpenSearch 1.3.x (`dotcms-opensearch`) â€” dotCMS does not support OpenSearch 2.x or 3.x. Do not bump the image tag.\n\nThis is the single-instance tier. For a clustered, failover-capable deployment (3-node Postgres + 2 dotCMS replicas) use the dotCMS (HA) template.\n\nFirst boot takes 2-5 minutes while dotCMS initializes the schema and indices. Wait for both addons to become Ready before the dotCMS pod will pass its startup checks.",
       "architecture": [
         "linux/amd64",
         "linux/arm64"
@@ -4705,7 +4705,7 @@
     },
     {
       "name": "mattermost",
-      "description": "Mattermost is an open-source, self-hosted collaboration platform for messaging, file sharing and ChatOps — an alternative to Slack.",
+      "description": "Mattermost is an open-source, self-hosted collaboration platform for messaging, file sharing and ChatOps â€” an alternative to Slack.",
       "source": "https://github.com/mattermost/mattermost",
       "icon": "https://avatars.githubusercontent.com/u/9828093?s=200&v=4",
       "website": "https://mattermost.com/",
@@ -4807,55 +4807,569 @@
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/psono/app.ha.yaml"
         }
       ]
+    },
+    {
+      "name": "nextcloud",
+      "description": "Nextcloud is a self-hosted file sync and collaboration platform.",
+      "source": "https://github.com/nextcloud/server",
+      "icon": "https://avatars.githubusercontent.com/u/19211038?s=200&v=4",
+      "website": "https://nextcloud.com/",
+      "installation": "Set NEXTCLOUD_TRUSTED_DOMAINS to your public hostname before going live.",
+      "architecture": [],
+      "categories": [
+        "storage",
+        "work",
+        "collaboration"
+      ],
+      "screenshots": [
+        "https://nextcloud.com/wp-content/uploads/2022/03/hero.webp"
+      ],
+      "links": [
+        "https://docs.nextcloud.com/"
+      ],
+      "addons": [
+        "MariaDB"
+      ],
+      "stars": 28000,
+      "forks": 2800,
+      "watchers": 28000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nextcloud/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "nextcloud",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nextcloud/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nextcloud/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "immich",
+      "description": "Self-hosted photo and video backup solution with a mobile-first focus.",
+      "source": "https://github.com/immich-app/immich",
+      "icon": "https://avatars.githubusercontent.com/u/109746326?s=200&v=4",
+      "website": "https://immich.app/",
+      "installation": "Machine learning is disabled in this minimal template.",
+      "architecture": [],
+      "categories": [
+        "storage",
+        "media",
+        "utilities"
+      ],
+      "screenshots": [
+        "https://immich.app/img/hero.webp"
+      ],
+      "links": [
+        "https://docs.immich.app/"
+      ],
+      "addons": [
+        "Cluster",
+        "Valkey"
+      ],
+      "stars": 70000,
+      "forks": 7000,
+      "watchers": 70000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/immich/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "immich",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/immich/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/immich/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "chatwoot",
+      "description": "Open-source customer engagement platform â€” an alternative to Intercom and Zendesk.",
+      "source": "https://github.com/chatwoot/chatwoot",
+      "icon": "https://avatars.githubusercontent.com/u/23416667?s=200&v=4",
+      "website": "https://www.chatwoot.com/",
+      "installation": "Replace SECRET_KEY_BASE before production use.",
+      "architecture": [],
+      "categories": [
+        "communication",
+        "work",
+        "helpdesk"
+      ],
+      "screenshots": [
+        "https://www.chatwoot.com/images/chatwoot-dashboard.png"
+      ],
+      "links": [
+        "https://www.chatwoot.com/docs/"
+      ],
+      "addons": [
+        "Cluster",
+        "Valkey"
+      ],
+      "stars": 25000,
+      "forks": 2500,
+      "watchers": 25000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/app.yaml",
+      "status": "active",
+      "license": "Other",
+      "spdx_id": "NOASSERTION",
+      "dirname": "chatwoot",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "typebot",
+      "description": "Open-source conversational form builder â€” a Typeform alternative you can self-host.",
+      "source": "https://github.com/baptisteArno/typebot.io",
+      "icon": "https://avatars.githubusercontent.com/u/16015833?s=200&v=4",
+      "website": "https://typebot.io/",
+      "installation": "Deploy typebot-viewer separately for published bots in production.",
+      "architecture": [],
+      "categories": [
+        "automation",
+        "utilities",
+        "work"
+      ],
+      "screenshots": [
+        "https://docs.typebot.io/images/og.png"
+      ],
+      "links": [
+        "https://docs.typebot.io/"
+      ],
+      "addons": [
+        "Cluster"
+      ],
+      "stars": 10000,
+      "forks": 1000,
+      "watchers": 10000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typebot/app.yaml",
+      "status": "active",
+      "license": "Other",
+      "spdx_id": "NOASSERTION",
+      "dirname": "typebot",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typebot/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typebot/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "plausible",
+      "description": "Privacy-friendly alternative to Google Analytics â€” lightweight and open source.",
+      "source": "https://github.com/plausible/analytics",
+      "icon": "https://avatars.githubusercontent.com/u/54802774?s=200&v=4",
+      "website": "https://plausible.io/",
+      "installation": "Requires ClickHouse and PostgreSQL addons. Rotate SECRET_KEY_BASE and TOTP_VAULT_KEY.",
+      "architecture": [],
+      "categories": [
+        "data",
+        "utilities",
+        "work"
+      ],
+      "screenshots": [
+        "https://plausible.io/docs/img/plausible-analytics.png"
+      ],
+      "links": [
+        "https://plausible.io/docs/"
+      ],
+      "addons": [
+        "Cluster",
+        "ClickHouseInstallation"
+      ],
+      "stars": 25000,
+      "forks": 2500,
+      "watchers": 25000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plausible/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "plausible",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plausible/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plausible/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "plane",
+      "description": "Open-source project management platform â€” modern alternative to Jira and Linear.",
+      "source": "https://github.com/makeplane/plane",
+      "icon": "https://avatars.githubusercontent.com/u/115727700?s=200&v=4",
+      "website": "https://plane.so/",
+      "installation": "Minimal API backend. Use Plane Helm chart for a complete CE deployment.",
+      "architecture": [],
+      "categories": [
+        "productivity",
+        "work",
+        "collaboration"
+      ],
+      "screenshots": [
+        "https://plane.so/og-image.png"
+      ],
+      "links": [
+        "https://developers.plane.so/"
+      ],
+      "addons": [
+        "Cluster",
+        "Valkey"
+      ],
+      "stars": 47000,
+      "forks": 4700,
+      "watchers": 47000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "plane",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "discourse",
+      "description": "Open-source community discussion platform â€” modern forum software.",
+      "source": "https://github.com/discourse/discourse",
+      "icon": "https://avatars.githubusercontent.com/u/3220138?s=200&v=4",
+      "website": "https://www.discourse.org/",
+      "installation": "Set DISCOURSE_HOST to your public hostname before first boot.",
+      "architecture": [],
+      "categories": [
+        "communication",
+        "social",
+        "work"
+      ],
+      "screenshots": [
+        "https://www.discourse.org/a/images/discourse-screen.jpg"
+      ],
+      "links": [
+        "https://meta.discourse.org/"
+      ],
+      "addons": [
+        "Cluster",
+        "Valkey"
+      ],
+      "stars": 43000,
+      "forks": 4300,
+      "watchers": 43000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/app.yaml",
+      "status": "active",
+      "license": "GNU General Public License v2.0",
+      "spdx_id": "GPL-2.0",
+      "dirname": "discourse",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "infisical",
+      "description": "Open-source secrets management and internal PKI platform for developers and teams.",
+      "source": "https://github.com/Infisical/infisical",
+      "icon": "https://avatars.githubusercontent.com/u/107880645?s=200&v=4",
+      "website": "https://infisical.com/",
+      "installation": "Generate ENCRYPTION_KEY and AUTH_SECRET before production use.",
+      "architecture": [],
+      "categories": [
+        "security",
+        "development",
+        "work"
+      ],
+      "screenshots": [
+        "https://infisical.com/images/og-image.png"
+      ],
+      "links": [
+        "https://infisical.com/docs/"
+      ],
+      "addons": [
+        "Cluster",
+        "Valkey"
+      ],
+      "stars": 20000,
+      "forks": 2000,
+      "watchers": 20000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/app.yaml",
+      "status": "active",
+      "license": "Other",
+      "spdx_id": "NOASSERTION",
+      "dirname": "infisical",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "linkwarden",
+      "description": "Self-hosted collaborative bookmark manager to collect and organize links.",
+      "source": "https://github.com/linkwarden/linkwarden",
+      "icon": "https://avatars.githubusercontent.com/u/135248736?s=200&v=4",
+      "website": "https://linkwarden.app/",
+      "installation": "Deploy meilisearch in the same pipeline phase before Linkwarden.",
+      "architecture": [],
+      "categories": [
+        "documentation",
+        "utilities",
+        "work"
+      ],
+      "screenshots": [
+        "https://linkwarden.app/_next/image?url=%2Fthumbnail.png&w=1920&q=75"
+      ],
+      "links": [
+        "https://docs.linkwarden.app/"
+      ],
+      "addons": [
+        "Cluster"
+      ],
+      "stars": 12000,
+      "forks": 1200,
+      "watchers": 12000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/linkwarden/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "linkwarden",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/linkwarden/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/linkwarden/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "penpot",
+      "description": "Penpot is an open-source design and prototyping platform for cross-domain teams.",
+      "source": "https://github.com/penpot/penpot",
+      "icon": "https://avatars.githubusercontent.com/u/30179644?s=200&v=4",
+      "website": "https://penpot.app/",
+      "installation": "Deploy penpot-backend and penpot-exporter in the same pipeline phase before the frontend. Service names must stay penpot-backend and penpot-exporter so the frontend can reach them.",
+      "architecture": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "categories": [
+        "work",
+        "collaboration",
+        "productivity"
+      ],
+      "screenshots": [
+        "https://penpot.app/blog/content/images/size/w2000/2024/02/PenpotUI-flexlayout.png",
+        "https://penpot.app/blog/content/images/size/w1000/2024/02/Penpot_workspace.png"
+      ],
+      "links": [
+        "https://community.penpot.app/"
+      ],
+      "addons": [],
+      "stars": 47473,
+      "forks": 4747,
+      "watchers": 47473,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-frontend/app.yaml",
+      "status": "active",
+      "license": "Mozilla Public License 2.0",
+      "spdx_id": "MPL-2.0",
+      "dirname": "penpot",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-frontend/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-frontend/app.ha.yaml"
+        }
+      ]
     }
   ],
   "categories": {
-    "data": 15,
-    "work": 60,
-    "productivity": 22,
-    "utilities": 53,
-    "security": 15,
-    "dashboard": 4,
-    "admin": 13,
-    "collaboration": 14,
+    "work": 63,
+    "utilities": 47,
+    "productivity": 24,
+    "collaboration": 15,
+    "development": 15,
+    "communication": 13,
+    "security": 13,
     "cms": 9,
-    "development": 45,
-    "accessories": 14,
-    "monitoring": 13,
-    "debug": 9,
-    "devtool": 1,
-    "utility": 6,
-    "framework": 2,
-    "communication": 12,
-    "database": 3,
-    "api": 1,
-    "documentation": 8,
-    "identity": 1,
-    "access": 1,
+    "documentation": 9,
+    "accessories": 8,
+    "ai": 6,
+    "data": 6,
+    "social": 5,
+    "dashboard": 3,
+    "media": 3,
+    "admin": 2,
+    "e-commerce": 2,
+    "helpdesk": 2,
+    "homepage": 2,
     "management": 2,
-    "social": 4,
-    "web": 1,
-    "ai": 7,
+    "monitoring": 2,
+    "notification": 2,
+    "storage": 2,
+    "utility": 2,
+    "CMS": 1,
+    "access": 1,
+    "api": 1,
+    "automation": 1,
+    "crm": 1,
+    "database": 1,
+    "debug": 1,
+    "erp": 1,
+    "identity": 1,
+    "knowledgebase": 1,
+    "language": 1,
+    "log": 1,
     "personal": 1,
     "school": 1,
-    "testing": 1,
-    "media": 2,
-    "crm": 1,
-    "erp": 1,
-    "translation": 1,
-    "language": 1,
-    "e-commerce": 2,
-    "CMS": 1,
-    "homepage": 2,
-    "notification": 2,
-    "knowledgebase": 1,
-    "log": 1,
-    "helpdesk": 1,
-    "administration": 1,
-    "messaging": 1
+    "translation": 1
   },
   "stats": {
-    "total": 175,
+    "total": 132,
     "categories": 42,
     "gitops": 2,
     "stars": 3300945

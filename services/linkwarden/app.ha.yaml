@@ -1,0 +1,102 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: linkwarden
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted collaborative bookmark manager to collect and organize links.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/135248736?s=200&v=4
+    kubero.dev/template.installation: Deploy the meilisearch template in the same pipeline phase first (app name `meilisearch`).
+      Generate NEXTAUTH_SECRET with `openssl rand -base64 32`.
+    kubero.dev/template.links: '["https://docs.linkwarden.app/"]'
+    kubero.dev/template.screenshots: '["https://linkwarden.app/_next/image?url=%2Fthumbnail.png&w=1920&q=75"]'
+    kubero.dev/template.source: https://github.com/linkwarden/linkwarden
+    kubero.dev/template.categories: '["documentation", "utilities", "work"]'
+    kubero.dev/template.title: Linkwarden
+    kubero.dev/template.website: https://linkwarden.app/
+  labels:
+    manager: kubero
+spec:
+  name: linkwarden
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: linkwarden-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: linkwarden
+              owner: linkwarden
+              secret:
+                name: linkwarden-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: linkwarden-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: linkwarden-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: linkwarden
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: linkwarden-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: linkwarden
+          password: linkwarden
+  envVars:
+  - name: NEXTAUTH_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: NEXTAUTH_SECRET
+    value: replace-with-openssl-rand-base64-32
+  - name: DATABASE_URL
+    value: postgresql://linkwarden:linkwarden@linkwarden-postgresql-rw:5432/linkwarden
+  - name: MEILI_HOST
+    value: http://meilisearch-kuberoapp:7700
+  - name: MEILI_MASTER_KEY
+    value: linkwarden-meili-key
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /data/data
+    name: linkwarden-data
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: ghcr.io/linkwarden/linkwarden
+    tag: latest

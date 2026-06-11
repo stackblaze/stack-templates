@@ -1,0 +1,144 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: plausible
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Privacy-friendly alternative to Google Analytics — lightweight and open source.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/54802774?s=200&v=4
+    kubero.dev/template.installation: Generate SECRET_KEY_BASE with `openssl rand -hex 64` and TOTP_VAULT_KEY with `openssl
+      rand -base64 32`. Update BASE_URL before going live.
+    kubero.dev/template.links: '["https://plausible.io/docs/"]'
+    kubero.dev/template.screenshots: '["https://plausible.io/docs/img/plausible-analytics.png"]'
+    kubero.dev/template.source: https://github.com/plausible/analytics
+    kubero.dev/template.categories: '["data", "utilities", "work"]'
+    kubero.dev/template.title: Plausible Analytics
+    kubero.dev/template.website: https://plausible.io/
+  labels:
+    manager: kubero
+spec:
+  name: plausible
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: plausible-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: plausible
+              owner: plausible
+              secret:
+                name: plausible-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: plausible-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: plausible-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: plausible
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: plausible-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: plausible
+          password: plausible
+  - displayName: ClickHouse
+    env: []
+    icon: /img/addons/clickhouse.svg
+    id: clickhouse-operator
+    kind: ClickHouseInstallation
+    resourceDefinitions:
+      ClickHouseInstallation:
+        apiVersion: clickhouse.altinity.com/v1
+        kind: ClickHouseInstallation
+        metadata:
+          name: plausible-clickhouse
+        spec:
+          configuration:
+            users:
+              admin/password: plausible
+              admin/networks/ip:
+              - 0.0.0.0/0
+            clusters:
+            - name: analytics
+              layout:
+                shardsCount: 1
+                replicasCount: 1
+          defaults:
+            templates:
+              dataVolumeClaimTemplate: data-volume-template
+              logVolumeClaimTemplate: log-volume-template
+          templates:
+            volumeClaimTemplates:
+            - name: data-volume-template
+              spec:
+                accessModes:
+                - ReadWriteOnce
+                storageClassName: fast
+                resources:
+                  requests:
+                    storage: 5Gi
+            - name: log-volume-template
+              spec:
+                accessModes:
+                - ReadWriteOnce
+                storageClassName: fast
+                resources:
+                  requests:
+                    storage: 1Gi
+  envVars:
+  - name: BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: SECRET_KEY_BASE
+    value: '0000000000000000000000000000000000000000000000000000000000000000'
+  - name: TOTP_VAULT_KEY
+    value: '0000000000000000000000000000000000000000'
+  - name: DATABASE_URL
+    value: postgresql://plausible:plausible@plausible-postgresql-rw:5432/plausible
+  - name: CLICKHOUSE_DATABASE_URL
+    value: http://admin:plausible@clickhouse-plausible-clickhouse:8123/plausible_events
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: ghcr.io/plausible/community-edition
+    tag: v3.0.1
+    command:
+    - sh
+    - -c
+    - sleep 15 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run

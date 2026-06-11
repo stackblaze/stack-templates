@@ -1,0 +1,142 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: discourse
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source community discussion platform — modern forum software.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/3220138?s=200&v=4
+    kubero.dev/template.installation: Set DISCOURSE_HOST to your public hostname (without protocol) before first boot. Default
+      admin password is configured via DISCOURSE_PASSWORD — change it after install.
+    kubero.dev/template.links: '["https://meta.discourse.org/"]'
+    kubero.dev/template.screenshots: '["https://www.discourse.org/a/images/discourse-screen.jpg"]'
+    kubero.dev/template.source: https://github.com/discourse/discourse
+    kubero.dev/template.categories: '["communication", "social", "work"]'
+    kubero.dev/template.title: Discourse
+    kubero.dev/template.website: https://www.discourse.org/
+  labels:
+    manager: kubero
+spec:
+  name: discourse
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: discourse-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: bitnami_discourse
+              owner: bn_discourse
+              secret:
+                name: discourse-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: discourse-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: discourse-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: discourse
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: discourse-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: bn_discourse
+          password: discourse
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: discourse-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: DISCOURSE_HOST
+    value: discourse.localhost
+  - name: DISCOURSE_PASSWORD
+    value: discourse
+  - name: DISCOURSE_DATABASE_HOST
+    value: discourse-postgresql-rw
+  - name: DISCOURSE_DATABASE_PORT_NUMBER
+    value: '5432'
+  - name: DISCOURSE_DATABASE_USER
+    value: bn_discourse
+  - name: DISCOURSE_DATABASE_NAME
+    value: bitnami_discourse
+  - name: DISCOURSE_REDIS_HOST
+    value: rfr-discourse-valkey-readwrite
+  - name: DISCOURSE_REDIS_PORT_NUMBER
+    value: '6379'
+  - name: ALLOW_EMPTY_PASSWORD
+    value: 'yes'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /bitnami/discourse
+    name: discourse-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: bitnami/discourse
+    tag: latest

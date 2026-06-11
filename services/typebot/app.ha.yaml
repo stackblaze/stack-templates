@@ -1,0 +1,101 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: typebot
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source conversational form builder — a Typeform alternative you can self-host.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/16015833?s=200&v=4
+    kubero.dev/template.installation: This template deploys the Typebot builder. Set NEXT_PUBLIC_VIEWER_URL to your public
+      viewer URL. For production, deploy baptistearno/typebot-viewer with the same DATABASE_URL and ENCRYPTION_SECRET in the
+      same pipeline phase.
+    kubero.dev/template.links: '["https://docs.typebot.io/"]'
+    kubero.dev/template.screenshots: '["https://docs.typebot.io/images/og.png"]'
+    kubero.dev/template.source: https://github.com/baptisteArno/typebot.io
+    kubero.dev/template.categories: '["automation", "utilities", "work"]'
+    kubero.dev/template.title: Typebot
+    kubero.dev/template.website: https://typebot.io/
+  labels:
+    manager: kubero
+spec:
+  name: typebot
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: typebot-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: typebot
+              owner: typebot
+              secret:
+                name: typebot-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: typebot-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: typebot-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: typebot
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: typebot-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: typebot
+          password: typebot
+  envVars:
+  - name: DATABASE_URL
+    value: postgresql://typebot:typebot@typebot-postgresql-rw:5432/typebot
+  - name: NEXTAUTH_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: NEXT_PUBLIC_VIEWER_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: NEXTAUTH_SECRET
+    value: replace-with-openssl-rand-base64-32
+  - name: ENCRYPTION_SECRET
+    value: replace-with-openssl-rand-base64-32
+  - name: ADMIN_EMAIL
+    value: admin@example.com
+  - name: DISABLE_SIGNUP
+    value: 'false'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: baptistearno/typebot-builder
+    tag: latest

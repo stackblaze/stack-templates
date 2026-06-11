@@ -1,0 +1,143 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: chatwoot
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source customer engagement platform — an alternative to Intercom and Zendesk.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/23416667?s=200&v=4
+    kubero.dev/template.installation: Background jobs run inline in this minimal template. For production throughput, deploy
+      a dedicated Sidekiq worker using the same image and env with `bundle exec sidekiq -C config/sidekiq.yml`.
+    kubero.dev/template.links: '["https://www.chatwoot.com/docs/"]'
+    kubero.dev/template.screenshots: '["https://www.chatwoot.com/images/chatwoot-dashboard.png"]'
+    kubero.dev/template.source: https://github.com/chatwoot/chatwoot
+    kubero.dev/template.categories: '["communication", "work", "helpdesk"]'
+    kubero.dev/template.title: Chatwoot
+    kubero.dev/template.website: https://www.chatwoot.com/
+  labels:
+    manager: kubero
+spec:
+  name: chatwoot
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: chatwoot-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: chatwoot
+              owner: chatwoot
+              secret:
+                name: chatwoot-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: chatwoot-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: chatwoot-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: chatwoot
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: chatwoot-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: chatwoot
+          password: chatwoot
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: chatwoot-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: FRONTEND_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: POSTGRES_HOST
+    value: chatwoot-postgresql-rw
+  - name: POSTGRES_PORT
+    value: '5432'
+  - name: POSTGRES_DATABASE
+    value: chatwoot
+  - name: POSTGRES_USERNAME
+    value: chatwoot
+  - name: POSTGRES_PASSWORD
+    value: chatwoot
+  - name: REDIS_URL
+    value: redis://rfr-chatwoot-valkey-readwrite:6379
+  - name: SECRET_KEY_BASE
+    value: replace-with-openssl-rand-hex-64
+  - name: RAILS_ENV
+    value: production
+  - name: INSTALLATION_ENV
+    value: docker
+  - name: ACTIVE_STORAGE_SERVICE
+    value: local
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/storage
+    name: chatwoot-storage
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: chatwoot/chatwoot
+    tag: latest

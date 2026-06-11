@@ -1,0 +1,143 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: immich
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted photo and video backup solution with a mobile-first focus.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/109746326?s=200&v=4
+    kubero.dev/template.installation: Machine learning is disabled in this minimal template. Enable a separate ML service
+      for face/object detection if needed.
+    kubero.dev/template.links: '["https://docs.immich.app/"]'
+    kubero.dev/template.screenshots: '["https://immich.app/img/hero.webp"]'
+    kubero.dev/template.source: https://github.com/immich-app/immich
+    kubero.dev/template.categories: '["storage", "media", "utilities"]'
+    kubero.dev/template.title: Immich
+    kubero.dev/template.website: https://immich.app/
+  labels:
+    manager: kubero
+spec:
+  name: immich
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: immich-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: immich
+              owner: immich
+              secret:
+                name: immich-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: immich-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: immich-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: immich
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: immich-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: immich
+          password: immich
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: immich-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: DB_HOSTNAME
+    value: immich-postgresql-rw
+  - name: DB_PORT
+    value: '5432'
+  - name: DB_USERNAME
+    value: immich
+  - name: DB_PASSWORD
+    value: immich
+  - name: DB_DATABASE_NAME
+    value: immich
+  - name: REDIS_HOSTNAME
+    value: rfr-immich-valkey-readwrite
+  - name: REDIS_PORT
+    value: '6379'
+  - name: REDIS_PASSWORD
+    value: ''
+  - name: REDIS_DBINDEX
+    value: '0'
+  - name: MACHINE_LEARNING_ENABLED
+    value: 'false'
+  - name: UPLOAD_LOCATION
+    value: /usr/src/app/upload
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /usr/src/app/upload
+    name: immich-upload
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '2283'
+    pullPolicy: Always
+    repository: ghcr.io/immich-app/immich-server
+    tag: release
