@@ -75,7 +75,7 @@ spec:
   - displayName: ClickHouse
     env: []
     icon: /img/addons/clickhouse.svg
-    id: clickhouse-operator
+    id: kubero-operator
     kind: ClickHouseInstallation
     resourceDefinitions:
       ClickHouseInstallation:

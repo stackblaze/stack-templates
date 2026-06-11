@@ -8,8 +8,8 @@ metadata:
       Slack.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4921959?s=200&v=4
     kubero.dev/template.installation: Set SETTING_EXTERNAL_HOST and SECRETS_secret_key before first boot. Initial startup
-      can take 5–10 minutes while Zulip configures all services. Requires RabbitMQ Cluster Operator and KubeDB operator on
-      the cluster.
+      can take 5–10 minutes while Zulip configures all services. Requires
+      `kubero-operator/operators/install.sh` (RabbitMQ Cluster + KubeDB operators).
     kubero.dev/template.links: '["https://zulip.readthedocs.io/projects/docker/"]'
     kubero.dev/template.screenshots: '["https://zulip.com/static/images/landing-page/zulip-hero.png"]'
     kubero.dev/template.source: https://github.com/zulip/zulip
@@ -77,7 +77,7 @@ spec:
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
-    id: valkey-operator
+    id: kubero-operator
     kind: Valkey
     resourceDefinitions:
       Valkey:
@@ -106,7 +106,7 @@ spec:
   - displayName: RabbitMQ
     env: []
     icon: /img/addons/rabbitmq.svg
-    id: rabbitmq-cluster-operator
+    id: kubero-operator
     kind: RabbitmqCluster
     resourceDefinitions:
       RabbitmqCluster:
@@ -140,7 +140,7 @@ spec:
   - displayName: Memcached
     env: []
     icon: /img/addons/memcached.svg
-    id: kubedb-operator
+    id: kubero-operator
     kind: Memcached
     resourceDefinitions:
       Memcached:

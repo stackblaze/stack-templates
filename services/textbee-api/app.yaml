@@ -45,7 +45,7 @@ spec:
         - displayName: Document DB
           env: []
           icon: /img/addons/mongo.svg
-          id: documentdb-operator
+          id: kubero-operator
           kind: DocumentDB
           resourceDefinitions:
               DocumentDB:

@@ -177,7 +177,7 @@ def documentdb_addon(name: str, user: str = "mongoadmin", password: str = "chang
         "displayName": "Document DB",
         "env": [],
         "icon": "/img/addons/mongo.svg",
-        "id": "documentdb-operator",
+        "id": "kubero-operator",
         "kind": "DocumentDB",
         "resourceDefinitions": {
             "DocumentDB": {

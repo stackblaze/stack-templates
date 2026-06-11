@@ -39,13 +39,12 @@ app container.
 | App `web.replicaCount` | Usually `1` | Usually `1` (HA is in the data layer) |
 
 Use **Kubernetes operator add-ons** only — never deprecated `KuberoAddon*`
-or `KuberoMongoDB`. MongoDB-compatible apps use **Document DB**
-(`documentdb-operator`, port `10260`, TLS + SCRAM). PostgreSQL, MariaDB, and
-Valkey use **`kubero-operator`** / **`mariadb-operator`** / **`valkey-operator`**.
-Other operators: **RabbitMQ** (`rabbitmq-cluster-operator`), **Memcached**
-(`kubedb-operator`), **Milvus** (`milvus-operator`), **Weaviate**
-(`weaviate-operator`), **RustFS** (`rustfs-operator`), **ClickHouse**
-(`clickhouse-operator`), **Kafka** (Strimzi).
+or `KuberoMongoDB`. All prerequisite operators (CNPG, MariaDB, Valkey,
+Document DB, ClickHouse, Strimzi Kafka, RustFS, RabbitMQ, KubeDB Memcached,
+Milvus, Weaviate, …) are installed via **`kubero-operator/operators/install.sh`**
+into the cluster `operators` namespace. Every add-on block in templates must
+use **`id: kubero-operator`** — the `kind` field selects the CR type
+(`Cluster`, `MariaDB`, `DocumentDB`, `RabbitmqCluster`, etc.).
 
 Catalog entries expose both via `deploymentTypes` in `index.json`:
 

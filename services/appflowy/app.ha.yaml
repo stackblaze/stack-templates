@@ -107,7 +107,7 @@ spec:
   - displayName: RustFS
     env: []
     icon: /img/addons/rustfs.svg
-    id: rustfs-operator
+    id: kubero-operator
     kind: Tenant
     resourceDefinitions:
       Tenant:

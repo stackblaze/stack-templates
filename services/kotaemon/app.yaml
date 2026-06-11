@@ -6,7 +6,7 @@ metadata:
         kubero.dev/template.architecture: "[]"
         kubero.dev/template.description: "An open-source clean & customizable RAG UI for chatting with your documents."
         kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/3265185"
-        kubero.dev/template.installation: "Provisions Milvus for vector storage. Requires the Milvus operator on the cluster. The main-full image bundles local models; point your pipeline at Milvus for production RAG indexing."
+        kubero.dev/template.installation: "Provisions Milvus for vector storage. Requires kubero-operator/operators/install.sh. The main-full image bundles local models; point your pipeline at Milvus for production RAG indexing."
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/Cinnamon/kotaemon/main/docs/images/preview-graph.png", "https://raw.githubusercontent.com/Cinnamon/kotaemon/main/docs/images/preview.png"]'
         kubero.dev/template.source: "https://github.com/Cinnamon/kotaemon"
@@ -31,7 +31,7 @@ spec:
         - displayName: Milvus
           env: []
           icon: /img/addons/milvus.svg
-          id: milvus-operator
+          id: kubero-operator
           kind: Milvus
           resourceDefinitions:
               Milvus:
