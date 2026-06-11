@@ -101,6 +101,42 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  - displayName: RustFS
+    env: []
+    icon: /img/addons/rustfs.svg
+    id: rustfs-operator
+    kind: Tenant
+    resourceDefinitions:
+      Tenant:
+        apiVersion: rustfs.com/v1alpha1
+        kind: Tenant
+        metadata:
+          name: appflowy-rustfs
+        spec:
+          image: rustfs/rustfs:latest
+          credsSecret:
+            name: rustfs-credentials
+          pools:
+          - name: pool-0
+            servers: 1
+            persistence:
+              volumesPerServer: 4
+              volumeClaimTemplate:
+                accessModes:
+                - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 2Gi
+                storageClassName: slow
+      credsSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: rustfs-credentials
+        type: Opaque
+        stringData:
+          accesskey: rustfsadmin
+          secretkey: changeme
   envVars:
   - name: APPFLOWY_DATABASE_URL
     value: postgres://appflowy:appflowy@appflowy-postgresql-rw:5432/appflowy
@@ -115,11 +151,11 @@ spec:
   - name: APPFLOWY_S3_USE_MINIO
     value: 'true'
   - name: APPFLOWY_S3_MINIO_URL
-    value: http://minio:9000
+    value: http://appflowy-rustfs:9000
   - name: APPFLOWY_S3_ACCESS_KEY
-    value: minioadmin
+    value: rustfsadmin
   - name: APPFLOWY_S3_SECRET_KEY
-    value: minioadmin
+    value: changeme
   - name: APPFLOWY_S3_BUCKET
     value: appflowy
   extraVolumes: []

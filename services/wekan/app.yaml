@@ -22,7 +22,7 @@ spec:
         - name: WRITABLE_PATH
           value: /data
         - name: MONGO_URL
-          value: mongodb://wekan:wekan@wekan-mongodb:27017/wekan
+          value: mongodb://mongoadmin:changeme@documentdb-service-wekan-documentdb:10260/wekan?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
         - name: ROOT_URL
           value: https://wekan.localhost
         - name: WITH_API
@@ -45,37 +45,36 @@ spec:
           size: 1Gi
     cronjobs: []
     addons:
-        - displayName: MongoDB
+        - displayName: Document DB
           env: []
           icon: /img/addons/mongo.svg
-          id: kubero-operator
-          kind: KuberoMongoDB
+          id: documentdb-operator
+          kind: DocumentDB
           resourceDefinitions:
-              KuberoMongoDB:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoMongoDB
+              DocumentDB:
+                  apiVersion: documentdb.io/preview
+                  kind: DocumentDB
                   metadata:
-                      name: wekan-mongodb
+                      name: wekan-documentdb
                   spec:
-                      mongodb:
-                          architecture: standalone
-                          auth:
-                              databases:
-                                  - wekan
-                              passwords:
-                                  - wekan
-                              rootPassword: wekan
-                              rootUser: root
-                              usernames:
-                                  - wekan
-                          directoryPerDB: false
-                          disableJavascript: false
-                          global:
-                          persistence:
-                              size: 1Gi
-                          replicaCount: 1
-          version:
-              latest: 0.1.5
+                      nodeCount: 1
+                      instancesPerNode: 1
+                      documentDbCredentialSecret: documentdb-credentials
+                      resource:
+                          storage:
+                              pvcSize: 1Gi
+                              storageClass: default
+                      exposeViaService:
+                          serviceType: ClusterIP
+              credentialSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: documentdb-credentials
+                  type: Opaque
+                  stringData:
+                      username: mongoadmin
+                      password: changeme
     web:
         replicaCount: 1
     worker:

@@ -26,7 +26,7 @@ spec:
         - name: FRONTEND_URL
           value: https://textbee.localhost
         - name: MONGO_URI
-          value: mongodb://textbee:textbee@textbee-api-mongodb:27017/textbee
+          value: mongodb://mongoadmin:changeme@documentdb-service-textbee-api-documentdb:10260/textbee?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
         - name: FIREBASE_PROJECT_ID
           value: ""
         - name: FIREBASE_PRIVATE_KEY_ID
@@ -42,37 +42,36 @@ spec:
     extraVolumes: []
     cronjobs: []
     addons:
-        - displayName: MongoDB
+        - displayName: Document DB
           env: []
           icon: /img/addons/mongo.svg
-          id: kubero-operator
-          kind: KuberoMongoDB
+          id: documentdb-operator
+          kind: DocumentDB
           resourceDefinitions:
-              KuberoMongoDB:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoMongoDB
+              DocumentDB:
+                  apiVersion: documentdb.io/preview
+                  kind: DocumentDB
                   metadata:
-                      name: textbee-api-mongodb
+                      name: textbee-api-documentdb
                   spec:
-                      mongodb:
-                          architecture: standalone
-                          auth:
-                              databases:
-                                  - textbee
-                              passwords:
-                                  - textbee
-                              rootPassword: textbee
-                              rootUser: root
-                              usernames:
-                                  - textbee
-                          directoryPerDB: true
-                          disableJavascript: false
-                          global:
-                          persistence:
-                              size: 1Gi
-                          replicaCount: 1
-          version:
-              latest: 0.1.8
+                      nodeCount: 1
+                      instancesPerNode: 1
+                      documentDbCredentialSecret: documentdb-credentials
+                      resource:
+                          storage:
+                              pvcSize: 1Gi
+                              storageClass: default
+                      exposeViaService:
+                          serviceType: ClusterIP
+              credentialSecret:
+                  apiVersion: v1
+                  kind: Secret
+                  metadata:
+                      name: documentdb-credentials
+                  type: Opaque
+                  stringData:
+                      username: mongoadmin
+                      password: changeme
     web:
         replicaCount: 1
     worker:

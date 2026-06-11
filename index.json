@@ -585,7 +585,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoMongoDB"
+        "DocumentDB"
       ],
       "stars": 45291,
       "forks": 13558,
@@ -2033,7 +2033,7 @@
       ],
       "links": [],
       "addons": [
-        "KuberoMongoDB"
+        "DocumentDB"
       ],
       "stars": 20921,
       "forks": 2973,
@@ -2910,7 +2910,7 @@
       ],
       "addons": [
         "Valkey",
-        "KuberoMongoDB"
+        "DocumentDB"
       ],
       "stars": 1981,
       "forks": 371,
@@ -4010,7 +4010,7 @@
       "screenshots": [],
       "links": [],
       "addons": [
-        "KuberoMongoDB"
+        "DocumentDB"
       ],
       "stars": 2571,
       "forks": 320,
@@ -4077,7 +4077,9 @@
         "https://raw.githubusercontent.com/Cinnamon/kotaemon/main/docs/images/preview.png"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "Milvus"
+      ],
       "stars": 25374,
       "forks": 2121,
       "watchers": 25374,
@@ -6003,7 +6005,8 @@
       ],
       "addons": [
         "Cluster",
-        "Valkey"
+        "Valkey",
+        "Tenant"
       ],
       "stars": 5000,
       "forks": 500,
@@ -6308,8 +6311,8 @@
       "addons": [
         "Cluster",
         "Valkey",
-        "KuberoAddonRabbitmq",
-        "KuberoAddonMemcached"
+        "RabbitmqCluster",
+        "Memcached"
       ],
       "stars": 22000,
       "forks": 2200,

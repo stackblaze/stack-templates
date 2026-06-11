@@ -159,6 +159,52 @@ def valkey_addon(name: str, ha: bool) -> dict:
     }
 
 
+def documentdb_uri(instance: str, user: str, password: str, database: str = "") -> str:
+    """MongoDB-wire URI for Microsoft DocumentDB (port 10260, TLS + SCRAM)."""
+    host = f"documentdb-service-{instance}"
+    params = (
+        "directConnection=true&authMechanism=SCRAM-SHA-256&tls=true"
+        "&tlsAllowInvalidCertificates=true&replicaSet=rs0"
+    )
+    path = database or ""
+    return f"mongodb://{user}:{password}@{host}:10260/{path}?{params}"
+
+
+def documentdb_addon(name: str, user: str = "mongoadmin", password: str = "changeme", node_count: int = 1) -> dict:
+    """Document DB operator addon (MongoDB-wire compatible, replaces KuberoMongoDB)."""
+    instance = f"{name}-documentdb"
+    return {
+        "displayName": "Document DB",
+        "env": [],
+        "icon": "/img/addons/mongo.svg",
+        "id": "documentdb-operator",
+        "kind": "DocumentDB",
+        "resourceDefinitions": {
+            "DocumentDB": {
+                "apiVersion": "documentdb.io/preview",
+                "kind": "DocumentDB",
+                "metadata": {"name": instance},
+                "spec": {
+                    "nodeCount": node_count,
+                    "instancesPerNode": 1,
+                    "documentDbCredentialSecret": "documentdb-credentials",
+                    "resource": {
+                        "storage": {"pvcSize": "1Gi", "storageClass": "default"},
+                    },
+                    "exposeViaService": {"serviceType": "ClusterIP"},
+                },
+            },
+            "credentialSecret": {
+                "apiVersion": "v1",
+                "kind": "Secret",
+                "metadata": {"name": "documentdb-credentials"},
+                "type": "Opaque",
+                "stringData": {"username": user, "password": password},
+            },
+        },
+    }
+
+
 def clickhouse_addon(name: str, password: str, replicas: int) -> dict:
     return {
         "displayName": "ClickHouse",

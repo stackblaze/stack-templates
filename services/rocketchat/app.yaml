@@ -17,40 +17,41 @@ metadata:
   name: rocketchat
 spec:
   addons:
-  - displayName: Kubero MongoDB
+  - displayName: Document DB
     env: []
-    icon: /img/addons/MongoDB.png
-    id: kubero-operator
-    kind: KuberoMongoDB
+    icon: /img/addons/mongo.svg
+    id: documentdb-operator
+    kind: DocumentDB
     resourceDefinitions:
-      KuberoMongoDB:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoMongoDB
+      DocumentDB:
+        apiVersion: documentdb.io/preview
+        kind: DocumentDB
         metadata:
-          name: rocketchat-mongodb
+          name: rocketchat-documentdb
         spec:
-          mongodb:
-            architecture: standalone
-            auth:
-              databases:
-              - kubero
-              passwords:
-              - rocket
-              rootPassword: mongoroot
-              rootUser: root
-              usernames:
-              - rocket
-            directoryPerDB: false
-            disableJavascript: false
-            global:
-            persistence:
-              size: 1Gi
-            replicaCount: 1
+          nodeCount: 1
+          instancesPerNode: 1
+          documentDbCredentialSecret: documentdb-credentials
+          resource:
+            storage:
+              pvcSize: 1Gi
+              storageClass: default
+          exposeViaService:
+            serviceType: ClusterIP
+      credentialSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: documentdb-credentials
+        type: Opaque
+        stringData:
+          username: mongoadmin
+          password: changeme
   cronjobs: []
   deploymentstrategy: docker
   envVars:
   - name: MONGO_URL
-    value: mongodb://rocket:rocket@rocketchat-mongodb:27017/kubero
+    value: mongodb://mongoadmin:changeme@documentdb-service-rocketchat-documentdb:10260/rocketchat?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
   - name: ROOT_URL
     value: https://rocketchat.demo.kubero.dev
   - name: DEPLOY_METHOD

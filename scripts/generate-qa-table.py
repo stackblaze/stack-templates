@@ -15,6 +15,72 @@ SERVICES = ROOT / "services"
 MARKER_START = "<!-- qa-table:start -->"
 MARKER_END = "<!-- qa-table:end -->"
 
+# Kubero plugin `kind` → `displayName` (see kubero/server/src/addons/plugins/).
+KIND_DISPLAY = {
+    "Cluster": "PostgreSQL (CloudNativePG)",
+    "MariaDB": "MariaDB",
+    "Valkey": "Valkey",
+    "KuberoMongoDB": "MongoDB (deprecated — use DocumentDB)",
+    "ClickHouseInstallation": "ClickHouse Cluster",
+    "KuberoAddonRabbitmq": "RabbitMQ",
+    "KuberoAddonMemcached": "Memcached",
+    "KuberoAddonPostgres": "PostgreSQL",
+    "KuberoAddonMysql": "MySQL",
+    "KuberoAddonRedis": "Redis",
+    "KuberoAddonMongodb": "MongoDB",
+    "KuberoMail": "Haraka Mail Server",
+    "KuberoOpenSearch": "OpenSearch",
+    "KuberoFerretDB": "FerretDB",
+    "KuberoCouchDB": "CouchDB",
+    "Elasticsearch": "Elasticsearch",
+    "Kafka": "Kafka (Strimzi)",
+    "PostgresCluster": "Crunchy Postgres Cluster",
+    "Redis": "Opstree Redis",
+    "RedisCluster": "Opstree Redis Cluster",
+    "PerconaServerMongoDB": "Percona MongoDB",
+    "DocumentDB": "Document DB",
+    "RabbitmqCluster": "RabbitMQ",
+    "Memcached": "Memcached",
+    "Milvus": "Milvus",
+    "WeaviateCluster": "Weaviate",
+    "Tenant": "RustFS",
+    "Cockroachdb": "CockroachDB",
+}
+
+
+def addon_labels(service: dict) -> list[str]:
+    """Kubero add-on display names from template YAML (preferred) or index.json."""
+    dirname = service.get("dirname") or service["name"]
+    path = SERVICES / dirname / "app.yaml"
+    labels: list[str] = []
+    if path.exists():
+        try:
+            import yaml
+
+            doc = yaml.safe_load(path.read_text(encoding="utf-8"))
+            for addon in (doc.get("spec") or {}).get("addons") or []:
+                label = (addon.get("displayName") or "").strip()
+                if not label:
+                    kind = addon.get("kind") or ""
+                    label = KIND_DISPLAY.get(kind, kind)
+                if label and label not in labels:
+                    labels.append(label)
+        except Exception:
+            labels = []
+    if not labels:
+        for kind in service.get("addons") or []:
+            label = KIND_DISPLAY.get(kind, kind)
+            if label and label not in labels:
+                labels.append(label)
+    return labels
+
+
+def addons_cell(service: dict) -> str:
+    labels = addon_labels(service)
+    if not labels:
+        return "—"
+    return ", ".join(labels)
+
 
 def ha_available(service: dict) -> bool:
     for dt in service.get("deploymentTypes") or []:
@@ -78,7 +144,9 @@ def build_table(services: list[dict], overrides: dict) -> str:
         "Whether each catalog template has been validated by QA on a live Kubero",
         "cluster. **No** = not yet tested; **Yes** = QA verified; **—** = no HA",
         "variant in the catalog. **Version** is the Docker image tag from",
-        "`services/<name>/app.yaml` (standard template).",
+        "`services/<name>/app.yaml` (standard template). **Add-ons** lists Kubero",
+        "operator add-ons (`displayName` in each template) — databases, caches, and",
+        "queues are never embedded in the app container.",
         "",
         "To record a QA pass, edit `qa-status.json` and re-run",
         "`python scripts/generate-qa-table.py`:",
@@ -90,6 +158,7 @@ def build_table(services: list[dict], overrides: dict) -> str:
         '      <th align="left" width="40"></th>',
         '      <th align="left">App</th>',
         '      <th align="center" width="100">Version</th>',
+        '      <th align="left">Add-ons</th>',
         '      <th align="center" width="90">Standard</th>',
         '      <th align="center" width="70">HA</th>',
         "    </tr>",
@@ -103,12 +172,14 @@ def build_table(services: list[dict], overrides: dict) -> str:
         std = qa_cell(o.get("standard", False))
         ha = qa_cell(o.get("ha") if "ha" in o else (False if ha_available(svc) else None))
         version = html.escape(template_version(svc))
+        addons = html.escape(addons_cell(svc))
         icon = icon_img(svc.get("icon", ""), name)
         safe_name = html.escape(name)
         rows.append("    <tr>")
         rows.append(f"      <td>{icon}</td>")
         rows.append(f"      <td><strong>{safe_name}</strong></td>")
         rows.append(f'      <td align="center"><code>{version}</code></td>')
+        rows.append(f"      <td>{addons}</td>")
         rows.append(f'      <td align="center">{std}</td>')
         rows.append(f'      <td align="center">{ha}</td>')
         rows.append("    </tr>")

@@ -32,7 +32,7 @@ spec:
         - name: ADMIN_EMAIL
           value: ""
         - name: DATABASE_URL
-          value: mongodb://textbee:textbee@textbee-api-mongodb:27017/textbee
+          value: mongodb://mongoadmin:changeme@documentdb-service-textbee-api-documentdb:10260/textbee?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
         - name: MAIL_HOST
           value: ""
         - name: MAIL_PORT
