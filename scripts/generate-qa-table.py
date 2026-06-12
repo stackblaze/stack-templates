@@ -30,14 +30,12 @@ KIND_DISPLAY = {
     "KuberoCouchDB": "CouchDB",
     "Elasticsearch": "Elasticsearch",
     "Kafka": "Kafka (Strimzi)",
-    "Redis": "Opstree Redis",
-    "RedisCluster": "Opstree Redis Cluster",
     "DocumentDB": "Document DB",
     "RabbitmqCluster": "RabbitMQ",
     "Milvus": "Milvus",
     "WeaviateCluster": "Weaviate",
     "Tenant": "RustFS",
-    "Cockroachdb": "CockroachDB",
+    "CrdbCluster": "CockroachDB",
 }
 
 

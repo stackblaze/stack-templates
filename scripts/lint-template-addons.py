@@ -11,6 +11,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 SERVICES = ROOT / "services"
 
+# Keep in sync with kubero/server/src/addons/addon-tiers.ts DEPRECATED_ADDON_KINDS
 RETIRED_KINDS = {
     "KuberoAddonPostgres",
     "KuberoAddonRedis",
@@ -19,6 +20,11 @@ RETIRED_KINDS = {
     "KuberoAddonRabbitmq",
     "PerconaServerMongoDB",
     "PostgresCluster",
+    "WeaviateCluster",
+    "KuberoMail",
+    "Elasticsearch",
+    "Redis",
+    "RedisCluster",
 }
 
 REPLACEMENTS = {
@@ -29,6 +35,10 @@ REPLACEMENTS = {
     "KuberoAddonRabbitmq": "RabbitmqCluster",
     "PerconaServerMongoDB": "DocumentDB",
     "PostgresCluster": "Cluster",
+    "WeaviateCluster": "Milvus",
+    "Elasticsearch": "KuberoOpenSearch",
+    "Redis": "Valkey",
+    "RedisCluster": "Valkey",
 }
 
 
@@ -42,7 +52,7 @@ def check_file(path: Path) -> list[str]:
     for addon in addons:
         kind = str(addon.get("kind") or "").strip()
         if kind in RETIRED_KINDS:
-            repl = REPLACEMENTS.get(kind, "supported operator add-on")
+            repl = REPLACEMENTS.get(kind, "a supported operator add-on")
             errors.append(f"{path}: retired add-on {kind} — use {repl}")
     return errors
 
