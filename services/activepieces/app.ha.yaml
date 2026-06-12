@@ -50,6 +50,8 @@ spec:
               owner: activepieces
               secret:
                 name: activepieces-postgresql-app
+              postInitApplicationSQL:
+                - CREATE EXTENSION IF NOT EXISTS vector;
           enableSuperuserAccess: true
           superuserSecret:
             name: activepieces-postgresql-superuser
@@ -139,9 +141,9 @@ spec:
   - name: AP_POSTGRES_PORT
     value: '5432'
   - name: AP_REDIS_PASSWORD
-    value: ""
+    value: activepieces
   - name: AP_ENCRYPTION_KEY
-    value: secretsecret
+    value: "0123456789abcdef0123456789abcdef"
   extraVolumes: []
   image:
     containerPort: '80'
