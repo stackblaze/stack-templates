@@ -16,31 +16,24 @@ MARKER_START = "<!-- qa-table:start -->"
 MARKER_END = "<!-- qa-table:end -->"
 
 # Kubero plugin `kind` → `displayName` (see kubero/server/src/addons/plugins/).
+# Retired kinds (KuberoAddon*, PostgresCluster, PerconaServerMongoDB) must not appear
+# in template YAML — see scripts/lint-template-addons.py.
 KIND_DISPLAY = {
     "Cluster": "PostgreSQL (CloudNativePG)",
     "MariaDB": "MariaDB",
     "Valkey": "Valkey",
-    "KuberoMongoDB": "MongoDB (deprecated — use DocumentDB)",
     "ClickHouseInstallation": "ClickHouse Cluster",
-    "KuberoAddonRabbitmq": "RabbitMQ",
     "KuberoAddonMemcached": "Memcached",
-    "KuberoAddonPostgres": "PostgreSQL",
-    "KuberoAddonMysql": "MySQL",
-    "KuberoAddonRedis": "Redis",
-    "KuberoAddonMongodb": "MongoDB",
     "KuberoMail": "Haraka Mail Server",
     "KuberoOpenSearch": "OpenSearch",
     "KuberoFerretDB": "FerretDB",
     "KuberoCouchDB": "CouchDB",
     "Elasticsearch": "Elasticsearch",
     "Kafka": "Kafka (Strimzi)",
-    "PostgresCluster": "Crunchy Postgres Cluster",
     "Redis": "Opstree Redis",
     "RedisCluster": "Opstree Redis Cluster",
-    "PerconaServerMongoDB": "Percona MongoDB",
     "DocumentDB": "Document DB",
     "RabbitmqCluster": "RabbitMQ",
-    "Memcached": "Memcached",
     "Milvus": "Milvus",
     "WeaviateCluster": "Weaviate",
     "Tenant": "RustFS",

@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4921959?s=200&v=4
     kubero.dev/template.installation: Set SETTING_EXTERNAL_HOST and SECRETS_secret_key before first boot. Initial startup
       can take 5–10 minutes while Zulip configures all services. Requires
-      `kubero-operator/operators/install.sh` (RabbitMQ Cluster + KubeDB operators).
+      `kubero-operator/operators/install.sh` (RabbitMQ Cluster operator).
     kubero.dev/template.links: '["https://zulip.readthedocs.io/projects/docker/"]'
     kubero.dev/template.screenshots: '["https://zulip.com/static/images/landing-page/zulip-hero.png"]'
     kubero.dev/template.source: https://github.com/zulip/zulip
@@ -144,18 +144,24 @@ spec:
     env: []
     icon: /img/addons/memcached.svg
     id: kubero-operator
-    kind: Memcached
+    kind: KuberoAddonMemcached
     resourceDefinitions:
-      Memcached:
-        apiVersion: kubedb.com/v1alpha2
-        kind: Memcached
+      KuberoAddonMemcached:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoAddonMemcached
         metadata:
           name: zulip-memcached
         spec:
-          version: 1.6.22-v1
-          replicas: 3
-          storageType: Ephemeral
-          terminationPolicy: Delete
+          memcached:
+            image:
+              tag: "1.6.39"
+            replicaCount: 3
+            config:
+              memoryLimit: 64
+              maxConnections: 1024
+              extraArgs: []
+              verbosity: 0
+            resources: {}
   envVars:
   - name: SETTING_EXTERNAL_HOST
     value: zulip.localhost

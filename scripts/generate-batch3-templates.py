@@ -30,43 +30,37 @@ def rabbitmq_addon(name: str, user: str, password: str, replicas: int) -> dict:
         "env": [],
         "icon": "/img/addons/rabbitmq.svg",
         "id": "kubero-operator",
-        "kind": "KuberoAddonRabbitmq",
+        "kind": "RabbitmqCluster",
         "resourceDefinitions": {
-            "KuberoAddonRabbitmq": {
-                "apiVersion": "application.kubero.dev/v1alpha1",
-                "kind": "KuberoAddonRabbitmq",
+            "RabbitmqCluster": {
+                "apiVersion": "rabbitmq.com/v1beta1",
+                "kind": "RabbitmqCluster",
                 "metadata": {"name": f"{name}-rabbitmq"},
                 "spec": {
-                    "rabbitmq": {
-                        "image": {"tag": "4"},
-                        "replicaCount": replicas,
-                        "serviceMonitor": {"enabled": False},
-                        "clusterDomain": "cluster.local",
-                        "plugins": [],
-                        "authentication": {
-                            "user": {"value": user},
-                            "password": {"value": password},
-                            "erlangCookie": {"value": f"{name}_erlang_cookie"},
-                        },
-                        "options": {
-                            "memoryHighWatermark": {
-                                "enabled": False,
-                                "type": "relative",
-                                "value": 0.4,
-                            },
-                            "memory": {},
-                        },
-                        "managementPlugin": {"enabled": False},
-                        "prometheusPlugin": {"enabled": True},
-                        "storage": {
-                            "volumeName": "rabbitmq-volume",
-                            "requestedSize": "1Gi",
-                            "className": "fast",
-                            "accessModes": ["ReadWriteOnce"],
-                        },
-                    }
+                    "replicas": replicas,
+                    "persistence": {
+                        "storageClassName": "fast",
+                        "storage": "1Gi",
+                    },
+                    "resources": {
+                        "requests": {"cpu": "100m", "memory": "512Mi"},
+                        "limits": {"memory": "1Gi"},
+                    },
                 },
-            }
+            },
+            "default-userSecret": {
+                "apiVersion": "v1",
+                "kind": "Secret",
+                "metadata": {"name": f"{name}-rabbitmq-default-user"},
+                "type": "Opaque",
+                "stringData": {
+                    "username": user,
+                    "password": password,
+                    "default_user.conf": (
+                        f"default_user = {user}\ndefault_pass = {password}"
+                    ),
+                },
+            },
         },
     }
 
@@ -284,7 +278,7 @@ CATALOG_ENTRIES = [
         "categories": ["communication", "work", "collaboration"],
         "screenshots": ["https://zulip.com/static/images/landing-page/zulip-hero.png"],
         "links": ["https://zulip.readthedocs.io/projects/docker/"],
-        "addons": ["Cluster", "Valkey", "KuberoAddonRabbitmq", "KuberoAddonMemcached"],
+        "addons": ["Cluster", "Valkey", "RabbitmqCluster", "KuberoAddonMemcached"],
         "stars": 22000,
         "language": "Python",
         "license": "Other",

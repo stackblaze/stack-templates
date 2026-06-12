@@ -40,7 +40,7 @@ app container.
 
 Use **Kubernetes operator add-ons** only — never deprecated `KuberoAddon*`
 or `KuberoMongoDB`. All prerequisite operators (CNPG, MariaDB, Valkey,
-Document DB, ClickHouse, Strimzi Kafka, RustFS, RabbitMQ, KubeDB Memcached,
+Document DB, ClickHouse, Strimzi Kafka, RustFS, RabbitMQ,
 Milvus, Weaviate, …) are installed via **`kubero-operator/operators/install.sh`**
 into the cluster `operators` namespace. Every add-on block in templates must
 use **`id: kubero-operator`** — the `kind` field selects the CR type
