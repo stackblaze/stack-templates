@@ -20,28 +20,41 @@ spec:
   cronjobs: []
   deploymentstrategy: docker
   envVars:
-  - name: SWOOLE_WORKER_NUM
-    value: '4'
-  - name: API_ENABLED
-    value: 'true'
-  - name: CORS_ALLOW_ORIGIN
-    value: ^https?://(localhost||slink\.yourdomain\.com|127\.0\.0\.1)(:[0-9]+)?$
-  - name: USER_APPROVAL_REQUIRED
-    value: 'true'
-  - name: USER_APPROVAL_REQUIRED
-    value: 15M
+  - name: TZ
+    value: UTC
   - name: ORIGIN
-    value: http://slink.yourdomain.com
+    value: '{{KUBERO_APP_URL}}'
+  - name: USER_APPROVAL_REQUIRED
+    value: 'true'
+  - name: USER_PASSWORD_MIN_LENGTH
+    value: '8'
+  - name: IMAGE_MAX_SIZE
+    value: 15M
+  - name: STORAGE_PROVIDER
+    value: local
   extraVolumes:
   - accessMode: ReadWriteOnce
     accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /var/data
-    name: slink-volume
+    mountPath: /app/var/data
+    name: slink-data
+    size: 1Gi
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/slink/images
+    name: slink-images
     size: 10Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
-    containerPort: '2000'
+    containerPort: '3000'
     pullPolicy: Always
     repository: anirdev/slink
     tag: latest
