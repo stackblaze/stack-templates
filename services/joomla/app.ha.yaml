@@ -90,14 +90,6 @@ spec:
     value: change-me
   - name: JOOMLA_ADMIN_EMAIL
     value: admin@example.com
-  extraVolumes:
-  - accessModes:
-    - ReadWriteMany
-    storageClass: shared
-    emptyDir: false
-    mountPath: /var/www/html/images
-    name: joomla-images
-    size: 1Gi
   image:
     containerPort: '80'
     repository: joomla
