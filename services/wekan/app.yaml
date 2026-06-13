@@ -6,7 +6,7 @@ metadata:
         kubero.dev/template.architecture: '["linux/amd64"]'
         kubero.dev/template.description: "The Open Source kanban board"
         kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/11725037"
-        kubero.dev/template.installation: "Requires at least 2Gi memory. First boot can take several minutes while Wekan connects to DocumentDB."
+        kubero.dev/template.installation: "Requires at least 2Gi memory. Uses DocumentDB with polling reactivity (change streams unsupported). First boot can take several minutes."
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://wekan.github.io/wekan-dark-mode.png"]'
         kubero.dev/template.source: "https://github.com/wekan/wekan"
@@ -22,7 +22,7 @@ spec:
         - name: WRITABLE_PATH
           value: /data
         - name: MONGO_URL
-          value: mongodb://mongoadmin:changeme@documentdb-service-wekan-documentdb:10260/wekan?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
+          value: mongodb://mongoadmin:changeme@documentdb-service-wekan-documentdb:10260/wekan?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false
         - name: ROOT_URL
           value: '{{KUBERO_APP_URL}}'
         - name: WITH_API
@@ -37,6 +37,8 @@ spec:
           value: "true"
         - name: PORT
           value: "8080"
+        - name: METEOR_REACTIVITY_ORDER
+          value: polling
     extraVolumes:
         - accessMode: ReadWriteOnce
           accessModes:
