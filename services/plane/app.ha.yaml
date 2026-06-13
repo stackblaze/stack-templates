@@ -193,4 +193,6 @@ spec:
     repository: makeplane/plane-backend
     tag: stable
     command:
-    - ./bin/docker-entrypoint-api.sh
+    - sh
+    - -c
+    - ./bin/docker-entrypoint-migrator.sh && ./bin/docker-entrypoint-api.sh
