@@ -6,7 +6,7 @@ metadata:
         kubero.dev/template.architecture: "[]"
         kubero.dev/template.description: "Metabase is the easy, open-source way for everyone in your company to ask questions and learn from data."
         kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/10520629"
-        kubero.dev/template.installation: ""
+        kubero.dev/template.installation: "First boot can take several minutes while Metabase initializes its application database."
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '[ "https://raw.githubusercontent.com/metabase/metabase/master/docs/images/metabase-product-screenshot.svg"]'
         kubero.dev/template.source: "https://github.com/metabase/metabase"
@@ -18,10 +18,80 @@ metadata:
 spec:
     name: metabase
     deploymentstrategy: docker
-    envVars: []
+    addons:
+    - displayName: PostgreSQL (CloudNativePG)
+      env: []
+      icon: /img/addons/pgsql.svg
+      id: kubero-operator
+      kind: Cluster
+      resourceDefinitions:
+        Cluster:
+          apiVersion: postgresql.cnpg.io/v1
+          kind: Cluster
+          metadata:
+            name: metabase-postgres
+          spec:
+            instances: 1
+            imageName: ghcr.io/cloudnative-pg/postgresql:16
+            primaryUpdateStrategy: unsupervised
+            storage:
+              storageClass: fast
+              size: 5Gi
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: "1"
+                memory: 1Gi
+            bootstrap:
+              initdb:
+                database: metabase
+                owner: metabase
+                secret:
+                  name: metabase-postgres-app
+                postInitApplicationSQL:
+                  - GRANT ALL ON SCHEMA public TO metabase
+                  - GRANT CREATE ON SCHEMA public TO metabase
+                  - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO metabase
+            enableSuperuserAccess: true
+            superuserSecret:
+              name: metabase-postgres-superuser
+        superuserSecret:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: metabase-postgres-superuser
+          type: kubernetes.io/basic-auth
+          stringData:
+            username: postgres
+            password: metabase
+        appUserSecret:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: metabase-postgres-app
+          type: kubernetes.io/basic-auth
+          stringData:
+            username: metabase
+            password: metabase
+    envVars:
+    - name: MB_DB_TYPE
+      value: postgres
+    - name: MB_DB_DBNAME
+      value: metabase
+    - name: MB_DB_PORT
+      value: "5432"
+    - name: MB_DB_USER
+      value: metabase
+    - name: MB_DB_PASS
+      value: metabase
+    - name: MB_DB_HOST
+      value: metabase-postgres-rw
+    - name: JAVA_OPTS
+      value: -Xmx1536m
     extraVolumes: []
     cronjobs: []
-    addons: []
     web:
         replicaCount: 1
     worker:
@@ -31,3 +101,17 @@ spec:
         pullPolicy: Always
         repository: metabase/metabase
         tag: latest
+    # Default QA LimitRange caps web pods at 512Mi; Metabase OOMs during boot.
+    resources:
+        requests:
+            cpu: 500m
+            memory: 1Gi
+        limits:
+            cpu: "1"
+            memory: 2Gi
+    healthcheck:
+        enabled: true
+        path: /
+        startupSeconds: 300
+        timeoutSeconds: 5
+        periodSeconds: 10
