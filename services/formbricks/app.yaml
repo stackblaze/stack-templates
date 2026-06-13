@@ -6,8 +6,9 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source Qualtrics alternative for in-product micro-surveys and experience management.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/105877416?s=200&v=4
-    kubero.dev/template.installation: Generate NEXTAUTH_SECRET, ENCRYPTION_KEY, CRON_SECRET, HUB_API_KEY, and CUBEJS_API_SECRET
-      with openssl rand -hex 32 before production use.
+    kubero.dev/template.installation: Pinned to v4.8.6 for Kubero single-app deploy (v5 requires Hub and Cube).
+      Replace NEXTAUTH_SECRET, ENCRYPTION_KEY, and CRON_SECRET with openssl rand -hex 32 before production.
+      For Formbricks v5 with Hub, use the official Helm chart instead.
     kubero.dev/template.links: '["https://formbricks.com/docs/self-hosting/setup/docker"]'
     kubero.dev/template.screenshots: '["https://formbricks.com/images/og-image.png"]'
     kubero.dev/template.source: https://github.com/formbricks/formbricks
@@ -51,6 +52,10 @@ spec:
               owner: formbricks
               secret:
                 name: formbricks-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO formbricks
+                - GRANT CREATE ON SCHEMA public TO formbricks
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO formbricks
           enableSuperuserAccess: true
           superuserSecret:
             name: formbricks-postgresql-superuser
@@ -111,23 +116,36 @@ spec:
   - name: REDIS_URL
     value: redis://rfr-formbricks-valkey-readwrite:6379
   - name: NEXTAUTH_SECRET
-    value: replace-with-openssl-rand-hex-32
+    value: random64
   - name: ENCRYPTION_KEY
-    value: replace-with-openssl-rand-hex-32
+    value: random64
   - name: CRON_SECRET
-    value: replace-with-openssl-rand-hex-32
-  - name: HUB_API_KEY
-    value: replace-with-openssl-rand-hex-32
-  - name: CUBEJS_API_SECRET
-    value: replace-with-openssl-rand-hex-32
+    value: random64
+  - name: EMAIL_VERIFICATION_DISABLED
+    value: '1'
+  - name: PASSWORD_RESET_DISABLED
+    value: '1'
   extraVolumes: []
   cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '3000'
     pullPolicy: Always
     repository: ghcr.io/formbricks/formbricks
-    tag: latest
+    tag: "4.8.6"
