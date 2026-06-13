@@ -78,7 +78,7 @@ spec:
   - name: MYSQL_PASSWORD
     value: nextcloud
   - name: NEXTCLOUD_TRUSTED_DOMAINS
-    value: nextcloud.localhost
+    value: localhost {{KUBERO_APP_HOST}}
   - name: OVERWRITEPROTOCOL
     value: https
   extraVolumes:
@@ -86,7 +86,7 @@ spec:
     - ReadWriteMany
     storageClass: shared
     emptyDir: false
-    mountPath: /var/www/html
+    mountPath: /var/www/html/data
     name: nextcloud-data
     size: 5Gi
   cronjobs: []
