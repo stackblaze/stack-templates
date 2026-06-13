@@ -50,6 +50,10 @@ spec:
               owner: openproject
               secret:
                 name: openproject-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO openproject
+                - GRANT CREATE ON SCHEMA public TO openproject
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO openproject
           enableSuperuserAccess: true
           superuserSecret:
             name: openproject-postgresql-superuser
@@ -75,11 +79,11 @@ spec:
   - name: OPENPROJECT_HTTPS
     value: 'true'
   - name: OPENPROJECT_HOST__NAME
-    value: openproject.localhost
+    value: '{{KUBERO_APP_HOST}}'
   - name: DATABASE_URL
     value: postgresql://openproject:openproject@openproject-postgresql-rw:5432/openproject
   - name: OPENPROJECT_SECRET_KEY_BASE
-    value: replace-with-openssl-rand-hex-64
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -92,6 +96,19 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '8080'
     pullPolicy: Always
