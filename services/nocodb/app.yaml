@@ -18,7 +18,9 @@ spec:
   addons: []
   cronjobs: []
   deploymentstrategy: docker
-  envVars: []
+  envVars:
+  - name: NODE_OPTIONS
+    value: --max-old-space-size=1536
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -33,6 +35,20 @@ spec:
       securityContext:
         readOnlyRootFilesystem: false
     tag: latest
+  # Default QA LimitRange caps web pods at 512Mi; NocoDB OOMs during boot.
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   name: nocodb
   web:
     replicaCount: 1
