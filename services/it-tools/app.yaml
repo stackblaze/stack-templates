@@ -1,0 +1,31 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Collection of handy online tools for developers,
+      with great UX.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/CorentinTh/it-tools/main/public/favicon-32x32.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/CorentinTh/it-tools/main/.github/logo-dark.png"]'
+    kubero.dev/template.source: https://github.com/CorentinTh/it-tools
+    kubero.dev/template.categories: '["development", "utilities"]'
+    kubero.dev/template.title: IT-Tools
+    kubero.dev/template.website: https://it-tools.tech
+  name: it-tools
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes: []
+  image:
+    containerPort: '80'
+    repository: corentinth/it-tools
+    tag: latest
+  name: it-tools
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
