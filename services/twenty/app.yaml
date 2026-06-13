@@ -47,6 +47,8 @@ spec:
           value: 5m
         - name: WORKSPACE_INACTIVE_DAYS_BEFORE_NOTIFICATION
           value: "365"
+        - name: WORKSPACE_INACTIVE_DAYS_BEFORE_SOFT_DELETION
+          value: "380"
         - name: WORKSPACE_INACTIVE_DAYS_BEFORE_DELETION
           value: "400"
         - name: STORAGE_TYPE
@@ -100,6 +102,10 @@ spec:
                               owner: twenty
                               secret:
                                   name: twenty-postgresql-app
+                              postInitApplicationSQL:
+                                  - GRANT ALL ON SCHEMA public TO twenty
+                                  - GRANT CREATE ON SCHEMA public TO twenty
+                                  - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO twenty
                       enableSuperuserAccess: true
                       superuserSecret:
                           name: twenty-postgresql-superuser
