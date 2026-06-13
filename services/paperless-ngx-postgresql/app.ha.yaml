@@ -22,11 +22,11 @@ spec:
         - name: PAPERLESS_SECRET_KEY
           value: 70zcjuy9cy9NcIrj++eK2FR0E/Kdb3d3VZhRw8UmDSg=
         - name: PAPERLESS_REDIS
-          value: redis://rfr-valkey-readwrite:6379
+          value: redis://rfr-paperless-valkey-readwrite:6379
         - name: PAPERLESS_URL
           value: '{{KUBERO_APP_URL}}'
         - name: PAPERLESS_DBHOST
-          value: postgres-rw
+          value: paperless-pg-rw
         - name: PAPERLESS_DBNAME
           value: paperless
         - name: PAPERLESS_DBPORT
@@ -82,7 +82,7 @@ spec:
                   apiVersion: rds.valkey.buf.red/v1alpha1
                   kind: Valkey
                   metadata:
-                      name: valkey
+                      name: paperless-valkey
                   spec:
                       version: "8.0"
                       arch: failover
@@ -114,7 +114,7 @@ spec:
                   apiVersion: postgresql.cnpg.io/v1
                   kind: Cluster
                   metadata:
-                      name: postgres
+                      name: paperless-pg
                   spec:
                       instances: 3
                       imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -134,19 +134,19 @@ spec:
                               database: paperless
                               owner: paperless
                               secret:
-                                  name: postgres-app
+                                  name: paperless-pg-app
                               postInitApplicationSQL:
                                   - GRANT ALL ON SCHEMA public TO paperless
                                   - GRANT CREATE ON SCHEMA public TO paperless
                                   - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO paperless
                       enableSuperuserAccess: true
                       superuserSecret:
-                          name: postgres-superuser
+                          name: paperless-pg-superuser
               superuserSecret:
                   apiVersion: v1
                   kind: Secret
                   metadata:
-                      name: postgres-superuser
+                      name: paperless-pg-superuser
                   type: kubernetes.io/basic-auth
                   stringData:
                       username: postgres
@@ -155,7 +155,7 @@ spec:
                   apiVersion: v1
                   kind: Secret
                   metadata:
-                      name: postgres-app
+                      name: paperless-pg-app
                   type: kubernetes.io/basic-auth
                   stringData:
                       username: paperless
