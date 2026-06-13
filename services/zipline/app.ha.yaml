@@ -27,7 +27,7 @@ spec:
           value: 0.0.0.0
         - name: CORE_PORT
           value: "3000"
-        - name: CORE_DATABASE_URL
+        - name: DATABASE_URL
           value: postgres://zipline:zipline@zipline-postgresql-rw:5432/zipline
     extraVolumes:
         - accessMode: ReadWriteOnce
@@ -77,6 +77,10 @@ spec:
                               owner: zipline
                               secret:
                                   name: zipline-postgresql-app
+                              postInitApplicationSQL:
+                                  - GRANT ALL ON SCHEMA public TO zipline
+                                  - GRANT CREATE ON SCHEMA public TO zipline
+                                  - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zipline
                       enableSuperuserAccess: true
                       superuserSecret:
                           name: zipline-postgresql-superuser
