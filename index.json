@@ -3867,6 +3867,44 @@
       "dirname": "archivebox"
     },
     {
+      "name": "audiobookshelf",
+      "description": "Self-hosted audiobook and podcast server with multi-user support, progress sync, and OPDS.",
+      "source": "https://github.com/advplyr/audiobookshelf",
+      "icon": "https://avatars.githubusercontent.com/u/88282323?s=200&v=4",
+      "website": "https://www.audiobookshelf.org/",
+      "installation": "Upload media to the audiobooks and podcasts volumes, then add libraries in Settings.",
+      "architecture": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "categories": [
+        "media",
+        "utilities"
+      ],
+      "screenshots": [
+        "https://raw.githubusercontent.com/advplyr/audiobookshelf/master/images/banner.jpg"
+      ],
+      "links": [
+        "https://www.audiobookshelf.org/docs/"
+      ],
+      "addons": [],
+      "stars": 13180,
+      "forks": 1005,
+      "watchers": 69,
+      "issues": 1056,
+      "last_updated": "2026-06-13T15:51:37Z",
+      "last_pushed": "2026-06-04T20:13:34Z",
+      "created_at": "2021-08-17T22:00:40Z",
+      "size": 42775,
+      "language": "JavaScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/audiobookshelf/app.yaml",
+      "status": "active",
+      "license": "GNU General Public License v3.0",
+      "spdx_id": "GPL-3.0",
+      "dirname": "audiobookshelf"
+    },
+    {
       "name": "kanboard",
       "description": "Kanboard is a free and open source project management software focused on the Kanban methodology.",
       "source": "https://github.com/kanboard/kanboard",
