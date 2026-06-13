@@ -1,0 +1,54 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Web file manager — browse, upload, and share files from the browser.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/35781395?v=4
+    kubero.dev/template.installation: 'Default login: admin/admin. Database and config persist under /database and /config volumes.'
+    kubero.dev/template.links: '["https://filebrowser.org/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/filebrowser/filebrowser
+    kubero.dev/template.categories: '["utilities", "storage", "work"]'
+    kubero.dev/template.title: File Browser
+    kubero.dev/template.website: https://filebrowser.org/
+  labels:
+    manager: kubero
+  name: filebrowser
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /srv
+    name: filebrowser-srv
+    size: 1Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /database
+    name: filebrowser-database
+    size: 1Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /config
+    name: filebrowser-config
+    size: 100Mi
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: filebrowser/filebrowser
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+    tag: latest
+  name: filebrowser
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
