@@ -1,0 +1,50 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Beyond coding. Forgejo is a self-hosted lightweight
+      software forge with Git hosting, code review, team collaboration, package registry
+      and CI/CD.
+    kubero.dev/template.icon: https://codeberg.org/forgejo/Forgejo/raw/branch/forgejo/public/assets/img/logo.svg
+    kubero.dev/template.installation: First boot initializes SQLite under /data and
+      creates app.ini automatically. Set FORGEJO__server__ROOT_URL to your public URL
+      before first deploy if not using Kubero ingress substitution.
+    kubero.dev/template.links: '["https://forgejo.org/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://codeberg.org/forgejo/Forgejo
+    kubero.dev/template.categories: '["work","development","collaboration"]'
+    kubero.dev/template.title: Forgejo
+    kubero.dev/template.website: https://forgejo.org/
+  name: forgejo
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: USER_UID
+    value: '1000'
+  - name: USER_GID
+    value: '1000'
+  - name: FORGEJO__server__ROOT_URL
+    value: '{{KUBERO_APP_URL}}'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /data
+    name: forgejo-data
+    size: 10Gi
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: codeberg.org/forgejo/forgejo
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+    tag: '11'
+  name: forgejo
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
