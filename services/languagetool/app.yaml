@@ -34,7 +34,8 @@ spec:
     size: 1Gi
   healthcheck:
     enabled: true
-    path: /healthcheck
+    # API-only image: / and /healthcheck return 400 without query params.
+    path: /v2/languages
     startupSeconds: 180
     timeoutSeconds: 5
     periodSeconds: 10
@@ -42,6 +43,13 @@ spec:
     containerPort: '8010'
     repository: erikvl87/languagetool
     tag: latest
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
   name: languagetool
   web:
     replicaCount: 1

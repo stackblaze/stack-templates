@@ -30,17 +30,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: freshrss-mysql
+          name: "{{KUBERO_APP_NAME}}-freshrss-mysql"
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: freshrss-mysql-root
+            name: "{{KUBERO_APP_NAME}}-freshrss-mysql-root"
             key: password
           database: freshrss
           username: freshrss
           passwordSecretKeyRef:
-            name: freshrss-mysql-app
+            name: "{{KUBERO_APP_NAME}}-freshrss-mysql-app"
             key: password
           storage:
             size: 5Gi
@@ -59,7 +59,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: freshrss-mysql-root
+          name: "{{KUBERO_APP_NAME}}-freshrss-mysql-root"
         type: Opaque
         stringData:
           password: freshrss
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: freshrss-mysql-app
+          name: "{{KUBERO_APP_NAME}}-freshrss-mysql-app"
         type: Opaque
         stringData:
           password: freshrss
@@ -77,7 +77,7 @@ spec:
   - name: CRON_MIN
     value: 13,43
   - name: FRESHRSS_INSTALL
-    value: --default-user admin --db-type mysql --db-host freshrss-mysql --db-user freshrss --db-password freshrss
+    value: --default-user admin --db-type mysql --db-host {{KUBERO_APP_NAME}}-freshrss-mysql --db-user freshrss --db-password freshrss
       --db-base freshrss
   extraVolumes:
   - accessModes:
