@@ -51,6 +51,10 @@ spec:
               owner: nodebb
               secret:
                 name: nodebb-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO nodebb
+                - GRANT CREATE ON SCHEMA public TO nodebb
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nodebb
           enableSuperuserAccess: true
           superuserSecret:
             name: nodebb-postgresql-superuser
@@ -101,6 +105,12 @@ spec:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
+    mountPath: /usr/src/app/build
+    name: nodebb-build
+    size: 1Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
     mountPath: /usr/src/app/public/uploads
     name: nodebb-uploads
     size: 2Gi
@@ -115,6 +125,19 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '4567'
     pullPolicy: Always
