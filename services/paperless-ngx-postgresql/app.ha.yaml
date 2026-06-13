@@ -22,11 +22,11 @@ spec:
         - name: PAPERLESS_SECRET_KEY
           value: 70zcjuy9cy9NcIrj++eK2FR0E/Kdb3d3VZhRw8UmDSg=
         - name: PAPERLESS_REDIS
-          value: redis://rfr-paperless-ngx-valkey-readwrite:6379
+          value: redis://rfr-valkey-readwrite:6379
         - name: PAPERLESS_URL
-          value: https://paperless-ngx.localhost
+          value: '{{KUBERO_APP_URL}}'
         - name: PAPERLESS_DBHOST
-          value: paperless-ngx-postgresql-rw
+          value: postgres-rw
         - name: PAPERLESS_DBNAME
           value: paperless
         - name: PAPERLESS_DBPORT
@@ -82,7 +82,7 @@ spec:
                   apiVersion: rds.valkey.buf.red/v1alpha1
                   kind: Valkey
                   metadata:
-                      name: paperless-ngx-valkey
+                      name: valkey
                   spec:
                       version: "8.0"
                       arch: failover
@@ -114,7 +114,7 @@ spec:
                   apiVersion: postgresql.cnpg.io/v1
                   kind: Cluster
                   metadata:
-                      name: paperless-ngx-postgresql
+                      name: postgres
                   spec:
                       instances: 3
                       imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -134,15 +134,19 @@ spec:
                               database: paperless
                               owner: paperless
                               secret:
-                                  name: paperless-ngx-postgresql-app
+                                  name: postgres-app
+                              postInitApplicationSQL:
+                                  - GRANT ALL ON SCHEMA public TO paperless
+                                  - GRANT CREATE ON SCHEMA public TO paperless
+                                  - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO paperless
                       enableSuperuserAccess: true
                       superuserSecret:
-                          name: paperless-ngx-postgresql-superuser
+                          name: postgres-superuser
               superuserSecret:
                   apiVersion: v1
                   kind: Secret
                   metadata:
-                      name: paperless-ngx-postgresql-superuser
+                      name: postgres-superuser
                   type: kubernetes.io/basic-auth
                   stringData:
                       username: postgres
@@ -151,7 +155,7 @@ spec:
                   apiVersion: v1
                   kind: Secret
                   metadata:
-                      name: paperless-ngx-postgresql-app
+                      name: postgres-app
                   type: kubernetes.io/basic-auth
                   stringData:
                       username: paperless
@@ -160,6 +164,12 @@ spec:
         replicaCount: 1
     worker:
         replicaCount: 0
+    healthcheck:
+        enabled: true
+        path: /
+        startupSeconds: 600
+        timeoutSeconds: 5
+        periodSeconds: 10
     image:
         containerPort: "8000"
         pullPolicy: Always

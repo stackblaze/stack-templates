@@ -1769,7 +1769,7 @@
       "status": "active",
       "license": "GNU General Public License v3.0",
       "spdx_id": "GPL-3.0",
-      "dirname": "paperless-ngx-postgresql",
+      "dirname": "paperless-ngx",
       "deploymentTypes": [
         {
           "id": "standard",
