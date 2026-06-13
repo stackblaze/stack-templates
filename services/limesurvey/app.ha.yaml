@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.description: LimeSurvey is the simple, quick and anonymous
       online survey tool that's bursting with juicy insights.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1364105?s=200&v=4
-    kubero.dev/template.installation: ''
+    kubero.dev/template.installation: Auto-installs on first boot when LIMESURVEY_DB_* and admin env vars are set. Default login admin/root — change immediately.
     kubero.dev/template.links: '"https://manual.limesurvey.org/LimeSurvey_Manual"'
     kubero.dev/template.screenshots: '["https://manual.limesurvey.org/images/1/15/Surveys-alternative_button.png","https://manual.limesurvey.org/images/5/50/Newsurveyscreen.png"]'
     kubero.dev/template.source: https://github.com/LimeSurvey/LimeSurvey
@@ -65,9 +65,13 @@ spec:
   - name: LIMESURVEY_DB_PASSWORD
     value: root
   - name: LIMESURVEY_ADMIN_USER
+    value: admin
+  - name: LIMESURVEY_ADMIN_PASSWORD
     value: root
-  - name: LIME_ADMIN_PASSWORD
-    value: root
+  - name: LIMESURVEY_DB_NAME
+    value: limesurvey
+  - name: LIMESURVEY_USE_INNODB
+    value: '1'
   - name: LIMESURVEY_ADMIN_NAME
     value: Lime Administrator
   - name: LIMESURVEY_ADMIN_EMAIL
@@ -75,12 +79,28 @@ spec:
   extraVolumes:
   - accessModes:
     - ReadWriteMany
+    storageClass: shared
     emptyDir: false
-    mountPath: /var/www/html
-    name: limesurvey-volume
+    mountPath: /var/www/html/upload
+    name: limesurvey-upload
+    size: 2Gi
+  - accessModes:
+    - ReadWriteMany
+    storageClass: shared
+    emptyDir: false
+    mountPath: /var/www/html/plugins
+    name: limesurvey-plugins
+    size: 1Gi
+  - accessModes:
+    - ReadWriteMany
+    storageClass: shared
+    emptyDir: false
+    mountPath: /var/www/html/application/config
+    name: limesurvey-config
     size: 1Gi
   image:
-    containerPort: '8082'
+    containerPort: '80'
+    pullPolicy: Always
     repository: adamzammit/limesurvey
     tag: latest
   name: limesurvey
