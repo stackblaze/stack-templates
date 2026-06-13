@@ -2,7 +2,7 @@ apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
   annotations:
-    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
     kubero.dev/template.description: A self-hosted, file based task management board
       that supports Markdown syntax.
     kubero.dev/template.icon: https://raw.githubusercontent.com/BaldissaraMatheus/Tasks.md/main/frontend/public/favicon/android-chrome-192x192.png
@@ -13,22 +13,42 @@ metadata:
     kubero.dev/template.categories: '["productivity", "utilities", "work"]'
     kubero.dev/template.title: Tasks.md
     kubero.dev/template.website: https://hub.docker.com/r/baldissaramatheus/tasks.md
+  labels:
+    manager: kubero
   name: tasksmd
 spec:
   addons: []
   cronjobs: []
   deploymentstrategy: docker
   envVars:
+  - name: PUID
+    value: '1000'
+  - name: PGID
+    value: '1000'
   - name: TITLE
     value: Demo
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
-    mountPath: /api/files/
-    name: tasksmd-files
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /tasks
+    name: tasksmd-tasks
     size: 1Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /config
+    name: tasksmd-config
+    size: 1Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '8080'
+    pullPolicy: Always
     repository: baldissaramatheus/tasks.md
     tag: latest
   name: tasksmd
