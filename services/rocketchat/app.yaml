@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/12508788?s=200&v=4
     kubero.dev/template.installation: First boot can take several minutes while Rocket.Chat
       runs MongoDB migrations. Requires at least 2Gi memory; the template sizes
-      the web pod accordingly and disables startup probes so init is not killed.
+      the web pod accordingly. DocumentDB must be ready before the app serves HTTP.
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://global-uploads.webflow.com/611a19b9853b7414a0f6b3f6/6464d93d33af48db33864025_Team%20Collab.webp","https://global-uploads.webflow.com/611a19b9853b7414a0f6b3f6/615d85d3d3ae5682e8571dfb_Group%203924%20(1).png"]'
     kubero.dev/template.source: https://github.com/RocketChat/Rocket.Chat
@@ -53,7 +53,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: MONGO_URL
-    value: mongodb://mongoadmin:changeme@documentdb-service-rocketchat-documentdb:10260/rocketchat?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
+    value: mongodb://mongoadmin:changeme@documentdb-service-rocketchat-documentdb:10260/rocketchat?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&serverSelectionTimeoutMS=60000
   - name: ROOT_URL
     value: '{{KUBERO_APP_URL}}'
   - name: DEPLOY_METHOD
@@ -74,9 +74,14 @@ spec:
     limits:
       cpu: '1'
       memory: 2Gi
-  # First boot + migrations exceed the chart's fixed ~90s startup probe.
+  # First boot + migrations can exceed the chart's fixed ~90s startup probe once
+  # DocumentDB is up; keep probes enabled so QA waits for HTTP, not a Running pod.
   healthcheck:
-    enabled: false
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   name: rocketchat
   web:
     replicaCount: 1
