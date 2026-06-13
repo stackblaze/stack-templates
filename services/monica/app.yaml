@@ -109,7 +109,7 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    path: /
+    path: /login
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
