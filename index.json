@@ -214,139 +214,6 @@
       "dirname": "netbird"
     },
     {
-      "name": "penpot-frontend",
-      "description": "Penpot is a open-source design tool for design and code collaboration.",
-      "source": "https://github.com/penpot/penpot",
-      "icon": "https://avatars.githubusercontent.com/u/30179644",
-      "website": "https://penpot.app/",
-      "installation": "Make sure you have all three services running: penpot-backend, penpot-exporter, penpot-frontend",
-      "architecture": [
-        "linux/amd64",
-        "linux/arm64"
-      ],
-      "categories": [
-        "work",
-        "collaboration"
-      ],
-      "screenshots": [
-        "https://penpot.app/blog/content/images/size/w2000/2024/02/PenpotUI-flexlayout.png",
-        "https://penpot.app/blog/content/images/size/w1000/2024/02/Penpot_workspace.png"
-      ],
-      "links": [
-        "https://community.penpot.app/"
-      ],
-      "addons": [],
-      "stars": 47473,
-      "forks": 2929,
-      "watchers": 47473,
-      "issues": 679,
-      "last_updated": "2026-05-11T12:49:06Z",
-      "last_pushed": "2026-05-11T12:48:32Z",
-      "created_at": "2015-12-29T22:09:07Z",
-      "size": 365039,
-      "language": "Clojure",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-frontend/app.yaml",
-      "status": "active",
-      "license": "Mozilla Public License 2.0",
-      "spdx_id": "MPL-2.0",
-      "dirname": "penpot-frontend"
-    },
-    {
-      "name": "penpot-backend",
-      "description": "Penpot is a open-source design tool for design and code collaboration.",
-      "source": "https://github.com/penpot/penpot",
-      "icon": "https://avatars.githubusercontent.com/u/30179644",
-      "website": "https://penpot.app/",
-      "installation": "Make sure you have all three services running: penpot-backend, penpot-exporter, penpot-frontend",
-      "architecture": [
-        "linux/amd64",
-        "linux/arm64"
-      ],
-      "categories": [
-        "work",
-        "collaboration"
-      ],
-      "screenshots": [
-        "https://penpot.app/blog/content/images/size/w2000/2024/02/PenpotUI-flexlayout.png",
-        "https://penpot.app/blog/content/images/size/w1000/2024/02/Penpot_workspace.png"
-      ],
-      "links": [
-        "https://community.penpot.app/"
-      ],
-      "addons": [
-        "Cluster",
-        "Valkey"
-      ],
-      "stars": 47473,
-      "forks": 2929,
-      "watchers": 47473,
-      "issues": 679,
-      "last_updated": "2026-05-11T12:49:06Z",
-      "last_pushed": "2026-05-11T12:48:32Z",
-      "created_at": "2015-12-29T22:09:07Z",
-      "size": 365039,
-      "language": "Clojure",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-backend/app.yaml",
-      "status": "active",
-      "license": "Mozilla Public License 2.0",
-      "spdx_id": "MPL-2.0",
-      "dirname": "penpot-backend",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-backend/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-backend/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "penpot-exporter",
-      "description": "Penpot is a open-source design tool for design and code collaboration.",
-      "source": "https://github.com/penpot/penpot",
-      "icon": "https://avatars.githubusercontent.com/u/30179644",
-      "website": "https://penpot.app/",
-      "installation": "Make sure you have all three services running: penpot-backend, penpot-exporter, penpot-frontend",
-      "architecture": [
-        "linux/amd64",
-        "linux/arm64"
-      ],
-      "categories": [
-        "work",
-        "collaboration"
-      ],
-      "screenshots": [
-        "https://penpot.app/blog/content/images/size/w2000/2024/02/PenpotUI-flexlayout.png",
-        "https://penpot.app/blog/content/images/size/w1000/2024/02/Penpot_workspace.png"
-      ],
-      "links": [
-        "https://community.penpot.app/"
-      ],
-      "addons": [],
-      "stars": 47473,
-      "forks": 2929,
-      "watchers": 47473,
-      "issues": 679,
-      "last_updated": "2026-05-11T12:49:06Z",
-      "last_pushed": "2026-05-11T12:48:32Z",
-      "created_at": "2015-12-29T22:09:07Z",
-      "size": 365039,
-      "language": "Clojure",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-exporter/app.yaml",
-      "status": "active",
-      "license": "Mozilla Public License 2.0",
-      "spdx_id": "MPL-2.0",
-      "dirname": "penpot-exporter"
-    },
-    {
       "name": "wordpress",
       "description": "WordPress is a free and open-source content management system written in hypertext preprocessor language.",
       "source": "https://github.com/WordPress/WordPress",
@@ -523,38 +390,6 @@
       "license": "Apache License 2.0",
       "spdx_id": "Apache-2.0",
       "dirname": "changedetection"
-    },
-    {
-      "name": "kuma",
-      "description": "Kuma is a self-hosted monitoring tool like \"Uptime Robot\". ",
-      "source": "https://github.com/louislam/uptime-kuma",
-      "icon": "https://github.com/louislam/uptime-kuma/raw/master/public/icon.svg",
-      "website": "https://uptime.kuma.pet",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "monitoring"
-      ],
-      "screenshots": [
-        "https://camo.githubusercontent.com/9674a2b1b7d094b060fd79e6df7dca10b86a484ce6015b2668cff768dfc786ee/68747470733a2f2f757074696d652e6b756d612e7065742f696d672f6461726b2e6a7067"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 86543,
-      "forks": 7815,
-      "watchers": 86543,
-      "issues": 740,
-      "last_updated": "2026-05-11T12:44:16Z",
-      "last_pushed": "2026-05-11T12:43:15Z",
-      "created_at": "2021-07-03T01:02:42Z",
-      "size": 36814,
-      "language": "JavaScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kuma/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "kuma"
     },
     {
       "name": "uptime-kuma",
@@ -1229,40 +1064,6 @@
       "license": "MIT License",
       "spdx_id": "MIT",
       "dirname": "grav"
-    },
-    {
-      "name": "stirlingpdf",
-      "description": "Stirling PDF is a hosted web application that allows you to perform various operations on PDF files, such as splitting and adding images.",
-      "source": "https://github.com/Frooodle/Stirling-PDF",
-      "icon": "https://raw.githubusercontent.com/Frooodle/Stirling-PDF/main/docs/stirling.png",
-      "website": "https://github.com/Frooodle/Stirling-PDF",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "productivity",
-        "utilities",
-        "work"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/Frooodle/Stirling-PDF/main/images/stirling-home.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 78556,
-      "forks": 6876,
-      "watchers": 78556,
-      "issues": 394,
-      "last_updated": "2026-05-11T12:36:12Z",
-      "last_pushed": "2026-05-11T11:10:23Z",
-      "created_at": "2023-01-27T18:22:42Z",
-      "size": 276295,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sterlingpdf/app.yaml",
-      "status": "active",
-      "license": "Other",
-      "spdx_id": "NOASSERTION",
-      "dirname": "sterlingpdf"
     },
     {
       "name": "stirling-pdf",
@@ -4397,41 +4198,6 @@
       "dirname": "timetagger"
     },
     {
-      "name": "textbee-api",
-      "description": "textbee.dev is an opensource and free sms-gatway for sending SMS messages through API or dashboard web interface.",
-      "source": "https://github.com/vernu/textbee",
-      "icon": "https://avatars.githubusercontent.com/u/38871878",
-      "website": "https://textbee.dev/",
-      "installation": "",
-      "architecture": [
-        "amd64",
-        "arm64"
-      ],
-      "categories": [
-        "notification"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [
-        "DocumentDB"
-      ],
-      "stars": 2571,
-      "forks": 320,
-      "watchers": 2571,
-      "issues": 21,
-      "last_updated": "2026-05-10T12:21:38Z",
-      "last_pushed": "2026-04-05T17:36:16Z",
-      "created_at": "2022-03-18T18:15:53Z",
-      "size": 4788,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/textbee-api/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "textbee-api"
-    },
-    {
       "name": "textbee",
       "description": "textbee.dev is an opensource and free sms-gatway for sending SMS messages through API or dashboard web interface.",
       "source": "https://github.com/vernu/textbee",
@@ -4813,39 +4579,6 @@
       "dirname": "shlink"
     },
     {
-      "name": "kubectl",
-      "description": "Run kubectl command in web browser",
-      "source": "https://github.com/KubeOperator/webkubectl",
-      "icon": "https://avatars.githubusercontent.com/u/52770786?s=200&v=4",
-      "website": "https://github.com/KubeOperator/webkubectl",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "utilities",
-        "admin"
-      ],
-      "screenshots": [
-        "https://github.com/KubeOperator/webkubectl/raw/master/web-resources/webkubectl.gif"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 884,
-      "forks": 127,
-      "watchers": 884,
-      "issues": 14,
-      "last_updated": "2026-05-07T19:48:43Z",
-      "last_pushed": "2025-12-31T04:33:49Z",
-      "created_at": "2019-10-14T02:35:53Z",
-      "size": 5757,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/webkubectl/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "webkubectl"
-    },
-    {
       "name": "chibisafe",
       "description": "Blazing fast file uploader and awesome bunker written in node!",
       "source": "https://github.com/chibisafe/chibisafe",
@@ -5023,69 +4756,6 @@
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/peppermint/app.ha.yaml"
         }
       ]
-    },
-    {
-      "name": "anse",
-      "description": "Supercharged experience for multiple models such as ChatGPT, DALL-E and Stable Diffusion.",
-      "source": "https://github.com/anse-app/anse",
-      "icon": "https://raw.githubusercontent.com/anse-app/anse/refs/heads/main/public/pwa-192.png",
-      "website": "https://anse.app",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "communication",
-        "ai"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 1976,
-      "forks": 418,
-      "watchers": 1976,
-      "issues": 41,
-      "last_updated": "2026-05-09T19:20:04Z",
-      "last_pushed": "2025-05-12T02:21:03Z",
-      "created_at": "2023-04-26T19:03:36Z",
-      "size": 1047,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anse/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "anse"
-    },
-    {
-      "name": "chatpad",
-      "description": "Chatpad sets itself apart with a broader vision - to become the ultimate interface for ChatGPT users.",
-      "source": "https://github.com/deiucanta/chatpad",
-      "icon": "https://raw.githubusercontent.com/deiucanta/chatpad/refs/heads/main/src/assets/favicon.png",
-      "website": "https://chatpad.ai",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "ai"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/deiucanta/chatpad/main/banner.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 1484,
-      "forks": 254,
-      "watchers": 1484,
-      "issues": 76,
-      "last_updated": "2026-05-03T02:19:13Z",
-      "last_pushed": "2024-06-13T05:31:54Z",
-      "created_at": "2023-03-17T18:18:06Z",
-      "size": 2206,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatpad/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "chatpad"
     },
     {
       "name": "dotcms",
@@ -6495,55 +6165,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/netbox/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "kroki",
-      "description": "Creates diagrams from textual descriptions — unified API for PlantUML, Mermaid, Graphviz, and more.",
-      "source": "https://github.com/yuzutech/kroki",
-      "icon": "https://avatars.githubusercontent.com/u/4894788?s=200&v=4",
-      "website": "https://kroki.io/",
-      "installation": "No database required. Optionally set KROKI_SAFE_MODE=secure for production.",
-      "architecture": [],
-      "categories": [
-        "utilities",
-        "development",
-        "documentation"
-      ],
-      "screenshots": [
-        "https://kroki.io/assets/img/kroki-logo.png"
-      ],
-      "links": [
-        "https://docs.kroki.io/"
-      ],
-      "addons": [],
-      "stars": 4000,
-      "forks": 400,
-      "watchers": 4000,
-      "issues": 0,
-      "last_updated": "2026-06-11T00:00:00Z",
-      "last_pushed": "2026-06-11T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "Java",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kroki/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "kroki",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kroki/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kroki/app.ha.yaml"
         }
       ]
     },
