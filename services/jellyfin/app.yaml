@@ -21,8 +21,12 @@ spec:
   deploymentstrategy: docker
   addons: []
   envVars:
+  - name: DOTNET_USE_POLLING_FILE_WATCHER
+    value: '1'
   - name: JELLYFIN_PublishedServerUrl
     value: '{{KUBERO_APP_URL}}'
+  - name: TZ
+    value: Etc/UTC
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -37,6 +41,12 @@ spec:
     name: jellyfin-media
     size: 10Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
