@@ -51,6 +51,10 @@ spec:
               owner: infisical
               secret:
                 name: infisical-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO infisical
+                - GRANT CREATE ON SCHEMA public TO infisical
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO infisical
           enableSuperuserAccess: true
           superuserSecret:
             name: infisical-postgresql-superuser
@@ -116,9 +120,9 @@ spec:
   - name: REDIS_URL
     value: redis://rfr-infisical-valkey-readwrite:6379
   - name: ENCRYPTION_KEY
-    value: '00000000000000000000000000000000'
+    value: f13dbc92aaaf86fa7cb0ed8ac3265f47
   - name: AUTH_SECRET
-    value: replace-with-openssl-rand-base64-32
+    value: 5lrMXKKWCVocS/uerPsl7V+TX/aaUaI7iDkgl3tSmLE=
   extraVolumes: []
   cronjobs: []
   web:
@@ -130,3 +134,17 @@ spec:
     pullPolicy: Always
     repository: infisical/infisical
     tag: latest
+  # Default QA LimitRange caps web pods at 512Mi; Infisical OOMs during DB migrations.
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
