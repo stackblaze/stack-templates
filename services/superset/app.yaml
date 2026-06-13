@@ -163,4 +163,4 @@ spec:
     command:
     - sh
     - -c
-    - /app/.venv/bin/pip install --no-cache-dir psycopg2-binary && superset db upgrade && (superset fab create-admin --username admin --email admin@superset.com --password "$ADMIN_PASSWORD" --firstname Superset --lastname Admin || true) && superset init && exec /app/docker/docker-bootstrap.sh app-gunicorn
+    - /app/.venv/bin/python -m pip install --no-cache-dir psycopg2-binary && superset db upgrade && (superset fab create-admin --username admin --email admin@superset.com --password "$ADMIN_PASSWORD" --firstname Superset --lastname Admin || true) && superset init && exec /app/docker/docker-bootstrap.sh app-gunicorn
