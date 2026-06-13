@@ -6,8 +6,8 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Modern data exploration and visualization platform — enterprise-ready business intelligence.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/47359?s=200&v=4
-    kubero.dev/template.installation: Generate SUPERSET_SECRET_KEY with openssl rand -base64 42. Run superset db upgrade &&
-      superset init once after first deploy if the UI does not load.
+    kubero.dev/template.installation: First boot runs migrations and init automatically (several minutes). Change SUPERSET_SECRET_KEY
+      and ADMIN_PASSWORD before production use.
     kubero.dev/template.links: '["https://superset.apache.org/docs/intro"]'
     kubero.dev/template.screenshots: '["https://superset.apache.org/img/superset-logo-horiz.svg"]'
     kubero.dev/template.source: https://github.com/apache/superset
@@ -51,6 +51,10 @@ spec:
               owner: superset
               secret:
                 name: superset-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO superset
+                - GRANT CREATE ON SCHEMA public TO superset
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO superset
           enableSuperuserAccess: true
           superuserSecret:
             name: superset-postgresql-superuser
@@ -106,7 +110,17 @@ spec:
             quorum: 2
   envVars:
   - name: SUPERSET_SECRET_KEY
-    value: replace-with-openssl-rand-base64-42
+    value: change-me-before-production-use-openssl-rand-base64-42
+  - name: SUPERSET_LOAD_EXAMPLES
+    value: 'no'
+  - name: SUPERSET_ENV
+    value: production
+  - name: FLASK_DEBUG
+    value: 'false'
+  - name: ADMIN_PASSWORD
+    value: superset
+  - name: PYTHONPATH
+    value: /app/pythonpath:/app/docker/pythonpath_dev
   - name: DATABASE_DIALECT
     value: postgresql
   - name: DATABASE_HOST
@@ -129,8 +143,25 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /login/
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '8088'
     pullPolicy: Always
     repository: apache/superset
     tag: latest
+    command:
+    - sh
+    - -c
+    - /app/docker/docker-bootstrap.sh && superset db upgrade && (superset fab create-admin --username admin --email admin@superset.com --password "$ADMIN_PASSWORD" --firstname Superset --lastname Admin || true) && superset init && exec /app/docker/docker-bootstrap.sh app-gunicorn
