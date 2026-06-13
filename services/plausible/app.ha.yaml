@@ -51,6 +51,10 @@ spec:
               owner: plausible
               secret:
                 name: plausible-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO plausible
+              - GRANT CREATE ON SCHEMA public TO plausible
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO plausible
           enableSuperuserAccess: true
           superuserSecret:
             name: plausible-postgresql-superuser
@@ -122,7 +126,7 @@ spec:
   - name: SECRET_KEY_BASE
     value: '0000000000000000000000000000000000000000000000000000000000000000'
   - name: TOTP_VAULT_KEY
-    value: '0000000000000000000000000000000000000000'
+    value: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
   - name: DATABASE_URL
     value: postgresql://plausible:plausible@plausible-postgresql-rw:5432/plausible
   - name: CLICKHOUSE_DATABASE_URL
