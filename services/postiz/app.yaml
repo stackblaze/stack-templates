@@ -20,9 +20,9 @@ spec:
     deploymentstrategy: docker
     envVars:
         - name: MAIN_URL
-          value: https://postiz.localhost
+          value: '{{KUBERO_APP_URL}}'
         - name: FRONTEND_URL
-          value: https://postiz.localhost
+          value: '{{KUBERO_APP_URL}}'
         - name: JWT_SECRET
           value: random string that is unique to every install - just type random
               characters here!
@@ -39,7 +39,7 @@ spec:
         - name: NEXT_PUBLIC_UPLOAD_DIRECTORY
           value: /upload
         - name: NEXT_PUBLIC_BACKEND_URL
-          value: https://postiz.localhost/api
+          value: '{{KUBERO_APP_URL}}/api'
         - name: BACKEND_INTERNAL_URL
           value: http://localhost:3000
     extraVolumes:
@@ -90,6 +90,10 @@ spec:
                               owner: postiz
                               secret:
                                   name: postiz-postgresql-app
+                              postInitApplicationSQL:
+                                  - GRANT ALL ON SCHEMA public TO postiz
+                                  - GRANT CREATE ON SCHEMA public TO postiz
+                                  - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO postiz
                       enableSuperuserAccess: true
                       superuserSecret:
                           name: postiz-postgresql-superuser
@@ -149,3 +153,17 @@ spec:
         pullPolicy: Always
         repository: ghcr.io/gitroomhq/postiz-app
         tag: latest
+    # Default QA LimitRange caps web pods at 512Mi; Postiz OOMs during Prisma/PM2 boot.
+    resources:
+        requests:
+            cpu: 500m
+            memory: 1Gi
+        limits:
+            cpu: "1"
+            memory: 2Gi
+    healthcheck:
+        enabled: true
+        path: /
+        startupSeconds: 300
+        timeoutSeconds: 5
+        periodSeconds: 10
