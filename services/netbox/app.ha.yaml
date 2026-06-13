@@ -52,6 +52,10 @@ spec:
               owner: netbox
               secret:
                 name: netbox-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO netbox
+                - GRANT CREATE ON SCHEMA public TO netbox
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO netbox
           enableSuperuserAccess: true
           superuserSecret:
             name: netbox-postgresql-superuser
@@ -127,7 +131,11 @@ spec:
   - name: REDIS_CACHE_DATABASE
     value: '1'
   - name: SECRET_KEY
-    value: replace-with-openssl-rand-hex-50
+    value: '{{KUBERO_GEN_ALNUM:50}}'
+  - name: ALLOWED_HOSTS
+    value: '{{KUBERO_APP_HOST}}'
+  - name: CSRF_TRUSTED_ORIGINS
+    value: '{{KUBERO_APP_URL}}'
   - name: SKIP_SUPERUSER
     value: 'false'
   - name: SUPERUSER_NAME
@@ -148,6 +156,19 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /login/
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '8080'
     pullPolicy: Always
