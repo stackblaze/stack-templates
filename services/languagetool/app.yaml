@@ -32,6 +32,12 @@ spec:
     mountPath: /ngrams
     name: languagetool-ngrams
     size: 1Gi
+  healthcheck:
+    enabled: true
+    path: /healthcheck
+    startupSeconds: 180
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '8010'
     repository: erikvl87/languagetool
