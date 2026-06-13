@@ -151,6 +151,10 @@ spec:
     value: postgresql://plane:plane@plane-postgresql-rw:5432/plane
   - name: REDIS_URL
     value: redis://rfr-plane-valkey-readwrite:6379/0
+  - name: CELERY_BROKER_URL
+    value: redis://rfr-plane-valkey-readwrite:6379/0
+  - name: CELERY_RESULT_BACKEND
+    value: redis://rfr-plane-valkey-readwrite:6379/0
   - name: SECRET_KEY
     value: '{{KUBERO_GEN_ALNUM:50}}'
   - name: USE_MINIO
