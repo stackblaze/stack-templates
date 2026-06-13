@@ -83,7 +83,7 @@ spec:
   - name: HUMHUB_PROTO
     value: https
   - name: HUMHUB_HOST
-    value: humhub.localhost
+    value: '{{KUBERO_APP_HOST}}'
   - name: HUMHUB_ADMIN_LOGIN
     value: admin
   - name: HUMHUB_ADMIN_EMAIL
@@ -108,6 +108,12 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '80'
     pullPolicy: Always
