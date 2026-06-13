@@ -84,6 +84,10 @@ spec:
     value: postgresql://openproject:openproject@openproject-postgresql-rw:5432/openproject
   - name: OPENPROJECT_SECRET_KEY_BASE
     value: '{{KUBERO_GEN_ALNUM:64}}'
+  - name: MIGRATE
+    value: 'true'
+  - name: OPENPROJECT_ATTACHMENTS__STORAGE__PATH
+    value: /var/openproject/assets
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
