@@ -22,7 +22,7 @@ spec:
         - name: PAPERLESS_SECRET_KEY
           value: 70zcjuy9cy9NcIrj++eK2FR0E/Kdb3d3VZhRw8UmDSg=
         - name: PAPERLESS_REDIS
-          value: redis://rfr-paperless-valkey-readwrite:6379
+          value: redis://rfr-paperless-ngx-valkey-readwrite:6379
         - name: PAPERLESS_URL
           value: '{{KUBERO_APP_URL}}'
         - name: PAPERLESS_DBHOST
@@ -82,7 +82,7 @@ spec:
                   apiVersion: rds.valkey.buf.red/v1alpha1
                   kind: Valkey
                   metadata:
-                      name: paperless-valkey
+                      name: paperless-ngx-valkey
                   spec:
                       version: "8.0"
                       arch: replica
