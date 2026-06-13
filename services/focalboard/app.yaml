@@ -1,0 +1,45 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open source, self-hosted alternative to Trello, Notion, and Asana.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/9919?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '["https://www.focalboard.com/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/mattermost/focalboard
+    kubero.dev/template.categories: '["productivity", "work"]'
+    kubero.dev/template.title: Focalboard
+    kubero.dev/template.website: https://www.focalboard.com/
+  labels:
+    manager: kubero
+  name: focalboard
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: FOCALBOARD_SERVER_ROOT
+    value: '{{KUBERO_APP_URL}}'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /opt/focalboard/data
+    name: focalboard-data
+    size: 1Gi
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: mattermost/focalboard
+    tag: latest
+    command:
+    - sh
+    - -c
+    - mkdir -p /opt/focalboard/data/files && printf '%s\n' "{\"serverRoot\":\"${FOCALBOARD_SERVER_ROOT}\",\"port\":8000,\"dbtype\":\"sqlite3\",\"dbconfig\":\"./data/focalboard.db\",\"postgres_dbconfig\":\"dbname=focalboard sslmode=disable\",\"useSSL\":false,\"webpath\":\"./pack\",\"filespath\":\"./data/files\",\"telemetry\":false,\"session_expire_time\":2592000,\"session_refresh_time\":18000,\"localOnly\":false,\"enableLocalMode\":true,\"localModeSocketLocation\":\"/var/tmp/focalboard_local.socket\",\"enablePublicSharedBoards\":false}" > /opt/focalboard/config.json && exec /opt/focalboard/bin/focalboard-server
+  name: focalboard
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

@@ -5562,6 +5562,39 @@
       ]
     },
     {
+      "name": "focalboard",
+      "description": "Open source, self-hosted alternative to Trello, Notion, and Asana.",
+      "source": "https://github.com/mattermost/focalboard",
+      "icon": "https://avatars.githubusercontent.com/u/9919?s=200&v=4",
+      "website": "https://www.focalboard.com/",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "productivity",
+        "work"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://www.focalboard.com/"
+      ],
+      "addons": [],
+      "stars": 26237,
+      "forks": 2546,
+      "watchers": 26237,
+      "issues": 780,
+      "last_updated": "2026-06-13T17:41:17Z",
+      "last_pushed": "2026-05-18T16:05:00Z",
+      "created_at": "2020-10-06T16:46:23Z",
+      "size": 59223,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/focalboard/app.yaml",
+      "status": "active",
+      "license": "Other",
+      "spdx_id": "NOASSERTION",
+      "dirname": "focalboard"
+    },
+    {
       "name": "formbricks",
       "description": "Open-source Qualtrics alternative for in-product micro-surveys and experience management.",
       "source": "https://github.com/formbricks/formbricks",
