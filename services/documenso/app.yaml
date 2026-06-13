@@ -6,7 +6,7 @@ metadata:
         kubero.dev/template.architecture: '["linux/amd64", "linux/arm64/v8"]'
         kubero.dev/template.description: "The Open Source DocuSign Alternative."
         kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/127681099"
-        kubero.dev/template.installation: ""
+        kubero.dev/template.installation: "Configure NEXT_PRIVATE_SMTP_* for production email delivery."
         kubero.dev/template.links: '["https://docs.documenso.com/"]'
         kubero.dev/template.screenshots: "[]"
         kubero.dev/template.source: "https://github.com/documenso/documenso"
@@ -20,7 +20,7 @@ spec:
     deploymentstrategy: docker
     envVars:
         - name: NEXTAUTH_URL
-          value: https://documenso.localhost
+          value: '{{KUBERO_APP_URL}}'
         - name: NEXTAUTH_SECRET
           value: random64
         - name: NEXT_PRIVATE_ENCRYPTION_KEY
@@ -28,11 +28,29 @@ spec:
         - name: NEXT_PRIVATE_ENCRYPTION_SECONDARY_KEY
           value: xFtITgOSSvu/bTTJ11G/czyXlvhF8txPhr2GwSTQUm/+m6YLIfrC/LTgHq2yFi9l+KBWN+Wx5YgRFoWOvdkePs5N31/1RBhx3/qApQ2lIbY=
         - name: NEXT_PUBLIC_WEBAPP_URL
-          value: https://documenso.localhost
+          value: '{{KUBERO_APP_URL}}'
+        - name: NEXT_PRIVATE_INTERNAL_WEBAPP_URL
+          value: '{{KUBERO_APP_URL}}'
         - name: NEXT_PRIVATE_DATABASE_URL
-          value: postgresql://documenso:documenso@documenso-postgresql-rw/docusano
+          value: postgresql://documenso:documenso@documenso-postgresql-rw:5432/documenso
         - name: NEXT_PRIVATE_DIRECT_DATABASE_URL
-          value: postgresql://documenso:documenso@documenso-postgresql-rw/docusano
+          value: postgresql://documenso:documenso@documenso-postgresql-rw:5432/documenso
+        - name: NEXT_PRIVATE_SMTP_TRANSPORT
+          value: smtp-auth
+        - name: NEXT_PRIVATE_SMTP_HOST
+          value: smtp.example.com
+        - name: NEXT_PRIVATE_SMTP_PORT
+          value: "587"
+        - name: NEXT_PRIVATE_SMTP_USERNAME
+          value: noreply@example.com
+        - name: NEXT_PRIVATE_SMTP_PASSWORD
+          value: replace-me
+        - name: NEXT_PRIVATE_SMTP_FROM_NAME
+          value: Documenso
+        - name: NEXT_PRIVATE_SMTP_FROM_ADDRESS
+          value: noreply@example.com
+        - name: DOCUMENSO_DISABLE_TELEMETRY
+          value: "true"
     extraVolumes: []
     cronjobs: []
     addons:
@@ -63,10 +81,14 @@ spec:
                               memory: 1Gi
                       bootstrap:
                           initdb:
-                              database: docusano
+                              database: documenso
                               owner: documenso
                               secret:
                                   name: documenso-postgresql-app
+                              postInitApplicationSQL:
+                                  - GRANT ALL ON SCHEMA public TO documenso
+                                  - GRANT CREATE ON SCHEMA public TO documenso
+                                  - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO documenso
                       enableSuperuserAccess: true
                       superuserSecret:
                           name: documenso-postgresql-superuser
@@ -92,6 +114,19 @@ spec:
         replicaCount: 1
     worker:
         replicaCount: 0
+    resources:
+        requests:
+            cpu: 500m
+            memory: 1Gi
+        limits:
+            cpu: "1"
+            memory: 2Gi
+    healthcheck:
+        enabled: true
+        path: /
+        startupSeconds: 600
+        timeoutSeconds: 5
+        periodSeconds: 10
     image:
         containerPort: "3000"
         pullPolicy: Always
