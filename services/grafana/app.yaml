@@ -1,0 +1,55 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open source analytics and interactive visualization platform for metrics, logs, and traces.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/7195757?s=200&v=4
+    kubero.dev/template.installation: Default login is admin/admin — change the password on first sign-in.
+    kubero.dev/template.links: '["https://grafana.com/docs/grafana/latest/"]'
+    kubero.dev/template.screenshots: '["https://grafana.com/media/docs/grafana/dashboards/overview-screenshot.png"]'
+    kubero.dev/template.source: https://github.com/grafana/grafana
+    kubero.dev/template.categories: '["monitoring", "dashboard", "utilities"]'
+    kubero.dev/template.title: Grafana
+    kubero.dev/template.website: https://grafana.com/
+  labels:
+    manager: kubero
+  name: grafana
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: GF_SERVER_ROOT_URL
+    value: '{{KUBERO_APP_URL}}'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/lib/grafana
+    name: grafana-data
+    size: 1Gi
+  healthcheck:
+    enabled: true
+    path: /api/health
+    startupSeconds: 180
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: grafana/grafana
+    tag: latest
+    command:
+    - sh
+    - -c
+    - chown -R 472:472 /var/lib/grafana && exec /run.sh
+    run:
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
+  name: grafana
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
