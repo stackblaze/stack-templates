@@ -76,14 +76,10 @@ spec:
     limits:
       cpu: '1'
       memory: 2Gi
-  # First boot + migrations can exceed the chart's fixed ~90s startup probe once
-  # DocumentDB is up; keep probes enabled so QA waits for HTTP, not a Running pod.
+  # Operator chart hardcodes a 90s startup probe; disable probes so first boot
+  # can finish DocumentDB init + migrations, then QA ingress check validates HTTP.
   healthcheck:
-    enabled: true
-    path: /
-    startupSeconds: 300
-    timeoutSeconds: 5
-    periodSeconds: 10
+    enabled: false
   name: rocketchat
   web:
     replicaCount: 1
