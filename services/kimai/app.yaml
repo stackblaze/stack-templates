@@ -26,7 +26,7 @@ spec:
         - name: ADMINPASS
           value: changemeplease
         - name: TRUSTED_HOSTS
-          value: "{{KUBERO_APP_HOST}}"
+          value: "{{KUBERO_APP_HOST}}|localhost|127.0.0.1|10\\..+"
         - name: DATABASE_URL
           value: mysql://kimai:kimai@{{KUBERO_APP_NAME}}-kimai-mysql/kimai?charset=utf8mb4
     extraVolumes:
