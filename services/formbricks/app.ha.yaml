@@ -53,6 +53,7 @@ spec:
               secret:
                 name: formbricks-postgresql-app
               postInitApplicationSQL:
+                - CREATE EXTENSION IF NOT EXISTS vector;
                 - GRANT ALL ON SCHEMA public TO formbricks
                 - GRANT CREATE ON SCHEMA public TO formbricks
                 - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO formbricks
