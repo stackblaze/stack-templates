@@ -4390,6 +4390,54 @@
       "dirname": "tasksmd"
     },
     {
+      "name": "tandoor",
+      "description": "Self-hosted Django recipe manager for organizing recipes, meal plans, and shopping lists.",
+      "source": "https://github.com/TandoorRecipes/recipes",
+      "icon": "https://avatars.githubusercontent.com/u/67073608?s=200&v=4",
+      "website": "https://tandoor.dev/",
+      "installation": "Set SECRET_KEY to a random 50+ character string. First boot runs migrations and collectstatic (may take several minutes).",
+      "architecture": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "categories": [
+        "utilities",
+        "productivity"
+      ],
+      "screenshots": [
+        "https://docs.tandoor.dev/assets/img/logo.png"
+      ],
+      "links": [
+        "https://docs.tandoor.dev/"
+      ],
+      "addons": [
+        "Cluster"
+      ],
+      "stars": 6000,
+      "forks": 600,
+      "watchers": 6000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "tandoor",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/app.yaml"
+        }
+      ]
+    },
+    {
       "name": "slash",
       "description": "An open source, self-hosted platform for sharing and managing your most frequently used links. Easily create customizable, human-readable shortcuts to streamline your link management.",
       "source": "https://github.com/yourselfhosted/slash",
