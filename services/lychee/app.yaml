@@ -27,6 +27,8 @@ spec:
     value: sqlite
   - name: APP_ENV
     value: local
+  - name: APP_KEY
+    value: base64:B0SHakyMaw8rozeNKm+XcT1ZukIc9xSNPghJiWh9ivc=
   - name: DB_DATABASE
     value: /local/db/lychee
   - name: STARTUP_DELAY
