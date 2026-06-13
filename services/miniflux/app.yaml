@@ -1,0 +1,99 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Miniflux is a minimalist and opinionated RSS reader written in Go.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/9411421?s=200&v=4
+    kubero.dev/template.installation: RUN_MIGRATIONS and CREATE_ADMIN run on first boot. Change ADMIN_PASSWORD after login.
+    kubero.dev/template.links: '["https://miniflux.app/docs/"]'
+    kubero.dev/template.screenshots: '["https://miniflux.app/images/screenshot.png"]'
+    kubero.dev/template.source: https://github.com/miniflux/v2
+    kubero.dev/template.categories: '["utilities", "productivity"]'
+    kubero.dev/template.title: Miniflux
+    kubero.dev/template.website: https://miniflux.app/
+  labels:
+    manager: kubero
+  name: miniflux
+spec:
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: miniflux-postgres
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: miniflux
+              owner: miniflux
+              secret:
+                name: miniflux-postgres-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO miniflux
+                - GRANT CREATE ON SCHEMA public TO miniflux
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO miniflux
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: miniflux-postgres-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: miniflux-postgres-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: miniflux
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: miniflux-postgres-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: miniflux
+          password: miniflux
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: DATABASE_URL
+    value: postgres://miniflux:miniflux@miniflux-postgres-rw:5432/miniflux?sslmode=disable
+  - name: RUN_MIGRATIONS
+    value: '1'
+  - name: CREATE_ADMIN
+    value: '1'
+  - name: ADMIN_USERNAME
+    value: admin
+  - name: ADMIN_PASSWORD
+    value: miniflux-qa-admin
+  extraVolumes: []
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: miniflux/miniflux
+    tag: latest
+  name: miniflux
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
