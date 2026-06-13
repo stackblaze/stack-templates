@@ -68,7 +68,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: APP_FULL_BASE_URL
-    value: http://passbolt.mydomain.com
+    value: '{{KUBERO_APP_URL}}'
   - name: DATASOURCES_DEFAULT_HOST
     value: passbolt-mysql
   - name: DATASOURCES_DEFAULT_USERNAME
@@ -77,6 +77,18 @@ spec:
     value: changeme
   - name: DATASOURCES_DEFAULT_DATABASE
     value: passbolt
+  - name: EMAIL_TRANSPORT_DEFAULT_HOST
+    value: localhost
+  - name: EMAIL_TRANSPORT_DEFAULT_PORT
+    value: '25'
+  - name: EMAIL_DEFAULT_FROM
+    value: noreply@example.com
+  healthcheck:
+    enabled: true
+    path: /healthcheck/status.json
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -90,9 +102,26 @@ spec:
     size: 1Gi
   image:
     containerPort: '80'
+    command:
+    - sh
+    - -c
+    - mkdir -p /etc/passbolt/gpg /etc/passbolt/jwt && chown -R 33:33 /etc/passbolt/gpg
+      /etc/passbolt/jwt && exec /docker-entrypoint.sh
+    pullPolicy: Always
     repository: passbolt/passbolt
+    run:
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
     tag: latest-ce
   name: passbolt
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
   web:
     replicaCount: 1
   worker:
