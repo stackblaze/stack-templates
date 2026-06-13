@@ -21,7 +21,7 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /www/assets
     name: homer-data
@@ -30,12 +30,6 @@ spec:
     containerPort: '8080'
     repository: b4bz/homer
     tag: latest
-  ingress:
-    hosts:
-    - host: homer.lacolhost.com
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
   name: homer
   web:
     replicaCount: 1
