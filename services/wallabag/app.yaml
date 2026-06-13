@@ -1,0 +1,61 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+    kubero.dev/template.description: Self-hostable read-it-later app for saving and classifying web pages to read later.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4573139?s=200&v=4
+    kubero.dev/template.installation: Default login is wallabag:wallabag — change the password after first login.
+    kubero.dev/template.links: '["https://doc.wallabag.org/"]'
+    kubero.dev/template.screenshots: '["https://www.wallabag.org/images/logo-wallabag.svg"]'
+    kubero.dev/template.source: https://github.com/wallabag/wallabag
+    kubero.dev/template.categories: '["utilities", "productivity"]'
+    kubero.dev/template.title: wallabag
+    kubero.dev/template.website: https://www.wallabag.org/
+  labels:
+    manager: kubero
+  name: wallabag
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: SYMFONY__ENV__DOMAIN_NAME
+    value: '{{KUBERO_APP_URL}}'
+  - name: TRUSTED_HOSTS
+    value: '{{KUBERO_APP_HOST}}|localhost|127.0.0.1|10\\..+'
+  - name: TRUSTED_PROXIES
+    value: 10.0.0.0/8,REMOTE_ADDR
+  - name: SYMFONY__ENV__SECRET
+    value: ovmpmAWXRCabNlMgzlzFXDYmCFfzGv
+  - name: SYMFONY__ENV__FOSUSER_REGISTRATION
+    value: 'false'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/wallabag/data
+    name: wallabag-data
+    size: 1Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/wallabag/web/assets/images
+    name: wallabag-images
+    size: 1Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: wallabag/wallabag
+    tag: latest
+  name: wallabag
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
