@@ -18,13 +18,15 @@ spec:
   addons: []
   cronjobs: []
   deploymentstrategy: docker
-  envVars: []
+  envVars:
+  - name: INIT_ASSETS
+    value: '1'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /www/assets
-    name: homer-data
+    name: homer-assets
     size: 300Mi
   image:
     containerPort: '8080'
