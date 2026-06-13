@@ -51,6 +51,11 @@ spec:
               owner: immich
               secret:
                 name: immich-postgresql-app
+              postInitApplicationSQL:
+                - CREATE EXTENSION IF NOT EXISTS vector;
+                - GRANT ALL ON SCHEMA public TO immich
+                - GRANT CREATE ON SCHEMA public TO immich
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO immich
           enableSuperuserAccess: true
           superuserSecret:
             name: immich-postgresql-superuser
@@ -125,6 +130,8 @@ spec:
     value: '0'
   - name: MACHINE_LEARNING_ENABLED
     value: 'false'
+  - name: DB_VECTOR_EXTENSION
+    value: pgvector
   - name: UPLOAD_LOCATION
     value: /usr/src/app/upload
   extraVolumes:
@@ -139,8 +146,21 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /api/server/ping
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '2283'
     pullPolicy: Always
     repository: ghcr.io/immich-app/immich-server
-    tag: release
+    tag: v2
