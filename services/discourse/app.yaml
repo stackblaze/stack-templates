@@ -51,6 +51,10 @@ spec:
               owner: bn_discourse
               secret:
                 name: discourse-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO bn_discourse
+                - GRANT CREATE ON SCHEMA public TO bn_discourse
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO bn_discourse
           enableSuperuserAccess: true
           superuserSecret:
             name: discourse-postgresql-superuser
@@ -103,15 +107,29 @@ spec:
               memory: 256Mi
   envVars:
   - name: DISCOURSE_HOST
-    value: discourse.localhost
+    value: '{{KUBERO_APP_HOST}}'
   - name: DISCOURSE_PASSWORD
     value: discourse
+  - name: DISCOURSE_EMAIL
+    value: admin@example.com
+  - name: DISCOURSE_SMTP_HOST
+    value: smtp.example.com
+  - name: DISCOURSE_SMTP_PORT
+    value: '587'
+  - name: DISCOURSE_SMTP_USER
+    value: user@example.com
+  - name: DISCOURSE_SMTP_PASSWORD
+    value: changeme
+  - name: DISCOURSE_SMTP_PROTOCOL
+    value: tls
   - name: DISCOURSE_DATABASE_HOST
     value: discourse-postgresql-rw
   - name: DISCOURSE_DATABASE_PORT_NUMBER
     value: '5432'
   - name: DISCOURSE_DATABASE_USER
     value: bn_discourse
+  - name: DISCOURSE_DATABASE_PASSWORD
+    value: discourse
   - name: DISCOURSE_DATABASE_NAME
     value: bitnami_discourse
   - name: DISCOURSE_REDIS_HOST
@@ -132,8 +150,21 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1536Mi
+    limits:
+      cpu: '2'
+      memory: 3Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: bitnami/discourse
-    tag: latest
+    repository: bitnamilegacy/discourse
+    tag: 3-debian-12
