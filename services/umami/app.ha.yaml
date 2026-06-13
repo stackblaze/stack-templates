@@ -47,6 +47,10 @@ spec:
               owner: umami
               secret:
                 name: umami-umami-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO umami
+                - GRANT CREATE ON SCHEMA public TO umami
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO umami
           enableSuperuserAccess: true
           superuserSecret:
             name: umami-umami-superuser
@@ -69,7 +73,7 @@ spec:
           username: umami
           password: umami
   cronjobs: []
-  deploymentstrategy: umami
+  deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
     value: postgresql://umami:umami@umami-umami-rw:5432/umami
