@@ -47,6 +47,10 @@ spec:
               owner: n8n
               secret:
                 name: n8n-postgres-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO n8n
+                - GRANT CREATE ON SCHEMA public TO n8n
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO n8n
           enableSuperuserAccess: true
           superuserSecret:
             name: n8n-postgres-superuser

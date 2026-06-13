@@ -85,7 +85,7 @@ spec:
     - ReadWriteMany
     storageClass: shared
     emptyDir: false
-    mountPath: /var/www/html
+    mountPath: /var/www/html/wp-content
     name: "{{KUBERO_APP_NAME}}-data"
     size: 1Gi
   image:
