@@ -5306,6 +5306,42 @@
       ]
     },
     {
+      "name": "linkding",
+      "description": "Self-hosted bookmark manager that is minimal, fast, and easy to set up.",
+      "source": "https://github.com/sissbruecker/linkding",
+      "icon": "https://avatars.githubusercontent.com/u/34423368?s=200&v=4",
+      "website": "https://linkding.link/",
+      "installation": "Set LD_SUPERUSER_NAME and LD_SUPERUSER_PASSWORD before first deploy to create the admin user.",
+      "architecture": [],
+      "categories": [
+        "documentation",
+        "productivity",
+        "utilities"
+      ],
+      "screenshots": [
+        "https://raw.githubusercontent.com/sissbruecker/linkding/master/assets/page-overview-dark.png"
+      ],
+      "links": [
+        "https://linkding.link/"
+      ],
+      "addons": [],
+      "stars": 10000,
+      "forks": 500,
+      "watchers": 10000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2018-01-01T00:00:00Z",
+      "size": 0,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/linkding/app.yaml",
+      "status": "active",
+      "license": "MIT License",
+      "spdx_id": "MIT",
+      "dirname": "linkding"
+    },
+    {
       "name": "linkwarden",
       "description": "Self-hosted collaborative bookmark manager to collect and organize links.",
       "source": "https://github.com/linkwarden/linkwarden",

@@ -1,0 +1,51 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted bookmark manager that is minimal, fast, and easy to set up.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/34423368?s=200&v=4
+    kubero.dev/template.installation: Set LD_SUPERUSER_NAME and LD_SUPERUSER_PASSWORD before first deploy to create the admin user.
+    kubero.dev/template.links: '["https://linkding.link/"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/sissbruecker/linkding/master/assets/page-overview-dark.png"]'
+    kubero.dev/template.source: https://github.com/sissbruecker/linkding
+    kubero.dev/template.categories: '["documentation", "productivity", "utilities"]'
+    kubero.dev/template.title: Linkding
+    kubero.dev/template.website: https://linkding.link/
+  labels:
+    manager: kubero
+  name: linkding
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: LD_SUPERUSER_NAME
+    value: admin
+  - name: LD_SUPERUSER_PASSWORD
+    value: linkding-qa-admin
+  - name: LD_SUPERUSER_EMAIL
+    value: admin@example.com
+  - name: LD_SERVER_PORT
+    value: '9090'
+  - name: LD_CSRF_TRUSTED_ORIGINS
+    value: '{{KUBERO_APP_URL}}'
+  - name: LD_USE_X_FORWARDED_HOST
+    value: 'true'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /etc/linkding/data
+    name: linkding-data
+    size: 1Gi
+  image:
+    containerPort: '9090'
+    pullPolicy: Always
+    repository: ghcr.io/sissbruecker/linkding
+    tag: latest
+  name: linkding
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
