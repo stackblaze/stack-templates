@@ -52,6 +52,10 @@ spec:
               owner: typebot
               secret:
                 name: typebot-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO typebot
+                - GRANT CREATE ON SCHEMA public TO typebot
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO typebot
           enableSuperuserAccess: true
           superuserSecret:
             name: typebot-postgresql-superuser
@@ -81,9 +85,11 @@ spec:
   - name: NEXT_PUBLIC_VIEWER_URL
     value: '{{KUBERO_APP_URL}}'
   - name: NEXTAUTH_SECRET
-    value: replace-with-openssl-rand-base64-32
+    value: H+KbL/OFrqbEuDy/1zX8bsPG+spXri3S
   - name: ENCRYPTION_SECRET
-    value: replace-with-openssl-rand-base64-32
+    value: do+UspMmB/rewbX2K/rskFmtgGSSZ8Ta
+  - name: NODE_OPTIONS
+    value: --no-node-snapshot
   - name: ADMIN_EMAIL
     value: admin@example.com
   - name: DISABLE_SIGNUP
