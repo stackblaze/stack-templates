@@ -138,6 +138,20 @@ spec:
     containerPort: '3000'
     repository: lukevella/rallly
     tag: '4'
+  # Default QA LimitRange caps web pods at 512Mi; Rallly OOMs during Next.js boot.
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   name: rallly
   web:
     replicaCount: 1
