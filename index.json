@@ -894,6 +894,42 @@
       "dirname": "docuseal"
     },
     {
+      "name": "dolibarr",
+      "description": "Dolibarr ERP CRM is a modern software package to manage your company or foundation's activity (contacts, suppliers, invoices, orders, stocks, agenda, accounting, ...). it's an open source Web application (written in PHP) designed for businesses of any sizes, foundations and freelancers.",
+      "source": "https://github.com/Dolibarr/dolibarr",
+      "icon": "https://avatars.githubusercontent.com/u/877491?v=4",
+      "website": "https://www.dolibarr.org/",
+      "installation": "Auto-installs on first boot when DOLI_DB_* and DOLI_URL_ROOT are set. Default login admin/admin — change immediately. First boot may take several minutes while MariaDB initializes.",
+      "architecture": [],
+      "categories": [
+        "work",
+        "productivity",
+        "utilities"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://wiki.dolibarr.org/"
+      ],
+      "addons": [
+        "MariaDB"
+      ],
+      "stars": 7308,
+      "forks": 3407,
+      "watchers": 270,
+      "issues": 1154,
+      "last_updated": "2026-06-13T14:19:20Z",
+      "last_pushed": "2026-06-13T14:19:14Z",
+      "created_at": "2011-06-26T21:55:03Z",
+      "size": 1703022,
+      "language": "PHP",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dolibarr/app.yaml",
+      "status": "active",
+      "license": "GNU General Public License v3.0",
+      "spdx_id": "GPL-3.0",
+      "dirname": "dolibarr"
+    },
+    {
       "name": "rallly",
       "description": "Rallly is an open-source scheduling and collaboration tool designed to make organizing events and meetings easier.",
       "source": "https://github.com/lukevella/rallly",
@@ -3454,6 +3490,52 @@
       "license": "MIT License",
       "spdx_id": "MIT",
       "dirname": "moodist"
+    },
+    {
+      "name": "monica",
+      "description": "Personal CRM. Remember everything about your friends, family and business relationships.",
+      "source": "https://github.com/monicahq/monica",
+      "icon": "https://avatars.githubusercontent.com/u/25832602?s=200&v=4",
+      "website": "https://monicahq.com/",
+      "installation": "First boot runs Laravel migrations and may take several minutes.",
+      "architecture": [],
+      "categories": [
+        "productivity",
+        "utilities"
+      ],
+      "screenshots": [],
+      "links": [],
+      "addons": [
+        "MariaDB"
+      ],
+      "stars": 24759,
+      "forks": 2520,
+      "watchers": 24759,
+      "issues": 778,
+      "last_updated": "2026-06-13T11:33:18Z",
+      "last_pushed": "2026-04-24T19:52:26Z",
+      "created_at": "2017-02-17T00:02:58Z",
+      "size": 152694,
+      "language": "PHP",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/monica/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "monica",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/monica/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/monica/app.ha.yaml"
+        }
+      ]
     },
     {
       "name": "photoview",
