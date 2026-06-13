@@ -109,7 +109,7 @@ spec:
       memory: 2Gi
   healthcheck:
     enabled: true
-    path: /
+    path: /health_checks/default
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
