@@ -43,10 +43,15 @@ spec:
               memory: 1Gi
           bootstrap:
             initdb:
-              database: postgres
+              database: n8n
               owner: n8n
               secret:
                 name: n8n-postgres-app
+              postInitApplicationSQL:
+                - CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
+                - GRANT ALL ON SCHEMA public TO n8n
+                - GRANT CREATE ON SCHEMA public TO n8n
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO n8n
           enableSuperuserAccess: true
           superuserSecret:
             name: n8n-postgres-superuser
@@ -84,7 +89,7 @@ spec:
   - name: N8N_BASIC_AUTH_ACTIVE
     value: 'false'
   - name: DB_POSTGRESDB_DATABASE
-    value: postgres
+    value: n8n
   extraVolumes: []
   image:
     containerPort: '5678'
