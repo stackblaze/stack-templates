@@ -32,7 +32,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /config
-    name: jellyfin-config
+    name: jellyfin-data
     size: 4Gi
   - accessModes:
     - ReadWriteOnce
