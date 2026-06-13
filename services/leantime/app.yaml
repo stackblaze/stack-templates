@@ -29,12 +29,12 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: leantime-mysql
+          name: "{{KUBERO_APP_NAME}}-mysql"
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: leantime-mysql-root
+            name: "{{KUBERO_APP_NAME}}-mysql-root"
             key: password
           database: leantime
           storage:
@@ -52,7 +52,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: leantime-mysql-root
+          name: "{{KUBERO_APP_NAME}}-mysql-root"
         type: Opaque
         stringData:
           password: leantime
@@ -60,7 +60,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: LEAN_DB_HOST
-    value: leantime-mysql
+    value: "{{KUBERO_APP_NAME}}-mysql"
   - name: LEAN_DB_USER
     value: root
   - name: LEAN_DB_PASSWORD
@@ -70,10 +70,12 @@ spec:
   - name: LEAN_EMAIL_RETURN
     value: changeme@local.local
   - name: LEAN_APP_URL
-    value: https://leantime.demo.kubero.dev
+    value: "{{KUBERO_APP_URL}}"
+  - name: LEAN_SESSION_PASSWORD
+    value: leantime
   extraVolumes: []
   image:
-    containerPort: '80'
+    containerPort: '8080'
     repository: leantime/leantime
     tag: latest
   name: leantime
