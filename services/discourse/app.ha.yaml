@@ -112,7 +112,7 @@ spec:
   - name: DISCOURSE_HOST
     value: '{{KUBERO_APP_HOST}}'
   - name: DISCOURSE_PASSWORD
-    value: discourse
+    value: discourse123
   - name: DISCOURSE_EMAIL
     value: admin@example.com
   - name: DISCOURSE_SMTP_HOST
