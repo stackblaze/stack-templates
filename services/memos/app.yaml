@@ -28,7 +28,7 @@ spec:
   image:
     containerPort: '5230'
     repository: neosmemo/memos
-    tag: latest
+    tag: stable
   name: memos
   web:
     replicaCount: 1
