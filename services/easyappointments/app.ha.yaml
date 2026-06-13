@@ -102,3 +102,13 @@ spec:
     pullPolicy: Always
     repository: alextselegidis/easyappointments
     tag: latest
+    command:
+    - sh
+    - -c
+    - mkdir -p /var/www/html/storage/cache /var/www/html/storage/logs /var/www/html/storage/sessions
+      /var/www/html/storage/uploads && chown -R www-data:www-data /var/www/html/storage
+      && exec /usr/local/bin/docker-entrypoint.sh
+    run:
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
