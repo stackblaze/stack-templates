@@ -37,8 +37,8 @@ spec:
           accessModes:
               - ReadWriteOnce
           emptyDir: false
-          mountPath: /home/libretranslate/.local
-          name: libtranslate-models-volume
+          mountPath: /home/libretranslate/.local/share/argos-translate
+          name: libtranslate-lang-models
           size: 2Gi
     cronjobs: []
     addons: []
