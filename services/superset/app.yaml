@@ -118,6 +118,8 @@ spec:
     value: superset
   - name: PYTHONPATH
     value: /app/pythonpath:/app/docker/pythonpath_dev
+  - name: SUPERSET__SQLALCHEMY_DATABASE_URI
+    value: postgresql+psycopg2://superset:superset@superset-postgresql-rw:5432/superset
   - name: DATABASE_DIALECT
     value: postgresql
   - name: DATABASE_HOST
