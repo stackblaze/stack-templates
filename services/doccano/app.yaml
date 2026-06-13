@@ -25,6 +25,12 @@ spec:
           value: admin@example.com
         - name: ADMIN_PASSWORD
           value: random16
+        - name: SECRET_KEY
+          value: 7b3f9c2e1a8d4f60b5e2c9a17d4e8f3c6b0a9d2e5f81c47a3b6d9e0f2a5c8b1d4
+        - name: DATABASE_URL
+          value: sqlite:////data/doccano.db
+        - name: DEBUG
+          value: "False"
     extraVolumes:
         - accessMode: ReadWriteOnce
           accessModes:
@@ -43,4 +49,18 @@ spec:
         containerPort: "8000"
         pullPolicy: Always
         repository: doccano/doccano
+        # The image's USER is "doccano"; a freshly provisioned PVC at /data is
+        # root-owned, so run as root to let the app create the sqlite database.
+        run:
+            securityContext:
+                runAsNonRoot: false
+                runAsUser: 0
         tag: latest
+    # run.sh executes migrations + superuser creation before gunicorn binds,
+    # which can exceed the default startup probe window.
+    healthcheck:
+        enabled: true
+        path: /
+        startupSeconds: 300
+        timeoutSeconds: 5
+        periodSeconds: 10
