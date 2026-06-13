@@ -25,9 +25,9 @@ spec:
         - name: TRUST_PROXY_HEADER
           value: "1"
         - name: ENDPOINT
-          value: https://logto.localhost
+          value: '{{KUBERO_APP_URL}}'
         - name: ADMIN_ENDPOINT
-          value: https://admin.logto.localhost
+          value: '{{KUBERO_APP_URL}}'
     extraVolumes: []
     cronjobs: []
     addons:
