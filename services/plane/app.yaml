@@ -52,6 +52,10 @@ spec:
               owner: plane
               secret:
                 name: plane-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO plane
+                - GRANT CREATE ON SCHEMA public TO plane
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO plane
           enableSuperuserAccess: true
           superuserSecret:
             name: plane-postgresql-superuser
@@ -102,6 +106,42 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  - displayName: RustFS
+    env: []
+    icon: /img/addons/rustfs.svg
+    id: kubero-operator
+    kind: Tenant
+    resourceDefinitions:
+      Tenant:
+        apiVersion: rustfs.com/v1alpha1
+        kind: Tenant
+        metadata:
+          name: plane-rustfs
+        spec:
+          image: rustfs/rustfs:latest
+          credsSecret:
+            name: plane-rustfs-credentials
+          pools:
+          - name: pool-0
+            servers: 1
+            persistence:
+              volumesPerServer: 4
+              volumeClaimTemplate:
+                accessModes:
+                - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 2Gi
+                storageClassName: slow
+      credsSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: plane-rustfs-credentials
+        type: Opaque
+        stringData:
+          accesskey: planeadmin
+          secretkey: changeme
   envVars:
   - name: WEB_URL
     value: '{{KUBERO_APP_URL}}'
@@ -112,15 +152,38 @@ spec:
   - name: REDIS_URL
     value: redis://rfr-plane-valkey-readwrite:6379/0
   - name: SECRET_KEY
-    value: replace-with-openssl-rand-hex-32
+    value: '{{KUBERO_GEN_ALNUM:50}}'
   - name: USE_MINIO
-    value: '0'
+    value: '1'
+  - name: AWS_ACCESS_KEY_ID
+    value: planeadmin
+  - name: AWS_SECRET_ACCESS_KEY
+    value: changeme
+  - name: AWS_S3_ENDPOINT_URL
+    value: http://plane-rustfs:9000
+  - name: AWS_S3_BUCKET_NAME
+    value: uploads
+  - name: AWS_REGION
+    value: us-east-1
   extraVolumes: []
   cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '8000'
     pullPolicy: Always
