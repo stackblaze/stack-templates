@@ -137,6 +137,7 @@ spec:
     path: /
     startupSeconds: 600
     timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '4567'
     pullPolicy: Always
