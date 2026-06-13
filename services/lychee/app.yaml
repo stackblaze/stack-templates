@@ -30,7 +30,7 @@ spec:
   - name: APP_KEY
     value: base64:B0SHakyMaw8rozeNKm+XcT1ZukIc9xSNPghJiWh9ivc=
   - name: DB_DATABASE
-    value: /local/db/lychee
+    value: /app/database/lychee.sqlite
   - name: STARTUP_DELAY
     value: '5'
   - name: TRUSTED_PROXIES
@@ -44,21 +44,27 @@ spec:
     accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /local/db
+    mountPath: /app/database
     name: lychee-db-volume
     size: 1Gi
   - accessMode: ReadWriteOnce
     accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /uploads
+    mountPath: /app/public/uploads
     name: lychee-upload-volume
     size: 1Gi
   image:
-    containerPort: '80'
+    containerPort: '8000'
     pullPolicy: Always
     repository: lycheeorg/lychee
     tag: latest
+    command:
+    - sh
+    - -c
+    - mkdir -p /app/database && touch /app/database/lychee.sqlite && chown www-data:www-data
+      /app/database/lychee.sqlite && exec /usr/local/bin/entrypoint.sh php artisan octane:start
+      --server=frankenphp --host=0.0.0.0 --port=8000
   name: lychee
   web:
     replicaCount: 1
