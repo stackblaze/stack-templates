@@ -133,11 +133,7 @@ spec:
       cpu: '1'
       memory: 2Gi
   healthcheck:
-    enabled: true
-    path: /
-    startupSeconds: 600
-    timeoutSeconds: 5
-    periodSeconds: 10
+    enabled: false
   image:
     containerPort: '4567'
     pullPolicy: Always
