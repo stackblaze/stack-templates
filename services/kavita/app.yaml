@@ -45,8 +45,19 @@ spec:
     periodSeconds: 10
   image:
     containerPort: '5000'
+    command:
+    - sh
+    - -c
+    - mkdir -p /kavita/config /data && if [ ! -f /kavita/config/appsettings.json ]; then printf
+      '%s\n' '{"TokenKey":"super secret unguessable key that is longer because we require
+      it","Port":5000,"IpAddresses":"","BaseUrl":"/","Cache":75}' > /kavita/config/appsettings.json;
+      fi && exec /entrypoint.sh
     pullPolicy: Always
     repository: ghcr.io/kareadita/kavita
+    run:
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
     tag: latest
   name: kavita
   web:
