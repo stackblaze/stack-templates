@@ -77,8 +77,8 @@ spec:
   - name: CRON_MIN
     value: 13,43
   - name: FRESHRSS_INSTALL
-    value: --default-user admin --default-password change-me --db-type mysql --db-host freshrss-mysql --db-user freshrss --db-password
-      freshrss --db-base freshrss
+    value: --default-user admin --db-type mysql --db-host freshrss-mysql --db-user freshrss --db-password freshrss
+      --db-base freshrss
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
