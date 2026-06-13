@@ -84,6 +84,8 @@ spec:
     value: keila
   - name: MAILER_SMTP_PASSWORD
     value: keila
+  - name: MAILER_SMTP_FROM_EMAIL
+    value: noreply@localhost
   - name: KEILA_USER
     value: root@localhost
   - name: KEILA_PASSWORD
