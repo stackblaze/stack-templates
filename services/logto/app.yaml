@@ -88,7 +88,11 @@ spec:
     worker:
         replicaCount: 0
     image:
-        containerPort: 8080
+        containerPort: 3001
         pullPolicy: Always
         repository: svhd/logto
         tag: latest
+        command:
+            - sh
+            - -c
+            - sleep 10 && npm run cli db seed -- --swe && npm start
