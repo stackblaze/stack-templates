@@ -76,6 +76,10 @@ spec:
                               owner: tolgee
                               secret:
                                   name: tolgee-postgresql-app
+                              postInitApplicationSQL:
+                                  - GRANT ALL ON SCHEMA public TO tolgee
+                                  - GRANT CREATE ON SCHEMA public TO tolgee
+                                  - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO tolgee
                       enableSuperuserAccess: true
                       superuserSecret:
                           name: tolgee-postgresql-superuser
@@ -106,3 +110,10 @@ spec:
         pullPolicy: Always
         repository: tolgee/tolgee
         tag: latest
+    # Spring Boot + Liquibase migrations exceed the default ~90s startup probe.
+    healthcheck:
+        enabled: true
+        path: /
+        startupSeconds: 300
+        timeoutSeconds: 5
+        periodSeconds: 10
