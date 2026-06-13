@@ -1,0 +1,114 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: monica
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Personal CRM to remember everything about your friends, family, and business relationships.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/25832602?s=200&v=4
+    kubero.dev/template.installation: First boot runs Laravel migrations and may take several minutes. Register your account on the setup screen.
+    kubero.dev/template.links: '["https://github.com/monicahq/monica"]'
+    kubero.dev/template.screenshots: '["https://beta.monicahq.com/img/dashboard/dashboard.png"]'
+    kubero.dev/template.source: https://github.com/monicahq/monica
+    kubero.dev/template.categories: '["productivity", "utilities"]'
+    kubero.dev/template.title: Monica
+    kubero.dev/template.website: https://monicahq.com/
+  labels:
+    manager: kubero
+spec:
+  name: monica
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: "{{KUBERO_APP_NAME}}-monica-mysql"
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: "{{KUBERO_APP_NAME}}-monica-mysql-root"
+            key: password
+          database: monica
+          username: monica
+          passwordSecretKeyRef:
+            name: "{{KUBERO_APP_NAME}}-monica-mysql-app"
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: "{{KUBERO_APP_NAME}}-monica-mysql-root"
+        type: Opaque
+        stringData:
+          password: monica
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: "{{KUBERO_APP_NAME}}-monica-mysql-app"
+        type: Opaque
+        stringData:
+          password: monica
+  envVars:
+  - name: APP_ENV
+    value: production
+  - name: APP_KEY
+    value: base64:lR33x8mKnhDce4kDdIzHK+Y4wpjMhhGCKYUHLOQTbTY=
+  - name: APP_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: DB_CONNECTION
+    value: mysql
+  - name: DB_HOST
+    value: '{{KUBERO_APP_NAME}}-monica-mysql'
+  - name: DB_PORT
+    value: '3306'
+  - name: DB_DATABASE
+    value: monica
+  - name: DB_USERNAME
+    value: monica
+  - name: DB_PASSWORD
+    value: monica
+  - name: LOG_CHANNEL
+    value: stderr
+  - name: CACHE_DRIVER
+    value: database
+  - name: SESSION_DRIVER
+    value: database
+  - name: QUEUE_DRIVER
+    value: sync
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/storage
+    name: monica-storage
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: monica
+    tag: latest
