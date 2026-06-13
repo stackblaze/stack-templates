@@ -61,6 +61,8 @@ spec:
           value: "false"
         - name: TELEMETRY_ENABLED
           value: "true"
+        - name: NODE_OPTIONS
+          value: --max-old-space-size=1536
     extraVolumes:
         - accessMode: ReadWriteOnce
           accessModes:
@@ -168,3 +170,17 @@ spec:
         pullPolicy: Always
         repository: twentycrm/twenty
         tag: latest
+    # Default QA LimitRange caps web pods at 512Mi; Twenty OOMs during DB migrations.
+    resources:
+        requests:
+            cpu: 500m
+            memory: 1Gi
+        limits:
+            cpu: "1"
+            memory: 2Gi
+    healthcheck:
+        enabled: true
+        path: /
+        startupSeconds: 300
+        timeoutSeconds: 5
+        periodSeconds: 10
