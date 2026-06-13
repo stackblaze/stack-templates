@@ -130,7 +130,7 @@ spec:
   - name: SECRET_KEY
     value: '{{KUBERO_GEN_ALNUM:50}}'
   - name: ALLOWED_HOSTS
-    value: '{{KUBERO_APP_HOST}}'
+    value: '* {{KUBERO_APP_HOST}}'
   - name: CSRF_TRUSTED_ORIGINS
     value: '{{KUBERO_APP_URL}}'
   - name: SKIP_SUPERUSER
