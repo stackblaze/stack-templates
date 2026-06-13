@@ -35,6 +35,8 @@ spec:
           value: NONE
         - name: BROWSER_POLICY_ENABLED
           value: "true"
+        - name: PORT
+          value: "8080"
     extraVolumes:
         - accessMode: ReadWriteOnce
           accessModes:
@@ -84,7 +86,11 @@ spec:
             cpu: '1'
             memory: 2Gi
     healthcheck:
-        enabled: false
+        enabled: true
+        path: /
+        startupSeconds: 600
+        timeoutSeconds: 5
+        periodSeconds: 10
     web:
         replicaCount: 1
     worker:
