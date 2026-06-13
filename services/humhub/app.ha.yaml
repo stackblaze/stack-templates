@@ -90,6 +90,8 @@ spec:
     value: admin@example.com
   - name: HUMHUB_ADMIN_PASSWORD
     value: change-me
+  - name: HUMHUB_AUTO_INSTALL
+    value: 'true'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
