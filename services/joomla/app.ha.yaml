@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.description: Joomla is a free and open-source content management
       system for publishing web content on websites.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/751633?s=200&v=4
-    kubero.dev/template.installation: ''
+    kubero.dev/template.installation: Set JOOMLA_ADMIN_PASSWORD before first boot for auto-install.
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://upload.wikimedia.org/wikipedia/commons/9/96/Backend_Joomla_4_en.png"]'
     kubero.dev/template.source: https://github.com/joomla/joomla-cms
@@ -16,24 +16,34 @@ metadata:
   name: joomla
 spec:
   addons:
-  - displayName: PostgreSQL (CloudNativePG)
+  - displayName: MariaDB
     env: []
-    icon: /img/addons/pgsql.svg
+    icon: /img/addons/mysql.svg
     id: kubero-operator
-    kind: Cluster
+    kind: MariaDB
     resourceDefinitions:
-      Cluster:
-        apiVersion: postgresql.cnpg.io/v1
-        kind: Cluster
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
         metadata:
-          name: joomla-postgresql
+          name: joomla-db
         spec:
-          instances: 3
-          imageName: ghcr.io/cloudnative-pg/postgresql:16
-          primaryUpdateStrategy: unsupervised
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: joomla-db-root
+            key: password
+          database: joomla
+          username: joomla
+          passwordSecretKeyRef:
+            name: joomla-db-app
+            key: password
           storage:
-            storageClass: fast
             size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          galera:
+            enabled: true
           resources:
             requests:
               cpu: 100m
@@ -41,59 +51,72 @@ spec:
             limits:
               cpu: "1"
               memory: 1Gi
-          bootstrap:
-            initdb:
-              database: postgresql
-              owner: joomla
-              secret:
-                name: joomla-postgresql-app
-          enableSuperuserAccess: true
-          superuserSecret:
-            name: joomla-postgresql-superuser
-      superuserSecret:
+      rootSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: joomla-postgresql-superuser
-        type: kubernetes.io/basic-auth
+          name: joomla-db-root
+        type: Opaque
         stringData:
-          username: postgres
           password: joomla
-      appUserSecret:
+      appSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: joomla-postgresql-app
-        type: kubernetes.io/basic-auth
+          name: joomla-db-app
+        type: Opaque
         stringData:
-          username: joomla
           password: joomla
   cronjobs: []
   deploymentstrategy: docker
   envVars:
   - name: JOOMLA_DB_HOST
-    value: joomla-postgresql-rw
+    value: joomla-db
+  - name: JOOMLA_DB_USER
+    value: joomla
   - name: JOOMLA_DB_PASSWORD
     value: joomla
+  - name: JOOMLA_DB_NAME
+    value: joomla
+  - name: JOOMLA_DB_TYPE
+    value: mysqli
+  - name: JOOMLA_SITE_NAME
+    value: Joomla
+  - name: JOOMLA_ADMIN_USER
+    value: Admin
+  - name: JOOMLA_ADMIN_USERNAME
+    value: admin
+  - name: JOOMLA_ADMIN_PASSWORD
+    value: change-me
+  - name: JOOMLA_ADMIN_EMAIL
+    value: admin@example.com
   extraVolumes:
   - accessModes:
     - ReadWriteMany
+    storageClass: shared
     emptyDir: false
-    mountPath: /var/www/html
-    name: joomla-volume
+    mountPath: /var/www/html/images
+    name: joomla-images
     size: 1Gi
-  - accessModes:
-    - ReadWriteMany
-    emptyDir: false
-    mountPath: /var/run/apache2
-    name: joomla-rundir
-    size: 1Mi
   image:
     containerPort: '80'
     repository: joomla
     tag: latest
   name: joomla
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
