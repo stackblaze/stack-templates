@@ -45,10 +45,14 @@ spec:
               memory: 1Gi
           bootstrap:
             initdb:
-              database: postgresql
+              database: affine
               owner: affine
               secret:
                 name: affine-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO affine
+                - GRANT CREATE ON SCHEMA public TO affine
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO affine
           enableSuperuserAccess: true
           superuserSecret:
             name: affine-postgresql-superuser
@@ -102,12 +106,12 @@ spec:
   cronjobs: []
   deploymentstrategy: docker
   envVars:
-  - name: NODE_OPTIONS
-    value: --import=./scripts/register.js
   - name: REDIS_SERVER_HOST
     value: rfr-affine-valkey-readwrite
   - name: DATABASE_URL
-    value: postgres://affine:afffine@affine-postgresql-rw:5432/postgresql
+    value: postgresql://affine:afffine@affine-postgresql-rw:5432/affine
+  - name: AFFINE_INDEXER_ENABLED
+    value: 'false'
   - name: NODE_ENV
     value: production
   - name: AFFINE_ADMIN_EMAIL
@@ -129,7 +133,7 @@ spec:
   image:
     containerPort: '3010'
     pullPolicy: Always
-    repository: ghcr.io/toeverything/affine-graphql
+    repository: ghcr.io/toeverything/affine
     tag: stable
   name: affine
   web:
