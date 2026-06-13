@@ -41,6 +41,12 @@ spec:
           value: admin@example.com
         - name: PAPERLESS_ADMIN_PASSWORD
           value: administrator
+        - name: PAPERLESS_WEBSERVER_WORKERS
+          value: "1"
+        - name: PAPERLESS_TASK_WORKERS
+          value: "1"
+        - name: PAPERLESS_ENABLE_NLTK
+          value: "false"
     extraVolumes:
         - accessMode: ReadWriteOnce
           accessModes:
@@ -161,6 +167,13 @@ spec:
         replicaCount: 1
     worker:
         replicaCount: 0
+    resources:
+        requests:
+            cpu: 500m
+            memory: 1Gi
+        limits:
+            cpu: "1"
+            memory: 3Gi
     healthcheck:
         enabled: true
         path: /
