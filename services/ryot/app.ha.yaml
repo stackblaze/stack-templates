@@ -49,6 +49,10 @@ spec:
               owner: ryot
               secret:
                 name: ryot-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO ryot
+                - GRANT CREATE ON SCHEMA public TO ryot
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ryot
           enableSuperuserAccess: true
           superuserSecret:
             name: ryot-postgresql-superuser
@@ -75,9 +79,19 @@ spec:
   envVars:
   - name: DATABASE_URL
     value: postgres://ryot:ryot@ryot-postgresql-rw:5432/ryot
+  - name: FRONTEND_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: SERVER_ADMIN_ACCESS_TOKEN
+    value: random64
   - name: DISABLE_TELEMETRY
-    value: 'false'
+    value: 'true'
   extraVolumes: []
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '8000'
     pullPolicy: Always
