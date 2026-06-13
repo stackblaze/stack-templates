@@ -35,7 +35,7 @@ spec:
     worker:
         replicaCount: 0
     image:
-        containerPort: 8080
+        containerPort: 3000
         pullPolicy: Always
         repository: flowiseai/flowise
         tag: latest
