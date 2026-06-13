@@ -493,42 +493,6 @@
       ]
     },
     {
-      "name": "grafana",
-      "description": "Open source analytics and interactive visualization platform for metrics, logs, and traces.",
-      "source": "https://github.com/grafana/grafana",
-      "icon": "https://avatars.githubusercontent.com/u/7195757?s=200&v=4",
-      "website": "https://grafana.com/",
-      "installation": "Default login is admin/admin — change the password on first sign-in.",
-      "architecture": [],
-      "categories": [
-        "monitoring",
-        "dashboard",
-        "utilities"
-      ],
-      "screenshots": [
-        "https://grafana.com/media/docs/grafana/dashboards/overview-screenshot.png"
-      ],
-      "links": [
-        "https://grafana.com/docs/grafana/latest/"
-      ],
-      "addons": [],
-      "stars": 65000,
-      "forks": 12000,
-      "watchers": 65000,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2014-11-24T00:00:00Z",
-      "size": 0,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/grafana/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "grafana"
-    },
-    {
       "name": "changedetection",
       "description": "A self-hosted free open source website change detection, monitor and notification service.",
       "source": "https://github.com/dgtlmoon/changedetection.io",
@@ -4674,54 +4638,6 @@
       "license": "MIT License",
       "spdx_id": "MIT",
       "dirname": "tasksmd"
-    },
-    {
-      "name": "tandoor",
-      "description": "Self-hosted Django recipe manager for organizing recipes, meal plans, and shopping lists.",
-      "source": "https://github.com/TandoorRecipes/recipes",
-      "icon": "https://avatars.githubusercontent.com/u/67073608?s=200&v=4",
-      "website": "https://tandoor.dev/",
-      "installation": "Set SECRET_KEY to a random 50+ character string. First boot runs migrations and collectstatic (may take several minutes).",
-      "architecture": [
-        "linux/amd64",
-        "linux/arm64"
-      ],
-      "categories": [
-        "utilities",
-        "productivity"
-      ],
-      "screenshots": [
-        "https://docs.tandoor.dev/assets/img/logo.png"
-      ],
-      "links": [
-        "https://docs.tandoor.dev/"
-      ],
-      "addons": [
-        "Cluster"
-      ],
-      "stars": 6000,
-      "forks": 600,
-      "watchers": 6000,
-      "issues": 0,
-      "last_updated": "2026-06-11T00:00:00Z",
-      "last_pushed": "2026-06-11T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "Python",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "tandoor",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/app.yaml"
-        }
-      ]
     },
     {
       "name": "slash",
