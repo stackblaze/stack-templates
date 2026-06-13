@@ -145,6 +145,40 @@ spec:
         stringData:
           accesskey: planeadmin
           secretkey: changeme
+  - displayName: RabbitMQ
+    env: []
+    icon: /img/addons/rabbitmq.svg
+    id: kubero-operator
+    kind: RabbitmqCluster
+    resourceDefinitions:
+      RabbitmqCluster:
+        apiVersion: rabbitmq.com/v1beta1
+        kind: RabbitmqCluster
+        metadata:
+          name: plane-rabbitmq
+        spec:
+          replicas: 3
+          persistence:
+            storageClassName: fast
+            storage: 1Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+      default-userSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: plane-rabbitmq-default-user
+        type: Opaque
+        stringData:
+          username: plane
+          password: plane
+          default_user.conf: |
+            default_user = plane
+            default_pass = plane
   envVars:
   - name: WEB_URL
     value: '{{KUBERO_APP_URL}}'
@@ -168,6 +202,16 @@ spec:
     value: uploads
   - name: AWS_REGION
     value: us-east-1
+  - name: RABBITMQ_HOST
+    value: plane-rabbitmq
+  - name: RABBITMQ_USER
+    value: plane
+  - name: RABBITMQ_PASSWORD
+    value: plane
+  - name: RABBITMQ_VHOST
+    value: /
+  - name: GUNICORN_WORKERS
+    value: '1'
   extraVolumes: []
   cronjobs: []
   web:
@@ -176,15 +220,15 @@ spec:
     replicaCount: 0
   resources:
     requests:
-      cpu: 500m
-      memory: 1Gi
-    limits:
       cpu: '1'
       memory: 2Gi
+    limits:
+      cpu: '2'
+      memory: 3Gi
   healthcheck:
     enabled: true
     path: /
-    startupSeconds: 600
+    startupSeconds: 900
     timeoutSeconds: 5
     periodSeconds: 10
   image:
