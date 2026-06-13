@@ -19,12 +19,16 @@ spec:
     name: kimai
     deploymentstrategy: docker
     envVars:
+        - name: APP_SECRET
+          value: 0LZiQBLw4WvqPlz4cz8RsHJlxNiSqM9B48y4ChyJ5v1oA0L/TPIqRjQNdPZN3iEG
         - name: ADMINMAIL
           value: admin@kimai.local
         - name: ADMINPASS
           value: changemeplease
+        - name: TRUSTED_HOSTS
+          value: "{{KUBERO_APP_HOST}}"
         - name: DATABASE_URL
-          value: mysql://kimai:kimai@kimai-mysql/kimai?charset=utf8mb4
+          value: mysql://kimai:kimai@{{KUBERO_APP_NAME}}-kimai-mysql/kimai?charset=utf8mb4
     extraVolumes:
         - accessMode: ReadWriteOnce
           accessModes:
@@ -52,17 +56,17 @@ spec:
                   apiVersion: k8s.mariadb.com/v1alpha1
                   kind: MariaDB
                   metadata:
-                      name: kimai-mysql
+                      name: "{{KUBERO_APP_NAME}}-kimai-mysql"
                   spec:
                       metrics:
                         enabled: true
                       rootPasswordSecretKeyRef:
-                          name: kimai-mysql-root
+                          name: "{{KUBERO_APP_NAME}}-kimai-mysql-root"
                           key: password
                       database: kimai
                       username: kimai
                       passwordSecretKeyRef:
-                          name: kimai-mysql-app
+                          name: "{{KUBERO_APP_NAME}}-kimai-mysql-app"
                           key: password
                       storage:
                           size: 5Gi
@@ -81,7 +85,7 @@ spec:
                   apiVersion: v1
                   kind: Secret
                   metadata:
-                      name: kimai-mysql-root
+                      name: "{{KUBERO_APP_NAME}}-kimai-mysql-root"
                   type: Opaque
                   stringData:
                       password: kimai
@@ -89,7 +93,7 @@ spec:
                   apiVersion: v1
                   kind: Secret
                   metadata:
-                      name: kimai-mysql-app
+                      name: "{{KUBERO_APP_NAME}}-kimai-mysql-app"
                   type: Opaque
                   stringData:
                       password: kimai
