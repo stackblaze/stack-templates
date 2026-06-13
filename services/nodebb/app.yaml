@@ -6,8 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Next-generation forum software — powerful, mobile-ready, and fully customizable.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4449608?s=200&v=4
-    kubero.dev/template.installation: First boot runs automated setup via NODEBB_* env vars. Change admin password after login.
-      Remove SETUP env or set to empty after successful initialization.
+    kubero.dev/template.installation: First boot runs automated install via NODEBB_* env vars (takes several minutes). Change admin password after login.
     kubero.dev/template.links: '["https://docs.nodebb.org/"]'
     kubero.dev/template.screenshots: '["https://nodebb.org/assets/images/nodebb-screenshot.png"]'
     kubero.dev/template.source: https://github.com/NodeBB/NodeBB
@@ -77,8 +76,6 @@ spec:
           username: nodebb
           password: nodebb
   envVars:
-  - name: SETUP
-    value: 'true'
   - name: NODEBB_URL
     value: '{{KUBERO_APP_URL}}'
   - name: NODEBB_PORT
@@ -135,7 +132,7 @@ spec:
   healthcheck:
     enabled: true
     path: /
-    startupSeconds: 600
+    startupSeconds: 900
     timeoutSeconds: 5
     periodSeconds: 10
   image:
