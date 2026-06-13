@@ -27,6 +27,8 @@ spec:
           value: changemeplease
         - name: TRUSTED_HOSTS
           value: "{{KUBERO_APP_HOST}}|localhost|127.0.0.1|10\\..+"
+        - name: TRUSTED_PROXIES
+          value: "10.0.0.0/8,REMOTE_ADDR"
         - name: DATABASE_URL
           value: mysql://kimai:kimai@{{KUBERO_APP_NAME}}-kimai-mysql/kimai?charset=utf8mb4
     extraVolumes:
@@ -101,6 +103,12 @@ spec:
         replicaCount: 1
     worker:
         replicaCount: 0
+    healthcheck:
+        enabled: true
+        path: /
+        startupSeconds: 300
+        timeoutSeconds: 5
+        periodSeconds: 10
     image:
         containerPort: "8001"
         pullPolicy: Always
