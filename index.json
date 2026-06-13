@@ -1419,54 +1419,6 @@
       "dirname": "excalidraw"
     },
     {
-      "name": "atuin",
-      "description": "Atuin replaces your existing shell history with a SQLite database, and records additional context for your commands.",
-      "source": "https://github.com/atuinsh/atuin",
-      "icon": "https://avatars.githubusercontent.com/u/122059230?s=200&v=4",
-      "website": "https://atuin.sh/",
-      "installation": "Make sure you have selected the correct storageclass for the database. If you are unsure, you can check the available storage classes by running the following command: ```bash kubectl get storageclass ``` ",
-      "architecture": [],
-      "categories": [
-        "development",
-        "utilities"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/atuinsh/atuin/main/demo.gif"
-      ],
-      "links": [],
-      "addons": [
-        "Cluster"
-      ],
-      "stars": 29670,
-      "forks": 838,
-      "watchers": 29670,
-      "issues": 484,
-      "last_updated": "2026-05-11T12:34:44Z",
-      "last_pushed": "2026-05-11T08:10:01Z",
-      "created_at": "2020-10-04T23:01:58Z",
-      "size": 50882,
-      "language": "Rust",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/atuin/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "atuin",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/atuin/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/atuin/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "joomla",
       "description": "Joomla is a free and open-source content management system for publishing web content on websites.",
       "source": "https://github.com/joomla/joomla-cms",
@@ -2939,43 +2891,6 @@
       "dirname": "workout-tracker"
     },
     {
-      "name": "coral",
-      "description": "A better onlne commenting experience from Vox Media",
-      "source": "https://github.com/coralproject/talk",
-      "icon": "https://avatars.githubusercontent.com/u/9255912?s=200&v=4",
-      "website": "https://coralproject.net",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "social",
-        "communication"
-      ],
-      "screenshots": null,
-      "links": [
-        "https://docs.coralproject.net/",
-        "https://github.com/coralproject/talk/blob/main/docs/docs/environment-variables.md"
-      ],
-      "addons": [
-        "Valkey",
-        "DocumentDB"
-      ],
-      "stars": 1981,
-      "forks": 371,
-      "watchers": 1981,
-      "issues": 52,
-      "last_updated": "2026-05-07T17:35:44Z",
-      "last_pushed": "2026-05-07T19:14:16Z",
-      "created_at": "2016-10-31T16:14:05Z",
-      "size": 82025,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/coral/app.yaml",
-      "status": "active",
-      "license": "Other",
-      "spdx_id": "NOASSERTION",
-      "dirname": "coral"
-    },
-    {
       "name": "presentator",
       "description": "Design feedback and presentation platform",
       "source": "https://github.com/presentator/presentator",
@@ -3271,57 +3186,6 @@
       "license": "MIT License",
       "spdx_id": "MIT",
       "dirname": "lychee"
-    },
-    {
-      "name": "mosparo",
-      "description": "The modern spam protection. Protects your forms from spam by simply checking the content. Open source, Free to use, Accessible, and Self-Hosted.",
-      "source": "https://github.com/mosparo/mosparo",
-      "icon": "https://avatars.githubusercontent.com/u/83111146?s=200&v=4",
-      "website": "https://mosparo.io/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "security",
-        "accessories"
-      ],
-      "screenshots": [
-        "https://d4.alternativeto.net/HPWhNJQo67junwVeSlN5ovWPz-UkZrQel0IxkNXUVbs/rs:fit:1200:1200:0/g:ce:0:0/YWJzOi8vZGlzdC9zL21vc3Bhcm9fMTA2NTE1X2Z1bGwuanBn.jpg",
-        "https://d4.alternativeto.net/DYwswFga7YcsviDw-b71168EBIS45dqsbHE0cNb8phk/rs:fit:1200:1200:0/g:ce:0:0/YWJzOi8vZGlzdC9zL21vc3Bhcm9fNTUyMjcxX2Z1bGwuanBn.jpg",
-        "https://d4.alternativeto.net/AsvhGcW3WdllXHft46cSiW5yq_l3bgdyf1-EARYjSzU/rs:fit:1200:1200:0/g:ce:0:0/YWJzOi8vZGlzdC9zL21vc3Bhcm9fMjgyMjI5X2Z1bGwuanBn.jpg",
-        "https://d4.alternativeto.net/8jPSunVUELUMLlyhW0UjOYFCQm9uKkgwE38WdUYm0V4/rs:fit:1200:1200:0/g:ce:0:0/YWJzOi8vZGlzdC9zL21vc3Bhcm9fMjYzNjQ4X2Z1bGwuanBn.jpg"
-      ],
-      "links": [],
-      "addons": [
-        "MariaDB"
-      ],
-      "stars": 282,
-      "forks": 17,
-      "watchers": 282,
-      "issues": 14,
-      "last_updated": "2026-04-27T16:02:49Z",
-      "last_pushed": "2026-05-05T07:44:02Z",
-      "created_at": "2021-06-14T08:30:43Z",
-      "size": 6114,
-      "language": "PHP",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mosparo/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "mosparo",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mosparo/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mosparo/app.ha.yaml"
-        }
-      ]
     },
     {
       "name": "vvveb-mysql",
@@ -4229,41 +4093,6 @@
       "license": "MIT License",
       "spdx_id": "MIT",
       "dirname": "textbee"
-    },
-    {
-      "name": "kotaemon",
-      "description": "An open-source clean & customizable RAG UI for chatting with your documents.",
-      "source": "https://github.com/Cinnamon/kotaemon",
-      "icon": "https://avatars.githubusercontent.com/u/3265185",
-      "website": "https://cinnamon.github.io/kotaemon/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "ai"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/Cinnamon/kotaemon/main/docs/images/preview-graph.png",
-        "https://raw.githubusercontent.com/Cinnamon/kotaemon/main/docs/images/preview.png"
-      ],
-      "links": [],
-      "addons": [
-        "Milvus"
-      ],
-      "stars": 25374,
-      "forks": 2121,
-      "watchers": 25374,
-      "issues": 234,
-      "last_updated": "2026-05-11T06:17:07Z",
-      "last_pushed": "2026-04-03T11:28:24Z",
-      "created_at": "2024-03-25T08:16:42Z",
-      "size": 44273,
-      "language": "Python",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kotaemon/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "kotaemon"
     },
     {
       "name": "serpbear",
