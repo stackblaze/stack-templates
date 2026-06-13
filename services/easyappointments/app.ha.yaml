@@ -86,10 +86,11 @@ spec:
     value: easyappointments
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
+    storageClass: shared
     emptyDir: false
-    mountPath: /var/www/html
-    name: easyappointments-data
+    mountPath: /var/www/html/storage
+    name: easyappointments-storage
     size: 1Gi
   cronjobs: []
   web:
