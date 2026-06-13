@@ -47,6 +47,10 @@ spec:
               owner: rallly
               secret:
                 name: rallly-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO rallly
+                - GRANT CREATE ON SCHEMA public TO rallly
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO rallly
           enableSuperuserAccess: true
           superuserSecret:
             name: rallly-postgresql-superuser
@@ -68,18 +72,72 @@ spec:
         stringData:
           username: rallly
           password: rallly
+  - displayName: RustFS
+    env: []
+    icon: /img/addons/rustfs.svg
+    id: kubero-operator
+    kind: Tenant
+    resourceDefinitions:
+      Tenant:
+        apiVersion: rustfs.com/v1alpha1
+        kind: Tenant
+        metadata:
+          name: rallly-rustfs
+        spec:
+          image: rustfs/rustfs:latest
+          credsSecret:
+            name: rallly-rustfs-credentials
+          pools:
+          - name: pool-0
+            servers: 1
+            persistence:
+              volumesPerServer: 4
+              volumeClaimTemplate:
+                accessModes:
+                - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 2Gi
+                storageClassName: slow
+      credsSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: rallly-rustfs-credentials
+        type: Opaque
+        stringData:
+          accesskey: ralllyadmin
+          secretkey: changeme
   cronjobs: []
   deploymentstrategy: docker
   envVars:
+  - name: NODE_ENV
+    value: production
+  - name: NEXT_PUBLIC_BASE_URL
+    value: '{{KUBERO_APP_URL}}'
   - name: DATABASE_URL
     value: postgres://rallly:rallly@rallly-postgresql-rw:5432/postgresql
   - name: SECRET_PASSWORD
     value: replace-me-now-with-a-own-secret
+  - name: SUPPORT_EMAIL
+    value: support@example.com
+  - name: NOREPLY_EMAIL
+    value: noreply@example.com
+  - name: S3_ENDPOINT
+    value: http://rallly-rustfs:9000
+  - name: S3_BUCKET_NAME
+    value: rallly
+  - name: S3_REGION
+    value: us-east-1
+  - name: S3_ACCESS_KEY_ID
+    value: ralllyadmin
+  - name: S3_SECRET_ACCESS_KEY
+    value: changeme
   extraVolumes: []
   image:
     containerPort: '3000'
     repository: lukevella/rallly
-    tag: latest
+    tag: '4'
   name: rallly
   web:
     replicaCount: 1
