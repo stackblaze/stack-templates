@@ -160,6 +160,12 @@ spec:
     name: pretix-data
     size: 5Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
