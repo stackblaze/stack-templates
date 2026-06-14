@@ -7,8 +7,8 @@ metadata:
     kubero.dev/template.description: 'Open-source customer relationship management for sales, marketing and service teams:
       accounts, contacts, leads, opportunities, cases and workflows.'
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/suitecrm/icon.png
-    kubero.dev/template.installation: Runs the Bitnami Legacy SuiteCRM image (bitnamilegacy/suitecrm — Bitnami removed free
-      images from Docker Hub). SuiteCRM only supports MariaDB/MySQL
+    kubero.dev/template.installation: Runs the Bitnami Legacy SuiteCRM image mirrored to GHCR (bitnamilegacy/suitecrm — Bitnami
+      removed free images from Docker Hub). SuiteCRM only supports MariaDB/MySQL
       (no PostgreSQL) — this template ships the bundled mariadb addon (default db/user/password 'suitecrm', rotate before
       production). On first boot the admin account is provisioned from SUITECRM_USERNAME / SUITECRM_PASSWORD / SUITECRM_EMAIL
       — rotate SUITECRM_PASSWORD (placeholder value) and the mariadb password to match SUITECRM_DATABASE_PASSWORD. The valkey
@@ -151,5 +151,5 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: bitnamilegacy/suitecrm
+    repository: ghcr.io/stackblaze/stack-templates/suitecrm
     tag: '8'
