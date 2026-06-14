@@ -135,7 +135,7 @@ spec:
   - name: WORKSPACE_NAME
     value: Default
   - name: SECRET_KEY
-    value: replace-with-openssl-rand-base64-32
+    value: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
   - name: PASSWORD
     value: dittofeed
   - name: DATABASE_HOST
