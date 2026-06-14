@@ -162,5 +162,5 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: dockware/play
+    repository: ghcr.io/dockware-mirror/play
     tag: latest
