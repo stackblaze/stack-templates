@@ -61,6 +61,10 @@ spec:
             initdb:
               database: opnform
               owner: opnform
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO opnform
+                - GRANT CREATE ON SCHEMA public TO opnform
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO opnform
               secret:
                 name: opnform-postgresql-app
           enableSuperuserAccess: true
@@ -170,8 +174,14 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: jhumanj/opnform-api
-    tag: latest
+    repository: ghcr.io/stackblaze/stack-templates/opnform-api
+    tag: '1.13.2'
