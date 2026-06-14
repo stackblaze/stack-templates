@@ -26,7 +26,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: calcom-postgresql
+          name: calcom-db
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -43,18 +43,22 @@ spec:
               memory: 1Gi
           bootstrap:
             initdb:
-              database: postgresql
+              database: calcom
               owner: calcom
               secret:
-                name: calcom-postgresql-app
+                name: calcom-db-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO calcom
+                - GRANT CREATE ON SCHEMA public TO calcom
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO calcom
           enableSuperuserAccess: true
           superuserSecret:
-            name: calcom-postgresql-superuser
+            name: calcom-db-superuser
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: calcom-postgresql-superuser
+          name: calcom-db-superuser
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -63,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: calcom-postgresql-app
+          name: calcom-db-app
         type: kubernetes.io/basic-auth
         stringData:
           username: calcom
@@ -72,25 +76,56 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgresql://calcom:calcom@calcom-postgresql-rw/postgresql
+    value: postgresql://calcom:calcom@calcom-db-rw:5432/calcom
+  - name: DATABASE_DIRECT_URL
+    value: postgresql://calcom:calcom@calcom-db-rw:5432/calcom
   - name: NODE_ENV
     value: production
   - name: NEXT_PUBLIC_LICENSE_CONSENT
     value: agree
+  - name: NEXT_PUBLIC_WEBAPP_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: NEXTAUTH_URL
+    value: '{{KUBERO_APP_URL}}'
   - name: NEXTAUTH_SECRET
-    value: palimpalim
+    value: '00000000000000000000000000000000'
   - name: CALENDSO_ENCRYPTION_KEY
-    value: bumpulum
+    value: '11111111111111111111111111111111'
   extraVolumes: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /auth/login
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '3000'
+    pullPolicy: Always
     repository: calcom.docker.scarf.sh/calcom/cal.com
     run:
       securityContext:
         readOnlyRootFilesystem: false
     tag: latest
+    command:
+    - sh
+    - -c
+    - |
+      set -e
+      for i in $(seq 1 60); do
+        node -e "const {Client}=require('pg'); const c=new Client(process.env.DATABASE_URL); c.connect().then(()=>{c.end();process.exit(0)}).catch(()=>process.exit(1))" && break
+        sleep 5
+      done
+      cd /calcom && npx prisma migrate deploy --schema=packages/prisma/schema.prisma
+      exec yarn start
   name: calcom
-  web:
-    replicaCount: 1
-  worker:
-    replicaCount: 0
