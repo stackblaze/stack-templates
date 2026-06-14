@@ -144,8 +144,14 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: owncloud/server
-    tag: latest
+    repository: ghcr.io/stackblaze/stack-templates/owncloud-server
+    tag: '10.16.3'
