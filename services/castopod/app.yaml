@@ -134,6 +134,8 @@ spec:
     value: ''
   - name: CP_REDIS_DATABASE
     value: '0'
+  - name: CP_DISABLE_HTTPS
+    value: '1'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -146,6 +148,12 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /cp-install
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '8080'
     pullPolicy: Always
