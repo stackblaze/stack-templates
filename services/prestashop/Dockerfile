@@ -7,5 +7,4 @@ RUN cp /tmp/docker_run.sh /usr/local/bin/prestashop-docker-run.sh \
 COPY kubero-entrypoint.sh /usr/local/bin/kubero-entrypoint.sh
 RUN chmod +x /usr/local/bin/kubero-entrypoint.sh /usr/local/bin/prestashop-docker-run.sh
 
-USER www-data
 ENTRYPOINT ["/usr/local/bin/kubero-entrypoint.sh"]
