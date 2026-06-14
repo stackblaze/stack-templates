@@ -150,8 +150,15 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 180
   image:
     containerPort: '8000'
     pullPolicy: Always
     repository: ghcr.io/dfir-iris/iriswebapp_app
     tag: v2.4.20
+    command:
+    - ./iris-entrypoint.sh
+    - app
