@@ -28,6 +28,8 @@ spec:
   deploymentstrategy: docker
   addons: []
   envVars:
+  - name: COUNTLY_MONGO_INSIDE
+    value: '1'
   - name: COUNTLY_OVERWRITE_MEM_REQUIREMENT
     value: '1'
   - name: NODE_OPTIONS
@@ -76,6 +78,7 @@ spec:
     - sh
     - -c
     - |
+      ln -sf /usr/bin/mongosh /usr/bin/mongo
       mkdir -p /etc/nginx/sites-enabled
       rm -f /etc/nginx/conf.d/default.conf
       chown -R mongodb:mongodb /var/lib/mongodb
