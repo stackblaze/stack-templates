@@ -161,6 +161,8 @@ spec:
   envVars:
   - name: SETTING_EXTERNAL_HOST
     value: '{{KUBERO_APP_HOST}}'
+  - name: SETTING_ALLOWED_HOSTS
+    value: "['*']"
   - name: SETTING_ZULIP_ADMINISTRATOR
     value: admin@example.com
   - name: DB_HOST
