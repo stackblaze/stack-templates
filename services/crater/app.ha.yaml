@@ -8,7 +8,7 @@ metadata:
       invoices and estimates.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/crater/icon.png
     kubero.dev/template.installation: 'Crater is a Laravel (PHP) + Vue invoicing app backed by MariaDB. This template runs
-      the maintained community image ghcr.io/jee-r/crater (nginx + PHP-FPM on :8080), since the upstream project ships a build-from-source
+      the community image j33r/crater on Docker Hub (nginx + PHP-FPM on :8080), since the upstream project ships a build-from-source
       docker-compose rather than an official prebuilt image. BEFORE first boot ROTATE: APP_KEY (run `openssl rand -base64
       32` and prefix with `base64:`, i.e. set APP_KEY=base64:<value>) and the MariaDB password (default ''crater''). APP_URL
       is pre-filled with {{KUBERO_APP_URL}} and MUST match the public URL or cookie-based auth (4.0.0+) will fail. FIRST RUN:
@@ -124,8 +124,14 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: ghcr.io/jee-r/crater
+    repository: j33r/crater
     tag: latest
