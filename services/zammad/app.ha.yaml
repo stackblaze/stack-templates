@@ -64,6 +64,10 @@ spec:
               owner: zammad
               secret:
                 name: zammad-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO zammad
+                - GRANT CREATE ON SCHEMA public TO zammad
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zammad
           enableSuperuserAccess: true
           superuserSecret:
             name: zammad-postgresql-superuser
@@ -159,9 +163,9 @@ spec:
   - name: NGINX_PORT
     value: '8080'
   - name: ZAMMAD_RAILSSERVER_HOST
-    value: zammad-railsserver
+    value: 127.0.0.1
   - name: ZAMMAD_WEBSOCKET_HOST
-    value: zammad-websocket
+    value: 127.0.0.1
   - name: ZAMMAD_HTTP_TYPE
     value: https
   - name: ZAMMAD_FQDN
@@ -182,6 +186,19 @@ spec:
     name: zammad-storage
     size: 5Gi
   cronjobs: []
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 1200
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -192,4 +209,25 @@ spec:
     repository: ghcr.io/zammad/zammad
     tag: stable
     command:
-    - zammad-nginx
+    - /bin/bash
+    - -ec
+    - |
+      EP=/opt/zammad/bin/docker-entrypoint
+      REDIS_HOST="${REDIS_URL#redis://}"
+      REDIS_HOST="${REDIS_HOST%%/*}"
+      REDIS_PORT="${REDIS_URL##*:}"
+      REDIS_PORT="${REDIS_PORT%%/*}"
+      MC_HOST="${MEMCACHE_SERVERS%%:*}"
+      until pg_isready -q -h "${POSTGRESQL_HOST}" -p "${POSTGRESQL_PORT}"; do sleep 2; done
+      until (echo >/dev/tcp/"${MC_HOST}"/11211) 2>/dev/null; do sleep 2; done
+      until (echo >/dev/tcp/"${REDIS_HOST}"/"${REDIS_PORT}") 2>/dev/null; do sleep 2; done
+      "${EP}" zammad-init
+      "${EP}" zammad-railsserver &
+      "${EP}" zammad-websocket &
+      "${EP}" zammad-scheduler &
+      until (echo >/dev/tcp/127.0.0.1/"${ZAMMAD_RAILSSERVER_PORT:-3000}") 2>/dev/null; do sleep 2; done
+      exec "${EP}" zammad-nginx
+    run:
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
