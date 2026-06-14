@@ -114,7 +114,7 @@ spec:
       memory: 2Gi
   healthcheck:
     enabled: true
-    path: /
+    path: /api/graphql
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
@@ -131,7 +131,12 @@ spec:
         node -e "const {Pool}=require('pg'); const p=new Pool({host:process.env.DB_HOST,port:process.env.DB_PORT,user:process.env.DB_USER,password:process.env.DB_PASSWORD,database:process.env.DB_NAME}); p.query('SELECT 1').then(()=>process.exit(0)).catch(()=>process.exit(1))" && break
         sleep 5
       done
+      npm run start &
+      for i in $(seq 1 120); do
+        wget -q -O /dev/null http://127.0.0.1:3000/api/graphql && break
+        sleep 5
+      done
       npm run user:create -- --email "$ADMIN_EMAIL" --password "$ADMIN_PASSWORD" --name "$ADMIN_NAME" || true
       npm run seed -- --all || true
-      exec npm run start
+      wait
   name: evershop
