@@ -84,10 +84,6 @@ spec:
     value: http://+:80
   - name: ASPNETCORE_ENVIRONMENT
     value: Production
-  - name: ConnectionStrings__DataSettings
-    value: Server=nopcommerce-postgresql-rw;Port=5432;Database=nopcommerce;User Id=nopcommerce;Password=nopcommerce;
-  - name: NopDatabaseProvider
-    value: postgresql
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -102,7 +98,7 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    path: /
+    path: /install
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
