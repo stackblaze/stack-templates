@@ -113,6 +113,12 @@ spec:
     name: grist-data
     size: 5Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /status?ready=1
+    startupSeconds: 120
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
