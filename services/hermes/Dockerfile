@@ -1,30 +1,26 @@
-# Multi-stage build of hashicorp-forge/hermes v0.5.0 for ghcr.io/stackblaze/stack-templates/hermes.
-# Upstream ships a Dockerfile that expects a pre-built binary; this builds from source.
-
+# Build hashicorp-forge/hermes v0.5.0 — mirrors upstream CI (Node 16 + Go 1.18+).
 ARG HERMES_VERSION=v0.5.0
 
-FROM node:20-bookworm AS web
+FROM golang:1.22-bookworm AS build
 ARG HERMES_VERSION
 WORKDIR /src
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y git curl ca-certificates && \
+    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
 RUN git clone --depth 1 --branch ${HERMES_VERSION} https://github.com/hashicorp-forge/hermes.git .
-WORKDIR /src/web
-RUN corepack enable && yarn install && rm -rf dist/ && yarn build
-
-FROM golang:1.22-bookworm AS gobuild
-ARG HERMES_VERSION
-WORKDIR /src
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
-RUN git clone --depth 1 --branch ${HERMES_VERSION} https://github.com/hashicorp-forge/hermes.git .
-COPY --from=web /src/web/dist ./web/dist
-ENV CGO_ENABLED=0
-RUN go build -o ./hermes ./cmd/hermes
+ENV SKIP_YARN_COREPACK_CHECK=true \
+    YARN_IGNORE_NODE=1 \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64
+RUN make web/set-yarn-version && make web/build && make bin/linux
 
 FROM alpine:3.21.5
 WORKDIR /app
 RUN apk --no-cache add ca-certificates
-COPY --from=gobuild /src/hermes /app/hermes
-COPY --from=gobuild /src/configs /app/configs
+COPY --from=build /src/hermes /app/hermes
+COPY --from=build /src/configs /app/configs
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh
 EXPOSE 8000
