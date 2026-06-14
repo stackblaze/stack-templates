@@ -202,5 +202,5 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: zknt/pixelfed
+    repository: quay.io/zknt/pixelfed
     tag: latest
