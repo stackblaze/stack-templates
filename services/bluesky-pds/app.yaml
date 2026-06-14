@@ -21,17 +21,15 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: PDS_HOSTNAME
-    value: bsky.changeme.com
+    value: '{{KUBERO_APP_HOST}}'
   - name: PDS_JWT_SECRET
-    value: changeme
+    value: '{{KUBERO_GEN_ALNUM:32}}'
   - name: PDS_ADMIN_PASSWORD
-    value: changeme
-  - name: PDS_REPO_SIGNING_KEY_K256_PRIVATE_KEY_HEX
-    value: changeme
+    value: '{{KUBERO_GEN_ALNUM:32}}'
   - name: PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX
-    value: changeme
-  - name: PDS_DB_SQLITE_LOCATION
-    value: /pds/pds.sqlite
+    value: ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d59f74e4312
+  - name: PDS_DATA_DIRECTORY
+    value: /pds
   - name: PDS_BLOBSTORE_DISK_LOCATION
     value: /pds/blocks
   - name: PDS_DID_PLC_URL
@@ -42,6 +40,10 @@ spec:
     value: did:web:api.bsky-sandbox.dev
   - name: PDS_CRAWLERS
     value: https://bgs.bsky-sandbox.dev
+  - name: LOG_ENABLED
+    value: 'true'
+  - name: PDS_INVITE_REQUIRED
+    value: 'false'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -49,11 +51,25 @@ spec:
     mountPath: /pds
     name: bsk-data
     size: 40Gi
+  healthcheck:
+    enabled: true
+    path: /xrpc/_health
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '3000'
+    pullPolicy: Always
     repository: ghcr.io/bluesky-social/pds
     tag: latest
   name: bluesky-pds
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
   web:
     replicaCount: 1
   worker:
