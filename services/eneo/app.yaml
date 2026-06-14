@@ -66,6 +66,11 @@ spec:
               owner: eneo
               secret:
                 name: eneo-postgresql-app
+              postInitApplicationSQL:
+                - CREATE EXTENSION IF NOT EXISTS vector;
+                - GRANT ALL ON SCHEMA public TO eneo
+                - GRANT CREATE ON SCHEMA public TO eneo
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO eneo
           enableSuperuserAccess: true
           superuserSecret:
             name: eneo-postgresql-superuser
@@ -155,6 +160,18 @@ spec:
     value: 'true'
   - name: USING_CRAWL
     value: 'true'
+  - name: UPLOAD_FILE_TO_SESSION_MAX_SIZE
+    value: '10485760'
+  - name: UPLOAD_IMAGE_TO_SESSION_MAX_SIZE
+    value: '10485760'
+  - name: UPLOAD_MAX_FILE_SIZE
+    value: '10485760'
+  - name: TRANSCRIPTION_MAX_FILE_SIZE
+    value: '10485760'
+  - name: API_KEY_LENGTH
+    value: '64'
+  - name: API_KEY_HEADER_NAME
+    value: X-API-Key
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
