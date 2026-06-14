@@ -162,6 +162,8 @@ spec:
     value: admin@example.com
   - name: SETTING_REMOTE_POSTGRES_HOST
     value: zulip-postgresql-rw
+  - name: SETTING_REMOTE_POSTGRES_PORT
+    value: '5432'
   - name: SETTING_REMOTE_POSTGRES_SSLMODE
     value: prefer
   - name: SETTING_RABBITMQ_HOST
