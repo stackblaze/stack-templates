@@ -53,11 +53,13 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: MONGO_URL
-    value: mongodb://mongoadmin:changeme@documentdb-service-rocketchat-documentdb:10260/rocketchat?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&serverSelectionTimeoutMS=60000
+    value: mongodb://mongoadmin:changeme@documentdb-service-rocketchat-documentdb:10260/rocketchat?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false&serverSelectionTimeoutMS=60000
   - name: MONGO_OPLOG_URL
-    value: mongodb://mongoadmin:changeme@documentdb-service-rocketchat-documentdb:10260/local?authSource=admin&directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
+    value: mongodb://mongoadmin:changeme@documentdb-service-rocketchat-documentdb:10260/local?authSource=admin&directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false
   - name: ROOT_URL
     value: '{{KUBERO_APP_URL}}'
+  - name: HTTP_FORWARDED_COUNT
+    value: '1'
   - name: DEPLOY_METHOD
     value: docker
   - name: NODE_OPTIONS
@@ -76,10 +78,13 @@ spec:
     limits:
       cpu: '1'
       memory: 2Gi
-  # Operator chart hardcodes a 90s startup probe; disable probes so first boot
-  # can finish DocumentDB init + migrations, then QA ingress check validates HTTP.
+  # /api/info returns 200 JSON once Meteor is ready; / often 503 during boot.
   healthcheck:
-    enabled: false
+    enabled: true
+    path: /api/info
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   name: rocketchat
   web:
     replicaCount: 1
