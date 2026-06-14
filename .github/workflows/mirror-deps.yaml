@@ -119,6 +119,11 @@ jobs:
             dest_tag: 'v8.6.2'
             dest_name: snipe-it
 
+          # Taiga backend — Docker Hub only; parallel QA hits 429 rate limit.
+          - source: docker.io/taigaio/taiga-back:latest
+            dest_tag: 'latest'
+            dest_name: taiga-back
+
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@v3

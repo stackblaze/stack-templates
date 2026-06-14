@@ -63,6 +63,10 @@ spec:
               owner: taiga
               secret:
                 name: taiga-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO taiga
+                - GRANT CREATE ON SCHEMA public TO taiga
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO taiga
           enableSuperuserAccess: true
           superuserSecret:
             name: taiga-postgresql-superuser
@@ -106,18 +110,10 @@ spec:
               memory: 512Mi
             limits:
               memory: 1Gi
-      default-userSecret:
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: taiga-rabbitmq-default-user
-        type: Opaque
-        stringData:
-          username: taiga
-          password: taiga
-          default_user.conf: 'default_user = taiga
-
-            default_pass = taiga'
+          rabbitmq:
+            additionalConfig: |
+              default_user = taiga
+              default_pass = taiga
   envVars:
   - name: POSTGRES_HOST
     value: taiga-postgresql-rw
@@ -159,6 +155,12 @@ spec:
     name: taiga-media
     size: 5Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /api/v1/
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -166,5 +168,5 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: taigaio/taiga-back
+    repository: ghcr.io/stackblaze/stack-templates/taiga-back
     tag: latest
