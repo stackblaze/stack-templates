@@ -64,6 +64,10 @@ spec:
               owner: docassemble
               secret:
                 name: docassemble-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO docassemble
+                - GRANT CREATE ON SCHEMA public TO docassemble
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO docassemble
           enableSuperuserAccess: true
           superuserSecret:
             name: docassemble-postgresql-superuser
@@ -147,7 +151,7 @@ spec:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /usr/share/docassemble
+    mountPath: /usr/share/docassemble/backup
     name: docassemble-data
     size: 5Gi
   cronjobs: []
