@@ -152,6 +152,8 @@ spec:
     value: localhost
   - name: PRETIX_MAIL_PORT
     value: '25'
+  - name: NUM_WORKERS
+    value: '2'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -166,6 +168,13 @@ spec:
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
   web:
     replicaCount: 1
   worker:
