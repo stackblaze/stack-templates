@@ -77,9 +77,3 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/yopass
     tag: latest
-    command:
-    - yopass-server
-    - --database=redis
-    - --redis=redis://rfr-yopass-valkey-readwrite:6379/0
-    - --port=1337
-    - --address=0.0.0.0
