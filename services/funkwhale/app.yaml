@@ -68,6 +68,10 @@ spec:
             initdb:
               database: funkwhale
               owner: funkwhale
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO funkwhale
+              - GRANT CREATE ON SCHEMA public TO funkwhale
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO funkwhale
               secret:
                 name: funkwhale-postgresql-app
           enableSuperuserAccess: true
@@ -132,7 +136,7 @@ spec:
   - name: DJANGO_SETTINGS_MODULE
     value: config.settings.production
   - name: DJANGO_SECRET_KEY
-    value: replace-with-openssl-rand-base64-45
+    value: qa-change-me-openssl-rand-base64-45-before-production
   - name: DJANGO_ALLOWED_HOSTS
     value: '{{KUBERO_APP_HOST}}'
   - name: DATABASE_URL
@@ -191,6 +195,12 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /api/v1/instance/
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '5000'
     pullPolicy: Always
