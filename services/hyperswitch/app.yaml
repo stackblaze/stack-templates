@@ -178,9 +178,9 @@ spec:
     containerPort: '8080'
     pullPolicy: Always
     repository: juspaydotin/hyperswitch-router
-    tag: standalone
+    tag: 2026.06.11.0-standalone
     command:
     - sh
     - -c
-    - curl -fsSL -o /tmp/docker_compose.toml https://raw.githubusercontent.com/juspay/hyperswitch/main/config/docker_compose.toml
+    - curl -fsSL -o /tmp/docker_compose.toml https://raw.githubusercontent.com/juspay/hyperswitch/2026.06.11.0/config/docker_compose.toml
       && exec /local/bin/router -f /tmp/docker_compose.toml
