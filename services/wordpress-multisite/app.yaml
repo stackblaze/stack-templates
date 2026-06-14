@@ -13,7 +13,7 @@ metadata:
       the printed wp-config.php / .htaccess rules. Subdomain multisite needs a wildcard DNS record (*.{{KUBERO_APP_HOST}})
       and matching ingress/TLS; subdirectory multisite needs none. Rotate WORDPRESS_AUTH_KEY/SECURE_AUTH_KEY/LOGGED_IN_KEY/NONCE_KEY
       and the four matching salts (openssl rand -base64 64) plus the MariaDB password before going to production. Persistent
-      data (wp-content: uploads, plugins, themes, languages) lives on the mounted volume at /var/www/html.'
+      data (wp-content: uploads, plugins, themes, languages) lives on the mounted volume at /var/www/html/wp-content.'
     kubero.dev/template.links: '["https://developer.wordpress.org/advanced-administration/multisite/create-network/", "https://hub.docker.com/_/wordpress"]'
     kubero.dev/template.screenshots: '["https://s.w.org/images/home/swag-collection-2024.jpg"]'
     kubero.dev/template.source: https://github.com/WordPress/WordPress
@@ -77,7 +77,7 @@ spec:
           password: wordpress-multisite
   envVars:
   - name: WORDPRESS_DB_HOST
-    value: wordpress-multisite-mysql:3306
+    value: '{{KUBERO_APP_NAME}}-wordpress-multisite-mysql'
   - name: WORDPRESS_DB_NAME
     value: wordpress-multisite
   - name: WORDPRESS_DB_USER
@@ -108,7 +108,7 @@ spec:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /var/www/html
+    mountPath: /var/www/html/wp-content
     name: wordpress-multisite-data
     size: 5Gi
   cronjobs: []
@@ -120,4 +120,4 @@ spec:
     containerPort: '80'
     pullPolicy: Always
     repository: wordpress
-    tag: php8.3-apache
+    tag: latest
