@@ -165,6 +165,8 @@ spec:
     value: "['*']"
   - name: SETTING_ROOT_DOMAIN_LANDING_PAGE
     value: 'True'
+  - name: LOADBALANCER_IPS
+    value: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
   - name: SETTING_ZULIP_ADMINISTRATOR
     value: admin@example.com
   - name: DB_HOST
@@ -226,7 +228,7 @@ spec:
       memory: 4Gi
   healthcheck:
     enabled: true
-    path: /
+    path: /health
     startupSeconds: 1200
     timeoutSeconds: 5
     periodSeconds: 10
