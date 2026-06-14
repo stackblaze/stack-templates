@@ -114,6 +114,8 @@ spec:
     value: KuberoQaAdminPass123
   - name: TZ
     value: Etc/UTC
+  - name: NGINX_ENABLE_EXPLOIT_PROTECTION
+    value: 'FALSE'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
