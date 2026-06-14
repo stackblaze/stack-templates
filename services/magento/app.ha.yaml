@@ -8,10 +8,9 @@ metadata:
       a powerful admin for building online stores.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/magento/icon.png
     kubero.dev/template.installation: 'shinsenter/magento image (Bitnami Magento was removed from Docker Hub). MariaDB
-      Galera, OpenSearch 1.3 (3-node), and Valkey failover are provisioned as operator add-ons. On first boot the container
-      bootstraps Magento via composer then runs setup:install — rotate ADMIN_PASSWORD and the MariaDB password before exposing
-      publicly. Admin panel lives at {{KUBERO_APP_URL}}/admin. Install is slow (10–15 min) and memory-heavy; the web pod
-      requests 2Gi RAM.'
+      Galera and OpenSearch 1.3 (3-node) are provisioned as operator add-ons. On first boot the container bootstraps Magento
+      via composer then runs setup:install — rotate ADMIN_PASSWORD and the MariaDB password before exposing publicly.
+      Admin panel lives at {{KUBERO_APP_URL}}/admin. Install is slow (10–15 min) and memory-heavy; the web pod requests 2Gi RAM.'
     kubero.dev/template.links: '["https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/overview.html",
       "https://hub.docker.com/r/shinsenter/magento"]'
     kubero.dev/template.screenshots: '[]'
@@ -76,38 +75,6 @@ spec:
         type: Opaque
         stringData:
           password: magento
-  - displayName: Valkey
-    env: []
-    icon: /img/addons/redis.svg
-    id: kubero-operator
-    kind: Valkey
-    resourceDefinitions:
-      Valkey:
-        apiVersion: rds.valkey.buf.red/v1alpha1
-        kind: Valkey
-        metadata:
-          name: magento-valkey
-        spec:
-          version: '8.0'
-          arch: failover
-          replicas:
-            shards: 1
-            replicasOfShard: 2
-          access:
-            serviceType: ClusterIP
-          storage:
-            capacity: 1Gi
-            storageClassName: fast
-          resources:
-            requests:
-              cpu: 50m
-              memory: 256Mi
-            limits:
-              cpu: 500m
-              memory: 256Mi
-          sentinel:
-            replicas: 3
-            quorum: 2
   - displayName: OpenSearch
     env: []
     icon: /img/addons/opensearch.svg
