@@ -120,8 +120,6 @@ spec:
     value: '_'
   - name: NGINX_ENABLE_DENY_HIDDEN_FILES
     value: 'FALSE'
-  - name: NGINX_POST_INIT_SCRIPT
-    value: sed -i 's|server_name \(.*\);|server_name \1 _;|' /etc/nginx/sites.enabled/freescout/server-begin/09-server_name.conf
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
