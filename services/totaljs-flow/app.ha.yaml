@@ -49,5 +49,5 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: totalplatform/flow
+    repository: ghcr.io/stackblaze/stack-templates/totaljs-flow
     tag: latest

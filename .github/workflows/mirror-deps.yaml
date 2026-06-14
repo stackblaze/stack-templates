@@ -129,6 +129,11 @@ jobs:
             dest_tag: 'latest'
             dest_name: taiga-back
 
+          # Total.js Flow — Docker Hub only; parallel QA hits 429 rate limit.
+          - source: docker.io/totalplatform/flow:latest
+            dest_tag: 'latest'
+            dest_name: totaljs-flow
+
           # Temporal auto-setup — Docker Hub hits 429 rate limit in parallel QA.
           - source: docker.io/temporalio/auto-setup:1.29
             dest_tag: '1.29'
