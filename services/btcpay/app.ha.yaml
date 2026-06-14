@@ -63,6 +63,10 @@ spec:
               owner: btcpay
               secret:
                 name: btcpay-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO btcpay
+                - GRANT CREATE ON SCHEMA public TO btcpay
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO btcpay
           enableSuperuserAccess: true
           superuserSecret:
             name: btcpay-postgresql-superuser
@@ -100,7 +104,7 @@ spec:
   - name: BTCPAY_POSTGRES
     value: User ID=btcpay;Password=btcpay;Host=btcpay-postgresql-rw;Port=5432;Database=btcpay;Include Error Detail=true
   - name: BTCPAY_EXPLORERPOSTGRES
-    value: User ID=btcpay;Password=btcpay;Host=btcpay-postgresql-rw;Port=5432;Database=nbxplorer;Include Error Detail=true
+    value: User ID=btcpay;Password=btcpay;Host=btcpay-postgresql-rw;Port=5432;Database=btcpay;Include Error Detail=true
   - name: BTCPAY_BTCEXPLORERURL
     value: http://nbxplorer:32838/
   - name: BTCPAY_DATADIR
@@ -123,4 +127,4 @@ spec:
     containerPort: '49392'
     pullPolicy: Always
     repository: btcpayserver/btcpayserver
-    tag: latest
+    tag: '2.3.9'
