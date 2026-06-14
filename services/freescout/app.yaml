@@ -56,6 +56,10 @@ spec:
               owner: freescout
               secret:
                 name: freescout-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO freescout
+                - GRANT CREATE ON SCHEMA public TO freescout
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO freescout
           enableSuperuserAccess: true
           superuserSecret:
             name: freescout-postgresql-superuser
@@ -81,7 +85,7 @@ spec:
   - name: APP_URL
     value: '{{KUBERO_APP_URL}}'
   - name: APP_KEY
-    value: base64:replace-with-openssl-rand-base64-32
+    value: base64:S3ViZXJvVGVtcGxhdGVRYVNtb2tlVGVzdEtleSEhMTI=
   - name: SITE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: DB_TYPE
@@ -107,7 +111,7 @@ spec:
   - name: ADMIN_EMAIL
     value: admin@example.com
   - name: ADMIN_PASS
-    value: replace-with-openssl-rand-hex-32
+    value: KuberoQaAdminPass123
   - name: TZ
     value: Etc/UTC
   extraVolumes:
@@ -122,6 +126,12 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '80'
     pullPolicy: Always
