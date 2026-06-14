@@ -220,5 +220,5 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: ghcr.io/zulip/zulip-server
-    tag: 10.2-1
+    repository: zulip/docker-zulip
+    tag: 11.6-0
