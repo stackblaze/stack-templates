@@ -138,8 +138,6 @@ spec:
     value: rfr-invoiceninja-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
-  - name: REDIS_PASSWORD
-    value: 'null'
   - name: CACHE_DRIVER
     value: redis
   - name: QUEUE_CONNECTION
@@ -210,6 +208,7 @@ spec:
       EOF
       /usr/local/bin/docker-entrypoint supervisord &
       while ! nc -z 127.0.0.1 9000 2>/dev/null; do sleep 2; done
+      while ! nc -z "${REDIS_HOST}" 6379 2>/dev/null; do sleep 2; done
       nginx
       wait
     run:
