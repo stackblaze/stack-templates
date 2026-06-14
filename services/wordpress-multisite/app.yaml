@@ -77,7 +77,7 @@ spec:
           password: wordpress-multisite
   envVars:
   - name: WORDPRESS_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-wordpress-multisite-mysql'
+    value: wordpress-multisite-mysql
   - name: WORDPRESS_DB_NAME
     value: wordpress-multisite
   - name: WORDPRESS_DB_USER
