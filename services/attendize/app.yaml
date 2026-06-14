@@ -170,7 +170,7 @@ spec:
   # elestio entrypoint chown + Laravel migrations exceed the default ~90s startup probe.
   healthcheck:
     enabled: true
-    path: /
+    path: /install
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
