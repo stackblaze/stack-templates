@@ -117,6 +117,12 @@ spec:
     value: 'false'
   extraVolumes: []
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /api/v1/system-info
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -124,5 +130,5 @@ spec:
   image:
     containerPort: '7243'
     pullPolicy: Always
-    repository: temporalio/auto-setup
+    repository: ghcr.io/stackblaze/stack-templates/temporal-auto-setup
     tag: '1.29'

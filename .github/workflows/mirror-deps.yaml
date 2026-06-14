@@ -124,6 +124,11 @@ jobs:
             dest_tag: 'latest'
             dest_name: taiga-back
 
+          # Temporal auto-setup — Docker Hub hits 429 rate limit in parallel QA.
+          - source: docker.io/temporalio/auto-setup:1.29
+            dest_tag: '1.29'
+            dest_name: temporal-auto-setup
+
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@v3
