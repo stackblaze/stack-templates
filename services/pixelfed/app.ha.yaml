@@ -193,12 +193,6 @@ spec:
     mountPath: /var/www/storage
     name: pixelfed-storage
     size: 5Gi
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /var/www/bootstrap
-    name: pixelfed-bootstrap
-    size: 1Gi
   cronjobs: []
   web:
     replicaCount: 1
