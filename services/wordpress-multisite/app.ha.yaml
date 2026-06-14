@@ -121,5 +121,5 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: wordpress
+    repository: ghcr.io/stackblaze/stack-templates/wordpress
     tag: latest
