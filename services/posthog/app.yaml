@@ -235,6 +235,19 @@ spec:
     value: 'false'
   extraVolumes: []
   cronjobs: []
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '2'
+      memory: 4Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 10
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
