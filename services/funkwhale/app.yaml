@@ -197,7 +197,7 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    path: /api/v1/instance/
+    path: /api/v1/instance/spa-manifest.json
     startupSeconds: 900
     timeoutSeconds: 5
     periodSeconds: 10
