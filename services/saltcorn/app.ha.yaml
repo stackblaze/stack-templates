@@ -54,6 +54,10 @@ spec:
             initdb:
               database: saltcorn
               owner: saltcorn
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO saltcorn
+              - GRANT CREATE ON SCHEMA public TO saltcorn
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO saltcorn
               secret:
                 name: saltcorn-postgresql-app
           enableSuperuserAccess: true
@@ -111,3 +115,6 @@ spec:
     pullPolicy: Always
     repository: saltcorn/saltcorn
     tag: latest
+    command:
+    - serve
+    - -a
