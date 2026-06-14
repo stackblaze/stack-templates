@@ -184,7 +184,7 @@ spec:
   cronjobs: []
   healthcheck:
     enabled: true
-    path: /
+    path: /api/healthz
     startupSeconds: 300
     timeoutSeconds: 5
     periodSeconds: 10
