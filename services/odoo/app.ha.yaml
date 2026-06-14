@@ -65,6 +65,8 @@ spec:
                 - GRANT ALL ON SCHEMA public TO odoo
                 - GRANT CREATE ON SCHEMA public TO odoo
                 - ALTER ROLE odoo CREATEDB
+              postInitSQL:
+                - ALTER ROLE odoo CREATEDB
           enableSuperuserAccess: true
           superuserSecret:
             name: odoo-postgresql-superuser
@@ -103,6 +105,12 @@ spec:
     name: odoo-data
     size: 5Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -112,3 +120,13 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/odoo
     tag: '18.0'
+    command:
+    - bash
+    - -c
+    - |
+      export PGPASSWORD="$PASSWORD"
+      wait-for-psql.py --db_host="$HOST" --db_port="$PORT" --db_user="$USER" --db_password="$PASSWORD" --timeout=120
+      if ! psql -h "$HOST" -p "$PORT" -U "$USER" -d odoo -tc "SELECT 1 FROM information_schema.tables WHERE table_name='ir_module_module'" 2>/dev/null | grep -q 1; then
+        odoo -d odoo -i base --stop-after-init --without-demo=all --db_host="$HOST" --db_port="$PORT" --db_user="$USER" --db_password="$PASSWORD"
+      fi
+      exec /entrypoint.sh odoo
