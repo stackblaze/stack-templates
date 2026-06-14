@@ -126,5 +126,5 @@ spec:
       - -c
       - |
         sed -i 's/config.force_ssl = ENV.fetch("FORCE_SSL_PROD", true)/config.force_ssl = false/' /app/config/environments/production.rb
-        until pg_isready -h "$(echo "$DATABASE_URL" | sed -E 's|.*@([^:/]+).*|\1|')" -p 5432 -U fugu; do sleep 2; done
+        until ruby -rpg -e "PG.connect(ENV.fetch('DATABASE_URL'))" 2>/dev/null; do sleep 2; done
         exec sh /app/docker-entrypoint.sh rails server -b 0.0.0.0
