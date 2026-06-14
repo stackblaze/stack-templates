@@ -1693,45 +1693,6 @@
       ]
     },
     {
-      "name": "paperless-ngx-sqlite",
-      "description": "A community-supported supercharged version of paperless: scan, index and archive all your physical documents",
-      "source": "https://github.com/paperless-ngx/paperless-ngx",
-      "icon": "https://avatars.githubusercontent.com/u/99562962",
-      "website": "https://docs.paperless-ngx.com/",
-      "installation": "run `python3 manage.py createsuperuser` from within the container to create an admin user",
-      "architecture": [],
-      "categories": [
-        "productivity",
-        "work",
-        "utilities"
-      ],
-      "screenshots": [
-        "https://docs.paperless-ngx.com/assets/screenshots/dashboard.png",
-        "https://docs.paperless-ngx.com/assets/screenshots/documents-largecards.png"
-      ],
-      "links": [
-        "https://docs.paperless-ngx.com/setup/#docker"
-      ],
-      "addons": [
-        "Valkey"
-      ],
-      "stars": 40537,
-      "forks": 2679,
-      "watchers": 40537,
-      "issues": 6,
-      "last_updated": "2026-05-11T11:59:41Z",
-      "last_pushed": "2026-05-11T01:10:11Z",
-      "created_at": "2022-02-12T21:56:52Z",
-      "size": 185141,
-      "language": "Python",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/paperless-ngx-sqlite/app.yaml",
-      "status": "active",
-      "license": "GNU General Public License v3.0",
-      "spdx_id": "GPL-3.0",
-      "dirname": "paperless-ngx-sqlite"
-    },
-    {
       "name": "paperless-ngx",
       "description": "A community-supported supercharged version of paperless: scan, index and archive all your physical documents",
       "source": "https://github.com/paperless-ngx/paperless-ngx",
@@ -5245,59 +5206,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/linkwarden/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "penpot",
-      "description": "Penpot is an open-source design and prototyping platform for cross-domain teams.",
-      "source": "https://github.com/penpot/penpot",
-      "icon": "https://avatars.githubusercontent.com/u/30179644?s=200&v=4",
-      "website": "https://penpot.app/",
-      "installation": "Deploy penpot-backend and penpot-exporter in the same pipeline phase before the frontend. Service names must stay penpot-backend and penpot-exporter so the frontend can reach them.",
-      "architecture": [
-        "linux/amd64",
-        "linux/arm64"
-      ],
-      "categories": [
-        "work",
-        "collaboration",
-        "productivity"
-      ],
-      "screenshots": [
-        "https://penpot.app/blog/content/images/size/w2000/2024/02/PenpotUI-flexlayout.png",
-        "https://penpot.app/blog/content/images/size/w1000/2024/02/Penpot_workspace.png"
-      ],
-      "links": [
-        "https://community.penpot.app/"
-      ],
-      "addons": [],
-      "stars": 47473,
-      "forks": 4747,
-      "watchers": 47473,
-      "issues": 0,
-      "last_updated": "2026-06-11T00:00:00Z",
-      "last_pushed": "2026-06-11T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-frontend/app.yaml",
-      "status": "active",
-      "license": "Mozilla Public License 2.0",
-      "spdx_id": "MPL-2.0",
-      "dirname": "penpot",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-frontend/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot-frontend/app.ha.yaml"
         }
       ]
     },
