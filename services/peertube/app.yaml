@@ -186,5 +186,5 @@ spec:
   image:
     containerPort: '9000'
     pullPolicy: Always
-    repository: chocobozzz/peertube
+    repository: ghcr.io/stackblaze/stack-templates/peertube
     tag: production-bullseye
