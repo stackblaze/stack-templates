@@ -54,6 +54,12 @@ spec:
               owner: fugu
               secret:
                 name: fugu-postgresql-app
+              postInitSQL:
+                - ALTER ROLE fugu CREATEDB
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO fugu
+                - GRANT CREATE ON SCHEMA public TO fugu
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO fugu
           enableSuperuserAccess: true
           superuserSecret:
             name: fugu-postgresql-superuser
