@@ -122,6 +122,12 @@ spec:
     value: '*'
   - name: INVENTREE_TRUSTED_ORIGINS
     value: '{{KUBERO_APP_URL}}'
+  - name: INVENTREE_USE_X_FORWARDED_HOST
+    value: 'True'
+  - name: INVENTREE_USE_X_FORWARDED_PORT
+    value: 'True'
+  - name: INVENTREE_USE_X_FORWARDED_PROTO
+    value: 'True'
   - name: INVENTREE_DEBUG
     value: 'False'
   - name: INVENTREE_DB_ENGINE
@@ -154,6 +160,12 @@ spec:
     name: inventree-data
     size: 5Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /api/system/health/
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
