@@ -122,5 +122,5 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: prestashop/prestashop
+    repository: ghcr.io/stackblaze/stack-templates/prestashop
     tag: 8-apache

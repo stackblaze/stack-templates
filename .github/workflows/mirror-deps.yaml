@@ -109,6 +109,11 @@ jobs:
             dest_tag: 'latest'
             dest_name: pydio
 
+          # PrestaShop — Docker Hub only; parallel QA hits 429 rate limit.
+          - source: docker.io/prestashop/prestashop:8-apache
+            dest_tag: '8-apache'
+            dest_name: prestashop
+
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@v3
