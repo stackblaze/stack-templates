@@ -131,9 +131,9 @@ spec:
   - name: IRIS_WORKER
     value: '0'
   - name: IRIS_SECRET_KEY
-    value: replace-with-openssl-rand-hex-32
+    value: 8f3c2a1b9e7d6c5b4a39281706f5e4d3c2b1a0987654321fedcba0987654321
   - name: IRIS_SECURITY_PASSWORD_SALT
-    value: replace-with-openssl-rand-hex-32
+    value: 1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f80
   - name: IRIS_URL
     value: '{{KUBERO_APP_URL}}'
   - name: LOG_LEVEL
