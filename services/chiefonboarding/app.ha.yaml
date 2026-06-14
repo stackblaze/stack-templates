@@ -85,7 +85,7 @@ spec:
   - name: DATABASE_URL
     value: postgres://chiefonboarding:chiefonboarding@chiefonboarding-postgresql-rw:5432/chiefonboarding
   - name: ALLOWED_HOSTS
-    value: '{{KUBERO_APP_HOST}}'
+    value: '* {{KUBERO_APP_HOST}}'
   - name: BASE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: DEBUG
