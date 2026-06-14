@@ -130,5 +130,5 @@ spec:
   image:
     containerPort: '5000'
     pullPolicy: Always
-    repository: passit/passit
+    repository: ghcr.io/stackblaze/stack-templates/passit
     tag: stable
