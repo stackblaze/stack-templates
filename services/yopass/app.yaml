@@ -7,12 +7,11 @@ metadata:
     kubero.dev/template.description: Self-hosted web service for securely sharing one-time secrets, passwords and files with
       client-side encryption and automatic expiry.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/yopass/icon.png
-    kubero.dev/template.installation: Yopass stores encrypted secrets ephemerally in Memcached (deployed as the bundled add-on);
-      secrets auto-expire by TTL so no persistent volume is required. The server is reached at the memcached add-on host yopass-memcached:11211
-      via the MEMCACHED env var. Secrets are encrypted in the browser before upload, so the server never sees plaintext. Set
-      the public URL via the BASE_URL env (already wired to {{KUBERO_APP_URL}}) so generated share links are correct. For
-      production behind the Kubero ingress, optionally set TRUSTED_PROXIES to the ingress CIDR. No database credentials to
-      rotate.
+    kubero.dev/template.installation: Yopass stores encrypted secrets ephemerally in Valkey (deployed as the bundled add-on);
+      secrets auto-expire by TTL so no persistent volume is required. The server connects via REDIS at redis://rfr-yopass-valkey-readwrite:6379/0.
+      Secrets are encrypted in the browser before upload, so the server never sees plaintext. Set the public URL via the BASE_URL
+      env (already wired to {{KUBERO_APP_URL}}) so generated share links are correct. For production behind the Kubero ingress,
+      optionally set TRUSTED_PROXIES to the ingress CIDR. No database credentials to rotate.
     kubero.dev/template.links: '["https://github.com/jhaals/yopass#yopass", "https://hub.docker.com/r/jhaals/yopass"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/jhaals/yopass
@@ -25,33 +24,40 @@ spec:
   name: yopass
   deploymentstrategy: docker
   addons:
-  - displayName: Memcached
+  - displayName: Valkey
     env: []
-    icon: /img/addons/memcached.svg
+    icon: /img/addons/redis.svg
     id: kubero-operator
-    kind: KuberoAddonMemcached
+    kind: Valkey
     resourceDefinitions:
-      KuberoAddonMemcached:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoAddonMemcached
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
         metadata:
-          name: yopass-memcached
+          name: yopass-valkey
         spec:
-          memcached:
-            image:
-              tag: 1.6.39
-            replicaCount: 1
-            config:
-              memoryLimit: 128
-              maxConnections: 1024
-              extraArgs: []
-              verbosity: 0
-            resources: {}
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
   envVars:
-  - name: MEMCACHED
-    value: yopass-memcached:11211
   - name: DATABASE
-    value: memcached
+    value: redis
+  - name: REDIS
+    value: redis://rfr-yopass-valkey-readwrite:6379/0
   - name: PORT
     value: '1337'
   - name: ADDRESS
@@ -69,10 +75,11 @@ spec:
   image:
     containerPort: '1337'
     pullPolicy: Always
-    repository: jhaals/yopass
+    repository: ghcr.io/stackblaze/stack-templates/yopass
     tag: latest
     command:
     - yopass-server
-    - --memcached=yopass-memcached:11211
+    - --database=redis
+    - --redis=redis://rfr-yopass-valkey-readwrite:6379/0
     - --port=1337
     - --address=0.0.0.0

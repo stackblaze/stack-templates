@@ -170,6 +170,11 @@ jobs:
             dest_tag: 'latest'
             dest_name: wordpress
 
+          # Yopass — Docker Hub only; parallel QA hits 429 rate limit.
+          - source: docker.io/jhaals/yopass:latest
+            dest_tag: 'latest'
+            dest_name: yopass
+
           # wger — Docker Hub only; parallel QA hits 429 rate limit.
           - source: docker.io/wger/server:latest
             dest_tag: 'latest'
