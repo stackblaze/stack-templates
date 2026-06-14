@@ -154,5 +154,5 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: snipe/snipe-it
+    repository: ghcr.io/stackblaze/stack-templates/snipe-it
     tag: v8.6.2
