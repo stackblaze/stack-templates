@@ -21,7 +21,7 @@ spec:
     deploymentstrategy: docker
     envVars:
         - name: DB_URL
-          value: postgresql://postgres:logto@logto-postgresql-rw:5432/logto
+          value: postgresql://postgres:logto@logto-db-rw:5432/logto
         - name: TRUST_PROXY_HEADER
           value: "1"
         - name: ENDPOINT
@@ -41,7 +41,7 @@ spec:
                   apiVersion: postgresql.cnpg.io/v1
                   kind: Cluster
                   metadata:
-                      name: logto-postgresql
+                      name: logto-db
                   spec:
                       instances: 1
                       imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -61,15 +61,19 @@ spec:
                               database: logto
                               owner: postgres
                               secret:
-                                  name: logto-postgresql-app
+                                  name: logto-db-app
+                              postInitApplicationSQL:
+                                  - GRANT ALL ON SCHEMA public TO postgres
+                                  - GRANT CREATE ON SCHEMA public TO postgres
+                                  - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO postgres
                       enableSuperuserAccess: true
                       superuserSecret:
-                          name: logto-postgresql-superuser
+                          name: logto-db-superuser
               superuserSecret:
                   apiVersion: v1
                   kind: Secret
                   metadata:
-                      name: logto-postgresql-superuser
+                      name: logto-db-superuser
                   type: kubernetes.io/basic-auth
                   stringData:
                       username: postgres
@@ -78,7 +82,7 @@ spec:
                   apiVersion: v1
                   kind: Secret
                   metadata:
-                      name: logto-postgresql-app
+                      name: logto-db-app
                   type: kubernetes.io/basic-auth
                   stringData:
                       username: postgres
@@ -87,12 +91,30 @@ spec:
         replicaCount: 1
     worker:
         replicaCount: 0
+    resources:
+        requests:
+            cpu: 250m
+            memory: 512Mi
+        limits:
+            cpu: "1"
+            memory: 2Gi
+    healthcheck:
+        enabled: true
+        path: /api/status
+        startupSeconds: 900
+        timeoutSeconds: 5
+        periodSeconds: 10
     image:
-        containerPort: 3001
+        containerPort: '3001'
         pullPolicy: Always
         repository: svhd/logto
         tag: latest
         command:
             - sh
             - -c
-            - sleep 10 && npm run cli db seed -- --swe && npm start
+            - |
+              for i in $(seq 1 60); do
+                node -e "const {Client}=require('pg'); const c=new Client(process.env.DB_URL); c.connect().then(()=>{c.end();process.exit(0)}).catch(()=>process.exit(1))" && break
+                sleep 5
+              done
+              npm run cli db seed -- --swe && npm start
