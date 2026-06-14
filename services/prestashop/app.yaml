@@ -107,6 +107,13 @@ spec:
     value: admin@localhost.local
   - name: ADMIN_PASSWD
     value: prestashop
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html
+    name: prestashop-data
+    size: 5Gi
   cronjobs: []
   web:
     replicaCount: 1
