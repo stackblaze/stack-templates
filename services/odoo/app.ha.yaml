@@ -1,0 +1,110 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: odoo
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'Open-source suite of business apps: CRM, e-commerce, accounting, inventory, project
+      management, HR and more.'
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/6368483?s=200&v=4
+    kubero.dev/template.installation: 'Odoo requires PostgreSQL ONLY (it does not support MySQL); the postgresql add-on is
+      wired in via HOST/USER/PASSWORD/PORT. On first run the role ''odoo'' must be able to CREATE DATABASE so the web installer
+      can provision the Odoo database; the bundled add-on role has this. Rotate the add-on password and the ''admin'' master
+      password (set ODOO_RC or use the Database Manager) after install, and lock down /web/database/manager. The /var/lib/odoo
+      volume holds the filestore (attachments, uploads, sessions) and must be persistent. Custom modules go in /mnt/extra-addons.
+      COMPANION SERVICES (deploy as separate apps from the same odoo:18.0 image, sharing the same PostgreSQL add-on and filestore
+      volume): (1) a long-polling/gevent worker for live chat, discuss and websockets, started with command ''odoo gevent''
+      (or ''odoo --workers=N'' in multi-worker mode listening on the gevent port 8072); (2) optionally a dedicated cron/scheduler
+      worker (odoo --max-cron-threads=N). In a single-replica deployment the embedded cron and HTTP worker handle scheduling,
+      so the standalone web template alone is functional for evaluation. For production multi-worker mode put a reverse proxy
+      in front (proxy_mode=True) so X-Forwarded-* is honored.'
+    kubero.dev/template.links: '["https://www.odoo.com/documentation", "https://github.com/odoo/docker"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/odoo/odoo
+    kubero.dev/template.categories: '["erp", "crm", "e-commerce"]'
+    kubero.dev/template.title: Odoo
+    kubero.dev/template.website: https://www.odoo.com
+  labels:
+    manager: kubero
+spec:
+  name: odoo
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: odoo-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: odoo
+              owner: odoo
+              secret:
+                name: odoo-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: odoo-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: odoo-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: odoo
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: odoo-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: odoo
+          password: odoo
+  envVars:
+  - name: HOST
+    value: odoo-postgresql-rw
+  - name: PORT
+    value: '5432'
+  - name: USER
+    value: odoo
+  - name: PASSWORD
+    value: odoo
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/lib/odoo
+    name: odoo-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8069'
+    pullPolicy: Always
+    repository: odoo
+    tag: '18.0'

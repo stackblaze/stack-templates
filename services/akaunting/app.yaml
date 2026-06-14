@@ -1,0 +1,126 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: akaunting
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Free and open-source online accounting software for small businesses and freelancers,
+      with invoicing, expense tracking, and reporting.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/15054956?s=200&v=4
+    kubero.dev/template.installation: Akaunting is a Laravel app backed by MariaDB/MySQL (it does NOT support Postgres). On
+      first boot the entrypoint installs the schema and seeds the admin user from ADMIN_EMAIL/ADMIN_PASSWORD, then the web
+      installer is bypassed. Rotate the MariaDB password (default 'akaunting'), ADMIN_PASSWORD, and APP_KEY (must be a 32-char
+      value; the placeholder is intentionally weak — regenerate with 'php artisan key:generate' or set base64:<openssl rand
+      -base64 32>). After the DB add-on is healthy, log in at the app URL with ADMIN_EMAIL/ADMIN_PASSWORD and change the admin
+      password immediately. Uploaded files, generated PDFs, and logos persist under /var/www/html/storage (mounted volume).
+    kubero.dev/template.links: '["https://akaunting.com/hc/docs/on-premise/installation/", "https://github.com/akaunting/docker"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/akaunting/akaunting
+    kubero.dev/template.categories: '["finance", "erp", "work"]'
+    kubero.dev/template.title: Akaunting
+    kubero.dev/template.website: https://akaunting.com
+  labels:
+    manager: kubero
+spec:
+  name: akaunting
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: akaunting-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: akaunting-mysql-root
+            key: password
+          database: akaunting
+          username: akaunting
+          passwordSecretKeyRef:
+            name: akaunting-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: akaunting-mysql-root
+        type: Opaque
+        stringData:
+          password: akaunting
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: akaunting-mysql-app
+        type: Opaque
+        stringData:
+          password: akaunting
+  envVars:
+  - name: APP_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: APP_ENV
+    value: production
+  - name: APP_DEBUG
+    value: 'false'
+  - name: APP_KEY
+    value: base64:replace-with-openssl-rand-base64-32
+  - name: APP_LOCALE
+    value: en-US
+  - name: DB_CONNECTION
+    value: mysql
+  - name: DB_HOST
+    value: akaunting-mysql
+  - name: DB_PORT
+    value: '3306'
+  - name: DB_DATABASE
+    value: akaunting
+  - name: DB_USERNAME
+    value: akaunting
+  - name: DB_PASSWORD
+    value: akaunting
+  - name: DB_PREFIX
+    value: ak_
+  - name: COMPANY_NAME
+    value: My Company
+  - name: COMPANY_EMAIL
+    value: admin@example.com
+  - name: ADMIN_EMAIL
+    value: admin@example.com
+  - name: ADMIN_PASSWORD
+    value: replace-with-strong-password
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/storage
+    name: akaunting-data
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: akaunting/akaunting
+    tag: latest

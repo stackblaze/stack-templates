@@ -1,0 +1,36 @@
+{
+  "slug": "tracardi",
+  "title": "Tracardi",
+  "description": "Open-source API-first Customer Data Platform (CDP) for collecting events, building profiles and segments, and orchestrating real-time customer journeys.",
+  "source": "https://github.com/Tracardi/tracardi",
+  "website": "https://tracardi.com",
+  "icon": "https://avatars.githubusercontent.com/u/61210182?s=200&v=4",
+  "categories": ["data", "crm", "automation"],
+  "installation": "Tracardi is a multi-container stack; this template runs ONLY the primary API/server image tracardi/tracardi-api on internal port 80. It REQUIRES an external Elasticsearch (7.x) or OpenSearch cluster as its primary datastore for all events/profiles/segments - Elasticsearch is NOT one of the supported operator add-ons, so deploy it separately (e.g. docker.elastic.co/elasticsearch/elasticsearch:7.17.x) and point ELASTIC_HOST at it (default here http://elasticsearch:9200) before Tracardi will start. The MySQL config DB is provisioned via the mariadb add-on and Redis cache via the valkey add-on. Deploy these COMPANION services from the same Tracardi image family, sharing the SAME ELASTIC_HOST / REDIS_HOST / MYSQL_HOST env values: tracardi/tracardi-gui (the web admin GUI, internal port 80 - expose it with its own Service/Ingress, this is what operators log into), tracardi/update-worker (background workflow/segmentation worker), and tracardi/apm (auto profile-merging / background processing worker). Set PRODUCTION=yes and DEMO=no for a clean install. ROTATE before exposing: the mariadb (MYSQL) and any admin passwords; the default admin login is created on first boot (admin@tracardi.com) - change it immediately. AUTOLOAD_BRIDGE/DEMO data and the default credentials are for evaluation only.",
+  "screenshots": [],
+  "links": ["https://docs.tracardi.com", "https://github.com/Tracardi/tracardi-api"],
+  "license": "Other",
+  "spdx_id": "NOASSERTION",
+  "stars": 700,
+  "language": "Python",
+  "image": {"repository": "tracardi/tracardi-api", "tag": "1.1.6", "containerPort": "80", "command": []},
+  "envVars": [
+    {"name": "ELASTIC_HOST", "value": "http://elasticsearch:9200"},
+    {"name": "REDIS_HOST", "value": "redis://rfr-tracardi-valkey-readwrite:6379"},
+    {"name": "MYSQL_HOST", "value": "tracardi-mysql"},
+    {"name": "MYSQL_PORT", "value": "3306"},
+    {"name": "MYSQL_USERNAME", "value": "tracardi"},
+    {"name": "MYSQL_PASSWORD", "value": "tracardi"},
+    {"name": "MYSQL_DATABASE", "value": "tracardi"},
+    {"name": "PRODUCTION", "value": "yes"},
+    {"name": "DEMO", "value": "no"},
+    {"name": "SAVE_LOGS", "value": "no"},
+    {"name": "LOGGING_LEVEL", "value": "info"},
+    {"name": "API_DOMAIN", "value": "{{KUBERO_APP_HOST}}"}
+  ],
+  "addons": [
+    {"type": "mariadb", "name": "tracardi", "db": "tracardi", "user": "tracardi", "password": "tracardi"},
+    {"type": "valkey", "name": "tracardi"}
+  ],
+  "extraVolumes": []
+}

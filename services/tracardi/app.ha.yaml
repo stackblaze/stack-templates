@@ -1,0 +1,152 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: tracardi
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source API-first Customer Data Platform (CDP) for collecting events, building profiles
+      and segments, and orchestrating real-time customer journeys.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/61210182?s=200&v=4
+    kubero.dev/template.installation: 'Tracardi is a multi-container stack; this template runs ONLY the primary API/server
+      image tracardi/tracardi-api on internal port 80. It REQUIRES an external Elasticsearch (7.x) or OpenSearch cluster as
+      its primary datastore for all events/profiles/segments - Elasticsearch is NOT one of the supported operator add-ons,
+      so deploy it separately (e.g. docker.elastic.co/elasticsearch/elasticsearch:7.17.x) and point ELASTIC_HOST at it (default
+      here http://elasticsearch:9200) before Tracardi will start. The MySQL config DB is provisioned via the mariadb add-on
+      and Redis cache via the valkey add-on. Deploy these COMPANION services from the same Tracardi image family, sharing
+      the SAME ELASTIC_HOST / REDIS_HOST / MYSQL_HOST env values: tracardi/tracardi-gui (the web admin GUI, internal port
+      80 - expose it with its own Service/Ingress, this is what operators log into), tracardi/update-worker (background workflow/segmentation
+      worker), and tracardi/apm (auto profile-merging / background processing worker). Set PRODUCTION=yes and DEMO=no for
+      a clean install. ROTATE before exposing: the mariadb (MYSQL) and any admin passwords; the default admin login is created
+      on first boot (admin@tracardi.com) - change it immediately. AUTOLOAD_BRIDGE/DEMO data and the default credentials are
+      for evaluation only.'
+    kubero.dev/template.links: '["https://docs.tracardi.com", "https://github.com/Tracardi/tracardi-api"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/Tracardi/tracardi
+    kubero.dev/template.categories: '["data", "crm", "automation"]'
+    kubero.dev/template.title: Tracardi
+    kubero.dev/template.website: https://tracardi.com
+  labels:
+    manager: kubero
+spec:
+  name: tracardi
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: tracardi-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: tracardi-mysql-root
+            key: password
+          database: tracardi
+          username: tracardi
+          passwordSecretKeyRef:
+            name: tracardi-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: tracardi-mysql-root
+        type: Opaque
+        stringData:
+          password: tracardi
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: tracardi-mysql-app
+        type: Opaque
+        stringData:
+          password: tracardi
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: tracardi-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: ELASTIC_HOST
+    value: http://elasticsearch:9200
+  - name: REDIS_HOST
+    value: redis://rfr-tracardi-valkey-readwrite:6379
+  - name: MYSQL_HOST
+    value: tracardi-mysql
+  - name: MYSQL_PORT
+    value: '3306'
+  - name: MYSQL_USERNAME
+    value: tracardi
+  - name: MYSQL_PASSWORD
+    value: tracardi
+  - name: MYSQL_DATABASE
+    value: tracardi
+  - name: PRODUCTION
+    value: 'yes'
+  - name: DEMO
+    value: 'no'
+  - name: SAVE_LOGS
+    value: 'no'
+  - name: LOGGING_LEVEL
+    value: info
+  - name: API_DOMAIN
+    value: '{{KUBERO_APP_HOST}}'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: tracardi/tracardi-api
+    tag: 1.1.6

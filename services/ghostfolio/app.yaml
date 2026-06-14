@@ -1,0 +1,146 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: ghostfolio
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source wealth management software to track stocks, ETFs, crypto and other assets
+      across accounts in one privacy-focused dashboard.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/82473144?s=200&v=4
+    kubero.dev/template.installation: 'NestJS/Angular app served on port 3333. Companion services deployed as add-ons: PostgreSQL
+      (primary DB) and a Valkey (Redis-protocol) instance used for caching and the queue. Database migrations run automatically
+      on boot. Rotate ACCESS_TOKEN_SALT and JWT_SECRET_KEY to unique random values (openssl rand -hex 32 each) and rotate
+      the postgres password before exposing publicly. The Valkey add-on runs without a password, so REDIS_PASSWORD is left
+      empty. After first launch, create your account from the start page; the FIRST registered user (or one whose security
+      token you promote) can be granted admin by setting their role to ADMIN in the Postgres _user table. Stock/crypto market
+      data is fetched from external providers (Yahoo Finance by default); configure additional DATA_SOURCE provider API keys
+      via env if you need them.'
+    kubero.dev/template.links: '["https://github.com/ghostfolio/ghostfolio/blob/main/README.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/ghostfolio/ghostfolio
+    kubero.dev/template.categories: '["finance", "productivity", "data"]'
+    kubero.dev/template.title: Ghostfolio
+    kubero.dev/template.website: https://ghostfol.io
+  labels:
+    manager: kubero
+spec:
+  name: ghostfolio
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: ghostfolio-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: ghostfolio
+              owner: ghostfolio
+              secret:
+                name: ghostfolio-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: ghostfolio-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: ghostfolio-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: ghostfolio
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: ghostfolio-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: ghostfolio
+          password: ghostfolio
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: ghostfolio-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: NODE_ENV
+    value: production
+  - name: DATABASE_URL
+    value: postgresql://ghostfolio:ghostfolio@ghostfolio-postgresql-rw:5432/ghostfolio?connect_timeout=300&sslmode=prefer
+  - name: POSTGRES_DB
+    value: ghostfolio
+  - name: POSTGRES_USER
+    value: ghostfolio
+  - name: POSTGRES_PASSWORD
+    value: ghostfolio
+  - name: REDIS_HOST
+    value: rfr-ghostfolio-valkey-readwrite
+  - name: REDIS_PORT
+    value: '6379'
+  - name: REDIS_PASSWORD
+    value: ''
+  - name: ACCESS_TOKEN_SALT
+    value: replace-with-openssl-rand-hex-32
+  - name: JWT_SECRET_KEY
+    value: replace-with-different-openssl-rand-hex-32
+  - name: HOST
+    value: 0.0.0.0
+  - name: PORT
+    value: '3333'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3333'
+    pullPolicy: Always
+    repository: ghostfolio/ghostfolio
+    tag: latest

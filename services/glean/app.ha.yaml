@@ -1,0 +1,165 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: glean
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted RSS reader and personal knowledge management tool with AI-powered semantic
+      search over your saved reading.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/22127499?s=200&v=4
+    kubero.dev/template.installation: 'This template deploys the PRIMARY backend API only (ghcr.io/leslieleung/glean-backend,
+      FastAPI, port 8000). Glean is a multi-container stack: also deploy the WORKER (same image ghcr.io/leslieleung/glean-backend
+      run as the arq background task queue), the WEB frontend (ghcr.io/leslieleung/glean-web, listens on :80), and the ADMIN
+      dashboard (ghcr.io/leslieleung/glean-admin, listens on :80, default ADMIN_PORT 3001). It also requires a MILVUS vector
+      database (milvusdb/milvus:v2.6.6) plus its etcd (quay.io/coreos/etcd:v3.5.5) and minio (minio/minio) dependencies for
+      semantic search embeddings - Milvus is not an available operator add-on, so deploy it separately and point MILVUS_HOST/MILVUS_PORT
+      at it (default 19530). Postgres and Redis (Valkey) are provisioned by the add-ons below. ROTATE before exposing: SECRET_KEY
+      (JWT signing - replace with `openssl rand -hex 32`), the postgres password, and ADMIN_PASSWORD. First run: CREATE_ADMIN=true
+      auto-creates the super_admin from ADMIN_USERNAME/ADMIN_PASSWORD; RUN_MIGRATIONS=true applies DB migrations on boot.
+      Note: upstream still labels this project as in-development / not production-ready.'
+    kubero.dev/template.links: '["https://github.com/LeslieLeung/glean#readme"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/LeslieLeung/glean
+    kubero.dev/template.categories: '["productivity", "ai", "utilities"]'
+    kubero.dev/template.title: Glean
+    kubero.dev/template.website: https://github.com/LeslieLeung/glean
+  labels:
+    manager: kubero
+spec:
+  name: glean
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: glean-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: glean
+              owner: glean
+              secret:
+                name: glean-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: glean-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: glean-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: glean
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: glean-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: glean
+          password: glean
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: glean-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: DATABASE_URL
+    value: postgresql+asyncpg://glean:glean@glean-postgresql-rw:5432/glean
+  - name: POSTGRES_DB
+    value: glean
+  - name: POSTGRES_USER
+    value: glean
+  - name: POSTGRES_PASSWORD
+    value: glean
+  - name: REDIS_URL
+    value: redis://rfr-glean-valkey-readwrite:6379/0
+  - name: SECRET_KEY
+    value: replace-with-openssl-rand-hex-32
+  - name: ADMIN_USERNAME
+    value: admin
+  - name: ADMIN_PASSWORD
+    value: replace-with-a-strong-password
+  - name: ADMIN_ROLE
+    value: super_admin
+  - name: CREATE_ADMIN
+    value: 'true'
+  - name: RUN_MIGRATIONS
+    value: 'true'
+  - name: MILVUS_HOST
+    value: glean-milvus
+  - name: MILVUS_PORT
+    value: '19530'
+  - name: CORS_ORIGINS
+    value: '["{{KUBERO_APP_URL}}"]'
+  - name: LOG_LEVEL
+    value: INFO
+  - name: DEBUG
+    value: 'false'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/logs
+    name: glean-logs
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: ghcr.io/leslieleung/glean-backend
+    tag: latest

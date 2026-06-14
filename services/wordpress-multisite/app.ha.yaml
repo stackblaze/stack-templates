@@ -1,0 +1,125 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: wordpress-multisite
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: The world's most popular open-source CMS, preconfigured for Multisite to run a network
+      of sites from a single WordPress install.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/8089?s=200&v=4
+    kubero.dev/template.installation: 'WordPress requires MySQL/MariaDB (it does not support PostgreSQL), so this template
+      ships the mariadb add-on. Multisite is enabled at the WordPress config layer via WORDPRESS_CONFIG_EXTRA (WP_ALLOW_MULTISITE=true).
+      After the first-run install wizard completes, go to Tools > Network Setup in wp-admin to create the network, then add
+      the printed wp-config.php / .htaccess rules. Subdomain multisite needs a wildcard DNS record (*.{{KUBERO_APP_HOST}})
+      and matching ingress/TLS; subdirectory multisite needs none. Rotate WORDPRESS_AUTH_KEY/SECURE_AUTH_KEY/LOGGED_IN_KEY/NONCE_KEY
+      and the four matching salts (openssl rand -base64 64) plus the MariaDB password before going to production. Persistent
+      data (wp-content: uploads, plugins, themes, languages) lives on the mounted volume at /var/www/html.'
+    kubero.dev/template.links: '["https://developer.wordpress.org/advanced-administration/multisite/create-network/", "https://hub.docker.com/_/wordpress"]'
+    kubero.dev/template.screenshots: '["https://s.w.org/images/home/swag-collection-2024.jpg"]'
+    kubero.dev/template.source: https://github.com/WordPress/WordPress
+    kubero.dev/template.categories: '["cms", "media", "e-commerce"]'
+    kubero.dev/template.title: WordPress Multisite
+    kubero.dev/template.website: https://wordpress.org/
+  labels:
+    manager: kubero
+spec:
+  name: wordpress-multisite
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: wordpress-multisite-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: wordpress-multisite-mysql-root
+            key: password
+          database: wordpress-multisite
+          username: wordpress-multisite
+          passwordSecretKeyRef:
+            name: wordpress-multisite-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: wordpress-multisite-mysql-root
+        type: Opaque
+        stringData:
+          password: wordpress-multisite
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: wordpress-multisite-mysql-app
+        type: Opaque
+        stringData:
+          password: wordpress-multisite
+  envVars:
+  - name: WORDPRESS_DB_HOST
+    value: wordpress-multisite-mysql:3306
+  - name: WORDPRESS_DB_NAME
+    value: wordpress-multisite
+  - name: WORDPRESS_DB_USER
+    value: wordpress-multisite
+  - name: WORDPRESS_DB_PASSWORD
+    value: wordpress-multisite
+  - name: WORDPRESS_TABLE_PREFIX
+    value: wp_
+  - name: WORDPRESS_CONFIG_EXTRA
+    value: define('WP_ALLOW_MULTISITE', true); define('WP_HOME', '{{KUBERO_APP_URL}}'); define('WP_SITEURL', '{{KUBERO_APP_URL}}');
+  - name: WORDPRESS_AUTH_KEY
+    value: replace-with-openssl-rand-base64-64
+  - name: WORDPRESS_SECURE_AUTH_KEY
+    value: replace-with-openssl-rand-base64-64
+  - name: WORDPRESS_LOGGED_IN_KEY
+    value: replace-with-openssl-rand-base64-64
+  - name: WORDPRESS_NONCE_KEY
+    value: replace-with-openssl-rand-base64-64
+  - name: WORDPRESS_AUTH_SALT
+    value: replace-with-openssl-rand-base64-64
+  - name: WORDPRESS_SECURE_AUTH_SALT
+    value: replace-with-openssl-rand-base64-64
+  - name: WORDPRESS_LOGGED_IN_SALT
+    value: replace-with-openssl-rand-base64-64
+  - name: WORDPRESS_NONCE_SALT
+    value: replace-with-openssl-rand-base64-64
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html
+    name: wordpress-multisite-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: wordpress
+    tag: php8.3-apache

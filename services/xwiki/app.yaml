@@ -1,0 +1,111 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: xwiki
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source advanced enterprise wiki platform for building collaborative web applications,
+      knowledge bases and intranets.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/82801?s=200&v=4
+    kubero.dev/template.installation: Uses the official xwiki image (Tomcat, postgres variant) on internal port 8080. Deploy
+      with the bundled PostgreSQL add-on; the DB_USER/DB_PASSWORD/DB_DATABASE/DB_HOST env vars point XWiki at the '{{KUBERO_APP_NAME}}-postgresql-rw'
+      Postgres service (rotate the Postgres add-on password after install). On first boot XWiki connects to the empty database,
+      runs the Distribution Wizard to install the default flavor (XWiki Standard), and prompts you to create the admin (superadmin)
+      user and password at the app URL, complete the wizard and set a strong admin password before going to production. The
+      permanent directory (config, extensions, attachments cache, Solr search index) lives under /usr/local/xwiki and is persisted
+      by the xwiki-data volume, no external Solr/Elasticsearch is required since XWiki ships an embedded Solr index there.
+      Increase the app pod size (JVM heap) for larger wikis. The 'stable-postgres-tomcat' tag tracks the latest stable XWiki
+      release, switch to an 'lts-postgres-tomcat' tag for long-term-support builds.
+    kubero.dev/template.links: '["https://www.xwiki.org/xwiki/bin/view/Documentation/AdminGuide/Installation/InstallationDocker/",
+      "https://github.com/xwiki-contrib/docker-xwiki/blob/master/README.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/xwiki/xwiki-platform
+    kubero.dev/template.categories: '["documentation", "collaboration", "productivity"]'
+    kubero.dev/template.title: XWiki
+    kubero.dev/template.website: https://www.xwiki.org/
+  labels:
+    manager: kubero
+spec:
+  name: xwiki
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: xwiki-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: xwiki
+              owner: xwiki
+              secret:
+                name: xwiki-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: xwiki-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: xwiki-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: xwiki
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: xwiki-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: xwiki
+          password: xwiki
+  envVars:
+  - name: DB_HOST
+    value: xwiki-postgresql-rw
+  - name: DB_DATABASE
+    value: xwiki
+  - name: DB_USER
+    value: xwiki
+  - name: DB_PASSWORD
+    value: xwiki
+  - name: JAVA_OPTS
+    value: -Xmx1024m -Xms512m
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /usr/local/xwiki
+    name: xwiki-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: xwiki
+    tag: stable-postgres-tomcat

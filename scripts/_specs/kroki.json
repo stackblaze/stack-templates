@@ -1,0 +1,25 @@
+{
+  "slug": "kroki",
+  "title": "Kroki",
+  "description": "Unified API that turns textual descriptions into diagrams (PlantUML, Mermaid, GraphViz, BPMN, C4, and many more).",
+  "source": "https://github.com/yuzutech/kroki",
+  "website": "https://kroki.io",
+  "icon": "https://avatars.githubusercontent.com/u/40165180?s=200&v=4",
+  "categories": ["development", "documentation", "utilities"],
+  "installation": "Kroki is a stateless rendering gateway and needs no database or persistent volume. The main yuzutech/kroki container renders most diagram types (PlantUML, GraphViz, C4, etc.) on its own. To enable Mermaid, BPMN and Excalidraw diagrams, deploy the optional companion containers (yuzutech/kroki-mermaid on :8002, yuzutech/kroki-bpmn on :8003, yuzutech/kroki-excalidraw on :8004) as separate apps and point the KROKI_*_HOST env vars at their in-cluster service names. The diagrams.net companion (yuzutech/kroki-diagramsnet) is experimental. Tune KROKI_MAX_URI_OPENING_COUNT / KROKI_MAX_URI_OPENING_TIMEOUT to harden against SSRF if exposing publicly.",
+  "screenshots": [],
+  "links": ["https://docs.kroki.io"],
+  "license": "MIT License",
+  "spdx_id": "MIT",
+  "stars": 3500,
+  "language": "Java",
+  "image": {"repository": "yuzutech/kroki", "tag": "0.31.0", "containerPort": "8000", "command": []},
+  "envVars": [
+    {"name": "KROKI_MERMAID_HOST", "value": "kroki-mermaid"},
+    {"name": "KROKI_BPMN_HOST", "value": "kroki-bpmn"},
+    {"name": "KROKI_EXCALIDRAW_HOST", "value": "kroki-excalidraw"},
+    {"name": "KROKI_SAFE_MODE", "value": "secure"}
+  ],
+  "addons": [],
+  "extraVolumes": []
+}

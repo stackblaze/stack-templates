@@ -1,0 +1,103 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: nopcommerce
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source ASP.NET Core e-commerce platform and shopping cart for building online stores.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/9377786?s=200&v=4
+    kubero.dev/template.installation: 'First run launches the nopCommerce install wizard at the app URL: pick the PostgreSQL
+      provider and enter the connection details below (host nopcommerce-postgresql-rw, port 5432, db/user/pass = nopcommerce).
+      The wizard creates the admin user you specify and writes config to /app/App_Data (persisted via the data volume). Rotate
+      the default postgres password after install. nopCommerce can run without the DB add-on against SQL Server/MySQL too,
+      but this template ships PostgreSQL. Optional: front with a CDN/object storage for media at scale; not required to boot.'
+    kubero.dev/template.links: '["https://docs.nopcommerce.com/en/getting-started/index.html", "https://docs.nopcommerce.com/en/developer/tutorials/docker.html"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/nopSolutions/nopCommerce
+    kubero.dev/template.categories: '["e-commerce", "cms", "work"]'
+    kubero.dev/template.title: nopCommerce
+    kubero.dev/template.website: https://www.nopcommerce.com
+  labels:
+    manager: kubero
+spec:
+  name: nopcommerce
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: nopcommerce-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: nopcommerce
+              owner: nopcommerce
+              secret:
+                name: nopcommerce-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: nopcommerce-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: nopcommerce-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: nopcommerce
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: nopcommerce-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: nopcommerce
+          password: nopcommerce
+  envVars:
+  - name: ASPNETCORE_URLS
+    value: http://+:80
+  - name: ASPNETCORE_ENVIRONMENT
+    value: Production
+  - name: ConnectionStrings__DataSettings
+    value: Server=nopcommerce-postgresql-rw;Port=5432;Database=nopcommerce;User Id=nopcommerce;Password=nopcommerce;
+  - name: NopDatabaseProvider
+    value: postgresql
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/App_Data
+    name: nopcommerce-data
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: nopcommerceteam/nopcommerce
+    tag: latest

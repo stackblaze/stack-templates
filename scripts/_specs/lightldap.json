@@ -1,0 +1,37 @@
+{
+  "slug": "lightldap",
+  "title": "LLDAP",
+  "description": "Lightweight authentication server providing a simplified, opinionated LDAP interface with a clean web UI for user and group management.",
+  "source": "https://github.com/lldap/lldap",
+  "website": "https://github.com/lldap/lldap",
+  "icon": "https://avatars.githubusercontent.com/u/96665150?s=200&v=4",
+  "categories": ["identity", "security", "utilities"],
+  "installation": "LLDAP exposes its web admin UI on port 17170 and an LDAP endpoint on port 3890 (LDAP is not HTTP; expose it separately if other apps must bind to it). ROTATE these template defaults before production: LLDAP_JWT_SECRET and LLDAP_KEY_SEED (generate with `openssl rand -hex 32`), and LLDAP_LDAP_USER_PASS (the initial admin password for the bind user 'admin'). On first run log in at the app URL with admin / the LLDAP_LDAP_USER_PASS value, then create users/groups. This spec uses the bundled Postgres add-on via LLDAP_DATABASE_URL; if you prefer the default embedded SQLite store, remove the postgres add-on and LLDAP_DATABASE_URL and keep the /data volume. Adjust LLDAP_LDAP_BASE_DN to your domain.",
+  "screenshots": [],
+  "links": ["https://github.com/lldap/lldap/blob/main/README.md"],
+  "license": "GNU General Public License v3.0",
+  "spdx_id": "GPL-3.0",
+  "stars": 6300,
+  "language": "Rust",
+  "image": {
+    "repository": "lldap/lldap",
+    "tag": "stable",
+    "containerPort": "17170",
+    "command": []
+  },
+  "envVars": [
+    {"name": "LLDAP_JWT_SECRET", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "LLDAP_KEY_SEED", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "LLDAP_LDAP_USER_PASS", "value": "lightldap"},
+    {"name": "LLDAP_LDAP_BASE_DN", "value": "dc=example,dc=com"},
+    {"name": "LLDAP_DATABASE_URL", "value": "postgres://lightldap:lightldap@lightldap-postgresql-rw:5432/lightldap"},
+    {"name": "LLDAP_HTTP_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "TZ", "value": "UTC"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "lightldap", "db": "lightldap", "user": "lightldap", "password": "lightldap"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/data", "name": "lightldap-data", "size": "2Gi"}
+  ]
+}

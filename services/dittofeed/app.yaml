@@ -1,0 +1,173 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: dittofeed
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source customer engagement and marketing automation platform for building messaging
+      campaigns and user journeys across email, SMS, and push.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/120567321?s=200&v=4
+    kubero.dev/template.installation: 'Dittofeed is a multi-service stack. This template runs the all-in-one dittofeed/dittofeed-lite
+      image (API + dashboard + worker in one process) on port 3000 in single-tenant mode. It needs two operator add-ons (Postgres
+      + ClickHouse, both provisioned here) AND an external Temporal cluster, which is NOT an available add-on: deploy Temporal
+      separately (image temporalio/auto-setup:1.22.4 with its own Postgres, plus optional temporalio/ui:2.22.1) and point
+      TEMPORAL_ADDRESS at it (default temporal:7233). For production scale you may instead run the split images dittofeed/api,
+      dittofeed/dashboard, and dittofeed/worker (worker handles the Temporal-driven journey processing) rather than the lite
+      bundle; blob storage (any S3/MinIO) is optional. BOOTSTRAP=true auto-creates the default workspace and tables on first
+      start. ROTATE before exposing: SECRET_KEY (openssl rand -base64 32), the admin PASSWORD env, plus the Postgres and ClickHouse
+      add-on passwords. Set DASHBOARD_API_BASE / dashboard URLs to your public host. CLICKHOUSE_HOST must be the full http://host:8123
+      URL.'
+    kubero.dev/template.links: '["https://docs.dittofeed.com/deployment/self-hosted", "https://docs.dittofeed.com/deployment/self-hosted/docker-compose"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/dittofeed/dittofeed
+    kubero.dev/template.categories: '["communication", "automation", "crm"]'
+    kubero.dev/template.title: Dittofeed
+    kubero.dev/template.website: https://www.dittofeed.com/
+  labels:
+    manager: kubero
+spec:
+  name: dittofeed
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: dittofeed-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: dittofeed
+              owner: dittofeed
+              secret:
+                name: dittofeed-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: dittofeed-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: dittofeed-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: dittofeed
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: dittofeed-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: dittofeed
+          password: dittofeed
+  - displayName: ClickHouse
+    env: []
+    icon: /img/addons/clickhouse.svg
+    id: clickhouse-operator
+    kind: ClickHouseInstallation
+    resourceDefinitions:
+      ClickHouseInstallation:
+        apiVersion: clickhouse.altinity.com/v1
+        kind: ClickHouseInstallation
+        metadata:
+          name: dittofeed-clickhouse
+        spec:
+          configuration:
+            users:
+              admin/password: dittofeed
+              admin/networks/ip:
+              - 0.0.0.0/0
+            clusters:
+            - name: analytics
+              layout:
+                shardsCount: 1
+                replicasCount: 1
+          defaults:
+            templates:
+              dataVolumeClaimTemplate: data-volume-template
+              logVolumeClaimTemplate: log-volume-template
+          templates:
+            volumeClaimTemplates:
+            - name: data-volume-template
+              spec:
+                accessModes:
+                - ReadWriteOnce
+                storageClassName: fast
+                resources:
+                  requests:
+                    storage: 5Gi
+            - name: log-volume-template
+              spec:
+                accessModes:
+                - ReadWriteOnce
+                storageClassName: fast
+                resources:
+                  requests:
+                    storage: 1Gi
+  envVars:
+  - name: NODE_ENV
+    value: production
+  - name: AUTH_MODE
+    value: single-tenant
+  - name: BOOTSTRAP
+    value: 'true'
+  - name: WORKSPACE_NAME
+    value: Default
+  - name: SECRET_KEY
+    value: replace-with-openssl-rand-base64-32
+  - name: PASSWORD
+    value: dittofeed
+  - name: DATABASE_HOST
+    value: dittofeed-postgresql-rw
+  - name: DATABASE_PORT
+    value: '5432'
+  - name: DATABASE_USER
+    value: dittofeed
+  - name: DATABASE_PASSWORD
+    value: dittofeed
+  - name: DATABASE_NAME
+    value: dittofeed
+  - name: CLICKHOUSE_HOST
+    value: http://clickhouse-dittofeed-clickhouse:8123
+  - name: CLICKHOUSE_USER
+    value: admin
+  - name: CLICKHOUSE_PASSWORD
+    value: dittofeed
+  - name: CLICKHOUSE_DATABASE
+    value: dittofeed
+  - name: TEMPORAL_ADDRESS
+    value: temporal:7233
+  - name: DASHBOARD_API_BASE
+    value: '{{KUBERO_APP_URL}}'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: dittofeed/dittofeed-lite
+    tag: v0.23.0

@@ -1,0 +1,117 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: joplin
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted sync server for the Joplin open-source note-taking and to-do app, with end-to-end-encrypted
+      multi-device sync and sharing.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1285584?s=200&v=4
+    kubero.dev/template.installation: Deploy with the bundled PostgreSQL add-on; rotate the Postgres password (and after first
+      login the admin password) from the template defaults before production. Joplin Server validates incoming requests against
+      APP_BASE_URL, so it is set to the deployed public URL via {{KUBERO_APP_URL}} — if you change the hostname you must update
+      this or clients get an 'invalid origin' error. The server listens on port 22300 (APP_PORT) and serves both the web admin
+      UI and the sync API. Storage driver defaults to the database (DB_CLIENT=pg), so notes, attachments and blobs live in
+      Postgres; the joplin-storage volume mounted at /home/joplin/storage is only used if you switch to the filesystem storage
+      driver. On first run the database is migrated automatically; log in to the web UI with the default admin account admin@localhost
+      / admin and change the password immediately, then point Joplin desktop/mobile clients at the URL using the 'Joplin Server'
+      sync target. No external object store, search engine or SMTP is required for a base install (configure MAILER_* env
+      vars later if you want email invitations).
+    kubero.dev/template.links: '["https://joplinapp.org/help/install/sync", "https://github.com/laurent22/joplin/blob/dev/packages/server/README.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/laurent22/joplin
+    kubero.dev/template.categories: '["productivity", "documentation", "collaboration"]'
+    kubero.dev/template.title: Joplin Server
+    kubero.dev/template.website: https://joplinapp.org
+  labels:
+    manager: kubero
+spec:
+  name: joplin
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: joplin-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: joplin
+              owner: joplin
+              secret:
+                name: joplin-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: joplin-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: joplin-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: joplin
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: joplin-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: joplin
+          password: joplin
+  envVars:
+  - name: APP_PORT
+    value: '22300'
+  - name: APP_BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: DB_CLIENT
+    value: pg
+  - name: POSTGRES_HOST
+    value: joplin-postgresql-rw
+  - name: POSTGRES_PORT
+    value: '5432'
+  - name: POSTGRES_DATABASE
+    value: joplin
+  - name: POSTGRES_USER
+    value: joplin
+  - name: POSTGRES_PASSWORD
+    value: joplin
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /home/joplin/storage
+    name: joplin-storage
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '22300'
+    pullPolicy: Always
+    repository: joplin/server
+    tag: latest

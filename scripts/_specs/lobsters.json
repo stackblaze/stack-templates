@@ -1,0 +1,33 @@
+{
+  "slug": "lobsters",
+  "title": "Lobsters",
+  "description": "Computing-focused community link aggregator and discussion site built on Ruby on Rails.",
+  "source": "https://github.com/lobsters/lobsters",
+  "website": "https://lobste.rs",
+  "icon": "https://avatars.githubusercontent.com/u/22999921?s=200&v=4",
+  "categories": ["social", "collaboration", "communication"],
+  "installation": "Lobsters has no official container image; this template uses the community-maintained utensils/lobsters image, which is stale (last pushed ~5 years ago) and pinned to the legacy MariaDB schema. For a current deployment, build from source (https://github.com/lobsters/lobsters; note the project is migrating toward SQLite). Required setup: (1) ROTATE SECRET_KEY_BASE and INGRESS_PASSWORD to fresh random values (openssl rand -hex 64 / -hex 32) and rotate the MariaDB password from the slug default. (2) The MariaDB add-on is provisioned automatically; on first boot run rails db:setup / db:migrate inside the app container to create the schema, then create the first admin via rails console (User.create then user.grant_moderatorship / is_admin). (3) DATABASE_URL uses the trilogy/mysql2 adapter against the lobsters-mysql service.",
+  "screenshots": ["https://lobste.rs/s"],
+  "links": ["https://github.com/lobsters/lobsters/blob/master/README.md"],
+  "license": "BSD 3-Clause \"New\" or \"Revised\" License",
+  "spdx_id": "BSD-3-Clause",
+  "stars": 4700,
+  "language": "Ruby",
+  "image": {"repository": "utensils/lobsters", "tag": "latest", "containerPort": "9000", "command": []},
+  "envVars": [
+    {"name": "RAILS_ENV", "value": "production"},
+    {"name": "RACK_ENV", "value": "production"},
+    {"name": "PORT", "value": "9000"},
+    {"name": "DATABASE_URL", "value": "mysql2://lobsters:lobsters@lobsters-mysql:3306/lobsters"},
+    {"name": "SECRET_KEY_BASE", "value": "replace-with-openssl-rand-hex-64"},
+    {"name": "INGRESS_PASSWORD", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "RAILS_SERVE_STATIC_FILES", "value": "true"},
+    {"name": "RAILS_LOG_TO_STDOUT", "value": "true"}
+  ],
+  "addons": [
+    {"type": "mariadb", "name": "lobsters", "db": "lobsters", "user": "lobsters", "password": "lobsters"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/app/public/uploads", "name": "lobsters-data", "size": "2Gi"}
+  ]
+}

@@ -1,0 +1,161 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: automatisch
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source business automation tool (a self-hostable Zapier alternative) for connecting
+      apps and building no-code integration workflows.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/97354410?s=200&v=4
+    kubero.dev/template.installation: 'Automatisch is a multi-service stack. This template runs the main web/API server from
+      automatischio/automatisch on port 3000. It REQUIRES a companion WORKER service: deploy a second app with the SAME image
+      (automatischio/automatisch), the SAME environment variables PLUS WORKER=true, and the same Postgres + Redis connection
+      settings -- the worker runs the background queues that actually execute your flows, so without it nothing fires. It
+      needs two operator add-ons (Postgres + Valkey/Redis, both provisioned here). ROTATE before exposing: ENCRYPTION_KEY,
+      WEBHOOK_SECRET_KEY, and APP_SECRET_KEY (generate each with `openssl rand -base64 36`) plus the Postgres add-on password.
+      On first start the server runs DB migrations and seeds the admin user; the default login is created from the docker
+      env or the install wizard -- check the docs and change the admin password immediately. Set HOST/PROTOCOL to match your
+      public URL so OAuth redirect URIs and webhook URLs resolve correctly.'
+    kubero.dev/template.links: '["https://automatisch.io/docs/guide/installation", "https://automatisch.io/docs"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/automatisch/automatisch
+    kubero.dev/template.categories: '["automation", "productivity", "work"]'
+    kubero.dev/template.title: Automatisch
+    kubero.dev/template.website: https://automatisch.io/
+  labels:
+    manager: kubero
+spec:
+  name: automatisch
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: automatisch-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: automatisch
+              owner: automatisch
+              secret:
+                name: automatisch-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: automatisch-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: automatisch-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: automatisch
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: automatisch-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: automatisch
+          password: automatisch
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: automatisch-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: APP_ENV
+    value: production
+  - name: HOST
+    value: '{{KUBERO_APP_HOST}}'
+  - name: PROTOCOL
+    value: https
+  - name: PORT
+    value: '3000'
+  - name: ENCRYPTION_KEY
+    value: replace-with-openssl-rand-base64-36
+  - name: WEBHOOK_SECRET_KEY
+    value: replace-with-openssl-rand-base64-36
+  - name: APP_SECRET_KEY
+    value: replace-with-openssl-rand-base64-36
+  - name: POSTGRES_HOST
+    value: automatisch-postgresql-rw
+  - name: POSTGRES_PORT
+    value: '5432'
+  - name: POSTGRES_DATABASE
+    value: automatisch
+  - name: POSTGRES_USERNAME
+    value: automatisch
+  - name: POSTGRES_PASSWORD
+    value: automatisch
+  - name: POSTGRES_ENABLE_SSL
+    value: 'false'
+  - name: REDIS_HOST
+    value: rfr-automatisch-valkey-readwrite
+  - name: REDIS_PORT
+    value: '6379'
+  - name: WORKER
+    value: 'false'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /automatisch/storage
+    name: automatisch-storage
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: automatischio/automatisch
+    tag: latest

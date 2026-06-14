@@ -1,0 +1,44 @@
+{
+  "slug": "wordpress-multisite",
+  "title": "WordPress Multisite",
+  "description": "The world's most popular open-source CMS, preconfigured for Multisite to run a network of sites from a single WordPress install.",
+  "source": "https://github.com/WordPress/WordPress",
+  "website": "https://wordpress.org/",
+  "icon": "https://avatars.githubusercontent.com/u/8089?s=200&v=4",
+  "categories": ["cms", "media", "e-commerce"],
+  "installation": "WordPress requires MySQL/MariaDB (it does not support PostgreSQL), so this template ships the mariadb add-on. Multisite is enabled at the WordPress config layer via WORDPRESS_CONFIG_EXTRA (WP_ALLOW_MULTISITE=true). After the first-run install wizard completes, go to Tools > Network Setup in wp-admin to create the network, then add the printed wp-config.php / .htaccess rules. Subdomain multisite needs a wildcard DNS record (*.{{KUBERO_APP_HOST}}) and matching ingress/TLS; subdirectory multisite needs none. Rotate WORDPRESS_AUTH_KEY/SECURE_AUTH_KEY/LOGGED_IN_KEY/NONCE_KEY and the four matching salts (openssl rand -base64 64) plus the MariaDB password before going to production. Persistent data (wp-content: uploads, plugins, themes, languages) lives on the mounted volume at /var/www/html.",
+  "screenshots": ["https://s.w.org/images/home/swag-collection-2024.jpg"],
+  "links": ["https://developer.wordpress.org/advanced-administration/multisite/create-network/", "https://hub.docker.com/_/wordpress"],
+  "license": "GNU General Public License v2.0",
+  "spdx_id": "GPL-2.0",
+  "stars": 19500,
+  "language": "PHP",
+  "image": {
+    "repository": "wordpress",
+    "tag": "php8.3-apache",
+    "containerPort": "80",
+    "command": []
+  },
+  "envVars": [
+    {"name": "WORDPRESS_DB_HOST", "value": "wordpress-multisite-mysql:3306"},
+    {"name": "WORDPRESS_DB_NAME", "value": "wordpress-multisite"},
+    {"name": "WORDPRESS_DB_USER", "value": "wordpress-multisite"},
+    {"name": "WORDPRESS_DB_PASSWORD", "value": "wordpress-multisite"},
+    {"name": "WORDPRESS_TABLE_PREFIX", "value": "wp_"},
+    {"name": "WORDPRESS_CONFIG_EXTRA", "value": "define('WP_ALLOW_MULTISITE', true); define('WP_HOME', '{{KUBERO_APP_URL}}'); define('WP_SITEURL', '{{KUBERO_APP_URL}}');"},
+    {"name": "WORDPRESS_AUTH_KEY", "value": "replace-with-openssl-rand-base64-64"},
+    {"name": "WORDPRESS_SECURE_AUTH_KEY", "value": "replace-with-openssl-rand-base64-64"},
+    {"name": "WORDPRESS_LOGGED_IN_KEY", "value": "replace-with-openssl-rand-base64-64"},
+    {"name": "WORDPRESS_NONCE_KEY", "value": "replace-with-openssl-rand-base64-64"},
+    {"name": "WORDPRESS_AUTH_SALT", "value": "replace-with-openssl-rand-base64-64"},
+    {"name": "WORDPRESS_SECURE_AUTH_SALT", "value": "replace-with-openssl-rand-base64-64"},
+    {"name": "WORDPRESS_LOGGED_IN_SALT", "value": "replace-with-openssl-rand-base64-64"},
+    {"name": "WORDPRESS_NONCE_SALT", "value": "replace-with-openssl-rand-base64-64"}
+  ],
+  "addons": [
+    {"type": "mariadb", "name": "wordpress-multisite", "db": "wordpress-multisite", "user": "wordpress-multisite", "password": "wordpress-multisite"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/var/www/html", "name": "wordpress-multisite-data", "size": "5Gi"}
+  ]
+}

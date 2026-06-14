@@ -1,0 +1,29 @@
+{
+  "slug": "itop",
+  "title": "iTop",
+  "description": "Combodo iTop: open-source ITSM and CMDB platform for incident, problem, change, service management and a configuration database.",
+  "source": "https://github.com/Combodo/iTop",
+  "website": "https://www.combodo.com/itop",
+  "icon": "https://avatars.githubusercontent.com/u/16124054?s=200&v=4",
+  "categories": ["helpdesk", "work", "productivity"],
+  "installation": "iTop is a PHP app that requires MySQL/MariaDB (it does NOT support Postgres); a 'mariadb' add-on is provisioned. The vbkunin/itop image is the de-facto community image (no official Combodo image exists); the '-base' tag is Apache+PHP only, without a bundled DB, so it uses the external MariaDB add-on. The database connection is NOT set via env vars - on first run open the URL and complete the web setup wizard, entering DB host 'itop-mysql' port 3306, user 'itop', password 'itop', db 'itop' (rotate this password from its default before going live). The wizard also creates the admin account. The MYSQL_PASS env only seeds the bundled MySQL of the non-base image and is unused here. Persist /var/www/html/data and the generated /var/www/html/conf so config and attachments survive restarts.",
+  "screenshots": [],
+  "links": ["https://www.itophub.io/wiki/page", "https://github.com/vbkunin/itop-docker"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 1100,
+  "language": "PHP",
+  "image": {"repository": "vbkunin/itop", "tag": "latest-base", "containerPort": "80", "command": []},
+  "envVars": [
+    {"name": "TZ", "value": "UTC"},
+    {"name": "MYSQL_HOST", "value": "itop-mysql"},
+    {"name": "MYSQL_PASS", "value": "itop"}
+  ],
+  "addons": [
+    {"type": "mariadb", "name": "itop", "db": "itop", "user": "itop", "password": "itop"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/var/www/html/data", "name": "itop-data", "size": "3Gi"},
+    {"mountPath": "/var/www/html/conf", "name": "itop-conf", "size": "1Gi"}
+  ]
+}

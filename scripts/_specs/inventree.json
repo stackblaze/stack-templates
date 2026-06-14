@@ -1,0 +1,42 @@
+{
+  "slug": "inventree",
+  "title": "InvenTree",
+  "description": "Open-source inventory management and stock-control system for parts, suppliers, builds and orders, with a REST API and barcode support.",
+  "source": "https://github.com/inventree/InvenTree",
+  "website": "https://inventree.org",
+  "icon": "https://avatars.githubusercontent.com/u/29896360?s=200&v=4",
+  "categories": ["erp", "work", "productivity"],
+  "installation": "InvenTree is a multi-container Django stack. This template runs the PRIMARY web/server image 'inventree/inventree:stable' (gunicorn on :8000), wired to Postgres and Valkey (Redis cache). You MUST also deploy these companion services from the SAME 'inventree/inventree:stable' image: (1) WORKER - the django-q background task processor, started with command ['invoke','worker'] (or the bundled 'worker' entrypoint); it shares the same env vars and data volume. (2) PROXY - a Caddy reverse proxy/static-file server (image 'caddy:2-alpine') that fronts the server and serves /static and /media from the shared data volume; in Kubero the ingress already handles TLS, so the Caddy proxy is optional if you point ingress at this app directly, but static/media files must still be served. The server entrypoint auto-runs DB migrations and collectstatic on boot. ROTATE before going live: INVENTREE_SECRET_KEY (run 'openssl rand -hex 32') and the Postgres password. After first boot, create the admin/superuser via 'invoke superuser' in the server pod (or set INVENTREE_ADMIN_USER / INVENTREE_ADMIN_PASSWORD / INVENTREE_ADMIN_EMAIL env vars for auto-creation), then log in at the URL. INVENTREE_SITE_URL is set to the public URL; keep INVENTREE_ALLOWED_HOSTS / INVENTREE_TRUSTED_ORIGINS in sync if you change the hostname. Email (INVENTREE_EMAIL_*) is optional but needed for notifications and password resets.",
+  "screenshots": ["https://docs.inventree.org/en/stable/assets/images/index_dashboard.png"],
+  "links": ["https://docs.inventree.org/en/stable/start/docker/", "https://docs.inventree.org/en/stable/start/config/"],
+  "license": "MIT License",
+  "spdx_id": "MIT",
+  "stars": 5200,
+  "language": "Python",
+  "image": {"repository": "inventree/inventree", "tag": "stable", "containerPort": "8000", "command": []},
+  "envVars": [
+    {"name": "INVENTREE_SECRET_KEY", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "INVENTREE_SITE_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "INVENTREE_ALLOWED_HOSTS", "value": "*"},
+    {"name": "INVENTREE_TRUSTED_ORIGINS", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "INVENTREE_DEBUG", "value": "False"},
+    {"name": "INVENTREE_DB_ENGINE", "value": "postgresql"},
+    {"name": "INVENTREE_DB_NAME", "value": "inventree"},
+    {"name": "INVENTREE_DB_USER", "value": "inventree"},
+    {"name": "INVENTREE_DB_PASSWORD", "value": "inventree"},
+    {"name": "INVENTREE_DB_HOST", "value": "inventree-postgresql-rw"},
+    {"name": "INVENTREE_DB_PORT", "value": "5432"},
+    {"name": "INVENTREE_CACHE_ENABLED", "value": "True"},
+    {"name": "INVENTREE_CACHE_HOST", "value": "rfr-inventree-valkey-readwrite"},
+    {"name": "INVENTREE_CACHE_PORT", "value": "6379"},
+    {"name": "INVENTREE_EXT_VOLUME", "value": "/home/inventree/data"},
+    {"name": "INVENTREE_AUTO_UPDATE", "value": "True"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "inventree", "db": "inventree", "user": "inventree", "password": "inventree"},
+    {"type": "valkey", "name": "inventree"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/home/inventree/data", "name": "inventree-data", "size": "5Gi"}
+  ]
+}

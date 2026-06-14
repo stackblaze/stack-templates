@@ -1,0 +1,46 @@
+{
+  "slug": "dittofeed",
+  "title": "Dittofeed",
+  "description": "Open-source customer engagement and marketing automation platform for building messaging campaigns and user journeys across email, SMS, and push.",
+  "source": "https://github.com/dittofeed/dittofeed",
+  "website": "https://www.dittofeed.com/",
+  "icon": "https://avatars.githubusercontent.com/u/120567321?s=200&v=4",
+  "categories": ["communication", "automation", "crm"],
+  "installation": "Dittofeed is a multi-service stack. This template runs the all-in-one dittofeed/dittofeed-lite image (API + dashboard + worker in one process) on port 3000 in single-tenant mode. It needs two operator add-ons (Postgres + ClickHouse, both provisioned here) AND an external Temporal cluster, which is NOT an available add-on: deploy Temporal separately (image temporalio/auto-setup:1.22.4 with its own Postgres, plus optional temporalio/ui:2.22.1) and point TEMPORAL_ADDRESS at it (default temporal:7233). For production scale you may instead run the split images dittofeed/api, dittofeed/dashboard, and dittofeed/worker (worker handles the Temporal-driven journey processing) rather than the lite bundle; blob storage (any S3/MinIO) is optional. BOOTSTRAP=true auto-creates the default workspace and tables on first start. ROTATE before exposing: SECRET_KEY (openssl rand -base64 32), the admin PASSWORD env, plus the Postgres and ClickHouse add-on passwords. Set DASHBOARD_API_BASE / dashboard URLs to your public host. CLICKHOUSE_HOST must be the full http://host:8123 URL.",
+  "screenshots": [],
+  "links": ["https://docs.dittofeed.com/deployment/self-hosted", "https://docs.dittofeed.com/deployment/self-hosted/docker-compose"],
+  "license": "MIT License",
+  "spdx_id": "MIT",
+  "stars": 4300,
+  "language": "TypeScript",
+  "image": {
+    "repository": "dittofeed/dittofeed-lite",
+    "tag": "v0.23.0",
+    "containerPort": "3000",
+    "command": []
+  },
+  "envVars": [
+    {"name": "NODE_ENV", "value": "production"},
+    {"name": "AUTH_MODE", "value": "single-tenant"},
+    {"name": "BOOTSTRAP", "value": "true"},
+    {"name": "WORKSPACE_NAME", "value": "Default"},
+    {"name": "SECRET_KEY", "value": "replace-with-openssl-rand-base64-32"},
+    {"name": "PASSWORD", "value": "dittofeed"},
+    {"name": "DATABASE_HOST", "value": "dittofeed-postgresql-rw"},
+    {"name": "DATABASE_PORT", "value": "5432"},
+    {"name": "DATABASE_USER", "value": "dittofeed"},
+    {"name": "DATABASE_PASSWORD", "value": "dittofeed"},
+    {"name": "DATABASE_NAME", "value": "dittofeed"},
+    {"name": "CLICKHOUSE_HOST", "value": "http://clickhouse-dittofeed-clickhouse:8123"},
+    {"name": "CLICKHOUSE_USER", "value": "admin"},
+    {"name": "CLICKHOUSE_PASSWORD", "value": "dittofeed"},
+    {"name": "CLICKHOUSE_DATABASE", "value": "dittofeed"},
+    {"name": "TEMPORAL_ADDRESS", "value": "temporal:7233"},
+    {"name": "DASHBOARD_API_BASE", "value": "{{KUBERO_APP_URL}}"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "dittofeed", "db": "dittofeed", "user": "dittofeed", "password": "dittofeed"},
+    {"type": "clickhouse", "name": "dittofeed", "password": "dittofeed"}
+  ],
+  "extraVolumes": []
+}

@@ -1,0 +1,96 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: jitsi
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted, end-to-end-encrypted video conferencing platform - a privacy-focused, fully
+      featured alternative to Zoom and Google Meet.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1209556?s=200&v=4
+    kubero.dev/template.installation: 'This template runs the PRIMARY Jitsi web frontend container ONLY (jitsi/web - an nginx
+      that serves the Meet SPA on internal HTTP port 80 and reverse-proxies XMPP/BOSH). Jitsi Meet is a MULTI-CONTAINER stack
+      and a working conference REQUIRES three more companion containers deployed as SEPARATE apps sharing the SAME config
+      volume (/config) and the same generated secrets: (a) jitsi/prosody - the XMPP SIGNALING SERVER (this is the ''database'':
+      Jitsi stores all room/auth/presence state in Prosody, file-based, no SQL engine is used, which is why this template
+      declares NO add-on); (b) jitsi/jicofo - the CONFERENCE FOCUS component that allocates conferences and manages the videobridge;
+      (c) jitsi/jvb - the JITSI VIDEOBRIDGE that routes the actual WebRTC AUDIO/VIDEO media. All four containers must run
+      the SAME JITSI image version. CRITICAL FIRST-RUN STEPS: 1) Generate the shared component passwords once - run ''./gen-passwords.sh''
+      from the docker-jitsi-meet repo (or ''openssl rand -hex 16'' for each) and set JICOFO_COMPONENT_SECRET, JICOFO_AUTH_PASSWORD,
+      JVB_AUTH_PASSWORD identically across web/prosody/jicofo/jvb; the placeholder ''replace-with-openssl-rand-hex-16'' values
+      below MUST be rotated and copied to the other three pods. 2) Set PUBLIC_URL to your real https host (defaulted to the
+      app URL token). 3) All pods mount the SAME /config (RWX) so Prosody can write generated certs/host config that web,
+      jicofo and jvb read back. MEDIA/NETWORKING CAVEAT: jitsi/jvb needs UDP/10000 reachable from clients for WebRTC and DOCKER_HOST_ADDRESS
+      / JVB_ADVERTISE_IPS set to the node''s public IP - a vanilla pod cannot bind that without host networking or a node-level
+      UDP path, so wire JVB''s UDP port and advertised IP on the node before relying on it. ENABLE_LETSENCRYPT/ENABLE_HTTP_REDIRECT
+      are left off because TLS is terminated at the Kubero ingress. Optional Jibri (jitsi/jibri) adds recording/streaming
+      and needs extra kernel/audio access; omit for a basic deployment.'
+    kubero.dev/template.links: '["https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-docker", "https://github.com/jitsi/docker-jitsi-meet#readme"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/jitsi/docker-jitsi-meet
+    kubero.dev/template.categories: '["communication", "collaboration", "media"]'
+    kubero.dev/template.title: Jitsi Meet
+    kubero.dev/template.website: https://jitsi.org
+  labels:
+    manager: kubero
+spec:
+  name: jitsi
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: TZ
+    value: UTC
+  - name: PUBLIC_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: HTTP_PORT
+    value: '80'
+  - name: DISABLE_HTTPS
+    value: '1'
+  - name: ENABLE_HTTP_REDIRECT
+    value: '0'
+  - name: ENABLE_LETSENCRYPT
+    value: '0'
+  - name: ENABLE_XMPP_WEBSOCKET
+    value: '1'
+  - name: XMPP_DOMAIN
+    value: meet.jitsi
+  - name: XMPP_AUTH_DOMAIN
+    value: auth.meet.jitsi
+  - name: XMPP_MUC_DOMAIN
+    value: muc.meet.jitsi
+  - name: XMPP_INTERNAL_MUC_DOMAIN
+    value: internal-muc.meet.jitsi
+  - name: XMPP_GUEST_DOMAIN
+    value: guest.meet.jitsi
+  - name: XMPP_RECORDER_DOMAIN
+    value: recorder.meet.jitsi
+  - name: XMPP_BOSH_URL_BASE
+    value: http://jitsi-prosody:5280
+  - name: XMPP_SERVER
+    value: jitsi-prosody
+  - name: JICOFO_AUTH_USER
+    value: focus
+  - name: JVB_AUTH_USER
+    value: jvb
+  - name: JICOFO_COMPONENT_SECRET
+    value: replace-with-openssl-rand-hex-16
+  - name: JICOFO_AUTH_PASSWORD
+    value: replace-with-openssl-rand-hex-16
+  - name: JVB_AUTH_PASSWORD
+    value: replace-with-openssl-rand-hex-16
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /config
+    name: jitsi-config
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: jitsi/web
+    tag: stable

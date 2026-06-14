@@ -1,0 +1,109 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: itop
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'Combodo iTop: open-source ITSM and CMDB platform for incident, problem, change, service
+      management and a configuration database.'
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/16124054?s=200&v=4
+    kubero.dev/template.installation: iTop is a PHP app that requires MySQL/MariaDB (it does NOT support Postgres); a 'mariadb'
+      add-on is provisioned. The vbkunin/itop image is the de-facto community image (no official Combodo image exists); the
+      '-base' tag is Apache+PHP only, without a bundled DB, so it uses the external MariaDB add-on. The database connection
+      is NOT set via env vars - on first run open the URL and complete the web setup wizard, entering DB host 'itop-mysql'
+      port 3306, user 'itop', password 'itop', db 'itop' (rotate this password from its default before going live). The wizard
+      also creates the admin account. The MYSQL_PASS env only seeds the bundled MySQL of the non-base image and is unused
+      here. Persist /var/www/html/data and the generated /var/www/html/conf so config and attachments survive restarts.
+    kubero.dev/template.links: '["https://www.itophub.io/wiki/page", "https://github.com/vbkunin/itop-docker"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/Combodo/iTop
+    kubero.dev/template.categories: '["helpdesk", "work", "productivity"]'
+    kubero.dev/template.title: iTop
+    kubero.dev/template.website: https://www.combodo.com/itop
+  labels:
+    manager: kubero
+spec:
+  name: itop
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: itop-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: itop-mysql-root
+            key: password
+          database: itop
+          username: itop
+          passwordSecretKeyRef:
+            name: itop-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: itop-mysql-root
+        type: Opaque
+        stringData:
+          password: itop
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: itop-mysql-app
+        type: Opaque
+        stringData:
+          password: itop
+  envVars:
+  - name: TZ
+    value: UTC
+  - name: MYSQL_HOST
+    value: itop-mysql
+  - name: MYSQL_PASS
+    value: itop
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/data
+    name: itop-data
+    size: 3Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/conf
+    name: itop-conf
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: vbkunin/itop
+    tag: latest-base

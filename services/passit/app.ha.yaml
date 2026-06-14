@@ -1,0 +1,137 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: passit
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source, self-hosted password manager with end-to-end encryption and team sharing,
+      plus browser extensions and a REST API.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/40027207?s=200&v=4
+    kubero.dev/template.installation: 'Image: passit/passit:stable (official, on Docker Hub; project is hosted on GitLab).
+      This is a Django app. ROTATE SECRET_KEY (set it to `openssl rand -hex 32`) and the Postgres password (default ''passit'')
+      before exposing publicly. ALLOWED_HOSTS is set to ''*'' for first boot; tighten it to your real host. The container
+      runs Django migrations on start, then serves via gunicorn on port 5000. Create the first admin/user via the web sign-up
+      flow (registration is open by default; disable open registration with SIGN_UP_ENABLED=false after creating your accounts).
+      DATABASE_URL points at the bundled postgres add-on (passit-postgresql-rw) and REDIS_URL at the valkey add-on (used for
+      Celery background jobs / caching). For password-reset and invite emails, configure SMTP via EMAIL_* / SERVER_EMAIL env
+      vars or the Django settings after install. No object storage required.'
+    kubero.dev/template.links: '["https://passit.io/getting-started/", "https://gitlab.com/passit/passit"]'
+    kubero.dev/template.screenshots: '["https://passit.io/static/img/screenshot.png"]'
+    kubero.dev/template.source: https://gitlab.com/passit/passit
+    kubero.dev/template.categories: '["security", "identity", "utilities"]'
+    kubero.dev/template.title: Passit
+    kubero.dev/template.website: https://passit.io
+  labels:
+    manager: kubero
+spec:
+  name: passit
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: passit-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: passit
+              owner: passit
+              secret:
+                name: passit-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: passit-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: passit-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: passit
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: passit-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: passit
+          password: passit
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: passit-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: SECRET_KEY
+    value: replace-with-openssl-rand-hex-32
+  - name: DATABASE_URL
+    value: postgres://passit:passit@passit-postgresql-rw:5432/passit
+  - name: REDIS_URL
+    value: redis://rfr-passit-valkey-readwrite:6379
+  - name: ALLOWED_HOSTS
+    value: '*'
+  - name: SITE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: DEBUG
+    value: 'false'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '5000'
+    pullPolicy: Always
+    repository: passit/passit
+    tag: stable

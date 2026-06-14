@@ -1,0 +1,33 @@
+{
+  "slug": "documize",
+  "title": "Documize",
+  "description": "Open-source modern document and knowledge management platform combining wiki, docs and structured templates for teams.",
+  "source": "https://github.com/documize/community",
+  "website": "https://www.documize.com/",
+  "icon": "https://avatars.githubusercontent.com/u/9457894?s=200&v=4",
+  "categories": ["documentation", "collaboration", "productivity"],
+  "installation": "Uses the official documize/community image on internal port 5001. Deploy with the bundled PostgreSQL add-on; the DOCUMIZEDB connection string and DOCUMIZEDBTYPE=postgresql point Documize at the 'documize-postgresql-rw' Postgres service (rotate the Postgres add-on password and update DOCUMIZEDB after install). DOCUMIZELOCATION is set to 'selfhost' for self-hosted operation. IMPORTANT: replace DOCUMIZESALT with a unique random string (e.g. openssl rand -hex 16) before going to production. Documize stores all documents, settings and uploads in the database, so no persistent volume is required. On first boot open the app URL to run the setup wizard: name your organization and create the initial admin account; the database schema is migrated automatically on startup.",
+  "screenshots": [],
+  "links": ["https://docs.documize.com/", "https://github.com/documize/community/blob/master/docker-compose.yaml"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 2000,
+  "language": "Go",
+  "image": {
+    "repository": "documize/community",
+    "tag": "latest",
+    "containerPort": "5001",
+    "command": []
+  },
+  "envVars": [
+    {"name": "DOCUMIZEPORT", "value": "5001"},
+    {"name": "DOCUMIZEDB", "value": "host=documize-postgresql-rw port=5432 dbname=documize user=documize password=documize sslmode=disable"},
+    {"name": "DOCUMIZEDBTYPE", "value": "postgresql"},
+    {"name": "DOCUMIZESALT", "value": "replace-with-openssl-rand-hex-16"},
+    {"name": "DOCUMIZELOCATION", "value": "selfhost"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "documize", "db": "documize", "user": "documize", "password": "documize"}
+  ],
+  "extraVolumes": []
+}

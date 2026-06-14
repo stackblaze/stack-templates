@@ -1,0 +1,78 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: yopass
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted web service for securely sharing one-time secrets, passwords and files with
+      client-side encryption and automatic expiry.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1681963?s=200&v=4
+    kubero.dev/template.installation: Yopass stores encrypted secrets ephemerally in Memcached (deployed as the bundled add-on);
+      secrets auto-expire by TTL so no persistent volume is required. The server is reached at the memcached add-on host yopass-memcached:11211
+      via the MEMCACHED env var. Secrets are encrypted in the browser before upload, so the server never sees plaintext. Set
+      the public URL via the BASE_URL env (already wired to {{KUBERO_APP_URL}}) so generated share links are correct. For
+      production behind the Kubero ingress, optionally set TRUSTED_PROXIES to the ingress CIDR. No database credentials to
+      rotate.
+    kubero.dev/template.links: '["https://github.com/jhaals/yopass#yopass", "https://hub.docker.com/r/jhaals/yopass"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/jhaals/yopass
+    kubero.dev/template.categories: '["security", "utilities", "productivity"]'
+    kubero.dev/template.title: Yopass
+    kubero.dev/template.website: https://yopass.se
+  labels:
+    manager: kubero
+spec:
+  name: yopass
+  deploymentstrategy: docker
+  addons:
+  - displayName: Memcached
+    env: []
+    icon: /img/addons/memcached.svg
+    id: kubero-operator
+    kind: KuberoAddonMemcached
+    resourceDefinitions:
+      KuberoAddonMemcached:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoAddonMemcached
+        metadata:
+          name: yopass-memcached
+        spec:
+          memcached:
+            image:
+              tag: 1.6.39
+            replicaCount: 1
+            config:
+              memoryLimit: 128
+              maxConnections: 1024
+              extraArgs: []
+              verbosity: 0
+            resources: {}
+  envVars:
+  - name: MEMCACHED
+    value: yopass-memcached:11211
+  - name: DATABASE
+    value: memcached
+  - name: PORT
+    value: '1337'
+  - name: ADDRESS
+    value: 0.0.0.0
+  - name: BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: MAX_LENGTH
+    value: '10000'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '1337'
+    pullPolicy: Always
+    repository: jhaals/yopass
+    tag: latest
+    command:
+    - yopass-server
+    - --memcached=yopass-memcached:11211
+    - --port=1337
+    - --address=0.0.0.0

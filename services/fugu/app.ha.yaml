@@ -1,0 +1,113 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: fugu
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Free, privacy-friendly, simple, open-source and self-hostable product analytics.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1881676?s=200&v=4
+    kubero.dev/template.installation: Ruby on Rails product analytics backed by PostgreSQL. ROTATE SECRET_KEY_BASE (a 128-char
+      hex/alphanumeric string; generate with `openssl rand -hex 64`) and rotate the postgres credentials. DATABASE_URL points
+      at the bundled postgres add-on. Set INIT_USER_EMAIL and INIT_USER_PASSWORD to auto-create the first admin on first boot,
+      or visit the root URL and register (ALLOW_REGISTRATION=true). FORCE_SSL_PROD is enabled; terminate TLS at the ingress.
+      App listens on port 3000.
+    kubero.dev/template.links: '["https://github.com/shafy/fugu/blob/main/SELFHOSTING.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/shafy/fugu
+    kubero.dev/template.categories: '["data", "monitoring", "productivity"]'
+    kubero.dev/template.title: Fugu
+    kubero.dev/template.website: https://fugu.lol
+  labels:
+    manager: kubero
+spec:
+  name: fugu
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: fugu-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: fugu
+              owner: fugu
+              secret:
+                name: fugu-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: fugu-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: fugu-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: fugu
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: fugu-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: fugu
+          password: fugu
+  envVars:
+  - name: RAILS_ENV
+    value: production
+  - name: RAILS_LOG_TO_STDOUT
+    value: 'true'
+  - name: RAILS_SERVE_STATIC_FILES
+    value: 'true'
+  - name: DATABASE_URL
+    value: postgresql://fugu:fugu@fugu-postgresql-rw:5432/fugu
+  - name: DATABASE_NAME
+    value: fugu
+  - name: DATABASE_USER
+    value: fugu
+  - name: DATABASE_PASSWORD
+    value: fugu
+  - name: SECRET_KEY_BASE
+    value: replace-with-openssl-rand-hex-64
+  - name: ALLOW_REGISTRATION
+    value: 'true'
+  - name: FORCE_SSL_PROD
+    value: 'true'
+  - name: INIT_USER_EMAIL
+    value: admin@example.com
+  - name: INIT_USER_PASSWORD
+    value: replace-with-strong-password
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: shafyy/fugu
+    tag: latest

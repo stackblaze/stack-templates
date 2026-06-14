@@ -1,0 +1,176 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: pretix
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source event ticketing and registration platform for selling tickets to conferences,
+      festivals and exhibitions (Eventbrite alternative).
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/15068472?s=200&v=4
+    kubero.dev/template.installation: 'Pretix is a Django stack. This template runs the PRIMARY web container (image pretix/standalone
+      with command ''web'', listening on container port 80 - nginx+gunicorn under supervisord), wired to the Postgres and
+      Valkey/Redis add-ons provisioned here. The image is configured via PRETIX_<SECTION>_<KEY> environment variables (the
+      env-var equivalent of /etc/pretix/pretix.cfg). You MUST deploy the companion services as separate apps, all sharing
+      the SAME Postgres, Redis and env keys below: (1) Task worker - image pretix/standalone with command ''taskworker'' (Celery;
+      REQUIRED - sending emails, generating exports/invoices and all async jobs fail without it); (2) Cron/beat - image pretix/standalone
+      with command ''cron'' (periodic/scheduled tasks). Set PRETIX_PRETIX_URL to this app''s public URL (token below). ROTATE
+      before exposing: PRETIX_DJANGO_SECRET (via ''openssl rand -hex 50''), the Postgres add-on password, and configure real
+      SMTP (PRETIX_MAIL_* are placeholders - pretix cannot send tickets without working email). First run: the web container
+      applies DB migrations on boot; create the initial admin with ''pretix createsuperuser'' (or set PRETIX_PRETIXD_* and
+      use the web onboarding). The /data volume holds uploaded media, the data secret and the cache - mount the SAME volume
+      (RWX) on the worker if you generate exports there. Redis here is used for cache, sessions and as the Celery broker.
+      Docs: https://docs.pretix.eu/self-hosting/installation/docker_smallscale/'
+    kubero.dev/template.links: '["https://docs.pretix.eu/self-hosting/installation/docker_smallscale/", "https://docs.pretix.eu/self-hosting/installation/config/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/pretix/pretix
+    kubero.dev/template.categories: '["e-commerce", "finance", "work"]'
+    kubero.dev/template.title: Pretix
+    kubero.dev/template.website: https://pretix.eu/
+  labels:
+    manager: kubero
+spec:
+  name: pretix
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: pretix-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: pretix
+              owner: pretix
+              secret:
+                name: pretix-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: pretix-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: pretix-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: pretix
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: pretix-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: pretix
+          password: pretix
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: pretix-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: PRETIX_DATABASE_BACKEND
+    value: postgresql
+  - name: PRETIX_DATABASE_NAME
+    value: pretix
+  - name: PRETIX_DATABASE_USER
+    value: pretix
+  - name: PRETIX_DATABASE_PASSWORD
+    value: pretix
+  - name: PRETIX_DATABASE_HOST
+    value: pretix-postgresql-rw
+  - name: PRETIX_DATABASE_PORT
+    value: '5432'
+  - name: PRETIX_REDIS_LOCATION
+    value: redis://rfr-pretix-valkey-readwrite:6379/0
+  - name: PRETIX_REDIS_SESSIONS
+    value: 'true'
+  - name: PRETIX_CELERY_BROKER
+    value: redis://rfr-pretix-valkey-readwrite:6379/1
+  - name: PRETIX_CELERY_BACKEND
+    value: redis://rfr-pretix-valkey-readwrite:6379/2
+  - name: PRETIX_PRETIX_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: PRETIX_PRETIX_INSTANCE_NAME
+    value: pretix
+  - name: PRETIX_PRETIX_DATADIR
+    value: /data
+  - name: PRETIX_PRETIX_TRUST_X_FORWARDED_FOR
+    value: 'true'
+  - name: PRETIX_PRETIX_TRUST_X_FORWARDED_PROTO
+    value: 'true'
+  - name: PRETIX_DJANGO_SECRET
+    value: replace-with-openssl-rand-hex-50
+  - name: PRETIX_MAIL_FROM
+    value: tickets@example.com
+  - name: PRETIX_MAIL_HOST
+    value: localhost
+  - name: PRETIX_MAIL_PORT
+    value: '25'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /data
+    name: pretix-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: pretix/standalone
+    tag: stable
+    command:
+    - web

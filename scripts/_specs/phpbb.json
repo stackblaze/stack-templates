@@ -1,0 +1,41 @@
+{
+  "slug": "phpbb",
+  "title": "phpBB",
+  "description": "phpBB is a free, open-source flat-forum bulletin board software for building and running an online community discussion board.",
+  "source": "https://github.com/phpbb/phpbb",
+  "website": "https://www.phpbb.com/",
+  "icon": "https://avatars.githubusercontent.com/u/498544?s=200&v=4",
+  "categories": ["communication", "collaboration", "social"],
+  "installation": "Uses the actively-maintained bitnami/phpbb image, which bundles Apache + PHP and only supports MariaDB/MySQL (phpBB does support PostgreSQL upstream, but this image does not), so the mariadb add-on is shipped. On first boot the container runs the phpBB installer non-interactively against the MariaDB add-on, creating the admin account from PHPBB_USERNAME / PHPBB_PASSWORD / PHPBB_EMAIL. ROTATE the admin password (PHPBB_PASSWORD, currently a placeholder) and the mariadb add-on credentials (db/user/password all default to 'phpbb') before going to production, then log in at /adm to harden settings. PHPBB_HOST is wired to the public host via {{KUBERO_APP_HOST}} so generated links use the live URL. Persistent data (config, uploads/attachments, avatars, cache) lives under /bitnami/phpbb on the mounted volume. Configure SMTP via the board's ACP or PHPBB_SMTP_* env vars for outbound email. ALLOW_EMPTY_PASSWORD is disabled.",
+  "screenshots": [],
+  "links": ["https://www.phpbb.com/support/docs/en/3.3/ug/", "https://github.com/bitnami/containers/tree/main/bitnami/phpbb"],
+  "license": "GNU General Public License v2.0",
+  "spdx_id": "GPL-2.0",
+  "stars": 2000,
+  "language": "PHP",
+  "image": {
+    "repository": "bitnami/phpbb",
+    "tag": "latest",
+    "containerPort": "8080",
+    "command": []
+  },
+  "envVars": [
+    {"name": "PHPBB_DATABASE_HOST", "value": "phpbb-mysql"},
+    {"name": "PHPBB_DATABASE_PORT_NUMBER", "value": "3306"},
+    {"name": "PHPBB_DATABASE_NAME", "value": "phpbb"},
+    {"name": "PHPBB_DATABASE_USER", "value": "phpbb"},
+    {"name": "PHPBB_DATABASE_PASSWORD", "value": "phpbb"},
+    {"name": "PHPBB_HOST", "value": "{{KUBERO_APP_HOST}}"},
+    {"name": "PHPBB_USERNAME", "value": "admin"},
+    {"name": "PHPBB_PASSWORD", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "PHPBB_EMAIL", "value": "admin@example.com"},
+    {"name": "ALLOW_EMPTY_PASSWORD", "value": "no"},
+    {"name": "BITNAMI_DEBUG", "value": "false"}
+  ],
+  "addons": [
+    {"type": "mariadb", "name": "phpbb", "db": "phpbb", "user": "phpbb", "password": "phpbb"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/bitnami/phpbb", "name": "phpbb-data", "size": "3Gi"}
+  ]
+}

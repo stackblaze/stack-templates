@@ -1,0 +1,45 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: erugo
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted, WeTransfer-style file-sharing platform with secure links, passwords, and
+      download limits, built on Laravel and Vue.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/197433072?s=200&v=4
+    kubero.dev/template.installation: Erugo stores all data (SQLite database, uploaded files, and config) under /var/www/html/storage,
+      which is backed by a persistent volume; no external database add-on is required. The app listens on port 80. On first
+      run, open the app URL to complete the setup wizard and create the initial admin account. Erugo generates its own APP_KEY
+      on first boot if one is not provided. The container expects exclusive control of the mounted storage directory.
+    kubero.dev/template.links: '["https://erugo.app/docs/getting-started/quickstart/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/ErugoOSS/Erugo
+    kubero.dev/template.categories: '["storage", "collaboration", "utilities"]'
+    kubero.dev/template.title: Erugo
+    kubero.dev/template.website: https://erugo.app
+  labels:
+    manager: kubero
+spec:
+  name: erugo
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: APP_URL
+    value: '{{KUBERO_APP_URL}}'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/storage
+    name: erugo-storage
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: wardy784/erugo
+    tag: latest

@@ -1,0 +1,20 @@
+{
+  "slug": "keeweb",
+  "title": "KeeWeb",
+  "description": "Free, cross-platform web password manager compatible with KeePass; opens and edits .kdbx files entirely in the browser.",
+  "source": "https://github.com/keeweb/keeweb",
+  "website": "https://keeweb.info",
+  "icon": "https://avatars.githubusercontent.com/u/19752642?s=200&v=4",
+  "categories": ["security", "utilities", "productivity"],
+  "installation": "KeeWeb is a stateless, fully client-side password manager: the nginx container only serves static HTML/JS, and all cryptography (KeePass .kdbx parsing, AES/Argon2 key derivation) happens in the browser, so the server never sees your master password or plaintext. Because of this there is no database add-on and no server-side persistent volume - users open and save their .kdbx files from their own device or from an external storage provider they connect at runtime (WebDAV, Dropbox, Google Drive, OneDrive, or generic file download/upload). To enable a storage provider you register an OAuth/app credential with that provider and configure it client-side; nothing needs to be seeded on the server. The official image listens on HTTP port 80 (and can self-sign TLS on 443) - here TLS is terminated at the Kubero ingress, so only port 80 is exposed. No SMTP, S3 or search engine is required. To self-host your own .kdbx over WebDAV, deploy a separate WebDAV server and point KeeWeb at its URL from the UI.",
+  "screenshots": ["https://app.keeweb.info/img/screenshots/screenshot.png"],
+  "links": ["https://keeweb.info/", "https://github.com/keeweb/keeweb#readme"],
+  "license": "MIT License",
+  "spdx_id": "MIT",
+  "stars": 13000,
+  "language": "JavaScript",
+  "image": {"repository": "antelle/keeweb", "tag": "1.16.3", "containerPort": "80", "command": []},
+  "envVars": [],
+  "addons": [],
+  "extraVolumes": []
+}

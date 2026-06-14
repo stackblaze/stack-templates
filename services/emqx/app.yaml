@@ -1,0 +1,63 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: emqx
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Massively scalable open-source MQTT broker for IoT, connecting millions of devices with
+      a built-in dashboard, rules engine and data bridges.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/12471087?s=200&v=4
+    kubero.dev/template.installation: 'EMQX is self-contained: it stores cluster state, sessions, retained messages and config
+      in its built-in Mnesia/RLOG database persisted to the emqx-data volume at /opt/emqx/data, so no external add-on is provisioned.
+      The HTTP management dashboard and REST API listen on port 18083; the MQTT listeners (1883 TCP, 8883 TLS, 8083 WS, 8084
+      WSS) are exposed by the image but are not the HTTP container port and need a separate Service/Ingress if you want external
+      MQTT access. On first run log in to the dashboard with the default account admin / public and change the password immediately
+      (EMQX_DASHBOARD__DEFAULT_PASSWORD is set to a placeholder here that you should rotate, or just change it in the UI).
+      EMQX_NODE__COOKIE is the Erlang distribution secret shared by cluster members and MUST be rotated from the template
+      default before production. Single-node runs on the open-source edition; from v5.9 clustering requires a license key
+      from EMQX, and optional auth/data integrations (PostgreSQL, MySQL, Redis, Kafka, MongoDB, etc.) are configured later
+      in the dashboard, not at boot.'
+    kubero.dev/template.links: '["https://docs.emqx.com/en/emqx/latest/", "https://github.com/emqx/emqx/blob/master/deploy/docker/README.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/emqx/emqx
+    kubero.dev/template.categories: '["data", "automation", "utilities"]'
+    kubero.dev/template.title: EMQX
+    kubero.dev/template.website: https://www.emqx.io
+  labels:
+    manager: kubero
+spec:
+  name: emqx
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: EMQX_NAME
+    value: emqx
+  - name: EMQX_DASHBOARD__DEFAULT_USERNAME
+    value: admin
+  - name: EMQX_DASHBOARD__DEFAULT_PASSWORD
+    value: replace-with-openssl-rand-hex-16
+  - name: EMQX_NODE__COOKIE
+    value: replace-with-openssl-rand-hex-32
+  - name: EMQX_NODE__DATA_DIR
+    value: /opt/emqx/data
+  - name: EMQX_LISTENERS__TCP__DEFAULT__BIND
+    value: 0.0.0.0:1883
+  - name: EMQX_DASHBOARD__LISTENERS__HTTP__BIND
+    value: 0.0.0.0:18083
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /opt/emqx/data
+    name: emqx-data
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '18083'
+    pullPolicy: Always
+    repository: emqx/emqx
+    tag: latest

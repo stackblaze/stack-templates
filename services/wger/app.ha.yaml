@@ -1,0 +1,177 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: wger
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted FLOSS fitness and workout manager that lets you track workouts, nutrition,
+      body weight, and exercises.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/15212054?s=200&v=4
+    kubero.dev/template.installation: 'Single-container Django app served via gunicorn on port 8000. Rotate SECRET_KEY and
+      SIGNING_KEY (each a unique 50-char random string; they MUST differ) and the postgres password before going to production.
+      Companion services deployed as add-ons: PostgreSQL (primary DB) and a Valkey (Redis-protocol) instance used for both
+      the Django cache and the Celery broker/backend. Migrations run automatically on boot (DJANGO_PERFORM_MIGRATIONS=True).
+      On first run an admin user ''admin'' (password ''adminadmin'') is created via DJANGO_DB_BOOTSTRAP_USER defaults; change
+      it immediately. Set CSRF_TRUSTED_ORIGINS / SITE_URL to your real https URL (templated below). Uploaded media and static
+      files persist on the mounted volume. Note: the periodic exercise/ingredient sync tasks run via Celery against the Valkey
+      add-on; no separate worker pod is templated, so heavy background sync may be limited.'
+    kubero.dev/template.links: '["https://wger.readthedocs.io/en/latest/production/docker.html"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/wger-project/wger
+    kubero.dev/template.categories: '["productivity", "utilities", "data"]'
+    kubero.dev/template.title: Wger
+    kubero.dev/template.website: https://wger.de
+  labels:
+    manager: kubero
+spec:
+  name: wger
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: wger-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: wger
+              owner: wger
+              secret:
+                name: wger-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: wger-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: wger-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: wger
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: wger-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: wger
+          password: wger
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: wger-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: SECRET_KEY
+    value: replace-with-openssl-rand-hex-32-50chars
+  - name: SIGNING_KEY
+    value: replace-with-different-openssl-rand-hex-32
+  - name: DJANGO_DEBUG
+    value: 'False'
+  - name: DJANGO_DB_ENGINE
+    value: django.db.backends.postgresql
+  - name: DJANGO_DB_DATABASE
+    value: wger
+  - name: DJANGO_DB_USER
+    value: wger
+  - name: DJANGO_DB_PASSWORD
+    value: wger
+  - name: DJANGO_DB_HOST
+    value: wger-postgresql-rw
+  - name: DJANGO_DB_PORT
+    value: '5432'
+  - name: DJANGO_PERFORM_MIGRATIONS
+    value: 'True'
+  - name: DJANGO_CACHE_BACKEND
+    value: django_redis.cache.RedisCache
+  - name: DJANGO_CACHE_LOCATION
+    value: redis://rfr-wger-valkey-readwrite:6379/1
+  - name: DJANGO_CACHE_CLIENT_CLASS
+    value: django_redis.client.DefaultClient
+  - name: DJANGO_CACHE_TIMEOUT
+    value: '1296000'
+  - name: USE_CELERY
+    value: 'True'
+  - name: CELERY_BROKER
+    value: redis://rfr-wger-valkey-readwrite:6379/2
+  - name: CELERY_BACKEND
+    value: redis://rfr-wger-valkey-readwrite:6379/2
+  - name: SITE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: CSRF_TRUSTED_ORIGINS
+    value: '{{KUBERO_APP_URL}}'
+  - name: ALLOWED_HOSTS
+    value: '*'
+  - name: X_FORWARDED_PROTO_HEADER_SET
+    value: 'True'
+  - name: MEDIA_ROOT
+    value: /home/wger/media
+  - name: STATIC_ROOT
+    value: /home/wger/static
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /home/wger/media
+    name: wger-media
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: wger/server
+    tag: latest

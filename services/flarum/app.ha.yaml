@@ -1,0 +1,119 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: flarum
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Flarum is a simple, fast, free and open-source forum software for building modern community
+      discussion platforms.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/16245343?s=200&v=4
+    kubero.dev/template.installation: Uses the community-maintained mondedie/flarum image (the official flarum/flarum repo
+      ships source, not a runnable image). On first boot the container runs the installer non-interactively from the env vars
+      below against the MariaDB add-on, creating the admin account from FLARUM_ADMIN_USER / FLARUM_ADMIN_PASS (min 8 chars)
+      / FLARUM_ADMIN_MAIL. ROTATE the admin password, the mariadb add-on credentials (db/user/password all default to 'flarum'),
+      and log in to change them after setup. FORUM_URL is wired to the live app URL via {{KUBERO_APP_URL}}. Persistent data
+      (installed extensions, compiled public assets, logs) lives under /flarum/app and is kept by the flarum-data volume;
+      for production raise the PHP memory limit and pod size if you install many extensions.
+    kubero.dev/template.links: '["https://docs.flarum.org/", "https://github.com/mondediefr/docker-flarum/blob/master/README.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/flarum/flarum
+    kubero.dev/template.categories: '["communication", "collaboration", "social"]'
+    kubero.dev/template.title: Flarum
+    kubero.dev/template.website: https://flarum.org/
+  labels:
+    manager: kubero
+spec:
+  name: flarum
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: flarum-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: flarum-mysql-root
+            key: password
+          database: flarum
+          username: flarum
+          passwordSecretKeyRef:
+            name: flarum-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: flarum-mysql-root
+        type: Opaque
+        stringData:
+          password: flarum
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: flarum-mysql-app
+        type: Opaque
+        stringData:
+          password: flarum
+  envVars:
+  - name: DB_HOST
+    value: flarum-mysql
+  - name: DB_PORT
+    value: '3306'
+  - name: DB_NAME
+    value: flarum
+  - name: DB_USER
+    value: flarum
+  - name: DB_PASS
+    value: flarum
+  - name: DB_PREF
+    value: flarum_
+  - name: FORUM_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: FLARUM_ADMIN_USER
+    value: admin
+  - name: FLARUM_ADMIN_PASS
+    value: replace-with-openssl-rand-hex-32
+  - name: FLARUM_ADMIN_MAIL
+    value: admin@example.com
+  - name: DEBUG
+    value: 'false'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /flarum/app/storage
+    name: flarum-data
+    size: 3Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8888'
+    pullPolicy: Always
+    repository: mondedie/flarum
+    tag: stable

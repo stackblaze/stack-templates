@@ -1,0 +1,41 @@
+{
+  "slug": "growchief",
+  "title": "GrowChief",
+  "description": "All-in-one social media outreach automation tool using stealthy human-like browser automation (Playwright/Patchright).",
+  "source": "https://github.com/growchief/growchief",
+  "website": "https://www.growchief.com/",
+  "icon": "https://avatars.githubusercontent.com/u/213232405?s=200&v=4",
+  "categories": ["automation", "crm", "social"],
+  "installation": "Primary web/backend image only (ghcr.io/growchief/growchief). GrowChief REQUIRES a Temporal orchestrator cluster as companion services that must be deployed separately: temporalio/auto-setup:1.28.1 (point TEMPORAL_ADDRESS at it on :7233), its own backing store temporalio postgres (postgres:16) and elasticsearch:7.17.27 for Temporal visibility, plus optional temporalio/admin-tools and temporalio/ui:2.34.0. The growchief app container also runs the NestJS workers internally and uses xvfb-driven headless browsers, so give it generous CPU/memory. ROTATE AUTH_SECRET (set to a random value, e.g. openssl rand -hex 32) and the postgres password before exposing. Uploads persist to /uploads via the mounted volume (STORAGE_PROVIDER=local). Set GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET for Google OAuth login, and APOLLO_API_KEY / DATAGMA_API_KEY for enrichment if used. The app listens on port 5000. First run: open the app URL and create the first account.",
+  "screenshots": [],
+  "links": ["https://docs.growchief.com/"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 3400,
+  "language": "TypeScript",
+  "image": {
+    "repository": "ghcr.io/growchief/growchief",
+    "tag": "latest",
+    "containerPort": "5000",
+    "command": []
+  },
+  "envVars": [
+    {"name": "DATABASE_URL", "value": "postgresql://growchief:growchief@growchief-postgresql-rw:5432/growchief"},
+    {"name": "AUTH_SECRET", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "FRONTEND_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "TEMPORAL_ADDRESS", "value": "temporal:7233"},
+    {"name": "STORAGE_PROVIDER", "value": "local"},
+    {"name": "UPLOAD_DIRECTORY", "value": "/uploads"},
+    {"name": "NEXT_PUBLIC_UPLOAD_DIRECTORY", "value": "/uploads"},
+    {"name": "GOOGLE_CLIENT_ID", "value": ""},
+    {"name": "GOOGLE_CLIENT_SECRET", "value": ""},
+    {"name": "APOLLO_API_KEY", "value": ""},
+    {"name": "DATAGMA_API_KEY", "value": ""}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "growchief", "db": "growchief", "user": "growchief", "password": "growchief"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/uploads", "name": "growchief-uploads", "size": "5Gi"}
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "slug": "eneo",
+  "title": "Eneo",
+  "description": "Open-source, multi-tenant AI platform for the public sector: build chat assistants, RAG knowledge bases and AI workflows on your own models.",
+  "source": "https://github.com/eneo-ai/eneo",
+  "website": "https://eneo.ai",
+  "icon": "https://avatars.githubusercontent.com/u/206545558?s=200&v=4",
+  "categories": ["ai", "productivity", "collaboration"],
+  "installation": "PRIMARY container = the FastAPI backend (ghcr.io/eneo-ai/eneo-backend, listens on :8000, served behind a reverse proxy). This template deploys ONLY the backend API. To run the full stack you must also deploy these companion services as separate apps, all sharing this app's env (especially the POSTGRES_*, REDIS_*, JWT_SECRET, URL_SIGNING_KEY, ENCRYPTION_KEY values):\n  - Frontend (SvelteKit UI, the user-facing site on :3000): image ghcr.io/eneo-ai/eneo-frontend:latest. Point its API base at this backend.\n  - Worker (ARQ background tasks: web crawls, uploads, integrations): SAME image ghcr.io/eneo-ai/eneo-backend:latest with env RUN_AS_WORKER=true.\n  - DB init (one-shot migrations + default tenant/user; run ONCE then it exits): SAME backend image with command [\"python\",\"init_db.py\"]. Run this before the backend/worker the first time, or run `python init_db.py` in the backend container.\nDATASTORES: Postgres MUST have the pgvector extension (the upstream compose uses pgvector/pgvector:pg16) — Eneo stores embeddings in pgvector; confirm the operator-provisioned Postgres has the `vector` extension available/enabled. Redis is provided here by the Valkey add-on (used by ARQ for the job queue).\nSECRETS TO ROTATE before production: JWT_SECRET, URL_SIGNING_KEY, ENCRYPTION_KEY (generate each with `openssl rand -hex 32`), and the Postgres password. Also set PUBLIC_ORIGIN to your real https URL (pre-filled with this app's URL token).\nLLM PROVIDERS: Eneo brings its own models — set at least one of OPENAI_API_KEY / ANTHROPIC_API_KEY / GEMINI_API_KEY / AZURE_* / MISTRAL_API_KEY, or point VLLM_MODEL_URL at a self-hosted model. Optional: INFINITY_URL for embeddings, TAVILY_API_KEY for web search.\nFIRST RUN: after db-init, log in with the default admin user created by init_db.py and immediately change its password.",
+  "screenshots": [],
+  "links": ["https://github.com/eneo-ai/eneo/blob/main/docs/INSTALLATION.md", "https://github.com/eneo-ai/eneo/blob/main/docs/DEPLOYMENT.md"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 48,
+  "language": "Python",
+  "image": {"repository": "ghcr.io/eneo-ai/eneo-backend", "tag": "latest", "containerPort": "8000", "command": []},
+  "envVars": [
+    {"name": "POSTGRES_HOST", "value": "eneo-postgresql-rw"},
+    {"name": "POSTGRES_PORT", "value": "5432"},
+    {"name": "POSTGRES_DB", "value": "eneo"},
+    {"name": "POSTGRES_USER", "value": "eneo"},
+    {"name": "POSTGRES_PASSWORD", "value": "eneo"},
+    {"name": "REDIS_HOST", "value": "rfr-eneo-valkey-readwrite"},
+    {"name": "REDIS_PORT", "value": "6379"},
+    {"name": "PUBLIC_ORIGIN", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "API_PREFIX", "value": "/api/v1"},
+    {"name": "JWT_SECRET", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "JWT_AUDIENCE", "value": "*"},
+    {"name": "JWT_ISSUER", "value": "ENEO"},
+    {"name": "JWT_EXPIRY_TIME", "value": "86400"},
+    {"name": "JWT_ALGORITHM", "value": "HS256"},
+    {"name": "JWT_TOKEN_PREFIX", "value": "Bearer"},
+    {"name": "URL_SIGNING_KEY", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "ENCRYPTION_KEY", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "USING_ACCESS_MANAGEMENT", "value": "true"},
+    {"name": "USING_CRAWL", "value": "true"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "eneo", "db": "eneo", "user": "eneo", "password": "eneo"},
+    {"type": "valkey", "name": "eneo"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/app/data", "name": "eneo-data", "size": "2Gi"}
+  ]
+}

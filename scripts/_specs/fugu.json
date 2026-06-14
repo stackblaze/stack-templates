@@ -1,0 +1,35 @@
+{
+  "slug": "fugu",
+  "title": "Fugu",
+  "description": "Free, privacy-friendly, simple, open-source and self-hostable product analytics.",
+  "source": "https://github.com/shafy/fugu",
+  "website": "https://fugu.lol",
+  "icon": "https://avatars.githubusercontent.com/u/1881676?s=200&v=4",
+  "categories": ["data", "monitoring", "productivity"],
+  "installation": "Ruby on Rails product analytics backed by PostgreSQL. ROTATE SECRET_KEY_BASE (a 128-char hex/alphanumeric string; generate with `openssl rand -hex 64`) and rotate the postgres credentials. DATABASE_URL points at the bundled postgres add-on. Set INIT_USER_EMAIL and INIT_USER_PASSWORD to auto-create the first admin on first boot, or visit the root URL and register (ALLOW_REGISTRATION=true). FORCE_SSL_PROD is enabled; terminate TLS at the ingress. App listens on port 3000.",
+  "screenshots": [],
+  "links": ["https://github.com/shafy/fugu/blob/main/SELFHOSTING.md"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 215,
+  "language": "Ruby",
+  "image": {"repository": "shafyy/fugu", "tag": "latest", "containerPort": "3000", "command": []},
+  "envVars": [
+    {"name": "RAILS_ENV", "value": "production"},
+    {"name": "RAILS_LOG_TO_STDOUT", "value": "true"},
+    {"name": "RAILS_SERVE_STATIC_FILES", "value": "true"},
+    {"name": "DATABASE_URL", "value": "postgresql://fugu:fugu@fugu-postgresql-rw:5432/fugu"},
+    {"name": "DATABASE_NAME", "value": "fugu"},
+    {"name": "DATABASE_USER", "value": "fugu"},
+    {"name": "DATABASE_PASSWORD", "value": "fugu"},
+    {"name": "SECRET_KEY_BASE", "value": "replace-with-openssl-rand-hex-64"},
+    {"name": "ALLOW_REGISTRATION", "value": "true"},
+    {"name": "FORCE_SSL_PROD", "value": "true"},
+    {"name": "INIT_USER_EMAIL", "value": "admin@example.com"},
+    {"name": "INIT_USER_PASSWORD", "value": "replace-with-strong-password"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "fugu", "db": "fugu", "user": "fugu", "password": "fugu"}
+  ],
+  "extraVolumes": []
+}

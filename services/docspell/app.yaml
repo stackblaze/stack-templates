@@ -1,0 +1,119 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: docspell
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted document organizer (DMS) that auto-tags, OCRs and full-text-searches your
+      scanned PDFs, emails and uploads.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/701128?s=200&v=4
+    kubero.dev/template.installation: 'This is the Docspell rest server (web UI + REST API) listening on internal port 7880.
+      It REQUIRES a companion job executor deployed alongside it for OCR, text extraction and document conversion: deploy
+      docspell/joex:latest pointed at the SAME Postgres add-on (set its DOCSPELL_JOEX_JDBC_* / DOCSPELL_JOEX_BASE__URL env).
+      Both containers must share the file storage; this template stores binaries in the bundled Postgres (DOCSPELL_SERVER_BACKEND_FILES_DEFAULT__STORE=database),
+      so no shared volume between server and joex is needed for files. Rotate the random secrets before production: DOCSPELL_SERVER_AUTH_SERVER__SECRET
+      (openssl rand -hex 32) and DOCSPELL_SERVER_ADMIN__ENDPOINT_SECRET, and rotate the Postgres password. Full-text search
+      defaults here to the built-in PostgreSQL FTS backend (DOCSPELL_SERVER_FULL__TEXT__SEARCH_ENABLED=true + DOCSPELL_SERVER_FULL__TEXT__SEARCH_BACKEND=postgresql),
+      so no external Apache Solr is needed; only add a Solr instance if you set the backend to solr. First run: open the web
+      UI, register a new account using the same name for both ''collective'' and ''user'', then log in. Optional companions
+      for inbound mail/scanner ingest (docspell-consumedir, IMAP poller) are described in the docs and reuse the same Postgres.'
+    kubero.dev/template.links: '["https://docspell.org/docs/install/docker/", "https://docspell.org/docs/configure/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/eikek/docspell
+    kubero.dev/template.categories: '["documentation", "productivity", "storage"]'
+    kubero.dev/template.title: Docspell
+    kubero.dev/template.website: https://docspell.org
+  labels:
+    manager: kubero
+spec:
+  name: docspell
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: docspell-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: docspell
+              owner: docspell
+              secret:
+                name: docspell-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: docspell-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: docspell-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: docspell
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: docspell-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: docspell
+          password: docspell
+  envVars:
+  - name: TZ
+    value: UTC
+  - name: DOCSPELL_SERVER_BASE__URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: DOCSPELL_SERVER_BIND_ADDRESS
+    value: 0.0.0.0
+  - name: DOCSPELL_SERVER_BIND_PORT
+    value: '7880'
+  - name: DOCSPELL_SERVER_AUTH_SERVER__SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: DOCSPELL_SERVER_ADMIN__ENDPOINT_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: DOCSPELL_SERVER_BACKEND_JDBC_URL
+    value: jdbc:postgresql://docspell-postgresql-rw:5432/docspell
+  - name: DOCSPELL_SERVER_BACKEND_JDBC_USER
+    value: docspell
+  - name: DOCSPELL_SERVER_BACKEND_JDBC_PASSWORD
+    value: docspell
+  - name: DOCSPELL_SERVER_BACKEND_FILES_DEFAULT__STORE
+    value: database
+  - name: DOCSPELL_SERVER_FULL__TEXT__SEARCH_ENABLED
+    value: 'true'
+  - name: DOCSPELL_SERVER_FULL__TEXT__SEARCH_BACKEND
+    value: postgresql
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '7880'
+    pullPolicy: Always
+    repository: docspell/restserver
+    tag: latest

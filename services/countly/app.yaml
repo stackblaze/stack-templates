@@ -1,0 +1,93 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: countly
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source, privacy-focused product analytics platform for tracking web, mobile and
+      desktop apps with funnels, retention, crashes and push.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/2154895?s=200&v=4
+    kubero.dev/template.installation: 'Countly Community Edition is a multi-process stack. This template runs the PRIMARY
+      all-in-one image countly/countly-server, which bundles Nginx plus BOTH Node.js processes (the API ingestion process
+      and the frontend dashboard) behind a single HTTP port 80. DATASTORE: Countly stores everything in MongoDB. There is
+      no native MongoDB add-on, so this template provisions the MongoDB-wire-compatible ''documentdb'' add-on (Microsoft DocumentDB,
+      SCRAM-SHA-256 + TLS, user mongoadmin). COMPATIBILITY CAVEAT: Countly targets genuine MongoDB and uses some Mongo-specific
+      server behaviour; DocumentDB covers the common wire protocol but full feature parity is not guaranteed - if you hit
+      issues, point COUNTLY_CONFIG__MONGODB at an external real MongoDB 6.x/7.x instance instead and drop the add-on. The
+      connection is supplied as a full URI via COUNTLY_CONFIG__MONGODB (note the DOUBLE underscores - this is Countly''s universal
+      config-override prefix; per-process equivalents are COUNTLY_CONFIG_API__ / COUNTLY_CONFIG_FRONTEND__). ROTATE before
+      production: the documentdb add-on password (default ''countly'') and keep the URI in sync. FIRST-RUN: open the site,
+      complete the on-screen setup wizard to create the global admin account, then add your first application to get its App
+      Key/API Key for SDK integration. COMPANION / SCALE-OUT SERVICES (NOT deployed by this single-container template): for
+      horizontal scale Countly splits into separate images - countly/api (API ingestion, listens on port 3001) and countly/frontend
+      (dashboard, listens on port 6001) - each pointed at the same MongoDB via COUNTLY_CONFIG__MONGODB; scale countly/api
+      replicas to match write traffic. The all-in-one image also runs internal cron/aggregation and plugin jobs in-process,
+      so no separate scheduler/worker container is required for a single-node install. The mounted /opt/countly/frontend/express/public/appimages
+      volume keeps uploaded app icons/avatars; plugin and config state otherwise lives in MongoDB.'
+    kubero.dev/template.links: '["https://support.countly.com/hc/en-us/articles/360037814511-Setting-Up-Countly-with-Docker",
+      "https://support.countly.com/hc/en-us/articles/360036862332-Installing-the-Countly-Server"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/Countly/countly-server
+    kubero.dev/template.categories: '["data", "monitoring", "productivity"]'
+    kubero.dev/template.title: Countly
+    kubero.dev/template.website: https://countly.com
+  labels:
+    manager: kubero
+spec:
+  name: countly
+  deploymentstrategy: docker
+  addons:
+  - displayName: Document DB
+    env: []
+    icon: /img/addons/mongo.svg
+    id: kubero-operator
+    kind: DocumentDB
+    resourceDefinitions:
+      DocumentDB:
+        apiVersion: documentdb.io/preview
+        kind: DocumentDB
+        metadata:
+          name: countly-documentdb
+        spec:
+          nodeCount: 1
+          instancesPerNode: 1
+          documentDbCredentialSecret: documentdb-credentials
+          resource:
+            storage:
+              pvcSize: 1Gi
+              storageClass: default
+          exposeViaService:
+            serviceType: ClusterIP
+      credentialSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: documentdb-credentials
+        type: Opaque
+        stringData:
+          username: mongoadmin
+          password: countly
+  envVars:
+  - name: COUNTLY_CONFIG__MONGODB
+    value: mongodb://mongoadmin:countly@documentdb-service-countly-documentdb:10260/countly?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
+  - name: COUNTLY_CONFIG_API_API_DOMAIN
+    value: '{{KUBERO_APP_HOST}}'
+  - name: COUNTLY_CONFIG_FRONTEND_WEB_DOMAIN
+    value: '{{KUBERO_APP_HOST}}'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /opt/countly/frontend/express/public/appimages
+    name: countly-appimages
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: countly/countly-server
+    tag: latest

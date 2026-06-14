@@ -1,0 +1,132 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: photoprism
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: AI-powered, self-hosted photo and video management app that organizes your library with
+      automatic tagging, face recognition, and search.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/42360037?s=200&v=4
+    kubero.dev/template.installation: Deploy with the bundled MariaDB add-on (PhotoPrism recommends MariaDB over SQLite for
+      performance). On first run, log in as 'admin' with the password set in PHOTOPRISM_ADMIN_PASSWORD and rotate it immediately.
+      Rotate the MariaDB password and PHOTOPRISM_ADMIN_PASSWORD from their template defaults. Upload originals via the web
+      UI or place them under /photoprism/originals; the /photoprism/storage volume holds the sidecar/cache/index data and
+      must be persistent. Indexing and face recognition run in the background after import. For large libraries, increase
+      PHOTOPRISM_WORKERS or the app pod size.
+    kubero.dev/template.links: '["https://docs.photoprism.app/getting-started/docker-compose/", "https://docs.photoprism.app/getting-started/config-options/"]'
+    kubero.dev/template.screenshots: '["https://dl.photoprism.app/img/ui/library.jpg"]'
+    kubero.dev/template.source: https://github.com/photoprism/photoprism
+    kubero.dev/template.categories: '["media", "storage", "ai"]'
+    kubero.dev/template.title: PhotoPrism
+    kubero.dev/template.website: https://www.photoprism.app
+  labels:
+    manager: kubero
+spec:
+  name: photoprism
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: photoprism-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: photoprism-mysql-root
+            key: password
+          database: photoprism
+          username: photoprism
+          passwordSecretKeyRef:
+            name: photoprism-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: photoprism-mysql-root
+        type: Opaque
+        stringData:
+          password: photoprism
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: photoprism-mysql-app
+        type: Opaque
+        stringData:
+          password: photoprism
+  envVars:
+  - name: PHOTOPRISM_SITE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: PHOTOPRISM_ADMIN_USER
+    value: admin
+  - name: PHOTOPRISM_ADMIN_PASSWORD
+    value: replace-with-openssl-rand-base64-32
+  - name: PHOTOPRISM_AUTH_MODE
+    value: password
+  - name: PHOTOPRISM_DATABASE_DRIVER
+    value: mysql
+  - name: PHOTOPRISM_DATABASE_SERVER
+    value: photoprism-mysql:3306
+  - name: PHOTOPRISM_DATABASE_NAME
+    value: photoprism
+  - name: PHOTOPRISM_DATABASE_USER
+    value: photoprism
+  - name: PHOTOPRISM_DATABASE_PASSWORD
+    value: photoprism
+  - name: PHOTOPRISM_HTTP_HOST
+    value: 0.0.0.0
+  - name: PHOTOPRISM_HTTP_PORT
+    value: '2342'
+  - name: PHOTOPRISM_ORIGINALS_PATH
+    value: /photoprism/originals
+  - name: PHOTOPRISM_STORAGE_PATH
+    value: /photoprism/storage
+  - name: PHOTOPRISM_DISABLE_TLS
+    value: 'true'
+  - name: PHOTOPRISM_WORKERS
+    value: '2'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /photoprism/originals
+    name: photoprism-originals
+    size: 5Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /photoprism/storage
+    name: photoprism-storage
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '2342'
+    pullPolicy: Always
+    repository: photoprism/photoprism
+    tag: latest

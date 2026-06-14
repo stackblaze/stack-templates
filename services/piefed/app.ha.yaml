@@ -1,0 +1,157 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: piefed
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Federated (ActivityPub) link-aggregator and discussion platform - a self-hosted, Lemmy/Reddit-style
+      alternative for the Fediverse.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/137885340?s=200&v=4
+    kubero.dev/template.installation: 'This template runs the PRIMARY PieFed web/app container ONLY (ghcr.io/rimu/pyfedi -
+      a Django/Flask gunicorn app listening on HTTP port 5000). PieFed is a MULTI-CONTAINER stack and is NOT complete with
+      this pod alone. REQUIRED before first boot: 1) Rotate SECRET_KEY - it MUST be at least 32 chars; generate with ''openssl
+      rand -hex 32'' and replace the placeholder. 2) Rotate the Postgres password (Valkey/Redis is password-less in-cluster).
+      3) SERVER_NAME is baked into ActivityPub actor URLs and cannot be changed cleanly after federating - set it to your
+      real public host before going live. 4) After the Postgres add-on is up, exec into the pod and initialise the DB (''flask
+      db upgrade'' then ''flask init-db''), which creates the schema and the first admin account (note the printed admin password).
+      MANDATORY COMPANION SERVICE to deploy as a SEPARATE app (SAME image ghcr.io/rimu/pyfedi, SAME tag, sharing the SAME
+      Postgres + Valkey + media volume): the CELERY WORKER, command [''celery'',''-A'',''celery_worker.celery'',''worker'']
+      (or run the repo''s entrypoint in ''celery'' mode) - it handles all async ActivityPub federation send/receive, image
+      processing, and queue delivery; PieFed will appear to work without it but no federation or background jobs will run.
+      SCHEDULED JOBS: PieFed ships cron scripts (daily.sh, send_queue.sh, email_notifs.sh, remove_orphan_files.sh) that must
+      run on a schedule (a Kubero cron/CronJob or celery-beat container using the same image) for federation queue flushing,
+      digest emails, and cleanup. REVERSE PROXY: route public ingress to this web pod on port 5000 (Kubero''s ingress handles
+      TLS termination); no separate nginx image is required inside the stack. MEDIA: the /app/app/static/media volume holds
+      uploaded avatars/images - use RWX storage so the worker pod can also read/write it; for production at scale set S3-style
+      object storage (e.g. the RustFS add-on) instead. Optional: a full-text search backend can be configured later; omit
+      for a basic start.'
+    kubero.dev/template.links: '["https://codeberg.org/rimu/pyfedi/src/branch/main/INSTALL-docker.md", "https://join.piefed.social/docs/"]'
+    kubero.dev/template.screenshots: '["https://join.piefed.social/wp-content/uploads/2024/06/piefed-screenshot.png"]'
+    kubero.dev/template.source: https://codeberg.org/rimu/pyfedi
+    kubero.dev/template.categories: '["social", "communication", "collaboration"]'
+    kubero.dev/template.title: PieFed
+    kubero.dev/template.website: https://join.piefed.social
+  labels:
+    manager: kubero
+spec:
+  name: piefed
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: piefed-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: piefed
+              owner: piefed
+              secret:
+                name: piefed-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: piefed-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: piefed-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: piefed
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: piefed-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: piefed
+          password: piefed
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: piefed-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: SERVER_NAME
+    value: '{{KUBERO_APP_HOST}}'
+  - name: SECRET_KEY
+    value: replace-with-openssl-rand-hex-32
+  - name: DATABASE_URL
+    value: postgresql+psycopg2://piefed:piefed@piefed-postgresql-rw:5432/piefed
+  - name: CACHE_TYPE
+    value: RedisCache
+  - name: CACHE_REDIS_URL
+    value: redis://rfr-piefed-valkey-readwrite:6379/1
+  - name: CELERY_BROKER_URL
+    value: redis://rfr-piefed-valkey-readwrite:6379/0
+  - name: MAIL_FROM
+    value: noreply@example.com
+  - name: FLASK_APP
+    value: pyfedi.py
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/app/static/media
+    name: piefed-media
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '5000'
+    pullPolicy: Always
+    repository: ghcr.io/rimu/pyfedi
+    tag: latest

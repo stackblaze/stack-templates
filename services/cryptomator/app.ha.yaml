@@ -1,0 +1,114 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: cryptomator
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted key management and access control server for sharing Cryptomator-encrypted
+      vaults across teams.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/12529534?s=200&v=4
+    kubero.dev/template.installation: 'Cryptomator Hub is a Quarkus app that REQUIRES two companion services you must deploy
+      separately: (1) a PostgreSQL database (provided here as the ''postgres'' add-on; rotate the default cryptomator/cryptomator/cryptomator
+      db/user/password) and (2) a Keycloak identity server (NOT in the add-on catalog, deploy it separately, e.g. quay.io/keycloak/keycloak,
+      and import the Hub realm). Set HUB_PUBLIC_URL / HUB_KEYCLOAK_PUBLIC_URL to your real ingress URLs and configure the
+      Keycloak realm/clients. The QUARKUS_OIDC_AUTH_SERVER_URL and HUB_KEYCLOAK_* values below point at a Keycloak you must
+      stand up first. Use the official Setup Wizard at cryptomator.org/hub/self-hosted to generate realm config. Rotate all
+      default credentials before exposing publicly.'
+    kubero.dev/template.links: '["https://docs.cryptomator.org/hub/", "https://docs.cryptomator.org/hub/deployment/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/cryptomator/hub
+    kubero.dev/template.categories: '["security", "identity", "storage"]'
+    kubero.dev/template.title: Cryptomator Hub
+    kubero.dev/template.website: https://cryptomator.org/hub/
+  labels:
+    manager: kubero
+spec:
+  name: cryptomator
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: cryptomator-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: cryptomator
+              owner: cryptomator
+              secret:
+                name: cryptomator-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: cryptomator-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: cryptomator-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: cryptomator
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: cryptomator-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: cryptomator
+          password: cryptomator
+  envVars:
+  - name: QUARKUS_HTTP_PORT
+    value: '8080'
+  - name: QUARKUS_DATASOURCE_JDBC_URL
+    value: jdbc:postgresql://cryptomator-postgresql-rw:5432/cryptomator
+  - name: QUARKUS_DATASOURCE_USERNAME
+    value: cryptomator
+  - name: QUARKUS_DATASOURCE_PASSWORD
+    value: cryptomator
+  - name: HUB_PUBLIC_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: HUB_KEYCLOAK_PUBLIC_URL
+    value: '{{KUBERO_APP_URL}}/kc'
+  - name: HUB_KEYCLOAK_LOCAL_URL
+    value: http://keycloak:8080/kc
+  - name: HUB_KEYCLOAK_REALM
+    value: cryptomator
+  - name: QUARKUS_OIDC_AUTH_SERVER_URL
+    value: '{{KUBERO_APP_URL}}/kc/realms/cryptomator'
+  - name: QUARKUS_OIDC_CLIENT_ID
+    value: cryptomatorhub
+  - name: QUARKUS_OIDC_TOKEN_ISSUER
+    value: any
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: ghcr.io/cryptomator/hub
+    tag: stable

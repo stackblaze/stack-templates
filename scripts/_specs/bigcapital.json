@@ -1,0 +1,49 @@
+{
+  "slug": "bigcapital",
+  "title": "Bigcapital",
+  "description": "Open-source double-entry accounting and financial reporting platform, a self-hosted alternative to QuickBooks, Xero and Wave.",
+  "source": "https://github.com/bigcapitalhq/bigcapital",
+  "website": "https://bigcapital.app",
+  "icon": "https://avatars.githubusercontent.com/u/76165505?s=200&v=4",
+  "categories": ["finance", "erp", "work"],
+  "installation": "Multi-container stack. This template runs the PRIMARY backend API only: bigcapitalhq/server (listens on :3000). It is NOT usable on its own — you MUST also deploy these companion services and route them behind a reverse proxy (Envoy/Nginx): (1) FRONTEND/webapp: bigcapitalhq/webapp:latest (the SPA UI); (2) GATEWAY/proxy: envoyproxy/envoy:v1.30-latest fronting / -> webapp and /api -> server, terminating TLS on 80/443; (3) PDF rendering: gotenberg/gotenberg:7 (point GOTENBERG_URL at it, e.g. http://gotenberg:9000); (4) DB MIGRATION: a one-shot run of the same bigcapitalhq/server image with the migration command to provision the system + tenant schemas before first boot. The server multi-tenants: SYSTEM_DB_NAME is the control DB and each org gets its own DB prefixed by TENANT_DB_NAME_PERFIX. Add-ons wired: MariaDB (bigcapital-mysql:3306, app uses MySQL—not Postgres) and Valkey/Redis (rfr-bigcapital-valkey-readwrite:6379, no password) used for both cache and the BullMQ job queue. BEFORE exposing publicly ROTATE: JWT_SECRET (openssl rand -hex 32) and the MariaDB password (default 'bigcapital'). Set BASE_URL to your public URL (pre-filled with {{KUBERO_APP_URL}}). After the stack is up, browse to the gateway URL and create the first account (no default account exists); set SIGNUP_DISABLED=true afterward to lock down registration. Optional integrations (Plaid bank sync, Stripe/Lemon Squeezy billing, S3 attachments, SMTP mail) are configured via additional env vars.",
+  "screenshots": ["https://raw.githubusercontent.com/bigcapitalhq/bigcapital/develop/static/bigcapital-screenshot.png"],
+  "links": ["https://docs.bigcapital.app/deployment/docker", "https://github.com/bigcapitalhq/bigcapital/blob/develop/docker-compose.prod.yml"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 7300,
+  "language": "TypeScript",
+  "image": {
+    "repository": "bigcapitalhq/server",
+    "tag": "latest",
+    "containerPort": "3000",
+    "command": []
+  },
+  "envVars": [
+    {"name": "BASE_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "PORT", "value": "3000"},
+    {"name": "NODE_ENV", "value": "production"},
+    {"name": "JWT_SECRET", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "DB_HOST", "value": "bigcapital-mysql"},
+    {"name": "DB_PORT", "value": "3306"},
+    {"name": "DB_USER", "value": "bigcapital"},
+    {"name": "DB_PASSWORD", "value": "bigcapital"},
+    {"name": "DB_CHARSET", "value": "utf8"},
+    {"name": "SYSTEM_DB_NAME", "value": "bigcapital"},
+    {"name": "TENANT_DB_NAME_PERFIX", "value": "bigcapital_tenant_"},
+    {"name": "REDIS_HOST", "value": "rfr-bigcapital-valkey-readwrite"},
+    {"name": "REDIS_PORT", "value": "6379"},
+    {"name": "QUEUE_HOST", "value": "rfr-bigcapital-valkey-readwrite"},
+    {"name": "QUEUE_PORT", "value": "6379"},
+    {"name": "GOTENBERG_URL", "value": "http://gotenberg:9000"},
+    {"name": "SIGNUP_DISABLED", "value": "false"},
+    {"name": "SIGNUP_EMAIL_CONFIRMATION", "value": "false"}
+  ],
+  "addons": [
+    {"type": "mariadb", "name": "bigcapital", "db": "bigcapital", "user": "bigcapital", "password": "bigcapital"},
+    {"type": "valkey", "name": "bigcapital"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/data", "name": "bigcapital-data", "size": "2Gi"}
+  ]
+}

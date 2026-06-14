@@ -1,0 +1,128 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: temporal
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Durable execution platform that runs reliable, fault-tolerant workflows and activities
+      as code at scale.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/56493103?s=200&v=4
+    kubero.dev/template.installation: 'This template deploys the PRIMARY Temporal server using the all-in-one `temporalio/auto-setup`
+      image. On first boot auto-setup creates the database schema and starts all four server roles (frontend, history, matching,
+      internal worker) in a single pod. PORTS: the server speaks gRPC on 7233 (the address SDK clients/workers connect to)
+      and exposes an HTTP API on 7243 (the containerPort published here). Add-on: a Postgres add-on backs both the default
+      and visibility keyspaces (DBNAME=temporal, VISIBILITY_DBNAME=temporal_visibility, auto-created by auto-setup). NOTE:
+      auto-setup is the convenience bundle for self-hosting; Temporal recommends the separate `temporalio/server` + `temporalio/admin-tools`
+      images with externally-managed schema for large production deployments, and advanced/large visibility setups can additionally
+      use Elasticsearch or OpenSearch (set ENABLE_ES=true + ES_SEEDS) which is NOT provisioned here. COMPANION SERVICES to
+      deploy as their own Kubero apps: (1) WEB UI -> image `temporalio/ui:latest` (listens on HTTP 8080), set TEMPORAL_ADDRESS=temporal-<pod/service>:7233
+      and TEMPORAL_CORS_ORIGINS={{KUBERO_APP_URL}}; this is the human-facing dashboard. (2) ADMIN/CLI -> image `temporalio/admin-tools:latest`
+      for running `tctl`/`temporal` operator commands and manual schema upgrades. (3) Your own WORKERS are separate apps built
+      from your code with the Temporal SDK, pointed at this server''s 7233 gRPC endpoint. ROTATE the default Postgres password
+      before going live. Set TEMPORAL_ADDRESS/namespaces via tctl after boot; a `default` namespace is auto-registered.'
+    kubero.dev/template.links: '["https://docs.temporal.io/self-hosted-guide/deployment", "https://docs.temporal.io/self-hosted-guide/setup"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/temporalio/temporal
+    kubero.dev/template.categories: '["development", "automation", "data"]'
+    kubero.dev/template.title: Temporal
+    kubero.dev/template.website: https://temporal.io
+  labels:
+    manager: kubero
+spec:
+  name: temporal
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: temporal-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: temporal
+              owner: temporal
+              secret:
+                name: temporal-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: temporal-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: temporal-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: temporal
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: temporal-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: temporal
+          password: temporal
+  envVars:
+  - name: DB
+    value: postgres12
+  - name: DB_PORT
+    value: '5432'
+  - name: POSTGRES_SEEDS
+    value: temporal-postgresql-rw
+  - name: POSTGRES_USER
+    value: temporal
+  - name: POSTGRES_PWD
+    value: temporal
+  - name: DBNAME
+    value: temporal
+  - name: VISIBILITY_DBNAME
+    value: temporal_visibility
+  - name: SKIP_DEFAULT_NAMESPACE_CREATION
+    value: 'false'
+  - name: DEFAULT_NAMESPACE
+    value: default
+  - name: DEFAULT_NAMESPACE_RETENTION
+    value: 72h
+  - name: SKIP_ADD_CUSTOM_SEARCH_ATTRIBUTES
+    value: 'false'
+  - name: TEMPORAL_ADDRESS
+    value: 127.0.0.1:7233
+  - name: TEMPORAL_BROADCAST_ADDRESS
+    value: 0.0.0.0
+  - name: BIND_ON_IP
+    value: 0.0.0.0
+  - name: ENABLE_ES
+    value: 'false'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '7243'
+    pullPolicy: Always
+    repository: temporalio/auto-setup
+    tag: '1.29'

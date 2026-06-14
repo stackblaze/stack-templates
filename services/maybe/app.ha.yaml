@@ -1,0 +1,145 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: maybe
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source personal finance and wealth management app to track accounts, budgets, investments
+      and net worth.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/63742054?s=200&v=4
+    kubero.dev/template.installation: 'Rails app requiring PostgreSQL and Redis (deployed as add-ons). Rotate SECRET_KEY_BASE
+      to a unique value (openssl rand -hex 64) and rotate the postgres password before exposing publicly. A separate Sidekiq
+      worker process (same image, command: bundle exec sidekiq) should be deployed for background jobs; the web container
+      will function for basic use without it but recurring syncs/imports need the worker. Set SELF_HOSTING_ENABLED=true. If
+      serving over plain HTTP behind the ingress''s own TLS, RAILS_FORCE_SSL/RAILS_ASSUME_SSL are left false; enable them
+      if terminating TLS at the app.'
+    kubero.dev/template.links: '["https://github.com/maybe-finance/maybe/blob/main/docs/hosting/docker.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/maybe-finance/maybe
+    kubero.dev/template.categories: '["finance", "productivity", "data"]'
+    kubero.dev/template.title: Maybe
+    kubero.dev/template.website: https://maybefinance.com
+  labels:
+    manager: kubero
+spec:
+  name: maybe
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: maybe-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: maybe
+              owner: maybe
+              secret:
+                name: maybe-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: maybe-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: maybe-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: maybe
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: maybe-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: maybe
+          password: maybe
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: maybe-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: SELF_HOSTING_ENABLED
+    value: 'true'
+  - name: SECRET_KEY_BASE
+    value: replace-with-openssl-rand-hex-64
+  - name: RAILS_FORCE_SSL
+    value: 'false'
+  - name: RAILS_ASSUME_SSL
+    value: 'false'
+  - name: DB_HOST
+    value: maybe-postgresql-rw
+  - name: DB_PORT
+    value: '5432'
+  - name: POSTGRES_HOST
+    value: maybe-postgresql-rw
+  - name: POSTGRES_DB
+    value: maybe
+  - name: POSTGRES_USER
+    value: maybe
+  - name: POSTGRES_PASSWORD
+    value: maybe
+  - name: REDIS_URL
+    value: redis://rfr-maybe-valkey-readwrite:6379/0
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: ghcr.io/maybe-finance/maybe
+    tag: stable

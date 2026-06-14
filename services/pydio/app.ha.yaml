@@ -1,0 +1,122 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: pydio
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'Self-hosted document sharing and collaboration platform: a file-sync, sharing and content-management
+      server for organizations.'
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1144153?s=200&v=4
+    kubero.dev/template.installation: Pydio Cells requires a MySQL/MariaDB database (provided here by the mariadb add-on).
+      Rotate the default DB password ('pydio') and the random CELLS_ENABLE_METRICS/secret placeholders before going to production.
+      On first run Cells auto-installs against the database when CELLS_INSTALL_YAML is unset and the DB env vars are present;
+      otherwise open the app URL and complete the web installer using DB host pydio-mysql:3306, db/user/pass = pydio. Set
+      CELLS_SITE_EXTERNAL to the app URL (handled via {{KUBERO_APP_URL}}). TLS is terminated at the ingress, so the container
+      runs plain HTTP (CELLS_SITE_NO_TLS=1). Cells stores config, logs and uploaded files under /var/cells (persistent volume).
+      For large-scale search/object storage Cells embeds MinIO and a Bleve index by default; no external Elasticsearch/S3
+      is required for a single-node deployment.
+    kubero.dev/template.links: '["https://docs.pydio.com/latest/admin-guide/quick-start/cells-installation/docker/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/pydio/cells
+    kubero.dev/template.categories: '["storage", "collaboration", "productivity"]'
+    kubero.dev/template.title: Pydio Cells
+    kubero.dev/template.website: https://pydio.com
+  labels:
+    manager: kubero
+spec:
+  name: pydio
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: pydio-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: pydio-mysql-root
+            key: password
+          database: pydio
+          username: pydio
+          passwordSecretKeyRef:
+            name: pydio-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: pydio-mysql-root
+        type: Opaque
+        stringData:
+          password: pydio
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: pydio-mysql-app
+        type: Opaque
+        stringData:
+          password: pydio
+  envVars:
+  - name: CELLS_BIND
+    value: 0.0.0.0:8080
+  - name: CELLS_SITE_BIND
+    value: 0.0.0.0:8080
+  - name: CELLS_SITE_EXTERNAL
+    value: '{{KUBERO_APP_URL}}'
+  - name: CELLS_SITE_NO_TLS
+    value: '1'
+  - name: CELLS_NO_TLS
+    value: '1'
+  - name: CELLS_WORKING_DIR
+    value: /var/cells
+  - name: CELLS_DB_HOST
+    value: pydio-mysql
+  - name: CELLS_DB_PORT
+    value: '3306'
+  - name: CELLS_DB_NAME
+    value: pydio
+  - name: CELLS_DB_USER
+    value: pydio
+  - name: CELLS_DB_PASSWORD
+    value: pydio
+  - name: CELLS_DB_DSN
+    value: pydio:pydio@tcp(pydio-mysql:3306)/pydio?parseTime=true
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/cells
+    name: pydio-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: pydio/cells
+    tag: latest

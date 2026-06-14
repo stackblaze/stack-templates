@@ -1,0 +1,177 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: opnform
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Beautiful open-source form builder to create and share forms, surveys and quizzes with
+      no code, a self-hosted alternative to Typeform and Google Forms.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/243543958?s=200&v=4
+    kubero.dev/template.installation: 'Multi-container Laravel (PHP/API) + Nuxt (Vue/client) stack. THIS template deploys
+      the PRIMARY API/server image jhumanj/opnform-api:latest (Laravel + nginx + php-fpm on port 80), which serves the REST
+      API and runs DB migrations on boot. Rotate APP_KEY (base64:$(openssl rand -base64 32)), JWT_SECRET (openssl rand -hex
+      32), and the Postgres password (default ''opnform'') before exposing publicly. Companion services to deploy separately,
+      ALL from the SAME jhumanj/opnform-api:latest image, sharing this template''s env: (1) api-worker -- override command
+      to run the queue worker `php artisan queue:work`; (2) api-scheduler -- run the cron scheduler `php artisan schedule:work`.
+      Also deploy the FRONTEND as a separate app from jhumanj/opnform-client:latest (Nuxt SSR, listens on port 3000) with
+      NUXT_PUBLIC_API_BASE pointing at this api''s /api URL. The reference compose puts an nginx ingress in front that routes
+      / to the client and /api,/forms,/storage to this api; replicate that routing at the Kubero ingress (path-based) or front
+      both with a small nginx. Postgres (DB_CONNECTION=pgsql) and Valkey/Redis add-ons are bundled here. Set FRONTEND_URL
+      to the public client URL after deploying it. Local file uploads/avatars/exports persist on the /usr/share/nginx/html/storage/app
+      volume; for production object storage set FILESYSTEM_DISK=s3 and add S3-compatible storage env (no S3 add-on is provisioned
+      by this template). Configure SMTP (MAIL_* env) for outbound email after install.'
+    kubero.dev/template.links: '["https://github.com/JhumanJ/OpnForm/blob/main/docs/deployment/quickstart.md", "https://docs.opnform.com"]'
+    kubero.dev/template.screenshots: '["https://opnform.com/img/social-preview.jpg"]'
+    kubero.dev/template.source: https://github.com/JhumanJ/OpnForm
+    kubero.dev/template.categories: '["productivity", "work", "collaboration"]'
+    kubero.dev/template.title: OpnForm
+    kubero.dev/template.website: https://opnform.com
+  labels:
+    manager: kubero
+spec:
+  name: opnform
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: opnform-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: opnform
+              owner: opnform
+              secret:
+                name: opnform-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: opnform-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: opnform-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: opnform
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: opnform-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: opnform
+          password: opnform
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: opnform-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: APP_ENV
+    value: production
+  - name: APP_DEBUG
+    value: 'false'
+  - name: APP_KEY
+    value: base64:replace-with-openssl-rand-base64-32
+  - name: APP_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: FRONTEND_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: JWT_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: DB_CONNECTION
+    value: pgsql
+  - name: DB_HOST
+    value: opnform-postgresql-rw
+  - name: DB_PORT
+    value: '5432'
+  - name: DB_DATABASE
+    value: opnform
+  - name: DB_USERNAME
+    value: opnform
+  - name: DB_PASSWORD
+    value: opnform
+  - name: REDIS_HOST
+    value: rfr-opnform-valkey-readwrite
+  - name: REDIS_PORT
+    value: '6379'
+  - name: QUEUE_CONNECTION
+    value: redis
+  - name: CACHE_DRIVER
+    value: redis
+  - name: SESSION_DRIVER
+    value: redis
+  - name: FILESYSTEM_DISK
+    value: local
+  - name: PHP_MEMORY_LIMIT
+    value: 1G
+  - name: PHP_UPLOAD_MAX_FILESIZE
+    value: 64M
+  - name: PHP_POST_MAX_SIZE
+    value: 64M
+  - name: NGINX_MAX_BODY_SIZE
+    value: 64m
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /usr/share/nginx/html/storage/app
+    name: opnform-storage
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: jhumanj/opnform-api
+    tag: latest

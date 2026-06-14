@@ -1,0 +1,105 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: chiefonboarding
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source employee onboarding and preboarding platform with to-do items, intro sequences,
+      courses and Slack-driven workflows.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/65426741?s=200&v=4
+    kubero.dev/template.installation: 'Django app served on port 8000. Companion add-on: PostgreSQL (primary datastore via
+      DATABASE_URL). Database migrations and static-file collection run automatically on container boot. Rotate SECRET_KEY
+      to a unique random value (openssl rand -hex 32) and rotate the postgres password before exposing publicly. ALLOWED_HOSTS
+      and BASE_URL are wired to this deployment''s public host/URL. On first launch an initial admin account is created automatically:
+      log in with email admin@chiefonboarding.com and password admin, then change those credentials immediately. Email (SMTP)
+      is required to invite new hires and send notifications: set EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+      and DEFAULT_FROM_EMAIL, or use a provider like Mailgun via ANYMAIL_* keys. Optional Slack, Google and Twilio integrations
+      can be configured later from the Settings page.'
+    kubero.dev/template.links: '["https://docs.chiefonboarding.com/", "https://github.com/chiefonboarding/ChiefOnboarding/blob/master/docs/deployment/docker.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/chiefonboarding/ChiefOnboarding
+    kubero.dev/template.categories: '["work", "productivity", "automation"]'
+    kubero.dev/template.title: ChiefOnboarding
+    kubero.dev/template.website: https://chiefonboarding.com
+  labels:
+    manager: kubero
+spec:
+  name: chiefonboarding
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: chiefonboarding-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: chiefonboarding
+              owner: chiefonboarding
+              secret:
+                name: chiefonboarding-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: chiefonboarding-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: chiefonboarding-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: chiefonboarding
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: chiefonboarding-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: chiefonboarding
+          password: chiefonboarding
+  envVars:
+  - name: SECRET_KEY
+    value: replace-with-openssl-rand-hex-32
+  - name: DATABASE_URL
+    value: postgres://chiefonboarding:chiefonboarding@chiefonboarding-postgresql-rw:5432/chiefonboarding
+  - name: ALLOWED_HOSTS
+    value: '{{KUBERO_APP_HOST}}'
+  - name: BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: DEBUG
+    value: 'False'
+  - name: DEFAULT_FROM_EMAIL
+    value: hello@chiefonboarding.com
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: chiefonboarding/chiefonboarding
+    tag: latest

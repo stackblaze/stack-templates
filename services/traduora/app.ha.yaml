@@ -1,0 +1,113 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: traduora
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source translation management platform (TMS) for teams to collaboratively manage
+      app localization, with a REST API, CLI, and import/export.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/20991583?s=200&v=4
+    kubero.dev/template.installation: 'Single all-in-one everco/ever-traduora image (API + web UI) on port 8080, backed by
+      the bundled PostgreSQL add-on (TR_DB_TYPE=postgres; Traduora supports both MySQL and Postgres and we pick Postgres per
+      convention). ROTATE before production: TR_SECRET (used to sign/verify auth tokens; generate with `openssl rand -hex
+      32`) and the Postgres add-on password. Database tables are created/migrated automatically on first boot. TR_SIGNUPS_ENABLED
+      is left true so you can register the first account from the UI, which becomes the org owner; set it to false afterwards
+      to lock down public signups. Set TR_VIRTUAL_HOST to the deployed host so URLs in invitation/password emails resolve
+      correctly. Outbound email (TR_MAIL_*) and any S3 export targets are NOT provisioned here and must be configured separately
+      if needed.'
+    kubero.dev/template.links: '["https://docs.traduora.co/docs/configuration", "https://docs.traduora.co/docs/getting-started/self-hosting"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/ever-co/ever-traduora
+    kubero.dev/template.categories: '["development", "productivity", "collaboration"]'
+    kubero.dev/template.title: Traduora
+    kubero.dev/template.website: https://traduora.co
+  labels:
+    manager: kubero
+spec:
+  name: traduora
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: traduora-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: traduora
+              owner: traduora
+              secret:
+                name: traduora-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: traduora-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: traduora-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: traduora
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: traduora-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: traduora
+          password: traduora
+  envVars:
+  - name: TR_PORT
+    value: '8080'
+  - name: TR_VIRTUAL_HOST
+    value: '{{KUBERO_APP_URL}}'
+  - name: TR_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: TR_SIGNUPS_ENABLED
+    value: 'true'
+  - name: TR_DB_TYPE
+    value: postgres
+  - name: TR_DB_HOST
+    value: traduora-postgresql-rw
+  - name: TR_DB_PORT
+    value: '5432'
+  - name: TR_DB_USER
+    value: traduora
+  - name: TR_DB_PASSWORD
+    value: traduora
+  - name: TR_DB_DATABASE
+    value: traduora
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: everco/ever-traduora
+    tag: latest

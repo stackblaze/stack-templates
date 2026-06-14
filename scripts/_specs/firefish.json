@@ -1,0 +1,44 @@
+{
+  "slug": "firefish",
+  "title": "Firefish",
+  "description": "Free, open-source, federated (ActivityPub) microblogging server - a feature-rich Misskey fork for the Fediverse.",
+  "source": "https://git.joinfirefish.org/firefish/firefish",
+  "website": "https://joinfirefish.org",
+  "icon": "https://avatars.githubusercontent.com/u/107237853?s=200&v=4",
+  "categories": ["social", "communication", "media"],
+  "installation": "This template runs the PRIMARY Firefish Node.js web/server container only (listens on HTTP port 3000). IMPORTANT IMAGE NOTE: the original official registry (registry.firefish.dev) is now offline as upstream development has stalled; this spec points 'image.repository' at 'registry.firefish.dev/firefish/firefish' with tag 'latest' as the canonical reference - if your cluster cannot pull it, swap in a maintained mirror (e.g. a community-built ghcr image or your own build from the source repo) before deploying. CONFIG: Firefish normally reads .config/default.yml; this template instead drives connection settings via the POSTGRES_* / FIREFISH_DB_* and REDIS_* environment variables (kept in sync below) and mounts /firefish/.config as a persistent volume so you can drop a default.yml there for any setting not exposed as an env var (e.g. 'url', 'id' generation method, object storage). Set the public URL correctly BEFORE first boot - it is baked into ActivityPub actor URLs and cannot be changed cleanly later; {{KUBERO_APP_URL}} is wired into URL/FIREFISH_URL. FIRST-RUN: the entrypoint runs DB migrations automatically on start; once the pod is healthy open the site, create the first account (it becomes the instance admin), then configure the instance in the admin control panel. ROTATE the Postgres password (default 'firefish') and review the placeholder values. ADD-ONS: PostgreSQL (primary datastore) and Valkey/Redis (queue + cache, password-less in-cluster) are provisioned by this template. EXTERNAL SERVICES not provisioned here: object storage (S3-compatible, e.g. the RustFS add-on) is strongly recommended for media at scale - configure it in default.yml under 'objectStorage' or via the admin panel instead of relying on the local /firefish/files volume; SMTP for email; and an optional ElasticSearch/MeiliSearch backend for full-text search (configure in default.yml). COMPANION SERVICES: Firefish's background job queue (federation delivery, media processing, notifications) runs IN-PROCESS in this same image by default, so no separate worker deployment is required for a single-node start; for higher throughput you can run additional replicas of this same image with the queue 'mode' tuned in default.yml pointing at the same Postgres + Valkey.",
+  "screenshots": ["https://joinfirefish.org/img/screenshots/timeline.png"],
+  "links": ["https://git.joinfirefish.org/firefish/firefish/-/blob/develop/docs/install.md", "https://joinfirefish.org/"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 1300,
+  "language": "TypeScript",
+  "image": {"repository": "registry.firefish.dev/firefish/firefish", "tag": "latest", "containerPort": "3000", "command": []},
+  "envVars": [
+    {"name": "NODE_ENV", "value": "production"},
+    {"name": "URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "FIREFISH_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "POSTGRES_HOST", "value": "firefish-postgresql-rw"},
+    {"name": "POSTGRES_PORT", "value": "5432"},
+    {"name": "POSTGRES_DB", "value": "firefish"},
+    {"name": "POSTGRES_USER", "value": "firefish"},
+    {"name": "POSTGRES_PASSWORD", "value": "firefish"},
+    {"name": "FIREFISH_DB_HOST", "value": "firefish-postgresql-rw"},
+    {"name": "FIREFISH_DB_PORT", "value": "5432"},
+    {"name": "FIREFISH_DB", "value": "firefish"},
+    {"name": "FIREFISH_DB_USER", "value": "firefish"},
+    {"name": "FIREFISH_DB_PASS", "value": "firefish"},
+    {"name": "REDIS_HOST", "value": "rfr-firefish-valkey-readwrite"},
+    {"name": "REDIS_PORT", "value": "6379"},
+    {"name": "FIREFISH_REDIS_HOST", "value": "rfr-firefish-valkey-readwrite"},
+    {"name": "FIREFISH_REDIS_PORT", "value": "6379"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "firefish", "db": "firefish", "user": "firefish", "password": "firefish"},
+    {"type": "valkey", "name": "firefish"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/firefish/.config", "name": "firefish-config", "size": "1Gi"},
+    {"mountPath": "/firefish/files", "name": "firefish-files", "size": "5Gi"}
+  ]
+}

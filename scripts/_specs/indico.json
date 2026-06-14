@@ -1,0 +1,42 @@
+{
+  "slug": "indico",
+  "title": "Indico",
+  "description": "Open-source web platform from CERN for conference and event management, room booking, and collaboration.",
+  "source": "https://github.com/indico/indico",
+  "website": "https://getindico.io",
+  "icon": "https://avatars.githubusercontent.com/u/1490135?s=200&v=4",
+  "categories": ["productivity", "collaboration", "work"],
+  "installation": "Indico is a multi-container stack; this template runs the primary web/WSGI server (getindico/indico) only. You MUST deploy these companion services from the SAME getindico/indico image, sharing this app's env and the postgres+valkey add-ons: (1) a Celery worker (command: indico celery worker), and (2) a Celery beat scheduler (command: indico celery beat). The upstream production setup also fronts the web container with an nginx reverse proxy (getindico/indico-nginx) that proxies to port 9090 and serves static assets; Kubero's ingress already terminates HTTP, but you may add it if you need Indico's static/asset routing. Rotate SECRET_KEY (openssl rand -hex 32) and the postgres password before going to production. On first boot, exec into the web pod and run 'indico db prepare' to initialize the schema, then 'indico setup wizard' (or 'indico user grant_admin <email>') to create the initial admin. Indico sends email; configure SMTP via the admin UI. Uploads and the indico.conf live on the mounted /opt/indico/data volume.",
+  "screenshots": [],
+  "links": ["https://docs.getindico.io/en/stable/", "https://github.com/indico/indico-containers"],
+  "license": "MIT License",
+  "spdx_id": "MIT",
+  "stars": 1700,
+  "language": "Python",
+  "image": {
+    "repository": "getindico/indico",
+    "tag": "latest",
+    "containerPort": "9090",
+    "command": []
+  },
+  "envVars": [
+    {"name": "PGHOST", "value": "indico-postgresql-rw"},
+    {"name": "PGPORT", "value": "5432"},
+    {"name": "PGUSER", "value": "indico"},
+    {"name": "PGPASSWORD", "value": "indico"},
+    {"name": "PGDATABASE", "value": "indico"},
+    {"name": "INDICO_DB_URI", "value": "postgresql://indico:indico@indico-postgresql-rw:5432/indico"},
+    {"name": "REDIS_CACHE_URL", "value": "redis://rfr-indico-valkey-readwrite:6379/0"},
+    {"name": "CELERY_BROKER", "value": "redis://rfr-indico-valkey-readwrite:6379/1"},
+    {"name": "INDICO_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "VIRTUAL_HOST", "value": "{{KUBERO_APP_HOST}}"},
+    {"name": "SECRET_KEY", "value": "replace-with-openssl-rand-hex-32"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "indico", "db": "indico", "user": "indico", "password": "indico"},
+    {"type": "valkey", "name": "indico"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/opt/indico/data", "name": "indico-data", "size": "5Gi"}
+  ]
+}

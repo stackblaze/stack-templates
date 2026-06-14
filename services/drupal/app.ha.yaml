@@ -1,0 +1,111 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: drupal
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Drupal is an open-source content management framework for building websites, intranets
+      and digital experiences.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1120322?s=200&v=4
+    kubero.dev/template.installation: The official drupal image installs interactively via the web setup wizard on first run;
+      complete the wizard at the app URL. On the database step choose PostgreSQL and enter host '{{KUBERO_APP_NAME}}-postgresql-rw',
+      port 5432, database/user/password 'drupal' (rotate the postgres add-on credentials and the wizard admin password after
+      setup). Drupal writes settings.php and uploaded files under /var/www/html/sites, which is persisted by the drupal-sites
+      volume. For production, increase PHP memory_limit and the app pod size for large sites. No external object store or
+      search engine is required for a base install (add Solr/Search API later if needed).
+    kubero.dev/template.links: '["https://www.drupal.org/docs/getting-started", "https://github.com/docker-library/docs/blob/master/drupal/README.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/drupal/drupal
+    kubero.dev/template.categories: '["cms", "development", "documentation"]'
+    kubero.dev/template.title: Drupal
+    kubero.dev/template.website: https://www.drupal.org/
+  labels:
+    manager: kubero
+spec:
+  name: drupal
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: drupal-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: drupal
+              owner: drupal
+              secret:
+                name: drupal-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: drupal-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: drupal-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: drupal
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: drupal-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: drupal
+          password: drupal
+  envVars:
+  - name: DRUPAL_DATABASE_DRIVER
+    value: pgsql
+  - name: DRUPAL_DATABASE_HOST
+    value: drupal-postgresql-rw
+  - name: DRUPAL_DATABASE_PORT
+    value: '5432'
+  - name: DRUPAL_DATABASE_NAME
+    value: drupal
+  - name: DRUPAL_DATABASE_USERNAME
+    value: drupal
+  - name: DRUPAL_DATABASE_PASSWORD
+    value: drupal
+  - name: PHP_MEMORY_LIMIT
+    value: 256M
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/sites
+    name: drupal-sites
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: drupal
+    tag: 10-apache

@@ -1,0 +1,35 @@
+{
+  "slug": "omeka",
+  "title": "Omeka S",
+  "description": "Open-source web publishing platform for sharing digital collections and creating media-rich exhibits, built for libraries, museums, and archives.",
+  "source": "https://github.com/omeka/omeka-s",
+  "website": "https://omeka.org/s/",
+  "icon": "https://avatars.githubusercontent.com/u/1460789?s=200&v=4",
+  "categories": ["cms", "media", "documentation"],
+  "installation": "There is no official Omeka S image; this uses the actively maintained community image giocomai/omeka-s-docker (Omeka S 4.x on PHP/Apache). Omeka S supports MySQL/MariaDB only, so a mariadb add-on is deployed. ROTATE the mariadb add-on password and the matching MYSQL_PASSWORD env before production. On first boot, complete the web installer at the app URL to create the admin account and the first site. The /var/www/html/volume path persists config (database.ini, local.config.php), uploaded files, themes, and modules across restarts.",
+  "screenshots": [],
+  "links": ["https://omeka.org/s/docs/user-manual/", "https://github.com/giocomai/omeka-s-docker"],
+  "license": "GNU General Public License v3.0",
+  "spdx_id": "GPL-3.0",
+  "stars": 320,
+  "language": "PHP",
+  "image": {
+    "repository": "giocomai/omeka-s-docker",
+    "tag": "v4.1.1",
+    "containerPort": "80",
+    "command": []
+  },
+  "envVars": [
+    { "name": "MYSQL_HOST", "value": "omeka-mysql" },
+    { "name": "MYSQL_PORT", "value": "3306" },
+    { "name": "MYSQL_DATABASE", "value": "omeka" },
+    { "name": "MYSQL_USER", "value": "omeka" },
+    { "name": "MYSQL_PASSWORD", "value": "omeka" }
+  ],
+  "addons": [
+    { "type": "mariadb", "name": "omeka", "db": "omeka", "user": "omeka", "password": "omeka" }
+  ],
+  "extraVolumes": [
+    { "mountPath": "/var/www/html/volume", "name": "omeka-data", "size": "5Gi" }
+  ]
+}

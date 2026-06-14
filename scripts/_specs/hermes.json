@@ -1,0 +1,38 @@
+{
+  "slug": "hermes",
+  "title": "Hermes",
+  "description": "Open-source document management system from HashiCorp Labs for scaling an organization's writing, review and approval workflows.",
+  "source": "https://github.com/hashicorp-forge/hermes",
+  "website": "https://github.com/hashicorp-forge/hermes",
+  "icon": "https://avatars.githubusercontent.com/u/103241808?s=200&v=4",
+  "categories": ["documentation", "productivity", "collaboration"],
+  "installation": "Hermes is an alpha-stage HashiCorp Labs project that does NOT publish a prebuilt container image; you must build it from the repo (`docker build -t ghcr.io/hashicorp-forge/hermes:latest .`) and push it to a registry you control before deploying this template (update image.repository/tag to match). Hermes is config-driven via an HCL file: mount your `config.hcl` at the path referenced by the entrypoint (this template mounts a volume at /hermes/config; pass `-config=/hermes/config/config.hcl`) or override the database via the HERMES_SERVER_POSTGRES_* env vars set here. A Postgres add-on is provisioned and is the v2 source of truth - rotate the default `hermes` password. REQUIRED external companions NOT provided by this template: (1) Algolia (App ID + Search API Key + Write API Key) for the search index; (2) a Google Workspace project OR SharePoint/Microsoft 365 tenant as the document storage backend AND OAuth identity provider - supply the corresponding OAuth client credentials in config.hcl. Optional: Jira for issue linking. After first boot, run the included DB migrations and index sync per the repo README, then sign in with your Google/Microsoft account to bootstrap the first user.",
+  "screenshots": [],
+  "links": ["https://github.com/hashicorp-forge/hermes/blob/main/README.md", "https://github.com/hashicorp-forge/hermes/blob/main/docs"],
+  "license": "Mozilla Public License 2.0",
+  "spdx_id": "MPL-2.0",
+  "stars": 1900,
+  "language": "Go",
+  "image": {
+    "repository": "ghcr.io/hashicorp-forge/hermes",
+    "tag": "latest",
+    "containerPort": "8000",
+    "command": []
+  },
+  "envVars": [
+    {"name": "HERMES_SERVER_POSTGRES_HOST", "value": "hermes-postgresql-rw"},
+    {"name": "HERMES_SERVER_POSTGRES_PORT", "value": "5432"},
+    {"name": "HERMES_SERVER_POSTGRES_DBNAME", "value": "hermes"},
+    {"name": "HERMES_SERVER_POSTGRES_USER", "value": "hermes"},
+    {"name": "HERMES_SERVER_POSTGRES_PASSWORD", "value": "hermes"},
+    {"name": "HERMES_SERVER_BASE_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "HERMES_WEB_BASE_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "HERMES_SERVER_ADDR", "value": "0.0.0.0:8000"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "hermes", "db": "hermes", "user": "hermes", "password": "hermes"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/hermes/config", "name": "hermes-config", "size": "1Gi"}
+  ]
+}

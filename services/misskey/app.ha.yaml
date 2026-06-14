@@ -1,0 +1,168 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: misskey
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Decentralized, ActivityPub-federated microblogging platform with reactions, Drive file
+      storage and a customizable UI.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/55391665?s=200&v=4
+    kubero.dev/template.installation: 'Misskey is configured PRIMARILY via a YAML file (.config/default.yml), not env vars
+      alone, so before first boot you MUST supply that config (mounted at /misskey/.config) pointing db.host=misskey-postgresql-rw
+      / db.port=5432 / db.db=misskey and redis.host=rfr-misskey-valkey-readwrite / redis.port=6379, and set url to your public
+      https URL. The env vars below mirror those values and cover the parts Misskey reads from the environment; rotate POSTGRES_PASSWORD
+      and the db password in default.yml to match. After the web container is up, run the DB migrations (it runs `pnpm migrate`
+      on start in the official image). COMPANION SERVICES: the single misskey/misskey image runs web + the federation/inbox/deliver/queue
+      workers in one process by default, so no extra worker container is strictly required for small instances; for scale
+      you can run additional misskey/misskey replicas with MK_ONLY_QUEUE/MK_ONLY_SERVER style splits. OPTIONAL: for full-text
+      post search Misskey can use Elasticsearch/OpenSearch or Meilisearch (image getmeili/meilisearch) configured in default.yml
+      under meilisearch/elasticsearch - not provisioned here; and for object storage of Drive uploads it can use any S3-compatible
+      bucket (configured under objectStorage in default.yml) instead of the local volume.'
+    kubero.dev/template.links: '["https://misskey-hub.net/en/docs/for-admin/install/guides/docker/", "https://misskey-hub.net/en/docs/"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/misskey-dev/misskey/develop/title.svg"]'
+    kubero.dev/template.source: https://github.com/misskey-dev/misskey
+    kubero.dev/template.categories: '["social", "communication", "media"]'
+    kubero.dev/template.title: Misskey
+    kubero.dev/template.website: https://misskey-hub.net/
+  labels:
+    manager: kubero
+spec:
+  name: misskey
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: misskey-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: misskey
+              owner: misskey
+              secret:
+                name: misskey-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: misskey-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: misskey-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: misskey
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: misskey-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: misskey
+          password: misskey
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: misskey-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: MISSKEY_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: DATABASE_HOST
+    value: misskey-postgresql-rw
+  - name: DATABASE_PORT
+    value: '5432'
+  - name: DATABASE_DB
+    value: misskey
+  - name: DATABASE_USER
+    value: misskey
+  - name: DATABASE_PASSWORD
+    value: misskey
+  - name: POSTGRES_HOST
+    value: misskey-postgresql-rw
+  - name: POSTGRES_PORT
+    value: '5432'
+  - name: POSTGRES_DB
+    value: misskey
+  - name: POSTGRES_USER
+    value: misskey
+  - name: POSTGRES_PASSWORD
+    value: misskey
+  - name: REDIS_HOST
+    value: rfr-misskey-valkey-readwrite
+  - name: REDIS_PORT
+    value: '6379'
+  - name: NODE_ENV
+    value: production
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /misskey/files
+    name: misskey-files
+    size: 5Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /misskey/.config
+    name: misskey-config
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: misskey/misskey
+    tag: latest

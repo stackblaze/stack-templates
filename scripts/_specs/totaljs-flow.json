@@ -1,0 +1,31 @@
+{
+  "slug": "totaljs-flow",
+  "title": "Total.js Flow",
+  "description": "Open-source visual flow-based programming editor for building real-time data-processing and integration pipelines with drag-and-drop components.",
+  "source": "https://github.com/totaljs/flow",
+  "website": "https://www.totaljs.com/flow/",
+  "icon": "https://avatars.githubusercontent.com/u/12302554?s=200&v=4",
+  "categories": ["development", "automation", "utilities"],
+  "installation": "Image: totalplatform/flow (official Total.js platform image). Total.js Flow is fully file-based - it needs NO external database; all flow designs, custom components, uploaded files and config persist on the /www/flow volume, so back that up. The app listens on port 8000. The editor is unauthenticated by default: set FLOW_TOKEN to a long random value (e.g. `openssl rand -hex 32`) to require a token, and place it behind the ingress TLS/auth as appropriate before exposing publicly - rotate FLOW_TOKEN from the placeholder. FLOW_NAME just labels the instance. On first run the empty flow workspace loads at the root URL; create or import flows from the designer. If you later need a message queue or datastore, deploy it separately and reference it from inside your flows (Flow has its own component nodes for Postgres, MongoDB, Redis, MQTT, etc.).",
+  "screenshots": ["https://www.totaljs.com/download/flow-preview.png"],
+  "links": ["https://docs.totaljs.com/flow10/", "https://github.com/totaljs/flow"],
+  "license": "MIT License",
+  "spdx_id": "MIT",
+  "stars": 602,
+  "language": "JavaScript",
+  "image": {
+    "repository": "totalplatform/flow",
+    "tag": "latest",
+    "containerPort": "8000",
+    "command": []
+  },
+  "envVars": [
+    {"name": "FLOW_NAME", "value": "Total.js Flow"},
+    {"name": "FLOW_TOKEN", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "FLOW_URL", "value": "{{KUBERO_APP_URL}}"}
+  ],
+  "addons": [],
+  "extraVolumes": [
+    {"mountPath": "/www/flow", "name": "totaljs-flow-data", "size": "2Gi"}
+  ]
+}

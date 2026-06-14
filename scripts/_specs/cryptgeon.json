@@ -1,0 +1,32 @@
+{
+  "slug": "cryptgeon",
+  "title": "Cryptgeon",
+  "description": "Secure, open-source service for sharing self-destructing, end-to-end-encrypted notes and files, inspired by PrivNote.",
+  "source": "https://github.com/cupcakearmy/cryptgeon",
+  "website": "https://cryptgeon.org",
+  "icon": "https://avatars.githubusercontent.com/u/9690735?s=200&v=4",
+  "categories": ["security", "utilities", "productivity"],
+  "installation": "Deploy with the bundled Valkey (Redis-compatible) add-on, which is where all encrypted notes/files are stored temporarily until they expire or are viewed; nothing is persisted on disk, so no volume is required. The app connects to Valkey via the REDIS env var (passwordless in-cluster). Encryption happens client-side in the browser using AES-GCM, so the server never sees plaintext or keys and there is no admin login or user database to seed. Tune SIZE_LIMIT (max payload, e.g. 4 MiB), MAX_VIEWS and MAX_EXPIRATION (minutes) to taste. Because data lives only in Valkey memory, restarting/redeploying Valkey clears all outstanding notes. No SMTP, S3 or external search engine is needed.",
+  "screenshots": [],
+  "links": ["https://github.com/cupcakearmy/cryptgeon#readme", "https://cryptgeon.org"],
+  "license": "MIT License",
+  "spdx_id": "MIT",
+  "stars": 1400,
+  "language": "Rust",
+  "image": {
+    "repository": "cupcakearmy/cryptgeon",
+    "tag": "latest",
+    "containerPort": "8000",
+    "command": []
+  },
+  "envVars": [
+    {"name": "REDIS", "value": "redis://rfr-cryptgeon-valkey-readwrite:6379"},
+    {"name": "SIZE_LIMIT", "value": "4 MiB"},
+    {"name": "MAX_VIEWS", "value": "100"},
+    {"name": "MAX_EXPIRATION", "value": "360"}
+  ],
+  "addons": [
+    {"type": "valkey", "name": "cryptgeon"}
+  ],
+  "extraVolumes": []
+}

@@ -1,0 +1,44 @@
+{
+  "slug": "snipe-it",
+  "title": "Snipe-IT",
+  "description": "Free, open-source IT asset and license management system for tracking hardware, software licenses, accessories, and consumables.",
+  "source": "https://github.com/snipe/snipe-it",
+  "website": "https://snipeitapp.com",
+  "icon": "https://avatars.githubusercontent.com/u/4555401?s=200&v=4",
+  "categories": ["work", "utilities", "productivity"],
+  "installation": "Snipe-IT is a Laravel app backed by MariaDB/MySQL (it does NOT support Postgres). It requires a 32-char APP_KEY: rotate APP_KEY to a value generated with 'php artisan key:generate --show' (or 'openssl rand -base64 32' formatted as base64:...) before going live, and rotate the MariaDB password. Valkey is wired for cache/session/queue drivers. On first run the app auto-runs migrations; then open the URL and complete the web-based pre-flight setup wizard to create the admin user. Mail (MAIL_*) is optional but needed for notifications.",
+  "screenshots": ["https://snipeitapp.com/img/screenshots/dashboard.png"],
+  "links": ["https://snipe-it.readme.io/docs", "https://snipe-it.readme.io/docs/docker"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 11500,
+  "language": "PHP",
+  "image": {"repository": "snipe/snipe-it", "tag": "v8.6.2", "containerPort": "80", "command": []},
+  "envVars": [
+    {"name": "APP_KEY", "value": "base64:replace-with-openssl-rand-base64-32"},
+    {"name": "APP_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "APP_ENV", "value": "production"},
+    {"name": "APP_DEBUG", "value": "false"},
+    {"name": "APP_TRUSTED_PROXIES", "value": "*"},
+    {"name": "DB_CONNECTION", "value": "mysql"},
+    {"name": "DB_HOST", "value": "snipe-it-mysql"},
+    {"name": "DB_PORT", "value": "3306"},
+    {"name": "DB_DATABASE", "value": "snipe-it"},
+    {"name": "DB_USERNAME", "value": "snipe-it"},
+    {"name": "DB_PASSWORD", "value": "snipe-it"},
+    {"name": "REDIS_HOST", "value": "rfr-snipe-it-valkey-readwrite"},
+    {"name": "REDIS_PORT", "value": "6379"},
+    {"name": "REDIS_PASSWORD", "value": "null"},
+    {"name": "CACHE_DRIVER", "value": "redis"},
+    {"name": "SESSION_DRIVER", "value": "redis"},
+    {"name": "QUEUE_DRIVER", "value": "redis"},
+    {"name": "MAIL_DRIVER", "value": "log"}
+  ],
+  "addons": [
+    {"type": "mariadb", "name": "snipe-it", "db": "snipe-it", "user": "snipe-it", "password": "snipe-it"},
+    {"type": "valkey", "name": "snipe-it"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/var/lib/snipeit", "name": "snipe-it-data", "size": "2Gi"}
+  ]
+}

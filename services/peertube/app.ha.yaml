@@ -1,0 +1,193 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: peertube
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Free, federated (ActivityPub) video hosting and live-streaming platform - a self-hosted,
+      decentralized alternative to YouTube.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/19262219?s=200&v=4
+    kubero.dev/template.installation: 'This template runs the PRIMARY PeerTube server container ONLY (chocobozzz/peertube,
+      a Node.js app listening on HTTP port 9000). REQUIRED before first boot: 1) Rotate PEERTUBE_SECRET - generate with ''openssl
+      rand -hex 32'' and replace the placeholder; this signs sessions/JWT and CANNOT be left at the default. 2) Set PEERTUBE_WEBSERVER_HOSTNAME
+      to your real public host BEFORE going live - it is baked into ActivityPub actor URLs and federated video URLs and cannot
+      be changed cleanly once you have federated. 3) Note the default DB suffix is empty here (PEERTUBE_DB_SUFFIX="") so the
+      add-on database ''peertube'' is used as-is; the upstream compose default appends ''_prod''. 4) After first start, find
+      the auto-generated root admin password in the logs (search for ''Username: root'') or set it with ''NODE_CONFIG_DIR=/config
+      NODE_ENV=production npm run reset-password -- -u root'' inside the pod. COMPANION/EXTERNAL SERVICES (NOT bundled): (a)
+      EMAIL - PeerTube needs an SMTP server for account verification, password reset and notifications. Deploy a separate
+      mail relay (e.g. the official ''mwader/postfix-relay'' image) and point PEERTUBE_SMTP_HOSTNAME/PEERTUBE_SMTP_PORT at
+      it, or set PEERTUBE_SMTP_* to an external provider; mail is disabled until configured. (b) OBJECT STORAGE (recommended
+      at scale) - videos, thumbnails and HLS playlists can grow huge; for production set PEERTUBE_OBJECT_STORAGE_ENABLED=true
+      plus the PEERTUBE_OBJECT_STORAGE_* S3 vars (endpoint, region, bucket, access/secret keys) against an external S3 bucket
+      (e.g. the RustFS add-on) instead of the local /data volume. (c) Transcoding, federation queues and scheduled jobs all
+      run INSIDE this single container (handled by internal Bull/Redis job queues), so no separate worker/scheduler pod is
+      required - but transcoding is CPU/RAM heavy, so give this pod a large pod size and persistent /data. Rotate the Postgres
+      password; Valkey/Redis is password-less in-cluster (PEERTUBE_REDIS_AUTH is left blank). The /data volume must be persistent
+      (and RWX if you ever scale replicas) because uploaded/transcoded videos live there until moved to object storage.'
+    kubero.dev/template.links: '["https://docs.joinpeertube.org/install/docker", "https://docs.joinpeertube.org/maintain/configuration"]'
+    kubero.dev/template.screenshots: '["https://joinpeertube.org/img/maquette-pt.png"]'
+    kubero.dev/template.source: https://github.com/Chocobozzz/PeerTube
+    kubero.dev/template.categories: '["media", "social", "communication"]'
+    kubero.dev/template.title: PeerTube
+    kubero.dev/template.website: https://joinpeertube.org
+  labels:
+    manager: kubero
+spec:
+  name: peertube
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: peertube-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: peertube
+              owner: peertube
+              secret:
+                name: peertube-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: peertube-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: peertube-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: peertube
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: peertube-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: peertube
+          password: peertube
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: peertube-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: PEERTUBE_WEBSERVER_HOSTNAME
+    value: '{{KUBERO_APP_HOST}}'
+  - name: PEERTUBE_WEBSERVER_PORT
+    value: '443'
+  - name: PEERTUBE_WEBSERVER_HTTPS
+    value: 'true'
+  - name: PEERTUBE_BIND_ADDRESS
+    value: 0.0.0.0
+  - name: PEERTUBE_PORT
+    value: '9000'
+  - name: PEERTUBE_TRUST_PROXY
+    value: '["loopback", "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]'
+  - name: PEERTUBE_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: PEERTUBE_ADMIN_EMAIL
+    value: admin@example.com
+  - name: PEERTUBE_DB_HOSTNAME
+    value: peertube-postgresql-rw
+  - name: PEERTUBE_DB_PORT
+    value: '5432'
+  - name: PEERTUBE_DB_NAME
+    value: peertube
+  - name: PEERTUBE_DB_SUFFIX
+    value: ''
+  - name: PEERTUBE_DB_USERNAME
+    value: peertube
+  - name: PEERTUBE_DB_PASSWORD
+    value: peertube
+  - name: PEERTUBE_DB_SSL
+    value: 'false'
+  - name: PEERTUBE_REDIS_HOSTNAME
+    value: rfr-peertube-valkey-readwrite
+  - name: PEERTUBE_REDIS_PORT
+    value: '6379'
+  - name: PEERTUBE_REDIS_AUTH
+    value: ''
+  - name: PEERTUBE_SMTP_HOSTNAME
+    value: ''
+  - name: PEERTUBE_SMTP_PORT
+    value: '25'
+  - name: PEERTUBE_SMTP_FROM
+    value: noreply@example.com
+  - name: PEERTUBE_SMTP_TLS
+    value: 'false'
+  - name: PEERTUBE_SMTP_DISABLE_STARTTLS
+    value: 'false'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /data
+    name: peertube-data
+    size: 5Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /config
+    name: peertube-config
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '9000'
+    pullPolicy: Always
+    repository: chocobozzz/peertube
+    tag: production-bullseye

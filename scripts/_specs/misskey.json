@@ -1,0 +1,41 @@
+{
+  "slug": "misskey",
+  "title": "Misskey",
+  "description": "Decentralized, ActivityPub-federated microblogging platform with reactions, Drive file storage and a customizable UI.",
+  "source": "https://github.com/misskey-dev/misskey",
+  "website": "https://misskey-hub.net/",
+  "icon": "https://avatars.githubusercontent.com/u/55391665?s=200&v=4",
+  "categories": ["social", "communication", "media"],
+  "installation": "Misskey is configured PRIMARILY via a YAML file (.config/default.yml), not env vars alone, so before first boot you MUST supply that config (mounted at /misskey/.config) pointing db.host=misskey-postgresql-rw / db.port=5432 / db.db=misskey and redis.host=rfr-misskey-valkey-readwrite / redis.port=6379, and set url to your public https URL. The env vars below mirror those values and cover the parts Misskey reads from the environment; rotate POSTGRES_PASSWORD and the db password in default.yml to match. After the web container is up, run the DB migrations (it runs `pnpm migrate` on start in the official image). COMPANION SERVICES: the single misskey/misskey image runs web + the federation/inbox/deliver/queue workers in one process by default, so no extra worker container is strictly required for small instances; for scale you can run additional misskey/misskey replicas with MK_ONLY_QUEUE/MK_ONLY_SERVER style splits. OPTIONAL: for full-text post search Misskey can use Elasticsearch/OpenSearch or Meilisearch (image getmeili/meilisearch) configured in default.yml under meilisearch/elasticsearch - not provisioned here; and for object storage of Drive uploads it can use any S3-compatible bucket (configured under objectStorage in default.yml) instead of the local volume.",
+  "screenshots": ["https://raw.githubusercontent.com/misskey-dev/misskey/develop/title.svg"],
+  "links": ["https://misskey-hub.net/en/docs/for-admin/install/guides/docker/", "https://misskey-hub.net/en/docs/"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 11200,
+  "language": "TypeScript",
+  "image": {"repository": "misskey/misskey", "tag": "latest", "containerPort": "3000", "command": []},
+  "envVars": [
+    {"name": "MISSKEY_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "DATABASE_HOST", "value": "misskey-postgresql-rw"},
+    {"name": "DATABASE_PORT", "value": "5432"},
+    {"name": "DATABASE_DB", "value": "misskey"},
+    {"name": "DATABASE_USER", "value": "misskey"},
+    {"name": "DATABASE_PASSWORD", "value": "misskey"},
+    {"name": "POSTGRES_HOST", "value": "misskey-postgresql-rw"},
+    {"name": "POSTGRES_PORT", "value": "5432"},
+    {"name": "POSTGRES_DB", "value": "misskey"},
+    {"name": "POSTGRES_USER", "value": "misskey"},
+    {"name": "POSTGRES_PASSWORD", "value": "misskey"},
+    {"name": "REDIS_HOST", "value": "rfr-misskey-valkey-readwrite"},
+    {"name": "REDIS_PORT", "value": "6379"},
+    {"name": "NODE_ENV", "value": "production"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "misskey", "db": "misskey", "user": "misskey", "password": "misskey"},
+    {"type": "valkey", "name": "misskey"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/misskey/files", "name": "misskey-files", "size": "5Gi"},
+    {"mountPath": "/misskey/.config", "name": "misskey-config", "size": "1Gi"}
+  ]
+}

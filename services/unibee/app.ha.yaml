@@ -1,0 +1,139 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: unibee
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source, gateway-agnostic subscription billing and invoicing platform for SaaS businesses.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/156260965?s=200&v=4
+    kubero.dev/template.installation: 'Primary web/API container only (unibee/api). DATABASE_LINK uses a MySQL DSN, so this
+      template wires the mariadb add-on (UniBee speaks MySQL, not postgres). The valkey add-on has no password, so REDIS_PASSWORD
+      is left empty. UniBee is a multi-container stack: also deploy the companion services as separate Kubero apps and route
+      them behind one ingress (UniBee normally fronts them with nginx): admin merchant portal = unibee/admin-portal:v1.9.0
+      (port 80), user portal = unibee/user-portal:v1.9.0 (port 80), and the licensing service = unibee/license-api:v1.0.2-premium
+      (port 80). Set UNIBEE_API_URL and the portal URLs to your public host once routing is set up; replace UNIBEE_LICENSE
+      with your key (blank works in stand-alone MODE for the open-source edition). Rotate the mariadb password from the slug
+      default. First run: open the admin portal and create the first merchant/admin account.'
+    kubero.dev/template.links: '["https://github.com/UniBee-Billing/unibee/blob/main/README.md", "https://unibee.dev/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/UniBee-Billing/unibee
+    kubero.dev/template.categories: '["finance", "e-commerce", "work"]'
+    kubero.dev/template.title: UniBee
+    kubero.dev/template.website: https://unibee.dev/
+  labels:
+    manager: kubero
+spec:
+  name: unibee
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: unibee-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: unibee-mysql-root
+            key: password
+          database: unibee
+          username: unibee
+          passwordSecretKeyRef:
+            name: unibee-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: unibee-mysql-root
+        type: Opaque
+        stringData:
+          password: unibee
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: unibee-mysql-app
+        type: Opaque
+        stringData:
+          password: unibee
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: unibee-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: MODE
+    value: stand-alone
+  - name: ENV
+    value: prod
+  - name: SERVER_ADDRESS
+    value: '80'
+  - name: UNIBEE_API_URL
+    value: '{{KUBERO_APP_URL}}/api'
+  - name: DATABASE_LINK
+    value: mysql:unibee:unibee@tcp(unibee-mysql:3306)/unibee?loc=UTC&parseTime=false
+  - name: REDIS_ADDRESS
+    value: rfr-unibee-valkey-readwrite:6379
+  - name: REDIS_PASSWORD
+    value: ''
+  - name: UNIBEE_LICENSE
+    value: ''
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: unibee/api
+    tag: v1.9.0

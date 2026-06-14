@@ -1,0 +1,40 @@
+{
+  "slug": "shopware",
+  "title": "Shopware",
+  "description": "Open-source headless commerce platform for building online stores, marketplaces, and B2B/D2C experiences with Symfony and Vue.",
+  "source": "https://github.com/shopware/shopware",
+  "website": "https://www.shopware.com",
+  "icon": "https://avatars.githubusercontent.com/u/2767137?s=200&v=4",
+  "categories": ["e-commerce", "cms", "crm"],
+  "installation": "Image: dockware/play (the de-facto managed Shopware 6 Docker image; runs Apache + PHP-FPM on port 80). Shopware REQUIRES MySQL 8 / MariaDB 10.11+ (NOT Postgres) - the mariadb add-on is wired in. Valkey (Redis-compatible) is wired in for sessions and app cache. First-run: the image ships a pre-installed demo shop using its bundled MySQL; for production point DATABASE_URL at the external mariadb add-on (set INSTALL=1 / run `bin/console system:install` on first boot to migrate the schema onto it), then create an admin via `bin/console user:create`. Default admin login of the bundled demo is admin / shopware - ROTATE immediately. Rotate APP_SECRET and INSTANCE_ID_HASH (placeholders below) with `openssl rand -hex 32` and the mariadb/db passwords. COMPANION SERVICES (deploy as separate apps sharing the same DATABASE_URL/Redis): a message-consumer worker (`bin/console messenger:consume async,low_priority`, same dockware/play image, run as a long-lived command), a scheduled-task worker (`bin/console scheduled-task:run`), and a cron/cache-warmer. SEARCH: Shopware scales poorly past ~50k products on MySQL search - deploy OpenSearch 2.x separately (NOT an available operator add-on; run it standalone) and set OPENSEARCH_URL + SHOPWARE_ES_ENABLED=1 + SHOPWARE_ES_INDEXING_ENABLED=1. Optionally front the storefront with Varnish/HTTP cache for production.",
+  "screenshots": [],
+  "links": ["https://developer.shopware.com/docs/", "https://docs.dockware.io"],
+  "license": "MIT License",
+  "spdx_id": "MIT",
+  "stars": 3400,
+  "language": "PHP",
+  "image": {"repository": "dockware/play", "tag": "latest", "containerPort": "80", "command": []},
+  "envVars": [
+    {"name": "APP_ENV", "value": "prod"},
+    {"name": "APP_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "APP_SECRET", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "INSTANCE_ID_HASH", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "DATABASE_URL", "value": "mysql://shopware:shopware@shopware-mysql:3306/shopware"},
+    {"name": "REDIS_URL", "value": "redis://rfr-shopware-valkey-readwrite:6379"},
+    {"name": "REDIS_CACHE_URL", "value": "redis://rfr-shopware-valkey-readwrite:6379/0"},
+    {"name": "REDIS_SESSION_URL", "value": "redis://rfr-shopware-valkey-readwrite:6379/1"},
+    {"name": "SHOPWARE_HTTP_CACHE_ENABLED", "value": "1"},
+    {"name": "SHOPWARE_ES_ENABLED", "value": "0"},
+    {"name": "SHOPWARE_ES_INDEXING_ENABLED", "value": "0"},
+    {"name": "BLUE_GREEN_DEPLOYMENT", "value": "0"},
+    {"name": "PHP_MEMORY_LIMIT", "value": "512M"}
+  ],
+  "addons": [
+    {"type": "mariadb", "name": "shopware", "db": "shopware", "user": "shopware", "password": "shopware"},
+    {"type": "valkey", "name": "shopware"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/var/www/html/files", "name": "shopware-files", "size": "2Gi"},
+    {"mountPath": "/var/www/html/public/media", "name": "shopware-media", "size": "5Gi"}
+  ]
+}

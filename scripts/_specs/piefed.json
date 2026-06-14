@@ -1,0 +1,34 @@
+{
+  "slug": "piefed",
+  "title": "PieFed",
+  "description": "Federated (ActivityPub) link-aggregator and discussion platform - a self-hosted, Lemmy/Reddit-style alternative for the Fediverse.",
+  "source": "https://codeberg.org/rimu/pyfedi",
+  "website": "https://join.piefed.social",
+  "icon": "https://avatars.githubusercontent.com/u/137885340?s=200&v=4",
+  "categories": ["social", "communication", "collaboration"],
+  "installation": "This template runs the PRIMARY PieFed web/app container ONLY (ghcr.io/rimu/pyfedi - a Django/Flask gunicorn app listening on HTTP port 5000). PieFed is a MULTI-CONTAINER stack and is NOT complete with this pod alone. REQUIRED before first boot: 1) Rotate SECRET_KEY - it MUST be at least 32 chars; generate with 'openssl rand -hex 32' and replace the placeholder. 2) Rotate the Postgres password (Valkey/Redis is password-less in-cluster). 3) SERVER_NAME is baked into ActivityPub actor URLs and cannot be changed cleanly after federating - set it to your real public host before going live. 4) After the Postgres add-on is up, exec into the pod and initialise the DB ('flask db upgrade' then 'flask init-db'), which creates the schema and the first admin account (note the printed admin password). MANDATORY COMPANION SERVICE to deploy as a SEPARATE app (SAME image ghcr.io/rimu/pyfedi, SAME tag, sharing the SAME Postgres + Valkey + media volume): the CELERY WORKER, command ['celery','-A','celery_worker.celery','worker'] (or run the repo's entrypoint in 'celery' mode) - it handles all async ActivityPub federation send/receive, image processing, and queue delivery; PieFed will appear to work without it but no federation or background jobs will run. SCHEDULED JOBS: PieFed ships cron scripts (daily.sh, send_queue.sh, email_notifs.sh, remove_orphan_files.sh) that must run on a schedule (a Kubero cron/CronJob or celery-beat container using the same image) for federation queue flushing, digest emails, and cleanup. REVERSE PROXY: route public ingress to this web pod on port 5000 (Kubero's ingress handles TLS termination); no separate nginx image is required inside the stack. MEDIA: the /app/app/static/media volume holds uploaded avatars/images - use RWX storage so the worker pod can also read/write it; for production at scale set S3-style object storage (e.g. the RustFS add-on) instead. Optional: a full-text search backend can be configured later; omit for a basic start.",
+  "screenshots": ["https://join.piefed.social/wp-content/uploads/2024/06/piefed-screenshot.png"],
+  "links": ["https://codeberg.org/rimu/pyfedi/src/branch/main/INSTALL-docker.md", "https://join.piefed.social/docs/"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 700,
+  "language": "Python",
+  "image": {"repository": "ghcr.io/rimu/pyfedi", "tag": "latest", "containerPort": "5000", "command": []},
+  "envVars": [
+    {"name": "SERVER_NAME", "value": "{{KUBERO_APP_HOST}}"},
+    {"name": "SECRET_KEY", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "DATABASE_URL", "value": "postgresql+psycopg2://piefed:piefed@piefed-postgresql-rw:5432/piefed"},
+    {"name": "CACHE_TYPE", "value": "RedisCache"},
+    {"name": "CACHE_REDIS_URL", "value": "redis://rfr-piefed-valkey-readwrite:6379/1"},
+    {"name": "CELERY_BROKER_URL", "value": "redis://rfr-piefed-valkey-readwrite:6379/0"},
+    {"name": "MAIL_FROM", "value": "noreply@example.com"},
+    {"name": "FLASK_APP", "value": "pyfedi.py"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "piefed", "db": "piefed", "user": "piefed", "password": "piefed"},
+    {"type": "valkey", "name": "piefed"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/app/app/static/media", "name": "piefed-media", "size": "5Gi"}
+  ]
+}

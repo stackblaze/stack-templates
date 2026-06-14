@@ -1,0 +1,37 @@
+{
+  "slug": "unibee",
+  "title": "UniBee",
+  "description": "Open-source, gateway-agnostic subscription billing and invoicing platform for SaaS businesses.",
+  "source": "https://github.com/UniBee-Billing/unibee",
+  "website": "https://unibee.dev/",
+  "icon": "https://avatars.githubusercontent.com/u/156260965?s=200&v=4",
+  "categories": ["finance", "e-commerce", "work"],
+  "installation": "Primary web/API container only (unibee/api). DATABASE_LINK uses a MySQL DSN, so this template wires the mariadb add-on (UniBee speaks MySQL, not postgres). The valkey add-on has no password, so REDIS_PASSWORD is left empty. UniBee is a multi-container stack: also deploy the companion services as separate Kubero apps and route them behind one ingress (UniBee normally fronts them with nginx): admin merchant portal = unibee/admin-portal:v1.9.0 (port 80), user portal = unibee/user-portal:v1.9.0 (port 80), and the licensing service = unibee/license-api:v1.0.2-premium (port 80). Set UNIBEE_API_URL and the portal URLs to your public host once routing is set up; replace UNIBEE_LICENSE with your key (blank works in stand-alone MODE for the open-source edition). Rotate the mariadb password from the slug default. First run: open the admin portal and create the first merchant/admin account.",
+  "screenshots": [],
+  "links": ["https://github.com/UniBee-Billing/unibee/blob/main/README.md", "https://unibee.dev/"],
+  "license": "Other",
+  "spdx_id": "NOASSERTION",
+  "stars": 700,
+  "language": "Go",
+  "image": {
+    "repository": "unibee/api",
+    "tag": "v1.9.0",
+    "containerPort": "80",
+    "command": []
+  },
+  "envVars": [
+    {"name": "MODE", "value": "stand-alone"},
+    {"name": "ENV", "value": "prod"},
+    {"name": "SERVER_ADDRESS", "value": "80"},
+    {"name": "UNIBEE_API_URL", "value": "{{KUBERO_APP_URL}}/api"},
+    {"name": "DATABASE_LINK", "value": "mysql:unibee:unibee@tcp(unibee-mysql:3306)/unibee?loc=UTC&parseTime=false"},
+    {"name": "REDIS_ADDRESS", "value": "rfr-unibee-valkey-readwrite:6379"},
+    {"name": "REDIS_PASSWORD", "value": ""},
+    {"name": "UNIBEE_LICENSE", "value": ""}
+  ],
+  "addons": [
+    {"type": "mariadb", "name": "unibee", "db": "unibee", "user": "unibee", "password": "unibee"},
+    {"type": "valkey", "name": "unibee"}
+  ],
+  "extraVolumes": []
+}

@@ -1,0 +1,214 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: kbin
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Federated, content-aggregation and microblogging platform for the fediverse (a libre
+      Reddit/Lemmy alternative built on ActivityPub).
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/126523321?s=200&v=4
+    kubero.dev/template.installation: 'kbin is a multi-container Symfony/PHP stack and does NOT ship a single official all-in-one
+      image; this template runs the primary web tier (combined nginx + PHP-FPM, listening on port 8080) using the community-maintained
+      kbin docker build. After deploy you MUST also run the companion services from the same source image/repo (ernestwisniewski/kbin):
+      a ''messenger'' worker container running ''php bin/console messenger:consume async old'' for federation/queue processing,
+      and a Mercure SSE hub (image dunglas/mercure) for real-time updates. First run: exec into the web pod and run ''php
+      bin/console doctrine:migrations:migrate'', ''php bin/console kbin:user:create <admin> <email> <password>'', then ''php
+      bin/console kbin:user:admin <admin>'' to grant admin. ROTATE: APP_SECRET (openssl rand -hex 16), MERCURE_JWT_SECRET,
+      and the postgres/rabbitmq passwords (all default to the slug). Media/uploads are stored on disk (/var/www/html/public/media)
+      — mounted as a persistent volume. S3 media storage is optional and can be configured later via S3_* env vars (omitted
+      here). Federation requires that {{KUBERO_APP_HOST}} resolves publicly over HTTPS.'
+    kubero.dev/template.links: '["https://docs.kbin.pub", "https://github.com/ernestwisniewski/kbin/blob/main/docs/admin/installation.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/ernestwisniewski/kbin
+    kubero.dev/template.categories: '["social", "communication", "media"]'
+    kubero.dev/template.title: KBIN
+    kubero.dev/template.website: https://kbin.pub
+  labels:
+    manager: kubero
+spec:
+  name: kbin
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: kbin-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: kbin
+              owner: kbin
+              secret:
+                name: kbin-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: kbin-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: kbin-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: kbin
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: kbin-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: kbin
+          password: kbin
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: kbin-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  - displayName: RabbitMQ
+    env: []
+    icon: /img/addons/rabbitmq.svg
+    id: kubero-operator
+    kind: RabbitmqCluster
+    resourceDefinitions:
+      RabbitmqCluster:
+        apiVersion: rabbitmq.com/v1beta1
+        kind: RabbitmqCluster
+        metadata:
+          name: kbin-rabbitmq
+        spec:
+          replicas: 1
+          persistence:
+            storageClassName: fast
+            storage: 1Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+      default-userSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: kbin-rabbitmq-default-user
+        type: Opaque
+        stringData:
+          username: kbin
+          password: kbin
+          default_user.conf: 'default_user = kbin
+
+            default_pass = kbin'
+  envVars:
+  - name: APP_ENV
+    value: prod
+  - name: APP_DEBUG
+    value: '0'
+  - name: APP_SECRET
+    value: replace-with-openssl-rand-hex-16
+  - name: SERVER_NAME
+    value: '{{KUBERO_APP_HOST}}'
+  - name: KBIN_DOMAIN
+    value: '{{KUBERO_APP_HOST}}'
+  - name: KBIN_TITLE
+    value: kbin
+  - name: KBIN_DEFAULT_LANG
+    value: en
+  - name: KBIN_CONTACT_EMAIL
+    value: contact@example.com
+  - name: KBIN_SENDER_EMAIL
+    value: noreply@example.com
+  - name: KBIN_FEDERATION_ENABLED
+    value: 'true'
+  - name: DATABASE_URL
+    value: postgresql://kbin:kbin@kbin-postgresql-rw:5432/kbin?serverVersion=15&charset=utf8
+  - name: POSTGRES_DB
+    value: kbin
+  - name: POSTGRES_USER
+    value: kbin
+  - name: POSTGRES_PASSWORD
+    value: kbin
+  - name: REDIS_DNS
+    value: redis://rfr-kbin-valkey-readwrite:6379
+  - name: REDIS_PASSWORD
+    value: ''
+  - name: MESSENGER_TRANSPORT_DSN
+    value: amqp://kbin:kbin@kbin-rabbitmq:5672/%2f/messages
+  - name: RABBITMQ_DEFAULT_USER
+    value: kbin
+  - name: RABBITMQ_DEFAULT_PASS
+    value: kbin
+  - name: MERCURE_URL
+    value: '{{KUBERO_APP_URL}}/.well-known/mercure'
+  - name: MERCURE_PUBLIC_URL
+    value: '{{KUBERO_APP_URL}}/.well-known/mercure'
+  - name: MERCURE_JWT_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: CORS_ALLOW_ORIGIN
+    value: ^https?://{{KUBERO_APP_HOST}}$
+  - name: TRUSTED_PROXIES
+    value: 0.0.0.0/0
+  - name: TRUSTED_HOSTS
+    value: ^{{KUBERO_APP_HOST}}$
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/public/media
+    name: kbin-media
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: ernestwisniewski/kbin
+    tag: latest

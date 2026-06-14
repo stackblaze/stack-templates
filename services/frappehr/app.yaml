@@ -1,0 +1,159 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: frappehr
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source HR and payroll suite (employees, leave, attendance, expenses, payroll) built
+      on the Frappe framework and ERPNext.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/3658922?s=200&v=4
+    kubero.dev/template.installation: 'Frappe HR (HRMS) is a MULTI-CONTAINER Frappe stack and has NO standalone official image:
+      it is installed as an app on top of the frappe/erpnext base image (HRMS depends on ERPNext). This template deploys the
+      PRIMARY backend (gunicorn) image frappe/erpnext, which serves the Frappe HTTP API/app on port 8000. To run a complete,
+      production-ready install you MUST deploy these companion services from the SAME frappe/erpnext image (only the command
+      differs) plus the nginx frontend, and run one-time site creation: (1) frontend - image frappe/erpnext, command ''nginx-entrypoint.sh'',
+      env BACKEND=<this-app>:8000, SOCKETIO=<websocket>:9000, FRAPPE_SITE_NAME_HEADER, UPSTREAM_REAL_IP_ADDRESS - this is
+      the public web server (port 8080). (2) websocket - image frappe/erpnext, command ''node /home/frappe/frappe-bench/apps/frappe/socketio.js''
+      (port 9000, real-time). (3) queue-short - command ''bench worker --queue short,default''. (4) queue-long - command ''bench
+      worker --queue long,default,short''. (5) scheduler - command ''bench schedule''. (6) configurator (run-once init) -
+      command writes common_site_config.json from DB_HOST/DB_PORT/REDIS_CACHE/REDIS_QUEUE/SOCKETIO_PORT then exits. (7) create-site
+      (run-once Job) - ''bench new-site'' with --db-type mariadb, --mariadb-root-password, --admin-password, then ''bench
+      --site <site> install-app erpnext && bench --site <site> install-app hrms'', then ''bench use <site>''. The hrms app
+      is what turns this into Frappe HR. All services share the /home/frappe/frappe-bench/sites volume (the extraVolume below).
+      FIRST RUN: rotate the MariaDB password (default ''frappehr''), set a strong Administrator password during create-site,
+      then log in at the app URL as user ''Administrator'' and open the HR workspace. Frappe officially supports MariaDB (first-class)
+      and PostgreSQL; this template uses the MariaDB add-on as the canonical/recommended database.'
+    kubero.dev/template.links: '["https://docs.frappe.io/hr", "https://github.com/frappe/frappe_docker"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/frappe/hrms
+    kubero.dev/template.categories: '["work", "erp", "productivity"]'
+    kubero.dev/template.title: Frappe HR
+    kubero.dev/template.website: https://frappe.io/hr
+  labels:
+    manager: kubero
+spec:
+  name: frappehr
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: frappehr-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: frappehr-mysql-root
+            key: password
+          database: frappehr
+          username: frappehr
+          passwordSecretKeyRef:
+            name: frappehr-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: frappehr-mysql-root
+        type: Opaque
+        stringData:
+          password: frappehr
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: frappehr-mysql-app
+        type: Opaque
+        stringData:
+          password: frappehr
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: frappehr-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: DB_HOST
+    value: frappehr-mysql
+  - name: DB_PORT
+    value: '3306'
+  - name: DB_NAME
+    value: frappehr
+  - name: DB_PASSWORD
+    value: frappehr
+  - name: MARIADB_ROOT_PASSWORD
+    value: frappehr
+  - name: REDIS_CACHE
+    value: redis://rfr-frappehr-valkey-readwrite:6379
+  - name: REDIS_QUEUE
+    value: redis://rfr-frappehr-valkey-readwrite:6379
+  - name: REDIS_SOCKETIO
+    value: redis://rfr-frappehr-valkey-readwrite:6379
+  - name: SOCKETIO_PORT
+    value: '9000'
+  - name: GUNICORN_WORKERS
+    value: '2'
+  - name: GUNICORN_THREADS
+    value: '4'
+  - name: GUNICORN_TIMEOUT
+    value: '120'
+  - name: FRAPPE_SITE_NAME_HEADER
+    value: '{{KUBERO_APP_HOST}}'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /home/frappe/frappe-bench/sites
+    name: frappehr-sites
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: frappe/erpnext
+    tag: version-15

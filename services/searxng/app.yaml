@@ -1,0 +1,88 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: searxng
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Privacy-respecting, hackable open-source metasearch engine that aggregates results from
+      70+ search services without tracking or profiling users.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/80454229?s=200&v=4
+    kubero.dev/template.installation: 'SearXNG is a stateless metasearch engine: it stores no user search history and needs
+      no SQL database. It does use the bundled Valkey (Redis-compatible) add-on for the optional limiter/bot-detection and
+      caching, wired in via the SEARXNG_REDIS_URL env var (passwordless in-cluster). IMPORTANT: rotate SEARXNG_SECRET to a
+      unique random value before going live (e.g. `openssl rand -hex 32`); the placeholder here must not be used in production.
+      SEARXNG_BASE_URL is auto-filled with this app''s public URL so generated links and OpenSearch descriptions are correct.
+      Mount /etc/searxng to persist settings.yml (engines, theme, limiter, UI), which the image generates on first start;
+      edit it there to enable/disable search engines, turn on the limiter (limiter.toml), or restrict instance access. No
+      SMTP, S3, or external Elasticsearch is required.'
+    kubero.dev/template.links: '["https://docs.searxng.org/admin/installation-docker.html", "https://docs.searxng.org/admin/settings/index.html"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/searxng/searxng
+    kubero.dev/template.categories: '["utilities", "productivity", "security"]'
+    kubero.dev/template.title: SearXNG
+    kubero.dev/template.website: https://docs.searxng.org
+  labels:
+    manager: kubero
+spec:
+  name: searxng
+  deploymentstrategy: docker
+  addons:
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: searxng-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: SEARXNG_BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: SEARXNG_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: SEARXNG_REDIS_URL
+    value: redis://rfr-searxng-valkey-readwrite:6379/0
+  - name: SEARXNG_PORT
+    value: '8080'
+  - name: SEARXNG_BIND_ADDRESS
+    value: 0.0.0.0
+  - name: INSTANCE_NAME
+    value: SearXNG
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /etc/searxng
+    name: searxng-config
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: searxng/searxng
+    tag: latest

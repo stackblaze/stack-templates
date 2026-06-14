@@ -1,0 +1,124 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: grist
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source modern relational spreadsheet that combines the flexibility of a spreadsheet
+      with the robustness of a database.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/35017079?s=200&v=4
+    kubero.dev/template.installation: Grist stores each document as a SQLite .grist file on disk under /persist/docs, so the
+      persistent volume is mandatory and holds all your user data. The bundled PostgreSQL add-on is used only for the Grist
+      'home' database (orgs, workspaces, users, sharing/ACL metadata) via the TYPEORM_* variables; rotate the Postgres password.
+      Rotate GRIST_SESSION_SECRET to a fresh random value (openssl rand -hex 32) before going live, as it signs session cookies.
+      APP_HOME_URL is wired to the public URL token; keep it correct or document sharing links and the API will break. By
+      default this image runs with anonymous/no-login access (GRIST_DEFAULT_EMAIL is set as the initial admin) which is fine
+      for a trusted single-tenant install; to require login configure an external auth provider (GRIST_FORCE_LOGIN plus SAML/OIDC
+      env vars) or front it with an authenticating proxy. Sandboxing uses gVisor by default and falls back gracefully; no
+      extra service required. No external object store is needed for a single-node deployment.
+    kubero.dev/template.links: '["https://support.getgrist.com/self-managed/", "https://github.com/gristlabs/grist-core#environment-variables"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/gristlabs/grist-core
+    kubero.dev/template.categories: '["productivity", "data", "collaboration"]'
+    kubero.dev/template.title: Grist
+    kubero.dev/template.website: https://www.getgrist.com
+  labels:
+    manager: kubero
+spec:
+  name: grist
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: grist-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: grist
+              owner: grist
+              secret:
+                name: grist-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: grist-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: grist-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: grist
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: grist-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: grist
+          password: grist
+  envVars:
+  - name: PORT
+    value: '8484'
+  - name: APP_HOME_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: GRIST_SESSION_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: GRIST_DATA_DIR
+    value: /persist/docs
+  - name: GRIST_DEFAULT_EMAIL
+    value: admin@example.com
+  - name: GRIST_SANDBOX_FLAVOR
+    value: gvisor
+  - name: TYPEORM_TYPE
+    value: postgres
+  - name: TYPEORM_HOST
+    value: grist-postgresql-rw
+  - name: TYPEORM_PORT
+    value: '5432'
+  - name: TYPEORM_DATABASE
+    value: grist
+  - name: TYPEORM_USERNAME
+    value: grist
+  - name: TYPEORM_PASSWORD
+    value: grist
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /persist
+    name: grist-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8484'
+    pullPolicy: Always
+    repository: gristlabs/grist-oss
+    tag: stable

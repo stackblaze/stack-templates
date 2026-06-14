@@ -1,0 +1,38 @@
+{
+  "slug": "saltcorn",
+  "title": "Saltcorn",
+  "description": "Free and open-source no-code application builder for creating database-backed web apps without writing code.",
+  "source": "https://github.com/saltcorn/saltcorn",
+  "website": "https://saltcorn.com",
+  "icon": "https://avatars.githubusercontent.com/u/68660688?s=200&v=4",
+  "categories": ["development", "productivity", "data"],
+  "installation": "Image: saltcorn/saltcorn (official). Saltcorn requires PostgreSQL; it connects via the discrete PG* vars pointing at the bundled postgres add-on (host saltcorn-postgresql-rw). Rotate SALTCORN_SESSION_SECRET (any long random string, e.g. `openssl rand -hex 32`) and the Postgres password (default 'saltcorn') before exposing publicly. On first run Saltcorn auto-initializes the schema, then presents a setup wizard to create the admin user and site name - complete this immediately. User-installed plugins, uploaded files and config persist on the /saltcorn volume. Multi-tenant mode is off by default (SALTCORN_MULTI_TENANT=false).",
+  "screenshots": ["https://saltcorn.com/files/serve/176"],
+  "links": ["https://wiki.saltcorn.com/view/ShowPage/deploy-with-docker", "https://wiki.saltcorn.com/"],
+  "license": "MIT License",
+  "spdx_id": "MIT",
+  "stars": 1500,
+  "language": "JavaScript",
+  "image": {
+    "repository": "saltcorn/saltcorn",
+    "tag": "latest",
+    "containerPort": "3000",
+    "command": []
+  },
+  "envVars": [
+    {"name": "SALTCORN_SESSION_SECRET", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "SALTCORN_MULTI_TENANT", "value": "false"},
+    {"name": "PGHOST", "value": "saltcorn-postgresql-rw"},
+    {"name": "PGPORT", "value": "5432"},
+    {"name": "PGDATABASE", "value": "saltcorn"},
+    {"name": "PGUSER", "value": "saltcorn"},
+    {"name": "PGPASSWORD", "value": "saltcorn"},
+    {"name": "SALTCORN_FILE_STORE", "value": "/saltcorn"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "saltcorn", "db": "saltcorn", "user": "saltcorn", "password": "saltcorn"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/saltcorn", "name": "saltcorn-data", "size": "5Gi"}
+  ]
+}

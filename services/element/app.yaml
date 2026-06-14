@@ -1,0 +1,38 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: element
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Glossy, feature-rich Matrix web client for secure, decentralized chat, voice and video
+      collaboration.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/132949923?s=200&v=4
+    kubero.dev/template.installation: Element Web is a STATELESS static client (nginx on port 80); it does NOT store data
+      itself. It is the frontend for a Matrix homeserver, which you must deploy separately. Run a Synapse homeserver (which
+      needs its own Postgres) and point Element at it. Configure the homeserver/identity-server URLs by mounting a config.json
+      at /app/config.json or via the ELEMENT_WEB_PORT / templated config; at minimum set default_server_config (m.homeserver
+      base_url) to your Synapse URL. No add-ons or volumes are required for Element Web itself.
+    kubero.dev/template.links: '["https://github.com/element-hq/element-web/blob/develop/docs/config.md", "https://github.com/element-hq/element-web/blob/develop/docs/install.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/element-hq/element-web
+    kubero.dev/template.categories: '["communication", "collaboration", "social"]'
+    kubero.dev/template.title: Element Web
+    kubero.dev/template.website: https://element.io
+  labels:
+    manager: kubero
+spec:
+  name: element
+  deploymentstrategy: docker
+  addons: []
+  envVars: []
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: vectorim/element-web
+    tag: latest

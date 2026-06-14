@@ -1,0 +1,50 @@
+{
+  "slug": "peertube",
+  "title": "PeerTube",
+  "description": "Free, federated (ActivityPub) video hosting and live-streaming platform - a self-hosted, decentralized alternative to YouTube.",
+  "source": "https://github.com/Chocobozzz/PeerTube",
+  "website": "https://joinpeertube.org",
+  "icon": "https://avatars.githubusercontent.com/u/19262219?s=200&v=4",
+  "categories": ["media", "social", "communication"],
+  "installation": "This template runs the PRIMARY PeerTube server container ONLY (chocobozzz/peertube, a Node.js app listening on HTTP port 9000). REQUIRED before first boot: 1) Rotate PEERTUBE_SECRET - generate with 'openssl rand -hex 32' and replace the placeholder; this signs sessions/JWT and CANNOT be left at the default. 2) Set PEERTUBE_WEBSERVER_HOSTNAME to your real public host BEFORE going live - it is baked into ActivityPub actor URLs and federated video URLs and cannot be changed cleanly once you have federated. 3) Note the default DB suffix is empty here (PEERTUBE_DB_SUFFIX=\"\") so the add-on database 'peertube' is used as-is; the upstream compose default appends '_prod'. 4) After first start, find the auto-generated root admin password in the logs (search for 'Username: root') or set it with 'NODE_CONFIG_DIR=/config NODE_ENV=production npm run reset-password -- -u root' inside the pod. COMPANION/EXTERNAL SERVICES (NOT bundled): (a) EMAIL - PeerTube needs an SMTP server for account verification, password reset and notifications. Deploy a separate mail relay (e.g. the official 'mwader/postfix-relay' image) and point PEERTUBE_SMTP_HOSTNAME/PEERTUBE_SMTP_PORT at it, or set PEERTUBE_SMTP_* to an external provider; mail is disabled until configured. (b) OBJECT STORAGE (recommended at scale) - videos, thumbnails and HLS playlists can grow huge; for production set PEERTUBE_OBJECT_STORAGE_ENABLED=true plus the PEERTUBE_OBJECT_STORAGE_* S3 vars (endpoint, region, bucket, access/secret keys) against an external S3 bucket (e.g. the RustFS add-on) instead of the local /data volume. (c) Transcoding, federation queues and scheduled jobs all run INSIDE this single container (handled by internal Bull/Redis job queues), so no separate worker/scheduler pod is required - but transcoding is CPU/RAM heavy, so give this pod a large pod size and persistent /data. Rotate the Postgres password; Valkey/Redis is password-less in-cluster (PEERTUBE_REDIS_AUTH is left blank). The /data volume must be persistent (and RWX if you ever scale replicas) because uploaded/transcoded videos live there until moved to object storage.",
+  "screenshots": ["https://joinpeertube.org/img/maquette-pt.png"],
+  "links": ["https://docs.joinpeertube.org/install/docker", "https://docs.joinpeertube.org/maintain/configuration"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 13800,
+  "language": "TypeScript",
+  "image": {"repository": "chocobozzz/peertube", "tag": "production-bullseye", "containerPort": "9000", "command": []},
+  "envVars": [
+    {"name": "PEERTUBE_WEBSERVER_HOSTNAME", "value": "{{KUBERO_APP_HOST}}"},
+    {"name": "PEERTUBE_WEBSERVER_PORT", "value": "443"},
+    {"name": "PEERTUBE_WEBSERVER_HTTPS", "value": "true"},
+    {"name": "PEERTUBE_BIND_ADDRESS", "value": "0.0.0.0"},
+    {"name": "PEERTUBE_PORT", "value": "9000"},
+    {"name": "PEERTUBE_TRUST_PROXY", "value": "[\"loopback\", \"10.0.0.0/8\", \"172.16.0.0/12\", \"192.168.0.0/16\"]"},
+    {"name": "PEERTUBE_SECRET", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "PEERTUBE_ADMIN_EMAIL", "value": "admin@example.com"},
+    {"name": "PEERTUBE_DB_HOSTNAME", "value": "peertube-postgresql-rw"},
+    {"name": "PEERTUBE_DB_PORT", "value": "5432"},
+    {"name": "PEERTUBE_DB_NAME", "value": "peertube"},
+    {"name": "PEERTUBE_DB_SUFFIX", "value": ""},
+    {"name": "PEERTUBE_DB_USERNAME", "value": "peertube"},
+    {"name": "PEERTUBE_DB_PASSWORD", "value": "peertube"},
+    {"name": "PEERTUBE_DB_SSL", "value": "false"},
+    {"name": "PEERTUBE_REDIS_HOSTNAME", "value": "rfr-peertube-valkey-readwrite"},
+    {"name": "PEERTUBE_REDIS_PORT", "value": "6379"},
+    {"name": "PEERTUBE_REDIS_AUTH", "value": ""},
+    {"name": "PEERTUBE_SMTP_HOSTNAME", "value": ""},
+    {"name": "PEERTUBE_SMTP_PORT", "value": "25"},
+    {"name": "PEERTUBE_SMTP_FROM", "value": "noreply@example.com"},
+    {"name": "PEERTUBE_SMTP_TLS", "value": "false"},
+    {"name": "PEERTUBE_SMTP_DISABLE_STARTTLS", "value": "false"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "peertube", "db": "peertube", "user": "peertube", "password": "peertube"},
+    {"type": "valkey", "name": "peertube"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/data", "name": "peertube-data", "size": "5Gi"},
+    {"mountPath": "/config", "name": "peertube-config", "size": "1Gi"}
+  ]
+}

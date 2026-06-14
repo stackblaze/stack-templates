@@ -1,0 +1,119 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: mautic
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source marketing automation platform for email campaigns, lead management, landing
+      pages, and multichannel customer journeys.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/2071218?s=200&v=4
+    kubero.dev/template.installation: 'Mautic only supports MySQL/MariaDB (no Postgres). This template deploys the primary
+      mautic_web container; on first run open the URL and complete the web installer, or rely on the auto-install env vars
+      (set DOCKER_MAUTIC_LOAD_TEST_DATA=false). IMPORTANT: rotate the mariadb password and the MAUTIC_DB_PASSWORD env to match
+      before going to production. For full functionality deploy two companion containers from the SAME image mautic/mautic:5-apache,
+      changing only DOCKER_MAUTIC_ROLE: (1) a worker container with DOCKER_MAUTIC_ROLE=mautic_worker (consumes the Symfony
+      Messenger queues for email sending/processing), and (2) a cron container with DOCKER_MAUTIC_ROLE=mautic_cron (runs scheduled
+      segment/campaign/email cron jobs). All three containers must share the same MAUTIC_DB_* settings and the same persistent
+      volume (/var/www/html). Redis/Valkey can optionally back the Messenger transport and cache for higher throughput but
+      is not required.'
+    kubero.dev/template.links: '["https://docs.mautic.org/en/setup/how-to-install-mautic/docker-installation", "https://github.com/mautic/docker-mautic"]'
+    kubero.dev/template.screenshots: '["https://www.mautic.org/wp-content/uploads/2021/02/dashboard.png"]'
+    kubero.dev/template.source: https://github.com/mautic/mautic
+    kubero.dev/template.categories: '["crm", "automation", "communication"]'
+    kubero.dev/template.title: Mautic
+    kubero.dev/template.website: https://www.mautic.org
+  labels:
+    manager: kubero
+spec:
+  name: mautic
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: mautic-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: mautic-mysql-root
+            key: password
+          database: mautic
+          username: mautic
+          passwordSecretKeyRef:
+            name: mautic-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: mautic-mysql-root
+        type: Opaque
+        stringData:
+          password: mautic
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: mautic-mysql-app
+        type: Opaque
+        stringData:
+          password: mautic
+  envVars:
+  - name: DOCKER_MAUTIC_ROLE
+    value: mautic_web
+  - name: MAUTIC_DB_HOST
+    value: mautic-mysql
+  - name: MAUTIC_DB_PORT
+    value: '3306'
+  - name: MAUTIC_DB_DATABASE
+    value: mautic
+  - name: MAUTIC_DB_USER
+    value: mautic
+  - name: MAUTIC_DB_PASSWORD
+    value: mautic
+  - name: MAUTIC_RUN_CRON_JOBS
+    value: 'false'
+  - name: DOCKER_MAUTIC_LOAD_TEST_DATA
+    value: 'false'
+  - name: DOCKER_MAUTIC_RUN_MIGRATIONS
+    value: 'true'
+  - name: MAUTIC_TRUSTED_PROXIES
+    value: 0.0.0.0/0
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html
+    name: mautic-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: mautic/mautic
+    tag: 5-apache

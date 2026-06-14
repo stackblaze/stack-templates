@@ -1,0 +1,115 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: metabase-postgres
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source business intelligence and analytics tool to query, visualize, and share dashboards
+      from your databases without writing SQL.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/9942916?s=200&v=4
+    kubero.dev/template.installation: 'This template runs the official metabase/metabase image and stores all application
+      state (questions, dashboards, users, saved data-source credentials, settings) in the bundled PostgreSQL add-on via the
+      MB_DB_* variables, so no persistent volume is needed. Rotate the Postgres add-on password before exposing. CRITICAL:
+      set MB_ENCRYPTION_SECRET_KEY to a fixed random value (openssl rand -base64 32) and NEVER change it after first boot,
+      because it encrypts the credentials of the external databases you connect to; if it is lost or changed, those saved
+      connections become undecryptable. MB_SITE_URL is wired to the public URL token; keep it correct or password-reset and
+      embedding links will break. On first run, open the app and complete the setup wizard to create the initial admin account.
+      Outbound email (alerts, invites, pulses) requires SMTP settings configured in Admin > Email (not provisioned here).
+      To analyze data, add your own external database connections from the admin panel after setup.'
+    kubero.dev/template.links: '["https://www.metabase.com/docs/latest/installation-and-operation/running-metabase-on-docker",
+      "https://www.metabase.com/docs/latest/configuring-metabase/environment-variables"]'
+    kubero.dev/template.screenshots: '["https://www.metabase.com/images/home/hero-2.png"]'
+    kubero.dev/template.source: https://github.com/metabase/metabase
+    kubero.dev/template.categories: '["data", "monitoring", "productivity"]'
+    kubero.dev/template.title: Metabase (Postgres)
+    kubero.dev/template.website: https://www.metabase.com
+  labels:
+    manager: kubero
+spec:
+  name: metabase-postgres
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: metabase-postgres-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: metabase-postgres
+              owner: metabase-postgres
+              secret:
+                name: metabase-postgres-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: metabase-postgres-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: metabase-postgres-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: metabase-postgres
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: metabase-postgres-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: metabase-postgres
+          password: metabase-postgres
+  envVars:
+  - name: MB_DB_TYPE
+    value: postgres
+  - name: MB_DB_HOST
+    value: metabase-postgres-postgresql-rw
+  - name: MB_DB_PORT
+    value: '5432'
+  - name: MB_DB_DBNAME
+    value: metabase-postgres
+  - name: MB_DB_USER
+    value: metabase-postgres
+  - name: MB_DB_PASS
+    value: metabase-postgres
+  - name: MB_SITE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: MB_ENCRYPTION_SECRET_KEY
+    value: replace-with-openssl-rand-base64-32
+  - name: MB_JETTY_HOST
+    value: 0.0.0.0
+  - name: MB_JETTY_PORT
+    value: '3000'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: metabase/metabase
+    tag: latest

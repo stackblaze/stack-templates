@@ -1,0 +1,151 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: castopod
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source, self-hosted podcast hosting platform with built-in analytics and ActivityPub
+      federation for the Fediverse (Podcasting 2.0).
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/74553002?s=200&v=4
+    kubero.dev/template.installation: 'Castopod is a PHP/CodeIgniter app that needs a MySQL-compatible database (the MariaDB
+      add-on here; Castopod does NOT support Postgres) and optionally Redis for caching, which is wired to the password-less
+      Valkey add-on (CP_CACHE_HANDLER=redis + CP_REDIS_HOST). The public URL is injected via {{KUBERO_APP_URL}} into CP_BASEURL;
+      this MUST match the real host or asset/feed URLs break. ROTATE before going live: CP_ANALYTICS_SALT (set to a fresh
+      `openssl rand -hex 32` value — it salts analytics IP hashing and must not be the placeholder), and the MariaDB add-on
+      credentials (db/user/password all default to ''castopod''). On first run, browse to the app URL to complete the web
+      installer and create the super-admin (instance owner) account. Uploaded episode audio, cover art and the media library
+      persist on the /app/public/media volume; raise its size for large podcast catalogs. Outbound email (SMTP) for notifications/invites
+      must be configured in the admin panel after install. ActivityPub federation works out of the box once CP_BASEURL is
+      reachable over HTTPS.'
+    kubero.dev/template.links: '["https://docs.castopod.org/", "https://docs.castopod.org/main/en/getting-started/docker/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/ad-aures/castopod
+    kubero.dev/template.categories: '["media", "social", "communication"]'
+    kubero.dev/template.title: Castopod
+    kubero.dev/template.website: https://castopod.org
+  labels:
+    manager: kubero
+spec:
+  name: castopod
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: castopod-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: castopod-mysql-root
+            key: password
+          database: castopod
+          username: castopod
+          passwordSecretKeyRef:
+            name: castopod-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: castopod-mysql-root
+        type: Opaque
+        stringData:
+          password: castopod
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: castopod-mysql-app
+        type: Opaque
+        stringData:
+          password: castopod
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: castopod-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: CP_BASEURL
+    value: '{{KUBERO_APP_URL}}'
+  - name: CP_ANALYTICS_SALT
+    value: replace-with-openssl-rand-hex-32
+  - name: CP_DATABASE_HOSTNAME
+    value: castopod-mysql
+  - name: CP_DATABASE_PORT
+    value: '3306'
+  - name: CP_DATABASE_NAME
+    value: castopod
+  - name: CP_DATABASE_USERNAME
+    value: castopod
+  - name: CP_DATABASE_PASSWORD
+    value: castopod
+  - name: CP_DATABASE_PREFIX
+    value: cp_
+  - name: CP_CACHE_HANDLER
+    value: redis
+  - name: CP_REDIS_HOST
+    value: rfr-castopod-valkey-readwrite
+  - name: CP_REDIS_PORT
+    value: '6379'
+  - name: CP_REDIS_DATABASE
+    value: '0'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/public/media
+    name: castopod-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: castopod/castopod
+    tag: latest

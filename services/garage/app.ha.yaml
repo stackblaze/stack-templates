@@ -1,0 +1,67 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: garage
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Lightweight, self-hosted, S3-compatible distributed object storage built for geo-redundant
+      clusters on commodity hardware.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/85123091?s=200&v=4
+    kubero.dev/template.installation: 'Garage is a single self-contained Rust daemon that keeps all metadata and object data
+      on local disk, so it needs NO database add-on, just the two persistent volumes mounted below (/var/lib/garage/meta and
+      /var/lib/garage/data). The S3 API is served on the container HTTP port 3900; the static web endpoint is 3902 and the
+      admin API is 3903. Garage requires a few settings (rpc_secret, replication factor, bind addresses, dirs) that are normally
+      supplied via /etc/garage.toml; the GARAGE_* env vars below cover the env-config path, but you should mount a garage.toml
+      with replication_factor=1 for a single-node deploy. CRITICAL: rotate GARAGE_RPC_SECRET (a 32-byte hex value, generate
+      with `openssl rand -hex 32`) and GARAGE_ADMIN_TOKEN / GARAGE_METRICS_TOKEN before exposing. First-run setup is CLI-driven:
+      exec into the pod and run `garage layout assign -z dc1 -c 10G <node_id>` then `garage layout apply --version 1`, then
+      create a key (`garage key create`) and a bucket (`garage bucket create`) and grant access. Point S3 clients at the app
+      URL with path-style addressing. Garage is the object store itself, so it has no companion services.'
+    kubero.dev/template.links: '["https://garagehq.deuxfleurs.fr/documentation/quick-start/", "https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/deuxfleurs-org/garage
+    kubero.dev/template.categories: '["storage", "utilities", "data"]'
+    kubero.dev/template.title: Garage
+    kubero.dev/template.website: https://garagehq.deuxfleurs.fr
+  labels:
+    manager: kubero
+spec:
+  name: garage
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: GARAGE_RPC_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: GARAGE_ADMIN_TOKEN
+    value: replace-with-openssl-rand-base64-32
+  - name: GARAGE_METRICS_TOKEN
+    value: replace-with-openssl-rand-base64-32
+  - name: GARAGE_ALLOW_WORLD_READABLE_SECRETS
+    value: 'true'
+  - name: S3_API_ROOT_DOMAIN
+    value: '{{KUBERO_APP_HOST}}'
+  - name: S3_WEB_ROOT_DOMAIN
+    value: '{{KUBERO_APP_HOST}}'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/lib/garage/meta
+    name: garage-meta
+    size: 2Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/lib/garage/data
+    name: garage-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3900'
+    pullPolicy: Always
+    repository: dxflrs/garage
+    tag: v2.3.0

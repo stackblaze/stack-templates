@@ -1,0 +1,149 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: suitecrm
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'Open-source customer relationship management for sales, marketing and service teams:
+      accounts, contacts, leads, opportunities, cases and workflows.'
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4280435?s=200&v=4
+    kubero.dev/template.installation: Runs the Bitnami SuiteCRM image (bitnami/suitecrm). SuiteCRM only supports MariaDB/MySQL
+      (no PostgreSQL) — this template ships the bundled mariadb addon (default db/user/password 'suitecrm', rotate before
+      production). On first boot the admin account is provisioned from SUITECRM_USERNAME / SUITECRM_PASSWORD / SUITECRM_EMAIL
+      — rotate SUITECRM_PASSWORD (placeholder value) and the mariadb password to match SUITECRM_DATABASE_PASSWORD. The valkey
+      addon is wired as the optional Redis cache/session store via SUITECRM_REDIS_HOST (Valkey is Redis-compatible and password-less
+      here); remove it if not wanted. SUITECRM_HOST is set from the app URL token so generated links resolve. Persistent app
+      data (uploads, custom modules, config) lives at /bitnami/suitecrm — back this up. For outbound email configure SMTP
+      from the SuiteCRM admin UI after install. Scheduler/cron jobs should be run via an external CronJob hitting cron.php.
+    kubero.dev/template.links: '["https://docs.suitecrm.com/admin/installation-guide/", "https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-app-doc/apps-containers-suitecrm-index.html"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/salesagility/SuiteCRM
+    kubero.dev/template.categories: '["crm", "work", "productivity"]'
+    kubero.dev/template.title: SuiteCRM
+    kubero.dev/template.website: https://suitecrm.com
+  labels:
+    manager: kubero
+spec:
+  name: suitecrm
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: suitecrm-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: suitecrm-mysql-root
+            key: password
+          database: suitecrm
+          username: suitecrm
+          passwordSecretKeyRef:
+            name: suitecrm-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: suitecrm-mysql-root
+        type: Opaque
+        stringData:
+          password: suitecrm
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: suitecrm-mysql-app
+        type: Opaque
+        stringData:
+          password: suitecrm
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: suitecrm-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: SUITECRM_DATABASE_HOST
+    value: suitecrm-mysql
+  - name: SUITECRM_DATABASE_PORT_NUMBER
+    value: '3306'
+  - name: SUITECRM_DATABASE_NAME
+    value: suitecrm
+  - name: SUITECRM_DATABASE_USER
+    value: suitecrm
+  - name: SUITECRM_DATABASE_PASSWORD
+    value: suitecrm
+  - name: SUITECRM_HOST
+    value: '{{KUBERO_APP_HOST}}'
+  - name: SUITECRM_USERNAME
+    value: admin
+  - name: SUITECRM_PASSWORD
+    value: replace-with-openssl-rand-hex-32
+  - name: SUITECRM_EMAIL
+    value: admin@example.com
+  - name: SUITECRM_ENABLE_REDIS
+    value: 'yes'
+  - name: SUITECRM_REDIS_HOST
+    value: rfr-suitecrm-valkey-readwrite
+  - name: SUITECRM_REDIS_PORT_NUMBER
+    value: '6379'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /bitnami/suitecrm
+    name: suitecrm-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: bitnami/suitecrm
+    tag: '8'

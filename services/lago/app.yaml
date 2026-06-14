@@ -1,0 +1,173 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: lago
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source metering and usage-based billing platform for invoicing, subscriptions, and
+      pay-as-you-go pricing.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/86373116?s=200&v=4
+    kubero.dev/template.installation: 'Lago is a multi-service Rails stack. This template runs the PRIMARY API server (getlago/api)
+      on port 3000, wired to the Postgres and Valkey (Redis) add-ons provisioned here. You MUST deploy the companion services
+      separately, all sharing the SAME database, Redis, and the env keys below: (1) Worker - image getlago/api with command
+      ''./scripts/start.worker.sh'' (Sidekiq background jobs, required for billing/invoicing to function); (2) Clock - image
+      getlago/api with command ''./scripts/start.clock.sh'' (recurring/scheduled jobs); (3) Frontend - image getlago/front
+      on port 80, set its API_URL to this app''s public URL and APP_ENV=production; (4) PDF generator - image getlago/lago-gotenberg:7.8.2
+      on port 3000, point LAGO_PDF_URL at it (default http://lago-pdf:3000). Lago''s Postgres needs the partman + uuid-ossp
+      extensions; if the provisioned Postgres lacks them, swap in getlago/postgres-partman:15-alpine. ROTATE before exposing:
+      SECRET_KEY_BASE, LAGO_ENCRYPTION_PRIMARY_KEY, LAGO_ENCRYPTION_DETERMINISTIC_KEY, LAGO_ENCRYPTION_KEY_DERIVATION_SALT
+      (each via ''openssl rand -hex 32''), LAGO_RSA_PRIVATE_KEY (a real PEM via ''openssl genrsa 2048 | base64''), and the
+      Postgres add-on password. First run: the API container runs DB migrations on boot via LAGO_CREATE_ORG; create your first
+      organization/user through the frontend signup. Object storage (S3) for invoice PDFs is optional and not provisioned
+      - configure LAGO_USE_AWS_S3 + bucket env vars if needed.'
+    kubero.dev/template.links: '["https://getlago.com/docs/guide/lago-self-hosted/docker", "https://getlago.com/docs/api-reference/intro"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/getlago/lago
+    kubero.dev/template.categories: '["finance", "e-commerce", "development"]'
+    kubero.dev/template.title: Lago
+    kubero.dev/template.website: https://www.getlago.com/
+  labels:
+    manager: kubero
+spec:
+  name: lago
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: lago-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: lago
+              owner: lago
+              secret:
+                name: lago-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: lago-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: lago-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: lago
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: lago-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: lago
+          password: lago
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: lago-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: RAILS_ENV
+    value: production
+  - name: RAILS_LOG_TO_STDOUT
+    value: 'true'
+  - name: LAGO_CREATE_ORG
+    value: 'true'
+  - name: DATABASE_URL
+    value: postgresql://lago:lago@lago-postgresql-rw:5432/lago
+  - name: POSTGRES_HOST
+    value: lago-postgresql-rw
+  - name: POSTGRES_PORT
+    value: '5432'
+  - name: POSTGRES_DB
+    value: lago
+  - name: POSTGRES_USER
+    value: lago
+  - name: POSTGRES_PASSWORD
+    value: lago
+  - name: REDIS_URL
+    value: redis://rfr-lago-valkey-readwrite:6379
+  - name: REDIS_HOST
+    value: rfr-lago-valkey-readwrite
+  - name: REDIS_PORT
+    value: '6379'
+  - name: SECRET_KEY_BASE
+    value: replace-with-openssl-rand-hex-32
+  - name: LAGO_ENCRYPTION_PRIMARY_KEY
+    value: replace-with-openssl-rand-hex-32
+  - name: LAGO_ENCRYPTION_DETERMINISTIC_KEY
+    value: replace-with-openssl-rand-hex-32
+  - name: LAGO_ENCRYPTION_KEY_DERIVATION_SALT
+    value: replace-with-openssl-rand-hex-32
+  - name: LAGO_RSA_PRIVATE_KEY
+    value: replace-with-base64-encoded-rsa-private-key
+  - name: LAGO_API_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: LAGO_FRONT_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: LAGO_PDF_URL
+    value: http://lago-pdf:3000
+  - name: LAGO_REDIS_CACHE_URL
+    value: redis://rfr-lago-valkey-readwrite:6379
+  - name: LAGO_SIDEKIQ_WEB
+    value: 'false'
+  - name: LAGO_DISABLE_SEGMENT
+    value: 'true'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: getlago/api
+    tag: v1.48.1

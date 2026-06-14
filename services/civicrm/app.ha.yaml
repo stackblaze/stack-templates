@@ -1,0 +1,124 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: civicrm
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source constituent relationship management for nonprofits and civic groups, handling
+      contacts, contributions, events, memberships and email.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/745198?s=200&v=4
+    kubero.dev/template.installation: Runs CiviCRM Standalone (civicrm/civicrm). Requires a MariaDB/MySQL database (the bundled
+      mariadb addon, default db/user/password 'civicrm' — rotate before production). On first run the install script provisions
+      the admin account from CIVICRM_ADMIN_USER / CIVICRM_ADMIN_PASS — rotate the password and rotate the DB password too.
+      CIVICRM_UF_BASEURL is wired to the app URL token. CiviCRM does NOT support PostgreSQL. Persistent paths public/, private/
+      and ext/ are mounted as volumes; back these up. For outbound email and SMS configure an external SMTP provider from
+      the CiviCRM admin UI after install.
+    kubero.dev/template.links: '["https://docs.civicrm.org/installation/en/latest/standalone/", "https://github.com/civicrm/civicrm-docker/blob/main/README.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/civicrm/civicrm-core
+    kubero.dev/template.categories: '["crm", "productivity", "work"]'
+    kubero.dev/template.title: CiviCRM
+    kubero.dev/template.website: https://civicrm.org
+  labels:
+    manager: kubero
+spec:
+  name: civicrm
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: civicrm-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: civicrm-mysql-root
+            key: password
+          database: civicrm
+          username: civicrm
+          passwordSecretKeyRef:
+            name: civicrm-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: civicrm-mysql-root
+        type: Opaque
+        stringData:
+          password: civicrm
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: civicrm-mysql-app
+        type: Opaque
+        stringData:
+          password: civicrm
+  envVars:
+  - name: CIVICRM_DB_HOST
+    value: civicrm-mysql
+  - name: CIVICRM_DB_PORT
+    value: '3306'
+  - name: CIVICRM_DB_NAME
+    value: civicrm
+  - name: CIVICRM_DB_USER
+    value: civicrm
+  - name: CIVICRM_DB_PASSWORD
+    value: civicrm
+  - name: CIVICRM_UF_BASEURL
+    value: '{{KUBERO_APP_URL}}'
+  - name: CIVICRM_ADMIN_USER
+    value: admin
+  - name: CIVICRM_ADMIN_PASS
+    value: replace-with-openssl-rand-hex-32
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/public
+    name: civicrm-public
+    size: 2Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/private
+    name: civicrm-private
+    size: 2Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/ext
+    name: civicrm-ext
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: civicrm/civicrm
+    tag: '5'

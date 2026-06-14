@@ -1,0 +1,31 @@
+{
+  "slug": "papercups",
+  "title": "Papercups",
+  "description": "Open-source live chat and customer messaging platform (Intercom alternative) for support, onboarding, and team inboxes.",
+  "source": "https://github.com/papercups-io/papercups",
+  "website": "https://papercups.io",
+  "icon": "https://avatars.githubusercontent.com/u/65969060?s=200&v=4",
+  "categories": ["communication", "helpdesk", "crm"],
+  "installation": "Deploy with the bundled PostgreSQL add-on. Rotate SECRET_KEY_BASE (generate with `openssl rand -base64 48`) and the Postgres password from their template defaults before going to production. DATABASE_URL uses the ecto:// scheme and points at the in-cluster postgres add-on; REQUIRE_DB_SSL is false because the add-on speaks plaintext inside the cluster. The app serves the backend and web UI on port 4000. On first run the database migrations run automatically, then open the app and register the first account, which becomes the admin. Set BACKEND_URL to the deployed host so the chat widget and email links resolve correctly. File uploads (REACT_APP_FILE_UPLOADS_ENABLED) require an external S3-compatible bucket plus AWS_* / BUCKET_NAME env vars; outbound email requires a Mailgun or SMTP provider config. Neither S3 nor SMTP is provisioned here.",
+  "screenshots": [],
+  "links": ["https://docs.papercups.io", "https://github.com/papercups-io/papercups/blob/master/docs/SelfHosting.md"],
+  "license": "MIT License",
+  "spdx_id": "MIT",
+  "stars": 6100,
+  "language": "Elixir",
+  "image": {"repository": "papercups/papercups", "tag": "latest", "containerPort": "4000", "command": []},
+  "envVars": [
+    {"name": "DATABASE_URL", "value": "ecto://papercups:papercups@papercups-postgresql-rw:5432/papercups"},
+    {"name": "REQUIRE_DB_SSL", "value": "false"},
+    {"name": "SECRET_KEY_BASE", "value": "replace-with-openssl-rand-base64-48"},
+    {"name": "MIX_ENV", "value": "prod"},
+    {"name": "PORT", "value": "4000"},
+    {"name": "BACKEND_URL", "value": "{{KUBERO_APP_HOST}}"},
+    {"name": "REACT_APP_URL", "value": "{{KUBERO_APP_HOST}}"},
+    {"name": "REACT_APP_FILE_UPLOADS_ENABLED", "value": "0"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "papercups", "db": "papercups", "user": "papercups", "password": "papercups"}
+  ],
+  "extraVolumes": []
+}

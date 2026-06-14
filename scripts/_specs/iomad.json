@@ -1,0 +1,41 @@
+{
+  "slug": "iomad",
+  "title": "IOMAD",
+  "description": "IOMAD is a multi-tenant Moodle distribution that turns Moodle into a SaaS e-learning platform for managing multiple companies, departments and clients.",
+  "source": "https://github.com/iomad/iomad",
+  "website": "https://www.iomad.org/",
+  "icon": "https://avatars.githubusercontent.com/u/5709629?s=200&v=4",
+  "categories": ["productivity", "collaboration", "work"],
+  "installation": "IOMAD is a Moodle distribution and requires MySQL/MariaDB (Moodle does not support PostgreSQL in these images), so this template ships the mariadb add-on. The actively-maintained dedicated image is elestio/iomad (rebuilt against current IOMAD releases). On first boot the container runs the Moodle/IOMAD installer against the database using the MYSQL_* env vars and provisions the admin account from ADMIN_EMAIL/ADMIN_PASSWORD; set MOODLE_URL/SSL_PROXY are supplied so links resolve to the public HTTPS URL. After deploy, log in with the seeded admin and ROTATE: the ADMIN_PASSWORD env value, the MariaDB add-on password, and configure real SMTP under Site administration > Server > Email. Two persistent volumes are mounted: /var/www/html holds the IOMAD/Moodle code plus config.php, and /var/www/moodledata holds uploaded course files, caches and sessions. For production raise the app pod size (Moodle/PHP needs >=1Gi) and PHP memory_limit, and run Moodle cron. No external object store or search engine is required for a base install (add an external Elasticsearch/Solr later only if you enable global search).",
+  "screenshots": [],
+  "links": ["https://www.iomad.org/documentation/", "https://hub.docker.com/r/elestio/iomad"],
+  "license": "GNU General Public License v3.0",
+  "spdx_id": "GPL-3.0",
+  "stars": 470,
+  "language": "PHP",
+  "image": {
+    "repository": "elestio/iomad",
+    "tag": "latest",
+    "containerPort": "80",
+    "command": []
+  },
+  "envVars": [
+    {"name": "MYSQL_HOST", "value": "iomad-mysql"},
+    {"name": "MYSQL_PORT", "value": "3306"},
+    {"name": "MYSQL_DATABASE", "value": "iomad"},
+    {"name": "MYSQL_USER", "value": "iomad"},
+    {"name": "MYSQL_PASSWORD", "value": "iomad"},
+    {"name": "MOODLE_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "SSL_PROXY", "value": "true"},
+    {"name": "ADMIN_EMAIL", "value": "admin@example.com"},
+    {"name": "ADMIN_PASSWORD", "value": "replace-with-openssl-rand-base64-32"},
+    {"name": "PHP_MEMORY_LIMIT", "value": "512M"}
+  ],
+  "addons": [
+    {"type": "mariadb", "name": "iomad", "db": "iomad", "user": "iomad", "password": "iomad"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/var/www/html", "name": "iomad-html", "size": "5Gi"},
+    {"mountPath": "/var/www/moodledata", "name": "iomad-moodledata", "size": "5Gi"}
+  ]
+}

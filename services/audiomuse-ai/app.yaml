@@ -1,0 +1,152 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: audiomuse-ai
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted sonic analysis engine that auto-generates intelligent, mood-based playlists
+      for Jellyfin, Navidrome, LMS, Lyrion and Emby - no external services.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/171392533?s=200&v=4
+    kubero.dev/template.installation: 'This template runs the PRIMARY Flask web/API container ONLY (ghcr.io/neptunehub/audiomuse-ai
+      with SERVICE_TYPE=flask, HTTP port 8000). AudioMuse-AI is a MULTI-CONTAINER stack and is NOT functional with this pod
+      alone - it just serves the UI/API; the actual sonic analysis and playlist generation run in a separate worker. MANDATORY
+      COMPANION SERVICE to deploy as a SEPARATE app using the SAME image (ghcr.io/neptunehub/audiomuse-ai:latest) and the
+      SAME Postgres + Valkey/Redis + analysis volume: (a) the ANALYSIS WORKER - set SERVICE_TYPE=worker and provide identical
+      POSTGRES_* and REDIS_URL env vars; it is an RQ worker that pulls jobs from Redis, performs Librosa/ONNX audio analysis
+      locally, and writes results to Postgres (without it, every analysis/playlist task queues forever). OPTIONAL: a SCHEDULER/beat
+      companion (same image) for periodic re-analysis if you want recurring jobs. MEDIA SERVER: this is an add-on to an EXISTING
+      music server - after first boot, open the web UI at the app URL and configure the connection to your Jellyfin / Navidrome
+      / Emby / LMS server (server URL + API key / credentials) under settings; AudioMuse-AI reads the library from that server,
+      it does not host music itself. ROTATE before going live: the Postgres password (POSTGRES_PASSWORD - change from the
+      template default ''audiomuse-ai''). Valkey/Redis is password-less in-cluster. The /app/temp_audio volume (TEMP_DIR)
+      is scratch space where the worker downloads tracks for analysis and should be persistent/sized for your concurrency.
+      First analysis of a large library is CPU-heavy; give the worker pod a larger size.'
+    kubero.dev/template.links: '["https://neptunehub.github.io/AudioMuse-AI/", "https://github.com/NeptuneHub/AudioMuse-AI/blob/main/docs/PARAMETERS.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/NeptuneHub/AudioMuse-AI
+    kubero.dev/template.categories: '["media", "ai", "automation"]'
+    kubero.dev/template.title: AudioMuse-AI
+    kubero.dev/template.website: https://neptunehub.github.io/AudioMuse-AI/
+  labels:
+    manager: kubero
+spec:
+  name: audiomuse-ai
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: audiomuse-ai-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: audiomuse-ai
+              owner: audiomuse-ai
+              secret:
+                name: audiomuse-ai-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: audiomuse-ai-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: audiomuse-ai-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: audiomuse-ai
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: audiomuse-ai-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: audiomuse-ai
+          password: audiomuse-ai
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: audiomuse-ai-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: SERVICE_TYPE
+    value: flask
+  - name: TZ
+    value: UTC
+  - name: POSTGRES_HOST
+    value: audiomuse-ai-postgresql-rw
+  - name: POSTGRES_PORT
+    value: '5432'
+  - name: POSTGRES_DB
+    value: audiomuse-ai
+  - name: POSTGRES_USER
+    value: audiomuse-ai
+  - name: POSTGRES_PASSWORD
+    value: audiomuse-ai
+  - name: REDIS_URL
+    value: redis://rfr-audiomuse-ai-valkey-readwrite:6379/0
+  - name: TEMP_DIR
+    value: /app/temp_audio
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/temp_audio
+    name: audiomuse-ai-temp
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: ghcr.io/neptunehub/audiomuse-ai
+    tag: latest

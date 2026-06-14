@@ -1,0 +1,163 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: saleor
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: GraphQL-first, headless open-source e-commerce platform for building scalable storefronts,
+      marketplaces and digital commerce.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/9016908?s=200&v=4
+    kubero.dev/template.installation: 'Saleor is a multi-container stack. This template deploys the PRIMARY GraphQL API/server
+      image (ghcr.io/saleor/saleor). After first boot, exec into the pod and run migrations + create an admin: `python manage.py
+      migrate` then `python manage.py createsuperuser` (or set the pre-baked superuser via env). You MUST also deploy these
+      companion services, all using the SAME ghcr.io/saleor/saleor image with the same DATABASE_URL/REDIS_URL/SECRET_KEY env:
+      (1) Celery WORKER -> command `celery --app saleor.celeryconf:app worker --loglevel=info`; (2) Celery BEAT SCHEDULER
+      -> command `celery --app saleor.celeryconf:app beat --scheduler saleor.schedulers.schedulers.DatabaseScheduler`. The
+      admin DASHBOARD is a separate static SPA image `ghcr.io/saleor/saleor-dashboard` (nginx, port 80) pointed at this API''s
+      /graphql/ endpoint. Add-ons: a Postgres add-on (Saleor recommends PostgreSQL) and a Valkey/Redis add-on (used as Celery
+      broker + cache) are provisioned. Rotate the default Postgres password and the SECRET_KEY (replace the placeholder with
+      `openssl rand -hex 32`). Set ALLOWED_HOSTS/ALLOWED_GRAPHQL_ORIGINS to your real host. For media/static uploads Saleor
+      recommends external S3-compatible object storage in production; this template mounts a local volume at /app/media for
+      default local file storage. A full-text search backend is optional and not included.'
+    kubero.dev/template.links: '["https://docs.saleor.io/setup/docker-compose", "https://docs.saleor.io/setup/configuration"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/saleor/saleor
+    kubero.dev/template.categories: '["e-commerce", "development", "data"]'
+    kubero.dev/template.title: Saleor
+    kubero.dev/template.website: https://saleor.io
+  labels:
+    manager: kubero
+spec:
+  name: saleor
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: saleor-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: saleor
+              owner: saleor
+              secret:
+                name: saleor-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: saleor-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: saleor-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: saleor
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: saleor-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: saleor
+          password: saleor
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: saleor-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: DATABASE_URL
+    value: postgresql://saleor:saleor@saleor-postgresql-rw:5432/saleor
+  - name: REDIS_URL
+    value: redis://rfr-saleor-valkey-readwrite:6379/0
+  - name: CACHE_URL
+    value: redis://rfr-saleor-valkey-readwrite:6379/0
+  - name: CELERY_BROKER_URL
+    value: redis://rfr-saleor-valkey-readwrite:6379/1
+  - name: SECRET_KEY
+    value: replace-with-openssl-rand-hex-32
+  - name: DEBUG
+    value: 'False'
+  - name: ALLOWED_HOSTS
+    value: '{{KUBERO_APP_HOST}}'
+  - name: ALLOWED_GRAPHQL_ORIGINS
+    value: '{{KUBERO_APP_URL}}'
+  - name: PUBLIC_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: DEFAULT_FROM_EMAIL
+    value: noreply@example.com
+  - name: DEFAULT_CURRENCY
+    value: USD
+  - name: MEDIA_ROOT
+    value: /app/media
+  - name: STATIC_URL
+    value: /static/
+  - name: PLAYGROUND_ENABLED
+    value: 'False'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/media
+    name: saleor-media
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: ghcr.io/saleor/saleor
+    tag: '3.20'

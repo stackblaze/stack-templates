@@ -1,0 +1,109 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: papercups
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source live chat and customer messaging platform (Intercom alternative) for support,
+      onboarding, and team inboxes.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/65969060?s=200&v=4
+    kubero.dev/template.installation: Deploy with the bundled PostgreSQL add-on. Rotate SECRET_KEY_BASE (generate with `openssl
+      rand -base64 48`) and the Postgres password from their template defaults before going to production. DATABASE_URL uses
+      the ecto:// scheme and points at the in-cluster postgres add-on; REQUIRE_DB_SSL is false because the add-on speaks plaintext
+      inside the cluster. The app serves the backend and web UI on port 4000. On first run the database migrations run automatically,
+      then open the app and register the first account, which becomes the admin. Set BACKEND_URL to the deployed host so the
+      chat widget and email links resolve correctly. File uploads (REACT_APP_FILE_UPLOADS_ENABLED) require an external S3-compatible
+      bucket plus AWS_* / BUCKET_NAME env vars; outbound email requires a Mailgun or SMTP provider config. Neither S3 nor
+      SMTP is provisioned here.
+    kubero.dev/template.links: '["https://docs.papercups.io", "https://github.com/papercups-io/papercups/blob/master/docs/SelfHosting.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/papercups-io/papercups
+    kubero.dev/template.categories: '["communication", "helpdesk", "crm"]'
+    kubero.dev/template.title: Papercups
+    kubero.dev/template.website: https://papercups.io
+  labels:
+    manager: kubero
+spec:
+  name: papercups
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: papercups-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: papercups
+              owner: papercups
+              secret:
+                name: papercups-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: papercups-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: papercups-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: papercups
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: papercups-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: papercups
+          password: papercups
+  envVars:
+  - name: DATABASE_URL
+    value: ecto://papercups:papercups@papercups-postgresql-rw:5432/papercups
+  - name: REQUIRE_DB_SSL
+    value: 'false'
+  - name: SECRET_KEY_BASE
+    value: replace-with-openssl-rand-base64-48
+  - name: MIX_ENV
+    value: prod
+  - name: PORT
+    value: '4000'
+  - name: BACKEND_URL
+    value: '{{KUBERO_APP_HOST}}'
+  - name: REACT_APP_URL
+    value: '{{KUBERO_APP_HOST}}'
+  - name: REACT_APP_FILE_UPLOADS_ENABLED
+    value: '0'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '4000'
+    pullPolicy: Always
+    repository: papercups/papercups
+    tag: latest

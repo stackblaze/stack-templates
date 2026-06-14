@@ -1,0 +1,175 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: mastodon
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Free, open-source decentralized social network server based on ActivityPub - self-hosted
+      microblogging for the Fediverse.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/5188808?s=200&v=4
+    kubero.dev/template.installation: 'This template runs the PRIMARY Mastodon web (Puma/Rails) container from ghcr.io/mastodon/mastodon,
+      HTTP on port 3000. Mastodon is a MULTI-CONTAINER stack: this single template covers ONLY the web server, so you MUST
+      deploy these companion services separately for a working instance: 1) SIDEKIQ WORKER - same image ghcr.io/mastodon/mastodon:v4.4.18
+      with command [''bundle'',''exec'',''sidekiq''] and the SAME env vars as this web container; this runs ALL background
+      queues (federation push/pull, mailers, media processing, scheduled tasks) and is MANDATORY - without it nothing federates.
+      2) STREAMING SERVER - image ghcr.io/mastodon/mastodon-streaming:v4.4.18 listening on port 4000 (the real-time WebSocket/timeline
+      API); route /api/v1/streaming to it. Both companions share the same Postgres + Redis add-ons created here. REQUIRED
+      BEFORE FIRST BOOT (rotate every placeholder): generate the cryptographic secrets - run ''docker run --rm ghcr.io/mastodon/mastodon:v4.4.18
+      bundle exec rake secret'' to produce SECRET_KEY_BASE and OTP_SECRET; run ''bundle exec rake mastodon:webpush:generate_vapid_key''
+      for VAPID_PRIVATE_KEY/VAPID_PUBLIC_KEY; and run ''bundle exec rails db:encryption:init'' for the three ACTIVE_RECORD_ENCRYPTION_*
+      keys. Set LOCAL_DOMAIN to your real public host BEFORE federating - it is baked into ActivityPub actor URLs and cannot
+      be changed after going live. FIRST-RUN SETUP: exec into the web pod and run ''RAILS_ENV=production bundle exec rake
+      db:setup'' (creates schema + seeds), then create an owner account with ''bin/tootctl accounts create <user> --email
+      <email> --confirmed --role Owner''. EMAIL: set SMTP_* env vars (not preset here) so confirmation/notification mail works.
+      OPTIONAL EXTERNALS (omitted from addons, wire up later): full-text search needs Elasticsearch/OpenSearch (set ES_ENABLED=true
+      + ES_HOST/ES_PORT and run ''tootctl search deploy''); media at scale should use an S3-compatible bucket (e.g. the RustFS
+      add-on) via S3_ENABLED=true + S3_BUCKET/AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY instead of the local volume.'
+    kubero.dev/template.links: '["https://docs.joinmastodon.org/admin/install/", "https://docs.joinmastodon.org/admin/config/"]'
+    kubero.dev/template.screenshots: '["https://joinmastodon.org/_astro/web.D5n5lJ8H.png"]'
+    kubero.dev/template.source: https://github.com/mastodon/mastodon
+    kubero.dev/template.categories: '["social", "communication", "media"]'
+    kubero.dev/template.title: Mastodon
+    kubero.dev/template.website: https://joinmastodon.org
+  labels:
+    manager: kubero
+spec:
+  name: mastodon
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: mastodon-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: mastodon
+              owner: mastodon
+              secret:
+                name: mastodon-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: mastodon-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: mastodon-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: mastodon
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: mastodon-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: mastodon
+          password: mastodon
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: mastodon-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: RAILS_ENV
+    value: production
+  - name: NODE_ENV
+    value: production
+  - name: LOCAL_DOMAIN
+    value: '{{KUBERO_APP_HOST}}'
+  - name: WEB_DOMAIN
+    value: '{{KUBERO_APP_HOST}}'
+  - name: RAILS_SERVE_STATIC_FILES
+    value: 'true'
+  - name: DB_HOST
+    value: mastodon-postgresql-rw
+  - name: DB_PORT
+    value: '5432'
+  - name: DB_NAME
+    value: mastodon
+  - name: DB_USER
+    value: mastodon
+  - name: DB_PASS
+    value: mastodon
+  - name: REDIS_HOST
+    value: rfr-mastodon-valkey-readwrite
+  - name: REDIS_PORT
+    value: '6379'
+  - name: SECRET_KEY_BASE
+    value: replace-with-rake-secret-128-hex
+  - name: OTP_SECRET
+    value: replace-with-rake-secret-128-hex
+  - name: VAPID_PRIVATE_KEY
+    value: replace-with-webpush-generate-vapid-key
+  - name: VAPID_PUBLIC_KEY
+    value: replace-with-webpush-generate-vapid-key
+  - name: ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY
+    value: replace-with-rails-db-encryption-init
+  - name: ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY
+    value: replace-with-rails-db-encryption-init
+  - name: ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT
+    value: replace-with-rails-db-encryption-init
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /mastodon/public/system
+    name: mastodon-system
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: ghcr.io/mastodon/mastodon
+    tag: v4.4.18

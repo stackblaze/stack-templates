@@ -1,0 +1,204 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: rybbit
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source, privacy-friendly, cookieless web and product analytics that is a more intuitive
+      alternative to Google Analytics.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/208537280?s=200&v=4
+    kubero.dev/template.installation: 'Rybbit is a multi-container stack. This template deploys the PRIMARY server image ghcr.io/rybbit-io/rybbit-backend
+      (Node/Koa API, port 3001). You MUST also deploy the companion frontend container ghcr.io/rybbit-io/rybbit-client (Next.js,
+      port 3002) and route browser traffic to it; the client talks to this backend via BASE_URL. Add-ons provisioned: ClickHouse
+      (analytics events), Postgres (accounts/projects), and Valkey/Redis (caching/sessions). Before first run: rotate BETTER_AUTH_SECRET
+      (openssl rand -hex 32), and rotate the Postgres and ClickHouse passwords from the slug defaults. Set BASE_URL/{{KUBERO_APP_URL}}
+      to the public client URL. The first account created becomes the admin; set DISABLE_SIGNUP=true after creating it. Optional:
+      MAPBOX_TOKEN for the world map, OPENROUTER_API_KEY for AI features.'
+    kubero.dev/template.links: '["https://rybbit.com/docs/self-hosting-manual"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/rybbit-io/rybbit
+    kubero.dev/template.categories: '["monitoring", "data", "utilities"]'
+    kubero.dev/template.title: Rybbit
+    kubero.dev/template.website: https://rybbit.com
+  labels:
+    manager: kubero
+spec:
+  name: rybbit
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: rybbit-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: rybbit
+              owner: rybbit
+              secret:
+                name: rybbit-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: rybbit-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: rybbit-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: rybbit
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: rybbit-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: rybbit
+          password: rybbit
+  - displayName: ClickHouse
+    env: []
+    icon: /img/addons/clickhouse.svg
+    id: clickhouse-operator
+    kind: ClickHouseInstallation
+    resourceDefinitions:
+      ClickHouseInstallation:
+        apiVersion: clickhouse.altinity.com/v1
+        kind: ClickHouseInstallation
+        metadata:
+          name: rybbit-clickhouse
+        spec:
+          configuration:
+            users:
+              admin/password: rybbit
+              admin/networks/ip:
+              - 0.0.0.0/0
+            clusters:
+            - name: analytics
+              layout:
+                shardsCount: 1
+                replicasCount: 2
+          defaults:
+            templates:
+              dataVolumeClaimTemplate: data-volume-template
+              logVolumeClaimTemplate: log-volume-template
+          templates:
+            volumeClaimTemplates:
+            - name: data-volume-template
+              spec:
+                accessModes:
+                - ReadWriteOnce
+                storageClassName: fast
+                resources:
+                  requests:
+                    storage: 5Gi
+            - name: log-volume-template
+              spec:
+                accessModes:
+                - ReadWriteOnce
+                storageClassName: fast
+                resources:
+                  requests:
+                    storage: 1Gi
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: rybbit-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: NODE_ENV
+    value: production
+  - name: BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: BETTER_AUTH_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: DISABLE_SIGNUP
+    value: 'false'
+  - name: DISABLE_TELEMETRY
+    value: 'true'
+  - name: CLUSTER_WORKERS
+    value: '4'
+  - name: POSTGRES_HOST
+    value: rybbit-postgresql-rw
+  - name: POSTGRES_PORT
+    value: '5432'
+  - name: POSTGRES_DB
+    value: rybbit
+  - name: POSTGRES_USER
+    value: rybbit
+  - name: POSTGRES_PASSWORD
+    value: rybbit
+  - name: CLICKHOUSE_HOST
+    value: http://clickhouse-rybbit-clickhouse:8123
+  - name: CLICKHOUSE_DB
+    value: default
+  - name: CLICKHOUSE_USER
+    value: admin
+  - name: CLICKHOUSE_PASSWORD
+    value: rybbit
+  - name: REDIS_HOST
+    value: rfr-rybbit-valkey-readwrite
+  - name: REDIS_PORT
+    value: '6379'
+  - name: REDIS_PASSWORD
+    value: ''
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3001'
+    pullPolicy: Always
+    repository: ghcr.io/rybbit-io/rybbit-backend
+    tag: latest

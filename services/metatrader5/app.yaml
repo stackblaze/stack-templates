@@ -1,0 +1,59 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: metatrader5
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: MetaTrader 5 trading terminal running under Wine in a container, accessible from any
+      browser via noVNC (KasmVNC) for forex and CFD trading.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1175748?s=200&v=4
+    kubero.dev/template.installation: 'MetaTrader 5 is proprietary software by MetaQuotes; there is no official MetaQuotes
+      Docker image. This template uses the community gmag11/metatrader5_vnc image, which runs the full Windows MT5 terminal
+      under Wine and exposes it through a KasmVNC/noVNC web desktop on port 3000. There is NO SQL database: the MT5 installation,
+      account profiles, charts and config all live on disk under /config, so a persistent volume is mounted there and no operator
+      add-on is used. First-run: open the web UI, let the bundled script download and install the MetaTrader5 terminal into
+      the volume (this can take several minutes on first boot), then log in to your broker account inside the terminal. Secure
+      the exposed noVNC desktop with the image''s CUSTOM_USER / PASSWORD variables (rotate the placeholder PASSWORD below)
+      or front it with an auth proxy, since anyone reaching the UI controls a live trading session. An optional RPyC/Python
+      automation server is available on port 8001 if you build trading bots against it; expose it separately if needed. No
+      SMTP, S3, Redis or external search engine is required.'
+    kubero.dev/template.links: '["https://github.com/gmag11/MetaTrader5-Docker#readme", "https://www.metatrader5.com/en"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/gmag11/MetaTrader5-Docker
+    kubero.dev/template.categories: '["finance", "utilities", "data"]'
+    kubero.dev/template.title: MetaTrader5
+    kubero.dev/template.website: https://github.com/gmag11/MetaTrader5-Docker
+  labels:
+    manager: kubero
+spec:
+  name: metatrader5
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: TZ
+    value: UTC
+  - name: CUSTOM_USER
+    value: metatrader5
+  - name: PASSWORD
+    value: replace-with-openssl-rand-hex-32
+  - name: PUID
+    value: '1000'
+  - name: PGID
+    value: '1000'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /config
+    name: metatrader5-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: gmag11/metatrader5_vnc
+    tag: latest

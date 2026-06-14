@@ -1,0 +1,122 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: growchief
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: All-in-one social media outreach automation tool using stealthy human-like browser automation
+      (Playwright/Patchright).
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/213232405?s=200&v=4
+    kubero.dev/template.installation: 'Primary web/backend image only (ghcr.io/growchief/growchief). GrowChief REQUIRES a
+      Temporal orchestrator cluster as companion services that must be deployed separately: temporalio/auto-setup:1.28.1 (point
+      TEMPORAL_ADDRESS at it on :7233), its own backing store temporalio postgres (postgres:16) and elasticsearch:7.17.27
+      for Temporal visibility, plus optional temporalio/admin-tools and temporalio/ui:2.34.0. The growchief app container
+      also runs the NestJS workers internally and uses xvfb-driven headless browsers, so give it generous CPU/memory. ROTATE
+      AUTH_SECRET (set to a random value, e.g. openssl rand -hex 32) and the postgres password before exposing. Uploads persist
+      to /uploads via the mounted volume (STORAGE_PROVIDER=local). Set GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET for Google OAuth
+      login, and APOLLO_API_KEY / DATAGMA_API_KEY for enrichment if used. The app listens on port 5000. First run: open the
+      app URL and create the first account.'
+    kubero.dev/template.links: '["https://docs.growchief.com/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/growchief/growchief
+    kubero.dev/template.categories: '["automation", "crm", "social"]'
+    kubero.dev/template.title: GrowChief
+    kubero.dev/template.website: https://www.growchief.com/
+  labels:
+    manager: kubero
+spec:
+  name: growchief
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: growchief-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: growchief
+              owner: growchief
+              secret:
+                name: growchief-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: growchief-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: growchief-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: growchief
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: growchief-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: growchief
+          password: growchief
+  envVars:
+  - name: DATABASE_URL
+    value: postgresql://growchief:growchief@growchief-postgresql-rw:5432/growchief
+  - name: AUTH_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: FRONTEND_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: TEMPORAL_ADDRESS
+    value: temporal:7233
+  - name: STORAGE_PROVIDER
+    value: local
+  - name: UPLOAD_DIRECTORY
+    value: /uploads
+  - name: NEXT_PUBLIC_UPLOAD_DIRECTORY
+    value: /uploads
+  - name: GOOGLE_CLIENT_ID
+    value: ''
+  - name: GOOGLE_CLIENT_SECRET
+    value: ''
+  - name: APOLLO_API_KEY
+    value: ''
+  - name: DATAGMA_API_KEY
+    value: ''
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /uploads
+    name: growchief-uploads
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '5000'
+    pullPolicy: Always
+    repository: ghcr.io/growchief/growchief
+    tag: latest

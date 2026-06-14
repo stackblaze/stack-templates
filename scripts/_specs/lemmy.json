@@ -1,0 +1,30 @@
+{
+  "slug": "lemmy",
+  "title": "Lemmy",
+  "description": "Self-hosted, federated (ActivityPub) link aggregator and discussion forum - a Reddit-style alternative for the Fediverse.",
+  "source": "https://github.com/LemmyNet/lemmy",
+  "website": "https://join-lemmy.org",
+  "icon": "https://avatars.githubusercontent.com/u/54033583?s=200&v=4",
+  "categories": ["social", "communication", "collaboration"],
+  "installation": "This template runs the PRIMARY Lemmy backend/API server ONLY (dessalines/lemmy, a Rust actix-web service listening on HTTP port 8536). Lemmy is a MULTI-CONTAINER stack and is NOT usable with this pod alone. CONFIG: Lemmy normally reads /config/config.hjson, but this template configures it purely via the LEMMY_* env vars - the critical ones are LEMMY_DATABASE_URL (points at the Postgres add-on) and LEMMY_HOSTNAME (your real public host, baked into ActivityPub actor URLs - set it BEFORE federating, it cannot be changed cleanly after going live). REQUIRED BEFORE FIRST BOOT: 1) Rotate the Postgres password. 2) The first user account you register through the UI becomes the instance admin - register it immediately after deploy. MANDATORY COMPANION SERVICES to deploy as SEPARATE Kubero apps: (A) FRONTEND - lemmy-ui, image dessalines/lemmy-ui:0.19.19, HTTP port 1234; set its env LEMMY_UI_LEMMY_INTERNAL_HOST to this backend's in-cluster service on :8536 and LEMMY_UI_LEMMY_EXTERNAL_HOST to your public host; PUBLIC INGRESS should be routed to lemmy-ui (port 1234), which proxies /api and /pictrs to the backend - the backend itself is an internal API. (B) IMAGE HOST - pict-rs, image asonix/pictrs:0.5, HTTP port 8080, with its own ~5Gi RWX volume at /mnt; point the backend at it via LEMMY_PICTRS__URL (e.g. http://lemmy-pictrs:8080/). (C) EMAIL (optional) - an SMTP relay such as mwader/postfix-relay for signup confirmation/notification mail; wire it via LEMMY_EMAIL__* or the smtp_server config. NOTE on datastores: Lemmy 0.19 needs ONLY PostgreSQL (>=15); it does NOT use Redis/Valkey. Federation, scheduled cleanup, and the outgoing activity queue all run inside this backend process - no separate worker/scheduler container is required.",
+  "screenshots": ["https://join-lemmy.org/assets/images/main-screenshot.webp"],
+  "links": ["https://join-lemmy.org/docs/administration/install_docker.html", "https://join-lemmy.org/docs/administration/configuration.html"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 14400,
+  "language": "Rust",
+  "image": {"repository": "dessalines/lemmy", "tag": "0.19.19", "containerPort": "8536", "command": []},
+  "envVars": [
+    {"name": "RUST_LOG", "value": "info"},
+    {"name": "LEMMY_HOSTNAME", "value": "{{KUBERO_APP_HOST}}"},
+    {"name": "LEMMY_DATABASE_URL", "value": "postgresql://lemmy:lemmy@lemmy-postgresql-rw:5432/lemmy"},
+    {"name": "LEMMY_PICTRS__URL", "value": "http://lemmy-pictrs:8080/"},
+    {"name": "LEMMY_PICTRS__API_KEY", "value": "replace-with-openssl-rand-hex-32"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "lemmy", "db": "lemmy", "user": "lemmy", "password": "lemmy"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/config", "name": "lemmy-config", "size": "1Gi"}
+  ]
+}

@@ -1,0 +1,126 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: iomad
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: IOMAD is a multi-tenant Moodle distribution that turns Moodle into a SaaS e-learning
+      platform for managing multiple companies, departments and clients.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/5709629?s=200&v=4
+    kubero.dev/template.installation: 'IOMAD is a Moodle distribution and requires MySQL/MariaDB (Moodle does not support
+      PostgreSQL in these images), so this template ships the mariadb add-on. The actively-maintained dedicated image is elestio/iomad
+      (rebuilt against current IOMAD releases). On first boot the container runs the Moodle/IOMAD installer against the database
+      using the MYSQL_* env vars and provisions the admin account from ADMIN_EMAIL/ADMIN_PASSWORD; set MOODLE_URL/SSL_PROXY
+      are supplied so links resolve to the public HTTPS URL. After deploy, log in with the seeded admin and ROTATE: the ADMIN_PASSWORD
+      env value, the MariaDB add-on password, and configure real SMTP under Site administration > Server > Email. Two persistent
+      volumes are mounted: /var/www/html holds the IOMAD/Moodle code plus config.php, and /var/www/moodledata holds uploaded
+      course files, caches and sessions. For production raise the app pod size (Moodle/PHP needs >=1Gi) and PHP memory_limit,
+      and run Moodle cron. No external object store or search engine is required for a base install (add an external Elasticsearch/Solr
+      later only if you enable global search).'
+    kubero.dev/template.links: '["https://www.iomad.org/documentation/", "https://hub.docker.com/r/elestio/iomad"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/iomad/iomad
+    kubero.dev/template.categories: '["productivity", "collaboration", "work"]'
+    kubero.dev/template.title: IOMAD
+    kubero.dev/template.website: https://www.iomad.org/
+  labels:
+    manager: kubero
+spec:
+  name: iomad
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: iomad-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: iomad-mysql-root
+            key: password
+          database: iomad
+          username: iomad
+          passwordSecretKeyRef:
+            name: iomad-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: iomad-mysql-root
+        type: Opaque
+        stringData:
+          password: iomad
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: iomad-mysql-app
+        type: Opaque
+        stringData:
+          password: iomad
+  envVars:
+  - name: MYSQL_HOST
+    value: iomad-mysql
+  - name: MYSQL_PORT
+    value: '3306'
+  - name: MYSQL_DATABASE
+    value: iomad
+  - name: MYSQL_USER
+    value: iomad
+  - name: MYSQL_PASSWORD
+    value: iomad
+  - name: MOODLE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: SSL_PROXY
+    value: 'true'
+  - name: ADMIN_EMAIL
+    value: admin@example.com
+  - name: ADMIN_PASSWORD
+    value: replace-with-openssl-rand-base64-32
+  - name: PHP_MEMORY_LIMIT
+    value: 512M
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html
+    name: iomad-html
+    size: 5Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/moodledata
+    name: iomad-moodledata
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: elestio/iomad
+    tag: latest

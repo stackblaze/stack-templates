@@ -1,0 +1,139 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: hortusfox
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted collaborative plant management system for tracking, organizing and caring
+      for your indoor and outdoor plants.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/58681347?s=200&v=4
+    kubero.dev/template.installation: 'Image: ghcr.io/danielbrendel/hortusfox-web (official). Uses MariaDB (the mariadb add-on,
+      host hortusfox-mysql). Rotate the MariaDB password (default ''hortusfox'') and set a strong APP_ADMIN_PASSWORD (default
+      placeholder) before exposing publicly; the first-run admin account is seeded from APP_ADMIN_EMAIL / APP_ADMIN_PASSWORD
+      on initial migration. DB_CHARSET must be utf8mb4. Persistent volumes hold uploaded plant images (/var/www/html/public/img),
+      backups (/var/www/html/public/backup), custom themes (/var/www/html/public/themes), app logs (/var/www/html/app/logs)
+      and applied migration markers (/var/www/html/app/migrations) so data and migration state survive restarts. Set APP_TIMEZONE
+      to your timezone.'
+    kubero.dev/template.links: '["https://github.com/danielbrendel/hortusfox-web/blob/master/README.md"]'
+    kubero.dev/template.screenshots: '["https://www.hortusfox.com/img/screenshot.png"]'
+    kubero.dev/template.source: https://github.com/danielbrendel/hortusfox-web
+    kubero.dev/template.categories: '["productivity", "collaboration", "utilities"]'
+    kubero.dev/template.title: HortusFox
+    kubero.dev/template.website: https://www.hortusfox.com
+  labels:
+    manager: kubero
+spec:
+  name: hortusfox
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: hortusfox-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: hortusfox-mysql-root
+            key: password
+          database: hortusfox
+          username: hortusfox
+          passwordSecretKeyRef:
+            name: hortusfox-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: hortusfox-mysql-root
+        type: Opaque
+        stringData:
+          password: hortusfox
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: hortusfox-mysql-app
+        type: Opaque
+        stringData:
+          password: hortusfox
+  envVars:
+  - name: APP_ADMIN_EMAIL
+    value: admin@example.com
+  - name: APP_ADMIN_PASSWORD
+    value: replace-with-openssl-rand-hex-32
+  - name: APP_TIMEZONE
+    value: UTC
+  - name: DB_HOST
+    value: hortusfox-mysql
+  - name: DB_PORT
+    value: '3306'
+  - name: DB_DATABASE
+    value: hortusfox
+  - name: DB_USERNAME
+    value: hortusfox
+  - name: DB_PASSWORD
+    value: hortusfox
+  - name: DB_CHARSET
+    value: utf8mb4
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/public/img
+    name: hortusfox-images
+    size: 5Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/public/backup
+    name: hortusfox-backup
+    size: 2Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/public/themes
+    name: hortusfox-themes
+    size: 1Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/app/logs
+    name: hortusfox-logs
+    size: 1Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/app/migrations
+    name: hortusfox-migrate
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: ghcr.io/danielbrendel/hortusfox-web
+    tag: latest

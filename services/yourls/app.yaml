@@ -1,0 +1,111 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: yourls
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'Your Own URL Shortener: a small, self-hosted PHP service to run your own short-link
+      service with stats, plugins, and a developer API.'
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4843816?s=200&v=4
+    kubero.dev/template.installation: YOURLS only supports MySQL/MariaDB (no PostgreSQL), so this template ships the mariadb
+      add-on. The admin account is bootstrapped from YOURLS_USER / YOURLS_PASS on first boot, and YOURLS_SITE is bound to
+      the deploy URL via {{KUBERO_APP_URL}} (must be the exact public URL, no trailing slash). The admin UI lives at /admin/.
+      Before going to production, rotate the MariaDB password, the YOURLS_PASS admin password, and the YOURLS_COOKIEKEY (openssl
+      rand -hex 32). User-supplied plugins, custom pages, and language packs persist on the mounted volume at /var/www/html/user.
+    kubero.dev/template.links: '["https://yourls.org/docs/", "https://hub.docker.com/_/yourls"]'
+    kubero.dev/template.screenshots: '["https://yourls.org/images/screenshots/admin.png"]'
+    kubero.dev/template.source: https://github.com/YOURLS/YOURLS
+    kubero.dev/template.categories: '["utilities", "productivity", "development"]'
+    kubero.dev/template.title: YOURLS
+    kubero.dev/template.website: https://yourls.org/
+  labels:
+    manager: kubero
+spec:
+  name: yourls
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: yourls-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: yourls-mysql-root
+            key: password
+          database: yourls
+          username: yourls
+          passwordSecretKeyRef:
+            name: yourls-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: yourls-mysql-root
+        type: Opaque
+        stringData:
+          password: yourls
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: yourls-mysql-app
+        type: Opaque
+        stringData:
+          password: yourls
+  envVars:
+  - name: YOURLS_DB_HOST
+    value: yourls-mysql:3306
+  - name: YOURLS_DB_NAME
+    value: yourls
+  - name: YOURLS_DB_USER
+    value: yourls
+  - name: YOURLS_DB_PASS
+    value: yourls
+  - name: YOURLS_DB_PREFIX
+    value: yourls_
+  - name: YOURLS_SITE
+    value: '{{KUBERO_APP_URL}}'
+  - name: YOURLS_USER
+    value: admin
+  - name: YOURLS_PASS
+    value: replace-with-openssl-rand-hex-32
+  - name: YOURLS_COOKIEKEY
+    value: replace-with-openssl-rand-hex-32
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/user
+    name: yourls-data
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: yourls
+    tag: 1.10-apache

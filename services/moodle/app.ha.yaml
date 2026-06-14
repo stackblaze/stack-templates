@@ -1,0 +1,134 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: moodle
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Moodle is the world's most popular open-source learning management system (LMS) for building
+      online courses, classrooms and e-learning.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/187617?s=200&v=4
+    kubero.dev/template.installation: 'Moodle requires MySQL/MariaDB (the maintained container images target MariaDB, not
+      PostgreSQL), so this template ships the mariadb add-on. The image is elestio/moodle, an actively-rebuilt Verified Publisher
+      image tracking current Moodle releases (Bitnami''s moodle image moved behind a paywall in 2025 and is no longer freely
+      pullable). On first boot the container runs the Moodle installer against the database using the MOODLE_DATABASE_* env
+      vars and provisions the admin account from MOODLE_USERNAME/MOODLE_PASSWORD/MOODLE_EMAIL; MOODLE_HOST and MOODLE_REVERSEPROXY
+      are set so generated links resolve to the public HTTPS URL behind the ingress. After deploy, log in with the seeded
+      admin and ROTATE: the MOODLE_PASSWORD env value, the MariaDB add-on password, and configure real SMTP under Site administration
+      > Server > Email. Two persistent volumes are mounted: /bitnami/moodle holds the Moodle code plus config.php, and /bitnami/moodledata
+      holds uploaded course files, caches and sessions. For production raise the app pod size (Moodle/PHP needs >=1Gi) and
+      PHP memory_limit, and schedule the Moodle cron (admin/cli/cron.php) every minute. Optional companions: deploy the memcached
+      add-on and point Moodle''s MUC application cache at it for performance, and add an external Solr/Elasticsearch only
+      if you enable global search (neither is required for a base install).'
+    kubero.dev/template.links: '["https://docs.moodle.org/en/Installation", "https://hub.docker.com/r/elestio/moodle"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/moodle/moodle
+    kubero.dev/template.categories: '["productivity", "collaboration", "work"]'
+    kubero.dev/template.title: Moodle
+    kubero.dev/template.website: https://moodle.org/
+  labels:
+    manager: kubero
+spec:
+  name: moodle
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: moodle-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: moodle-mysql-root
+            key: password
+          database: moodle
+          username: moodle
+          passwordSecretKeyRef:
+            name: moodle-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: moodle-mysql-root
+        type: Opaque
+        stringData:
+          password: moodle
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: moodle-mysql-app
+        type: Opaque
+        stringData:
+          password: moodle
+  envVars:
+  - name: MOODLE_DATABASE_TYPE
+    value: mariadb
+  - name: MOODLE_DATABASE_HOST
+    value: moodle-mysql
+  - name: MOODLE_DATABASE_PORT_NUMBER
+    value: '3306'
+  - name: MOODLE_DATABASE_NAME
+    value: moodle
+  - name: MOODLE_DATABASE_USER
+    value: moodle
+  - name: MOODLE_DATABASE_PASSWORD
+    value: moodle
+  - name: MOODLE_USERNAME
+    value: admin
+  - name: MOODLE_PASSWORD
+    value: replace-with-openssl-rand-base64-32
+  - name: MOODLE_EMAIL
+    value: admin@example.com
+  - name: MOODLE_HOST
+    value: '{{KUBERO_APP_URL}}'
+  - name: MOODLE_REVERSEPROXY
+    value: 'yes'
+  - name: MOODLE_SSLPROXY
+    value: 'yes'
+  - name: PHP_MEMORY_LIMIT
+    value: 512M
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /bitnami/moodle
+    name: moodle-app
+    size: 5Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /bitnami/moodledata
+    name: moodle-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: elestio/moodle
+    tag: latest

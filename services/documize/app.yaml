@@ -1,0 +1,102 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: documize
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source modern document and knowledge management platform combining wiki, docs and
+      structured templates for teams.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/9457894?s=200&v=4
+    kubero.dev/template.installation: 'Uses the official documize/community image on internal port 5001. Deploy with the bundled
+      PostgreSQL add-on; the DOCUMIZEDB connection string and DOCUMIZEDBTYPE=postgresql point Documize at the ''documize-postgresql-rw''
+      Postgres service (rotate the Postgres add-on password and update DOCUMIZEDB after install). DOCUMIZELOCATION is set
+      to ''selfhost'' for self-hosted operation. IMPORTANT: replace DOCUMIZESALT with a unique random string (e.g. openssl
+      rand -hex 16) before going to production. Documize stores all documents, settings and uploads in the database, so no
+      persistent volume is required. On first boot open the app URL to run the setup wizard: name your organization and create
+      the initial admin account; the database schema is migrated automatically on startup.'
+    kubero.dev/template.links: '["https://docs.documize.com/", "https://github.com/documize/community/blob/master/docker-compose.yaml"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/documize/community
+    kubero.dev/template.categories: '["documentation", "collaboration", "productivity"]'
+    kubero.dev/template.title: Documize
+    kubero.dev/template.website: https://www.documize.com/
+  labels:
+    manager: kubero
+spec:
+  name: documize
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: documize-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: documize
+              owner: documize
+              secret:
+                name: documize-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: documize-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: documize-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: documize
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: documize-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: documize
+          password: documize
+  envVars:
+  - name: DOCUMIZEPORT
+    value: '5001'
+  - name: DOCUMIZEDB
+    value: host=documize-postgresql-rw port=5432 dbname=documize user=documize password=documize sslmode=disable
+  - name: DOCUMIZEDBTYPE
+    value: postgresql
+  - name: DOCUMIZESALT
+    value: replace-with-openssl-rand-hex-16
+  - name: DOCUMIZELOCATION
+    value: selfhost
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '5001'
+    pullPolicy: Always
+    repository: documize/community
+    tag: latest

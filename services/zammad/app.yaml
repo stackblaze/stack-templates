@@ -1,0 +1,192 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: zammad
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source web-based help desk and customer support / ticketing system with email, chat,
+      social and a knowledge base.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/18482282?s=200&v=4
+    kubero.dev/template.installation: 'Zammad is a MULTI-CONTAINER stack. All Zammad roles share ONE image (ghcr.io/zammad/zammad)
+      and differ only by their entrypoint command. This template runs the PRIMARY web tier, command ''zammad-nginx'' (HTTP
+      on port 8080). To make Zammad fully functional you MUST also deploy these companion services from the SAME ghcr.io/zammad/zammad
+      image with these commands, all sharing the same env vars and the zammad-storage (/opt/zammad/storage) volume: ''zammad-init''
+      (run-once DB migrate/seed; must finish before the others come up), ''zammad-railsserver'' (Rails app/API, internal :3000
+      that nginx proxies to), ''zammad-websocket'' (websocket/ActionCable), ''zammad-scheduler'' (background jobs / delayed
+      jobs). An optional ''zammad-backup'' container handles dumps. Bundled add-ons here cover the datastores: postgres (primary
+      DB), memcached (Rails cache), and valkey (Redis-compatible, used for the websocket session store and job queue). Full-text
+      search needs Elasticsearch, which is NOT one of the available operator add-ons and is omitted: deploy an Elasticsearch
+      instance separately (image elasticsearch:9, single-node, xpack.security.enabled=false, vm.max_map_count=262144) and
+      set ELASTICSEARCH_ENABLED=true / ELASTICSEARCH_HOST / ELASTICSEARCH_PORT to enable search; Zammad boots and works without
+      it (search disabled). Rotate POSTGRES_PASS (default ''zammad'') before exposing publicly. Set ZAMMAD_FQDN to your real
+      hostname. On first load the web UI runs the getting-started wizard to create the first admin/organization; configure
+      inbound/outbound email channels there afterwards.'
+    kubero.dev/template.links: '["https://docs.zammad.org/en/latest/install/docker-compose.html", "https://admin-docs.zammad.org"]'
+    kubero.dev/template.screenshots: '["https://zammad.com/assets/images/product/screenshots/ticket-zoom.png"]'
+    kubero.dev/template.source: https://github.com/zammad/zammad
+    kubero.dev/template.categories: '["helpdesk", "communication", "crm"]'
+    kubero.dev/template.title: Zammad
+    kubero.dev/template.website: https://zammad.org
+  labels:
+    manager: kubero
+spec:
+  name: zammad
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: zammad-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: zammad
+              owner: zammad
+              secret:
+                name: zammad-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: zammad-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: zammad-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: zammad
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: zammad-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: zammad
+          password: zammad
+  - displayName: Memcached
+    env: []
+    icon: /img/addons/memcached.svg
+    id: kubero-operator
+    kind: KuberoAddonMemcached
+    resourceDefinitions:
+      KuberoAddonMemcached:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoAddonMemcached
+        metadata:
+          name: zammad-memcached
+        spec:
+          memcached:
+            image:
+              tag: 1.6.39
+            replicaCount: 1
+            config:
+              memoryLimit: 128
+              maxConnections: 1024
+              extraArgs: []
+              verbosity: 0
+            resources: {}
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: zammad-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: POSTGRESQL_HOST
+    value: zammad-postgresql-rw
+  - name: POSTGRESQL_PORT
+    value: '5432'
+  - name: POSTGRESQL_DB
+    value: zammad
+  - name: POSTGRESQL_USER
+    value: zammad
+  - name: POSTGRESQL_PASS
+    value: zammad
+  - name: POSTGRESQL_OPTIONS
+    value: ?pool=50
+  - name: MEMCACHE_SERVERS
+    value: zammad-memcached:11211
+  - name: REDIS_URL
+    value: redis://rfr-zammad-valkey-readwrite:6379
+  - name: NGINX_PORT
+    value: '8080'
+  - name: ZAMMAD_RAILSSERVER_HOST
+    value: zammad-railsserver
+  - name: ZAMMAD_WEBSOCKET_HOST
+    value: zammad-websocket
+  - name: ZAMMAD_HTTP_TYPE
+    value: https
+  - name: ZAMMAD_FQDN
+    value: '{{KUBERO_APP_HOST}}'
+  - name: NGINX_SERVER_NAME
+    value: '{{KUBERO_APP_HOST}}'
+  - name: NGINX_SERVER_SCHEME
+    value: https
+  - name: ELASTICSEARCH_ENABLED
+    value: 'false'
+  - name: TZ
+    value: Etc/UTC
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /opt/zammad/storage
+    name: zammad-storage
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: ghcr.io/zammad/zammad
+    tag: stable
+    command:
+    - zammad-nginx

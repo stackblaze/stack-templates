@@ -1,0 +1,41 @@
+{
+  "slug": "minthcm",
+  "title": "MintHCM",
+  "description": "Open-source, AI-native Human Capital Management (HCM) platform for HR processes, built on the SuiteCRM core with full data ownership.",
+  "source": "https://github.com/minthcm/minthcm",
+  "website": "https://minthcm.org",
+  "icon": "https://avatars.githubusercontent.com/u/51930847?s=200&v=4",
+  "categories": ["crm", "work", "productivity"],
+  "installation": "MintHCM requires a companion Elasticsearch 7.10+ service for search/indexing (not an operator add-on here) - deploy one and point ELASTICSEARCH_HOST/PORT at it, or the app boots but search features stay disabled. The bundled MariaDB add-on holds all relational data; rotate the default db password (currently the slug 'minthcm') after first deploy. On first run the entrypoint installs the schema using MINT_USER/MINT_PASS (admin/minthcm) and MINT_URL ({{KUBERO_APP_URL}}) - log in and change the admin password immediately. Set INSTALL_DEMO_DATA=yes only for evaluation. Persistent app code, config and uploads live under /var/www/html.",
+  "screenshots": [],
+  "links": ["https://minthcm.org/support/deploy-minthcm-on-docker/", "https://github.com/minthcm/minthcm"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 370,
+  "language": "PHP",
+  "image": {"repository": "minthcm/minthcm", "tag": "latest", "containerPort": "80", "command": []},
+  "envVars": [
+    {"name": "DB_HOST", "value": "minthcm-mysql"},
+    {"name": "DB_PORT", "value": "3306"},
+    {"name": "DB_NAME", "value": "minthcm"},
+    {"name": "DB_USER", "value": "minthcm"},
+    {"name": "DB_PASS", "value": "minthcm"},
+    {"name": "MYSQL_PASSWORD", "value": "minthcm"},
+    {"name": "MINT_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "MINT_USER", "value": "admin"},
+    {"name": "MINT_PASS", "value": "minthcm"},
+    {"name": "ELASTICSEARCH_HOST", "value": "minthcm-elasticsearch"},
+    {"name": "ELASTICSEARCH_PORT", "value": "9200"},
+    {"name": "ELASTICSEARCH_USERNAME", "value": "elastic"},
+    {"name": "ELASTICSEARCH_PASSWORD", "value": "changeme"},
+    {"name": "INSTALL_DEMO_DATA", "value": "no"},
+    {"name": "SSL", "value": "no"},
+    {"name": "REBUILD_FRONTEND", "value": "no"}
+  ],
+  "addons": [
+    {"type": "mariadb", "name": "minthcm", "db": "minthcm", "user": "minthcm", "password": "minthcm"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/var/www/html", "name": "minthcm-data", "size": "5Gi"}
+  ]
+}

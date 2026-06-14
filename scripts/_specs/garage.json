@@ -1,0 +1,30 @@
+{
+  "slug": "garage",
+  "title": "Garage",
+  "description": "Lightweight, self-hosted, S3-compatible distributed object storage built for geo-redundant clusters on commodity hardware.",
+  "source": "https://github.com/deuxfleurs-org/garage",
+  "website": "https://garagehq.deuxfleurs.fr",
+  "icon": "https://avatars.githubusercontent.com/u/85123091?s=200&v=4",
+  "categories": ["storage", "utilities", "data"],
+  "installation": "Garage is a single self-contained Rust daemon that keeps all metadata and object data on local disk, so it needs NO database add-on, just the two persistent volumes mounted below (/var/lib/garage/meta and /var/lib/garage/data). The S3 API is served on the container HTTP port 3900; the static web endpoint is 3902 and the admin API is 3903. Garage requires a few settings (rpc_secret, replication factor, bind addresses, dirs) that are normally supplied via /etc/garage.toml; the GARAGE_* env vars below cover the env-config path, but you should mount a garage.toml with replication_factor=1 for a single-node deploy. CRITICAL: rotate GARAGE_RPC_SECRET (a 32-byte hex value, generate with `openssl rand -hex 32`) and GARAGE_ADMIN_TOKEN / GARAGE_METRICS_TOKEN before exposing. First-run setup is CLI-driven: exec into the pod and run `garage layout assign -z dc1 -c 10G <node_id>` then `garage layout apply --version 1`, then create a key (`garage key create`) and a bucket (`garage bucket create`) and grant access. Point S3 clients at the app URL with path-style addressing. Garage is the object store itself, so it has no companion services.",
+  "screenshots": [],
+  "links": ["https://garagehq.deuxfleurs.fr/documentation/quick-start/", "https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 1700,
+  "language": "Rust",
+  "image": {"repository": "dxflrs/garage", "tag": "v2.3.0", "containerPort": "3900", "command": []},
+  "envVars": [
+    {"name": "GARAGE_RPC_SECRET", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "GARAGE_ADMIN_TOKEN", "value": "replace-with-openssl-rand-base64-32"},
+    {"name": "GARAGE_METRICS_TOKEN", "value": "replace-with-openssl-rand-base64-32"},
+    {"name": "GARAGE_ALLOW_WORLD_READABLE_SECRETS", "value": "true"},
+    {"name": "S3_API_ROOT_DOMAIN", "value": "{{KUBERO_APP_HOST}}"},
+    {"name": "S3_WEB_ROOT_DOMAIN", "value": "{{KUBERO_APP_HOST}}"}
+  ],
+  "addons": [],
+  "extraVolumes": [
+    {"mountPath": "/var/lib/garage/meta", "name": "garage-meta", "size": "2Gi"},
+    {"mountPath": "/var/lib/garage/data", "name": "garage-data", "size": "5Gi"}
+  ]
+}

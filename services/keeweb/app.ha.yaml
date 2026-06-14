@@ -1,0 +1,42 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: keeweb
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Free, cross-platform web password manager compatible with KeePass; opens and edits .kdbx
+      files entirely in the browser.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/19752642?s=200&v=4
+    kubero.dev/template.installation: 'KeeWeb is a stateless, fully client-side password manager: the nginx container only
+      serves static HTML/JS, and all cryptography (KeePass .kdbx parsing, AES/Argon2 key derivation) happens in the browser,
+      so the server never sees your master password or plaintext. Because of this there is no database add-on and no server-side
+      persistent volume - users open and save their .kdbx files from their own device or from an external storage provider
+      they connect at runtime (WebDAV, Dropbox, Google Drive, OneDrive, or generic file download/upload). To enable a storage
+      provider you register an OAuth/app credential with that provider and configure it client-side; nothing needs to be seeded
+      on the server. The official image listens on HTTP port 80 (and can self-sign TLS on 443) - here TLS is terminated at
+      the Kubero ingress, so only port 80 is exposed. No SMTP, S3 or search engine is required. To self-host your own .kdbx
+      over WebDAV, deploy a separate WebDAV server and point KeeWeb at its URL from the UI.'
+    kubero.dev/template.links: '["https://keeweb.info/", "https://github.com/keeweb/keeweb#readme"]'
+    kubero.dev/template.screenshots: '["https://app.keeweb.info/img/screenshots/screenshot.png"]'
+    kubero.dev/template.source: https://github.com/keeweb/keeweb
+    kubero.dev/template.categories: '["security", "utilities", "productivity"]'
+    kubero.dev/template.title: KeeWeb
+    kubero.dev/template.website: https://keeweb.info
+  labels:
+    manager: kubero
+spec:
+  name: keeweb
+  deploymentstrategy: docker
+  addons: []
+  envVars: []
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: antelle/keeweb
+    tag: 1.16.3

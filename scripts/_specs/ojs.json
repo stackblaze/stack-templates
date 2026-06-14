@@ -1,0 +1,38 @@
+{
+  "slug": "ojs",
+  "title": "Open Journal Systems",
+  "description": "Open-source journal management and scholarly publishing platform from the Public Knowledge Project, handling submission, peer review, and publication.",
+  "source": "https://github.com/pkp/ojs",
+  "website": "https://pkp.sfu.ca/software/ojs/",
+  "icon": "https://avatars.githubusercontent.com/u/1755342?s=200&v=4",
+  "categories": ["cms", "documentation", "collaboration"],
+  "installation": "Uses the official pkpofficial/ojs image (MariaDB backend). Set PKP_CLI_INSTALL=1 to auto-run the CLI installer on first boot using the DB_* env vars; otherwise complete the web-based installer at the app URL. ROTATE the mariadb add-on password and the DB_PASSWORD env to match before going to production. The /var/www/html volume persists OJS config (config.inc.php), uploaded submission files, and public files across restarts. SERVERNAME is set from the app host so generated config/URLs are correct.",
+  "screenshots": [],
+  "links": ["https://docs.pkp.sfu.ca/", "https://github.com/pkp/docker-ojs"],
+  "license": "GNU General Public License v3.0",
+  "spdx_id": "GPL-3.0",
+  "stars": 350,
+  "language": "PHP",
+  "image": {
+    "repository": "pkpofficial/ojs",
+    "tag": "stable-3_5_0",
+    "containerPort": "8080",
+    "command": []
+  },
+  "envVars": [
+    { "name": "SERVERNAME", "value": "{{KUBERO_APP_HOST}}" },
+    { "name": "HTTP_PORT", "value": "8080" },
+    { "name": "DB_HOST", "value": "ojs-mysql" },
+    { "name": "DB_PORT", "value": "3306" },
+    { "name": "DB_NAME", "value": "ojs" },
+    { "name": "DB_USER", "value": "ojs" },
+    { "name": "DB_PASSWORD", "value": "ojs" },
+    { "name": "PKP_CLI_INSTALL", "value": "1" }
+  ],
+  "addons": [
+    { "type": "mariadb", "name": "ojs", "db": "ojs", "user": "ojs", "password": "ojs" }
+  ],
+  "extraVolumes": [
+    { "mountPath": "/var/www/html", "name": "ojs-data", "size": "5Gi" }
+  ]
+}

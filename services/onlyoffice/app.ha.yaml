@@ -1,0 +1,193 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: onlyoffice
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted online office suite (Document Server) for collaborative real-time editing
+      of documents, spreadsheets and presentations.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/2941215?s=200&v=4
+    kubero.dev/template.installation: 'Uses the official onlyoffice/documentserver image on internal port 80. Deploy the bundled
+      PostgreSQL, RabbitMQ and Valkey (Redis) add-ons; DB_HOST points at ''onlyoffice-postgresql-rw'', AMQP_URI at the RabbitMQ
+      service and REDIS_SERVER_HOST at ''rfr-onlyoffice-valkey-readwrite''. IMPORTANT: JWT signing is enabled by default (JWT_ENABLED=true)
+      and the editor will refuse documents from clients that do not sign requests with JWT_SECRET, so the host application
+      (Nextcloud, your custom integration, etc.) must be configured with the same secret. Replace the JWT_SECRET placeholder
+      (openssl rand -hex 32) and rotate the Postgres/RabbitMQ add-on passwords after install. The DB schema is auto-created
+      on first boot against the empty ''onlyoffice'' database. Persistent state (cache, fonts, logs, document cache) lives
+      under /var/lib/onlyoffice. The Document Server has no admin UI of its own; reach the welcome/healthcheck page at the
+      app URL, then point an editor host at it. For very large deployments raise the app pod size.'
+    kubero.dev/template.links: '["https://helpcenter.onlyoffice.com/docs/installation/docs-community-install-docker.aspx",
+      "https://api.onlyoffice.com/docs/docs-api/get-started/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/ONLYOFFICE/Docker-DocumentServer
+    kubero.dev/template.categories: '["productivity", "collaboration", "documentation"]'
+    kubero.dev/template.title: OnlyOffice
+    kubero.dev/template.website: https://www.onlyoffice.com/
+  labels:
+    manager: kubero
+spec:
+  name: onlyoffice
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: onlyoffice-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: onlyoffice
+              owner: onlyoffice
+              secret:
+                name: onlyoffice-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: onlyoffice-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: onlyoffice-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: onlyoffice
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: onlyoffice-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: onlyoffice
+          password: onlyoffice
+  - displayName: RabbitMQ
+    env: []
+    icon: /img/addons/rabbitmq.svg
+    id: kubero-operator
+    kind: RabbitmqCluster
+    resourceDefinitions:
+      RabbitmqCluster:
+        apiVersion: rabbitmq.com/v1beta1
+        kind: RabbitmqCluster
+        metadata:
+          name: onlyoffice-rabbitmq
+        spec:
+          replicas: 3
+          persistence:
+            storageClassName: fast
+            storage: 1Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+      default-userSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: onlyoffice-rabbitmq-default-user
+        type: Opaque
+        stringData:
+          username: onlyoffice
+          password: onlyoffice
+          default_user.conf: 'default_user = onlyoffice
+
+            default_pass = onlyoffice'
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: onlyoffice-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: DB_TYPE
+    value: postgres
+  - name: DB_HOST
+    value: onlyoffice-postgresql-rw
+  - name: DB_PORT
+    value: '5432'
+  - name: DB_NAME
+    value: onlyoffice
+  - name: DB_USER
+    value: onlyoffice
+  - name: DB_PWD
+    value: onlyoffice
+  - name: AMQP_TYPE
+    value: rabbitmq
+  - name: AMQP_URI
+    value: amqp://onlyoffice:onlyoffice@onlyoffice-rabbitmq:5672
+  - name: REDIS_SERVER_HOST
+    value: rfr-onlyoffice-valkey-readwrite
+  - name: REDIS_SERVER_PORT
+    value: '6379'
+  - name: JWT_ENABLED
+    value: 'true'
+  - name: JWT_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: JWT_HEADER
+    value: Authorization
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/lib/onlyoffice
+    name: onlyoffice-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: onlyoffice/documentserver
+    tag: latest

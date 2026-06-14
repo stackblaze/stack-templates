@@ -1,0 +1,32 @@
+{
+  "slug": "unomi",
+  "title": "Apache Unomi",
+  "description": "Open-source Java/OSGi Customer Data Platform that manages profiles, segments and events with a privacy-first context server and standards-based API.",
+  "source": "https://github.com/apache/unomi",
+  "website": "https://unomi.apache.org",
+  "icon": "https://avatars.githubusercontent.com/u/47359?s=200&v=4",
+  "categories": ["data", "crm", "automation"],
+  "installation": "Apache Unomi REQUIRES an external Elasticsearch (1.x/2.x stream) or OpenSearch cluster for all profile/event/segment storage; it is NOT one of the supported operator add-ons, so deploy Elasticsearch/OpenSearch separately and point UNOMI_ELASTICSEARCH_ADDRESSES (or UNOMI_OPENSEARCH_ADDRESSES) at it before Unomi will start. Unomi's own Karaf runtime state and config live on the persistent volume at /opt/apache-unomi/data, so no SQL/NoSQL operator add-on is provisioned here. The HTTP context-server and REST API listen on 8181 (a TLS port 9443 and Karaf SSH 8102 are also exposed by the image but are not the HTTP container port and need their own Service/Ingress). UNOMI_THIRDPARTY_PROVIDER1_KEY is the shared secret used by trusted server-side event collectors and MUST be rotated from the template placeholder before production; UNOMI_THIRDPARTY_PROVIDER1_IPADDRESSES whitelists which source IPs may send protected events (here left open as 0.0.0.0/0 for first boot - tighten it). After boot, manage profiles and rules via the REST API / Karaf console; there is no bundled web admin UI."
+,
+  "screenshots": [],
+  "links": ["https://unomi.apache.org/manual/latest/index.html", "https://github.com/apache/unomi/tree/master/docker"],
+  "license": "Apache License 2.0",
+  "spdx_id": "Apache-2.0",
+  "stars": 600,
+  "language": "Java",
+  "image": {"repository": "apache/unomi", "tag": "3.0.0", "containerPort": "8181", "command": []},
+  "envVars": [
+    {"name": "UNOMI_ELASTICSEARCH_ADDRESSES", "value": "elasticsearch:9200"},
+    {"name": "UNOMI_ELASTICSEARCH_CLUSTERNAME", "value": "contextElasticSearch"},
+    {"name": "UNOMI_CLUSTER_PUBLIC_ADDRESS", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "UNOMI_CLUSTER_INTERNAL_ADDRESS", "value": "http://localhost:8181"},
+    {"name": "UNOMI_THIRDPARTY_PROVIDER1_KEY", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "UNOMI_THIRDPARTY_PROVIDER1_IPADDRESSES", "value": "0.0.0.0/0,::1,127.0.0.1"},
+    {"name": "UNOMI_ROOT_PASSWORD", "value": "replace-with-openssl-rand-hex-16"},
+    {"name": "KARAF_OPTS", "value": "-Dunomi.autoStart=true"}
+  ],
+  "addons": [],
+  "extraVolumes": [
+    {"mountPath": "/opt/apache-unomi/data", "name": "unomi-data", "size": "2Gi"}
+  ]
+}

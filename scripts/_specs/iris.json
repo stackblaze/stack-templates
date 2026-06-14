@@ -1,0 +1,45 @@
+{
+  "slug": "iris",
+  "title": "DFIR-IRIS",
+  "description": "Open-source collaborative incident response platform for DFIR analysts to share investigation evidence, tasks, and timelines.",
+  "source": "https://github.com/dfir-iris/iris-web",
+  "website": "https://dfir-iris.org",
+  "icon": "https://avatars.githubusercontent.com/u/86237962?s=200&v=4",
+  "categories": ["security", "collaboration", "productivity"],
+  "installation": "DFIR-IRIS is a multi-container stack; this template runs the primary web/app server (ghcr.io/dfir-iris/iriswebapp_app) only. You MUST deploy these companion services to make it functional: (1) a worker from the SAME ghcr.io/dfir-iris/iriswebapp_app image with env IRIS_WORKER=1 (it runs the Celery jobs handler and shares this app's env, the postgres add-on, and the rabbitmq add-on broker). Upstream also ships (2) ghcr.io/dfir-iris/iriswebapp_db (a pre-tuned Postgres image) and (3) ghcr.io/dfir-iris/iriswebapp_nginx (a reverse proxy that terminates TLS on 443 and proxies to the app on 8000). Here the Kubero ingress terminates HTTP and the postgres add-on replaces the db image, so neither companion image is required; deploy iriswebapp_nginx only if you need its static-asset routing. Pin all companion images to the SAME tag as this app (v2.4.20). IMPORTANT: rotate IRIS_SECRET_KEY and IRIS_SECURITY_PASSWORD_SALT (each 'openssl rand -hex 32') and the postgres/rabbitmq passwords before production. The app auto-creates the schema and an initial 'administrator' user on first boot; the generated admin password is printed in the app pod logs (grep for 'WARNING :: post_init :: create_safe_admin'). User-uploaded case evidence is stored in the database, but server-side datastore files live on the mounted /home/iris/downloads volume.",
+  "screenshots": [],
+  "links": ["https://docs.dfir-iris.org", "https://github.com/dfir-iris/iris-web/wiki"],
+  "license": "GNU Lesser General Public License v3.0",
+  "spdx_id": "LGPL-3.0",
+  "stars": 1500,
+  "language": "Python",
+  "image": {
+    "repository": "ghcr.io/dfir-iris/iriswebapp_app",
+    "tag": "v2.4.20",
+    "containerPort": "8000",
+    "command": []
+  },
+  "envVars": [
+    {"name": "POSTGRES_SERVER", "value": "iris-postgresql-rw"},
+    {"name": "POSTGRES_PORT", "value": "5432"},
+    {"name": "POSTGRES_USER", "value": "iris"},
+    {"name": "POSTGRES_PASSWORD", "value": "iris"},
+    {"name": "POSTGRES_ADMIN_USER", "value": "iris"},
+    {"name": "POSTGRES_ADMIN_PASSWORD", "value": "iris"},
+    {"name": "POSTGRES_DB", "value": "iris"},
+    {"name": "DB_HOST", "value": "iris-postgresql-rw"},
+    {"name": "CELERY_BROKER", "value": "amqp://iris:iris@iris-rabbitmq:5672"},
+    {"name": "IRIS_WORKER", "value": "0"},
+    {"name": "IRIS_SECRET_KEY", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "IRIS_SECURITY_PASSWORD_SALT", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "IRIS_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "LOG_LEVEL", "value": "INFO"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "iris", "db": "iris", "user": "iris", "password": "iris"},
+    {"type": "rabbitmq", "name": "iris", "user": "iris", "password": "iris"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/home/iris/downloads", "name": "iris-data", "size": "5Gi"}
+  ]
+}

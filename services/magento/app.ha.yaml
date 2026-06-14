@@ -1,0 +1,183 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: magento
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source PHP e-commerce platform with a flexible catalog, checkout, promotions and
+      a powerful admin for building online stores.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/168457?s=200&v=4
+    kubero.dev/template.installation: 'Bitnami Magento image. The app web container is the PRIMARY service; companion services
+      you must run alongside it: (1) a search engine - Magento 2.4+ REQUIRES Elasticsearch 7/8 or OpenSearch 2.x, which is
+      NOT a provided operator add-on, so deploy it separately (e.g. image bitnami/opensearch or opensearchproject/opensearch)
+      and point MAGENTO_ELASTICSEARCH_HOST/ELASTICSEARCH_HOST at it on port 9200; (2) optional but recommended cron/queue
+      worker running the same bitnami/magento image with command ''php /opt/bitnami/magento/htdocs/bin/magento cron:run''
+      for scheduled tasks, indexers and async order processing. MariaDB stores all catalog/order data; Valkey (Redis-compatible)
+      is wired for page cache and session storage. First run auto-installs Magento and creates the admin user from MAGENTO_USERNAME/MAGENTO_PASSWORD/MAGENTO_EMAIL
+      - rotate MAGENTO_PASSWORD (currently a placeholder), the MariaDB password, and admin email before exposing publicly.
+      Admin panel lives at {{KUBERO_APP_URL}}/admin. Install is slow (several minutes) and memory-heavy; give the web pod
+      >=2Gi RAM (PHP memory_limit). Reindex with ''bin/magento indexer:reindex'' after first boot.'
+    kubero.dev/template.links: '["https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/overview.html",
+      "https://github.com/bitnami/containers/tree/main/bitnami/magento"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/magento/magento2
+    kubero.dev/template.categories: '["e-commerce", "cms", "work"]'
+    kubero.dev/template.title: Magento
+    kubero.dev/template.website: https://business.adobe.com/products/magento/open-source.html
+  labels:
+    manager: kubero
+spec:
+  name: magento
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: magento-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: magento-mysql-root
+            key: password
+          database: magento
+          username: magento
+          passwordSecretKeyRef:
+            name: magento-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: magento-mysql-root
+        type: Opaque
+        stringData:
+          password: magento
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: magento-mysql-app
+        type: Opaque
+        stringData:
+          password: magento
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: magento-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: MAGENTO_HOST
+    value: '{{KUBERO_APP_HOST}}'
+  - name: MAGENTO_ENABLE_HTTPS
+    value: 'yes'
+  - name: MAGENTO_ENABLE_ADMIN_HTTPS
+    value: 'yes'
+  - name: MAGENTO_DEPLOY_STATIC_CONTENT
+    value: 'yes'
+  - name: MAGENTO_USERNAME
+    value: admin
+  - name: MAGENTO_PASSWORD
+    value: replace-with-openssl-rand-base64-32
+  - name: MAGENTO_EMAIL
+    value: admin@example.com
+  - name: MAGENTO_FIRST_NAME
+    value: Store
+  - name: MAGENTO_LAST_NAME
+    value: Admin
+  - name: MAGENTO_DATABASE_HOST
+    value: magento-mysql
+  - name: MAGENTO_DATABASE_PORT_NUMBER
+    value: '3306'
+  - name: MAGENTO_DATABASE_NAME
+    value: magento
+  - name: MAGENTO_DATABASE_USER
+    value: magento
+  - name: MAGENTO_DATABASE_PASSWORD
+    value: magento
+  - name: MAGENTO_SEARCH_ENGINE
+    value: elasticsearch7
+  - name: MAGENTO_ELASTICSEARCH_HOST
+    value: magento-elasticsearch
+  - name: MAGENTO_ELASTICSEARCH_PORT_NUMBER
+    value: '9200'
+  - name: ELASTICSEARCH_HOST
+    value: magento-elasticsearch
+  - name: ELASTICSEARCH_PORT_NUMBER
+    value: '9200'
+  - name: MAGENTO_USE_REDIS_CACHE
+    value: 'yes'
+  - name: MAGENTO_CACHE_HOST
+    value: rfr-magento-valkey-readwrite
+  - name: MAGENTO_CACHE_PORT_NUMBER
+    value: '6379'
+  - name: MAGENTO_USE_REDIS_SESSION
+    value: 'yes'
+  - name: MAGENTO_SESSION_HOST
+    value: rfr-magento-valkey-readwrite
+  - name: MAGENTO_SESSION_PORT_NUMBER
+    value: '6379'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /bitnami/magento
+    name: magento-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: bitnami/magento
+    tag: latest

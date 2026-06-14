@@ -1,0 +1,122 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: convex
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source reactive backend-as-a-service with a TypeScript database, server functions,
+      file storage, and real-time sync.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/96100313?s=200&v=4
+    kubero.dev/template.installation: 'This template deploys ONLY the Convex backend (ghcr.io/get-convex/convex-backend).
+      It exposes two HTTP ports: 3210 is the client API / sync endpoint (containerPort, what you publish as CONVEX_CLOUD_ORIGIN)
+      and 3211 serves HTTP actions / the ''site'' origin (CONVEX_SITE_ORIGIN). Because Kubero routes a single ingress to one
+      port, the public URL maps to 3210; if you need HTTP actions reachable externally, expose port 3211 with a second route
+      or host and update CONVEX_SITE_ORIGIN accordingly. COMPANION SERVICE: deploy the Convex dashboard separately as its
+      own app from image ghcr.io/get-convex/convex-dashboard:latest (listens on 6791), and point its NEXT_PUBLIC_DEPLOYMENT_URL
+      at this backend''s CONVEX_CLOUD_ORIGIN. Database: the bundled Postgres add-on holds all application data; note POSTGRES_URL
+      must be the SERVER connection string WITHOUT a database path (Convex creates and manages its own database named after
+      INSTANCE_NAME). DO_NOT_REQUIRE_SSL=true is set because the in-cluster Postgres uses plaintext; remove it if you front
+      Postgres with TLS. ROTATE before going live: INSTANCE_SECRET (openssl rand -hex 32) and the Postgres password. FIRST
+      RUN: after the backend is up, generate a deploy admin key with `kubectl exec <backend-pod> -- ./generate_admin_key.sh`
+      (or `docker compose exec backend ./generate_admin_key.sh` style) and use it as CONVEX_SELF_HOSTED_ADMIN_KEY when running
+      `npx convex deploy/dev` against CONVEX_SELF_HOSTED_URL (the 3210 origin). File storage defaults to the local persistent
+      volume at /convex/data; for production-scale file/snapshot storage Convex can use S3-compatible object storage via the
+      AWS_* / S3_STORAGE_*_BUCKET env vars (not configured here).'
+    kubero.dev/template.links: '["https://docs.convex.dev/self-hosting", "https://github.com/get-convex/convex-backend/blob/main/self-hosted/README.md"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/get-convex/convex-backend
+    kubero.dev/template.categories: '["development", "data", "automation"]'
+    kubero.dev/template.title: Convex
+    kubero.dev/template.website: https://www.convex.dev
+  labels:
+    manager: kubero
+spec:
+  name: convex
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: convex-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: convex
+              owner: convex
+              secret:
+                name: convex-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: convex-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: convex-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: convex
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: convex-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: convex
+          password: convex
+  envVars:
+  - name: INSTANCE_NAME
+    value: convex
+  - name: INSTANCE_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: CONVEX_CLOUD_ORIGIN
+    value: '{{KUBERO_APP_URL}}'
+  - name: CONVEX_SITE_ORIGIN
+    value: '{{KUBERO_APP_URL}}'
+  - name: POSTGRES_URL
+    value: postgresql://convex:convex@convex-postgresql-rw:5432
+  - name: DO_NOT_REQUIRE_SSL
+    value: 'true'
+  - name: DISABLE_BEACON
+    value: 'true'
+  - name: RUST_LOG
+    value: info
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /convex/data
+    name: convex-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3210'
+    pullPolicy: Always
+    repository: ghcr.io/get-convex/convex-backend
+    tag: latest

@@ -1,0 +1,23 @@
+{
+  "slug": "picoshare",
+  "title": "PicoShare",
+  "description": "Minimalist self-hosted file-sharing service for generating shareable download links to files of any size.",
+  "source": "https://github.com/mtlynch/picoshare",
+  "website": "https://pico.rocks",
+  "icon": "https://avatars.githubusercontent.com/u/3621513?s=200&v=4",
+  "categories": ["storage", "utilities", "productivity"],
+  "installation": "PicoShare stores everything in a single SQLite database under /data (no external datastore add-on needed). REQUIRED: set PS_SHARED_SECRET to a strong random value before exposing publicly (it is the admin/upload passphrase) and rotate the default. Optional: enable Litestream streaming backups by setting LITESTREAM_BUCKET / LITESTREAM_ENDPOINT / LITESTREAM_ACCESS_KEY_ID / LITESTREAM_SECRET_ACCESS_KEY (requires an external S3-compatible bucket; omitted from addons since Kubero add-ons do not cover S3). The persistent volume at /data must be retained across upgrades or all uploads and links are lost.",
+  "screenshots": ["https://raw.githubusercontent.com/mtlynch/picoshare/master/docs/demo.gif"],
+  "links": ["https://github.com/mtlynch/picoshare/blob/master/README.md"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 2300,
+  "language": "Go",
+  "image": {"repository": "mtlynch/picoshare", "tag": "latest", "containerPort": "3001", "command": []},
+  "envVars": [
+    {"name": "PORT", "value": "3001"},
+    {"name": "PS_SHARED_SECRET", "value": "replace-with-openssl-rand-hex-32"}
+  ],
+  "addons": [],
+  "extraVolumes": [{"mountPath": "/data", "name": "picoshare-data", "size": "2Gi"}]
+}

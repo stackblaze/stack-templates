@@ -1,0 +1,53 @@
+{
+  "slug": "opnform",
+  "title": "OpnForm",
+  "description": "Beautiful open-source form builder to create and share forms, surveys and quizzes with no code, a self-hosted alternative to Typeform and Google Forms.",
+  "source": "https://github.com/JhumanJ/OpnForm",
+  "website": "https://opnform.com",
+  "icon": "https://avatars.githubusercontent.com/u/243543958?s=200&v=4",
+  "categories": ["productivity", "work", "collaboration"],
+  "installation": "Multi-container Laravel (PHP/API) + Nuxt (Vue/client) stack. THIS template deploys the PRIMARY API/server image jhumanj/opnform-api:latest (Laravel + nginx + php-fpm on port 80), which serves the REST API and runs DB migrations on boot. Rotate APP_KEY (base64:$(openssl rand -base64 32)), JWT_SECRET (openssl rand -hex 32), and the Postgres password (default 'opnform') before exposing publicly. Companion services to deploy separately, ALL from the SAME jhumanj/opnform-api:latest image, sharing this template's env: (1) api-worker -- override command to run the queue worker `php artisan queue:work`; (2) api-scheduler -- run the cron scheduler `php artisan schedule:work`. Also deploy the FRONTEND as a separate app from jhumanj/opnform-client:latest (Nuxt SSR, listens on port 3000) with NUXT_PUBLIC_API_BASE pointing at this api's /api URL. The reference compose puts an nginx ingress in front that routes / to the client and /api,/forms,/storage to this api; replicate that routing at the Kubero ingress (path-based) or front both with a small nginx. Postgres (DB_CONNECTION=pgsql) and Valkey/Redis add-ons are bundled here. Set FRONTEND_URL to the public client URL after deploying it. Local file uploads/avatars/exports persist on the /usr/share/nginx/html/storage/app volume; for production object storage set FILESYSTEM_DISK=s3 and add S3-compatible storage env (no S3 add-on is provisioned by this template). Configure SMTP (MAIL_* env) for outbound email after install.",
+  "screenshots": ["https://opnform.com/img/social-preview.jpg"],
+  "links": ["https://github.com/JhumanJ/OpnForm/blob/main/docs/deployment/quickstart.md", "https://docs.opnform.com"],
+  "license": "Other",
+  "spdx_id": "NOASSERTION",
+  "stars": 3459,
+  "language": "PHP",
+  "image": {
+    "repository": "jhumanj/opnform-api",
+    "tag": "latest",
+    "containerPort": "80",
+    "command": []
+  },
+  "envVars": [
+    {"name": "APP_ENV", "value": "production"},
+    {"name": "APP_DEBUG", "value": "false"},
+    {"name": "APP_KEY", "value": "base64:replace-with-openssl-rand-base64-32"},
+    {"name": "APP_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "FRONTEND_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "JWT_SECRET", "value": "replace-with-openssl-rand-hex-32"},
+    {"name": "DB_CONNECTION", "value": "pgsql"},
+    {"name": "DB_HOST", "value": "opnform-postgresql-rw"},
+    {"name": "DB_PORT", "value": "5432"},
+    {"name": "DB_DATABASE", "value": "opnform"},
+    {"name": "DB_USERNAME", "value": "opnform"},
+    {"name": "DB_PASSWORD", "value": "opnform"},
+    {"name": "REDIS_HOST", "value": "rfr-opnform-valkey-readwrite"},
+    {"name": "REDIS_PORT", "value": "6379"},
+    {"name": "QUEUE_CONNECTION", "value": "redis"},
+    {"name": "CACHE_DRIVER", "value": "redis"},
+    {"name": "SESSION_DRIVER", "value": "redis"},
+    {"name": "FILESYSTEM_DISK", "value": "local"},
+    {"name": "PHP_MEMORY_LIMIT", "value": "1G"},
+    {"name": "PHP_UPLOAD_MAX_FILESIZE", "value": "64M"},
+    {"name": "PHP_POST_MAX_SIZE", "value": "64M"},
+    {"name": "NGINX_MAX_BODY_SIZE", "value": "64m"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "opnform", "db": "opnform", "user": "opnform", "password": "opnform"},
+    {"type": "valkey", "name": "opnform"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/usr/share/nginx/html/storage/app", "name": "opnform-storage", "size": "5Gi"}
+  ]
+}

@@ -1,0 +1,106 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: kener
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Stunning, open-source status pages with incident management, multi-language support,
+      monitors and customizable themes.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/16224367?s=200&v=4
+    kubero.dev/template.installation: 'Kener stores its data in a database that defaults to SQLite but is configured here
+      to use the bundled PostgreSQL add-on via DATABASE_URL (rotate the postgres password from the default ''kener''). Set
+      a strong KENER_SECRET_KEY before first start: replace the placeholder with `openssl rand -hex 32` and rotate it later
+      if needed. ORIGIN is wired to the app''s public URL so server-side calls and links resolve correctly. A 2Gi volume is
+      mounted at /app/uploads to persist logos and uploaded assets; with Postgres selected, the /app/database SQLite directory
+      is not required. First run: open the site and complete the setup/login, then add your monitors and customize site.json
+      from the UI. No SMTP, S3 or external search engine is required.'
+    kubero.dev/template.links: '["https://kener.ing/docs/", "https://kener.ing/docs/deployment"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/rajnandan1/kener
+    kubero.dev/template.categories: '["monitoring", "utilities", "productivity"]'
+    kubero.dev/template.title: Kener
+    kubero.dev/template.website: https://kener.ing
+  labels:
+    manager: kubero
+spec:
+  name: kener
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: kener-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: kener
+              owner: kener
+              secret:
+                name: kener-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: kener-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: kener-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: kener
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: kener-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: kener
+          password: kener
+  envVars:
+  - name: ORIGIN
+    value: '{{KUBERO_APP_URL}}'
+  - name: KENER_SECRET_KEY
+    value: replace-with-openssl-rand-hex-32
+  - name: DATABASE_URL
+    value: postgresql://kener:kener@kener-postgresql-rw:5432/kener
+  - name: PORT
+    value: '3000'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/uploads
+    name: kener-uploads
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: rajnandan1/kener
+    tag: latest

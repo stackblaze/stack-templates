@@ -1,0 +1,109 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: uvdesk
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source PHP/Symfony helpdesk and support ticketing system with email piping, knowledgebase,
+      and multi-channel agent workflows.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/24730296?s=200&v=4
+    kubero.dev/template.installation: 'UVdesk is wizard-driven: on first load complete the web installer at {{KUBERO_APP_URL}}/install.
+      When prompted for the database, use host ''uvdesk-mysql'', port 3306, database/user/password ''uvdesk'' (matching the
+      mariadb add-on below) and create your super-admin account there. There is no separate root step needed for an external
+      DB. UVdesk requires MySQL/MariaDB only (no PostgreSQL support). Outbound/inbound email (SMTP + IMAP mailbox) must be
+      configured in the admin panel after install for ticket creation from email. Rotate the mariadb password from the default
+      ''uvdesk'' before exposing publicly. No official Docker image is published by the project; this uses the actively maintained
+      community image dietermartens/uvdesk.'
+    kubero.dev/template.links: '["https://docs.uvdesk.com", "https://github.com/uvdesk/community-skeleton/wiki/Dockerize-helpdesk-project"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/uvdesk/community-skeleton
+    kubero.dev/template.categories: '["helpdesk", "work", "collaboration"]'
+    kubero.dev/template.title: UVdesk
+    kubero.dev/template.website: https://www.uvdesk.com
+  labels:
+    manager: kubero
+spec:
+  name: uvdesk
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: uvdesk-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: uvdesk-mysql-root
+            key: password
+          database: uvdesk
+          username: uvdesk
+          passwordSecretKeyRef:
+            name: uvdesk-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: uvdesk-mysql-root
+        type: Opaque
+        stringData:
+          password: uvdesk
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: uvdesk-mysql-app
+        type: Opaque
+        stringData:
+          password: uvdesk
+  envVars:
+  - name: MYSQL_HOST
+    value: uvdesk-mysql
+  - name: MYSQL_PORT
+    value: '3306'
+  - name: MYSQL_DATABASE
+    value: uvdesk
+  - name: MYSQL_USER
+    value: uvdesk
+  - name: MYSQL_PASSWORD
+    value: uvdesk
+  - name: MYSQL_ROOT_PASSWORD
+    value: uvdesk
+  - name: SITE_URL
+    value: '{{KUBERO_APP_URL}}'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/uvdesk/public/assets
+    name: uvdesk-data
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: dietermartens/uvdesk
+    tag: latest

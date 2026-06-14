@@ -1,0 +1,20 @@
+{
+  "slug": "element",
+  "title": "Element Web",
+  "description": "Glossy, feature-rich Matrix web client for secure, decentralized chat, voice and video collaboration.",
+  "source": "https://github.com/element-hq/element-web",
+  "website": "https://element.io",
+  "icon": "https://avatars.githubusercontent.com/u/132949923?s=200&v=4",
+  "categories": ["communication", "collaboration", "social"],
+  "installation": "Element Web is a STATELESS static client (nginx on port 80); it does NOT store data itself. It is the frontend for a Matrix homeserver, which you must deploy separately. Run a Synapse homeserver (which needs its own Postgres) and point Element at it. Configure the homeserver/identity-server URLs by mounting a config.json at /app/config.json or via the ELEMENT_WEB_PORT / templated config; at minimum set default_server_config (m.homeserver base_url) to your Synapse URL. No add-ons or volumes are required for Element Web itself.",
+  "screenshots": [],
+  "links": ["https://github.com/element-hq/element-web/blob/develop/docs/config.md", "https://github.com/element-hq/element-web/blob/develop/docs/install.md"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 11500,
+  "language": "TypeScript",
+  "image": {"repository": "vectorim/element-web", "tag": "latest", "containerPort": "80", "command": []},
+  "envVars": [],
+  "addons": [],
+  "extraVolumes": []
+}

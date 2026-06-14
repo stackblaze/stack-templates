@@ -1,0 +1,50 @@
+{
+  "slug": "attendize",
+  "title": "Attendize",
+  "description": "Open-source ticket selling and event management platform (Laravel) for organizing events and selling tickets online.",
+  "source": "https://github.com/Attendize/Attendize",
+  "website": "https://www.attendize.com/",
+  "icon": "https://avatars.githubusercontent.com/u/18512337?s=200&v=4",
+  "categories": ["e-commerce", "productivity", "work"],
+  "installation": "Attendize is a multi-container Laravel stack; this template deploys ONLY the web/server image (elestio/attendize-web, listens on container port 80). You MUST also run the companion queue/scheduler worker from image elestio/attendize-worker (same env, same DB/Redis) to send emails, generate ticket PDFs and process background jobs. SMTP is required for ticket delivery: set MAIL_HOST/MAIL_PORT/MAIL_USERNAME/MAIL_PASSWORD to a real SMTP relay (the upstream compose uses a maildev catch-all only for dev). ROTATE before production: APP_KEY (run `php artisan key:generate` or set a 32-char base64 secret prefixed with base64:), and the mariadb add-on db/user/password. APP_URL is wired to this app's public URL. First run: the entrypoint runs migrations automatically; then browse to {{KUBERO_APP_URL}}/install (or the signup page) to create the first admin/organiser account. Uses MariaDB (the app is MySQL-only, not Postgres-compatible) and Valkey/Redis for queue + cache.",
+  "screenshots": [],
+  "links": ["https://github.com/Attendize/Attendize/blob/master/docker-compose.yml"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 3000,
+  "language": "PHP",
+  "image": {"repository": "elestio/attendize-web", "tag": "latest", "containerPort": "80", "command": []},
+  "envVars": [
+    {"name": "APP_ENV", "value": "production"},
+    {"name": "APP_DEBUG", "value": "false"},
+    {"name": "APP_URL", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "APP_KEY", "value": "base64:replace-with-openssl-rand-base64-32"},
+    {"name": "DB_CONNECTION", "value": "mysql"},
+    {"name": "DB_HOST", "value": "attendize-mysql"},
+    {"name": "DB_PORT", "value": "3306"},
+    {"name": "DB_DATABASE", "value": "attendize"},
+    {"name": "DB_USERNAME", "value": "attendize"},
+    {"name": "DB_PASSWORD", "value": "attendize"},
+    {"name": "QUEUE_CONNECTION", "value": "redis"},
+    {"name": "CACHE_DRIVER", "value": "redis"},
+    {"name": "SESSION_DRIVER", "value": "redis"},
+    {"name": "REDIS_HOST", "value": "rfr-attendize-valkey-readwrite"},
+    {"name": "REDIS_PORT", "value": "6379"},
+    {"name": "REDIS_PASSWORD", "value": "null"},
+    {"name": "MAIL_DRIVER", "value": "smtp"},
+    {"name": "MAIL_HOST", "value": "smtp.example.com"},
+    {"name": "MAIL_PORT", "value": "587"},
+    {"name": "MAIL_USERNAME", "value": "replace-with-smtp-username"},
+    {"name": "MAIL_PASSWORD", "value": "replace-with-smtp-password"},
+    {"name": "MAIL_ENCRYPTION", "value": "tls"},
+    {"name": "MAIL_FROM_ADDRESS", "value": "tickets@example.com"},
+    {"name": "MAIL_FROM_NAME", "value": "Attendize"}
+  ],
+  "addons": [
+    {"type": "mariadb", "name": "attendize", "db": "attendize", "user": "attendize", "password": "attendize"},
+    {"type": "valkey", "name": "attendize"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/var/www/html/public/uploads", "name": "attendize-uploads", "size": "5Gi"}
+  ]
+}

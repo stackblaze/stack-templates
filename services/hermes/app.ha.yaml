@@ -1,0 +1,118 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: hermes
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source document management system from HashiCorp Labs for scaling an organization's
+      writing, review and approval workflows.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/103241808?s=200&v=4
+    kubero.dev/template.installation: 'Hermes is an alpha-stage HashiCorp Labs project that does NOT publish a prebuilt container
+      image; you must build it from the repo (`docker build -t ghcr.io/hashicorp-forge/hermes:latest .`) and push it to a
+      registry you control before deploying this template (update image.repository/tag to match). Hermes is config-driven
+      via an HCL file: mount your `config.hcl` at the path referenced by the entrypoint (this template mounts a volume at
+      /hermes/config; pass `-config=/hermes/config/config.hcl`) or override the database via the HERMES_SERVER_POSTGRES_*
+      env vars set here. A Postgres add-on is provisioned and is the v2 source of truth - rotate the default `hermes` password.
+      REQUIRED external companions NOT provided by this template: (1) Algolia (App ID + Search API Key + Write API Key) for
+      the search index; (2) a Google Workspace project OR SharePoint/Microsoft 365 tenant as the document storage backend
+      AND OAuth identity provider - supply the corresponding OAuth client credentials in config.hcl. Optional: Jira for issue
+      linking. After first boot, run the included DB migrations and index sync per the repo README, then sign in with your
+      Google/Microsoft account to bootstrap the first user.'
+    kubero.dev/template.links: '["https://github.com/hashicorp-forge/hermes/blob/main/README.md", "https://github.com/hashicorp-forge/hermes/blob/main/docs"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/hashicorp-forge/hermes
+    kubero.dev/template.categories: '["documentation", "productivity", "collaboration"]'
+    kubero.dev/template.title: Hermes
+    kubero.dev/template.website: https://github.com/hashicorp-forge/hermes
+  labels:
+    manager: kubero
+spec:
+  name: hermes
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: hermes-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: hermes
+              owner: hermes
+              secret:
+                name: hermes-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: hermes-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: hermes-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: hermes
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: hermes-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: hermes
+          password: hermes
+  envVars:
+  - name: HERMES_SERVER_POSTGRES_HOST
+    value: hermes-postgresql-rw
+  - name: HERMES_SERVER_POSTGRES_PORT
+    value: '5432'
+  - name: HERMES_SERVER_POSTGRES_DBNAME
+    value: hermes
+  - name: HERMES_SERVER_POSTGRES_USER
+    value: hermes
+  - name: HERMES_SERVER_POSTGRES_PASSWORD
+    value: hermes
+  - name: HERMES_SERVER_BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: HERMES_WEB_BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: HERMES_SERVER_ADDR
+    value: 0.0.0.0:8000
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /hermes/config
+    name: hermes-config
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: ghcr.io/hashicorp-forge/hermes
+    tag: latest

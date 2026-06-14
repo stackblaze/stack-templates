@@ -1,0 +1,58 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: flatnotes
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted, database-less note-taking web app that stores everything as a flat folder
+      of portable Markdown files with full-text search.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/8316040?s=200&v=4
+    kubero.dev/template.installation: 'Flatnotes is database-less: all notes are stored as plain Markdown files under /data
+      (mounted on the flatnotes-data volume), with a Whoosh search index rebuilt automatically on startup. No add-on (Postgres/Redis/etc.)
+      is required. Before deploying, rotate FLATNOTES_PASSWORD and FLATNOTES_SECRET_KEY from the template defaults: set FLATNOTES_SECRET_KEY
+      to a long random string (e.g. `openssl rand -hex 32`) so that auth session tokens stay valid and secure, and FLATNOTES_USERNAME/FLATNOTES_PASSWORD
+      to your own credentials. FLATNOTES_AUTH_TYPE defaults to ''password'' (single-user login); set it to ''totp'' to add
+      a TOTP second factor (also set FLATNOTES_TOTP_KEY), ''read_only'' for a public read-only instance, or ''none'' to disable
+      auth entirely (only safe behind another auth proxy). The app listens on port 8080 and serves both the web UI and API.
+      Because notes are just files on the volume, you can back them up, sync them, or edit them with any external Markdown
+      editor. No SMTP, object store or external search engine is needed.'
+    kubero.dev/template.links: '["https://github.com/dullage/flatnotes#readme", "https://flatnotes.io"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/dullage/flatnotes
+    kubero.dev/template.categories: '["productivity", "documentation", "utilities"]'
+    kubero.dev/template.title: Flatnotes
+    kubero.dev/template.website: https://flatnotes.io
+  labels:
+    manager: kubero
+spec:
+  name: flatnotes
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: FLATNOTES_AUTH_TYPE
+    value: password
+  - name: FLATNOTES_USERNAME
+    value: flatnotes
+  - name: FLATNOTES_PASSWORD
+    value: flatnotes
+  - name: FLATNOTES_SECRET_KEY
+    value: replace-with-openssl-rand-hex-32
+  - name: FLATNOTES_PATH
+    value: /data
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /data
+    name: flatnotes-data
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: dullage/flatnotes
+    tag: latest

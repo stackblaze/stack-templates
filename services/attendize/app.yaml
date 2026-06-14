@@ -1,0 +1,174 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: attendize
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source ticket selling and event management platform (Laravel) for organizing events
+      and selling tickets online.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/18512337?s=200&v=4
+    kubero.dev/template.installation: 'Attendize is a multi-container Laravel stack; this template deploys ONLY the web/server
+      image (elestio/attendize-web, listens on container port 80). You MUST also run the companion queue/scheduler worker
+      from image elestio/attendize-worker (same env, same DB/Redis) to send emails, generate ticket PDFs and process background
+      jobs. SMTP is required for ticket delivery: set MAIL_HOST/MAIL_PORT/MAIL_USERNAME/MAIL_PASSWORD to a real SMTP relay
+      (the upstream compose uses a maildev catch-all only for dev). ROTATE before production: APP_KEY (run `php artisan key:generate`
+      or set a 32-char base64 secret prefixed with base64:), and the mariadb add-on db/user/password. APP_URL is wired to
+      this app''s public URL. First run: the entrypoint runs migrations automatically; then browse to {{KUBERO_APP_URL}}/install
+      (or the signup page) to create the first admin/organiser account. Uses MariaDB (the app is MySQL-only, not Postgres-compatible)
+      and Valkey/Redis for queue + cache.'
+    kubero.dev/template.links: '["https://github.com/Attendize/Attendize/blob/master/docker-compose.yml"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/Attendize/Attendize
+    kubero.dev/template.categories: '["e-commerce", "productivity", "work"]'
+    kubero.dev/template.title: Attendize
+    kubero.dev/template.website: https://www.attendize.com/
+  labels:
+    manager: kubero
+spec:
+  name: attendize
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: attendize-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: attendize-mysql-root
+            key: password
+          database: attendize
+          username: attendize
+          passwordSecretKeyRef:
+            name: attendize-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: attendize-mysql-root
+        type: Opaque
+        stringData:
+          password: attendize
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: attendize-mysql-app
+        type: Opaque
+        stringData:
+          password: attendize
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: attendize-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: APP_ENV
+    value: production
+  - name: APP_DEBUG
+    value: 'false'
+  - name: APP_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: APP_KEY
+    value: base64:replace-with-openssl-rand-base64-32
+  - name: DB_CONNECTION
+    value: mysql
+  - name: DB_HOST
+    value: attendize-mysql
+  - name: DB_PORT
+    value: '3306'
+  - name: DB_DATABASE
+    value: attendize
+  - name: DB_USERNAME
+    value: attendize
+  - name: DB_PASSWORD
+    value: attendize
+  - name: QUEUE_CONNECTION
+    value: redis
+  - name: CACHE_DRIVER
+    value: redis
+  - name: SESSION_DRIVER
+    value: redis
+  - name: REDIS_HOST
+    value: rfr-attendize-valkey-readwrite
+  - name: REDIS_PORT
+    value: '6379'
+  - name: REDIS_PASSWORD
+    value: 'null'
+  - name: MAIL_DRIVER
+    value: smtp
+  - name: MAIL_HOST
+    value: smtp.example.com
+  - name: MAIL_PORT
+    value: '587'
+  - name: MAIL_USERNAME
+    value: replace-with-smtp-username
+  - name: MAIL_PASSWORD
+    value: replace-with-smtp-password
+  - name: MAIL_ENCRYPTION
+    value: tls
+  - name: MAIL_FROM_ADDRESS
+    value: tickets@example.com
+  - name: MAIL_FROM_NAME
+    value: Attendize
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/public/uploads
+    name: attendize-uploads
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: elestio/attendize-web
+    tag: latest

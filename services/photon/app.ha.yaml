@@ -1,0 +1,58 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: photon
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source geocoder for OpenStreetMap data with search-as-you-type and reverse geocoding,
+      powered by an embedded OpenSearch index.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/725743?s=200&v=4
+    kubero.dev/template.installation: 'Photon is a self-contained geocoder: it bundles its own OpenSearch/Elasticsearch search
+      engine and serves an HTTP API on port 2322 (no external database add-on is needed). It requires a pre-built search index.
+      The rtuszik/photon-docker image used here automatically downloads the GraphHopper index dump for the configured REGION
+      on first start and keeps it updated. IMPORTANT: index dumps are very large (a country like ''germany'' is several GB;
+      the worldwide ''planet'' index is ~90-200GB) and the initial download/extraction can take a long time, so size the /photon/data
+      volume to match your chosen REGION (the 1Gi default below is only enough for a tiny region/testing - increase it before
+      deploying a real region). Set REGION to a country/continent code (e.g. ''germany'', ''europe'') or ''planet'' for worldwide.
+      Query the API at /api?q=<text> and reverse-geocode at /reverse?lon=<x>&lat=<y>. No login or secrets to rotate. To pin
+      a version instead of ''latest'', use one of the rtuszik/photon-docker release tags.'
+    kubero.dev/template.links: '["https://github.com/komoot/photon#readme", "https://github.com/rtuszik/photon-docker#readme"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/komoot/photon
+    kubero.dev/template.categories: '["utilities", "development", "data"]'
+    kubero.dev/template.title: Photon
+    kubero.dev/template.website: https://photon.komoot.io
+  labels:
+    manager: kubero
+spec:
+  name: photon
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: REGION
+    value: germany
+  - name: UPDATE_STRATEGY
+    value: DISABLED
+  - name: UPDATE_INTERVAL
+    value: 30d
+  - name: PHOTON_LISTEN_IP
+    value: 0.0.0.0
+  - name: LOG_LEVEL
+    value: INFO
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /photon/data
+    name: photon-data
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '2322'
+    pullPolicy: Always
+    repository: rtuszik/photon-docker
+    tag: latest

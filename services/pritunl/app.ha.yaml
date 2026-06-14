@@ -1,0 +1,79 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: pritunl
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Enterprise distributed OpenVPN and WireGuard VPN server with a web admin console for
+      managing users, organizations and networks.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/3367358?s=200&v=4
+    kubero.dev/template.installation: 'No official Pritunl VPN container exists; this template uses the actively maintained
+      community image ghcr.io/jippi/docker-pritunl. Pritunl stores all state in MongoDB, provided here by the documentdb add-on
+      (rotate the mongoadmin password). The app connects via PRITUNL_MONGODB_URI. After first boot, exec into the pod and
+      run ''pritunl default-password'' to get the temporary admin login, then open the web console at {{KUBERO_APP_URL}} to
+      set the admin URL and finish setup. IMPORTANT VPN caveat: actual VPN tunneling needs the tun device plus NET_ADMIN/privileged
+      and host networking, which a standard Kubero deployment does not grant; the web admin console and user/org management
+      work out of the box, but to terminate live OpenVPN/WireGuard tunnels you must add privileged securityContext and a hostPath
+      /dev/net/tun mount.'
+    kubero.dev/template.links: '["https://docs.pritunl.com", "https://github.com/jippi/docker-pritunl"]'
+    kubero.dev/template.screenshots: '["https://pritunl.com/img/pritunl_users.png"]'
+    kubero.dev/template.source: https://github.com/pritunl/pritunl
+    kubero.dev/template.categories: '["security", "identity", "utilities"]'
+    kubero.dev/template.title: Pritunl
+    kubero.dev/template.website: https://pritunl.com
+  labels:
+    manager: kubero
+spec:
+  name: pritunl
+  deploymentstrategy: docker
+  addons:
+  - displayName: Document DB
+    env: []
+    icon: /img/addons/mongo.svg
+    id: kubero-operator
+    kind: DocumentDB
+    resourceDefinitions:
+      DocumentDB:
+        apiVersion: documentdb.io/preview
+        kind: DocumentDB
+        metadata:
+          name: pritunl-documentdb
+        spec:
+          nodeCount: 3
+          instancesPerNode: 1
+          documentDbCredentialSecret: documentdb-credentials
+          resource:
+            storage:
+              pvcSize: 1Gi
+              storageClass: default
+          exposeViaService:
+            serviceType: ClusterIP
+      credentialSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: documentdb-credentials
+        type: Opaque
+        stringData:
+          username: mongoadmin
+          password: pritunl
+  envVars:
+  - name: PRITUNL_MONGODB_URI
+    value: mongodb://mongoadmin:pritunl@documentdb-service-pritunl-documentdb:10260/pritunl?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/lib/pritunl
+    name: pritunl-data
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '443'
+    pullPolicy: Always
+    repository: ghcr.io/jippi/docker-pritunl
+    tag: latest

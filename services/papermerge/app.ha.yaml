@@ -1,0 +1,150 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: papermerge
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'Self-hosted document management system (DMS) for digital archives: scan, OCR, organize,
+      tag and full-text-search PDFs and scanned documents.'
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/62459211?s=200&v=4
+    kubero.dev/template.installation: 'Deploy with the bundled PostgreSQL and Valkey (Redis) add-ons; rotate the Postgres
+      password and the random PAPERMERGE__SECURITY__SECRET_KEY placeholder (openssl rand -hex 32), and change the bootstrap
+      superuser password PAPERMERGE__AUTH__PASSWORD before going to production. The web container listens on internal port
+      80 (apache) and serves both the React UI and the REST API. Uploaded documents and OCR output live under /db/media (PAPERMERGE__MAIN__MEDIA_ROOT)
+      on the persistent volume. On first boot the database is migrated automatically and a superuser is created from PAPERMERGE__AUTH__USERNAME
+      / PAPERMERGE__AUTH__PASSWORD; log in and change the password immediately. OCR is performed by separate companion worker
+      images that must be deployed alongside this app and share the same Postgres, Redis and media volume: papermerge/ocrworker:0.3.1
+      (OCR), papermerge/i3worker:0.3 (full-text index writer), papermerge/path-tmpl-worker:0.4.1 (path templates). Full-text
+      search defaults to a built-in SQLite/Tantivy index (PAPERMERGE__SEARCH__URL unset) so no external Elasticsearch is required
+      for a single-node install; set PAPERMERGE__SEARCH__URL only if you front it with Solr/OpenSearch. If you switch document
+      storage to S3 instead of the local volume, also deploy papermerge/s3worker and set PAPERMERGE__S3__BUCKET_NAME.'
+    kubero.dev/template.links: '["https://docs.papermerge.io/3.5/setup/docker-compose/", "https://docs.papermerge.io/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/ciur/papermerge
+    kubero.dev/template.categories: '["documentation", "productivity", "storage"]'
+    kubero.dev/template.title: Papermerge
+    kubero.dev/template.website: https://papermerge.com
+  labels:
+    manager: kubero
+spec:
+  name: papermerge
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: papermerge-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: papermerge
+              owner: papermerge
+              secret:
+                name: papermerge-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: papermerge-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: papermerge-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: papermerge
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: papermerge-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: papermerge
+          password: papermerge
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: papermerge-valkey
+        spec:
+          version: '8.0'
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          sentinel:
+            replicas: 3
+            quorum: 2
+  envVars:
+  - name: PAPERMERGE__SECURITY__SECRET_KEY
+    value: replace-with-openssl-rand-hex-32
+  - name: PAPERMERGE__AUTH__USERNAME
+    value: admin
+  - name: PAPERMERGE__AUTH__PASSWORD
+    value: papermerge
+  - name: PAPERMERGE__DATABASE__URL
+    value: postgresql://papermerge:papermerge@papermerge-postgresql-rw:5432/papermerge
+  - name: PAPERMERGE__REDIS__URL
+    value: redis://rfr-papermerge-valkey-readwrite:6379/0
+  - name: PAPERMERGE__MAIN__MEDIA_ROOT
+    value: /db/media
+  - name: PAPERMERGE__OCR__LANG_CODES
+    value: eng,deu
+  - name: PAPERMERGE__OCR__DEFAULT_LANG_CODE
+    value: eng
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /db/media
+    name: papermerge-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: papermerge/papermerge
+    tag: 3.5.3

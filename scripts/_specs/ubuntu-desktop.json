@@ -1,0 +1,35 @@
+{
+  "slug": "ubuntu-desktop",
+  "title": "Ubuntu Desktop",
+  "description": "Browser-accessible Ubuntu KDE desktop in a container (LinuxServer.io Webtop), streamed over KasmVNC for remote Linux desktop sessions.",
+  "source": "https://github.com/linuxserver/docker-webtop",
+  "website": "https://docs.linuxserver.io/images/docker-webtop/",
+  "icon": "https://avatars.githubusercontent.com/u/13923067?s=200&v=4",
+  "categories": ["development", "utilities", "productivity"],
+  "installation": "This is LinuxServer.io Webtop running the Ubuntu KDE flavor: a full Ubuntu desktop streamed to the browser over KasmVNC on port 3000, with no SQL database. All desktop state, the user home directory, and installed packages persist in the volume mounted at /config, so no add-on is required. The web UI is protected with HTTP Basic auth via CUSTOM_USER / PASSWORD - the template ships defaults (abc / ubuntu-desktop) that you MUST rotate before exposing it publicly; anyone who reaches the URL gets an interactive root-capable desktop. Set PUID/PGID to match your storage's ownership and TZ to your timezone. Desktop images benefit from a larger /dev/shm (the docker run guidance is --shm-size=1gb) - if Chromium or KDE apps crash, raise the pod's shared-memory size. The KDE flavor and any in-desktop Docker-in-Docker usage may require elevated/privileged container settings on the node; plan that before relying on nested containers. No SMTP, S3 or external search engine is needed. Set TITLE to brand the browser tab.",
+  "screenshots": ["https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/webtop-logo.png"],
+  "links": ["https://docs.linuxserver.io/images/docker-webtop/", "https://github.com/linuxserver/docker-webtop#readme"],
+  "license": "GNU General Public License v3.0",
+  "spdx_id": "GPL-3.0",
+  "stars": 740,
+  "language": "Shell",
+  "image": {
+    "repository": "linuxserver/webtop",
+    "tag": "ubuntu-kde",
+    "containerPort": "3000",
+    "command": []
+  },
+  "envVars": [
+    {"name": "PUID", "value": "1000"},
+    {"name": "PGID", "value": "1000"},
+    {"name": "TZ", "value": "Etc/UTC"},
+    {"name": "TITLE", "value": "Ubuntu Desktop"},
+    {"name": "CUSTOM_USER", "value": "abc"},
+    {"name": "PASSWORD", "value": "ubuntu-desktop"},
+    {"name": "SUBFOLDER", "value": "/"}
+  ],
+  "addons": [],
+  "extraVolumes": [
+    {"mountPath": "/config", "name": "ubuntu-desktop-config", "size": "5Gi"}
+  ]
+}

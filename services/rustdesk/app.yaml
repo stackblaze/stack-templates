@@ -1,0 +1,52 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: rustdesk
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted RustDesk relay/rendezvous server (hbbs + hbbr) for running your own private,
+      open-source remote desktop infrastructure.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/81591375?s=200&v=4
+    kubero.dev/template.installation: The rustdesk-server-s6 image runs both hbbs (ID/rendezvous) and hbbr (relay) in one
+      container via s6-overlay. On first start it generates an ECDSA key pair in /data (id_ed25519 / id_ed25519.pub); copy
+      the public key from /data/id_ed25519.pub and distribute it to RustDesk clients as the Key, with this host as the ID/Relay
+      server. Set RELAY to this app's public host so clients can reach the relay. Native RustDesk clients connect over TCP/UDP
+      21115-21119; those are NOT proxied by the HTTP ingress and require LoadBalancer/NodePort exposure of those ports. Container
+      port 21118 is the hbbs web/websocket port. ENCRYPTED_ONLY=1 rejects unencrypted clients. Persist /data to keep the key
+      pair and the SQLite db_v2.sqlite3 across restarts.
+    kubero.dev/template.links: '["https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/docker/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/rustdesk/rustdesk-server
+    kubero.dev/template.categories: '["utilities", "security", "work"]'
+    kubero.dev/template.title: RustDesk Server
+    kubero.dev/template.website: https://rustdesk.com
+  labels:
+    manager: kubero
+spec:
+  name: rustdesk
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: RELAY
+    value: '{{KUBERO_APP_HOST}}'
+  - name: ENCRYPTED_ONLY
+    value: '1'
+  - name: DB_URL
+    value: /data/db_v2.sqlite3
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /data
+    name: rustdesk-data
+    size: 2Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '21118'
+    pullPolicy: Always
+    repository: rustdesk/rustdesk-server-s6
+    tag: latest

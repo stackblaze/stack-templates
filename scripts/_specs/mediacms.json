@@ -1,0 +1,43 @@
+{
+  "slug": "mediacms",
+  "title": "MediaCMS",
+  "description": "Modern, fully featured open-source video and media content management system for building self-hosted media portals and streaming sites.",
+  "source": "https://github.com/mediacms-io/mediacms",
+  "website": "https://mediacms.io",
+  "icon": "https://avatars.githubusercontent.com/u/54712209?s=200&v=4",
+  "categories": ["media", "cms", "social"],
+  "installation": "This template runs the PRIMARY MediaCMS application container ONLY (mediacms/mediacms). MediaCMS is a Django + Celery MULTI-CONTAINER stack and is NOT complete with this pod alone. By default this pod is configured as the WEB front end (ENABLE_UWSGI=yes, ENABLE_NGINX=yes serving HTTP on port 80), with migrations and Celery DISABLED so they can run as dedicated apps. REQUIRED before/at first boot: 1) Run database migrations ONCE - deploy a one-shot companion app from the SAME image mediacms/mediacms with env ENABLE_UWSGI=no, ENABLE_NGINX=no, ENABLE_CELERY_BEAT=no, ENABLE_CELERY_SHORT=no, ENABLE_CELERY_LONG=no, ENABLE_MIGRATIONS=yes, ADMIN_USER=admin, ADMIN_EMAIL=admin@localhost and ADMIN_PASSWORD set to a strong value (this also creates the first superuser). Alternatively set ENABLE_MIGRATIONS=yes on THIS web pod for the very first deploy, then set it back to no. 2) Rotate the Postgres password (template default is the slug 'mediacms') and set a real ADMIN_PASSWORD. Valkey/Redis is password-less in-cluster. MANDATORY COMPANION SERVICES to deploy as SEPARATE apps from the SAME image mediacms/mediacms, sharing the SAME Postgres + Valkey + the /home/mediacms/mediacms/media_files volume (use RWX storage so uploads/transcodes are visible to all): (a) Celery WORKER for short tasks - env ENABLE_UWSGI=no, ENABLE_NGINX=no, ENABLE_CELERY_SHORT=yes, ENABLE_CELERY_LONG=yes, ENABLE_CELERY_BEAT=no, ENABLE_MIGRATIONS=no (handles thumbnailing, encoding/transcoding and notifications - REQUIRED or uploaded videos never finish processing); (b) Celery BEAT scheduler - env ENABLE_CELERY_BEAT=yes with all other ENABLE_* = no (periodic cleanup/maintenance jobs). All companion pods need the identical POSTGRES_* and REDIS_LOCATION env vars as this web pod. Route public ingress to THIS web pod (it runs the bundled nginx). Set FRONTEND_HOST to your public https URL so absolute media/asset links resolve correctly. Heavy video transcoding is CPU/RAM intensive - size the worker pod accordingly. For production at scale media_files can be offloaded to S3 (e.g. the RustFS add-on) via Django storages, but the default uses the local volume.",
+  "screenshots": ["https://mediacms.io/static/images/mediacms.png"],
+  "links": ["https://github.com/mediacms-io/mediacms/blob/main/docs/admins_docs.md", "https://github.com/mediacms-io/mediacms/blob/main/docs/Installation.md"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 5000,
+  "language": "Python",
+  "image": {"repository": "mediacms/mediacms", "tag": "latest", "containerPort": "80", "command": []},
+  "envVars": [
+    {"name": "ENABLE_UWSGI", "value": "yes"},
+    {"name": "ENABLE_NGINX", "value": "yes"},
+    {"name": "ENABLE_MIGRATIONS", "value": "no"},
+    {"name": "ENABLE_CELERY_BEAT", "value": "no"},
+    {"name": "ENABLE_CELERY_SHORT", "value": "no"},
+    {"name": "ENABLE_CELERY_LONG", "value": "no"},
+    {"name": "FRONTEND_HOST", "value": "{{KUBERO_APP_URL}}"},
+    {"name": "POSTGRES_HOST", "value": "mediacms-postgresql-rw"},
+    {"name": "POSTGRES_PORT", "value": "5432"},
+    {"name": "POSTGRES_DB", "value": "mediacms"},
+    {"name": "POSTGRES_USER", "value": "mediacms"},
+    {"name": "POSTGRES_PASSWORD", "value": "mediacms"},
+    {"name": "REDIS_LOCATION", "value": "redis://rfr-mediacms-valkey-readwrite:6379/1"},
+    {"name": "ADMIN_USER", "value": "admin"},
+    {"name": "ADMIN_EMAIL", "value": "admin@localhost"},
+    {"name": "ADMIN_PASSWORD", "value": "replace-with-openssl-rand-hex-16"},
+    {"name": "TZ", "value": "UTC"}
+  ],
+  "addons": [
+    {"type": "postgres", "name": "mediacms", "db": "mediacms", "user": "mediacms", "password": "mediacms"},
+    {"type": "valkey", "name": "mediacms"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/home/mediacms/mediacms/media_files", "name": "mediacms-media", "size": "5Gi"}
+  ]
+}

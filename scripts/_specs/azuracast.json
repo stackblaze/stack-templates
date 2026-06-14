@@ -1,0 +1,45 @@
+{
+  "slug": "azuracast",
+  "title": "AzuraCast",
+  "description": "Self-hosted, all-in-one web radio management suite for running internet radio stations, with streaming, automation, and live DJ support.",
+  "source": "https://github.com/AzuraCast/AzuraCast",
+  "website": "https://www.azuracast.com",
+  "icon": "https://avatars.githubusercontent.com/u/29005116?s=200&v=4",
+  "categories": ["media", "automation", "utilities"],
+  "installation": "AzuraCast is a multi-container stack; this template runs the PRIMARY web/application image (ghcr.io/azuracast/azuracast) which bundles nginx, PHP-FPM and the supervisord-managed background workers (scheduler, message queue, sync tasks) inside the single image, plus the Liquidsoap/Icecast/SHOUTcast streaming processes. External datastores are wired via add-ons: a MariaDB add-on (AzuraCast supports ONLY MySQL/MariaDB, not Postgres) and a Valkey add-on used as the Redis cache (REDIS_HOST points at the Valkey service; Valkey is Redis-protocol compatible and password-less here). Setting MYSQL_HOST to a non-localhost value automatically disables the image's bundled internal MariaDB; ENABLE_REDIS=true + REDIS_HOST disables the bundled Redis. Rotate MARIADB_PASSWORD / MYSQL_PASSWORD and the MariaDB add-on password before going live. The container's HTTP port is 80 (also exposes 443 for TLS and dynamic broadcast ports 8000-8999 for station streams, which must be exposed separately via a NodePort/LoadBalancer for listeners to connect). On first run, browse to the app URL and complete the web setup wizard to create the super-admin account and your first station. Station media, recordings and config persist on the mounted /var/azuracast volume; for production-scale media libraries consider increasing the volume size or using S3-backed station storage (configured per-station in the AzuraCast UI).",
+  "screenshots": [],
+  "links": ["https://docs.azuracast.com/en/getting-started/installation/docker", "https://www.azuracast.com/docs/administration/docker/"],
+  "license": "GNU Affero General Public License v3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 3700,
+  "language": "PHP",
+  "image": {"repository": "ghcr.io/azuracast/azuracast", "tag": "latest", "containerPort": "80", "command": []},
+  "envVars": [
+    {"name": "AZURACAST_HTTP_PORT", "value": "80"},
+    {"name": "AZURACAST_HTTPS_PORT", "value": "443"},
+    {"name": "NGINX_TIMEOUT", "value": "1800"},
+    {"name": "PUID", "value": "1000"},
+    {"name": "PGID", "value": "1000"},
+    {"name": "MYSQL_HOST", "value": "azuracast-mysql"},
+    {"name": "MYSQL_PORT", "value": "3306"},
+    {"name": "MYSQL_DATABASE", "value": "azuracast"},
+    {"name": "MYSQL_USER", "value": "azuracast"},
+    {"name": "MYSQL_PASSWORD", "value": "azuracast"},
+    {"name": "MARIADB_HOST", "value": "azuracast-mysql"},
+    {"name": "MARIADB_PORT", "value": "3306"},
+    {"name": "MARIADB_DATABASE", "value": "azuracast"},
+    {"name": "MARIADB_USERNAME", "value": "azuracast"},
+    {"name": "MARIADB_PASSWORD", "value": "azuracast"},
+    {"name": "ENABLE_REDIS", "value": "true"},
+    {"name": "REDIS_HOST", "value": "rfr-azuracast-valkey-readwrite"},
+    {"name": "REDIS_PORT", "value": "6379"},
+    {"name": "REDIS_DB", "value": "1"}
+  ],
+  "addons": [
+    {"type": "mariadb", "name": "azuracast", "db": "azuracast", "user": "azuracast", "password": "azuracast"},
+    {"type": "valkey", "name": "azuracast"}
+  ],
+  "extraVolumes": [
+    {"mountPath": "/var/azuracast", "name": "azuracast-data", "size": "5Gi"}
+  ]
+}

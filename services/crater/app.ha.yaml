@@ -1,0 +1,131 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: crater
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source, self-hosted web and mobile app to track expenses, payments and create professional
+      invoices and estimates.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/63154198?s=200&v=4
+    kubero.dev/template.installation: 'Crater is a Laravel (PHP) + Vue invoicing app backed by MariaDB. This template runs
+      the maintained community image ghcr.io/jee-r/crater (nginx + PHP-FPM on :8080), since the upstream project ships a build-from-source
+      docker-compose rather than an official prebuilt image. BEFORE first boot ROTATE: APP_KEY (run `openssl rand -base64
+      32` and prefix with `base64:`, i.e. set APP_KEY=base64:<value>) and the MariaDB password (default ''crater''). APP_URL
+      is pre-filled with {{KUBERO_APP_URL}} and MUST match the public URL or cookie-based auth (4.0.0+) will fail. FIRST RUN:
+      browse to the app URL and complete the on-boarding wizard (admin account, company, currency); the wizard runs DB migrations
+      automatically. Persistent app data (uploads, generated PDF invoices, logo, storage/) lives under /app and is kept on
+      the mounted volume. Cache/queue/session default to the database and file drivers (no Redis required); SMTP for mail
+      and optional S3 for storage are configured later via env vars or the Settings UI.'
+    kubero.dev/template.links: '["https://docs.craterapp.com/", "https://github.com/jee-r/docker-crater"]'
+    kubero.dev/template.screenshots: '["https://craterapp.com/static/img/crater-preview.png"]'
+    kubero.dev/template.source: https://github.com/crater-invoice-inc/crater
+    kubero.dev/template.categories: '["finance", "work", "productivity"]'
+    kubero.dev/template.title: Crater
+    kubero.dev/template.website: https://craterapp.com
+  labels:
+    manager: kubero
+spec:
+  name: crater
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: crater-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: crater-mysql-root
+            key: password
+          database: crater
+          username: crater
+          passwordSecretKeyRef:
+            name: crater-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: crater-mysql-root
+        type: Opaque
+        stringData:
+          password: crater
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: crater-mysql-app
+        type: Opaque
+        stringData:
+          password: crater
+  envVars:
+  - name: APP_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: APP_ENV
+    value: production
+  - name: APP_DEBUG
+    value: 'false'
+  - name: APP_KEY
+    value: base64:replace-with-openssl-rand-base64-32
+  - name: DB_CONNECTION
+    value: mysql
+  - name: DB_HOST
+    value: crater-mysql
+  - name: DB_PORT
+    value: '3306'
+  - name: DB_DATABASE
+    value: crater
+  - name: DB_USERNAME
+    value: crater
+  - name: DB_PASSWORD
+    value: crater
+  - name: CACHE_DRIVER
+    value: file
+  - name: SESSION_DRIVER
+    value: file
+  - name: QUEUE_CONNECTION
+    value: database
+  - name: SANCTUM_STATEFUL_DOMAINS
+    value: '{{KUBERO_APP_HOST}}'
+  - name: SESSION_DOMAIN
+    value: '{{KUBERO_APP_HOST}}'
+  - name: TZ
+    value: UTC
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app
+    name: crater-data
+    size: 3Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: ghcr.io/jee-r/crater
+    tag: latest
