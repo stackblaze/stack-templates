@@ -14,7 +14,8 @@ metadata:
       changing only DOCKER_MAUTIC_ROLE: (1) a worker container with DOCKER_MAUTIC_ROLE=mautic_worker (consumes the Symfony
       Messenger queues for email sending/processing), and (2) a cron container with DOCKER_MAUTIC_ROLE=mautic_cron (runs scheduled
       segment/campaign/email cron jobs). All three containers must share the same MAUTIC_DB_* settings and the same persistent
-      volume (/var/www/html). Redis/Valkey can optionally back the Messenger transport and cache for higher throughput but
+      volumes (/var/www/html/config, /var/www/html/var/logs, /var/www/html/docroot/media). Do not mount the entire /var/www/html
+      directory or the app code is hidden. Redis/Valkey can optionally back the Messenger transport and cache for higher throughput but
       is not required.'
     kubero.dev/template.links: '["https://docs.mautic.org/en/setup/how-to-install-mautic/docker-installation", "https://github.com/mautic/docker-mautic"]'
     kubero.dev/template.screenshots: '["https://www.mautic.org/wp-content/uploads/2021/02/dashboard.png"]'
@@ -104,9 +105,21 @@ spec:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /var/www/html
-    name: mautic-data
-    size: 5Gi
+    mountPath: /var/www/html/config
+    name: mautic-config
+    size: 1Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/var/logs
+    name: mautic-logs
+    size: 1Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/docroot/media
+    name: mautic-media
+    size: 3Gi
   cronjobs: []
   web:
     replicaCount: 1
