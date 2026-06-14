@@ -79,6 +79,10 @@ spec:
               owner: posthog
               secret:
                 name: posthog-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO posthog
+              - GRANT CREATE ON SCHEMA public TO posthog
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO posthog
           enableSuperuserAccess: true
           superuserSecret:
             name: posthog-postgresql-superuser
@@ -122,11 +126,20 @@ spec:
               layout:
                 shardsCount: 1
                 replicasCount: 1
+              templates:
+                podTemplate: clickhouse-pod-template
           defaults:
             templates:
               dataVolumeClaimTemplate: data-volume-template
               logVolumeClaimTemplate: log-volume-template
+              podTemplate: clickhouse-pod-template
           templates:
+            podTemplates:
+            - name: clickhouse-pod-template
+              spec:
+                containers:
+                - name: clickhouse
+                  image: clickhouse/clickhouse-server:24.8.7.41
             volumeClaimTemplates:
             - name: data-volume-template
               spec:
@@ -229,5 +242,5 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: posthog/posthog
+    repository: ghcr.io/posthog/posthog
     tag: latest
