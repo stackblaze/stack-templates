@@ -60,7 +60,7 @@ spec:
   healthcheck:
     enabled: true
     path: /o/ping
-    startupSeconds: 600
+    startupSeconds: 1200
     timeoutSeconds: 5
     periodSeconds: 10
   web:
