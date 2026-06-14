@@ -45,6 +45,13 @@ jobs:
             dest_tag: '1.36'
             dest_name: busybox
 
+          # nopCommerce — official image is Docker Hub only; parallel QA
+          # batches hit the anonymous pull rate limit (429). Mirror here
+          # so templates can swap registry without changing tags.
+          - source: docker.io/nopcommerceteam/nopcommerce:4.90.4
+            dest_tag: '4.90.4'
+            dest_name: nopcommerce
+
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@v3

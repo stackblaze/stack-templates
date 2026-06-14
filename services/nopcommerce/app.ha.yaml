@@ -52,6 +52,10 @@ spec:
             initdb:
               database: nopcommerce
               owner: nopcommerce
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO nopcommerce
+                - GRANT CREATE ON SCHEMA public TO nopcommerce
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nopcommerce
               secret:
                 name: nopcommerce-postgresql-app
           enableSuperuserAccess: true
@@ -96,8 +100,14 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: nopcommerceteam/nopcommerce
-    tag: latest
+    repository: ghcr.io/stackblaze/stack-templates/nopcommerce
+    tag: '4.90.4'
