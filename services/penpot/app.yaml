@@ -68,6 +68,10 @@ spec:
               owner: penpot
               secret:
                 name: penpot-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO penpot
+                - GRANT CREATE ON SCHEMA public TO penpot
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO penpot
           enableSuperuserAccess: true
           superuserSecret:
             name: penpot-postgresql-superuser
@@ -156,5 +160,5 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: penpotapp/frontend
+    repository: ghcr.io/stackblaze/stack-templates/penpot-frontend
     tag: '2.16'
