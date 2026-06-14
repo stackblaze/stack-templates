@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y git curl ca-certificates && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
 RUN git clone --depth 1 --branch ${HERMES_VERSION} https://github.com/hashicorp-forge/hermes.git .
+RUN corepack enable
 ENV SKIP_YARN_COREPACK_CHECK=true \
     YARN_IGNORE_NODE=1 \
     CGO_ENABLED=0 \
