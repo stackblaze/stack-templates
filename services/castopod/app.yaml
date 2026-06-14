@@ -127,9 +127,11 @@ spec:
   - name: CP_CACHE_HANDLER
     value: redis
   - name: CP_REDIS_HOST
-    value: rfr-castopod-valkey-readwrite
+    value: rfr-castopod-valkey-0
   - name: CP_REDIS_PORT
     value: '6379'
+  - name: CP_REDIS_PASSWORD
+    value: ''
   - name: CP_REDIS_DATABASE
     value: '0'
   extraVolumes:
