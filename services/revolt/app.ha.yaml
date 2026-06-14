@@ -129,7 +129,7 @@ spec:
               default_pass = revolt
   envVars:
   - name: REVOLT__DATABASE__MONGODB
-    value: mongodb://mongoadmin:revolt@documentdb-service-revolt-documentdb:10260/?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
+    value: mongodb://mongoadmin:revolt@documentdb-service-revolt-documentdb:10260/?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&retryWrites=false
   - name: REVOLT__DATABASE__REDIS
     value: redis://rfr-revolt-valkey-readwrite:6379/
   - name: REVOLT__RABBIT__HOST
