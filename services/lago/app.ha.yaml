@@ -45,7 +45,7 @@ spec:
           name: lago-postgresql
         spec:
           instances: 3
-          imageName: getlago/postgres-partman:15-alpine
+          imageName: getlago/postgres-partman:15.0-alpine
           primaryUpdateStrategy: unsupervised
           storage:
             storageClass: fast
@@ -129,6 +129,12 @@ spec:
     value: 'true'
   - name: LAGO_CREATE_ORG
     value: 'true'
+  - name: LAGO_ORG_USER_EMAIL
+    value: admin@example.com
+  - name: LAGO_ORG_USER_PASSWORD
+    value: lago-qa-password
+  - name: LAGO_ORG_NAME
+    value: Lago QA
   - name: DATABASE_URL
     value: postgresql://lago:lago@lago-postgresql-rw:5432/lago
   - name: POSTGRES_HOST
