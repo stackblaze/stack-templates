@@ -63,6 +63,13 @@ spec:
               owner: temporal
               secret:
                 name: temporal-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO temporal
+              - GRANT CREATE ON SCHEMA public TO temporal
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO temporal
+              - ALTER ROLE temporal CREATEDB
+              postInitSQL:
+              - ALTER ROLE temporal CREATEDB
           enableSuperuserAccess: true
           superuserSecret:
             name: temporal-postgresql-superuser
