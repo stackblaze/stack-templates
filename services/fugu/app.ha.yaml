@@ -124,4 +124,4 @@ spec:
     command:
       - sh
       - -c
-      - sed -i 's/config.force_ssl = ENV.fetch("FORCE_SSL_PROD", true)/config.force_ssl = false/' /app/config/environments/production.rb && exec /app/docker-entrypoint.sh rails server -b 0.0.0.0
+      - sed -i 's/config.force_ssl = ENV.fetch("FORCE_SSL_PROD", true)/config.force_ssl = false/' /app/config/environments/production.rb && exec sh /app/docker-entrypoint.sh rails server -b 0.0.0.0
