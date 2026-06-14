@@ -121,5 +121,5 @@ spec:
     replicaCount: 0
   image:
     containerPort: '80'
-    repository: wordpress
+    repository: ghcr.io/stackblaze/stack-templates/wordpress
     tag: latest
