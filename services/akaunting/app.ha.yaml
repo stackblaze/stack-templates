@@ -83,8 +83,6 @@ spec:
     value: production
   - name: APP_DEBUG
     value: 'false'
-  - name: APP_KEY
-    value: base64:cWFfYWthdW50aW5nX3RlbXBsYXRlX2tleTE=
   - name: APP_LOCALE
     value: en-US
   - name: AKAUNTING_SETUP
@@ -129,7 +127,7 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    path: /
+    path: /manifest.json
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
