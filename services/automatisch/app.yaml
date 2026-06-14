@@ -140,8 +140,6 @@ spec:
     value: rfr-automatisch-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
-  - name: WORKER
-    value: 'false'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
