@@ -44,6 +44,12 @@ jobs:
           - source: docker.io/library/busybox:1.36
             dest_tag: '1.36'
             dest_name: busybox
+          # odoo — official Docker Hub image hits anonymous pull rate
+          # limits during parallel QA batches; mirror keeps template smoke
+          # tests reliable (same pattern as neko-rooms GHCR swap).
+          - source: docker.io/library/odoo:18.0
+            dest_tag: '18.0'
+            dest_name: odoo
 
           # nopCommerce — official image is Docker Hub only; parallel QA
           # batches hit the anonymous pull rate limit (429). Mirror here

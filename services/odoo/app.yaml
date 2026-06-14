@@ -61,6 +61,10 @@ spec:
               owner: odoo
               secret:
                 name: odoo-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO odoo
+                - GRANT CREATE ON SCHEMA public TO odoo
+                - ALTER ROLE odoo CREATEDB
           enableSuperuserAccess: true
           superuserSecret:
             name: odoo-postgresql-superuser
@@ -106,5 +110,5 @@ spec:
   image:
     containerPort: '8069'
     pullPolicy: Always
-    repository: odoo
+    repository: ghcr.io/stackblaze/stack-templates/odoo
     tag: '18.0'
