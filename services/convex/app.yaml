@@ -90,7 +90,7 @@ spec:
   - name: INSTANCE_NAME
     value: convex
   - name: INSTANCE_SECRET
-    value: c0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ff
+    value: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
   - name: CONVEX_CLOUD_ORIGIN
     value: '{{KUBERO_APP_URL}}'
   - name: CONVEX_SITE_ORIGIN
