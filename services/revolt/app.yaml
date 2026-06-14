@@ -120,18 +120,10 @@ spec:
               memory: 512Mi
             limits:
               memory: 1Gi
-      default-userSecret:
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: revolt-rabbitmq-default-user
-        type: Opaque
-        stringData:
-          username: revolt
-          password: revolt
-          default_user.conf: 'default_user = revolt
-
-            default_pass = revolt'
+          rabbitmq:
+            additionalConfig: |
+              default_user = revolt
+              default_pass = revolt
   envVars:
   - name: REVOLT_DATABASE_URL
     value: mongodb://mongoadmin:revolt@documentdb-service-revolt-documentdb:10260/?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
