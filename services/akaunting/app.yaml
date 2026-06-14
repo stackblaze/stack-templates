@@ -82,9 +82,11 @@ spec:
   - name: APP_DEBUG
     value: 'false'
   - name: APP_KEY
-    value: base64:replace-with-openssl-rand-base64-32
+    value: base64:cWFfYWthdW50aW5nX3RlbXBsYXRlX2tleTE=
   - name: APP_LOCALE
     value: en-US
+  - name: AKAUNTING_SETUP
+    value: 'true'
   - name: DB_CONNECTION
     value: mysql
   - name: DB_HOST
@@ -92,6 +94,8 @@ spec:
   - name: DB_PORT
     value: '3306'
   - name: DB_DATABASE
+    value: akaunting
+  - name: DB_NAME
     value: akaunting
   - name: DB_USERNAME
     value: akaunting
@@ -107,6 +111,8 @@ spec:
     value: admin@example.com
   - name: ADMIN_PASSWORD
     value: replace-with-strong-password
+  - name: LOCALE
+    value: en-US
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -119,6 +125,12 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '80'
     pullPolicy: Always
