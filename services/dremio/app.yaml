@@ -39,9 +39,9 @@ spec:
   - name: DREMIO_JAVA_SERVER_EXTRA_OPTS
     value: -Dpaths.dist=file:///opt/dremio/data/dist
   - name: DREMIO_MAX_HEAP_MEMORY_SIZE_MB
-    value: '2048'
+    value: '1024'
   - name: DREMIO_MAX_DIRECT_MEMORY_SIZE_MB
-    value: '2048'
+    value: '512'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -50,6 +50,20 @@ spec:
     name: dremio-data
     size: 5Gi
   cronjobs: []
+  # Default QA LimitRange caps web pods at 512Mi; Dremio OOMs during JVM boot.
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
