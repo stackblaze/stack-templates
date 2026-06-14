@@ -119,7 +119,7 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    path: /installation
+    path: /api/v1/installation/requirements
     startupSeconds: 900
     timeoutSeconds: 5
     periodSeconds: 10
