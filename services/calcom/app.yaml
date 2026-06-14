@@ -79,6 +79,8 @@ spec:
     value: postgresql://calcom:calcom@calcom-db-rw:5432/calcom
   - name: DATABASE_DIRECT_URL
     value: postgresql://calcom:calcom@calcom-db-rw:5432/calcom
+  - name: DATABASE_HOST
+    value: calcom-db-rw:5432
   - name: NODE_ENV
     value: production
   - name: NEXT_PUBLIC_LICENSE_CONSENT
@@ -117,15 +119,4 @@ spec:
       securityContext:
         readOnlyRootFilesystem: false
     tag: latest
-    command:
-    - sh
-    - -c
-    - |
-      set -e
-      for i in $(seq 1 60); do
-        node -e "const {Client}=require('pg'); const c=new Client(process.env.DATABASE_URL); c.connect().then(()=>{c.end();process.exit(0)}).catch(()=>process.exit(1))" && break
-        sleep 5
-      done
-      cd /calcom && npx prisma migrate deploy --schema=packages/prisma/schema.prisma
-      exec yarn start
   name: calcom
