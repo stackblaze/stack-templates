@@ -98,7 +98,7 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    path: /install
+    path: /keepalive/index
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
