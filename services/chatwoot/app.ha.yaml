@@ -52,6 +52,9 @@ spec:
               secret:
                 name: chatwoot-db-app
               postInitApplicationSQL:
+                - CREATE EXTENSION IF NOT EXISTS vector
+                - CREATE EXTENSION IF NOT EXISTS pgcrypto
+                - CREATE EXTENSION IF NOT EXISTS pg_trgm
                 - GRANT ALL ON SCHEMA public TO chatwoot
                 - GRANT CREATE ON SCHEMA public TO chatwoot
                 - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO chatwoot
@@ -169,5 +172,6 @@ spec:
     - sh
     - -c
     - |
+      sed -i 's/enable_extension "pg_stat_statements"/# enable_extension "pg_stat_statements"/' /app/db/schema.rb /app/db/migrate/20230426130150_init_schema.rb 2>/dev/null || true
       docker/entrypoints/rails.sh bundle exec rails db:chatwoot_prepare
       exec docker/entrypoints/rails.sh bundle exec rails s -p 3000 -b 0.0.0.0
