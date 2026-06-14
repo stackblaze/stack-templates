@@ -189,6 +189,12 @@ spec:
     name: pixelfed-storage
     size: 5Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /api/v1/instance
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
