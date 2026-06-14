@@ -127,6 +127,8 @@ spec:
     value: '0000000000000000000000000000000000000000000000000000000000000000'
   - name: RAILS_ENV
     value: production
+  - name: NODE_ENV
+    value: production
   - name: FORCE_SSL
     value: 'false'
   - name: INSTALLATION_ENV
@@ -163,3 +165,9 @@ spec:
     pullPolicy: Always
     repository: chatwoot/chatwoot
     tag: latest
+    command:
+    - sh
+    - -c
+    - |
+      docker/entrypoints/rails.sh bundle exec rails db:chatwoot_prepare
+      exec docker/entrypoints/rails.sh bundle exec rails s -p 3000 -b 0.0.0.0
