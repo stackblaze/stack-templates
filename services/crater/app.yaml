@@ -8,13 +8,13 @@ metadata:
       invoices and estimates.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/crater/icon.png
     kubero.dev/template.installation: 'Crater is a Laravel (PHP) + Vue invoicing app backed by MariaDB. This template runs
-      the community image shinsenter/crater on Docker Hub (nginx + PHP on :80), since the upstream project ships a build-from-source
+      the community image shinsenter/crater:php7.4 on Docker Hub (nginx + PHP 7.4 on :80), since the upstream project ships a build-from-source
       docker-compose rather than an official prebuilt image. BEFORE first boot ROTATE: APP_KEY (run `openssl rand -base64
       32` and prefix with `base64:`, i.e. set APP_KEY=base64:<value>) and the MariaDB password (default ''crater''). APP_URL
       is pre-filled with {{KUBERO_APP_URL}} and MUST match the public URL or cookie-based auth (4.0.0+) will fail. FIRST RUN:
       browse to the app URL and complete the on-boarding wizard (admin account, company, currency); the wizard runs DB migrations
-      automatically. Persistent app data lives under /var/www/html (application code, uploads, storage); mount the
-      volume at the app root so the image auto-installer can bootstrap on first boot. Cache/queue/session default to the database and file drivers (no Redis required); SMTP for mail
+      automatically. On first boot the image auto-installs Crater into the container; add an optional volume on
+      /var/www/html for persistence across redeploys (must be empty on first boot). Cache/queue/session default to the database and file drivers (no Redis required); SMTP for mail
       and optional S3 for storage are configured later via env vars or the Settings UI.'
     kubero.dev/template.links: '["https://docs.craterapp.com/", "https://github.com/jee-r/docker-crater"]'
     kubero.dev/template.screenshots: '["https://craterapp.com/static/img/crater-preview.png"]'
@@ -110,13 +110,6 @@ spec:
     value: '{{KUBERO_APP_HOST}}'
   - name: TZ
     value: UTC
-  extraVolumes:
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /var/www/html
-    name: crater-data
-    size: 3Gi
   cronjobs: []
   web:
     replicaCount: 1
@@ -124,12 +117,12 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    path: /
-    startupSeconds: 600
+    path: /installation
+    startupSeconds: 900
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '80'
     pullPolicy: Always
     repository: shinsenter/crater
-    tag: latest
+    tag: php7.4
