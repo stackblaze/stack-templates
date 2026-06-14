@@ -46,6 +46,7 @@ spec:
     repository: ghcr.io/stackblaze/stack-templates/seaweedfs
     tag: latest
     command:
+    - /entrypoint.sh
     - server
     - -dir=/data
     - -s3
