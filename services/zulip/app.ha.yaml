@@ -163,11 +163,15 @@ spec:
     value: '{{KUBERO_APP_HOST}}'
   - name: SETTING_ZULIP_ADMINISTRATOR
     value: admin@example.com
-  - name: SETTING_REMOTE_POSTGRES_HOST
+  - name: DB_HOST
     value: zulip-postgresql-rw
-  - name: SETTING_REMOTE_POSTGRES_PORT
+  - name: DB_HOST_PORT
     value: '5432'
-  - name: SETTING_REMOTE_POSTGRES_SSLMODE
+  - name: DB_NAME
+    value: zulip
+  - name: DB_USER
+    value: zulip
+  - name: REMOTE_POSTGRES_SSLMODE
     value: prefer
   - name: SETTING_RABBITMQ_HOST
     value: zulip-rabbitmq
