@@ -140,6 +140,8 @@ spec:
     value: '{{KUBERO_APP_HOST}}'
   - name: COMPOSER_MEMORY_LIMIT
     value: '-1'
+  - name: DISABLE_AUTORUN_CREATING_PROJECT
+    value: '1'
   - name: ADMIN_USERNAME
     value: admin
   - name: ADMIN_PASSWORD
@@ -184,12 +186,18 @@ spec:
     - bash
     - -c
     - |
-      if [ ! -f /var/www/html/bin/magento ] && [ ! -f /var/www/html/composer.json ]; then
-        find /var/www/html -mindepth 1 -maxdepth 1 ! -name 'lost+found' -exec rm -rf {} + 2>/dev/null || true
-      fi
       install_magento() {
         while ! (echo >/dev/tcp/magento-mysql/3306) 2>/dev/null; do sleep 3; done
         while ! curl -sf "http://magento-elasticsearch:9200/_cat/health" >/dev/null; do sleep 3; done
+        if [ ! -f /var/www/html/bin/magento ]; then
+          cd /var/www/html
+          if [ ! -f composer.json ]; then
+            find /var/www/html -mindepth 1 -maxdepth 1 ! -name 'lost+found' -exec rm -rf {} + 2>/dev/null || true
+            composer create-project --no-interaction magento/community-edition .
+          else
+            composer install --no-interaction
+          fi
+        fi
         while [ ! -f /var/www/html/bin/magento ]; do sleep 5; done
         cd /var/www/html
         if [ ! -f app/etc/env.php ]; then
