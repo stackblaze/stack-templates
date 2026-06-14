@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source, self-hosted web and mobile app to track expenses, payments and create professional
       invoices and estimates.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/63154198?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/crater/icon.png
     kubero.dev/template.installation: 'Crater is a Laravel (PHP) + Vue invoicing app backed by MariaDB. This template runs
       the maintained community image ghcr.io/jee-r/crater (nginx + PHP-FPM on :8080), since the upstream project ships a build-from-source
       docker-compose rather than an official prebuilt image. BEFORE first boot ROTATE: APP_KEY (run `openssl rand -base64

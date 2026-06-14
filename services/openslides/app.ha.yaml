@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Web-based presentation and assembly system for managing and projecting agendas, motions,
       elections and live voting at meetings.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1859655?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openslides/icon.png
     kubero.dev/template.installation: 'OpenSlides 4 is a microservice stack and CANNOT run from this single image alone; this
       template deploys the core application server (openslides-backend, action API on container port 9002, presenter on 9003)
       plus its PostgreSQL (the datastore) and Valkey/Redis (message bus + autoupdate) add-ons. You MUST also deploy the companion

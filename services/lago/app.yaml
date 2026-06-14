@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source metering and usage-based billing platform for invoicing, subscriptions, and
       pay-as-you-go pricing.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/86373116?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lago/icon.png
     kubero.dev/template.installation: 'Lago is a multi-service Rails stack. This template runs the PRIMARY API server (getlago/api)
       on port 3000, wired to the Postgres and Valkey (Redis) add-ons provisioned here. You MUST deploy the companion services
       separately, all sharing the SAME database, Redis, and the env keys below: (1) Worker - image getlago/api with command

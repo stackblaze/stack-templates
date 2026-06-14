@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: The world's most popular open-source CMS, preconfigured for Multisite to run a network
       of sites from a single WordPress install.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/8089?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress-multisite/icon.png
     kubero.dev/template.installation: 'WordPress requires MySQL/MariaDB (it does not support PostgreSQL), so this template
       ships the mariadb add-on. Multisite is enabled at the WordPress config layer via WORDPRESS_CONFIG_EXTRA (WP_ALLOW_MULTISITE=true).
       After the first-run install wizard completes, go to Tools > Network Setup in wp-admin to create the network, then add

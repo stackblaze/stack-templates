@@ -5,7 +5,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: WordPress is a free and open-source content management
       system written in hypertext preprocessor language.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/276006?s=280
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://wordpress.org/documentation/files/2021/07/test-widgets_v2-1-1024x643.jpeg","https://user-images.githubusercontent.com/12400734/168248949-f19a1a73-2c02-4eab-84d1-faaff57dbd07.png","https://wordpress.org/documentation/files/2021/06/menu-add-items-1024x557.png"]'

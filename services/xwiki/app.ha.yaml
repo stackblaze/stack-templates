@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source advanced enterprise wiki platform for building collaborative web applications,
       knowledge bases and intranets.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/82801?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/xwiki/icon.png
     kubero.dev/template.installation: Uses the official xwiki image (Tomcat, postgres variant) on internal port 8080. Deploy
       with the bundled PostgreSQL add-on; the DB_USER/DB_PASSWORD/DB_DATABASE/DB_HOST env vars point XWiki at the '{{KUBERO_APP_NAME}}-postgresql-rw'
       Postgres service (rotate the Postgres add-on password after install). On first boot XWiki connects to the empty database,

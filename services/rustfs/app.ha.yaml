@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: High-performance, S3-compatible distributed object storage written in Rust, with a built-in
       web console; a drop-in MinIO/Ceph alternative.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/151849438?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rustfs/icon.png
     kubero.dev/template.installation: 'RustFS is itself the datastore: it persists all objects and metadata on disk under
       /data using erasure coding, so no database add-on is required. The S3-compatible API and web console are both served
       on container port 9000 (console reachable at /rustfs/console). Set RUSTFS_VOLUMES to the data path. IMPORTANT: rotate

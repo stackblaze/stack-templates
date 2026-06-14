@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Free, open-source, federated (ActivityPub) microblogging server - a feature-rich Misskey
       fork for the Fediverse.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/107237853?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefish/icon.png
     kubero.dev/template.installation: 'This template runs the PRIMARY Firefish Node.js web/server container only (listens
       on HTTP port 3000). IMPORTANT IMAGE NOTE: the original official registry (registry.firefish.dev) is now offline as upstream
       development has stalled; this spec points ''image.repository'' at ''registry.firefish.dev/firefish/firefish'' with tag

@@ -4,38 +4,111 @@
   "description": "AI-powered, self-hosted photo and video management app that organizes your library with automatic tagging, face recognition, and search.",
   "source": "https://github.com/photoprism/photoprism",
   "website": "https://www.photoprism.app",
-  "icon": "https://avatars.githubusercontent.com/u/42360037?s=200&v=4",
-  "categories": ["media", "storage", "ai"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/photoprism/icon.png",
+  "categories": [
+    "media",
+    "storage",
+    "ai"
+  ],
   "installation": "Deploy with the bundled MariaDB add-on (PhotoPrism recommends MariaDB over SQLite for performance). On first run, log in as 'admin' with the password set in PHOTOPRISM_ADMIN_PASSWORD and rotate it immediately. Rotate the MariaDB password and PHOTOPRISM_ADMIN_PASSWORD from their template defaults. Upload originals via the web UI or place them under /photoprism/originals; the /photoprism/storage volume holds the sidecar/cache/index data and must be persistent. Indexing and face recognition run in the background after import. For large libraries, increase PHOTOPRISM_WORKERS or the app pod size.",
-  "screenshots": ["https://dl.photoprism.app/img/ui/library.jpg"],
-  "links": ["https://docs.photoprism.app/getting-started/docker-compose/", "https://docs.photoprism.app/getting-started/config-options/"],
+  "screenshots": [
+    "https://dl.photoprism.app/img/ui/library.jpg"
+  ],
+  "links": [
+    "https://docs.photoprism.app/getting-started/docker-compose/",
+    "https://docs.photoprism.app/getting-started/config-options/"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 36000,
   "language": "Go",
-  "image": {"repository": "photoprism/photoprism", "tag": "latest", "containerPort": "2342", "command": []},
+  "image": {
+    "repository": "photoprism/photoprism",
+    "tag": "latest",
+    "containerPort": "2342",
+    "command": []
+  },
   "envVars": [
-    {"name": "PHOTOPRISM_SITE_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "PHOTOPRISM_ADMIN_USER", "value": "admin"},
-    {"name": "PHOTOPRISM_ADMIN_PASSWORD", "value": "replace-with-openssl-rand-base64-32"},
-    {"name": "PHOTOPRISM_AUTH_MODE", "value": "password"},
-    {"name": "PHOTOPRISM_DATABASE_DRIVER", "value": "mysql"},
-    {"name": "PHOTOPRISM_DATABASE_SERVER", "value": "photoprism-mysql:3306"},
-    {"name": "PHOTOPRISM_DATABASE_NAME", "value": "photoprism"},
-    {"name": "PHOTOPRISM_DATABASE_USER", "value": "photoprism"},
-    {"name": "PHOTOPRISM_DATABASE_PASSWORD", "value": "photoprism"},
-    {"name": "PHOTOPRISM_HTTP_HOST", "value": "0.0.0.0"},
-    {"name": "PHOTOPRISM_HTTP_PORT", "value": "2342"},
-    {"name": "PHOTOPRISM_ORIGINALS_PATH", "value": "/photoprism/originals"},
-    {"name": "PHOTOPRISM_STORAGE_PATH", "value": "/photoprism/storage"},
-    {"name": "PHOTOPRISM_DISABLE_TLS", "value": "true"},
-    {"name": "PHOTOPRISM_WORKERS", "value": "2"}
+    {
+      "name": "PHOTOPRISM_SITE_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "PHOTOPRISM_ADMIN_USER",
+      "value": "admin"
+    },
+    {
+      "name": "PHOTOPRISM_ADMIN_PASSWORD",
+      "value": "replace-with-openssl-rand-base64-32"
+    },
+    {
+      "name": "PHOTOPRISM_AUTH_MODE",
+      "value": "password"
+    },
+    {
+      "name": "PHOTOPRISM_DATABASE_DRIVER",
+      "value": "mysql"
+    },
+    {
+      "name": "PHOTOPRISM_DATABASE_SERVER",
+      "value": "photoprism-mysql:3306"
+    },
+    {
+      "name": "PHOTOPRISM_DATABASE_NAME",
+      "value": "photoprism"
+    },
+    {
+      "name": "PHOTOPRISM_DATABASE_USER",
+      "value": "photoprism"
+    },
+    {
+      "name": "PHOTOPRISM_DATABASE_PASSWORD",
+      "value": "photoprism"
+    },
+    {
+      "name": "PHOTOPRISM_HTTP_HOST",
+      "value": "0.0.0.0"
+    },
+    {
+      "name": "PHOTOPRISM_HTTP_PORT",
+      "value": "2342"
+    },
+    {
+      "name": "PHOTOPRISM_ORIGINALS_PATH",
+      "value": "/photoprism/originals"
+    },
+    {
+      "name": "PHOTOPRISM_STORAGE_PATH",
+      "value": "/photoprism/storage"
+    },
+    {
+      "name": "PHOTOPRISM_DISABLE_TLS",
+      "value": "true"
+    },
+    {
+      "name": "PHOTOPRISM_WORKERS",
+      "value": "2"
+    }
   ],
   "addons": [
-    {"type": "mariadb", "name": "photoprism", "db": "photoprism", "user": "photoprism", "password": "photoprism"}
+    {
+      "type": "mariadb",
+      "name": "photoprism",
+      "db": "photoprism",
+      "user": "photoprism",
+      "password": "photoprism"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/photoprism/originals", "name": "photoprism-originals", "size": "5Gi"},
-    {"mountPath": "/photoprism/storage", "name": "photoprism-storage", "size": "2Gi"}
+    {
+      "mountPath": "/photoprism/originals",
+      "name": "photoprism-originals",
+      "size": "5Gi"
+    },
+    {
+      "mountPath": "/photoprism/storage",
+      "name": "photoprism-storage",
+      "size": "2Gi"
+    }
   ]
 }

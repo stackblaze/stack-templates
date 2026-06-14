@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted sync server for the Joplin open-source note-taking and to-do app, with end-to-end-encrypted
       multi-device sync and sharing.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1285584?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/joplin/icon.png
     kubero.dev/template.installation: Deploy with the bundled PostgreSQL add-on; rotate the Postgres password (and after first
       login the admin password) from the template defaults before production. Joplin Server validates incoming requests against
       APP_BASE_URL, so it is set to the deployed public URL via {{KUBERO_APP_URL}} — if you change the hostname you must update

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source ERP suite (accounting, inventory, HR, CRM, manufacturing, projects) built
       on the Frappe framework.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/3658922?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/erpnext/icon.png
     kubero.dev/template.installation: 'ERPNext is a MULTI-CONTAINER Frappe stack. This template deploys the PRIMARY backend
       (gunicorn) image frappe/erpnext, which serves the Frappe HTTP API/app on port 8000. To run a complete, production-ready
       install you MUST deploy these companion services from the SAME frappe/erpnext image (only the command differs) plus

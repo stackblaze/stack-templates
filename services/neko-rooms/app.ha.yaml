@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted room management system for n.eko virtual browsers, a rabb.it alternative
       for collaborative co-browsing and watch-together sessions.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/3852029?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/neko-rooms/icon.png
     kubero.dev/template.installation: 'Neko Rooms spins up and tears down n.eko (virtual browser) containers on demand and
       exposes a management UI for them. It keeps no SQL database: room metadata and persistent room storage live on disk,
       so the bundled volume is mounted at /data (set NEKO_ROOMS_STORAGE_INTERNAL/EXTERNAL there) and no add-on is required.

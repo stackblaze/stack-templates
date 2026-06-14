@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source product analytics, session replay, feature flags, A/B testing and surveys
       platform built on PostgreSQL, ClickHouse and Kafka.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/63889450?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/posthog/icon.png
     kubero.dev/template.installation: "PostHog is a LARGE multi-service stack; this template runs the PRIMARY all-in-one image\
       \ posthog/posthog (the `web` role: Django backend + frontend) on HTTP port 8000. It is NOT fully functional alone -\
       \ PostHog needs several companion services and TWO datastores that are NOT in the allowed add-on set (Kafka and S3-compatible\

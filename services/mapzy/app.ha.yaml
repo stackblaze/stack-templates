@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Free, simple, open-source and self-hostable store finder / store locator you can embed
       on any website.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/119911711?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mapzy/icon.png
     kubero.dev/template.installation: Rails (Puma) app backed by PostgreSQL only; no Redis required. Rotate SECRET_KEY_BASE
       (generate with `openssl rand -hex 64`, must be a long alphanumeric string) and the postgres credentials before going
       to production. MAPBOX_ACCESS_TOKEN is REQUIRED for map tiles - sign up at mapbox.com and paste your token (Mapbox is

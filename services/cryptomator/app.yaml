@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted key management and access control server for sharing Cryptomator-encrypted
       vaults across teams.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/12529534?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cryptomator/icon.png
     kubero.dev/template.installation: 'Cryptomator Hub is a Quarkus app that REQUIRES two companion services you must deploy
       separately: (1) a PostgreSQL database (provided here as the ''postgres'' add-on; rotate the default cryptomator/cryptomator/cryptomator
       db/user/password) and (2) a Keycloak identity server (NOT in the add-on catalog, deploy it separately, e.g. quay.io/keycloak/keycloak,

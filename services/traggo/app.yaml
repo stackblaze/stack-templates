@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.description: 'Traggo is a self-hosted time tracking tool.
       It is designed to be easy to use and to be self-hosted. It is written in Go
       and uses Vue.js for the frontend. '
-    kubero.dev/template.icon: https://raw.githubusercontent.com/traggo/logo/master/logo.png
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/traggo/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/traggo/server/raw/master/.github/traggo_list.png","https://github.com/traggo/server/raw/master/.github/traggo_calendar.png","https://github.com/traggo/server/raw/master/.github/traggo_dashboard.png"]'

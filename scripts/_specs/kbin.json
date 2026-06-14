@@ -4,49 +4,154 @@
   "description": "Federated, content-aggregation and microblogging platform for the fediverse (a libre Reddit/Lemmy alternative built on ActivityPub).",
   "source": "https://github.com/ernestwisniewski/kbin",
   "website": "https://kbin.pub",
-  "icon": "https://avatars.githubusercontent.com/u/126523321?s=200&v=4",
-  "categories": ["social", "communication", "media"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kbin/icon.png",
+  "categories": [
+    "social",
+    "communication",
+    "media"
+  ],
   "installation": "kbin is a multi-container Symfony/PHP stack and does NOT ship a single official all-in-one image; this template runs the primary web tier (combined nginx + PHP-FPM, listening on port 8080) using the community-maintained kbin docker build. After deploy you MUST also run the companion services from the same source image/repo (ernestwisniewski/kbin): a 'messenger' worker container running 'php bin/console messenger:consume async old' for federation/queue processing, and a Mercure SSE hub (image dunglas/mercure) for real-time updates. First run: exec into the web pod and run 'php bin/console doctrine:migrations:migrate', 'php bin/console kbin:user:create <admin> <email> <password>', then 'php bin/console kbin:user:admin <admin>' to grant admin. ROTATE: APP_SECRET (openssl rand -hex 16), MERCURE_JWT_SECRET, and the postgres/rabbitmq passwords (all default to the slug). Media/uploads are stored on disk (/var/www/html/public/media) — mounted as a persistent volume. S3 media storage is optional and can be configured later via S3_* env vars (omitted here). Federation requires that {{KUBERO_APP_HOST}} resolves publicly over HTTPS.",
   "screenshots": [],
-  "links": ["https://docs.kbin.pub", "https://github.com/ernestwisniewski/kbin/blob/main/docs/admin/installation.md"],
+  "links": [
+    "https://docs.kbin.pub",
+    "https://github.com/ernestwisniewski/kbin/blob/main/docs/admin/installation.md"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 2300,
   "language": "PHP",
-  "image": {"repository": "ernestwisniewski/kbin", "tag": "latest", "containerPort": "8080", "command": []},
+  "image": {
+    "repository": "ernestwisniewski/kbin",
+    "tag": "latest",
+    "containerPort": "8080",
+    "command": []
+  },
   "envVars": [
-    {"name": "APP_ENV", "value": "prod"},
-    {"name": "APP_DEBUG", "value": "0"},
-    {"name": "APP_SECRET", "value": "replace-with-openssl-rand-hex-16"},
-    {"name": "SERVER_NAME", "value": "{{KUBERO_APP_HOST}}"},
-    {"name": "KBIN_DOMAIN", "value": "{{KUBERO_APP_HOST}}"},
-    {"name": "KBIN_TITLE", "value": "kbin"},
-    {"name": "KBIN_DEFAULT_LANG", "value": "en"},
-    {"name": "KBIN_CONTACT_EMAIL", "value": "contact@example.com"},
-    {"name": "KBIN_SENDER_EMAIL", "value": "noreply@example.com"},
-    {"name": "KBIN_FEDERATION_ENABLED", "value": "true"},
-    {"name": "DATABASE_URL", "value": "postgresql://kbin:kbin@kbin-postgresql-rw:5432/kbin?serverVersion=15&charset=utf8"},
-    {"name": "POSTGRES_DB", "value": "kbin"},
-    {"name": "POSTGRES_USER", "value": "kbin"},
-    {"name": "POSTGRES_PASSWORD", "value": "kbin"},
-    {"name": "REDIS_DNS", "value": "redis://rfr-kbin-valkey-readwrite:6379"},
-    {"name": "REDIS_PASSWORD", "value": ""},
-    {"name": "MESSENGER_TRANSPORT_DSN", "value": "amqp://kbin:kbin@kbin-rabbitmq:5672/%2f/messages"},
-    {"name": "RABBITMQ_DEFAULT_USER", "value": "kbin"},
-    {"name": "RABBITMQ_DEFAULT_PASS", "value": "kbin"},
-    {"name": "MERCURE_URL", "value": "{{KUBERO_APP_URL}}/.well-known/mercure"},
-    {"name": "MERCURE_PUBLIC_URL", "value": "{{KUBERO_APP_URL}}/.well-known/mercure"},
-    {"name": "MERCURE_JWT_SECRET", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "CORS_ALLOW_ORIGIN", "value": "^https?://{{KUBERO_APP_HOST}}$"},
-    {"name": "TRUSTED_PROXIES", "value": "0.0.0.0/0"},
-    {"name": "TRUSTED_HOSTS", "value": "^{{KUBERO_APP_HOST}}$"}
+    {
+      "name": "APP_ENV",
+      "value": "prod"
+    },
+    {
+      "name": "APP_DEBUG",
+      "value": "0"
+    },
+    {
+      "name": "APP_SECRET",
+      "value": "replace-with-openssl-rand-hex-16"
+    },
+    {
+      "name": "SERVER_NAME",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "KBIN_DOMAIN",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "KBIN_TITLE",
+      "value": "kbin"
+    },
+    {
+      "name": "KBIN_DEFAULT_LANG",
+      "value": "en"
+    },
+    {
+      "name": "KBIN_CONTACT_EMAIL",
+      "value": "contact@example.com"
+    },
+    {
+      "name": "KBIN_SENDER_EMAIL",
+      "value": "noreply@example.com"
+    },
+    {
+      "name": "KBIN_FEDERATION_ENABLED",
+      "value": "true"
+    },
+    {
+      "name": "DATABASE_URL",
+      "value": "postgresql://kbin:kbin@kbin-postgresql-rw:5432/kbin?serverVersion=15&charset=utf8"
+    },
+    {
+      "name": "POSTGRES_DB",
+      "value": "kbin"
+    },
+    {
+      "name": "POSTGRES_USER",
+      "value": "kbin"
+    },
+    {
+      "name": "POSTGRES_PASSWORD",
+      "value": "kbin"
+    },
+    {
+      "name": "REDIS_DNS",
+      "value": "redis://rfr-kbin-valkey-readwrite:6379"
+    },
+    {
+      "name": "REDIS_PASSWORD",
+      "value": ""
+    },
+    {
+      "name": "MESSENGER_TRANSPORT_DSN",
+      "value": "amqp://kbin:kbin@kbin-rabbitmq:5672/%2f/messages"
+    },
+    {
+      "name": "RABBITMQ_DEFAULT_USER",
+      "value": "kbin"
+    },
+    {
+      "name": "RABBITMQ_DEFAULT_PASS",
+      "value": "kbin"
+    },
+    {
+      "name": "MERCURE_URL",
+      "value": "{{KUBERO_APP_URL}}/.well-known/mercure"
+    },
+    {
+      "name": "MERCURE_PUBLIC_URL",
+      "value": "{{KUBERO_APP_URL}}/.well-known/mercure"
+    },
+    {
+      "name": "MERCURE_JWT_SECRET",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "CORS_ALLOW_ORIGIN",
+      "value": "^https?://{{KUBERO_APP_HOST}}$"
+    },
+    {
+      "name": "TRUSTED_PROXIES",
+      "value": "0.0.0.0/0"
+    },
+    {
+      "name": "TRUSTED_HOSTS",
+      "value": "^{{KUBERO_APP_HOST}}$"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "kbin", "db": "kbin", "user": "kbin", "password": "kbin"},
-    {"type": "valkey", "name": "kbin"},
-    {"type": "rabbitmq", "name": "kbin", "user": "kbin", "password": "kbin"}
+    {
+      "type": "postgres",
+      "name": "kbin",
+      "db": "kbin",
+      "user": "kbin",
+      "password": "kbin"
+    },
+    {
+      "type": "valkey",
+      "name": "kbin"
+    },
+    {
+      "type": "rabbitmq",
+      "name": "kbin",
+      "user": "kbin",
+      "password": "kbin"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/var/www/html/public/media", "name": "kbin-media", "size": "5Gi"}
+    {
+      "mountPath": "/var/www/html/public/media",
+      "name": "kbin-media",
+      "size": "5Gi"
+    }
   ]
 }

@@ -5,7 +5,7 @@ metadata:
     annotations:
         kubero.dev/template.architecture: '["linux/amd64", "linux/arm64", "linux/arm/v7"]'
         kubero.dev/template.description: "The fastest knowledge base for growing teams. Beautiful, realtime collaborative, feature packed, and markdown compatible."
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/1765001"
+        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/icon.png
         kubero.dev/template.installation: ""
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/380914/110356468-26374600-7fef-11eb-9f6a-f2cc2c8c6590.png"]'

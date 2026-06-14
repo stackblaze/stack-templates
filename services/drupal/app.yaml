@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Drupal is an open-source content management framework for building websites, intranets
       and digital experiences.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1120322?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/drupal/icon.png
     kubero.dev/template.installation: The official drupal image installs interactively via the web setup wizard on first run;
       complete the wizard at the app URL. On the database step choose PostgreSQL and enter host '{{KUBERO_APP_NAME}}-postgresql-rw',
       port 5432, database/user/password 'drupal' (rotate the postgres add-on credentials and the wizard admin password after

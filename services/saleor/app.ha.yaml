@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: GraphQL-first, headless open-source e-commerce platform for building scalable storefronts,
       marketplaces and digital commerce.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/9016908?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/saleor/icon.png
     kubero.dev/template.installation: 'Saleor is a multi-container stack. This template deploys the PRIMARY GraphQL API/server
       image (ghcr.io/saleor/saleor). After first boot, exec into the pod and run migrations + create an admin: `python manage.py
       migrate` then `python manage.py createsuperuser` (or set the pre-baked superuser via env). You MUST also deploy these

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Beautiful open-source form builder to create and share forms, surveys and quizzes with
       no code, a self-hosted alternative to Typeform and Google Forms.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/243543958?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/opnform/icon.png
     kubero.dev/template.installation: 'Multi-container Laravel (PHP/API) + Nuxt (Vue/client) stack. THIS template deploys
       the PRIMARY API/server image jhumanj/opnform-api:latest (Laravel + nginx + php-fpm on port 80), which serves the REST
       API and runs DB migrations on boot. Rotate APP_KEY (base64:$(openssl rand -base64 32)), JWT_SECRET (openssl rand -hex

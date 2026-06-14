@@ -4,11 +4,18 @@
   "description": "Open-source event ticketing and registration platform for selling tickets to conferences, festivals and exhibitions (Eventbrite alternative).",
   "source": "https://github.com/pretix/pretix",
   "website": "https://pretix.eu/",
-  "icon": "https://avatars.githubusercontent.com/u/15068472?s=200&v=4",
-  "categories": ["e-commerce", "finance", "work"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pretix/icon.png",
+  "categories": [
+    "e-commerce",
+    "finance",
+    "work"
+  ],
   "installation": "Pretix is a Django stack. This template runs the PRIMARY web container (image pretix/standalone with command 'web', listening on container port 80 - nginx+gunicorn under supervisord), wired to the Postgres and Valkey/Redis add-ons provisioned here. The image is configured via PRETIX_<SECTION>_<KEY> environment variables (the env-var equivalent of /etc/pretix/pretix.cfg). You MUST deploy the companion services as separate apps, all sharing the SAME Postgres, Redis and env keys below: (1) Task worker - image pretix/standalone with command 'taskworker' (Celery; REQUIRED - sending emails, generating exports/invoices and all async jobs fail without it); (2) Cron/beat - image pretix/standalone with command 'cron' (periodic/scheduled tasks). Set PRETIX_PRETIX_URL to this app's public URL (token below). ROTATE before exposing: PRETIX_DJANGO_SECRET (via 'openssl rand -hex 50'), the Postgres add-on password, and configure real SMTP (PRETIX_MAIL_* are placeholders - pretix cannot send tickets without working email). First run: the web container applies DB migrations on boot; create the initial admin with 'pretix createsuperuser' (or set PRETIX_PRETIXD_* and use the web onboarding). The /data volume holds uploaded media, the data secret and the cache - mount the SAME volume (RWX) on the worker if you generate exports there. Redis here is used for cache, sessions and as the Celery broker. Docs: https://docs.pretix.eu/self-hosting/installation/docker_smallscale/",
   "screenshots": [],
-  "links": ["https://docs.pretix.eu/self-hosting/installation/docker_smallscale/", "https://docs.pretix.eu/self-hosting/installation/config/"],
+  "links": [
+    "https://docs.pretix.eu/self-hosting/installation/docker_smallscale/",
+    "https://docs.pretix.eu/self-hosting/installation/config/"
+  ],
   "license": "Other",
   "spdx_id": "NOASSERTION",
   "stars": 4600,
@@ -17,34 +24,106 @@
     "repository": "pretix/standalone",
     "tag": "stable",
     "containerPort": "80",
-    "command": ["web"]
+    "command": [
+      "web"
+    ]
   },
   "envVars": [
-    {"name": "PRETIX_DATABASE_BACKEND", "value": "postgresql"},
-    {"name": "PRETIX_DATABASE_NAME", "value": "pretix"},
-    {"name": "PRETIX_DATABASE_USER", "value": "pretix"},
-    {"name": "PRETIX_DATABASE_PASSWORD", "value": "pretix"},
-    {"name": "PRETIX_DATABASE_HOST", "value": "pretix-postgresql-rw"},
-    {"name": "PRETIX_DATABASE_PORT", "value": "5432"},
-    {"name": "PRETIX_REDIS_LOCATION", "value": "redis://rfr-pretix-valkey-readwrite:6379/0"},
-    {"name": "PRETIX_REDIS_SESSIONS", "value": "true"},
-    {"name": "PRETIX_CELERY_BROKER", "value": "redis://rfr-pretix-valkey-readwrite:6379/1"},
-    {"name": "PRETIX_CELERY_BACKEND", "value": "redis://rfr-pretix-valkey-readwrite:6379/2"},
-    {"name": "PRETIX_PRETIX_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "PRETIX_PRETIX_INSTANCE_NAME", "value": "pretix"},
-    {"name": "PRETIX_PRETIX_DATADIR", "value": "/data"},
-    {"name": "PRETIX_PRETIX_TRUST_X_FORWARDED_FOR", "value": "true"},
-    {"name": "PRETIX_PRETIX_TRUST_X_FORWARDED_PROTO", "value": "true"},
-    {"name": "PRETIX_DJANGO_SECRET", "value": "replace-with-openssl-rand-hex-50"},
-    {"name": "PRETIX_MAIL_FROM", "value": "tickets@example.com"},
-    {"name": "PRETIX_MAIL_HOST", "value": "localhost"},
-    {"name": "PRETIX_MAIL_PORT", "value": "25"}
+    {
+      "name": "PRETIX_DATABASE_BACKEND",
+      "value": "postgresql"
+    },
+    {
+      "name": "PRETIX_DATABASE_NAME",
+      "value": "pretix"
+    },
+    {
+      "name": "PRETIX_DATABASE_USER",
+      "value": "pretix"
+    },
+    {
+      "name": "PRETIX_DATABASE_PASSWORD",
+      "value": "pretix"
+    },
+    {
+      "name": "PRETIX_DATABASE_HOST",
+      "value": "pretix-postgresql-rw"
+    },
+    {
+      "name": "PRETIX_DATABASE_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "PRETIX_REDIS_LOCATION",
+      "value": "redis://rfr-pretix-valkey-readwrite:6379/0"
+    },
+    {
+      "name": "PRETIX_REDIS_SESSIONS",
+      "value": "true"
+    },
+    {
+      "name": "PRETIX_CELERY_BROKER",
+      "value": "redis://rfr-pretix-valkey-readwrite:6379/1"
+    },
+    {
+      "name": "PRETIX_CELERY_BACKEND",
+      "value": "redis://rfr-pretix-valkey-readwrite:6379/2"
+    },
+    {
+      "name": "PRETIX_PRETIX_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "PRETIX_PRETIX_INSTANCE_NAME",
+      "value": "pretix"
+    },
+    {
+      "name": "PRETIX_PRETIX_DATADIR",
+      "value": "/data"
+    },
+    {
+      "name": "PRETIX_PRETIX_TRUST_X_FORWARDED_FOR",
+      "value": "true"
+    },
+    {
+      "name": "PRETIX_PRETIX_TRUST_X_FORWARDED_PROTO",
+      "value": "true"
+    },
+    {
+      "name": "PRETIX_DJANGO_SECRET",
+      "value": "replace-with-openssl-rand-hex-50"
+    },
+    {
+      "name": "PRETIX_MAIL_FROM",
+      "value": "tickets@example.com"
+    },
+    {
+      "name": "PRETIX_MAIL_HOST",
+      "value": "localhost"
+    },
+    {
+      "name": "PRETIX_MAIL_PORT",
+      "value": "25"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "pretix", "db": "pretix", "user": "pretix", "password": "pretix"},
-    {"type": "valkey", "name": "pretix"}
+    {
+      "type": "postgres",
+      "name": "pretix",
+      "db": "pretix",
+      "user": "pretix",
+      "password": "pretix"
+    },
+    {
+      "type": "valkey",
+      "name": "pretix"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/data", "name": "pretix-data", "size": "5Gi"}
+    {
+      "mountPath": "/data",
+      "name": "pretix-data",
+      "size": "5Gi"
+    }
   ]
 }

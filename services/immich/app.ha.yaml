@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted photo and video backup solution with a mobile-first focus.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/109746326?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/immich/icon.png
     kubero.dev/template.installation: Machine learning is disabled in this minimal template. Enable a separate ML service
       for face/object detection if needed.
     kubero.dev/template.links: '["https://docs.immich.app/"]'

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Lightweight, federated (ActivityPub) social networking server - a self-hosted, resource-friendly
       microblogging alternative for the Fediverse.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/35304081?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pleroma/icon.png
     kubero.dev/template.installation: 'This template runs the PRIMARY Pleroma server container (the BEAM/Elixir OTP release
       on git.pleroma.social/pleroma/pleroma:stable, HTTP on port 4000). Pleroma is single-process: the web endpoint AND the
       Oban background job queues (federation delivery, scheduled tasks, media processing) all run inside this one container,

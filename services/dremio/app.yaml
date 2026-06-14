@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open lakehouse platform with a SQL query engine and self-service semantic layer over
       data lakes, databases, and object storage.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1192398?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dremio/icon.png
     kubero.dev/template.installation: 'This template deploys a SINGLE-NODE Dremio Community Edition (dremio-oss) running coordinator
       + executor in one pod, which is the supported way to self-host/evaluate the OSS engine. Dremio OSS is self-contained:
       it stores its metadata KV store (RocksDB), uploads, and accelerator/cache files on LOCAL DISK under /opt/dremio/data,

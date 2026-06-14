@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: AI-powered, self-hosted photo and video management app that organizes your library with
       automatic tagging, face recognition, and search.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/42360037?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/photoprism/icon.png
     kubero.dev/template.installation: Deploy with the bundled MariaDB add-on (PhotoPrism recommends MariaDB over SQLite for
       performance). On first run, log in as 'admin' with the password set in PHOTOPRISM_ADMIN_PASSWORD and rotate it immediately.
       Rotate the MariaDB password and PHOTOPRISM_ADMIN_PASSWORD from their template defaults. Upload originals via the web

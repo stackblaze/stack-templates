@@ -5,7 +5,7 @@ metadata:
     annotations:
         kubero.dev/template.architecture: "[]"
         kubero.dev/template.description: "Ticket Management System in order to help helpdesks & service desks manage internal staff & customer requests"
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/76014454"
+        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/peppermint/icon.png
         kubero.dev/template.installation: "Default user is 'admin@admin.com' with password '1234'."
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: "[]"

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source PHP/Symfony helpdesk and support ticketing system with email piping, knowledgebase,
       and multi-channel agent workflows.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/24730296?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uvdesk/icon.png
     kubero.dev/template.installation: 'UVdesk is wizard-driven: on first load complete the web installer at {{KUBERO_APP_URL}}/install.
       When prompted for the database, use host ''uvdesk-mysql'', port 3306, database/user/password ''uvdesk'' (matching the
       mariadb add-on below) and create your super-admin account there. There is no separate root step needed for an external

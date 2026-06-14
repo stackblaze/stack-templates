@@ -5,7 +5,7 @@ metadata:
     annotations:
         kubero.dev/template.architecture: "[]"
         kubero.dev/template.description: "The Corteza low-code platform lets you build and iterate CRM, business process and other structured data apps fast, create intelligent business process workflows and connect with almost any data source."
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/50577806"
+        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/corteza/icon.png
         kubero.dev/template.installation: "Make sure to activate CORS headers"
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/cortezaproject/corteza/2024.9.x/.github/assets/hero-animation.webp"]'

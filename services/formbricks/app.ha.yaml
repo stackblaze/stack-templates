@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source Qualtrics alternative for in-product micro-surveys and experience management.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/105877416?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/formbricks/icon.png
     kubero.dev/template.installation: Pinned to v4.8.6 for Kubero single-app deploy (v5 requires Hub and Cube).
       Replace NEXTAUTH_SECRET, ENCRYPTION_KEY, and CRON_SECRET with openssl rand -hex 32 before production.
       For Formbricks v5 with Hub, use the official Helm chart instead.

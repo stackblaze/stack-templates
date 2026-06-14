@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Federated, content-aggregation and microblogging platform for the fediverse (a libre
       Reddit/Lemmy alternative built on ActivityPub).
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/126523321?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kbin/icon.png
     kubero.dev/template.installation: 'kbin is a multi-container Symfony/PHP stack and does NOT ship a single official all-in-one
       image; this template runs the primary web tier (combined nginx + PHP-FPM, listening on port 8080) using the community-maintained
       kbin docker build. After deploy you MUST also run the companion services from the same source image/repo (ernestwisniewski/kbin):

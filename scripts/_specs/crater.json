@@ -4,11 +4,20 @@
   "description": "Open-source, self-hosted web and mobile app to track expenses, payments and create professional invoices and estimates.",
   "source": "https://github.com/crater-invoice-inc/crater",
   "website": "https://craterapp.com",
-  "icon": "https://avatars.githubusercontent.com/u/63154198?s=200&v=4",
-  "categories": ["finance", "work", "productivity"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/crater/icon.png",
+  "categories": [
+    "finance",
+    "work",
+    "productivity"
+  ],
   "installation": "Crater is a Laravel (PHP) + Vue invoicing app backed by MariaDB. This template runs the maintained community image ghcr.io/jee-r/crater (nginx + PHP-FPM on :8080), since the upstream project ships a build-from-source docker-compose rather than an official prebuilt image. BEFORE first boot ROTATE: APP_KEY (run `openssl rand -base64 32` and prefix with `base64:`, i.e. set APP_KEY=base64:<value>) and the MariaDB password (default 'crater'). APP_URL is pre-filled with {{KUBERO_APP_URL}} and MUST match the public URL or cookie-based auth (4.0.0+) will fail. FIRST RUN: browse to the app URL and complete the on-boarding wizard (admin account, company, currency); the wizard runs DB migrations automatically. Persistent app data (uploads, generated PDF invoices, logo, storage/) lives under /app and is kept on the mounted volume. Cache/queue/session default to the database and file drivers (no Redis required); SMTP for mail and optional S3 for storage are configured later via env vars or the Settings UI.",
-  "screenshots": ["https://craterapp.com/static/img/crater-preview.png"],
-  "links": ["https://docs.craterapp.com/", "https://github.com/jee-r/docker-crater"],
+  "screenshots": [
+    "https://craterapp.com/static/img/crater-preview.png"
+  ],
+  "links": [
+    "https://docs.craterapp.com/",
+    "https://github.com/jee-r/docker-crater"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 8200,
@@ -20,27 +29,85 @@
     "command": []
   },
   "envVars": [
-    {"name": "APP_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "APP_ENV", "value": "production"},
-    {"name": "APP_DEBUG", "value": "false"},
-    {"name": "APP_KEY", "value": "base64:replace-with-openssl-rand-base64-32"},
-    {"name": "DB_CONNECTION", "value": "mysql"},
-    {"name": "DB_HOST", "value": "crater-mysql"},
-    {"name": "DB_PORT", "value": "3306"},
-    {"name": "DB_DATABASE", "value": "crater"},
-    {"name": "DB_USERNAME", "value": "crater"},
-    {"name": "DB_PASSWORD", "value": "crater"},
-    {"name": "CACHE_DRIVER", "value": "file"},
-    {"name": "SESSION_DRIVER", "value": "file"},
-    {"name": "QUEUE_CONNECTION", "value": "database"},
-    {"name": "SANCTUM_STATEFUL_DOMAINS", "value": "{{KUBERO_APP_HOST}}"},
-    {"name": "SESSION_DOMAIN", "value": "{{KUBERO_APP_HOST}}"},
-    {"name": "TZ", "value": "UTC"}
+    {
+      "name": "APP_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "APP_ENV",
+      "value": "production"
+    },
+    {
+      "name": "APP_DEBUG",
+      "value": "false"
+    },
+    {
+      "name": "APP_KEY",
+      "value": "base64:replace-with-openssl-rand-base64-32"
+    },
+    {
+      "name": "DB_CONNECTION",
+      "value": "mysql"
+    },
+    {
+      "name": "DB_HOST",
+      "value": "crater-mysql"
+    },
+    {
+      "name": "DB_PORT",
+      "value": "3306"
+    },
+    {
+      "name": "DB_DATABASE",
+      "value": "crater"
+    },
+    {
+      "name": "DB_USERNAME",
+      "value": "crater"
+    },
+    {
+      "name": "DB_PASSWORD",
+      "value": "crater"
+    },
+    {
+      "name": "CACHE_DRIVER",
+      "value": "file"
+    },
+    {
+      "name": "SESSION_DRIVER",
+      "value": "file"
+    },
+    {
+      "name": "QUEUE_CONNECTION",
+      "value": "database"
+    },
+    {
+      "name": "SANCTUM_STATEFUL_DOMAINS",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "SESSION_DOMAIN",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "TZ",
+      "value": "UTC"
+    }
   ],
   "addons": [
-    {"type": "mariadb", "name": "crater", "db": "crater", "user": "crater", "password": "crater"}
+    {
+      "type": "mariadb",
+      "name": "crater",
+      "db": "crater",
+      "user": "crater",
+      "password": "crater"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/app", "name": "crater-data", "size": "3Gi"}
+    {
+      "mountPath": "/app",
+      "name": "crater-data",
+      "size": "3Gi"
+    }
   ]
 }

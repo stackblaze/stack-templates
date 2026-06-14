@@ -5,7 +5,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: WebRTC - P2P - Simple, Secure, Fast, Real-Time
       Video Conferences Up to 4k and 60fps, compatible with all browsers and platforms.
-    kubero.dev/template.icon: https://www.saashub.com/images/app/service_logos/213/pgzsasbgu5fr/large.png?1653219756
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mirotalk-p2p/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/miroslavpejic85/mirotalk/raw/master/public/images/mirotalk-header.gif"]'

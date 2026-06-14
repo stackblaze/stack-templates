@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source security platform delivering unified XDR and SIEM protection for endpoints
       and cloud workloads, with a web dashboard for alerts and agents.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/10205436?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wazuh/icon.png
     kubero.dev/template.installation: 'This template deploys ONLY the Wazuh Dashboard (web UI, wazuh/wazuh-dashboard), which
       listens on port 5601 and is a thin front-end. Wazuh is a multi-container stack and will not function until you also
       deploy its companion services: 1) wazuh/wazuh-indexer:4.12.0 - the OpenSearch-based data store that holds all alerts

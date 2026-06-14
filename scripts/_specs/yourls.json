@@ -4,11 +4,20 @@
   "description": "Your Own URL Shortener: a small, self-hosted PHP service to run your own short-link service with stats, plugins, and a developer API.",
   "source": "https://github.com/YOURLS/YOURLS",
   "website": "https://yourls.org/",
-  "icon": "https://avatars.githubusercontent.com/u/4843816?s=200&v=4",
-  "categories": ["utilities", "productivity", "development"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/yourls/icon.png",
+  "categories": [
+    "utilities",
+    "productivity",
+    "development"
+  ],
   "installation": "YOURLS only supports MySQL/MariaDB (no PostgreSQL), so this template ships the mariadb add-on. The admin account is bootstrapped from YOURLS_USER / YOURLS_PASS on first boot, and YOURLS_SITE is bound to the deploy URL via {{KUBERO_APP_URL}} (must be the exact public URL, no trailing slash). The admin UI lives at /admin/. Before going to production, rotate the MariaDB password, the YOURLS_PASS admin password, and the YOURLS_COOKIEKEY (openssl rand -hex 32). User-supplied plugins, custom pages, and language packs persist on the mounted volume at /var/www/html/user.",
-  "screenshots": ["https://yourls.org/images/screenshots/admin.png"],
-  "links": ["https://yourls.org/docs/", "https://hub.docker.com/_/yourls"],
+  "screenshots": [
+    "https://yourls.org/images/screenshots/admin.png"
+  ],
+  "links": [
+    "https://yourls.org/docs/",
+    "https://hub.docker.com/_/yourls"
+  ],
   "license": "MIT License",
   "spdx_id": "MIT",
   "stars": 9500,
@@ -20,20 +29,57 @@
     "command": []
   },
   "envVars": [
-    {"name": "YOURLS_DB_HOST", "value": "yourls-mysql:3306"},
-    {"name": "YOURLS_DB_NAME", "value": "yourls"},
-    {"name": "YOURLS_DB_USER", "value": "yourls"},
-    {"name": "YOURLS_DB_PASS", "value": "yourls"},
-    {"name": "YOURLS_DB_PREFIX", "value": "yourls_"},
-    {"name": "YOURLS_SITE", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "YOURLS_USER", "value": "admin"},
-    {"name": "YOURLS_PASS", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "YOURLS_COOKIEKEY", "value": "replace-with-openssl-rand-hex-32"}
+    {
+      "name": "YOURLS_DB_HOST",
+      "value": "yourls-mysql:3306"
+    },
+    {
+      "name": "YOURLS_DB_NAME",
+      "value": "yourls"
+    },
+    {
+      "name": "YOURLS_DB_USER",
+      "value": "yourls"
+    },
+    {
+      "name": "YOURLS_DB_PASS",
+      "value": "yourls"
+    },
+    {
+      "name": "YOURLS_DB_PREFIX",
+      "value": "yourls_"
+    },
+    {
+      "name": "YOURLS_SITE",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "YOURLS_USER",
+      "value": "admin"
+    },
+    {
+      "name": "YOURLS_PASS",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "YOURLS_COOKIEKEY",
+      "value": "replace-with-openssl-rand-hex-32"
+    }
   ],
   "addons": [
-    {"type": "mariadb", "name": "yourls", "db": "yourls", "user": "yourls", "password": "yourls"}
+    {
+      "type": "mariadb",
+      "name": "yourls",
+      "db": "yourls",
+      "user": "yourls",
+      "password": "yourls"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/var/www/html/user", "name": "yourls-data", "size": "2Gi"}
+    {
+      "mountPath": "/var/www/html/user",
+      "name": "yourls-data",
+      "size": "2Gi"
+    }
   ]
 }

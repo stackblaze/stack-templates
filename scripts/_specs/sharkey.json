@@ -4,38 +4,111 @@
   "description": "Feature-rich, ActivityPub-federated microblogging server - a Misskey fork for the Fediverse with post editing and the Mastodon API.",
   "source": "https://activitypub.software/TransFem-org/Sharkey",
   "website": "https://joinsharkey.org/",
-  "icon": "https://avatars.githubusercontent.com/u/119182051?s=200&v=4",
-  "categories": ["social", "communication", "media"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sharkey/icon.png",
+  "categories": [
+    "social",
+    "communication",
+    "media"
+  ],
   "installation": "This template runs the PRIMARY Sharkey Node.js web/server container only (official image joinsharkey/sharkey, listens on HTTP port 3000). CONFIG: Sharkey (like its Misskey parent) is configured PRIMARILY via .config/default.yml, not env vars alone, so BEFORE first boot you MUST drop a default.yml into the mounted /sharkey/.config volume - set 'url' to your public https URL (it is baked into ActivityPub actor URLs and cannot be changed cleanly later; {{KUBERO_APP_URL}} is provided below for reference), and set db.host=sharkey-postgresql-rw / db.port=5432 / db.db=sharkey / db.user=sharkey / db.pass=sharkey and redis.host=rfr-sharkey-valkey-readwrite / redis.port=6379. The env vars below (POSTGRES_*/DATABASE_*/REDIS_*) mirror those values for the parts Sharkey reads from the environment; keep them in sync with default.yml. FIRST-RUN: the official image runs DB migrations automatically on start (pnpm migrate); once the pod is healthy open the site, create the first account (it becomes the instance admin), then configure the instance in the admin control panel. ROTATE the Postgres password (default 'sharkey') in BOTH the postgres add-on and default.yml to match. ADD-ONS PROVISIONED: PostgreSQL (primary datastore) and Valkey/Redis (queue + cache, password-less in-cluster). COMPANION SERVICES: Sharkey's background job queue (federation delivery/inbox, media processing, notifications) runs IN-PROCESS in this same image by default, so NO separate worker container is required for a single-node start; for scale you can run additional replicas of joinsharkey/sharkey with MK_ONLY_SERVER / MK_ONLY_QUEUE (clusterLimits in default.yml) pointing at the same Postgres + Valkey. EXTERNAL SERVICES not provisioned here: object storage (S3-compatible, e.g. the RustFS add-on) is strongly recommended for media at scale - configure under 'objectStorage' in default.yml instead of relying on the local /sharkey/files volume; SMTP for email verification; and an OPTIONAL MeiliSearch backend (image getmeili/meilisearch) for full-text post search, configured under 'meilisearch' in default.yml.",
-  "screenshots": ["https://joinsharkey.org/img/screenshots/timeline.png"],
-  "links": ["https://activitypub.software/TransFem-org/Sharkey/-/blob/develop/docs/install.md", "https://docs.joinsharkey.org/"],
+  "screenshots": [
+    "https://joinsharkey.org/img/screenshots/timeline.png"
+  ],
+  "links": [
+    "https://activitypub.software/TransFem-org/Sharkey/-/blob/develop/docs/install.md",
+    "https://docs.joinsharkey.org/"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 600,
   "language": "TypeScript",
-  "image": {"repository": "joinsharkey/sharkey", "tag": "stable", "containerPort": "3000", "command": []},
+  "image": {
+    "repository": "joinsharkey/sharkey",
+    "tag": "stable",
+    "containerPort": "3000",
+    "command": []
+  },
   "envVars": [
-    {"name": "NODE_ENV", "value": "production"},
-    {"name": "SHARKEY_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "DATABASE_HOST", "value": "sharkey-postgresql-rw"},
-    {"name": "DATABASE_PORT", "value": "5432"},
-    {"name": "DATABASE_DB", "value": "sharkey"},
-    {"name": "DATABASE_USER", "value": "sharkey"},
-    {"name": "DATABASE_PASSWORD", "value": "sharkey"},
-    {"name": "POSTGRES_HOST", "value": "sharkey-postgresql-rw"},
-    {"name": "POSTGRES_PORT", "value": "5432"},
-    {"name": "POSTGRES_DB", "value": "sharkey"},
-    {"name": "POSTGRES_USER", "value": "sharkey"},
-    {"name": "POSTGRES_PASSWORD", "value": "sharkey"},
-    {"name": "REDIS_HOST", "value": "rfr-sharkey-valkey-readwrite"},
-    {"name": "REDIS_PORT", "value": "6379"}
+    {
+      "name": "NODE_ENV",
+      "value": "production"
+    },
+    {
+      "name": "SHARKEY_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "DATABASE_HOST",
+      "value": "sharkey-postgresql-rw"
+    },
+    {
+      "name": "DATABASE_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "DATABASE_DB",
+      "value": "sharkey"
+    },
+    {
+      "name": "DATABASE_USER",
+      "value": "sharkey"
+    },
+    {
+      "name": "DATABASE_PASSWORD",
+      "value": "sharkey"
+    },
+    {
+      "name": "POSTGRES_HOST",
+      "value": "sharkey-postgresql-rw"
+    },
+    {
+      "name": "POSTGRES_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "POSTGRES_DB",
+      "value": "sharkey"
+    },
+    {
+      "name": "POSTGRES_USER",
+      "value": "sharkey"
+    },
+    {
+      "name": "POSTGRES_PASSWORD",
+      "value": "sharkey"
+    },
+    {
+      "name": "REDIS_HOST",
+      "value": "rfr-sharkey-valkey-readwrite"
+    },
+    {
+      "name": "REDIS_PORT",
+      "value": "6379"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "sharkey", "db": "sharkey", "user": "sharkey", "password": "sharkey"},
-    {"type": "valkey", "name": "sharkey"}
+    {
+      "type": "postgres",
+      "name": "sharkey",
+      "db": "sharkey",
+      "user": "sharkey",
+      "password": "sharkey"
+    },
+    {
+      "type": "valkey",
+      "name": "sharkey"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/sharkey/.config", "name": "sharkey-config", "size": "1Gi"},
-    {"mountPath": "/sharkey/files", "name": "sharkey-files", "size": "5Gi"}
+    {
+      "mountPath": "/sharkey/.config",
+      "name": "sharkey-config",
+      "size": "1Gi"
+    },
+    {
+      "mountPath": "/sharkey/files",
+      "name": "sharkey-files",
+      "size": "5Gi"
+    }
   ]
 }

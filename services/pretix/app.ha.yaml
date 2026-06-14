@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source event ticketing and registration platform for selling tickets to conferences,
       festivals and exhibitions (Eventbrite alternative).
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/15068472?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pretix/icon.png
     kubero.dev/template.installation: 'Pretix is a Django stack. This template runs the PRIMARY web container (image pretix/standalone
       with command ''web'', listening on container port 80 - nginx+gunicorn under supervisord), wired to the Postgres and
       Valkey/Redis add-ons provisioned here. The image is configured via PRETIX_<SECTION>_<KEY> environment variables (the

@@ -5,7 +5,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: The open source Calendly alternative. You are
       in charge of your own data, workflow and appearance
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/79145102?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/calcom/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/8019099/176390354-f1bc7069-0341-437a-9bb8-eb41092b4016.gif"]'

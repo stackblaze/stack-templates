@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted RustDesk relay/rendezvous server (hbbs + hbbr) for running your own private,
       open-source remote desktop infrastructure.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/81591375?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rustdesk/icon.png
     kubero.dev/template.installation: The rustdesk-server-s6 image runs both hbbs (ID/rendezvous) and hbbr (relay) in one
       container via s6-overlay. On first start it generates an ECDSA key pair in /data (id_ed25519 / id_ed25519.pub); copy
       the public key from /data/id_ed25519.pub and distribute it to RustDesk clients as the Key, with this host as the ID/Relay

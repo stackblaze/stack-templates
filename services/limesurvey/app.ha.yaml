@@ -5,7 +5,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: LimeSurvey is the simple, quick and anonymous
       online survey tool that's bursting with juicy insights.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1364105?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/limesurvey/icon.png
     kubero.dev/template.installation: Auto-installs on first boot when LIMESURVEY_DB_* and admin env vars are set. Default login admin/root — change immediately.
     kubero.dev/template.links: '"https://manual.limesurvey.org/LimeSurvey_Manual"'
     kubero.dev/template.screenshots: '["https://manual.limesurvey.org/images/1/15/Surveys-alternative_button.png","https://manual.limesurvey.org/images/5/50/Newsurveyscreen.png"]'

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source e-commerce platform for building and managing online stores, with a built-in
       admin back office and a marketplace of modules and themes.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/5905891?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/prestashop/icon.png
     kubero.dev/template.installation: 'PrestaShop requires MySQL/MariaDB (it does not support PostgreSQL). This template provisions
       the prestashop-mysql add-on (db/user/password all ''prestashop'' - ROTATE before production). PS_INSTALL_AUTO=1 runs
       the installer automatically on first boot using ADMIN_MAIL/ADMIN_PASSWD - change ADMIN_PASSWD (default ''prestashop''

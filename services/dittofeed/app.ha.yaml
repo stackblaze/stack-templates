@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source customer engagement and marketing automation platform for building messaging
       campaigns and user journeys across email, SMS, and push.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/120567321?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dittofeed/icon.png
     kubero.dev/template.installation: 'Dittofeed is a multi-service stack. This template runs the all-in-one dittofeed/dittofeed-lite
       image (API + dashboard + worker in one process) on port 3000 in single-tenant mode. It needs two operator add-ons (Postgres
       + ClickHouse, both provisioned here) AND an external Temporal cluster, which is NOT an available add-on: deploy Temporal

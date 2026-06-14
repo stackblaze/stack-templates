@@ -4,11 +4,20 @@
   "description": "Self-hosted, open-source Bitcoin and Lightning payment processor with no fees, no third party and full store/POS/invoicing tooling.",
   "source": "https://github.com/btcpayserver/btcpayserver",
   "website": "https://btcpayserver.org",
-  "icon": "https://avatars.githubusercontent.com/u/39504851?s=200&v=4",
-  "categories": ["finance", "e-commerce", "utilities"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/btcpay/icon.png",
+  "categories": [
+    "finance",
+    "e-commerce",
+    "utilities"
+  ],
   "installation": "BTCPay Server is a multi-container stack; this template deploys ONLY the primary btcpayserver web app backed by a Postgres add-on. It WILL NOT process payments until you also deploy its mandatory companion services in the same namespace: (1) NBXplorer - the UTXO indexer, image 'nicolasdorier/nbxplorer:latest', point btcpayserver at it via BTCPAY_BTCEXPLORERURL=http://nbxplorer:32838/ (default already set); NBXplorer needs its OWN database (set NBXPLORER_POSTGRES) and must reach a Bitcoin node. (2) A pruned/full Bitcoin Core node, image 'btcpayserver/bitcoin:latest' (txindex+RPC), referenced by NBXplorer's NBXPLORER_BTCRPCURL/BTCRPCAUTH - this requires a large persistent volume (hundreds of GB unfunded if not pruned). (3) OPTIONAL Lightning: an LND node ('btcpayserver/lnd:latest') or Core Lightning ('btcpayserver/lightning:latest') wired with BTCPAY_BTCLIGHTNING. ROTATE before first boot: the Postgres password (default 'btcpay') and the BTCPAY_POSTGRES connection string password to match. BTCPAY_HOST is pre-filled with {{KUBERO_APP_HOST}} and must equal the public hostname (used for cookie/URL generation); the app binds on 0.0.0.0:49392 via BTCPAY_BIND. TLS is terminated at the ingress so BTCPAY_PROTOCOL=https and the reverse-proxy headers are honored. First run: open the app URL, register the first account (it becomes the admin), then create a Store and add the BTC (and optional Lightning) wallet. Persistent data (keys, plugins, logs) lives under /datadir on the mounted volume.",
-  "screenshots": ["https://docs.btcpayserver.org/img/PointOfSale.png"],
-  "links": ["https://docs.btcpayserver.org/", "https://docs.btcpayserver.org/Deployment/ManualDeploymentExtended/"],
+  "screenshots": [
+    "https://docs.btcpayserver.org/img/PointOfSale.png"
+  ],
+  "links": [
+    "https://docs.btcpayserver.org/",
+    "https://docs.btcpayserver.org/Deployment/ManualDeploymentExtended/"
+  ],
   "license": "MIT License",
   "spdx_id": "MIT",
   "stars": 6600,
@@ -20,22 +29,65 @@
     "command": []
   },
   "envVars": [
-    {"name": "BTCPAY_HOST", "value": "{{KUBERO_APP_HOST}}"},
-    {"name": "BTCPAY_PROTOCOL", "value": "https"},
-    {"name": "BTCPAY_BIND", "value": "0.0.0.0:49392"},
-    {"name": "BTCPAY_NETWORK", "value": "mainnet"},
-    {"name": "BTCPAY_CHAINS", "value": "btc"},
-    {"name": "BTCPAY_ROOTPATH", "value": "/"},
-    {"name": "BTCPAY_POSTGRES", "value": "User ID=btcpay;Password=btcpay;Host=btcpay-postgresql-rw;Port=5432;Database=btcpay;Include Error Detail=true"},
-    {"name": "BTCPAY_EXPLORERPOSTGRES", "value": "User ID=btcpay;Password=btcpay;Host=btcpay-postgresql-rw;Port=5432;Database=nbxplorer;Include Error Detail=true"},
-    {"name": "BTCPAY_BTCEXPLORERURL", "value": "http://nbxplorer:32838/"},
-    {"name": "BTCPAY_DATADIR", "value": "/datadir"},
-    {"name": "BTCPAY_DEBUGLOG", "value": "btcpay.log"}
+    {
+      "name": "BTCPAY_HOST",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "BTCPAY_PROTOCOL",
+      "value": "https"
+    },
+    {
+      "name": "BTCPAY_BIND",
+      "value": "0.0.0.0:49392"
+    },
+    {
+      "name": "BTCPAY_NETWORK",
+      "value": "mainnet"
+    },
+    {
+      "name": "BTCPAY_CHAINS",
+      "value": "btc"
+    },
+    {
+      "name": "BTCPAY_ROOTPATH",
+      "value": "/"
+    },
+    {
+      "name": "BTCPAY_POSTGRES",
+      "value": "User ID=btcpay;Password=btcpay;Host=btcpay-postgresql-rw;Port=5432;Database=btcpay;Include Error Detail=true"
+    },
+    {
+      "name": "BTCPAY_EXPLORERPOSTGRES",
+      "value": "User ID=btcpay;Password=btcpay;Host=btcpay-postgresql-rw;Port=5432;Database=nbxplorer;Include Error Detail=true"
+    },
+    {
+      "name": "BTCPAY_BTCEXPLORERURL",
+      "value": "http://nbxplorer:32838/"
+    },
+    {
+      "name": "BTCPAY_DATADIR",
+      "value": "/datadir"
+    },
+    {
+      "name": "BTCPAY_DEBUGLOG",
+      "value": "btcpay.log"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "btcpay", "db": "btcpay", "user": "btcpay", "password": "btcpay"}
+    {
+      "type": "postgres",
+      "name": "btcpay",
+      "db": "btcpay",
+      "user": "btcpay",
+      "password": "btcpay"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/datadir", "name": "btcpay-data", "size": "2Gi"}
+    {
+      "mountPath": "/datadir",
+      "name": "btcpay-data",
+      "size": "2Gi"
+    }
   ]
 }

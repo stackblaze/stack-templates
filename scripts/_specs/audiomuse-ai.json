@@ -4,32 +4,84 @@
   "description": "Self-hosted sonic analysis engine that auto-generates intelligent, mood-based playlists for Jellyfin, Navidrome, LMS, Lyrion and Emby - no external services.",
   "source": "https://github.com/NeptuneHub/AudioMuse-AI",
   "website": "https://neptunehub.github.io/AudioMuse-AI/",
-  "icon": "https://avatars.githubusercontent.com/u/171392533?s=200&v=4",
-  "categories": ["media", "ai", "automation"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/audiomuse-ai/icon.png",
+  "categories": [
+    "media",
+    "ai",
+    "automation"
+  ],
   "installation": "This template runs the PRIMARY Flask web/API container ONLY (ghcr.io/neptunehub/audiomuse-ai with SERVICE_TYPE=flask, HTTP port 8000). AudioMuse-AI is a MULTI-CONTAINER stack and is NOT functional with this pod alone - it just serves the UI/API; the actual sonic analysis and playlist generation run in a separate worker. MANDATORY COMPANION SERVICE to deploy as a SEPARATE app using the SAME image (ghcr.io/neptunehub/audiomuse-ai:latest) and the SAME Postgres + Valkey/Redis + analysis volume: (a) the ANALYSIS WORKER - set SERVICE_TYPE=worker and provide identical POSTGRES_* and REDIS_URL env vars; it is an RQ worker that pulls jobs from Redis, performs Librosa/ONNX audio analysis locally, and writes results to Postgres (without it, every analysis/playlist task queues forever). OPTIONAL: a SCHEDULER/beat companion (same image) for periodic re-analysis if you want recurring jobs. MEDIA SERVER: this is an add-on to an EXISTING music server - after first boot, open the web UI at the app URL and configure the connection to your Jellyfin / Navidrome / Emby / LMS server (server URL + API key / credentials) under settings; AudioMuse-AI reads the library from that server, it does not host music itself. ROTATE before going live: the Postgres password (POSTGRES_PASSWORD - change from the template default 'audiomuse-ai'). Valkey/Redis is password-less in-cluster. The /app/temp_audio volume (TEMP_DIR) is scratch space where the worker downloads tracks for analysis and should be persistent/sized for your concurrency. First analysis of a large library is CPU-heavy; give the worker pod a larger size.",
   "screenshots": [],
-  "links": ["https://neptunehub.github.io/AudioMuse-AI/", "https://github.com/NeptuneHub/AudioMuse-AI/blob/main/docs/PARAMETERS.md"],
+  "links": [
+    "https://neptunehub.github.io/AudioMuse-AI/",
+    "https://github.com/NeptuneHub/AudioMuse-AI/blob/main/docs/PARAMETERS.md"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 600,
   "language": "Python",
-  "image": {"repository": "ghcr.io/neptunehub/audiomuse-ai", "tag": "latest", "containerPort": "8000", "command": []},
+  "image": {
+    "repository": "ghcr.io/neptunehub/audiomuse-ai",
+    "tag": "latest",
+    "containerPort": "8000",
+    "command": []
+  },
   "envVars": [
-    {"name": "SERVICE_TYPE", "value": "flask"},
-    {"name": "TZ", "value": "UTC"},
-    {"name": "POSTGRES_HOST", "value": "audiomuse-ai-postgresql-rw"},
-    {"name": "POSTGRES_PORT", "value": "5432"},
-    {"name": "POSTGRES_DB", "value": "audiomuse-ai"},
-    {"name": "POSTGRES_USER", "value": "audiomuse-ai"},
-    {"name": "POSTGRES_PASSWORD", "value": "audiomuse-ai"},
-    {"name": "REDIS_URL", "value": "redis://rfr-audiomuse-ai-valkey-readwrite:6379/0"},
-    {"name": "TEMP_DIR", "value": "/app/temp_audio"}
+    {
+      "name": "SERVICE_TYPE",
+      "value": "flask"
+    },
+    {
+      "name": "TZ",
+      "value": "UTC"
+    },
+    {
+      "name": "POSTGRES_HOST",
+      "value": "audiomuse-ai-postgresql-rw"
+    },
+    {
+      "name": "POSTGRES_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "POSTGRES_DB",
+      "value": "audiomuse-ai"
+    },
+    {
+      "name": "POSTGRES_USER",
+      "value": "audiomuse-ai"
+    },
+    {
+      "name": "POSTGRES_PASSWORD",
+      "value": "audiomuse-ai"
+    },
+    {
+      "name": "REDIS_URL",
+      "value": "redis://rfr-audiomuse-ai-valkey-readwrite:6379/0"
+    },
+    {
+      "name": "TEMP_DIR",
+      "value": "/app/temp_audio"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "audiomuse-ai", "db": "audiomuse-ai", "user": "audiomuse-ai", "password": "audiomuse-ai"},
-    {"type": "valkey", "name": "audiomuse-ai"}
+    {
+      "type": "postgres",
+      "name": "audiomuse-ai",
+      "db": "audiomuse-ai",
+      "user": "audiomuse-ai",
+      "password": "audiomuse-ai"
+    },
+    {
+      "type": "valkey",
+      "name": "audiomuse-ai"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/app/temp_audio", "name": "audiomuse-ai-temp", "size": "5Gi"}
+    {
+      "mountPath": "/app/temp_audio",
+      "name": "audiomuse-ai-temp",
+      "size": "5Gi"
+    }
   ]
 }

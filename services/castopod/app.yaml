@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source, self-hosted podcast hosting platform with built-in analytics and ActivityPub
       federation for the Fediverse (Podcasting 2.0).
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/74553002?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/castopod/icon.png
     kubero.dev/template.installation: 'Castopod is a PHP/CodeIgniter app that needs a MySQL-compatible database (the MariaDB
       add-on here; Castopod does NOT support Postgres) and optionally Redis for caching, which is wired to the password-less
       Valkey add-on (CP_CACHE_HANDLER=redis + CP_REDIS_HOST). The public URL is injected via {{KUBERO_APP_URL}} into CP_BASEURL;

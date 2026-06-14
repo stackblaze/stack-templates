@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source web-based help desk and customer support / ticketing system with email, chat,
       social and a knowledge base.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/18482282?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zammad/icon.png
     kubero.dev/template.installation: 'Zammad is a MULTI-CONTAINER stack. All Zammad roles share ONE image (ghcr.io/zammad/zammad)
       and differ only by their entrypoint command. This template runs the PRIMARY web tier, command ''zammad-nginx'' (HTTP
       on port 8080). To make Zammad fully functional you MUST also deploy these companion services from the SAME ghcr.io/zammad/zammad

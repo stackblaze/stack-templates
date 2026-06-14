@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source invoicing, billing, payments and expense-tracking platform for freelancers
       and businesses.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4815738?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/invoiceninja/icon.png
     kubero.dev/template.installation: 'Invoice Ninja v5 is a Laravel (PHP) app backed by MySQL/MariaDB (it does NOT officially
       support Postgres); Valkey is wired for cache and queue. BEFORE first boot ROTATE: APP_KEY (must be a 32-char value;
       generate with `openssl rand -base64 32` and set APP_KEY=base64:<value>) and the MariaDB password (default ''invoiceninja'').

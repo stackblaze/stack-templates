@@ -4,26 +4,60 @@
   "description": "Open-source ASP.NET Core e-commerce platform and shopping cart for building online stores.",
   "source": "https://github.com/nopSolutions/nopCommerce",
   "website": "https://www.nopcommerce.com",
-  "icon": "https://avatars.githubusercontent.com/u/9377786?s=200&v=4",
-  "categories": ["e-commerce", "cms", "work"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nopcommerce/icon.png",
+  "categories": [
+    "e-commerce",
+    "cms",
+    "work"
+  ],
   "installation": "First run launches the nopCommerce install wizard at the app URL: pick the PostgreSQL provider and enter the connection details below (host nopcommerce-postgresql-rw, port 5432, db/user/pass = nopcommerce). The wizard creates the admin user you specify and writes config to /app/App_Data (persisted via the data volume). Rotate the default postgres password after install. nopCommerce can run without the DB add-on against SQL Server/MySQL too, but this template ships PostgreSQL. Optional: front with a CDN/object storage for media at scale; not required to boot.",
   "screenshots": [],
-  "links": ["https://docs.nopcommerce.com/en/getting-started/index.html", "https://docs.nopcommerce.com/en/developer/tutorials/docker.html"],
+  "links": [
+    "https://docs.nopcommerce.com/en/getting-started/index.html",
+    "https://docs.nopcommerce.com/en/developer/tutorials/docker.html"
+  ],
   "license": "Other",
   "spdx_id": "NOASSERTION",
   "stars": 9500,
   "language": "C#",
-  "image": {"repository": "nopcommerceteam/nopcommerce", "tag": "latest", "containerPort": "80", "command": []},
+  "image": {
+    "repository": "nopcommerceteam/nopcommerce",
+    "tag": "latest",
+    "containerPort": "80",
+    "command": []
+  },
   "envVars": [
-    {"name": "ASPNETCORE_URLS", "value": "http://+:80"},
-    {"name": "ASPNETCORE_ENVIRONMENT", "value": "Production"},
-    {"name": "ConnectionStrings__DataSettings", "value": "Server=nopcommerce-postgresql-rw;Port=5432;Database=nopcommerce;User Id=nopcommerce;Password=nopcommerce;"},
-    {"name": "NopDatabaseProvider", "value": "postgresql"}
+    {
+      "name": "ASPNETCORE_URLS",
+      "value": "http://+:80"
+    },
+    {
+      "name": "ASPNETCORE_ENVIRONMENT",
+      "value": "Production"
+    },
+    {
+      "name": "ConnectionStrings__DataSettings",
+      "value": "Server=nopcommerce-postgresql-rw;Port=5432;Database=nopcommerce;User Id=nopcommerce;Password=nopcommerce;"
+    },
+    {
+      "name": "NopDatabaseProvider",
+      "value": "postgresql"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "nopcommerce", "db": "nopcommerce", "user": "nopcommerce", "password": "nopcommerce"}
+    {
+      "type": "postgres",
+      "name": "nopcommerce",
+      "db": "nopcommerce",
+      "user": "nopcommerce",
+      "password": "nopcommerce"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/app/App_Data", "name": "nopcommerce-data", "size": "2Gi"}
+    {
+      "mountPath": "/app/App_Data",
+      "name": "nopcommerce-data",
+      "size": "2Gi"
+    }
   ]
 }

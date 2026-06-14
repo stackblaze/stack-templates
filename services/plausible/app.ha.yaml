@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Privacy-friendly alternative to Google Analytics — lightweight and open source.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/54802774?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plausible/icon.png
     kubero.dev/template.installation: Generate SECRET_KEY_BASE with `openssl rand -hex 64` and TOTP_VAULT_KEY with `openssl
       rand -base64 32`. Update BASE_URL before going live.
     kubero.dev/template.links: '["https://plausible.io/docs/"]'

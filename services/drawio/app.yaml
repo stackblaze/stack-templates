@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted draw.io (diagrams.net), a client-side editor for flowcharts, UML, ER, network
       and other diagrams.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1429431?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/drawio/icon.png
     kubero.dev/template.installation: 'draw.io is a stateless, client-side diagram editor served by Tomcat. Diagrams are never
       stored on the server: they live in the browser, on the user''s local disk, or in an external storage provider the user
       connects (Google Drive, OneDrive, GitHub, GitLab, Dropbox), so no database add-on and no persistent volume are required.

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source API-first Customer Data Platform (CDP) for collecting events, building profiles
       and segments, and orchestrating real-time customer journeys.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/61210182?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tracardi/icon.png
     kubero.dev/template.installation: 'Tracardi is a multi-container stack; this template runs ONLY the primary API/server
       image tracardi/tracardi-api on internal port 80. It REQUIRES an external Elasticsearch (7.x) or OpenSearch cluster as
       its primary datastore for all events/profiles/segments - Elasticsearch is NOT one of the supported operator add-ons,

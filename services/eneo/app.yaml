@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: 'Open-source, multi-tenant AI platform for the public sector: build chat assistants,
       RAG knowledge bases and AI workflows on your own models.'
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/206545558?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/eneo/icon.png
     kubero.dev/template.installation: "PRIMARY container = the FastAPI backend (ghcr.io/eneo-ai/eneo-backend, listens on :8000,\
       \ served behind a reverse proxy). This template deploys ONLY the backend API. To run the full stack you must also deploy\
       \ these companion services as separate apps, all sharing this app's env (especially the POSTGRES_*, REDIS_*, JWT_SECRET,\

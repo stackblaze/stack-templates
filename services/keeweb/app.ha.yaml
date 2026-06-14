@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Free, cross-platform web password manager compatible with KeePass; opens and edits .kdbx
       files entirely in the browser.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/19752642?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keeweb/icon.png
     kubero.dev/template.installation: 'KeeWeb is a stateless, fully client-side password manager: the nginx container only
       serves static HTML/JS, and all cryptography (KeePass .kdbx parsing, AES/Argon2 key derivation) happens in the browser,
       so the server never sees your master password or plaintext. Because of this there is no database add-on and no server-side

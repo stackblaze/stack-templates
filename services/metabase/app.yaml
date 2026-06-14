@@ -5,7 +5,7 @@ metadata:
     annotations:
         kubero.dev/template.architecture: "[]"
         kubero.dev/template.description: "Metabase is the easy, open-source way for everyone in your company to ask questions and learn from data."
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/10520629"
+        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase/icon.png
         kubero.dev/template.installation: "First boot can take several minutes while Metabase initializes its application database."
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '[ "https://raw.githubusercontent.com/metabase/metabase/master/docs/images/metabase-product-screenshot.svg"]'

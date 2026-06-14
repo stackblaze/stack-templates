@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: ownCloud is a self-hosted file sync and share platform for storing, accessing and collaborating
       on your files across devices.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1645051?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/owncloud/icon.png
     kubero.dev/template.installation: The official owncloud/server image initializes itself on first boot using the OWNCLOUD_ADMIN_*
       and OWNCLOUD_DB_* environment variables, so no manual setup wizard is needed. It is built and tested against MariaDB/MySQL
       plus Redis (provided here by the mariadb and valkey add-ons). Rotate the mariadb add-on credentials and the OWNCLOUD_ADMIN_PASSWORD

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Lightweight authentication server providing a simplified, opinionated LDAP interface
       with a clean web UI for user and group management.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/96665150?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lightldap/icon.png
     kubero.dev/template.installation: 'LLDAP exposes its web admin UI on port 17170 and an LDAP endpoint on port 3890 (LDAP
       is not HTTP; expose it separately if other apps must bind to it). ROTATE these template defaults before production:
       LLDAP_JWT_SECRET and LLDAP_KEY_SEED (generate with `openssl rand -hex 32`), and LLDAP_LDAP_USER_PASS (the initial admin

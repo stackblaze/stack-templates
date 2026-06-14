@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted sonic analysis engine that auto-generates intelligent, mood-based playlists
       for Jellyfin, Navidrome, LMS, Lyrion and Emby - no external services.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/171392533?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/audiomuse-ai/icon.png
     kubero.dev/template.installation: 'This template runs the PRIMARY Flask web/API container ONLY (ghcr.io/neptunehub/audiomuse-ai
       with SERVICE_TYPE=flask, HTTP port 8000). AudioMuse-AI is a MULTI-CONTAINER stack and is NOT functional with this pod
       alone - it just serves the UI/API; the actual sonic analysis and playlist generation run in a separate worker. MANDATORY

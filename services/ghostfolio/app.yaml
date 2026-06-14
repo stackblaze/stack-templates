@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source wealth management software to track stocks, ETFs, crypto and other assets
       across accounts in one privacy-focused dashboard.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/82473144?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghostfolio/icon.png
     kubero.dev/template.installation: 'NestJS/Angular app served on port 3333. Companion services deployed as add-ons: PostgreSQL
       (primary DB) and a Valkey (Redis-protocol) instance used for caching and the queue. Database migrations run automatically
       on boot. Rotate ACCESS_TOKEN_SALT and JWT_SECRET_KEY to unique random values (openssl rand -hex 32 each) and rotate

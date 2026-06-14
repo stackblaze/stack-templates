@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Free, federated (ActivityPub) photo-sharing platform - a self-hosted, ethical alternative
       to Instagram for the Fediverse.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/45131569?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pixelfed/icon.png
     kubero.dev/template.installation: 'This template runs the PRIMARY Pixelfed web/php-fpm container only. The zknt/pixelfed
       image serves over HTTP on port 80 and ships a php-fpm + nginx supervisord bundle. REQUIRED first-run steps: 1) Generate
       an APP_KEY with ''php artisan key:generate'' (or ''openssl rand -base64 32'') and set it as ''base64:...'' - rotate

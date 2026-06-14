@@ -4,11 +4,20 @@
   "description": "Open-source business intelligence and analytics tool to query, visualize, and share dashboards from your databases without writing SQL.",
   "source": "https://github.com/metabase/metabase",
   "website": "https://www.metabase.com",
-  "icon": "https://avatars.githubusercontent.com/u/9942916?s=200&v=4",
-  "categories": ["data", "monitoring", "productivity"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase-postgres/icon.png",
+  "categories": [
+    "data",
+    "monitoring",
+    "productivity"
+  ],
   "installation": "This template runs the official metabase/metabase image and stores all application state (questions, dashboards, users, saved data-source credentials, settings) in the bundled PostgreSQL add-on via the MB_DB_* variables, so no persistent volume is needed. Rotate the Postgres add-on password before exposing. CRITICAL: set MB_ENCRYPTION_SECRET_KEY to a fixed random value (openssl rand -base64 32) and NEVER change it after first boot, because it encrypts the credentials of the external databases you connect to; if it is lost or changed, those saved connections become undecryptable. MB_SITE_URL is wired to the public URL token; keep it correct or password-reset and embedding links will break. On first run, open the app and complete the setup wizard to create the initial admin account. Outbound email (alerts, invites, pulses) requires SMTP settings configured in Admin > Email (not provisioned here). To analyze data, add your own external database connections from the admin panel after setup.",
-  "screenshots": ["https://www.metabase.com/images/home/hero-2.png"],
-  "links": ["https://www.metabase.com/docs/latest/installation-and-operation/running-metabase-on-docker", "https://www.metabase.com/docs/latest/configuring-metabase/environment-variables"],
+  "screenshots": [
+    "https://www.metabase.com/images/home/hero-2.png"
+  ],
+  "links": [
+    "https://www.metabase.com/docs/latest/installation-and-operation/running-metabase-on-docker",
+    "https://www.metabase.com/docs/latest/configuring-metabase/environment-variables"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 41000,
@@ -20,19 +29,55 @@
     "command": []
   },
   "envVars": [
-    {"name": "MB_DB_TYPE", "value": "postgres"},
-    {"name": "MB_DB_HOST", "value": "metabase-postgres-postgresql-rw"},
-    {"name": "MB_DB_PORT", "value": "5432"},
-    {"name": "MB_DB_DBNAME", "value": "metabase-postgres"},
-    {"name": "MB_DB_USER", "value": "metabase-postgres"},
-    {"name": "MB_DB_PASS", "value": "metabase-postgres"},
-    {"name": "MB_SITE_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "MB_ENCRYPTION_SECRET_KEY", "value": "replace-with-openssl-rand-base64-32"},
-    {"name": "MB_JETTY_HOST", "value": "0.0.0.0"},
-    {"name": "MB_JETTY_PORT", "value": "3000"}
+    {
+      "name": "MB_DB_TYPE",
+      "value": "postgres"
+    },
+    {
+      "name": "MB_DB_HOST",
+      "value": "metabase-postgres-postgresql-rw"
+    },
+    {
+      "name": "MB_DB_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "MB_DB_DBNAME",
+      "value": "metabase-postgres"
+    },
+    {
+      "name": "MB_DB_USER",
+      "value": "metabase-postgres"
+    },
+    {
+      "name": "MB_DB_PASS",
+      "value": "metabase-postgres"
+    },
+    {
+      "name": "MB_SITE_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "MB_ENCRYPTION_SECRET_KEY",
+      "value": "replace-with-openssl-rand-base64-32"
+    },
+    {
+      "name": "MB_JETTY_HOST",
+      "value": "0.0.0.0"
+    },
+    {
+      "name": "MB_JETTY_PORT",
+      "value": "3000"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "metabase-postgres", "db": "metabase-postgres", "user": "metabase-postgres", "password": "metabase-postgres"}
+    {
+      "type": "postgres",
+      "name": "metabase-postgres",
+      "db": "metabase-postgres",
+      "user": "metabase-postgres",
+      "password": "metabase-postgres"
+    }
   ],
   "extraVolumes": []
 }

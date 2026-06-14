@@ -4,11 +4,18 @@
   "description": "Self-hosted document organizer (DMS) that auto-tags, OCRs and full-text-searches your scanned PDFs, emails and uploads.",
   "source": "https://github.com/eikek/docspell",
   "website": "https://docspell.org",
-  "icon": "https://avatars.githubusercontent.com/u/701128?s=200&v=4",
-  "categories": ["documentation", "productivity", "storage"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docspell/icon.png",
+  "categories": [
+    "documentation",
+    "productivity",
+    "storage"
+  ],
   "installation": "This is the Docspell rest server (web UI + REST API) listening on internal port 7880. It REQUIRES a companion job executor deployed alongside it for OCR, text extraction and document conversion: deploy docspell/joex:latest pointed at the SAME Postgres add-on (set its DOCSPELL_JOEX_JDBC_* / DOCSPELL_JOEX_BASE__URL env). Both containers must share the file storage; this template stores binaries in the bundled Postgres (DOCSPELL_SERVER_BACKEND_FILES_DEFAULT__STORE=database), so no shared volume between server and joex is needed for files. Rotate the random secrets before production: DOCSPELL_SERVER_AUTH_SERVER__SECRET (openssl rand -hex 32) and DOCSPELL_SERVER_ADMIN__ENDPOINT_SECRET, and rotate the Postgres password. Full-text search defaults here to the built-in PostgreSQL FTS backend (DOCSPELL_SERVER_FULL__TEXT__SEARCH_ENABLED=true + DOCSPELL_SERVER_FULL__TEXT__SEARCH_BACKEND=postgresql), so no external Apache Solr is needed; only add a Solr instance if you set the backend to solr. First run: open the web UI, register a new account using the same name for both 'collective' and 'user', then log in. Optional companions for inbound mail/scanner ingest (docspell-consumedir, IMAP poller) are described in the docs and reuse the same Postgres.",
   "screenshots": [],
-  "links": ["https://docspell.org/docs/install/docker/", "https://docspell.org/docs/configure/"],
+  "links": [
+    "https://docspell.org/docs/install/docker/",
+    "https://docspell.org/docs/configure/"
+  ],
   "license": "GNU General Public License v3.0",
   "spdx_id": "GPL-3.0",
   "stars": 1730,
@@ -20,21 +27,63 @@
     "command": []
   },
   "envVars": [
-    {"name": "TZ", "value": "UTC"},
-    {"name": "DOCSPELL_SERVER_BASE__URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "DOCSPELL_SERVER_BIND_ADDRESS", "value": "0.0.0.0"},
-    {"name": "DOCSPELL_SERVER_BIND_PORT", "value": "7880"},
-    {"name": "DOCSPELL_SERVER_AUTH_SERVER__SECRET", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "DOCSPELL_SERVER_ADMIN__ENDPOINT_SECRET", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "DOCSPELL_SERVER_BACKEND_JDBC_URL", "value": "jdbc:postgresql://docspell-postgresql-rw:5432/docspell"},
-    {"name": "DOCSPELL_SERVER_BACKEND_JDBC_USER", "value": "docspell"},
-    {"name": "DOCSPELL_SERVER_BACKEND_JDBC_PASSWORD", "value": "docspell"},
-    {"name": "DOCSPELL_SERVER_BACKEND_FILES_DEFAULT__STORE", "value": "database"},
-    {"name": "DOCSPELL_SERVER_FULL__TEXT__SEARCH_ENABLED", "value": "true"},
-    {"name": "DOCSPELL_SERVER_FULL__TEXT__SEARCH_BACKEND", "value": "postgresql"}
+    {
+      "name": "TZ",
+      "value": "UTC"
+    },
+    {
+      "name": "DOCSPELL_SERVER_BASE__URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "DOCSPELL_SERVER_BIND_ADDRESS",
+      "value": "0.0.0.0"
+    },
+    {
+      "name": "DOCSPELL_SERVER_BIND_PORT",
+      "value": "7880"
+    },
+    {
+      "name": "DOCSPELL_SERVER_AUTH_SERVER__SECRET",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "DOCSPELL_SERVER_ADMIN__ENDPOINT_SECRET",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "DOCSPELL_SERVER_BACKEND_JDBC_URL",
+      "value": "jdbc:postgresql://docspell-postgresql-rw:5432/docspell"
+    },
+    {
+      "name": "DOCSPELL_SERVER_BACKEND_JDBC_USER",
+      "value": "docspell"
+    },
+    {
+      "name": "DOCSPELL_SERVER_BACKEND_JDBC_PASSWORD",
+      "value": "docspell"
+    },
+    {
+      "name": "DOCSPELL_SERVER_BACKEND_FILES_DEFAULT__STORE",
+      "value": "database"
+    },
+    {
+      "name": "DOCSPELL_SERVER_FULL__TEXT__SEARCH_ENABLED",
+      "value": "true"
+    },
+    {
+      "name": "DOCSPELL_SERVER_FULL__TEXT__SEARCH_BACKEND",
+      "value": "postgresql"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "docspell", "db": "docspell", "user": "docspell", "password": "docspell"}
+    {
+      "type": "postgres",
+      "name": "docspell",
+      "db": "docspell",
+      "user": "docspell",
+      "password": "docspell"
+    }
   ],
   "extraVolumes": []
 }

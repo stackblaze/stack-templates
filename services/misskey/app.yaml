@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Decentralized, ActivityPub-federated microblogging platform with reactions, Drive file
       storage and a customizable UI.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/55391665?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/misskey/icon.png
     kubero.dev/template.installation: 'Misskey is configured PRIMARILY via a YAML file (.config/default.yml), not env vars
       alone, so before first boot you MUST supply that config (mounted at /misskey/.config) pointing db.host=misskey-postgresql-rw
       / db.port=5432 / db.db=misskey and redis.host=rfr-misskey-valkey-readwrite / redis.port=6379, and set url to your public

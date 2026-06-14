@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Modern data exploration and visualization platform — enterprise-ready business intelligence.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/47359?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/superset/icon.png
     kubero.dev/template.installation: First boot runs migrations and init automatically (several minutes). Change SUPERSET_SECRET_KEY
       and ADMIN_PASSWORD before production use.
     kubero.dev/template.links: '["https://superset.apache.org/docs/intro"]'

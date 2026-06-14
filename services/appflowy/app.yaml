@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source Notion alternative — self-hosted workspace for notes, docs, and collaboration.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/86002201?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/appflowy/icon.png
     kubero.dev/template.installation: Bundles AppFlowy Cloud API with GoTrue auth in one pod. Deploy appflowy-web from the AppFlowy-Cloud
       docker-compose in the same pipeline for the full web UI.
     kubero.dev/template.links: '["https://appflowy-io-appflowy.mintlify.app/self-hosting/installation"]'

@@ -4,11 +4,17 @@
   "description": "Self-hosted RSS reader and personal knowledge management tool with AI-powered semantic search over your saved reading.",
   "source": "https://github.com/LeslieLeung/glean",
   "website": "https://github.com/LeslieLeung/glean",
-  "icon": "https://avatars.githubusercontent.com/u/22127499?s=200&v=4",
-  "categories": ["productivity", "ai", "utilities"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/glean/icon.png",
+  "categories": [
+    "productivity",
+    "ai",
+    "utilities"
+  ],
   "installation": "This template deploys the PRIMARY backend API only (ghcr.io/leslieleung/glean-backend, FastAPI, port 8000). Glean is a multi-container stack: also deploy the WORKER (same image ghcr.io/leslieleung/glean-backend run as the arq background task queue), the WEB frontend (ghcr.io/leslieleung/glean-web, listens on :80), and the ADMIN dashboard (ghcr.io/leslieleung/glean-admin, listens on :80, default ADMIN_PORT 3001). It also requires a MILVUS vector database (milvusdb/milvus:v2.6.6) plus its etcd (quay.io/coreos/etcd:v3.5.5) and minio (minio/minio) dependencies for semantic search embeddings - Milvus is not an available operator add-on, so deploy it separately and point MILVUS_HOST/MILVUS_PORT at it (default 19530). Postgres and Redis (Valkey) are provisioned by the add-ons below. ROTATE before exposing: SECRET_KEY (JWT signing - replace with `openssl rand -hex 32`), the postgres password, and ADMIN_PASSWORD. First run: CREATE_ADMIN=true auto-creates the super_admin from ADMIN_USERNAME/ADMIN_PASSWORD; RUN_MIGRATIONS=true applies DB migrations on boot. Note: upstream still labels this project as in-development / not production-ready.",
   "screenshots": [],
-  "links": ["https://github.com/LeslieLeung/glean#readme"],
+  "links": [
+    "https://github.com/LeslieLeung/glean#readme"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 828,
@@ -20,28 +26,89 @@
     "command": []
   },
   "envVars": [
-    {"name": "DATABASE_URL", "value": "postgresql+asyncpg://glean:glean@glean-postgresql-rw:5432/glean"},
-    {"name": "POSTGRES_DB", "value": "glean"},
-    {"name": "POSTGRES_USER", "value": "glean"},
-    {"name": "POSTGRES_PASSWORD", "value": "glean"},
-    {"name": "REDIS_URL", "value": "redis://rfr-glean-valkey-readwrite:6379/0"},
-    {"name": "SECRET_KEY", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "ADMIN_USERNAME", "value": "admin"},
-    {"name": "ADMIN_PASSWORD", "value": "replace-with-a-strong-password"},
-    {"name": "ADMIN_ROLE", "value": "super_admin"},
-    {"name": "CREATE_ADMIN", "value": "true"},
-    {"name": "RUN_MIGRATIONS", "value": "true"},
-    {"name": "MILVUS_HOST", "value": "glean-milvus"},
-    {"name": "MILVUS_PORT", "value": "19530"},
-    {"name": "CORS_ORIGINS", "value": "[\"{{KUBERO_APP_URL}}\"]"},
-    {"name": "LOG_LEVEL", "value": "INFO"},
-    {"name": "DEBUG", "value": "false"}
+    {
+      "name": "DATABASE_URL",
+      "value": "postgresql+asyncpg://glean:glean@glean-postgresql-rw:5432/glean"
+    },
+    {
+      "name": "POSTGRES_DB",
+      "value": "glean"
+    },
+    {
+      "name": "POSTGRES_USER",
+      "value": "glean"
+    },
+    {
+      "name": "POSTGRES_PASSWORD",
+      "value": "glean"
+    },
+    {
+      "name": "REDIS_URL",
+      "value": "redis://rfr-glean-valkey-readwrite:6379/0"
+    },
+    {
+      "name": "SECRET_KEY",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "ADMIN_USERNAME",
+      "value": "admin"
+    },
+    {
+      "name": "ADMIN_PASSWORD",
+      "value": "replace-with-a-strong-password"
+    },
+    {
+      "name": "ADMIN_ROLE",
+      "value": "super_admin"
+    },
+    {
+      "name": "CREATE_ADMIN",
+      "value": "true"
+    },
+    {
+      "name": "RUN_MIGRATIONS",
+      "value": "true"
+    },
+    {
+      "name": "MILVUS_HOST",
+      "value": "glean-milvus"
+    },
+    {
+      "name": "MILVUS_PORT",
+      "value": "19530"
+    },
+    {
+      "name": "CORS_ORIGINS",
+      "value": "[\"{{KUBERO_APP_URL}}\"]"
+    },
+    {
+      "name": "LOG_LEVEL",
+      "value": "INFO"
+    },
+    {
+      "name": "DEBUG",
+      "value": "false"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "glean", "db": "glean", "user": "glean", "password": "glean"},
-    {"type": "valkey", "name": "glean"}
+    {
+      "type": "postgres",
+      "name": "glean",
+      "db": "glean",
+      "user": "glean",
+      "password": "glean"
+    },
+    {
+      "type": "valkey",
+      "name": "glean"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/app/logs", "name": "glean-logs", "size": "1Gi"}
+    {
+      "mountPath": "/app/logs",
+      "name": "glean-logs",
+      "size": "1Gi"
+    }
   ]
 }

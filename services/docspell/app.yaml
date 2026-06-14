@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted document organizer (DMS) that auto-tags, OCRs and full-text-searches your
       scanned PDFs, emails and uploads.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/701128?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docspell/icon.png
     kubero.dev/template.installation: 'This is the Docspell rest server (web UI + REST API) listening on internal port 7880.
       It REQUIRES a companion job executor deployed alongside it for OCR, text extraction and document conversion: deploy
       docspell/joex:latest pointed at the SAME Postgres add-on (set its DOCSPELL_JOEX_JDBC_* / DOCSPELL_JOEX_BASE__URL env).

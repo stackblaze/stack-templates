@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: NetBox is the leading open-source DCIM and IP address management platform for network
       infrastructure.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/44905828?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/netbox/icon.png
     kubero.dev/template.installation: Rotate SECRET_KEY and DB passwords before production. Deploy a netbox-worker using the
       same image with `rqworker` for background jobs.
     kubero.dev/template.links: '["https://docs.netbox.dev/"]'

@@ -5,7 +5,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Rallly is an open-source scheduling and collaboration
       tool designed to make organizing events and meetings easier.
-    kubero.dev/template.icon: https://rallly.co/favicon-196x196.png
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rallly/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '["https://github.com/lukevella/rallly-selfhosted"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/lukevella/rallly/main/docs/images/poll-image.png"]'

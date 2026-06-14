@@ -4,11 +4,18 @@
   "description": "Self-hosted web service for securely sharing one-time secrets, passwords and files with client-side encryption and automatic expiry.",
   "source": "https://github.com/jhaals/yopass",
   "website": "https://yopass.se",
-  "icon": "https://avatars.githubusercontent.com/u/1681963?s=200&v=4",
-  "categories": ["security", "utilities", "productivity"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/yopass/icon.png",
+  "categories": [
+    "security",
+    "utilities",
+    "productivity"
+  ],
   "installation": "Yopass stores encrypted secrets ephemerally in Memcached (deployed as the bundled add-on); secrets auto-expire by TTL so no persistent volume is required. The server is reached at the memcached add-on host yopass-memcached:11211 via the MEMCACHED env var. Secrets are encrypted in the browser before upload, so the server never sees plaintext. Set the public URL via the BASE_URL env (already wired to {{KUBERO_APP_URL}}) so generated share links are correct. For production behind the Kubero ingress, optionally set TRUSTED_PROXIES to the ingress CIDR. No database credentials to rotate.",
   "screenshots": [],
-  "links": ["https://github.com/jhaals/yopass#yopass", "https://hub.docker.com/r/jhaals/yopass"],
+  "links": [
+    "https://github.com/jhaals/yopass#yopass",
+    "https://hub.docker.com/r/jhaals/yopass"
+  ],
   "license": "Apache License 2.0",
   "spdx_id": "Apache-2.0",
   "stars": 2800,
@@ -17,18 +24,44 @@
     "repository": "jhaals/yopass",
     "tag": "latest",
     "containerPort": "1337",
-    "command": ["yopass-server", "--memcached=yopass-memcached:11211", "--port=1337", "--address=0.0.0.0"]
+    "command": [
+      "yopass-server",
+      "--memcached=yopass-memcached:11211",
+      "--port=1337",
+      "--address=0.0.0.0"
+    ]
   },
   "envVars": [
-    {"name": "MEMCACHED", "value": "yopass-memcached:11211"},
-    {"name": "DATABASE", "value": "memcached"},
-    {"name": "PORT", "value": "1337"},
-    {"name": "ADDRESS", "value": "0.0.0.0"},
-    {"name": "BASE_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "MAX_LENGTH", "value": "10000"}
+    {
+      "name": "MEMCACHED",
+      "value": "yopass-memcached:11211"
+    },
+    {
+      "name": "DATABASE",
+      "value": "memcached"
+    },
+    {
+      "name": "PORT",
+      "value": "1337"
+    },
+    {
+      "name": "ADDRESS",
+      "value": "0.0.0.0"
+    },
+    {
+      "name": "BASE_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "MAX_LENGTH",
+      "value": "10000"
+    }
   ],
   "addons": [
-    {"type": "memcached", "name": "yopass"}
+    {
+      "type": "memcached",
+      "name": "yopass"
+    }
   ],
   "extraVolumes": []
 }

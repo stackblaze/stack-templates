@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source agile project management platform with Scrum and Kanban boards, backlogs,
       sprints, and issue tracking.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/5018367?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/taiga/icon.png
     kubero.dev/template.installation: 'This template deploys taiga-back (the Django API server) ONLY. Taiga is a multi-container
       stack and is NOT functional without its companion services, which must be deployed separately as their own apps/sidecars:
       (1) taiga-async = same image taigaio/taiga-back:latest with command celery worker (the background task/Celery worker,

@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Free, privacy-friendly, simple, open-source and self-hostable product analytics.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1881676?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/fugu/icon.png
     kubero.dev/template.installation: Ruby on Rails product analytics backed by PostgreSQL. ROTATE SECRET_KEY_BASE (a 128-char
       hex/alphanumeric string; generate with `openssl rand -hex 64`) and rotate the postgres credentials. DATABASE_URL points
       at the bundled postgres add-on. Set INIT_USER_EMAIL and INIT_USER_PASSWORD to auto-create the first admin on first boot,

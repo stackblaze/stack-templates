@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Durable execution platform that runs reliable, fault-tolerant workflows and activities
       as code at scale.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/56493103?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/temporal/icon.png
     kubero.dev/template.installation: 'This template deploys the PRIMARY Temporal server using the all-in-one `temporalio/auto-setup`
       image. On first boot auto-setup creates the database schema and starts all four server roles (frontend, history, matching,
       internal worker) in a single pod. PORTS: the server speaks gRPC on 7233 (the address SDK clients/workers connect to)

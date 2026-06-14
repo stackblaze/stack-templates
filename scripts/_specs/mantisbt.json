@@ -4,30 +4,77 @@
   "description": "MantisBT is an open source web-based bug and issue tracker that balances simplicity with powerful project and workflow management.",
   "source": "https://github.com/mantisbt/mantisbt",
   "website": "https://www.mantisbt.org/",
-  "icon": "https://avatars.githubusercontent.com/u/686630?s=200&v=4",
-  "categories": ["development", "productivity", "helpdesk"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mantisbt/icon.png",
+  "categories": [
+    "development",
+    "productivity",
+    "helpdesk"
+  ],
   "installation": "Database is configured through the first-run web installer at /admin/install.php, NOT via env vars. To reach it, this template sets MANTIS_ENABLE_ADMIN=1 so the /admin directory is accessible; SET IT BACK TO 0 after setup for security. At install.php choose database type 'MySQL Improved (mysqli)' and enter: Hostname=mantisbt-mysql, Username=mantisbt, Password=mantisbt, Database name=mantisbt (these are template defaults from the mariadb add-on; rotate them). The default app admin login is administrator / root: change the password immediately after install. Persisted volumes hold config (/var/www/html/config) and custom files/uploads (/var/www/html/custom).",
   "screenshots": [],
-  "links": ["https://www.mantisbt.org/documentation.php", "https://github.com/mantisbt/mantisbt/blob/master/docbook/Admin_Guide/en-US/Installation.xml"],
+  "links": [
+    "https://www.mantisbt.org/documentation.php",
+    "https://github.com/mantisbt/mantisbt/blob/master/docbook/Admin_Guide/en-US/Installation.xml"
+  ],
   "license": "GNU General Public License v2.0",
   "spdx_id": "GPL-2.0",
   "stars": 1100,
   "language": "PHP",
-  "image": {"repository": "xlrl/mantisbt", "tag": "2.28.3", "containerPort": "80", "command": []},
+  "image": {
+    "repository": "xlrl/mantisbt",
+    "tag": "2.28.3",
+    "containerPort": "80",
+    "command": []
+  },
   "envVars": [
-    {"name": "MANTIS_ENABLE_ADMIN", "value": "1"},
-    {"name": "MANTIS_TIMEZONE", "value": "UTC"},
-    {"name": "PHP_MAX_UPLOAD_SIZE", "value": "32M"},
-    {"name": "MANTIS_DB_HOST", "value": "mantisbt-mysql"},
-    {"name": "MANTIS_DB_NAME", "value": "mantisbt"},
-    {"name": "MANTIS_DB_USER", "value": "mantisbt"},
-    {"name": "MANTIS_DB_PASS", "value": "mantisbt"}
+    {
+      "name": "MANTIS_ENABLE_ADMIN",
+      "value": "1"
+    },
+    {
+      "name": "MANTIS_TIMEZONE",
+      "value": "UTC"
+    },
+    {
+      "name": "PHP_MAX_UPLOAD_SIZE",
+      "value": "32M"
+    },
+    {
+      "name": "MANTIS_DB_HOST",
+      "value": "mantisbt-mysql"
+    },
+    {
+      "name": "MANTIS_DB_NAME",
+      "value": "mantisbt"
+    },
+    {
+      "name": "MANTIS_DB_USER",
+      "value": "mantisbt"
+    },
+    {
+      "name": "MANTIS_DB_PASS",
+      "value": "mantisbt"
+    }
   ],
   "addons": [
-    {"type": "mariadb", "name": "mantisbt", "db": "mantisbt", "user": "mantisbt", "password": "mantisbt"}
+    {
+      "type": "mariadb",
+      "name": "mantisbt",
+      "db": "mantisbt",
+      "user": "mantisbt",
+      "password": "mantisbt"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/var/www/html/config", "name": "mantisbt-config", "size": "1Gi"},
-    {"mountPath": "/var/www/html/custom", "name": "mantisbt-custom", "size": "3Gi"}
+    {
+      "mountPath": "/var/www/html/config",
+      "name": "mantisbt-config",
+      "size": "1Gi"
+    },
+    {
+      "mountPath": "/var/www/html/custom",
+      "name": "mantisbt-custom",
+      "size": "3Gi"
+    }
   ]
 }

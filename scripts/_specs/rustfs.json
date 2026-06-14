@@ -4,11 +4,18 @@
   "description": "High-performance, S3-compatible distributed object storage written in Rust, with a built-in web console; a drop-in MinIO/Ceph alternative.",
   "source": "https://github.com/rustfs/rustfs",
   "website": "https://rustfs.com",
-  "icon": "https://avatars.githubusercontent.com/u/151849438?s=200&v=4",
-  "categories": ["storage", "data", "development"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rustfs/icon.png",
+  "categories": [
+    "storage",
+    "data",
+    "development"
+  ],
   "installation": "RustFS is itself the datastore: it persists all objects and metadata on disk under /data using erasure coding, so no database add-on is required. The S3-compatible API and web console are both served on container port 9000 (console reachable at /rustfs/console). Set RUSTFS_VOLUMES to the data path. IMPORTANT: rotate RUSTFS_ACCESS_KEY and RUSTFS_SECRET_KEY before exposing the endpoint - the template defaults (rustfsadmin / replace-with-openssl-rand-hex-32) are root credentials. After first boot, log in to the console with those credentials, then create scoped access keys and buckets for your apps. For multi-node erasure-set durability, run several replicas and point RUSTFS_VOLUMES at multiple mounts; this single-node template gives one volume suitable for dev/small workloads. No external S3, search engine, or SMTP service is needed.",
   "screenshots": [],
-  "links": ["https://docs.rustfs.com", "https://github.com/rustfs/rustfs#readme"],
+  "links": [
+    "https://docs.rustfs.com",
+    "https://github.com/rustfs/rustfs#readme"
+  ],
   "license": "Apache License 2.0",
   "spdx_id": "Apache-2.0",
   "stars": 28757,
@@ -20,15 +27,37 @@
     "command": []
   },
   "envVars": [
-    {"name": "RUSTFS_ADDRESS", "value": "0.0.0.0:9000"},
-    {"name": "RUSTFS_VOLUMES", "value": "/data"},
-    {"name": "RUSTFS_ACCESS_KEY", "value": "rustfsadmin"},
-    {"name": "RUSTFS_SECRET_KEY", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "RUSTFS_CONSOLE_ENABLE", "value": "true"},
-    {"name": "RUSTFS_SERVER_DOMAINS", "value": "{{KUBERO_APP_HOST}}"}
+    {
+      "name": "RUSTFS_ADDRESS",
+      "value": "0.0.0.0:9000"
+    },
+    {
+      "name": "RUSTFS_VOLUMES",
+      "value": "/data"
+    },
+    {
+      "name": "RUSTFS_ACCESS_KEY",
+      "value": "rustfsadmin"
+    },
+    {
+      "name": "RUSTFS_SECRET_KEY",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "RUSTFS_CONSOLE_ENABLE",
+      "value": "true"
+    },
+    {
+      "name": "RUSTFS_SERVER_DOMAINS",
+      "value": "{{KUBERO_APP_HOST}}"
+    }
   ],
   "addons": [],
   "extraVolumes": [
-    {"mountPath": "/data", "name": "rustfs-data", "size": "5Gi"}
+    {
+      "mountPath": "/data",
+      "name": "rustfs-data",
+      "size": "5Gi"
+    }
   ]
 }

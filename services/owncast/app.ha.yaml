@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted live video streaming and chat server, a free and open-source alternative
       to services like Twitch.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/63347156?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/owncast/icon.png
     kubero.dev/template.installation: Owncast stores all state (SQLite database, config, uploaded logos/emojis, and HLS video
       segments) under /app/data, so no external datastore add-on is required; the persistent volume is mandatory. On first
       run open the web UI, then visit Admin (/admin, default login admin / abc123) and immediately change the stream key and

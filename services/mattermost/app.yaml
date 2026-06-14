@@ -5,7 +5,7 @@ metadata:
     annotations:
         kubero.dev/template.architecture: '["arm64", "amd64"]'
         kubero.dev/template.description: "Mattermost is an open-source, self-hosted collaboration platform for messaging, file sharing and ChatOps — an alternative to Slack."
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/9828093?s=200&v=4"
+        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/icon.png
         kubero.dev/template.installation: "Ships the MIT-licensed Team Edition. After the first boot open the Site URL and create the initial admin account at /signup_user_complete. Set MM_SERVICESETTINGS_SITEURL to your public URL before going live."
         kubero.dev/template.links: '["https://docs.mattermost.com/"]'
         kubero.dev/template.screenshots: '["https://mattermost.com/wp-content/uploads/2022/02/hero-mattermost-overview.png"]'

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Decentralized social network platform that federates with the Fediverse (ActivityPub),
       Mastodon, Diaspora and more.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/3286163?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/friendica/icon.png
     kubero.dev/template.installation: 'First boot auto-installs once MYSQL_* and FRIENDICA_URL/FRIENDICA_ADMIN_MAIL are set;
       the admin account is linked to FRIENDICA_ADMIN_MAIL (use the email you will register with). REQUIRED companion service:
       deploy a second container from the SAME image friendica:2026.05-apache but with the startup command set to /cron.sh

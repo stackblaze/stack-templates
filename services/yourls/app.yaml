@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: 'Your Own URL Shortener: a small, self-hosted PHP service to run your own short-link
       service with stats, plugins, and a developer API.'
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4843816?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/yourls/icon.png
     kubero.dev/template.installation: YOURLS only supports MySQL/MariaDB (no PostgreSQL), so this template ships the mariadb
       add-on. The admin account is bootstrapped from YOURLS_USER / YOURLS_PASS on first boot, and YOURLS_SITE is bound to
       the deploy URL via {{KUBERO_APP_URL}} (must be the exact public URL, no trailing slash). The admin UI lives at /admin/.

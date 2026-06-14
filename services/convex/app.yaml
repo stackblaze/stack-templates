@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source reactive backend-as-a-service with a TypeScript database, server functions,
       file storage, and real-time sync.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/96100313?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/convex/icon.png
     kubero.dev/template.installation: 'This template deploys ONLY the Convex backend (ghcr.io/get-convex/convex-backend).
       It exposes two HTTP ports: 3210 is the client API / sync endpoint (containerPort, what you publish as CONVEX_CLOUD_ORIGIN)
       and 3211 serves HTTP actions / the ''site'' origin (CONVEX_SITE_ORIGIN). Because Kubero routes a single ingress to one

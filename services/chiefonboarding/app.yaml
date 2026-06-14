@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source employee onboarding and preboarding platform with to-do items, intro sequences,
       courses and Slack-driven workflows.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/65426741?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chiefonboarding/icon.png
     kubero.dev/template.installation: 'Django app served on port 8000. Companion add-on: PostgreSQL (primary datastore via
       DATABASE_URL). Database migrations and static-file collection run automatically on container boot. Rotate SECRET_KEY
       to a unique random value (openssl rand -hex 32) and rotate the postgres password before exposing publicly. ALLOWED_HOSTS

@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source secrets management and internal PKI platform for developers and teams.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/107880645?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/icon.png
     kubero.dev/template.installation: Generate ENCRYPTION_KEY with `openssl rand -hex 16` and AUTH_SECRET with `openssl rand
       -base64 32` before production use.
     kubero.dev/template.links: '["https://infisical.com/docs/"]'

@@ -4,11 +4,18 @@
   "description": "The world's most popular open-source e-commerce platform, built as a WordPress plugin to turn any WordPress site into a fully featured online store.",
   "source": "https://github.com/woocommerce/woocommerce",
   "website": "https://woocommerce.com/",
-  "icon": "https://avatars.githubusercontent.com/u/4463614?s=200&v=4",
-  "categories": ["e-commerce", "cms", "work"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/woocommerce/icon.png",
+  "categories": [
+    "e-commerce",
+    "cms",
+    "work"
+  ],
   "installation": "WooCommerce is a WordPress plugin, so this template runs the official wordpress image (PHP/Apache) and you install WooCommerce from inside wp-admin. WordPress requires MySQL/MariaDB (it does not support PostgreSQL), so the mariadb add-on is shipped. First run: complete the WordPress install wizard, then in wp-admin go to Plugins > Add New, search 'WooCommerce', install + activate, and run the WooCommerce setup wizard (store address, currency, payment, shipping). Rotate the MariaDB password and all eight WORDPRESS_AUTH_KEY/SALT secrets (openssl rand -base64 64) before production. WP_HOME/WP_SITEURL are pinned to the app URL so checkout and admin URLs resolve. Persistent data (wp-content: plugins incl. WooCommerce, themes, uploads/product images) lives on the mounted volume at /var/www/html. For email (order receipts) configure an SMTP plugin; for payments add a gateway plugin (Stripe/PayPal).",
   "screenshots": [],
-  "links": ["https://woocommerce.com/documentation/", "https://hub.docker.com/_/wordpress"],
+  "links": [
+    "https://woocommerce.com/documentation/",
+    "https://hub.docker.com/_/wordpress"
+  ],
   "license": "GNU General Public License v3.0",
   "spdx_id": "GPL-3.0",
   "stars": 9400,
@@ -20,25 +27,77 @@
     "command": []
   },
   "envVars": [
-    {"name": "WORDPRESS_DB_HOST", "value": "woocommerce-mysql:3306"},
-    {"name": "WORDPRESS_DB_NAME", "value": "woocommerce"},
-    {"name": "WORDPRESS_DB_USER", "value": "woocommerce"},
-    {"name": "WORDPRESS_DB_PASSWORD", "value": "woocommerce"},
-    {"name": "WORDPRESS_TABLE_PREFIX", "value": "wp_"},
-    {"name": "WORDPRESS_CONFIG_EXTRA", "value": "define('WP_HOME', '{{KUBERO_APP_URL}}'); define('WP_SITEURL', '{{KUBERO_APP_URL}}');"},
-    {"name": "WORDPRESS_AUTH_KEY", "value": "replace-with-openssl-rand-base64-64"},
-    {"name": "WORDPRESS_SECURE_AUTH_KEY", "value": "replace-with-openssl-rand-base64-64"},
-    {"name": "WORDPRESS_LOGGED_IN_KEY", "value": "replace-with-openssl-rand-base64-64"},
-    {"name": "WORDPRESS_NONCE_KEY", "value": "replace-with-openssl-rand-base64-64"},
-    {"name": "WORDPRESS_AUTH_SALT", "value": "replace-with-openssl-rand-base64-64"},
-    {"name": "WORDPRESS_SECURE_AUTH_SALT", "value": "replace-with-openssl-rand-base64-64"},
-    {"name": "WORDPRESS_LOGGED_IN_SALT", "value": "replace-with-openssl-rand-base64-64"},
-    {"name": "WORDPRESS_NONCE_SALT", "value": "replace-with-openssl-rand-base64-64"}
+    {
+      "name": "WORDPRESS_DB_HOST",
+      "value": "woocommerce-mysql:3306"
+    },
+    {
+      "name": "WORDPRESS_DB_NAME",
+      "value": "woocommerce"
+    },
+    {
+      "name": "WORDPRESS_DB_USER",
+      "value": "woocommerce"
+    },
+    {
+      "name": "WORDPRESS_DB_PASSWORD",
+      "value": "woocommerce"
+    },
+    {
+      "name": "WORDPRESS_TABLE_PREFIX",
+      "value": "wp_"
+    },
+    {
+      "name": "WORDPRESS_CONFIG_EXTRA",
+      "value": "define('WP_HOME', '{{KUBERO_APP_URL}}'); define('WP_SITEURL', '{{KUBERO_APP_URL}}');"
+    },
+    {
+      "name": "WORDPRESS_AUTH_KEY",
+      "value": "replace-with-openssl-rand-base64-64"
+    },
+    {
+      "name": "WORDPRESS_SECURE_AUTH_KEY",
+      "value": "replace-with-openssl-rand-base64-64"
+    },
+    {
+      "name": "WORDPRESS_LOGGED_IN_KEY",
+      "value": "replace-with-openssl-rand-base64-64"
+    },
+    {
+      "name": "WORDPRESS_NONCE_KEY",
+      "value": "replace-with-openssl-rand-base64-64"
+    },
+    {
+      "name": "WORDPRESS_AUTH_SALT",
+      "value": "replace-with-openssl-rand-base64-64"
+    },
+    {
+      "name": "WORDPRESS_SECURE_AUTH_SALT",
+      "value": "replace-with-openssl-rand-base64-64"
+    },
+    {
+      "name": "WORDPRESS_LOGGED_IN_SALT",
+      "value": "replace-with-openssl-rand-base64-64"
+    },
+    {
+      "name": "WORDPRESS_NONCE_SALT",
+      "value": "replace-with-openssl-rand-base64-64"
+    }
   ],
   "addons": [
-    {"type": "mariadb", "name": "woocommerce", "db": "woocommerce", "user": "woocommerce", "password": "woocommerce"}
+    {
+      "type": "mariadb",
+      "name": "woocommerce",
+      "db": "woocommerce",
+      "user": "woocommerce",
+      "password": "woocommerce"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/var/www/html", "name": "woocommerce-data", "size": "5Gi"}
+    {
+      "mountPath": "/var/www/html",
+      "name": "woocommerce-data",
+      "size": "5Gi"
+    }
   ]
 }

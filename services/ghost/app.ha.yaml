@@ -5,7 +5,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Ghost is a powerful app for new-media creators
       to publish, share, and grow a business around their content.
-    kubero.dev/template.icon: https://ghost.org/images/logos/ghost-logo-orb.png
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghost/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/353959/169805900-66be5b89-0859-4816-8da9-528ed7534704.png"]'

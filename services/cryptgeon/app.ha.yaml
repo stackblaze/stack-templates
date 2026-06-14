@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Secure, open-source service for sharing self-destructing, end-to-end-encrypted notes
       and files, inspired by PrivNote.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/9690735?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cryptgeon/icon.png
     kubero.dev/template.installation: Deploy with the bundled Valkey (Redis-compatible) add-on, which is where all encrypted
       notes/files are stored temporarily until they expire or are viewed; nothing is persisted on disk, so no volume is required.
       The app connects to Valkey via the REDIS env var (passwordless in-cluster). Encryption happens client-side in the browser

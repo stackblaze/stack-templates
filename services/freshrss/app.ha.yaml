@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted RSS feed aggregator — lightweight and extensible.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/9414285?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freshrss/icon.png
     kubero.dev/template.installation: Auto-install runs once on first boot via FRESHRSS_INSTALL. Change the default admin
       password after login.
     kubero.dev/template.links: '["https://freshrss.github.io/FreshRSS/en/"]'

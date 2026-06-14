@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted FLOSS fitness and workout manager that lets you track workouts, nutrition,
       body weight, and exercises.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/15212054?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wger/icon.png
     kubero.dev/template.installation: 'Single-container Django app served via gunicorn on port 8000. Rotate SECRET_KEY and
       SIGNING_KEY (each a unique 50-char random string; they MUST differ) and the postgres password before going to production.
       Companion services deployed as add-ons: PostgreSQL (primary DB) and a Valkey (Redis-protocol) instance used for both

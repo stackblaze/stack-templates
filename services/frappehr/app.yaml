@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source HR and payroll suite (employees, leave, attendance, expenses, payroll) built
       on the Frappe framework and ERPNext.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/3658922?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/frappehr/icon.png
     kubero.dev/template.installation: 'Frappe HR (HRMS) is a MULTI-CONTAINER Frappe stack and has NO standalone official image:
       it is installed as an app on top of the frappe/erpnext base image (HRMS depends on ERPNext). This template deploys the
       PRIMARY backend (gunicorn) image frappe/erpnext, which serves the Frappe HTTP API/app on port 8000. To run a complete,

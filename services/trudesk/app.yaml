@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source helpdesk and ticketing system with email piping, knowledge base, live notifications,
       and per-team agent workflows.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/15837764?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/trudesk/icon.png
     kubero.dev/template.installation: Trudesk is a Node.js helpdesk that stores all data in MongoDB; the documentdb add-on
       below provides the MongoDB-compatible backend. The TD_MONGODB_* vars point at the in-cluster documentdb service (host
       documentdb-service-trudesk-documentdb, port 10260) using SCRAM-SHA-256 over TLS, user 'mongoadmin'. Because the endpoint

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source live chat and customer messaging platform (Intercom alternative) for support,
       onboarding, and team inboxes.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/65969060?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/papercups/icon.png
     kubero.dev/template.installation: Deploy with the bundled PostgreSQL add-on. Rotate SECRET_KEY_BASE (generate with `openssl
       rand -base64 48`) and the Postgres password from their template defaults before going to production. DATABASE_URL uses
       the ecto:// scheme and points at the in-cluster postgres add-on; REQUIRE_DB_SSL is false because the add-on speaks plaintext

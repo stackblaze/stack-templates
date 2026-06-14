@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Massively scalable open-source MQTT broker for IoT, connecting millions of devices with
       a built-in dashboard, rules engine and data bridges.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/12471087?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/emqx/icon.png
     kubero.dev/template.installation: 'EMQX is self-contained: it stores cluster state, sessions, retained messages and config
       in its built-in Mnesia/RLOG database persisted to the emqx-data volume at /opt/emqx/data, so no external add-on is provisioned.
       The HTTP management dashboard and REST API listen on port 18083; the MQTT listeners (1883 TCP, 8883 TLS, 8083 WS, 8084

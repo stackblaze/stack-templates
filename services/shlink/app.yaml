@@ -4,7 +4,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: The definitive self-hosted URL shortener with REST API and visit tracking.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/29205352?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/shlink/icon.png
     kubero.dev/template.installation: Uses built-in SQLite for quick setup. Set DEFAULT_DOMAIN to your short domain. Root path returns 404 by design — use /rest/health for health checks.
     kubero.dev/template.links: '["https://shlink.io/documentation/"]'
     kubero.dev/template.screenshots: '["https://shlink.io/images/shlink-dashboard.png"]'

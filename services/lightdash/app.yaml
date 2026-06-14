@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source BI platform that turns your dbt project into a self-serve analytics tool
       with explores, charts, and dashboards.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/63661120?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lightdash/icon.png
     kubero.dev/template.installation: 'This template runs the PRIMARY Lightdash web/api server (lightdash/lightdash, port
       8080), which on boot also runs its own DB migrations against the bundled Postgres add-on. To be fully functional you
       MUST ALSO deploy a companion HEADLESS BROWSER deployment from image `ghcr.io/browserless/chromium:latest` (formerly

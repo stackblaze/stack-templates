@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source, privacy-focused product analytics platform for tracking web, mobile and
       desktop apps with funnels, retention, crashes and push.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/2154895?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/countly/icon.png
     kubero.dev/template.installation: 'Countly Community Edition is a multi-process stack. This template runs the PRIMARY
       all-in-one image countly/countly-server, which bundles Nginx plus BOTH Node.js processes (the API ingestion process
       and the frontend dashboard) behind a single HTTP port 80. DATASTORE: Countly stores everything in MongoDB. There is

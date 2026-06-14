@@ -4,11 +4,18 @@
   "description": "Open-source product analytics, session replay, feature flags, A/B testing and surveys platform built on PostgreSQL, ClickHouse and Kafka.",
   "source": "https://github.com/PostHog/posthog",
   "website": "https://posthog.com",
-  "icon": "https://avatars.githubusercontent.com/u/63889450?s=200&v=4",
-  "categories": ["data", "monitoring", "productivity"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/posthog/icon.png",
+  "categories": [
+    "data",
+    "monitoring",
+    "productivity"
+  ],
   "installation": "PostHog is a LARGE multi-service stack; this template runs the PRIMARY all-in-one image posthog/posthog (the `web` role: Django backend + frontend) on HTTP port 8000. It is NOT fully functional alone - PostHog needs several companion services and TWO datastores that are NOT in the allowed add-on set (Kafka and S3-compatible object storage), so plan to deploy those alongside it.\n\nADD-ONS provisioned here: postgres (relational app DB), clickhouse (the OLAP event store - the heart of PostHog analytics, reached at clickhouse-posthog-clickhouse:8123 over plain HTTP, so CLICKHOUSE_SECURE=false and CLICKHOUSE_VERIFY=false), and valkey (Redis-compatible cache/broker at rfr-posthog-valkey-readwrite:6379, no password).\n\nNOT provisionable as add-ons - deploy these as separate Kubero apps and update the *_HOSTS/endpoint env vars to point at them:\n  - KAFKA / event bus: PostHog requires Kafka. Use Redpanda (image `redpandadata/redpanda:latest`, Kafka API on 9092) or `bitnami/kafka`. Set KAFKA_HOSTS on EVERY PostHog container to host:9092.\n  - OBJECT STORAGE (session recordings, exports, uploads): PostHog requires S3-compatible storage. Deploy the platform's RustFS/S3 add-on or `minio/minio`, then set OBJECT_STORAGE_ENABLED=true, OBJECT_STORAGE_ENDPOINT, OBJECT_STORAGE_ACCESS_KEY_ID, OBJECT_STORAGE_SECRET_ACCESS_KEY, OBJECT_STORAGE_BUCKET.\n  - TEMPORAL (batch exports / scheduled jobs): image `temporalio/auto-setup` on gRPC 7233; only needed if you use batch exports.\n\nCOMPANION POSTHOG CONTAINERS (same posthog/posthog image, different command - deploy each as its own Kubero app sharing the SAME env vars / DATABASE_URL / CLICKHOUSE / KAFKA / REDIS):\n  - WORKER (Celery): command `./bin/docker-worker-celery --with-scheduler` - runs async tasks AND the scheduler; REQUIRED for the app to work.\n  - PLUGIN-SERVER / ingestion: command `./bin/plugin-server` - consumes Kafka events into ClickHouse; REQUIRED for any analytics data to appear.\n  - MIGRATE (one-shot, run FIRST): command `python manage.py migrate && python manage.py migrate_clickhouse` to create Postgres + ClickHouse schemas before the web/worker start. The migrate-clickhouse step needs Kafka reachable.\n  - (Optional high-scale, separate Rust images) CAPTURE -> `ghcr.io/posthog/posthog/capture:latest` (event intake on Kafka), FEATURE-FLAGS -> `ghcr.io/posthog/posthog/feature-flags:latest`.\n\nROTATE before production: SECRET_KEY and ENCRYPTION_SALT_KEYS (both set here to placeholder `replace-with-openssl-rand-hex-32` values - generate real ones with `openssl rand -hex 32`; ENCRYPTION_SALT_KEYS must be a 32-byte base64/urlsafe key and CANNOT change after first boot or stored secrets break), plus the postgres and clickhouse add-on passwords (default `posthog`).\n\nFIRST-RUN: run the MIGRATE job, then start web + worker + plugin-server; open {{KUBERO_APP_URL}} and complete the on-screen setup wizard to create the first organization and admin user. SITE_URL is preset to your public URL and IS_BEHIND_PROXY=true / DISABLE_SECURE_SSL_REDIRECT=true are set because TLS is terminated at the Kubero ingress. NOTE: PostHog deprecated its official Helm chart - self-hosting is officially Docker-Compose-based and unsupported for high scale; PostHog Cloud is the recommended path for large workloads.",
   "screenshots": [],
-  "links": ["https://posthog.com/docs/self-host", "https://posthog.com/docs/self-host/configure/environment-variables"],
+  "links": [
+    "https://posthog.com/docs/self-host",
+    "https://posthog.com/docs/self-host/configure/environment-variables"
+  ],
   "license": "Other",
   "spdx_id": "NOASSERTION",
   "stars": 24000,
@@ -20,34 +27,116 @@
     "command": []
   },
   "envVars": [
-    {"name": "DATABASE_URL", "value": "postgresql://posthog:posthog@posthog-postgresql-rw:5432/posthog"},
-    {"name": "POSTHOG_DB_NAME", "value": "posthog"},
-    {"name": "POSTHOG_DB_USER", "value": "posthog"},
-    {"name": "POSTHOG_DB_PASSWORD", "value": "posthog"},
-    {"name": "POSTHOG_POSTGRES_HOST", "value": "posthog-postgresql-rw"},
-    {"name": "POSTHOG_POSTGRES_PORT", "value": "5432"},
-    {"name": "CLICKHOUSE_HOST", "value": "clickhouse-posthog-clickhouse"},
-    {"name": "CLICKHOUSE_DATABASE", "value": "posthog"},
-    {"name": "CLICKHOUSE_USER", "value": "admin"},
-    {"name": "CLICKHOUSE_PASSWORD", "value": "posthog"},
-    {"name": "CLICKHOUSE_SECURE", "value": "false"},
-    {"name": "CLICKHOUSE_VERIFY", "value": "false"},
-    {"name": "REDIS_URL", "value": "redis://rfr-posthog-valkey-readwrite:6379"},
-    {"name": "KAFKA_HOSTS", "value": "posthog-kafka:9092"},
-    {"name": "KAFKA_URL", "value": "kafka://posthog-kafka:9092"},
-    {"name": "SITE_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "SECRET_KEY", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "ENCRYPTION_SALT_KEYS", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "DISABLE_SECURE_SSL_REDIRECT", "value": "true"},
-    {"name": "IS_BEHIND_PROXY", "value": "true"},
-    {"name": "TRUST_ALL_PROXIES", "value": "true"},
-    {"name": "DEPLOYMENT", "value": "kubero"},
-    {"name": "OBJECT_STORAGE_ENABLED", "value": "false"}
+    {
+      "name": "DATABASE_URL",
+      "value": "postgresql://posthog:posthog@posthog-postgresql-rw:5432/posthog"
+    },
+    {
+      "name": "POSTHOG_DB_NAME",
+      "value": "posthog"
+    },
+    {
+      "name": "POSTHOG_DB_USER",
+      "value": "posthog"
+    },
+    {
+      "name": "POSTHOG_DB_PASSWORD",
+      "value": "posthog"
+    },
+    {
+      "name": "POSTHOG_POSTGRES_HOST",
+      "value": "posthog-postgresql-rw"
+    },
+    {
+      "name": "POSTHOG_POSTGRES_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "CLICKHOUSE_HOST",
+      "value": "clickhouse-posthog-clickhouse"
+    },
+    {
+      "name": "CLICKHOUSE_DATABASE",
+      "value": "posthog"
+    },
+    {
+      "name": "CLICKHOUSE_USER",
+      "value": "admin"
+    },
+    {
+      "name": "CLICKHOUSE_PASSWORD",
+      "value": "posthog"
+    },
+    {
+      "name": "CLICKHOUSE_SECURE",
+      "value": "false"
+    },
+    {
+      "name": "CLICKHOUSE_VERIFY",
+      "value": "false"
+    },
+    {
+      "name": "REDIS_URL",
+      "value": "redis://rfr-posthog-valkey-readwrite:6379"
+    },
+    {
+      "name": "KAFKA_HOSTS",
+      "value": "posthog-kafka:9092"
+    },
+    {
+      "name": "KAFKA_URL",
+      "value": "kafka://posthog-kafka:9092"
+    },
+    {
+      "name": "SITE_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "SECRET_KEY",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "ENCRYPTION_SALT_KEYS",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "DISABLE_SECURE_SSL_REDIRECT",
+      "value": "true"
+    },
+    {
+      "name": "IS_BEHIND_PROXY",
+      "value": "true"
+    },
+    {
+      "name": "TRUST_ALL_PROXIES",
+      "value": "true"
+    },
+    {
+      "name": "DEPLOYMENT",
+      "value": "kubero"
+    },
+    {
+      "name": "OBJECT_STORAGE_ENABLED",
+      "value": "false"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "posthog", "db": "posthog", "user": "posthog", "password": "posthog"},
-    {"type": "clickhouse", "name": "posthog", "password": "posthog"},
-    {"type": "valkey", "name": "posthog"}
+    {
+      "type": "postgres",
+      "name": "posthog",
+      "db": "posthog",
+      "user": "posthog",
+      "password": "posthog"
+    },
+    {
+      "type": "clickhouse",
+      "name": "posthog",
+      "password": "posthog"
+    },
+    {
+      "type": "valkey",
+      "name": "posthog"
+    }
   ],
   "extraVolumes": []
 }

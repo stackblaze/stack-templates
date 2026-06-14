@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source data orchestration and integration platform (ETL) for designing and running
       visual data pipelines and workflows in the browser.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/47359?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hop/icon.png
     kubero.dev/template.installation: Deploys the official apache/hop-web image, with the visual designer reachable at the
       /ui path on the app URL. Apache Hop stores its projects, environments, and metadata as files, so no database add-on
       is provisioned; the persistent /config volume holds your project and config directory and must be kept. Mount or import

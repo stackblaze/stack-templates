@@ -4,11 +4,20 @@
   "description": "Open-source, self-hosted password manager with end-to-end encryption and team sharing, plus browser extensions and a REST API.",
   "source": "https://gitlab.com/passit/passit",
   "website": "https://passit.io",
-  "icon": "https://avatars.githubusercontent.com/u/40027207?s=200&v=4",
-  "categories": ["security", "identity", "utilities"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/passit/icon.png",
+  "categories": [
+    "security",
+    "identity",
+    "utilities"
+  ],
   "installation": "Image: passit/passit:stable (official, on Docker Hub; project is hosted on GitLab). This is a Django app. ROTATE SECRET_KEY (set it to `openssl rand -hex 32`) and the Postgres password (default 'passit') before exposing publicly. ALLOWED_HOSTS is set to '*' for first boot; tighten it to your real host. The container runs Django migrations on start, then serves via gunicorn on port 5000. Create the first admin/user via the web sign-up flow (registration is open by default; disable open registration with SIGN_UP_ENABLED=false after creating your accounts). DATABASE_URL points at the bundled postgres add-on (passit-postgresql-rw) and REDIS_URL at the valkey add-on (used for Celery background jobs / caching). For password-reset and invite emails, configure SMTP via EMAIL_* / SERVER_EMAIL env vars or the Django settings after install. No object storage required.",
-  "screenshots": ["https://passit.io/static/img/screenshot.png"],
-  "links": ["https://passit.io/getting-started/", "https://gitlab.com/passit/passit"],
+  "screenshots": [
+    "https://passit.io/static/img/screenshot.png"
+  ],
+  "links": [
+    "https://passit.io/getting-started/",
+    "https://gitlab.com/passit/passit"
+  ],
   "license": "MIT License",
   "spdx_id": "MIT",
   "stars": 600,
@@ -20,16 +29,43 @@
     "command": []
   },
   "envVars": [
-    {"name": "SECRET_KEY", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "DATABASE_URL", "value": "postgres://passit:passit@passit-postgresql-rw:5432/passit"},
-    {"name": "REDIS_URL", "value": "redis://rfr-passit-valkey-readwrite:6379"},
-    {"name": "ALLOWED_HOSTS", "value": "*"},
-    {"name": "SITE_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "DEBUG", "value": "false"}
+    {
+      "name": "SECRET_KEY",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "DATABASE_URL",
+      "value": "postgres://passit:passit@passit-postgresql-rw:5432/passit"
+    },
+    {
+      "name": "REDIS_URL",
+      "value": "redis://rfr-passit-valkey-readwrite:6379"
+    },
+    {
+      "name": "ALLOWED_HOSTS",
+      "value": "*"
+    },
+    {
+      "name": "SITE_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "DEBUG",
+      "value": "false"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "passit", "db": "passit", "user": "passit", "password": "passit"},
-    {"type": "valkey", "name": "passit"}
+    {
+      "type": "postgres",
+      "name": "passit",
+      "db": "passit",
+      "user": "passit",
+      "password": "passit"
+    },
+    {
+      "type": "valkey",
+      "name": "passit"
+    }
   ],
   "extraVolumes": []
 }

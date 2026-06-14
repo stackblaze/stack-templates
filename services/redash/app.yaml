@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source data visualization and dashboarding tool to query, explore, and share insights
       from 30+ SQL/NoSQL/API data sources.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/11148588?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/redash/icon.png
     kubero.dev/template.installation: 'Redash is a multi-process stack: every service runs the SAME redash/redash image with
       a different command. This template runs the primary web server (command `server`, port 5000). You MUST ALSO deploy these
       companion deployments from the identical redash/redash:10.1.0 image, same env vars, to make it functional: a Celery

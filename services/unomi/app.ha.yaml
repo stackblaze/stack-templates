@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source Java/OSGi Customer Data Platform that manages profiles, segments and events
       with a privacy-first context server and standards-based API.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/47359?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/unomi/icon.png
     kubero.dev/template.installation: Apache Unomi REQUIRES an external Elasticsearch (1.x/2.x stream) or OpenSearch cluster
       for all profile/event/segment storage; it is NOT one of the supported operator add-ons, so deploy Elasticsearch/OpenSearch
       separately and point UNOMI_ELASTICSEARCH_ADDRESSES (or UNOMI_OPENSEARCH_ADDRESSES) at it before Unomi will start. Unomi's

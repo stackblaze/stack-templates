@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Feature-rich, ActivityPub-federated microblogging server - a Misskey fork for the Fediverse
       with post editing and the Mastodon API.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/119182051?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sharkey/icon.png
     kubero.dev/template.installation: 'This template runs the PRIMARY Sharkey Node.js web/server container only (official
       image joinsharkey/sharkey, listens on HTTP port 3000). CONFIG: Sharkey (like its Misskey parent) is configured PRIMARILY
       via .config/default.yml, not env vars alone, so BEFORE first boot you MUST drop a default.yml into the mounted /sharkey/.config

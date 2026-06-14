@@ -4,11 +4,18 @@
   "description": "Fast distributed storage system for blobs, objects, files and a data lake, with an S3-compatible API and a filer web UI.",
   "source": "https://github.com/seaweedfs/seaweedfs",
   "website": "https://seaweedfs.com",
-  "icon": "https://avatars.githubusercontent.com/u/11985425?s=200&v=4",
-  "categories": ["storage", "data", "development"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seaweedfs/icon.png",
+  "categories": [
+    "storage",
+    "data",
+    "development"
+  ],
   "installation": "Runs as an all-in-one node via the `server` command (master + volume + filer), with the S3 gateway enabled. The filer web UI is on container port 8888; the S3-compatible API is on port 8333 and the master UI on 9333 (expose internally as needed). All metadata and data persist under /data (default leveldb filer store) so no external database add-on is required. For production scale, split master/volume/filer into separate deployments and point the filer at an external metadata store. There is no built-in auth on the filer UI by default; place it behind the ingress/auth layer and configure S3 access keys before exposing the S3 endpoint.",
   "screenshots": [],
-  "links": ["https://github.com/seaweedfs/seaweedfs/wiki", "https://github.com/seaweedfs/seaweedfs/wiki/Amazon-S3-API"],
+  "links": [
+    "https://github.com/seaweedfs/seaweedfs/wiki",
+    "https://github.com/seaweedfs/seaweedfs/wiki/Amazon-S3-API"
+  ],
   "license": "Apache License 2.0",
   "spdx_id": "Apache-2.0",
   "stars": 32898,
@@ -17,13 +24,26 @@
     "repository": "chrislusf/seaweedfs",
     "tag": "latest",
     "containerPort": "8888",
-    "command": ["server", "-dir=/data", "-s3", "-filer", "-master.volumeSizeLimitMB=1024"]
+    "command": [
+      "server",
+      "-dir=/data",
+      "-s3",
+      "-filer",
+      "-master.volumeSizeLimitMB=1024"
+    ]
   },
   "envVars": [
-    {"name": "WEED_CLUSTER_DEFAULT", "value": "sw"}
+    {
+      "name": "WEED_CLUSTER_DEFAULT",
+      "value": "sw"
+    }
   ],
   "addons": [],
   "extraVolumes": [
-    {"mountPath": "/data", "name": "seaweedfs-data", "size": "5Gi"}
+    {
+      "mountPath": "/data",
+      "name": "seaweedfs-data",
+      "size": "5Gi"
+    }
   ]
 }

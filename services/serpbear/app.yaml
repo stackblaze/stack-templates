@@ -5,7 +5,7 @@ metadata:
     annotations:
         kubero.dev/template.architecture: '["linux/amd64", "linux/arm64/v8"]'
         kubero.dev/template.description: "SerpBear is a Search Engine Position Tracking App. It allows you to track your website's keyword positions in Google and get notified of their positions."
-        kubero.dev/template.icon: "https://raw.githubusercontent.com/towfiqi/serpbear/refs/heads/main/public/icon.png"
+        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/serpbear/icon.png
         kubero.dev/template.installation: ""
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://serpbear.b-cdn.net/serpbear_readme_v2.gif"]'

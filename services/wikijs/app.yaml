@@ -5,7 +5,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Wiki.js is a modern, lightweight and powerful
       wiki app built on Node.js, Git and Markdown.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/requarks/wiki/main/client/static/favicons/android-chrome-256x256.png
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wikijs/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'

@@ -4,48 +4,152 @@
   "description": "Free, federated (ActivityPub) music server and sharing platform - a self-hosted alternative to streaming services for the Fediverse.",
   "source": "https://dev.funkwhale.audio/funkwhale/funkwhale",
   "website": "https://funkwhale.audio",
-  "icon": "https://avatars.githubusercontent.com/u/35307752?s=200&v=4",
-  "categories": ["media", "social", "communication"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/funkwhale/icon.png",
+  "categories": [
+    "media",
+    "social",
+    "communication"
+  ],
   "installation": "This template runs the PRIMARY Funkwhale API server container ONLY (funkwhale/api - a Django/gunicorn app listening on HTTP port 5000 via FUNKWHALE_API_IP/FUNKWHALE_API_PORT). Funkwhale is a MULTI-CONTAINER stack and is NOT complete with this pod alone. REQUIRED before first boot: 1) Rotate DJANGO_SECRET_KEY - generate with 'openssl rand -base64 45' (or 'openssl rand -hex 32') and set it; the placeholder MUST be replaced. 2) After the Postgres add-on is up, exec into the api pod and run 'python manage.py migrate' (then 'python manage.py collectstatic --noinput'). 3) Create the first admin with 'python manage.py createsuperuser' (or 'python manage.py fw users create --superuser'). MANDATORY COMPANION SERVICES to deploy as SEPARATE apps (same FUNKWHALE_VERSION, sharing the SAME Postgres + Valkey + media volume): (a) funkwhale/api with command ['celery','-A','funkwhale_api.taskapp','worker','-l','INFO'] - the CELERY WORKER that handles federation delivery, audio import/transcoding, and async tasks (MANDATORY); (b) funkwhale/api with command ['celery','-A','funkwhale_api.taskapp','beat','-l','INFO'] - the CELERY BEAT SCHEDULER for periodic federation/cleanup jobs; (c) funkwhale/front - the NGINX FRONTEND/REVERSE-PROXY image (port 80) that serves the Vue.js SPA, static/media files, and proxies /api to this api pod. Point the funkwhale/front container's FUNKWHALE_API_HOST/FUNKWHALE_API_PORT at this api Service, mount the SAME /srv/funkwhale/data/media (RWX) volume, and route public ingress to funkwhale/front (NOT directly to the api pod). The worker/beat/front pods must share this api pod's media volume - use RWX storage so imported/federated audio is reachable by all. OPTIONAL: a Typesense container (image typesense/typesense) enables full-text search - set TYPESENSE_API_KEY + TYPESENSE_HOST and run 'python manage.py search build'; omit for a basic start. OBJECT STORAGE: for production at scale set AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / AWS_STORAGE_BUCKET_NAME / AWS_S3_ENDPOINT_URL at an external S3 bucket (e.g. the RustFS add-on) instead of the local media volume. Rotate the Postgres password; Valkey is password-less in-cluster. FUNKWHALE_HOSTNAME is baked into ActivityPub actor URLs and cannot be changed cleanly after federating, so set it to your real host before going live.",
-  "screenshots": ["https://funkwhale.audio/img/screenshots/queue.png"],
-  "links": ["https://docs.funkwhale.audio/administrator/installation/docker.html", "https://docs.funkwhale.audio/administrator/configuration/env.html"],
+  "screenshots": [
+    "https://funkwhale.audio/img/screenshots/queue.png"
+  ],
+  "links": [
+    "https://docs.funkwhale.audio/administrator/installation/docker.html",
+    "https://docs.funkwhale.audio/administrator/configuration/env.html"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 1100,
   "language": "Python",
-  "image": {"repository": "funkwhale/api", "tag": "1.4", "containerPort": "5000", "command": []},
+  "image": {
+    "repository": "funkwhale/api",
+    "tag": "1.4",
+    "containerPort": "5000",
+    "command": []
+  },
   "envVars": [
-    {"name": "FUNKWHALE_HOSTNAME", "value": "{{KUBERO_APP_HOST}}"},
-    {"name": "FUNKWHALE_PROTOCOL", "value": "https"},
-    {"name": "FUNKWHALE_API_IP", "value": "0.0.0.0"},
-    {"name": "FUNKWHALE_API_PORT", "value": "5000"},
-    {"name": "DJANGO_SETTINGS_MODULE", "value": "config.settings.production"},
-    {"name": "DJANGO_SECRET_KEY", "value": "replace-with-openssl-rand-base64-45"},
-    {"name": "DJANGO_ALLOWED_HOSTS", "value": "{{KUBERO_APP_HOST}}"},
-    {"name": "DATABASE_URL", "value": "postgresql://funkwhale:funkwhale@funkwhale-postgresql-rw:5432/funkwhale"},
-    {"name": "DB_HOST", "value": "funkwhale-postgresql-rw"},
-    {"name": "DB_PORT", "value": "5432"},
-    {"name": "DB_NAME", "value": "funkwhale"},
-    {"name": "DB_USER", "value": "funkwhale"},
-    {"name": "DB_PASSWORD", "value": "funkwhale"},
-    {"name": "CACHE_URL", "value": "redis://rfr-funkwhale-valkey-readwrite:6379/0"},
-    {"name": "CELERY_BROKER_URL", "value": "redis://rfr-funkwhale-valkey-readwrite:6379/0"},
-    {"name": "MEDIA_ROOT", "value": "/srv/funkwhale/data/media"},
-    {"name": "STATIC_ROOT", "value": "/srv/funkwhale/data/static"},
-    {"name": "MUSIC_DIRECTORY_PATH", "value": "/srv/funkwhale/data/music"},
-    {"name": "MUSIC_DIRECTORY_SERVE_PATH", "value": "/srv/funkwhale/data/music"},
-    {"name": "FUNKWHALE_FRONTEND_PATH", "value": "/srv/funkwhale/front/dist"},
-    {"name": "NESTED_PROXY", "value": "1"},
-    {"name": "EMAIL_CONFIG", "value": "consolemail://"},
-    {"name": "DEFAULT_FROM_EMAIL", "value": "noreply@example.com"}
+    {
+      "name": "FUNKWHALE_HOSTNAME",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "FUNKWHALE_PROTOCOL",
+      "value": "https"
+    },
+    {
+      "name": "FUNKWHALE_API_IP",
+      "value": "0.0.0.0"
+    },
+    {
+      "name": "FUNKWHALE_API_PORT",
+      "value": "5000"
+    },
+    {
+      "name": "DJANGO_SETTINGS_MODULE",
+      "value": "config.settings.production"
+    },
+    {
+      "name": "DJANGO_SECRET_KEY",
+      "value": "replace-with-openssl-rand-base64-45"
+    },
+    {
+      "name": "DJANGO_ALLOWED_HOSTS",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "DATABASE_URL",
+      "value": "postgresql://funkwhale:funkwhale@funkwhale-postgresql-rw:5432/funkwhale"
+    },
+    {
+      "name": "DB_HOST",
+      "value": "funkwhale-postgresql-rw"
+    },
+    {
+      "name": "DB_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "DB_NAME",
+      "value": "funkwhale"
+    },
+    {
+      "name": "DB_USER",
+      "value": "funkwhale"
+    },
+    {
+      "name": "DB_PASSWORD",
+      "value": "funkwhale"
+    },
+    {
+      "name": "CACHE_URL",
+      "value": "redis://rfr-funkwhale-valkey-readwrite:6379/0"
+    },
+    {
+      "name": "CELERY_BROKER_URL",
+      "value": "redis://rfr-funkwhale-valkey-readwrite:6379/0"
+    },
+    {
+      "name": "MEDIA_ROOT",
+      "value": "/srv/funkwhale/data/media"
+    },
+    {
+      "name": "STATIC_ROOT",
+      "value": "/srv/funkwhale/data/static"
+    },
+    {
+      "name": "MUSIC_DIRECTORY_PATH",
+      "value": "/srv/funkwhale/data/music"
+    },
+    {
+      "name": "MUSIC_DIRECTORY_SERVE_PATH",
+      "value": "/srv/funkwhale/data/music"
+    },
+    {
+      "name": "FUNKWHALE_FRONTEND_PATH",
+      "value": "/srv/funkwhale/front/dist"
+    },
+    {
+      "name": "NESTED_PROXY",
+      "value": "1"
+    },
+    {
+      "name": "EMAIL_CONFIG",
+      "value": "consolemail://"
+    },
+    {
+      "name": "DEFAULT_FROM_EMAIL",
+      "value": "noreply@example.com"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "funkwhale", "db": "funkwhale", "user": "funkwhale", "password": "funkwhale"},
-    {"type": "valkey", "name": "funkwhale"}
+    {
+      "type": "postgres",
+      "name": "funkwhale",
+      "db": "funkwhale",
+      "user": "funkwhale",
+      "password": "funkwhale"
+    },
+    {
+      "type": "valkey",
+      "name": "funkwhale"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/srv/funkwhale/data/media", "name": "funkwhale-media", "size": "5Gi"},
-    {"mountPath": "/srv/funkwhale/data/music", "name": "funkwhale-music", "size": "5Gi"},
-    {"mountPath": "/srv/funkwhale/data/static", "name": "funkwhale-static", "size": "1Gi"}
+    {
+      "mountPath": "/srv/funkwhale/data/media",
+      "name": "funkwhale-media",
+      "size": "5Gi"
+    },
+    {
+      "mountPath": "/srv/funkwhale/data/music",
+      "name": "funkwhale-music",
+      "size": "5Gi"
+    },
+    {
+      "mountPath": "/srv/funkwhale/data/static",
+      "name": "funkwhale-static",
+      "size": "1Gi"
+    }
   ]
 }

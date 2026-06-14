@@ -5,7 +5,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: A file manager / web client for SFTP, S3, FTP,
       WebDAV, Git, Minio, LDAP, CalDAV, CardDAV, Mysql, Backblaze, ...
-    kubero.dev/template.icon: https://raw.githubusercontent.com/mickael-kerjean/filestash/refs/heads/master/public/assets/logo/favicon.svg
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/filestash/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/mickael-kerjean/filestash_images/master/.assets/photo.jpg","https://raw.githubusercontent.com/mickael-kerjean/filestash_images/master/.assets/navigation.gif"]'

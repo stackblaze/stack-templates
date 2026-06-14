@@ -5,7 +5,7 @@ metadata:
     annotations:
         kubero.dev/template.architecture: "[]"
         kubero.dev/template.description: "Logto is an open-source Identity and Access Management (IAM) platform designed to streamline Customer Identity and Access Management (CIAM) and Workforce Identity Management. "
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/84981374"
+        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/logto/icon.png
         kubero.dev/template.installation: "run kubectl `apply -f https://raw.githubusercontent.com/kubero-dev/kubero/main/services/logto/logto-admin-ingress.yaml` to enable the admin interface.
             A list of all available environment variables can be found here : https://docs.logto.io/docs/references/core/configuration/"
         kubero.dev/template.links: '["https://docs.logto.io/"]'

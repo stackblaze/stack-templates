@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source design and prototyping platform for product teams; the design tool for design
       and code collaboration.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/41834709?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot/icon.png
     kubero.dev/template.installation: 'Penpot is a MULTI-CONTAINER stack. This template deploys the PRIMARY web entrypoint,
       the nginx FRONTEND image `penpotapp/frontend` (HTTP 8080), which serves the SPA and reverse-proxies API/asset traffic
       to the backend and exporter. By itself the frontend will not function until you also deploy these COMPANION services

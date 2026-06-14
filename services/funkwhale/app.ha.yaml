@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Free, federated (ActivityPub) music server and sharing platform - a self-hosted alternative
       to streaming services for the Fediverse.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/35307752?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/funkwhale/icon.png
     kubero.dev/template.installation: 'This template runs the PRIMARY Funkwhale API server container ONLY (funkwhale/api -
       a Django/gunicorn app listening on HTTP port 5000 via FUNKWHALE_API_IP/FUNKWHALE_API_PORT). Funkwhale is a MULTI-CONTAINER
       stack and is NOT complete with this pod alone. REQUIRED before first boot: 1) Rotate DJANGO_SECRET_KEY - generate with

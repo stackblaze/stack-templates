@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Free, federated (ActivityPub) video hosting and live-streaming platform - a self-hosted,
       decentralized alternative to YouTube.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/19262219?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/peertube/icon.png
     kubero.dev/template.installation: 'This template runs the PRIMARY PeerTube server container ONLY (chocobozzz/peertube,
       a Node.js app listening on HTTP port 9000). REQUIRED before first boot: 1) Rotate PEERTUBE_SECRET - generate with ''openssl
       rand -hex 32'' and replace the placeholder; this signs sessions/JWT and CANNOT be left at the default. 2) Set PEERTUBE_WEBSERVER_HOSTNAME

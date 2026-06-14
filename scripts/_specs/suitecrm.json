@@ -4,8 +4,12 @@
   "description": "Open-source customer relationship management for sales, marketing and service teams: accounts, contacts, leads, opportunities, cases and workflows.",
   "source": "https://github.com/salesagility/SuiteCRM",
   "website": "https://suitecrm.com",
-  "icon": "https://avatars.githubusercontent.com/u/4280435?s=200&v=4",
-  "categories": ["crm", "work", "productivity"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/suitecrm/icon.png",
+  "categories": [
+    "crm",
+    "work",
+    "productivity"
+  ],
   "installation": "Runs the Bitnami SuiteCRM image (bitnami/suitecrm). SuiteCRM only supports MariaDB/MySQL (no PostgreSQL) — this template ships the bundled mariadb addon (default db/user/password 'suitecrm', rotate before production). On first boot the admin account is provisioned from SUITECRM_USERNAME / SUITECRM_PASSWORD / SUITECRM_EMAIL — rotate SUITECRM_PASSWORD (placeholder value) and the mariadb password to match SUITECRM_DATABASE_PASSWORD. The valkey addon is wired as the optional Redis cache/session store via SUITECRM_REDIS_HOST (Valkey is Redis-compatible and password-less here); remove it if not wanted. SUITECRM_HOST is set from the app URL token so generated links resolve. Persistent app data (uploads, custom modules, config) lives at /bitnami/suitecrm — back this up. For outbound email configure SMTP from the SuiteCRM admin UI after install. Scheduler/cron jobs should be run via an external CronJob hitting cron.php.",
   "screenshots": [],
   "links": [
@@ -23,24 +27,73 @@
     "command": []
   },
   "envVars": [
-    {"name": "SUITECRM_DATABASE_HOST", "value": "suitecrm-mysql"},
-    {"name": "SUITECRM_DATABASE_PORT_NUMBER", "value": "3306"},
-    {"name": "SUITECRM_DATABASE_NAME", "value": "suitecrm"},
-    {"name": "SUITECRM_DATABASE_USER", "value": "suitecrm"},
-    {"name": "SUITECRM_DATABASE_PASSWORD", "value": "suitecrm"},
-    {"name": "SUITECRM_HOST", "value": "{{KUBERO_APP_HOST}}"},
-    {"name": "SUITECRM_USERNAME", "value": "admin"},
-    {"name": "SUITECRM_PASSWORD", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "SUITECRM_EMAIL", "value": "admin@example.com"},
-    {"name": "SUITECRM_ENABLE_REDIS", "value": "yes"},
-    {"name": "SUITECRM_REDIS_HOST", "value": "rfr-suitecrm-valkey-readwrite"},
-    {"name": "SUITECRM_REDIS_PORT_NUMBER", "value": "6379"}
+    {
+      "name": "SUITECRM_DATABASE_HOST",
+      "value": "suitecrm-mysql"
+    },
+    {
+      "name": "SUITECRM_DATABASE_PORT_NUMBER",
+      "value": "3306"
+    },
+    {
+      "name": "SUITECRM_DATABASE_NAME",
+      "value": "suitecrm"
+    },
+    {
+      "name": "SUITECRM_DATABASE_USER",
+      "value": "suitecrm"
+    },
+    {
+      "name": "SUITECRM_DATABASE_PASSWORD",
+      "value": "suitecrm"
+    },
+    {
+      "name": "SUITECRM_HOST",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "SUITECRM_USERNAME",
+      "value": "admin"
+    },
+    {
+      "name": "SUITECRM_PASSWORD",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "SUITECRM_EMAIL",
+      "value": "admin@example.com"
+    },
+    {
+      "name": "SUITECRM_ENABLE_REDIS",
+      "value": "yes"
+    },
+    {
+      "name": "SUITECRM_REDIS_HOST",
+      "value": "rfr-suitecrm-valkey-readwrite"
+    },
+    {
+      "name": "SUITECRM_REDIS_PORT_NUMBER",
+      "value": "6379"
+    }
   ],
   "addons": [
-    {"type": "mariadb", "name": "suitecrm", "db": "suitecrm", "user": "suitecrm", "password": "suitecrm"},
-    {"type": "valkey", "name": "suitecrm"}
+    {
+      "type": "mariadb",
+      "name": "suitecrm",
+      "db": "suitecrm",
+      "user": "suitecrm",
+      "password": "suitecrm"
+    },
+    {
+      "type": "valkey",
+      "name": "suitecrm"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/bitnami/suitecrm", "name": "suitecrm-data", "size": "5Gi"}
+    {
+      "mountPath": "/bitnami/suitecrm",
+      "name": "suitecrm-data",
+      "size": "5Gi"
+    }
   ]
 }

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source, self-hosted password manager with end-to-end encryption and team sharing,
       plus browser extensions and a REST API.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/40027207?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/passit/icon.png
     kubero.dev/template.installation: 'Image: passit/passit:stable (official, on Docker Hub; project is hosted on GitLab).
       This is a Django app. ROTATE SECRET_KEY (set it to `openssl rand -hex 32`) and the Postgres password (default ''passit'')
       before exposing publicly. ALLOWED_HOSTS is set to ''*'' for first boot; tighten it to your real host. The container

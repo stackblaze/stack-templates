@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted, end-to-end-encrypted video conferencing platform - a privacy-focused, fully
       featured alternative to Zoom and Google Meet.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1209556?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jitsi/icon.png
     kubero.dev/template.installation: 'This template runs the PRIMARY Jitsi web frontend container ONLY (jitsi/web - an nginx
       that serves the Meet SPA on internal HTTP port 80 and reverse-proxies XMPP/BOSH). Jitsi Meet is a MULTI-CONTAINER stack
       and a working conference REQUIRES three more companion containers deployed as SEPARATE apps sharing the SAME config

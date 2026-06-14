@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Minimalist self-hosted file-sharing service for generating shareable download links to
       files of any size.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/3621513?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/picoshare/icon.png
     kubero.dev/template.installation: 'PicoShare stores everything in a single SQLite database under /data (no external datastore
       add-on needed). REQUIRED: set PS_SHARED_SECRET to a strong random value before exposing publicly (it is the admin/upload
       passphrase) and rotate the default. Optional: enable Litestream streaming backups by setting LITESTREAM_BUCKET / LITESTREAM_ENDPOINT

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Rust-based, petabyte-scale observability platform for logs, metrics, traces and real
       user monitoring; a lightweight Elasticsearch/Datadog alternative.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/110565997?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openobserve/icon.png
     kubero.dev/template.installation: 'This template runs the official single-node (local mode) image openobserve/openobserve
       on HTTP port 5080. DATASTORE: in local mode OpenObserve stores its metadata in an embedded SQLite DB and its ingested
       log/metric/trace data on local disk, so NO external database add-on is provisioned - everything lives on the mounted

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Free self-hosted help desk and shared inbox, a privacy-friendly open-source alternative
       to Zendesk and Help Scout.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/41373199?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freescout/icon.png
     kubero.dev/template.installation: 'Image: nfrastack/freescout (community-maintained, formerly tiredofit). Rotate APP_KEY
       (base64 of 32 random bytes: `base64:$(openssl rand -base64 32)`), the Postgres password (default ''freescout''), and
       ADMIN_PASS before exposing publicly. First run auto-installs and seeds the admin user from ADMIN_EMAIL / ADMIN_PASS;

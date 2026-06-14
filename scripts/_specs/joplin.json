@@ -4,11 +4,18 @@
   "description": "Self-hosted sync server for the Joplin open-source note-taking and to-do app, with end-to-end-encrypted multi-device sync and sharing.",
   "source": "https://github.com/laurent22/joplin",
   "website": "https://joplinapp.org",
-  "icon": "https://avatars.githubusercontent.com/u/1285584?s=200&v=4",
-  "categories": ["productivity", "documentation", "collaboration"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/joplin/icon.png",
+  "categories": [
+    "productivity",
+    "documentation",
+    "collaboration"
+  ],
   "installation": "Deploy with the bundled PostgreSQL add-on; rotate the Postgres password (and after first login the admin password) from the template defaults before production. Joplin Server validates incoming requests against APP_BASE_URL, so it is set to the deployed public URL via {{KUBERO_APP_URL}} — if you change the hostname you must update this or clients get an 'invalid origin' error. The server listens on port 22300 (APP_PORT) and serves both the web admin UI and the sync API. Storage driver defaults to the database (DB_CLIENT=pg), so notes, attachments and blobs live in Postgres; the joplin-storage volume mounted at /home/joplin/storage is only used if you switch to the filesystem storage driver. On first run the database is migrated automatically; log in to the web UI with the default admin account admin@localhost / admin and change the password immediately, then point Joplin desktop/mobile clients at the URL using the 'Joplin Server' sync target. No external object store, search engine or SMTP is required for a base install (configure MAILER_* env vars later if you want email invitations).",
   "screenshots": [],
-  "links": ["https://joplinapp.org/help/install/sync", "https://github.com/laurent22/joplin/blob/dev/packages/server/README.md"],
+  "links": [
+    "https://joplinapp.org/help/install/sync",
+    "https://github.com/laurent22/joplin/blob/dev/packages/server/README.md"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 48000,
@@ -20,19 +27,53 @@
     "command": []
   },
   "envVars": [
-    {"name": "APP_PORT", "value": "22300"},
-    {"name": "APP_BASE_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "DB_CLIENT", "value": "pg"},
-    {"name": "POSTGRES_HOST", "value": "joplin-postgresql-rw"},
-    {"name": "POSTGRES_PORT", "value": "5432"},
-    {"name": "POSTGRES_DATABASE", "value": "joplin"},
-    {"name": "POSTGRES_USER", "value": "joplin"},
-    {"name": "POSTGRES_PASSWORD", "value": "joplin"}
+    {
+      "name": "APP_PORT",
+      "value": "22300"
+    },
+    {
+      "name": "APP_BASE_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "DB_CLIENT",
+      "value": "pg"
+    },
+    {
+      "name": "POSTGRES_HOST",
+      "value": "joplin-postgresql-rw"
+    },
+    {
+      "name": "POSTGRES_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "POSTGRES_DATABASE",
+      "value": "joplin"
+    },
+    {
+      "name": "POSTGRES_USER",
+      "value": "joplin"
+    },
+    {
+      "name": "POSTGRES_PASSWORD",
+      "value": "joplin"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "joplin", "db": "joplin", "user": "joplin", "password": "joplin"}
+    {
+      "type": "postgres",
+      "name": "joplin",
+      "db": "joplin",
+      "user": "joplin",
+      "password": "joplin"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/home/joplin/storage", "name": "joplin-storage", "size": "2Gi"}
+    {
+      "mountPath": "/home/joplin/storage",
+      "name": "joplin-storage",
+      "size": "2Gi"
+    }
   ]
 }

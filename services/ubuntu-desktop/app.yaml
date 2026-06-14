@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Browser-accessible Ubuntu KDE desktop in a container (LinuxServer.io Webtop), streamed
       over KasmVNC for remote Linux desktop sessions.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/13923067?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ubuntu-desktop/icon.png
     kubero.dev/template.installation: 'This is LinuxServer.io Webtop running the Ubuntu KDE flavor: a full Ubuntu desktop
       streamed to the browser over KasmVNC on port 3000, with no SQL database. All desktop state, the user home directory,
       and installed packages persist in the volume mounted at /config, so no add-on is required. The web UI is protected with

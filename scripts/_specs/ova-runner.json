@@ -4,8 +4,12 @@
   "description": "OVA-Runner is a self-hosted CI/CD job runner that executes workloads inside isolated OVA/VM environments.",
   "source": "https://github.com/nicholasgasior/ova-runner",
   "website": "https://github.com/nicholasgasior/ova-runner",
-  "icon": "https://avatars.githubusercontent.com/u/1120322?s=200&v=4",
-  "categories": ["development", "utilities", "automation"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ova-runner/icon.png",
+  "categories": [
+    "development",
+    "utilities",
+    "automation"
+  ],
   "installation": "Configure RUNNER_TOKEN and COORDINATOR_URL before deploying. Ensure the pod has access to the Docker socket or a remote Docker daemon for job execution.",
   "screenshots": [],
   "links": [],
@@ -20,12 +24,25 @@
     "command": []
   },
   "envVars": [
-    {"name": "RUNNER_TOKEN", "value": "replace-with-runner-token"},
-    {"name": "COORDINATOR_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "RUNNER_NAME", "value": "ova-runner-01"}
+    {
+      "name": "RUNNER_TOKEN",
+      "value": "replace-with-runner-token"
+    },
+    {
+      "name": "COORDINATOR_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "RUNNER_NAME",
+      "value": "ova-runner-01"
+    }
   ],
   "addons": [],
   "extraVolumes": [
-    {"mountPath": "/data", "name": "ova-runner-data", "size": "5Gi"}
+    {
+      "mountPath": "/data",
+      "name": "ova-runner-data",
+      "size": "5Gi"
+    }
   ]
 }

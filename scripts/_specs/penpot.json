@@ -4,11 +4,18 @@
   "description": "Open-source design and prototyping platform for product teams; the design tool for design and code collaboration.",
   "source": "https://github.com/penpot/penpot",
   "website": "https://penpot.app",
-  "icon": "https://avatars.githubusercontent.com/u/41834709?s=200&v=4",
-  "categories": ["development", "collaboration", "productivity"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot/icon.png",
+  "categories": [
+    "development",
+    "collaboration",
+    "productivity"
+  ],
   "installation": "Penpot is a MULTI-CONTAINER stack. This template deploys the PRIMARY web entrypoint, the nginx FRONTEND image `penpotapp/frontend` (HTTP 8080), which serves the SPA and reverse-proxies API/asset traffic to the backend and exporter. By itself the frontend will not function until you also deploy these COMPANION services as their own Kubero apps (all pinned to the SAME version tag 2.16): (1) BACKEND -> image `penpotapp/backend` (listens on HTTP 6060); give it the database/redis/secret env shown below: PENPOT_DATABASE_URI=postgresql://penpot-postgresql-rw:5432/penpot, PENPOT_DATABASE_USERNAME=penpot, PENPOT_DATABASE_PASSWORD=penpot, PENPOT_REDIS_URI=redis://rfr-penpot-valkey-readwrite:6379/0, PENPOT_SECRET_KEY=(rotate, `openssl rand -hex 32`), PENPOT_PUBLIC_URI={{KUBERO_APP_URL}}, PENPOT_FLAGS, and the assets-fs storage env; it must MOUNT THE SAME shared assets volume at /opt/data/assets as the frontend. (2) EXPORTER -> image `penpotapp/exporter` (HTTP 6061), set PENPOT_PUBLIC_URI=http://penpot-frontend:8080 and PENPOT_REDIS_URI to the same Valkey URI; it renders thumbnails/exports via a headless browser. The frontend reaches the backend/exporter by the env PENPOT_BACKEND_URI / PENPOT_EXPORTER_URI (or PENPOT_INTERNAL_RESOLVER) -> point these at the backend (`http://penpot-backend:6060`) and exporter (`http://penpot-exporter:6061`) service names once those apps are up. ADD-ONS provisioned: a Postgres add-on (Penpot requires PostgreSQL) and a Valkey/Redis add-on. ROTATE the default Postgres password and set a strong PENPOT_SECRET_KEY (the same value MUST be shared by frontend, backend and exporter). FIRST RUN: by default registration is open; after creating the first owner account add `disable-registration` to PENPOT_FLAGS. SMTP is optional via PENPOT_SMTP_* env (with the `enable-smtp` flag); without it user emails print to the backend log. User-uploaded assets live on the shared local volume at /opt/data/assets (for multi-replica or large deployments use an S3-compatible backend instead, set via PENPOT_ASSETS_STORAGE_BACKEND=assets-s3, which is NOT provisioned here).",
   "screenshots": [],
-  "links": ["https://help.penpot.app/technical-guide/getting-started/", "https://help.penpot.app/technical-guide/configuration/"],
+  "links": [
+    "https://help.penpot.app/technical-guide/getting-started/",
+    "https://help.penpot.app/technical-guide/configuration/"
+  ],
   "license": "Mozilla Public License 2.0",
   "spdx_id": "MPL-2.0",
   "stars": 38000,
@@ -20,23 +27,69 @@
     "command": []
   },
   "envVars": [
-    {"name": "PENPOT_PUBLIC_URI", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "PENPOT_BACKEND_URI", "value": "http://penpot-backend:6060"},
-    {"name": "PENPOT_EXPORTER_URI", "value": "http://penpot-exporter:6061"},
-    {"name": "PENPOT_FLAGS", "value": "enable-registration enable-login-with-password disable-email-verification disable-secure-session-cookies"},
-    {"name": "PENPOT_DATABASE_URI", "value": "postgresql://penpot-postgresql-rw:5432/penpot"},
-    {"name": "PENPOT_DATABASE_USERNAME", "value": "penpot"},
-    {"name": "PENPOT_DATABASE_PASSWORD", "value": "penpot"},
-    {"name": "PENPOT_REDIS_URI", "value": "redis://rfr-penpot-valkey-readwrite:6379/0"},
-    {"name": "PENPOT_SECRET_KEY", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "PENPOT_ASSETS_STORAGE_BACKEND", "value": "assets-fs"},
-    {"name": "PENPOT_STORAGE_ASSETS_FS_DIRECTORY", "value": "/opt/data/assets"}
+    {
+      "name": "PENPOT_PUBLIC_URI",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "PENPOT_BACKEND_URI",
+      "value": "http://penpot-backend:6060"
+    },
+    {
+      "name": "PENPOT_EXPORTER_URI",
+      "value": "http://penpot-exporter:6061"
+    },
+    {
+      "name": "PENPOT_FLAGS",
+      "value": "enable-registration enable-login-with-password disable-email-verification disable-secure-session-cookies"
+    },
+    {
+      "name": "PENPOT_DATABASE_URI",
+      "value": "postgresql://penpot-postgresql-rw:5432/penpot"
+    },
+    {
+      "name": "PENPOT_DATABASE_USERNAME",
+      "value": "penpot"
+    },
+    {
+      "name": "PENPOT_DATABASE_PASSWORD",
+      "value": "penpot"
+    },
+    {
+      "name": "PENPOT_REDIS_URI",
+      "value": "redis://rfr-penpot-valkey-readwrite:6379/0"
+    },
+    {
+      "name": "PENPOT_SECRET_KEY",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "PENPOT_ASSETS_STORAGE_BACKEND",
+      "value": "assets-fs"
+    },
+    {
+      "name": "PENPOT_STORAGE_ASSETS_FS_DIRECTORY",
+      "value": "/opt/data/assets"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "penpot", "db": "penpot", "user": "penpot", "password": "penpot"},
-    {"type": "valkey", "name": "penpot"}
+    {
+      "type": "postgres",
+      "name": "penpot",
+      "db": "penpot",
+      "user": "penpot",
+      "password": "penpot"
+    },
+    {
+      "type": "valkey",
+      "name": "penpot"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/opt/data/assets", "name": "penpot-assets", "size": "5Gi"}
+    {
+      "mountPath": "/opt/data/assets",
+      "name": "penpot-assets",
+      "size": "5Gi"
+    }
   ]
 }

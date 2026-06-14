@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.description: "Your friendliest open source all-in-one automation\
       \ tool \u2728 Workflow automation tool 100+ integration / Enterprise automation\
       \ tool / Zapier Alternative"
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/99494700?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/activepieces/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/activepieces/activepieces/assets/1812998/e75616ce-7801-45b7-b3fa-eba778bebde3"]'

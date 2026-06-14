@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: MetaTrader 5 trading terminal running under Wine in a container, accessible from any
       browser via noVNC (KasmVNC) for forex and CFD trading.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1175748?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metatrader5/icon.png
     kubero.dev/template.installation: 'MetaTrader 5 is proprietary software by MetaQuotes; there is no official MetaQuotes
       Docker image. This template uses the community gmag11/metatrader5_vnc image, which runs the full Windows MT5 terminal
       under Wine and exposes it through a KasmVNC/noVNC web desktop on port 3000. There is NO SQL database: the MT5 installation,

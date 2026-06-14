@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source event management and ticket-selling platform (Laravel + React) for creating
       events, selling tickets, and managing attendees.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/153289711?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hi-events/icon.png
     kubero.dev/template.installation: 'Hi.Events is a Laravel API + React frontend stack. This template deploys the ALL-IN-ONE
       image (daveearley/hi.events-all-in-one, container port 80) which bundles the API, the built frontend, nginx, and the
       queue worker + scheduler in one container, so for a basic deployment NO companion services are required. It is wired

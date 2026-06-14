@@ -4,25 +4,58 @@
   "description": "Open-source data orchestration and integration platform (ETL) for designing and running visual data pipelines and workflows in the browser.",
   "source": "https://github.com/apache/hop",
   "website": "https://hop.apache.org",
-  "icon": "https://avatars.githubusercontent.com/u/47359?s=200&v=4",
-  "categories": ["data", "automation", "development"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hop/icon.png",
+  "categories": [
+    "data",
+    "automation",
+    "development"
+  ],
   "installation": "Deploys the official apache/hop-web image, with the visual designer reachable at the /ui path on the app URL. Apache Hop stores its projects, environments, and metadata as files, so no database add-on is provisioned; the persistent /config volume holds your project and config directory and must be kept. Mount or import your Hop project under /config and set HOP_PROJECT_FOLDER / HOP_PROJECT_NAME / HOP_ENVIRONMENT_NAME to auto-load it on startup (leave them empty to start with the default 'samples' project). Database, file, and message-queue connections used by your pipelines (Postgres, MySQL, Kafka, S3, etc.) are configured inside Hop per pipeline and are not part of this template. For production, run with a sized app pod (the JVM needs more than the default 512Mi) and add authentication in front of Hop Web, which ships without built-in login.",
-  "screenshots": ["https://hop.apache.org/img/hop-gui.png"],
-  "links": ["https://hop.apache.org/manual/latest/hop-gui/hop-web.html", "https://hop.apache.org/tech-manual/latest/docker-container.html"],
+  "screenshots": [
+    "https://hop.apache.org/img/hop-gui.png"
+  ],
+  "links": [
+    "https://hop.apache.org/manual/latest/hop-gui/hop-web.html",
+    "https://hop.apache.org/tech-manual/latest/docker-container.html"
+  ],
   "license": "Apache License 2.0",
   "spdx_id": "Apache-2.0",
   "stars": 1200,
   "language": "Java",
-  "image": {"repository": "apache/hop-web", "tag": "latest", "containerPort": "8080", "command": []},
+  "image": {
+    "repository": "apache/hop-web",
+    "tag": "latest",
+    "containerPort": "8080",
+    "command": []
+  },
   "envVars": [
-    {"name": "HOP_PROJECT_FOLDER", "value": ""},
-    {"name": "HOP_PROJECT_NAME", "value": ""},
-    {"name": "HOP_ENVIRONMENT_NAME", "value": ""},
-    {"name": "HOP_LOG_LEVEL", "value": "Basic"},
-    {"name": "HOP_AUDIT_FOLDER", "value": "/config/audit"}
+    {
+      "name": "HOP_PROJECT_FOLDER",
+      "value": ""
+    },
+    {
+      "name": "HOP_PROJECT_NAME",
+      "value": ""
+    },
+    {
+      "name": "HOP_ENVIRONMENT_NAME",
+      "value": ""
+    },
+    {
+      "name": "HOP_LOG_LEVEL",
+      "value": "Basic"
+    },
+    {
+      "name": "HOP_AUDIT_FOLDER",
+      "value": "/config/audit"
+    }
   ],
   "addons": [],
   "extraVolumes": [
-    {"mountPath": "/config", "name": "hop-config", "size": "2Gi"}
+    {
+      "mountPath": "/config",
+      "name": "hop-config",
+      "size": "2Gi"
+    }
   ]
 }

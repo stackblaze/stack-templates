@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted RSS reader and personal knowledge management tool with AI-powered semantic
       search over your saved reading.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/22127499?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/glean/icon.png
     kubero.dev/template.installation: 'This template deploys the PRIMARY backend API only (ghcr.io/leslieleung/glean-backend,
       FastAPI, port 8000). Glean is a multi-container stack: also deploy the WORKER (same image ghcr.io/leslieleung/glean-backend
       run as the arq background task queue), the WEB frontend (ghcr.io/leslieleung/glean-web, listens on :80), and the ADMIN

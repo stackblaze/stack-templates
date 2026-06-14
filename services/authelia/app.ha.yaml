@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source authentication and authorization server providing SSO and multi-factor auth
       as a companion to reverse proxies via a login portal.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/52617180?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/authelia/icon.png
     kubero.dev/template.installation: Authelia is an SSO / 2FA portal that protects other apps via your reverse proxy (forward-auth
       / OpenID Connect); it is not a destination app on its own. It needs a YAML config file that environment variables cannot
       fully replace - access control rules, the authentication backend (file or LDAP), the session cookie domain, and the

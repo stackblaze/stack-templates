@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source web platform from CERN for conference and event management, room booking,
       and collaboration.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1490135?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/indico/icon.png
     kubero.dev/template.installation: 'Indico is a multi-container stack; this template runs the primary web/WSGI server (getindico/indico)
       only. You MUST deploy these companion services from the SAME getindico/indico image, sharing this app''s env and the
       postgres+valkey add-ons: (1) a Celery worker (command: indico celery worker), and (2) a Celery beat scheduler (command:

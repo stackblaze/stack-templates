@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source double-entry accounting and financial reporting platform, a self-hosted alternative
       to QuickBooks, Xero and Wave.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/76165505?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bigcapital/icon.png
     kubero.dev/template.installation: 'Multi-container stack. This template runs the PRIMARY backend API only: bigcapitalhq/server
       (listens on :3000). It is NOT usable on its own — you MUST also deploy these companion services and route them behind
       a reverse proxy (Envoy/Nginx): (1) FRONTEND/webapp: bigcapitalhq/webapp:latest (the SPA UI); (2) GATEWAY/proxy: envoyproxy/envoy:v1.30-latest

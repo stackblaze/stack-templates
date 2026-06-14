@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Dolibarr ERP CRM — contacts, invoices, orders, stocks, agenda, and accounting for businesses and freelancers.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/877491?v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dolibarr/icon.png
     kubero.dev/template.installation: Auto-installs on first boot when DOLI_DB_* and DOLI_URL_ROOT are set. Default login admin/admin — change immediately. First boot may take several minutes while MariaDB initializes.
     kubero.dev/template.links: '["https://wiki.dolibarr.org/"]'
     kubero.dev/template.screenshots: '[]'

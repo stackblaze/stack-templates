@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: OVA-Runner is a self-hosted CI/CD job runner that executes workloads inside isolated
       OVA/VM environments.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1120322?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ova-runner/icon.png
     kubero.dev/template.installation: Configure RUNNER_TOKEN and COORDINATOR_URL before deploying. Ensure the pod has access
       to the Docker socket or a remote Docker daemon for job execution.
     kubero.dev/template.links: '[]'

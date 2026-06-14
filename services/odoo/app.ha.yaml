@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: 'Open-source suite of business apps: CRM, e-commerce, accounting, inventory, project
       management, HR and more.'
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/6368483?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/odoo/icon.png
     kubero.dev/template.installation: 'Odoo requires PostgreSQL ONLY (it does not support MySQL); the postgresql add-on is
       wired in via HOST/USER/PASSWORD/PORT. On first run the role ''odoo'' must be able to CREATE DATABASE so the web installer
       can provision the Odoo database; the bundled add-on role has this. Rotate the add-on password and the ''admin'' master

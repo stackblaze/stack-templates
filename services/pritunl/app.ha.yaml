@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Enterprise distributed OpenVPN and WireGuard VPN server with a web admin console for
       managing users, organizations and networks.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/3367358?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pritunl/icon.png
     kubero.dev/template.installation: 'No official Pritunl VPN container exists; this template uses the actively maintained
       community image ghcr.io/jippi/docker-pritunl. Pritunl stores all state in MongoDB, provided here by the documentdb add-on
       (rotate the mongoadmin password). The app connects via PRITUNL_MONGODB_URI. After first boot, exec into the pod and

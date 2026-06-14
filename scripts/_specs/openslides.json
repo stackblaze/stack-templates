@@ -4,11 +4,18 @@
   "description": "Web-based presentation and assembly system for managing and projecting agendas, motions, elections and live voting at meetings.",
   "source": "https://github.com/OpenSlides/OpenSlides",
   "website": "https://openslides.com/",
-  "icon": "https://avatars.githubusercontent.com/u/1859655?s=200&v=4",
-  "categories": ["collaboration", "productivity", "work"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openslides/icon.png",
+  "categories": [
+    "collaboration",
+    "productivity",
+    "work"
+  ],
   "installation": "OpenSlides 4 is a microservice stack and CANNOT run from this single image alone; this template deploys the core application server (openslides-backend, action API on container port 9002, presenter on 9003) plus its PostgreSQL (the datastore) and Valkey/Redis (message bus + autoupdate) add-ons. You MUST also deploy the companion services as separate apps and place the proxy in front as the public web entrypoint: openslides/openslides-proxy (HTTP entrypoint, listens on 8000), openslides/openslides-client (Angular frontend), openslides/openslides-datastore-reader and openslides/openslides-datastore-writer (datastore over PostgreSQL), openslides/openslides-auth (login/session, needs Valkey), openslides/openslides-autoupdate (real-time push, needs Valkey), openslides/openslides-vote (electronic voting, needs PostgreSQL + Valkey), openslides/openslides-icc (chat/notify), openslides/openslides-media (uploaded files/PDFs), openslides/openslides-search (full-text, optional), and openslides/openslides-manage-service (one-shot initial-data + superadmin bootstrap). All services share secrets via the AUTH_TOKEN_KEY / AUTH_COOKIE_KEY / internal auth password keys - generate them once with 'openssl rand -hex 32' and set the SAME value across every service; rotate the placeholder values below and the postgres add-on password before production. Run openslides-manage 'initial-data' + 'set-password' once to create the first superadmin (default login admin/admin - change immediately). Point all services at postgres host 'openslides-postgresql-rw' and redis host 'rfr-openslides-valkey-readwrite'. See https://github.com/OpenSlides/OpenSlides/blob/main/DEVELOPMENT.md for the full compose/manifest of every container.",
   "screenshots": [],
-  "links": ["https://github.com/OpenSlides/OpenSlides/blob/main/README.md", "https://github.com/OpenSlides/openslides-manage-service"],
+  "links": [
+    "https://github.com/OpenSlides/OpenSlides/blob/main/README.md",
+    "https://github.com/OpenSlides/openslides-manage-service"
+  ],
   "license": "MIT License",
   "spdx_id": "MIT",
   "stars": 620,
@@ -20,33 +27,109 @@
     "command": []
   },
   "envVars": [
-    {"name": "OPENSLIDES_DEVELOPMENT", "value": "false"},
-    {"name": "DATABASE_HOST", "value": "openslides-postgresql-rw"},
-    {"name": "DATABASE_PORT", "value": "5432"},
-    {"name": "DATABASE_NAME", "value": "openslides"},
-    {"name": "DATABASE_USER", "value": "openslides"},
-    {"name": "DATABASE_PASSWORD", "value": "openslides"},
-    {"name": "DATASTORE_READER_HOST", "value": "openslides-datastore-reader"},
-    {"name": "DATASTORE_READER_PORT", "value": "9010"},
-    {"name": "DATASTORE_WRITER_HOST", "value": "openslides-datastore-writer"},
-    {"name": "DATASTORE_WRITER_PORT", "value": "9011"},
-    {"name": "AUTH_HOST", "value": "openslides-auth"},
-    {"name": "AUTH_PORT", "value": "9004"},
-    {"name": "MESSAGE_BUS_HOST", "value": "rfr-openslides-valkey-readwrite"},
-    {"name": "MESSAGE_BUS_PORT", "value": "6379"},
-    {"name": "CACHE_HOST", "value": "rfr-openslides-valkey-readwrite"},
-    {"name": "CACHE_PORT", "value": "6379"},
-    {"name": "REDIS_HOST", "value": "rfr-openslides-valkey-readwrite"},
-    {"name": "REDIS_PORT", "value": "6379"},
-    {"name": "AUTH_TOKEN_KEY", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "AUTH_COOKIE_KEY", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "INTERNAL_AUTH_PASSWORD", "value": "replace-with-openssl-rand-hex-32"}
+    {
+      "name": "OPENSLIDES_DEVELOPMENT",
+      "value": "false"
+    },
+    {
+      "name": "DATABASE_HOST",
+      "value": "openslides-postgresql-rw"
+    },
+    {
+      "name": "DATABASE_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "DATABASE_NAME",
+      "value": "openslides"
+    },
+    {
+      "name": "DATABASE_USER",
+      "value": "openslides"
+    },
+    {
+      "name": "DATABASE_PASSWORD",
+      "value": "openslides"
+    },
+    {
+      "name": "DATASTORE_READER_HOST",
+      "value": "openslides-datastore-reader"
+    },
+    {
+      "name": "DATASTORE_READER_PORT",
+      "value": "9010"
+    },
+    {
+      "name": "DATASTORE_WRITER_HOST",
+      "value": "openslides-datastore-writer"
+    },
+    {
+      "name": "DATASTORE_WRITER_PORT",
+      "value": "9011"
+    },
+    {
+      "name": "AUTH_HOST",
+      "value": "openslides-auth"
+    },
+    {
+      "name": "AUTH_PORT",
+      "value": "9004"
+    },
+    {
+      "name": "MESSAGE_BUS_HOST",
+      "value": "rfr-openslides-valkey-readwrite"
+    },
+    {
+      "name": "MESSAGE_BUS_PORT",
+      "value": "6379"
+    },
+    {
+      "name": "CACHE_HOST",
+      "value": "rfr-openslides-valkey-readwrite"
+    },
+    {
+      "name": "CACHE_PORT",
+      "value": "6379"
+    },
+    {
+      "name": "REDIS_HOST",
+      "value": "rfr-openslides-valkey-readwrite"
+    },
+    {
+      "name": "REDIS_PORT",
+      "value": "6379"
+    },
+    {
+      "name": "AUTH_TOKEN_KEY",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "AUTH_COOKIE_KEY",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "INTERNAL_AUTH_PASSWORD",
+      "value": "replace-with-openssl-rand-hex-32"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "openslides", "db": "openslides", "user": "openslides", "password": "openslides"},
-    {"type": "valkey", "name": "openslides"}
+    {
+      "type": "postgres",
+      "name": "openslides",
+      "db": "openslides",
+      "user": "openslides",
+      "password": "openslides"
+    },
+    {
+      "type": "valkey",
+      "name": "openslides"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/data", "name": "openslides-data", "size": "2Gi"}
+    {
+      "mountPath": "/data",
+      "name": "openslides-data",
+      "size": "2Gi"
+    }
   ]
 }

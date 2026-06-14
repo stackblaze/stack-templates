@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source business automation tool (a self-hostable Zapier alternative) for connecting
       apps and building no-code integration workflows.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/97354410?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/automatisch/icon.png
     kubero.dev/template.installation: 'Automatisch is a multi-service stack. This template runs the main web/API server from
       automatischio/automatisch on port 3000. It REQUIRES a companion WORKER service: deploy a second app with the SAME image
       (automatischio/automatisch), the SAME environment variables PLUS WORKER=true, and the same Postgres + Redis connection

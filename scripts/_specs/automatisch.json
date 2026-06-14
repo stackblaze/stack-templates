@@ -4,11 +4,18 @@
   "description": "Open-source business automation tool (a self-hostable Zapier alternative) for connecting apps and building no-code integration workflows.",
   "source": "https://github.com/automatisch/automatisch",
   "website": "https://automatisch.io/",
-  "icon": "https://avatars.githubusercontent.com/u/97354410?s=200&v=4",
-  "categories": ["automation", "productivity", "work"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/automatisch/icon.png",
+  "categories": [
+    "automation",
+    "productivity",
+    "work"
+  ],
   "installation": "Automatisch is a multi-service stack. This template runs the main web/API server from automatischio/automatisch on port 3000. It REQUIRES a companion WORKER service: deploy a second app with the SAME image (automatischio/automatisch), the SAME environment variables PLUS WORKER=true, and the same Postgres + Redis connection settings -- the worker runs the background queues that actually execute your flows, so without it nothing fires. It needs two operator add-ons (Postgres + Valkey/Redis, both provisioned here). ROTATE before exposing: ENCRYPTION_KEY, WEBHOOK_SECRET_KEY, and APP_SECRET_KEY (generate each with `openssl rand -base64 36`) plus the Postgres add-on password. On first start the server runs DB migrations and seeds the admin user; the default login is created from the docker env or the install wizard -- check the docs and change the admin password immediately. Set HOST/PROTOCOL to match your public URL so OAuth redirect URIs and webhook URLs resolve correctly.",
   "screenshots": [],
-  "links": ["https://automatisch.io/docs/guide/installation", "https://automatisch.io/docs"],
+  "links": [
+    "https://automatisch.io/docs/guide/installation",
+    "https://automatisch.io/docs"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 11000,
@@ -20,28 +27,89 @@
     "command": []
   },
   "envVars": [
-    {"name": "APP_ENV", "value": "production"},
-    {"name": "HOST", "value": "{{KUBERO_APP_HOST}}"},
-    {"name": "PROTOCOL", "value": "https"},
-    {"name": "PORT", "value": "3000"},
-    {"name": "ENCRYPTION_KEY", "value": "replace-with-openssl-rand-base64-36"},
-    {"name": "WEBHOOK_SECRET_KEY", "value": "replace-with-openssl-rand-base64-36"},
-    {"name": "APP_SECRET_KEY", "value": "replace-with-openssl-rand-base64-36"},
-    {"name": "POSTGRES_HOST", "value": "automatisch-postgresql-rw"},
-    {"name": "POSTGRES_PORT", "value": "5432"},
-    {"name": "POSTGRES_DATABASE", "value": "automatisch"},
-    {"name": "POSTGRES_USERNAME", "value": "automatisch"},
-    {"name": "POSTGRES_PASSWORD", "value": "automatisch"},
-    {"name": "POSTGRES_ENABLE_SSL", "value": "false"},
-    {"name": "REDIS_HOST", "value": "rfr-automatisch-valkey-readwrite"},
-    {"name": "REDIS_PORT", "value": "6379"},
-    {"name": "WORKER", "value": "false"}
+    {
+      "name": "APP_ENV",
+      "value": "production"
+    },
+    {
+      "name": "HOST",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "PROTOCOL",
+      "value": "https"
+    },
+    {
+      "name": "PORT",
+      "value": "3000"
+    },
+    {
+      "name": "ENCRYPTION_KEY",
+      "value": "replace-with-openssl-rand-base64-36"
+    },
+    {
+      "name": "WEBHOOK_SECRET_KEY",
+      "value": "replace-with-openssl-rand-base64-36"
+    },
+    {
+      "name": "APP_SECRET_KEY",
+      "value": "replace-with-openssl-rand-base64-36"
+    },
+    {
+      "name": "POSTGRES_HOST",
+      "value": "automatisch-postgresql-rw"
+    },
+    {
+      "name": "POSTGRES_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "POSTGRES_DATABASE",
+      "value": "automatisch"
+    },
+    {
+      "name": "POSTGRES_USERNAME",
+      "value": "automatisch"
+    },
+    {
+      "name": "POSTGRES_PASSWORD",
+      "value": "automatisch"
+    },
+    {
+      "name": "POSTGRES_ENABLE_SSL",
+      "value": "false"
+    },
+    {
+      "name": "REDIS_HOST",
+      "value": "rfr-automatisch-valkey-readwrite"
+    },
+    {
+      "name": "REDIS_PORT",
+      "value": "6379"
+    },
+    {
+      "name": "WORKER",
+      "value": "false"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "automatisch", "db": "automatisch", "user": "automatisch", "password": "automatisch"},
-    {"type": "valkey", "name": "automatisch"}
+    {
+      "type": "postgres",
+      "name": "automatisch",
+      "db": "automatisch",
+      "user": "automatisch",
+      "password": "automatisch"
+    },
+    {
+      "type": "valkey",
+      "name": "automatisch"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/automatisch/storage", "name": "automatisch-storage", "size": "2Gi"}
+    {
+      "mountPath": "/automatisch/storage",
+      "name": "automatisch-storage",
+      "size": "2Gi"
+    }
   ]
 }

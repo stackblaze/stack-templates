@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: 'Self-hosted document sharing and collaboration platform: a file-sync, sharing and content-management
       server for organizations.'
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1144153?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pydio/icon.png
     kubero.dev/template.installation: Pydio Cells requires a MySQL/MariaDB database (provided here by the mariadb add-on).
       Rotate the default DB password ('pydio') and the random CELLS_ENABLE_METRICS/secret placeholders before going to production.
       On first run Cells auto-installs against the database when CELLS_INSTALL_YAML is unset and the DB env vars are present;

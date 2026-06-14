@@ -4,11 +4,18 @@
   "description": "ownCloud is a self-hosted file sync and share platform for storing, accessing and collaborating on your files across devices.",
   "source": "https://github.com/owncloud/core",
   "website": "https://owncloud.com/",
-  "icon": "https://avatars.githubusercontent.com/u/1645051?s=200&v=4",
-  "categories": ["storage", "productivity", "collaboration"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/owncloud/icon.png",
+  "categories": [
+    "storage",
+    "productivity",
+    "collaboration"
+  ],
   "installation": "The official owncloud/server image initializes itself on first boot using the OWNCLOUD_ADMIN_* and OWNCLOUD_DB_* environment variables, so no manual setup wizard is needed. It is built and tested against MariaDB/MySQL plus Redis (provided here by the mariadb and valkey add-ons). Rotate the mariadb add-on credentials and the OWNCLOUD_ADMIN_PASSWORD ('owncloud' default) after first login. OWNCLOUD_TRUSTED_DOMAINS / OWNCLOUD_DOMAIN are wired to the app host so the instance accepts requests at its public URL; add any extra domains there. The valkey add-on is password-less, so OWNCLOUD_REDIS_HOST points at rfr-owncloud-valkey-readwrite with no password set. User files, config and the SQLite-free data dir live under /mnt/data (persisted by the owncloud-data volume). For large instances raise the app pod size and PHP memory limit. An external object/S3 store is optional and not required for a base install.",
   "screenshots": [],
-  "links": ["https://doc.owncloud.com/server/latest/admin_manual/installation/docker/", "https://doc.owncloud.com/server/latest/admin_manual/"],
+  "links": [
+    "https://doc.owncloud.com/server/latest/admin_manual/installation/docker/",
+    "https://doc.owncloud.com/server/latest/admin_manual/"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 8500,
@@ -20,25 +27,77 @@
     "command": []
   },
   "envVars": [
-    {"name": "OWNCLOUD_DOMAIN", "value": "{{KUBERO_APP_HOST}}"},
-    {"name": "OWNCLOUD_TRUSTED_DOMAINS", "value": "{{KUBERO_APP_HOST}}"},
-    {"name": "OWNCLOUD_DB_TYPE", "value": "mysql"},
-    {"name": "OWNCLOUD_DB_HOST", "value": "owncloud-mysql"},
-    {"name": "OWNCLOUD_DB_NAME", "value": "owncloud"},
-    {"name": "OWNCLOUD_DB_USERNAME", "value": "owncloud"},
-    {"name": "OWNCLOUD_DB_PASSWORD", "value": "owncloud"},
-    {"name": "OWNCLOUD_ADMIN_USERNAME", "value": "admin"},
-    {"name": "OWNCLOUD_ADMIN_PASSWORD", "value": "owncloud"},
-    {"name": "OWNCLOUD_MYSQL_UTF8MB4", "value": "true"},
-    {"name": "OWNCLOUD_REDIS_ENABLED", "value": "true"},
-    {"name": "OWNCLOUD_REDIS_HOST", "value": "rfr-owncloud-valkey-readwrite"},
-    {"name": "OWNCLOUD_REDIS_PORT", "value": "6379"}
+    {
+      "name": "OWNCLOUD_DOMAIN",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "OWNCLOUD_TRUSTED_DOMAINS",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "OWNCLOUD_DB_TYPE",
+      "value": "mysql"
+    },
+    {
+      "name": "OWNCLOUD_DB_HOST",
+      "value": "owncloud-mysql"
+    },
+    {
+      "name": "OWNCLOUD_DB_NAME",
+      "value": "owncloud"
+    },
+    {
+      "name": "OWNCLOUD_DB_USERNAME",
+      "value": "owncloud"
+    },
+    {
+      "name": "OWNCLOUD_DB_PASSWORD",
+      "value": "owncloud"
+    },
+    {
+      "name": "OWNCLOUD_ADMIN_USERNAME",
+      "value": "admin"
+    },
+    {
+      "name": "OWNCLOUD_ADMIN_PASSWORD",
+      "value": "owncloud"
+    },
+    {
+      "name": "OWNCLOUD_MYSQL_UTF8MB4",
+      "value": "true"
+    },
+    {
+      "name": "OWNCLOUD_REDIS_ENABLED",
+      "value": "true"
+    },
+    {
+      "name": "OWNCLOUD_REDIS_HOST",
+      "value": "rfr-owncloud-valkey-readwrite"
+    },
+    {
+      "name": "OWNCLOUD_REDIS_PORT",
+      "value": "6379"
+    }
   ],
   "addons": [
-    {"type": "mariadb", "name": "owncloud", "db": "owncloud", "user": "owncloud", "password": "owncloud"},
-    {"type": "valkey", "name": "owncloud"}
+    {
+      "type": "mariadb",
+      "name": "owncloud",
+      "db": "owncloud",
+      "user": "owncloud",
+      "password": "owncloud"
+    },
+    {
+      "type": "valkey",
+      "name": "owncloud"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/mnt/data", "name": "owncloud-data", "size": "5Gi"}
+    {
+      "mountPath": "/mnt/data",
+      "name": "owncloud-data",
+      "size": "5Gi"
+    }
   ]
 }

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source modern relational spreadsheet that combines the flexibility of a spreadsheet
       with the robustness of a database.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/35017079?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/grist/icon.png
     kubero.dev/template.installation: Grist stores each document as a SQLite .grist file on disk under /persist/docs, so the
       persistent volume is mandatory and holds all your user data. The bundled PostgreSQL add-on is used only for the Grist
       'home' database (orgs, workspaces, users, sharing/ACL metadata) via the TYPEORM_* variables; rotate the Postgres password.

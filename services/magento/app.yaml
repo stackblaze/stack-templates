@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source PHP e-commerce platform with a flexible catalog, checkout, promotions and
       a powerful admin for building online stores.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/168457?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/magento/icon.png
     kubero.dev/template.installation: 'Bitnami Magento image. The app web container is the PRIMARY service; companion services
       you must run alongside it: (1) a search engine - Magento 2.4+ REQUIRES Elasticsearch 7/8 or OpenSearch 2.x, which is
       NOT a provided operator add-on, so deploy it separately (e.g. image bitnami/opensearch or opensearchproject/opensearch)

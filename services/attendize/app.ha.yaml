@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source ticket selling and event management platform (Laravel) for organizing events
       and selling tickets online.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/18512337?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/attendize/icon.png
     kubero.dev/template.installation: 'Attendize is a multi-container Laravel stack; this template deploys ONLY the web/server
       image (elestio/attendize-web, listens on container port 80). You MUST also run the companion queue/scheduler worker
       from image elestio/attendize-worker (same env, same DB/Redis) to send emails, generate ticket PDFs and process background

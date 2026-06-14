@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source constituent relationship management for nonprofits and civic groups, handling
       contacts, contributions, events, memberships and email.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/745198?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/civicrm/icon.png
     kubero.dev/template.installation: Runs CiviCRM Standalone (civicrm/civicrm). Requires a MariaDB/MySQL database (the bundled
       mariadb addon, default db/user/password 'civicrm' — rotate before production). On first run the install script provisions
       the admin account from CIVICRM_ADMIN_USER / CIVICRM_ADMIN_PASS — rotate the password and rotate the DB password too.

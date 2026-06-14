@@ -5,7 +5,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: ILLA is a robust open source low-code platform
       for developers to build internal tools.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/93245159?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/illa/icon.png
     kubero.dev/template.installation: All-in-one image bundles PostgreSQL, Redis, and
       MinIO. Default login is root / password. Data persists under /opt/illa/database
       and /opt/illa/drive.

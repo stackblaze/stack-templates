@@ -4,11 +4,18 @@
   "description": "Open-source suite of business apps: CRM, e-commerce, accounting, inventory, project management, HR and more.",
   "source": "https://github.com/odoo/odoo",
   "website": "https://www.odoo.com",
-  "icon": "https://avatars.githubusercontent.com/u/6368483?s=200&v=4",
-  "categories": ["erp", "crm", "e-commerce"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/odoo/icon.png",
+  "categories": [
+    "erp",
+    "crm",
+    "e-commerce"
+  ],
   "installation": "Odoo requires PostgreSQL ONLY (it does not support MySQL); the postgresql add-on is wired in via HOST/USER/PASSWORD/PORT. On first run the role 'odoo' must be able to CREATE DATABASE so the web installer can provision the Odoo database; the bundled add-on role has this. Rotate the add-on password and the 'admin' master password (set ODOO_RC or use the Database Manager) after install, and lock down /web/database/manager. The /var/lib/odoo volume holds the filestore (attachments, uploads, sessions) and must be persistent. Custom modules go in /mnt/extra-addons. COMPANION SERVICES (deploy as separate apps from the same odoo:18.0 image, sharing the same PostgreSQL add-on and filestore volume): (1) a long-polling/gevent worker for live chat, discuss and websockets, started with command 'odoo gevent' (or 'odoo --workers=N' in multi-worker mode listening on the gevent port 8072); (2) optionally a dedicated cron/scheduler worker (odoo --max-cron-threads=N). In a single-replica deployment the embedded cron and HTTP worker handle scheduling, so the standalone web template alone is functional for evaluation. For production multi-worker mode put a reverse proxy in front (proxy_mode=True) so X-Forwarded-* is honored.",
   "screenshots": [],
-  "links": ["https://www.odoo.com/documentation", "https://github.com/odoo/docker"],
+  "links": [
+    "https://www.odoo.com/documentation",
+    "https://github.com/odoo/docker"
+  ],
   "license": "GNU Lesser General Public License v3.0",
   "spdx_id": "LGPL-3.0",
   "stars": 41000,
@@ -20,15 +27,37 @@
     "command": []
   },
   "envVars": [
-    { "name": "HOST", "value": "odoo-postgresql-rw" },
-    { "name": "PORT", "value": "5432" },
-    { "name": "USER", "value": "odoo" },
-    { "name": "PASSWORD", "value": "odoo" }
+    {
+      "name": "HOST",
+      "value": "odoo-postgresql-rw"
+    },
+    {
+      "name": "PORT",
+      "value": "5432"
+    },
+    {
+      "name": "USER",
+      "value": "odoo"
+    },
+    {
+      "name": "PASSWORD",
+      "value": "odoo"
+    }
   ],
   "addons": [
-    { "type": "postgres", "name": "odoo", "db": "odoo", "user": "odoo", "password": "odoo" }
+    {
+      "type": "postgres",
+      "name": "odoo",
+      "db": "odoo",
+      "user": "odoo",
+      "password": "odoo"
+    }
   ],
   "extraVolumes": [
-    { "mountPath": "/var/lib/odoo", "name": "odoo-data", "size": "5Gi" }
+    {
+      "mountPath": "/var/lib/odoo",
+      "name": "odoo-data",
+      "size": "5Gi"
+    }
   ]
 }

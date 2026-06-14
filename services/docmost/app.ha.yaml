@@ -5,7 +5,7 @@ metadata:
     annotations:
         kubero.dev/template.architecture: "[]"
         kubero.dev/template.description: "Docmost is an open-source collaborative wiki and documentation software. It is an open-source alternative to Confluence and Notion."
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/150462874"
+        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docmost/icon.png
         kubero.dev/template.installation: ""
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/242ed60fe9d9d3c7e1d8d7d3f64d28d23c0a81e5963265880095e0e9c7604205/68747470733a2f2f646f636d6f73742e636f6d2f73637265656e73686f74732f686f6d652e706e67"]'

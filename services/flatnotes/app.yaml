@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted, database-less note-taking web app that stores everything as a flat folder
       of portable Markdown files with full-text search.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/8316040?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flatnotes/icon.png
     kubero.dev/template.installation: 'Flatnotes is database-less: all notes are stored as plain Markdown files under /data
       (mounted on the flatnotes-data volume), with a Whoosh search index rebuilt automatically on startup. No add-on (Postgres/Redis/etc.)
       is required. Before deploying, rotate FLATNOTES_PASSWORD and FLATNOTES_SECRET_KEY from the template defaults: set FLATNOTES_SECRET_KEY

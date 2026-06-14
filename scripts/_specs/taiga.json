@@ -4,39 +4,114 @@
   "description": "Open-source agile project management platform with Scrum and Kanban boards, backlogs, sprints, and issue tracking.",
   "source": "https://github.com/taigaio/taiga-back",
   "website": "https://www.taiga.io",
-  "icon": "https://avatars.githubusercontent.com/u/5018367?s=200&v=4",
-  "categories": ["work", "productivity", "collaboration"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/taiga/icon.png",
+  "categories": [
+    "work",
+    "productivity",
+    "collaboration"
+  ],
   "installation": "This template deploys taiga-back (the Django API server) ONLY. Taiga is a multi-container stack and is NOT functional without its companion services, which must be deployed separately as their own apps/sidecars: (1) taiga-async = same image taigaio/taiga-back:latest with command celery worker (the background task/Celery worker, shares POSTGRES_* + RABBITMQ + TAIGA_SECRET_KEY); (2) taiga-front = taigaio/taiga-front:latest (the web UI, served on port 80); (3) taiga-events = taigaio/taiga-events:latest (websocket push server, needs its own RabbitMQ broker + the same TAIGA_SECRET_KEY); (4) taiga-protected = taigaio/taiga-protected:latest (signed-URL attachment proxy, needs TAIGA_SECRET_KEY); (5) taiga-gateway = nginx:1.19-alpine routing front/back/events/protected on port 9000 (the real public entrypoint). This template provisions the shared postgres and rabbitmq add-ons that taiga-back, taiga-async, and taiga-events all connect to. ROTATE: TAIGA_SECRET_KEY (set to replace-with-openssl-rand-hex-32 here; generate with `openssl rand -hex 32` and use the SAME value across back/async/events/protected), the postgres password, and the RABBITMQ_PASS. FIRST RUN: exec into taiga-back and run `python manage.py migrate` then `python manage.py loaddata initial_project_templates` and create a superuser with `python manage.py createsuperuser`. Note EVENTS_PUSH_BACKEND_URL and CELERY_BROKER_URL point at the rabbitmq add-on (amqp://taiga:taiga@taiga-rabbitmq:5672).",
   "screenshots": [],
-  "links": ["https://docs.taiga.io/setup-production.html", "https://github.com/taigaio/taiga-docker"],
+  "links": [
+    "https://docs.taiga.io/setup-production.html",
+    "https://github.com/taigaio/taiga-docker"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 6400,
   "language": "Python",
-  "image": {"repository": "taigaio/taiga-back", "tag": "latest", "containerPort": "8000", "command": []},
+  "image": {
+    "repository": "taigaio/taiga-back",
+    "tag": "latest",
+    "containerPort": "8000",
+    "command": []
+  },
   "envVars": [
-    {"name": "POSTGRES_HOST", "value": "taiga-postgresql-rw"},
-    {"name": "POSTGRES_PORT", "value": "5432"},
-    {"name": "POSTGRES_DB", "value": "taiga"},
-    {"name": "POSTGRES_USER", "value": "taiga"},
-    {"name": "POSTGRES_PASSWORD", "value": "taiga"},
-    {"name": "TAIGA_SECRET_KEY", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "TAIGA_SITES_SCHEME", "value": "https"},
-    {"name": "TAIGA_SITES_DOMAIN", "value": "{{KUBERO_APP_HOST}}"},
-    {"name": "TAIGA_SUBPATH", "value": ""},
-    {"name": "RABBITMQ_USER", "value": "taiga"},
-    {"name": "RABBITMQ_PASS", "value": "taiga"},
-    {"name": "CELERY_ENABLED", "value": "True"},
-    {"name": "CELERY_BROKER_URL", "value": "amqp://taiga:taiga@taiga-rabbitmq:5672"},
-    {"name": "EVENTS_PUSH_BACKEND", "value": "taiga.events.backends.rabbitmq.EventsPushBackend"},
-    {"name": "EVENTS_PUSH_BACKEND_URL", "value": "amqp://taiga:taiga@taiga-rabbitmq:5672"},
-    {"name": "ENABLE_TELEMETRY", "value": "False"}
+    {
+      "name": "POSTGRES_HOST",
+      "value": "taiga-postgresql-rw"
+    },
+    {
+      "name": "POSTGRES_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "POSTGRES_DB",
+      "value": "taiga"
+    },
+    {
+      "name": "POSTGRES_USER",
+      "value": "taiga"
+    },
+    {
+      "name": "POSTGRES_PASSWORD",
+      "value": "taiga"
+    },
+    {
+      "name": "TAIGA_SECRET_KEY",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "TAIGA_SITES_SCHEME",
+      "value": "https"
+    },
+    {
+      "name": "TAIGA_SITES_DOMAIN",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "TAIGA_SUBPATH",
+      "value": ""
+    },
+    {
+      "name": "RABBITMQ_USER",
+      "value": "taiga"
+    },
+    {
+      "name": "RABBITMQ_PASS",
+      "value": "taiga"
+    },
+    {
+      "name": "CELERY_ENABLED",
+      "value": "True"
+    },
+    {
+      "name": "CELERY_BROKER_URL",
+      "value": "amqp://taiga:taiga@taiga-rabbitmq:5672"
+    },
+    {
+      "name": "EVENTS_PUSH_BACKEND",
+      "value": "taiga.events.backends.rabbitmq.EventsPushBackend"
+    },
+    {
+      "name": "EVENTS_PUSH_BACKEND_URL",
+      "value": "amqp://taiga:taiga@taiga-rabbitmq:5672"
+    },
+    {
+      "name": "ENABLE_TELEMETRY",
+      "value": "False"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "taiga", "db": "taiga", "user": "taiga", "password": "taiga"},
-    {"type": "rabbitmq", "name": "taiga", "user": "taiga", "password": "taiga"}
+    {
+      "type": "postgres",
+      "name": "taiga",
+      "db": "taiga",
+      "user": "taiga",
+      "password": "taiga"
+    },
+    {
+      "type": "rabbitmq",
+      "name": "taiga",
+      "user": "taiga",
+      "password": "taiga"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/taiga-back/media", "name": "taiga-media", "size": "5Gi"}
+    {
+      "mountPath": "/taiga-back/media",
+      "name": "taiga-media",
+      "size": "5Gi"
+    }
   ]
 }

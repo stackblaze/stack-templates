@@ -4,27 +4,64 @@
   "description": "Massively scalable open-source MQTT broker for IoT, connecting millions of devices with a built-in dashboard, rules engine and data bridges.",
   "source": "https://github.com/emqx/emqx",
   "website": "https://www.emqx.io",
-  "icon": "https://avatars.githubusercontent.com/u/12471087?s=200&v=4",
-  "categories": ["data", "automation", "utilities"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/emqx/icon.png",
+  "categories": [
+    "data",
+    "automation",
+    "utilities"
+  ],
   "installation": "EMQX is self-contained: it stores cluster state, sessions, retained messages and config in its built-in Mnesia/RLOG database persisted to the emqx-data volume at /opt/emqx/data, so no external add-on is provisioned. The HTTP management dashboard and REST API listen on port 18083; the MQTT listeners (1883 TCP, 8883 TLS, 8083 WS, 8084 WSS) are exposed by the image but are not the HTTP container port and need a separate Service/Ingress if you want external MQTT access. On first run log in to the dashboard with the default account admin / public and change the password immediately (EMQX_DASHBOARD__DEFAULT_PASSWORD is set to a placeholder here that you should rotate, or just change it in the UI). EMQX_NODE__COOKIE is the Erlang distribution secret shared by cluster members and MUST be rotated from the template default before production. Single-node runs on the open-source edition; from v5.9 clustering requires a license key from EMQX, and optional auth/data integrations (PostgreSQL, MySQL, Redis, Kafka, MongoDB, etc.) are configured later in the dashboard, not at boot.",
   "screenshots": [],
-  "links": ["https://docs.emqx.com/en/emqx/latest/", "https://github.com/emqx/emqx/blob/master/deploy/docker/README.md"],
+  "links": [
+    "https://docs.emqx.com/en/emqx/latest/",
+    "https://github.com/emqx/emqx/blob/master/deploy/docker/README.md"
+  ],
   "license": "Other",
   "spdx_id": "NOASSERTION",
   "stars": 15300,
   "language": "Erlang",
-  "image": {"repository": "emqx/emqx", "tag": "latest", "containerPort": "18083", "command": []},
+  "image": {
+    "repository": "emqx/emqx",
+    "tag": "latest",
+    "containerPort": "18083",
+    "command": []
+  },
   "envVars": [
-    {"name": "EMQX_NAME", "value": "emqx"},
-    {"name": "EMQX_DASHBOARD__DEFAULT_USERNAME", "value": "admin"},
-    {"name": "EMQX_DASHBOARD__DEFAULT_PASSWORD", "value": "replace-with-openssl-rand-hex-16"},
-    {"name": "EMQX_NODE__COOKIE", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "EMQX_NODE__DATA_DIR", "value": "/opt/emqx/data"},
-    {"name": "EMQX_LISTENERS__TCP__DEFAULT__BIND", "value": "0.0.0.0:1883"},
-    {"name": "EMQX_DASHBOARD__LISTENERS__HTTP__BIND", "value": "0.0.0.0:18083"}
+    {
+      "name": "EMQX_NAME",
+      "value": "emqx"
+    },
+    {
+      "name": "EMQX_DASHBOARD__DEFAULT_USERNAME",
+      "value": "admin"
+    },
+    {
+      "name": "EMQX_DASHBOARD__DEFAULT_PASSWORD",
+      "value": "replace-with-openssl-rand-hex-16"
+    },
+    {
+      "name": "EMQX_NODE__COOKIE",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "EMQX_NODE__DATA_DIR",
+      "value": "/opt/emqx/data"
+    },
+    {
+      "name": "EMQX_LISTENERS__TCP__DEFAULT__BIND",
+      "value": "0.0.0.0:1883"
+    },
+    {
+      "name": "EMQX_DASHBOARD__LISTENERS__HTTP__BIND",
+      "value": "0.0.0.0:18083"
+    }
   ],
   "addons": [],
   "extraVolumes": [
-    {"mountPath": "/opt/emqx/data", "name": "emqx-data", "size": "2Gi"}
+    {
+      "mountPath": "/opt/emqx/data",
+      "name": "emqx-data",
+      "size": "2Gi"
+    }
   ]
 }

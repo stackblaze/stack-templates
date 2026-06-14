@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source expert system for guided interviews and document assembly, widely used to
       build legal-aid and law-firm self-help applications.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/8924866?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docassemble/icon.png
     kubero.dev/template.installation: 'Docassemble ships as a single all-in-one image (jhpyle/docassemble) whose roles are
       selected with the CONTAINERROLE env var. This template runs the web role and externalises the SQL database and Redis
       to the bundled add-ons. ROTATE the Postgres password and SECRETKEY (openssl rand -base64 32) before production. The

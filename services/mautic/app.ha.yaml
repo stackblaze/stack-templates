@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source marketing automation platform for email campaigns, lead management, landing
       pages, and multichannel customer journeys.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/2071218?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mautic/icon.png
     kubero.dev/template.installation: 'Mautic only supports MySQL/MariaDB (no Postgres). This template deploys the primary
       mautic_web container; on first run open the URL and complete the web installer, or rely on the auto-install env vars
       (set DOCKER_MAUTIC_LOAD_TEST_DATA=false). IMPORTANT: rotate the mariadb password and the MAUTIC_DB_PASSWORD env to match

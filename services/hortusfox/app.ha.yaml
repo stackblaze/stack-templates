@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted collaborative plant management system for tracking, organizing and caring
       for your indoor and outdoor plants.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/58681347?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hortusfox/icon.png
     kubero.dev/template.installation: 'Image: ghcr.io/danielbrendel/hortusfox-web (official). Uses MariaDB (the mariadb add-on,
       host hortusfox-mysql). Rotate the MariaDB password (default ''hortusfox'') and set a strong APP_ADMIN_PASSWORD (default
       placeholder) before exposing publicly; the first-run admin account is seeded from APP_ADMIN_EMAIL / APP_ADMIN_PASSWORD

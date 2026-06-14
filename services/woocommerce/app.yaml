@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: The world's most popular open-source e-commerce platform, built as a WordPress plugin
       to turn any WordPress site into a fully featured online store.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4463614?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/woocommerce/icon.png
     kubero.dev/template.installation: 'WooCommerce is a WordPress plugin, so this template runs the official wordpress image
       (PHP/Apache) and you install WooCommerce from inside wp-admin. WordPress requires MySQL/MariaDB (it does not support
       PostgreSQL), so the mariadb add-on is shipped. First run: complete the WordPress install wizard, then in wp-admin go

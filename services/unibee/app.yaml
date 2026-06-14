@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source, gateway-agnostic subscription billing and invoicing platform for SaaS businesses.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/156260965?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/unibee/icon.png
     kubero.dev/template.installation: 'Primary web/API container only (unibee/api). DATABASE_LINK uses a MySQL DSN, so this
       template wires the mariadb add-on (UniBee speaks MySQL, not postgres). The valkey add-on has no password, so REDIS_PASSWORD
       is left empty. UniBee is a multi-container stack: also deploy the companion services as separate Kubero apps and route

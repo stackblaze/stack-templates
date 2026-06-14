@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Flarum is a simple, fast, free and open-source forum software for building modern community
       discussion platforms.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/16245343?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flarum/icon.png
     kubero.dev/template.installation: Uses the community-maintained mondedie/flarum image (the official flarum/flarum repo
       ships source, not a runnable image). On first boot the container runs the installer non-interactively from the env vars
       below against the MariaDB add-on, creating the admin account from FLARUM_ADMIN_USER / FLARUM_ADMIN_PASS (min 8 chars)

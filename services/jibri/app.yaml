@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Jitsi Broadcasting Infrastructure - a recording and live-streaming component that captures
       Jitsi Meet conferences via headless Chrome and ffmpeg.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1209556?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jibri/icon.png
     kubero.dev/template.installation: 'Jibri (Jitsi Broadcasting Infrastructure) is NOT a standalone app: it is the recording/live-streaming
       worker of the Jitsi Meet stack. It runs a headless Chrome + ffmpeg, joins a conference as a hidden participant, and
       records to a file (or streams to RTMP/YouTube). It keeps NO SQL database - all state is file-based and conference/auth

@@ -4,11 +4,20 @@
   "description": "Free self-hosted help desk and shared inbox, a privacy-friendly open-source alternative to Zendesk and Help Scout.",
   "source": "https://github.com/freescout-help-desk/freescout",
   "website": "https://freescout.net",
-  "icon": "https://avatars.githubusercontent.com/u/41373199?s=200&v=4",
-  "categories": ["helpdesk", "communication", "collaboration"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freescout/icon.png",
+  "categories": [
+    "helpdesk",
+    "communication",
+    "collaboration"
+  ],
   "installation": "Image: nfrastack/freescout (community-maintained, formerly tiredofit). Rotate APP_KEY (base64 of 32 random bytes: `base64:$(openssl rand -base64 32)`), the Postgres password (default 'freescout'), and ADMIN_PASS before exposing publicly. First run auto-installs and seeds the admin user from ADMIN_EMAIL / ADMIN_PASS; change the admin password after first login. DB_TYPE=pgsql points FreeScout at the bundled postgres add-on (host freescout-postgresql-rw). For inbound/outbound email, configure SMTP/IMAP in the FreeScout settings UI (or via mail env vars) after install. Persistent /data volume holds uploads, installed modules, cache and config.",
-  "screenshots": ["https://freescout.net/wp-content/uploads/2018/12/screenshot-conversation.png"],
-  "links": ["https://github.com/freescout-help-desk/freescout/wiki/Installation-Guide", "https://github.com/nfrastack/docker-freescout"],
+  "screenshots": [
+    "https://freescout.net/wp-content/uploads/2018/12/screenshot-conversation.png"
+  ],
+  "links": [
+    "https://github.com/freescout-help-desk/freescout/wiki/Installation-Guide",
+    "https://github.com/nfrastack/docker-freescout"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 4300,
@@ -20,27 +29,85 @@
     "command": []
   },
   "envVars": [
-    {"name": "APP_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "APP_KEY", "value": "base64:replace-with-openssl-rand-base64-32"},
-    {"name": "SITE_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "DB_TYPE", "value": "pgsql"},
-    {"name": "DB_CONNECTION", "value": "pgsql"},
-    {"name": "DB_HOST", "value": "freescout-postgresql-rw"},
-    {"name": "DB_PORT", "value": "5432"},
-    {"name": "DB_NAME", "value": "freescout"},
-    {"name": "DB_DATABASE", "value": "freescout"},
-    {"name": "DB_USER", "value": "freescout"},
-    {"name": "DB_USERNAME", "value": "freescout"},
-    {"name": "DB_PASS", "value": "freescout"},
-    {"name": "DB_PASSWORD", "value": "freescout"},
-    {"name": "ADMIN_EMAIL", "value": "admin@example.com"},
-    {"name": "ADMIN_PASS", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "TZ", "value": "Etc/UTC"}
+    {
+      "name": "APP_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "APP_KEY",
+      "value": "base64:replace-with-openssl-rand-base64-32"
+    },
+    {
+      "name": "SITE_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "DB_TYPE",
+      "value": "pgsql"
+    },
+    {
+      "name": "DB_CONNECTION",
+      "value": "pgsql"
+    },
+    {
+      "name": "DB_HOST",
+      "value": "freescout-postgresql-rw"
+    },
+    {
+      "name": "DB_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "DB_NAME",
+      "value": "freescout"
+    },
+    {
+      "name": "DB_DATABASE",
+      "value": "freescout"
+    },
+    {
+      "name": "DB_USER",
+      "value": "freescout"
+    },
+    {
+      "name": "DB_USERNAME",
+      "value": "freescout"
+    },
+    {
+      "name": "DB_PASS",
+      "value": "freescout"
+    },
+    {
+      "name": "DB_PASSWORD",
+      "value": "freescout"
+    },
+    {
+      "name": "ADMIN_EMAIL",
+      "value": "admin@example.com"
+    },
+    {
+      "name": "ADMIN_PASS",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "TZ",
+      "value": "Etc/UTC"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "freescout", "db": "freescout", "user": "freescout", "password": "freescout"}
+    {
+      "type": "postgres",
+      "name": "freescout",
+      "db": "freescout",
+      "user": "freescout",
+      "password": "freescout"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/data", "name": "freescout-data", "size": "5Gi"}
+    {
+      "mountPath": "/data",
+      "name": "freescout-data",
+      "size": "5Gi"
+    }
   ]
 }

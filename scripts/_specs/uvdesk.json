@@ -4,11 +4,18 @@
   "description": "Open-source PHP/Symfony helpdesk and support ticketing system with email piping, knowledgebase, and multi-channel agent workflows.",
   "source": "https://github.com/uvdesk/community-skeleton",
   "website": "https://www.uvdesk.com",
-  "icon": "https://avatars.githubusercontent.com/u/24730296?s=200&v=4",
-  "categories": ["helpdesk", "work", "collaboration"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uvdesk/icon.png",
+  "categories": [
+    "helpdesk",
+    "work",
+    "collaboration"
+  ],
   "installation": "UVdesk is wizard-driven: on first load complete the web installer at {{KUBERO_APP_URL}}/install. When prompted for the database, use host 'uvdesk-mysql', port 3306, database/user/password 'uvdesk' (matching the mariadb add-on below) and create your super-admin account there. There is no separate root step needed for an external DB. UVdesk requires MySQL/MariaDB only (no PostgreSQL support). Outbound/inbound email (SMTP + IMAP mailbox) must be configured in the admin panel after install for ticket creation from email. Rotate the mariadb password from the default 'uvdesk' before exposing publicly. No official Docker image is published by the project; this uses the actively maintained community image dietermartens/uvdesk.",
   "screenshots": [],
-  "links": ["https://docs.uvdesk.com", "https://github.com/uvdesk/community-skeleton/wiki/Dockerize-helpdesk-project"],
+  "links": [
+    "https://docs.uvdesk.com",
+    "https://github.com/uvdesk/community-skeleton/wiki/Dockerize-helpdesk-project"
+  ],
   "license": "Open Software License 3.0",
   "spdx_id": "OSL-3.0",
   "stars": 19011,
@@ -20,18 +27,49 @@
     "command": []
   },
   "envVars": [
-    {"name": "MYSQL_HOST", "value": "uvdesk-mysql"},
-    {"name": "MYSQL_PORT", "value": "3306"},
-    {"name": "MYSQL_DATABASE", "value": "uvdesk"},
-    {"name": "MYSQL_USER", "value": "uvdesk"},
-    {"name": "MYSQL_PASSWORD", "value": "uvdesk"},
-    {"name": "MYSQL_ROOT_PASSWORD", "value": "uvdesk"},
-    {"name": "SITE_URL", "value": "{{KUBERO_APP_URL}}"}
+    {
+      "name": "MYSQL_HOST",
+      "value": "uvdesk-mysql"
+    },
+    {
+      "name": "MYSQL_PORT",
+      "value": "3306"
+    },
+    {
+      "name": "MYSQL_DATABASE",
+      "value": "uvdesk"
+    },
+    {
+      "name": "MYSQL_USER",
+      "value": "uvdesk"
+    },
+    {
+      "name": "MYSQL_PASSWORD",
+      "value": "uvdesk"
+    },
+    {
+      "name": "MYSQL_ROOT_PASSWORD",
+      "value": "uvdesk"
+    },
+    {
+      "name": "SITE_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    }
   ],
   "addons": [
-    {"type": "mariadb", "name": "uvdesk", "db": "uvdesk", "user": "uvdesk", "password": "uvdesk"}
+    {
+      "type": "mariadb",
+      "name": "uvdesk",
+      "db": "uvdesk",
+      "user": "uvdesk",
+      "password": "uvdesk"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/var/www/uvdesk/public/assets", "name": "uvdesk-data", "size": "2Gi"}
+    {
+      "mountPath": "/var/www/uvdesk/public/assets",
+      "name": "uvdesk-data",
+      "size": "2Gi"
+    }
   ]
 }

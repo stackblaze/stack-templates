@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source, Rust-based payment switch and orchestration platform for routing, retrying
       and reconciling payments across 100+ processors.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/55474490?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hyperswitch/icon.png
     kubero.dev/template.installation: 'Hyperswitch is a multi-container stack. This template deploys the PRIMARY API server,
       the `hyperswitch-router` (the `standalone` image is the all-in-one self-host variant that bundles config + migrations).
       It listens on HTTP 8080 (health check: GET /health). Add-ons: a Postgres add-on (the system of record) and a Valkey/Redis

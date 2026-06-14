@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Nextcloud is a self-hosted file sync and collaboration platform.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/19211038?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nextcloud/icon.png
     kubero.dev/template.installation: Set NEXTCLOUD_TRUSTED_DOMAINS to your public hostname before going live.
     kubero.dev/template.links: '["https://docs.nextcloud.com/"]'
     kubero.dev/template.screenshots: '["https://nextcloud.com/wp-content/uploads/2022/03/hero.webp"]'

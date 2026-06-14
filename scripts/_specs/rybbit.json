@@ -4,40 +4,118 @@
   "description": "Open-source, privacy-friendly, cookieless web and product analytics that is a more intuitive alternative to Google Analytics.",
   "source": "https://github.com/rybbit-io/rybbit",
   "website": "https://rybbit.com",
-  "icon": "https://avatars.githubusercontent.com/u/208537280?s=200&v=4",
-  "categories": ["monitoring", "data", "utilities"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rybbit/icon.png",
+  "categories": [
+    "monitoring",
+    "data",
+    "utilities"
+  ],
   "installation": "Rybbit is a multi-container stack. This template deploys the PRIMARY server image ghcr.io/rybbit-io/rybbit-backend (Node/Koa API, port 3001). You MUST also deploy the companion frontend container ghcr.io/rybbit-io/rybbit-client (Next.js, port 3002) and route browser traffic to it; the client talks to this backend via BASE_URL. Add-ons provisioned: ClickHouse (analytics events), Postgres (accounts/projects), and Valkey/Redis (caching/sessions). Before first run: rotate BETTER_AUTH_SECRET (openssl rand -hex 32), and rotate the Postgres and ClickHouse passwords from the slug defaults. Set BASE_URL/{{KUBERO_APP_URL}} to the public client URL. The first account created becomes the admin; set DISABLE_SIGNUP=true after creating it. Optional: MAPBOX_TOKEN for the world map, OPENROUTER_API_KEY for AI features.",
   "screenshots": [],
-  "links": ["https://rybbit.com/docs/self-hosting-manual"],
+  "links": [
+    "https://rybbit.com/docs/self-hosting-manual"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 12284,
   "language": "TypeScript",
-  "image": {"repository": "ghcr.io/rybbit-io/rybbit-backend", "tag": "latest", "containerPort": "3001", "command": []},
+  "image": {
+    "repository": "ghcr.io/rybbit-io/rybbit-backend",
+    "tag": "latest",
+    "containerPort": "3001",
+    "command": []
+  },
   "envVars": [
-    {"name": "NODE_ENV", "value": "production"},
-    {"name": "BASE_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "BETTER_AUTH_SECRET", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "DISABLE_SIGNUP", "value": "false"},
-    {"name": "DISABLE_TELEMETRY", "value": "true"},
-    {"name": "CLUSTER_WORKERS", "value": "4"},
-    {"name": "POSTGRES_HOST", "value": "rybbit-postgresql-rw"},
-    {"name": "POSTGRES_PORT", "value": "5432"},
-    {"name": "POSTGRES_DB", "value": "rybbit"},
-    {"name": "POSTGRES_USER", "value": "rybbit"},
-    {"name": "POSTGRES_PASSWORD", "value": "rybbit"},
-    {"name": "CLICKHOUSE_HOST", "value": "http://clickhouse-rybbit-clickhouse:8123"},
-    {"name": "CLICKHOUSE_DB", "value": "default"},
-    {"name": "CLICKHOUSE_USER", "value": "admin"},
-    {"name": "CLICKHOUSE_PASSWORD", "value": "rybbit"},
-    {"name": "REDIS_HOST", "value": "rfr-rybbit-valkey-readwrite"},
-    {"name": "REDIS_PORT", "value": "6379"},
-    {"name": "REDIS_PASSWORD", "value": ""}
+    {
+      "name": "NODE_ENV",
+      "value": "production"
+    },
+    {
+      "name": "BASE_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "BETTER_AUTH_SECRET",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "DISABLE_SIGNUP",
+      "value": "false"
+    },
+    {
+      "name": "DISABLE_TELEMETRY",
+      "value": "true"
+    },
+    {
+      "name": "CLUSTER_WORKERS",
+      "value": "4"
+    },
+    {
+      "name": "POSTGRES_HOST",
+      "value": "rybbit-postgresql-rw"
+    },
+    {
+      "name": "POSTGRES_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "POSTGRES_DB",
+      "value": "rybbit"
+    },
+    {
+      "name": "POSTGRES_USER",
+      "value": "rybbit"
+    },
+    {
+      "name": "POSTGRES_PASSWORD",
+      "value": "rybbit"
+    },
+    {
+      "name": "CLICKHOUSE_HOST",
+      "value": "http://clickhouse-rybbit-clickhouse:8123"
+    },
+    {
+      "name": "CLICKHOUSE_DB",
+      "value": "default"
+    },
+    {
+      "name": "CLICKHOUSE_USER",
+      "value": "admin"
+    },
+    {
+      "name": "CLICKHOUSE_PASSWORD",
+      "value": "rybbit"
+    },
+    {
+      "name": "REDIS_HOST",
+      "value": "rfr-rybbit-valkey-readwrite"
+    },
+    {
+      "name": "REDIS_PORT",
+      "value": "6379"
+    },
+    {
+      "name": "REDIS_PASSWORD",
+      "value": ""
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "rybbit", "db": "rybbit", "user": "rybbit", "password": "rybbit"},
-    {"type": "clickhouse", "name": "rybbit", "password": "rybbit"},
-    {"type": "valkey", "name": "rybbit"}
+    {
+      "type": "postgres",
+      "name": "rybbit",
+      "db": "rybbit",
+      "user": "rybbit",
+      "password": "rybbit"
+    },
+    {
+      "type": "clickhouse",
+      "name": "rybbit",
+      "password": "rybbit"
+    },
+    {
+      "type": "valkey",
+      "name": "rybbit"
+    }
   ],
   "extraVolumes": []
 }

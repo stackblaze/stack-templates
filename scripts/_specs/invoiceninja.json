@@ -4,11 +4,20 @@
   "description": "Open-source invoicing, billing, payments and expense-tracking platform for freelancers and businesses.",
   "source": "https://github.com/invoiceninja/invoiceninja",
   "website": "https://invoiceninja.com",
-  "icon": "https://avatars.githubusercontent.com/u/4815738?s=200&v=4",
-  "categories": ["finance", "work", "productivity"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/invoiceninja/icon.png",
+  "categories": [
+    "finance",
+    "work",
+    "productivity"
+  ],
   "installation": "Invoice Ninja v5 is a Laravel (PHP) app backed by MySQL/MariaDB (it does NOT officially support Postgres); Valkey is wired for cache and queue. BEFORE first boot ROTATE: APP_KEY (must be a 32-char value; generate with `openssl rand -base64 32` and set APP_KEY=base64:<value>) and the MariaDB password (default 'invoiceninja'). APP_URL is pre-filled with {{KUBERO_APP_URL}} and must match the public URL. On first boot the entrypoint runs DB migrations and seeds the admin user from IN_USER_EMAIL / IN_PASSWORD (rotate IN_PASSWORD) - then log in at the app URL and change the password. PDF generation uses the bundled snappdf (headless Chromium) so no companion service is required; set PDF_GENERATOR=snappdf. REQUIRE_HTTPS=false is set because TLS is terminated at the ingress. Uploads, logos and generated PDF invoices persist under /var/www/html/public/storage on the mounted volume. SMTP for mail and optional S3 for storage are configured later via env vars or the Settings UI.",
-  "screenshots": ["https://www.invoiceninja.com/wp-content/uploads/2021/01/dashboard.png"],
-  "links": ["https://invoiceninja.github.io/", "https://github.com/invoiceninja/dockerfiles"],
+  "screenshots": [
+    "https://www.invoiceninja.com/wp-content/uploads/2021/01/dashboard.png"
+  ],
+  "links": [
+    "https://invoiceninja.github.io/",
+    "https://github.com/invoiceninja/dockerfiles"
+  ],
   "license": "Elastic License 2.0",
   "spdx_id": "NOASSERTION",
   "stars": 8600,
@@ -20,34 +29,113 @@
     "command": []
   },
   "envVars": [
-    {"name": "APP_URL", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "APP_ENV", "value": "production"},
-    {"name": "APP_DEBUG", "value": "false"},
-    {"name": "APP_KEY", "value": "base64:replace-with-openssl-rand-base64-32"},
-    {"name": "REQUIRE_HTTPS", "value": "false"},
-    {"name": "TRUSTED_PROXIES", "value": "*"},
-    {"name": "DB_CONNECTION", "value": "mysql"},
-    {"name": "DB_HOST", "value": "invoiceninja-mysql"},
-    {"name": "DB_PORT", "value": "3306"},
-    {"name": "DB_DATABASE", "value": "invoiceninja"},
-    {"name": "DB_USERNAME", "value": "invoiceninja"},
-    {"name": "DB_PASSWORD", "value": "invoiceninja"},
-    {"name": "REDIS_HOST", "value": "rfr-invoiceninja-valkey-readwrite"},
-    {"name": "REDIS_PORT", "value": "6379"},
-    {"name": "REDIS_PASSWORD", "value": "null"},
-    {"name": "CACHE_DRIVER", "value": "redis"},
-    {"name": "QUEUE_CONNECTION", "value": "redis"},
-    {"name": "SESSION_DRIVER", "value": "redis"},
-    {"name": "PDF_GENERATOR", "value": "snappdf"},
-    {"name": "IN_USER_EMAIL", "value": "admin@example.com"},
-    {"name": "IN_PASSWORD", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "MAIL_MAILER", "value": "log"}
+    {
+      "name": "APP_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "APP_ENV",
+      "value": "production"
+    },
+    {
+      "name": "APP_DEBUG",
+      "value": "false"
+    },
+    {
+      "name": "APP_KEY",
+      "value": "base64:replace-with-openssl-rand-base64-32"
+    },
+    {
+      "name": "REQUIRE_HTTPS",
+      "value": "false"
+    },
+    {
+      "name": "TRUSTED_PROXIES",
+      "value": "*"
+    },
+    {
+      "name": "DB_CONNECTION",
+      "value": "mysql"
+    },
+    {
+      "name": "DB_HOST",
+      "value": "invoiceninja-mysql"
+    },
+    {
+      "name": "DB_PORT",
+      "value": "3306"
+    },
+    {
+      "name": "DB_DATABASE",
+      "value": "invoiceninja"
+    },
+    {
+      "name": "DB_USERNAME",
+      "value": "invoiceninja"
+    },
+    {
+      "name": "DB_PASSWORD",
+      "value": "invoiceninja"
+    },
+    {
+      "name": "REDIS_HOST",
+      "value": "rfr-invoiceninja-valkey-readwrite"
+    },
+    {
+      "name": "REDIS_PORT",
+      "value": "6379"
+    },
+    {
+      "name": "REDIS_PASSWORD",
+      "value": "null"
+    },
+    {
+      "name": "CACHE_DRIVER",
+      "value": "redis"
+    },
+    {
+      "name": "QUEUE_CONNECTION",
+      "value": "redis"
+    },
+    {
+      "name": "SESSION_DRIVER",
+      "value": "redis"
+    },
+    {
+      "name": "PDF_GENERATOR",
+      "value": "snappdf"
+    },
+    {
+      "name": "IN_USER_EMAIL",
+      "value": "admin@example.com"
+    },
+    {
+      "name": "IN_PASSWORD",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "MAIL_MAILER",
+      "value": "log"
+    }
   ],
   "addons": [
-    {"type": "mariadb", "name": "invoiceninja", "db": "invoiceninja", "user": "invoiceninja", "password": "invoiceninja"},
-    {"type": "valkey", "name": "invoiceninja"}
+    {
+      "type": "mariadb",
+      "name": "invoiceninja",
+      "db": "invoiceninja",
+      "user": "invoiceninja",
+      "password": "invoiceninja"
+    },
+    {
+      "type": "valkey",
+      "name": "invoiceninja"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/var/www/html/public/storage", "name": "invoiceninja-data", "size": "3Gi"}
+    {
+      "mountPath": "/var/www/html/public/storage",
+      "name": "invoiceninja-data",
+      "size": "3Gi"
+    }
   ]
 }

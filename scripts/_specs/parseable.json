@@ -4,11 +4,18 @@
   "description": "Rust-based, S3-native log analytics and observability platform with a built-in web console; a lightweight Elasticsearch/Splunk alternative.",
   "source": "https://github.com/parseablehq/parseable",
   "website": "https://www.parseable.com",
-  "icon": "https://avatars.githubusercontent.com/u/91102217?s=200&v=4",
-  "categories": ["monitoring", "data", "utilities"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/parseable/icon.png",
+  "categories": [
+    "monitoring",
+    "data",
+    "utilities"
+  ],
   "installation": "This template runs the official parseable/parseable image in single-node LOCAL-STORE mode via the custom command 'parseable local-store', serving the HTTP API and web console on port 8000. DATASTORE: in local-store mode Parseable persists all ingested log data and metadata on disk (P_FS_DIR=/parseable/data) plus an in-flight staging area (P_STAGING_DIR=/parseable/staging), so NO external database add-on is provisioned - everything lives on the mounted volumes. For that reason these persistent volumes MUST be retained across redeploys or ingested data is lost; grow them to match your retention. BEFORE FIRST RUN you MUST rotate P_USERNAME and P_PASSWORD - these create the initial admin login (the defaults admin/admin are insecure); log in at the root URL with those credentials. PRODUCTION SCALE-OUT (NOT configured here): for durable, horizontally-scalable storage Parseable instead writes to S3-compatible object storage - run 'parseable s3-store' and set P_S3_URL, P_S3_ACCESS_KEY, P_S3_SECRET_KEY, P_S3_REGION and P_S3_BUCKET to point at an external S3 bucket; this template uses local disk for simplicity. Send logs over HTTP to /api/v1/ingest with your credentials.",
   "screenshots": [],
-  "links": ["https://www.parseable.com/docs/quickstart", "https://www.parseable.com/docs/server/environment-variables"],
+  "links": [
+    "https://www.parseable.com/docs/quickstart",
+    "https://www.parseable.com/docs/server/environment-variables"
+  ],
   "license": "GNU Affero General Public License v3.0",
   "spdx_id": "AGPL-3.0",
   "stars": 14000,
@@ -17,18 +24,44 @@
     "repository": "parseable/parseable",
     "tag": "latest",
     "containerPort": "8000",
-    "command": ["parseable", "local-store"]
+    "command": [
+      "parseable",
+      "local-store"
+    ]
   },
   "envVars": [
-    {"name": "P_ADDR", "value": "0.0.0.0:8000"},
-    {"name": "P_USERNAME", "value": "admin"},
-    {"name": "P_PASSWORD", "value": "replace-with-openssl-rand-base64-32"},
-    {"name": "P_FS_DIR", "value": "/parseable/data"},
-    {"name": "P_STAGING_DIR", "value": "/parseable/staging"}
+    {
+      "name": "P_ADDR",
+      "value": "0.0.0.0:8000"
+    },
+    {
+      "name": "P_USERNAME",
+      "value": "admin"
+    },
+    {
+      "name": "P_PASSWORD",
+      "value": "replace-with-openssl-rand-base64-32"
+    },
+    {
+      "name": "P_FS_DIR",
+      "value": "/parseable/data"
+    },
+    {
+      "name": "P_STAGING_DIR",
+      "value": "/parseable/staging"
+    }
   ],
   "addons": [],
   "extraVolumes": [
-    {"mountPath": "/parseable/data", "name": "parseable-data", "size": "5Gi"},
-    {"mountPath": "/parseable/staging", "name": "parseable-staging", "size": "2Gi"}
+    {
+      "mountPath": "/parseable/data",
+      "name": "parseable-data",
+      "size": "5Gi"
+    },
+    {
+      "mountPath": "/parseable/staging",
+      "name": "parseable-staging",
+      "size": "2Gi"
+    }
   ]
 }

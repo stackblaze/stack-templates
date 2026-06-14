@@ -5,7 +5,7 @@ metadata:
     annotations:
         kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
         kubero.dev/template.description: "Kimai is a web-based multi-user time-tracking application. Works great for everyone: freelancers, companies, organizations"
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/981996"
+        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kimai/icon.png
         kubero.dev/template.installation: ""
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: "[]"

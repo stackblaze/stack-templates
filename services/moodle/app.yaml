@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Moodle is the world's most popular open-source learning management system (LMS) for building
       online courses, classrooms and e-learning.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/187617?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodle/icon.png
     kubero.dev/template.installation: 'Moodle requires MySQL/MariaDB (the maintained container images target MariaDB, not
       PostgreSQL), so this template ships the mariadb add-on. The image is elestio/moodle, an actively-rebuilt Verified Publisher
       image tracking current Moodle releases (Bitnami''s moodle image moved behind a paywall in 2025 and is no longer freely

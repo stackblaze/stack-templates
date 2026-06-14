@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Glossy, feature-rich Matrix web client for secure, decentralized chat, voice and video
       collaboration.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/132949923?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/element/icon.png
     kubero.dev/template.installation: Element Web is a STATELESS static client (nginx on port 80); it does NOT store data
       itself. It is the frontend for a Matrix homeserver, which you must deploy separately. Run a Synapse homeserver (which
       needs its own Postgres) and point Element at it. Configure the homeserver/identity-server URLs by mounting a config.json

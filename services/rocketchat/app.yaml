@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.description: Rocket.Chat is an open-source fully customizable
       communications platform developed in JavaScript for organizations with high
       standards of data protection.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/12508788?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rocketchat/icon.png
     kubero.dev/template.installation: First boot can take several minutes while Rocket.Chat
       runs MongoDB migrations. Requires at least 2Gi memory. Pin to 5.4.10 — Microsoft
       DocumentDB lacks MongoDB collation indexes (breaks 6.x) and full oplog support.

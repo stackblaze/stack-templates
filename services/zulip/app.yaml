@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Powerful open-source team chat organized into topic-based threads — an alternative to
       Slack.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4921959?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zulip/icon.png
     kubero.dev/template.installation: Set SETTING_EXTERNAL_HOST and SECRETS_secret_key before first boot. Initial startup
       can take 5–10 minutes while Zulip configures all services. Requires
       `kubero-operator/operators/install.sh` (RabbitMQ Cluster operator).

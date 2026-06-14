@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: 'Open-source, self-hostable Discord alternative: a real-time chat platform with servers,
       channels, DMs, voice and file sharing (now branded Stoat).'
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/75771118?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/revolt/icon.png
     kubero.dev/template.installation: 'This template runs ONLY the PRIMARY Revolt backend API (the Rust ''delta'' monolith,
       image ghcr.io/stoatchat/api, HTTP port 8000). Revolt (recently rebranded ''Stoat'') is a MULTI-CONTAINER microservice
       stack; the API alone is not a usable deployment - you MUST deploy the companion services below pointing at the SAME

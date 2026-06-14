@@ -4,34 +4,100 @@
   "description": "Open-source HR and payroll suite (employees, leave, attendance, expenses, payroll) built on the Frappe framework and ERPNext.",
   "source": "https://github.com/frappe/hrms",
   "website": "https://frappe.io/hr",
-  "icon": "https://avatars.githubusercontent.com/u/3658922?s=200&v=4",
-  "categories": ["work", "erp", "productivity"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/frappehr/icon.png",
+  "categories": [
+    "work",
+    "erp",
+    "productivity"
+  ],
   "installation": "Frappe HR (HRMS) is a MULTI-CONTAINER Frappe stack and has NO standalone official image: it is installed as an app on top of the frappe/erpnext base image (HRMS depends on ERPNext). This template deploys the PRIMARY backend (gunicorn) image frappe/erpnext, which serves the Frappe HTTP API/app on port 8000. To run a complete, production-ready install you MUST deploy these companion services from the SAME frappe/erpnext image (only the command differs) plus the nginx frontend, and run one-time site creation: (1) frontend - image frappe/erpnext, command 'nginx-entrypoint.sh', env BACKEND=<this-app>:8000, SOCKETIO=<websocket>:9000, FRAPPE_SITE_NAME_HEADER, UPSTREAM_REAL_IP_ADDRESS - this is the public web server (port 8080). (2) websocket - image frappe/erpnext, command 'node /home/frappe/frappe-bench/apps/frappe/socketio.js' (port 9000, real-time). (3) queue-short - command 'bench worker --queue short,default'. (4) queue-long - command 'bench worker --queue long,default,short'. (5) scheduler - command 'bench schedule'. (6) configurator (run-once init) - command writes common_site_config.json from DB_HOST/DB_PORT/REDIS_CACHE/REDIS_QUEUE/SOCKETIO_PORT then exits. (7) create-site (run-once Job) - 'bench new-site' with --db-type mariadb, --mariadb-root-password, --admin-password, then 'bench --site <site> install-app erpnext && bench --site <site> install-app hrms', then 'bench use <site>'. The hrms app is what turns this into Frappe HR. All services share the /home/frappe/frappe-bench/sites volume (the extraVolume below). FIRST RUN: rotate the MariaDB password (default 'frappehr'), set a strong Administrator password during create-site, then log in at the app URL as user 'Administrator' and open the HR workspace. Frappe officially supports MariaDB (first-class) and PostgreSQL; this template uses the MariaDB add-on as the canonical/recommended database.",
   "screenshots": [],
-  "links": ["https://docs.frappe.io/hr", "https://github.com/frappe/frappe_docker"],
+  "links": [
+    "https://docs.frappe.io/hr",
+    "https://github.com/frappe/frappe_docker"
+  ],
   "license": "GNU General Public License v3.0",
   "spdx_id": "GPL-3.0",
   "stars": 2400,
   "language": "Python",
-  "image": {"repository": "frappe/erpnext", "tag": "version-15", "containerPort": "8000", "command": []},
+  "image": {
+    "repository": "frappe/erpnext",
+    "tag": "version-15",
+    "containerPort": "8000",
+    "command": []
+  },
   "envVars": [
-    {"name": "DB_HOST", "value": "frappehr-mysql"},
-    {"name": "DB_PORT", "value": "3306"},
-    {"name": "DB_NAME", "value": "frappehr"},
-    {"name": "DB_PASSWORD", "value": "frappehr"},
-    {"name": "MARIADB_ROOT_PASSWORD", "value": "frappehr"},
-    {"name": "REDIS_CACHE", "value": "redis://rfr-frappehr-valkey-readwrite:6379"},
-    {"name": "REDIS_QUEUE", "value": "redis://rfr-frappehr-valkey-readwrite:6379"},
-    {"name": "REDIS_SOCKETIO", "value": "redis://rfr-frappehr-valkey-readwrite:6379"},
-    {"name": "SOCKETIO_PORT", "value": "9000"},
-    {"name": "GUNICORN_WORKERS", "value": "2"},
-    {"name": "GUNICORN_THREADS", "value": "4"},
-    {"name": "GUNICORN_TIMEOUT", "value": "120"},
-    {"name": "FRAPPE_SITE_NAME_HEADER", "value": "{{KUBERO_APP_HOST}}"}
+    {
+      "name": "DB_HOST",
+      "value": "frappehr-mysql"
+    },
+    {
+      "name": "DB_PORT",
+      "value": "3306"
+    },
+    {
+      "name": "DB_NAME",
+      "value": "frappehr"
+    },
+    {
+      "name": "DB_PASSWORD",
+      "value": "frappehr"
+    },
+    {
+      "name": "MARIADB_ROOT_PASSWORD",
+      "value": "frappehr"
+    },
+    {
+      "name": "REDIS_CACHE",
+      "value": "redis://rfr-frappehr-valkey-readwrite:6379"
+    },
+    {
+      "name": "REDIS_QUEUE",
+      "value": "redis://rfr-frappehr-valkey-readwrite:6379"
+    },
+    {
+      "name": "REDIS_SOCKETIO",
+      "value": "redis://rfr-frappehr-valkey-readwrite:6379"
+    },
+    {
+      "name": "SOCKETIO_PORT",
+      "value": "9000"
+    },
+    {
+      "name": "GUNICORN_WORKERS",
+      "value": "2"
+    },
+    {
+      "name": "GUNICORN_THREADS",
+      "value": "4"
+    },
+    {
+      "name": "GUNICORN_TIMEOUT",
+      "value": "120"
+    },
+    {
+      "name": "FRAPPE_SITE_NAME_HEADER",
+      "value": "{{KUBERO_APP_HOST}}"
+    }
   ],
   "addons": [
-    {"type": "mariadb", "name": "frappehr", "db": "frappehr", "user": "frappehr", "password": "frappehr"},
-    {"type": "valkey", "name": "frappehr"}
+    {
+      "type": "mariadb",
+      "name": "frappehr",
+      "db": "frappehr",
+      "user": "frappehr",
+      "password": "frappehr"
+    },
+    {
+      "type": "valkey",
+      "name": "frappehr"
+    }
   ],
-  "extraVolumes": [{"mountPath": "/home/frappe/frappe-bench/sites", "name": "frappehr-sites", "size": "5Gi"}]
+  "extraVolumes": [
+    {
+      "mountPath": "/home/frappe/frappe-bench/sites",
+      "name": "frappehr-sites",
+      "size": "5Gi"
+    }
+  ]
 }

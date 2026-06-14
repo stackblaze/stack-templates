@@ -4,11 +4,18 @@
   "description": "Stunning, open-source status pages with incident management, multi-language support, monitors and customizable themes.",
   "source": "https://github.com/rajnandan1/kener",
   "website": "https://kener.ing",
-  "icon": "https://avatars.githubusercontent.com/u/16224367?s=200&v=4",
-  "categories": ["monitoring", "utilities", "productivity"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kener/icon.png",
+  "categories": [
+    "monitoring",
+    "utilities",
+    "productivity"
+  ],
   "installation": "Kener stores its data in a database that defaults to SQLite but is configured here to use the bundled PostgreSQL add-on via DATABASE_URL (rotate the postgres password from the default 'kener'). Set a strong KENER_SECRET_KEY before first start: replace the placeholder with `openssl rand -hex 32` and rotate it later if needed. ORIGIN is wired to the app's public URL so server-side calls and links resolve correctly. A 2Gi volume is mounted at /app/uploads to persist logos and uploaded assets; with Postgres selected, the /app/database SQLite directory is not required. First run: open the site and complete the setup/login, then add your monitors and customize site.json from the UI. No SMTP, S3 or external search engine is required.",
   "screenshots": [],
-  "links": ["https://kener.ing/docs/", "https://kener.ing/docs/deployment"],
+  "links": [
+    "https://kener.ing/docs/",
+    "https://kener.ing/docs/deployment"
+  ],
   "license": "MIT License",
   "spdx_id": "MIT",
   "stars": 5000,
@@ -20,15 +27,37 @@
     "command": []
   },
   "envVars": [
-    {"name": "ORIGIN", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "KENER_SECRET_KEY", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "DATABASE_URL", "value": "postgresql://kener:kener@kener-postgresql-rw:5432/kener"},
-    {"name": "PORT", "value": "3000"}
+    {
+      "name": "ORIGIN",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "KENER_SECRET_KEY",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "DATABASE_URL",
+      "value": "postgresql://kener:kener@kener-postgresql-rw:5432/kener"
+    },
+    {
+      "name": "PORT",
+      "value": "3000"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "kener", "db": "kener", "user": "kener", "password": "kener"}
+    {
+      "type": "postgres",
+      "name": "kener",
+      "db": "kener",
+      "user": "kener",
+      "password": "kener"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/app/uploads", "name": "kener-uploads", "size": "2Gi"}
+    {
+      "mountPath": "/app/uploads",
+      "name": "kener-uploads",
+      "size": "2Gi"
+    }
   ]
 }

@@ -5,7 +5,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source conversational form builder — a Typeform alternative you can self-host.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/16015833?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typebot/icon.png
     kubero.dev/template.installation: This template deploys the Typebot builder. Set NEXT_PUBLIC_VIEWER_URL to your public
       viewer URL. For production, deploy baptistearno/typebot-viewer with the same DATABASE_URL and ENCRYPTION_SECRET in the
       same pipeline phase.

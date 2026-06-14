@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source web publishing platform for sharing digital collections and creating media-rich
       exhibits, built for libraries, museums, and archives.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1460789?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/omeka/icon.png
     kubero.dev/template.installation: There is no official Omeka S image; this uses the actively maintained community image
       giocomai/omeka-s-docker (Omeka S 4.x on PHP/Apache). Omeka S supports MySQL/MariaDB only, so a mariadb add-on is deployed.
       ROTATE the mariadb add-on password and the matching MYSQL_PASSWORD env before production. On first boot, complete the

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.description: LanguageTool is an Open Source proofreading software
       for English, Spanish, French, German, Portuguese, Polish, Dutch, and more than
       20 other languages.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/5187764?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/languagetool/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '["https://github.com/Erikvl87/docker-languagetool/blob/master/docker-compose.yml"]'
     kubero.dev/template.screenshots: '["https://languagetool.org/videos/gmail_de_en.mp4"]'

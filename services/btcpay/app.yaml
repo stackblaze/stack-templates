@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted, open-source Bitcoin and Lightning payment processor with no fees, no third
       party and full store/POS/invoicing tooling.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/39504851?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/btcpay/icon.png
     kubero.dev/template.installation: 'BTCPay Server is a multi-container stack; this template deploys ONLY the primary btcpayserver
       web app backed by a Postgres add-on. It WILL NOT process payments until you also deploy its mandatory companion services
       in the same namespace: (1) NBXplorer - the UTXO indexer, image ''nicolasdorier/nbxplorer:latest'', point btcpayserver

@@ -4,23 +4,48 @@
   "description": "Open lakehouse platform with a SQL query engine and self-service semantic layer over data lakes, databases, and object storage.",
   "source": "https://github.com/dremio/dremio-oss",
   "website": "https://www.dremio.com",
-  "icon": "https://avatars.githubusercontent.com/u/1192398?s=200&v=4",
-  "categories": ["data", "development", "ai"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dremio/icon.png",
+  "categories": [
+    "data",
+    "development",
+    "ai"
+  ],
   "installation": "This template deploys a SINGLE-NODE Dremio Community Edition (dremio-oss) running coordinator + executor in one pod, which is the supported way to self-host/evaluate the OSS engine. Dremio OSS is self-contained: it stores its metadata KV store (RocksDB), uploads, and accelerator/cache files on LOCAL DISK under /opt/dremio/data, so NO database add-on is provisioned -- a persistent volume is mounted there instead and MUST remain persistent or you lose all sources, spaces, and reflections. FIRST RUN: open the web UI on port 9047, the very first form creates the admin account and password -- set a strong password there (nothing to rotate in this template). PORTS: 9047 = HTTP web UI / REST API (the containerPort published here); the engine also listens on 31010 (Dremio ODBC/native client + coordinator-executor RPC), 32010 (Apache Arrow Flight, used by Python/JDBC Arrow clients), and 45678 (inter-node coordination) -- expose those via additional Services if external clients/BI tools need them. SCALING: to run a real distributed cluster you deploy SEPARATE COMPANION apps from the SAME image `dremio/dremio-oss` configured as dedicated roles -- (1) a coordinator-only node (DREMIO_JAVA_SERVER_EXTRA_OPTS with services.coordinator.enabled=true, services.executor.enabled=false), (2) one or more executor-only nodes (services.coordinator.enabled=false, services.executor.enabled=true) that register back to the coordinator over 31010/45678, and (3) an external distributed store (S3/HDFS) for the dist path instead of the local PVC; these companions are NOT created here. NOTE: Dremio OSS uses external object stores (S3/ADLS/GCS/HDFS) and JDBC sources for actual data -- those are configured at runtime in the UI, not as add-ons. Bump the app pod size (Dremio is a JVM and needs several GiB of heap) before loading real workloads.",
   "screenshots": [],
-  "links": ["https://docs.dremio.com/current/get-started/docker-quickstart/", "https://docs.dremio.com/software/deployment/dremio-config/"],
+  "links": [
+    "https://docs.dremio.com/current/get-started/docker-quickstart/",
+    "https://docs.dremio.com/software/deployment/dremio-config/"
+  ],
   "license": "Apache License 2.0",
   "spdx_id": "Apache-2.0",
   "stars": 1400,
   "language": "Java",
-  "image": {"repository": "dremio/dremio-oss", "tag": "latest", "containerPort": "9047", "command": []},
+  "image": {
+    "repository": "dremio/dremio-oss",
+    "tag": "latest",
+    "containerPort": "9047",
+    "command": []
+  },
   "envVars": [
-    {"name": "DREMIO_JAVA_SERVER_EXTRA_OPTS", "value": "-Dpaths.dist=file:///opt/dremio/data/dist"},
-    {"name": "DREMIO_MAX_HEAP_MEMORY_SIZE_MB", "value": "2048"},
-    {"name": "DREMIO_MAX_DIRECT_MEMORY_SIZE_MB", "value": "2048"}
+    {
+      "name": "DREMIO_JAVA_SERVER_EXTRA_OPTS",
+      "value": "-Dpaths.dist=file:///opt/dremio/data/dist"
+    },
+    {
+      "name": "DREMIO_MAX_HEAP_MEMORY_SIZE_MB",
+      "value": "2048"
+    },
+    {
+      "name": "DREMIO_MAX_DIRECT_MEMORY_SIZE_MB",
+      "value": "2048"
+    }
   ],
   "addons": [],
   "extraVolumes": [
-    {"mountPath": "/opt/dremio/data", "name": "dremio-data", "size": "5Gi"}
+    {
+      "mountPath": "/opt/dremio/data",
+      "name": "dremio-data",
+      "size": "5Gi"
+    }
   ]
 }

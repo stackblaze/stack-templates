@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source inventory management and stock-control system for parts, suppliers, builds
       and orders, with a REST API and barcode support.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/29896360?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/inventree/icon.png
     kubero.dev/template.installation: 'InvenTree is a multi-container Django stack. This template runs the PRIMARY web/server
       image ''inventree/inventree:stable'' (gunicorn on :8000), wired to Postgres and Valkey (Redis cache). You MUST also
       deploy these companion services from the SAME ''inventree/inventree:stable'' image: (1) WORKER - the django-q background

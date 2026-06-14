@@ -5,7 +5,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: A self-hosted free open source website change
       detection, monitor and notification service.
-    kubero.dev/template.icon: https://changedetection.io/themes/cdio/assets/images/favicons/apple-touch-icon.png
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/changedetection/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/dgtlmoon/changedetection.io/master/docs/screenshot.png"]'

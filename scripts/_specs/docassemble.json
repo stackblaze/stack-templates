@@ -4,11 +4,18 @@
   "description": "Open-source expert system for guided interviews and document assembly, widely used to build legal-aid and law-firm self-help applications.",
   "source": "https://github.com/jhpyle/docassemble",
   "website": "https://docassemble.org",
-  "icon": "https://avatars.githubusercontent.com/u/8924866?s=200&v=4",
-  "categories": ["productivity", "automation", "documentation"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docassemble/icon.png",
+  "categories": [
+    "productivity",
+    "automation",
+    "documentation"
+  ],
   "installation": "Docassemble ships as a single all-in-one image (jhpyle/docassemble) whose roles are selected with the CONTAINERROLE env var. This template runs the web role and externalises the SQL database and Redis to the bundled add-ons. ROTATE the Postgres password and SECRETKEY (openssl rand -base64 32) before production. The container listens on internal port 80; set BEHINDHTTPSLOADBALANCER=true because Kubero's ingress terminates TLS, and DAHOSTNAME is auto-set from {{KUBERO_APP_HOST}}. On first boot the schema is created automatically; the bootstrap admin is admin@admin.com / password (set/rotate via the configuration). Persistent application data (uploaded packages, generated files, certs, config.yml) lives under /usr/share/docassemble on the volume. COMPANION SERVICES: for a production multi-server install deploy additional replicas of the SAME jhpyle/docassemble image with different CONTAINERROLE values that share the same Postgres, Redis and /usr/share/docassemble volume: CONTAINERROLE=celery (background task / document-assembly worker), CONTAINERROLE=cron (scheduled tasks), and optionally CONTAINERROLE=log (centralised logging) and CONTAINERROLE=mail. RabbitMQ is only needed for the SQL/Redis-replicated HA topology (set RABBITMQ=pyamqp://...) and can be added later; a single-node web+celery setup does not require it. A background OCR/translation ML container is not required for basic operation. To externalise file storage to S3/Azure instead of the volume, set the S3 or AZURE config keys in the docassemble configuration (not an operator add-on).",
   "screenshots": [],
-  "links": ["https://docassemble.org/docs/docker.html", "https://docassemble.org/docs/scalability.html"],
+  "links": [
+    "https://docassemble.org/docs/docker.html",
+    "https://docassemble.org/docs/scalability.html"
+  ],
   "license": "MIT License",
   "spdx_id": "MIT",
   "stars": 800,
@@ -20,26 +27,81 @@
     "command": []
   },
   "envVars": [
-    {"name": "CONTAINERROLE", "value": "web"},
-    {"name": "DBPREFIX", "value": "postgresql+psycopg2://"},
-    {"name": "DBHOST", "value": "docassemble-postgresql-rw"},
-    {"name": "DBPORT", "value": "5432"},
-    {"name": "DBNAME", "value": "docassemble"},
-    {"name": "DBUSER", "value": "docassemble"},
-    {"name": "DBPASSWORD", "value": "docassemble"},
-    {"name": "REDIS", "value": "redis://rfr-docassemble-valkey-readwrite:6379"},
-    {"name": "SECRETKEY", "value": "replace-with-openssl-rand-base64-32"},
-    {"name": "DAHOSTNAME", "value": "{{KUBERO_APP_HOST}}"},
-    {"name": "BEHINDHTTPSLOADBALANCER", "value": "true"},
-    {"name": "USEHTTPS", "value": "false"},
-    {"name": "USELETSENCRYPT", "value": "false"},
-    {"name": "TIMEZONE", "value": "America/New_York"}
+    {
+      "name": "CONTAINERROLE",
+      "value": "web"
+    },
+    {
+      "name": "DBPREFIX",
+      "value": "postgresql+psycopg2://"
+    },
+    {
+      "name": "DBHOST",
+      "value": "docassemble-postgresql-rw"
+    },
+    {
+      "name": "DBPORT",
+      "value": "5432"
+    },
+    {
+      "name": "DBNAME",
+      "value": "docassemble"
+    },
+    {
+      "name": "DBUSER",
+      "value": "docassemble"
+    },
+    {
+      "name": "DBPASSWORD",
+      "value": "docassemble"
+    },
+    {
+      "name": "REDIS",
+      "value": "redis://rfr-docassemble-valkey-readwrite:6379"
+    },
+    {
+      "name": "SECRETKEY",
+      "value": "replace-with-openssl-rand-base64-32"
+    },
+    {
+      "name": "DAHOSTNAME",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "BEHINDHTTPSLOADBALANCER",
+      "value": "true"
+    },
+    {
+      "name": "USEHTTPS",
+      "value": "false"
+    },
+    {
+      "name": "USELETSENCRYPT",
+      "value": "false"
+    },
+    {
+      "name": "TIMEZONE",
+      "value": "America/New_York"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "docassemble", "db": "docassemble", "user": "docassemble", "password": "docassemble"},
-    {"type": "valkey", "name": "docassemble"}
+    {
+      "type": "postgres",
+      "name": "docassemble",
+      "db": "docassemble",
+      "user": "docassemble",
+      "password": "docassemble"
+    },
+    {
+      "type": "valkey",
+      "name": "docassemble"
+    }
   ],
   "extraVolumes": [
-    {"mountPath": "/usr/share/docassemble", "name": "docassemble-data", "size": "5Gi"}
+    {
+      "mountPath": "/usr/share/docassemble",
+      "name": "docassemble-data",
+      "size": "5Gi"
+    }
   ]
 }

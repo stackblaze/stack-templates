@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted, all-in-one web radio management suite for running internet radio stations,
       with streaming, automation, and live DJ support.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/29005116?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/azuracast/icon.png
     kubero.dev/template.installation: 'AzuraCast is a multi-container stack; this template runs the PRIMARY web/application
       image (ghcr.io/azuracast/azuracast) which bundles nginx, PHP-FPM and the supervisord-managed background workers (scheduler,
       message queue, sync tasks) inside the single image, plus the Liquidsoap/Icecast/SHOUTcast streaming processes. External

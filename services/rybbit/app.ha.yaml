@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source, privacy-friendly, cookieless web and product analytics that is a more intuitive
       alternative to Google Analytics.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/208537280?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rybbit/icon.png
     kubero.dev/template.installation: 'Rybbit is a multi-container stack. This template deploys the PRIMARY server image ghcr.io/rybbit-io/rybbit-backend
       (Node/Koa API, port 3001). You MUST also deploy the companion frontend container ghcr.io/rybbit-io/rybbit-client (Next.js,
       port 3002) and route browser traffic to it; the client talks to this backend via BASE_URL. Add-ons provisioned: ClickHouse

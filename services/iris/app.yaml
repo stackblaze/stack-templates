@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source collaborative incident response platform for DFIR analysts to share investigation
       evidence, tasks, and timelines.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/86237962?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/iris/icon.png
     kubero.dev/template.installation: 'DFIR-IRIS is a multi-container stack; this template runs the primary web/app server
       (ghcr.io/dfir-iris/iriswebapp_app) only. You MUST deploy these companion services to make it functional: (1) a worker
       from the SAME ghcr.io/dfir-iris/iriswebapp_app image with env IRIS_WORKER=1 (it runs the Celery jobs handler and shares

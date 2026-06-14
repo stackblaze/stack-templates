@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.description: Leantime is a goals focused project management
       system for non-project managers. Building with ADHD, Autism, and dyslexia in
       mind.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/11252321?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/leantime/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/Leantime/leantime/master/public/assets/images/Screenshots/mywork.png","https://raw.githubusercontent.com/Leantime/leantime/master/public/assets/images/Screenshots/dark.png","https://raw.githubusercontent.com/Leantime/leantime/master/public/assets/images/Screenshots/kanban.png","https://raw.githubusercontent.com/Leantime/leantime/master/public/assets/images/Screenshots/timeline.png"]'

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Modern, fully featured open-source video and media content management system for building
       self-hosted media portals and streaming sites.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/54712209?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mediacms/icon.png
     kubero.dev/template.installation: 'This template runs the PRIMARY MediaCMS application container ONLY (mediacms/mediacms).
       MediaCMS is a Django + Celery MULTI-CONTAINER stack and is NOT complete with this pod alone. By default this pod is
       configured as the WEB front end (ENABLE_UWSGI=yes, ENABLE_NGINX=yes serving HTTP on port 80), with migrations and Celery

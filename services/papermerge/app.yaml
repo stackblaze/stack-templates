@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: 'Self-hosted document management system (DMS) for digital archives: scan, OCR, organize,
       tag and full-text-search PDFs and scanned documents.'
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/62459211?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/papermerge/icon.png
     kubero.dev/template.installation: 'Deploy with the bundled PostgreSQL and Valkey (Redis) add-ons; rotate the Postgres
       password and the random PAPERMERGE__SECURITY__SECRET_KEY placeholder (openssl rand -hex 32), and change the bootstrap
       superuser password PAPERMERGE__AUTH__PASSWORD before going to production. The web container listens on internal port

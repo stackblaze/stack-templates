@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Free, open-source decentralized social network server based on ActivityPub - self-hosted
       microblogging for the Fediverse.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/5188808?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mastodon/icon.png
     kubero.dev/template.installation: 'This template runs the PRIMARY Mastodon web (Puma/Rails) container from ghcr.io/mastodon/mastodon,
       HTTP on port 3000. Mastodon is a MULTI-CONTAINER stack: this single template covers ONLY the web server, so you MUST
       deploy these companion services separately for a working instance: 1) SIDEKIQ WORKER - same image ghcr.io/mastodon/mastodon:v4.4.18

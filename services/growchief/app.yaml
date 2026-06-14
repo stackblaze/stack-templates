@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: All-in-one social media outreach automation tool using stealthy human-like browser automation
       (Playwright/Patchright).
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/213232405?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/growchief/icon.png
     kubero.dev/template.installation: 'Primary web/backend image only (ghcr.io/growchief/growchief). GrowChief REQUIRES a
       Temporal orchestrator cluster as companion services that must be deployed separately: temporalio/auto-setup:1.28.1 (point
       TEMPORAL_ADDRESS at it on :7233), its own backing store temporalio postgres (postgres:16) and elasticsearch:7.17.27

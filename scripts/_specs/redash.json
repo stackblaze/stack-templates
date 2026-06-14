@@ -4,11 +4,20 @@
   "description": "Open-source data visualization and dashboarding tool to query, explore, and share insights from 30+ SQL/NoSQL/API data sources.",
   "source": "https://github.com/getredash/redash",
   "website": "https://redash.io",
-  "icon": "https://avatars.githubusercontent.com/u/11148588?s=200&v=4",
-  "categories": ["data", "monitoring", "development"],
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/redash/icon.png",
+  "categories": [
+    "data",
+    "monitoring",
+    "development"
+  ],
   "installation": "Redash is a multi-process stack: every service runs the SAME redash/redash image with a different command. This template runs the primary web server (command `server`, port 5000). You MUST ALSO deploy these companion deployments from the identical redash/redash:10.1.0 image, same env vars, to make it functional: a Celery WORKER (`celery worker --app=redash.worker --queue=queries,celery`) for running queries, a SCHEDULER (`celery worker --app=redash.worker --beat --queue=periodic,emails,schemas`) for refreshes and alerts, and a one-time INIT/migration job (`create_db`) that must run ONCE before first boot to create the schema. Bundled add-ons Postgres and Redis (provided by the Valkey add-on) are provisioned here. ROTATE before exposing: REDASH_COOKIE_SECRET and REDASH_SECRET_KEY (each `openssl rand -hex 32`; SECRET_KEY must be 32+ chars and must NOT change after data exists or saved credentials become undecryptable), plus the Postgres add-on password. Set REDASH_HOST to your public URL. After the create_db job completes and the server is up, open the app and the first registration becomes the admin. Optional: outbound email needs REDASH_MAIL_* SMTP env vars (not provisioned).",
-  "screenshots": ["https://redash.io/assets/images/elements/redash-mobile.png"],
-  "links": ["https://redash.io/help/open-source/setup", "https://github.com/getredash/setup"],
+  "screenshots": [
+    "https://redash.io/assets/images/elements/redash-mobile.png"
+  ],
+  "links": [
+    "https://redash.io/help/open-source/setup",
+    "https://github.com/getredash/setup"
+  ],
   "license": "BSD 2-Clause \"Simplified\" License",
   "spdx_id": "BSD-2-Clause",
   "stars": 27000,
@@ -17,22 +26,60 @@
     "repository": "redash/redash",
     "tag": "10.1.0",
     "containerPort": "5000",
-    "command": ["server"]
+    "command": [
+      "server"
+    ]
   },
   "envVars": [
-    {"name": "PYTHONUNBUFFERED", "value": "0"},
-    {"name": "REDASH_LOG_LEVEL", "value": "INFO"},
-    {"name": "REDASH_DATABASE_URL", "value": "postgresql://redash:redash@redash-postgresql-rw:5432/redash"},
-    {"name": "REDASH_REDIS_URL", "value": "redis://rfr-redash-valkey-readwrite:6379/0"},
-    {"name": "REDASH_COOKIE_SECRET", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "REDASH_SECRET_KEY", "value": "replace-with-openssl-rand-hex-32"},
-    {"name": "REDASH_HOST", "value": "{{KUBERO_APP_URL}}"},
-    {"name": "REDASH_WEB_WORKERS", "value": "4"},
-    {"name": "REDASH_ENFORCE_HTTPS", "value": "false"}
+    {
+      "name": "PYTHONUNBUFFERED",
+      "value": "0"
+    },
+    {
+      "name": "REDASH_LOG_LEVEL",
+      "value": "INFO"
+    },
+    {
+      "name": "REDASH_DATABASE_URL",
+      "value": "postgresql://redash:redash@redash-postgresql-rw:5432/redash"
+    },
+    {
+      "name": "REDASH_REDIS_URL",
+      "value": "redis://rfr-redash-valkey-readwrite:6379/0"
+    },
+    {
+      "name": "REDASH_COOKIE_SECRET",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "REDASH_SECRET_KEY",
+      "value": "replace-with-openssl-rand-hex-32"
+    },
+    {
+      "name": "REDASH_HOST",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "REDASH_WEB_WORKERS",
+      "value": "4"
+    },
+    {
+      "name": "REDASH_ENFORCE_HTTPS",
+      "value": "false"
+    }
   ],
   "addons": [
-    {"type": "postgres", "name": "redash", "db": "redash", "user": "redash", "password": "redash"},
-    {"type": "valkey", "name": "redash"}
+    {
+      "type": "postgres",
+      "name": "redash",
+      "db": "redash",
+      "user": "redash",
+      "password": "redash"
+    },
+    {
+      "type": "valkey",
+      "name": "redash"
+    }
   ],
   "extraVolumes": []
 }

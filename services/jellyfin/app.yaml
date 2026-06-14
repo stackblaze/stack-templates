@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Free software media system that puts you in control of managing and streaming your movies,
       TV, and music.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/45698031?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jellyfin/icon.png
     kubero.dev/template.installation: Mount media under /media or add libraries pointing to your storage after first login.
     kubero.dev/template.links: '["https://jellyfin.org/docs/"]'
     kubero.dev/template.screenshots: '["https://jellyfin.org/images/screenshots/home.png"]'

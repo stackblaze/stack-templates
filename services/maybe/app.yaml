@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source personal finance and wealth management app to track accounts, budgets, investments
       and net worth.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/63742054?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/maybe/icon.png
     kubero.dev/template.installation: 'Rails app requiring PostgreSQL and Redis (deployed as add-ons). Rotate SECRET_KEY_BASE
       to a unique value (openssl rand -hex 64) and rotate the postgres password before exposing publicly. A separate Sidekiq
       worker process (same image, command: bundle exec sidekiq) should be deployed for background jobs; the web container

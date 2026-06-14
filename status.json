@@ -1,0 +1,1307 @@
+{
+  "vikunja": {
+    "name": "vikunja",
+    "status": "pass",
+    "validatedAt": "2026-06-13T09:08:53.877Z",
+    "error": null,
+    "url": "https://qa-vikunja-f147.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 51182
+  },
+  "changedetection": {
+    "name": "changedetection",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:51:52.17Z",
+    "error": null,
+    "url": "https://qa-changedetection-e13a.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34333
+  },
+  "mattermost": {
+    "name": "mattermost",
+    "status": "pass",
+    "validatedAt": "2026-06-12T15:23:27.356Z",
+    "error": null,
+    "url": "https://qa-mattermost-1123.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 84275
+  },
+  "docmost": {
+    "name": "docmost",
+    "status": "pass",
+    "validatedAt": "2026-06-12T15:27:00.684Z",
+    "error": null,
+    "url": "https://qa-docmost-dfbc.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 85758
+  },
+  "activepieces": {
+    "name": "activepieces",
+    "status": "pass",
+    "validatedAt": "2026-06-12T15:39:11.453Z",
+    "error": null,
+    "url": "https://qa-activepieces-0430.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 707446
+  },
+  "tolgee": {
+    "name": "tolgee",
+    "status": "fail",
+    "validatedAt": "2026-06-13T02:09:34.433Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 7841
+  },
+  "azzimut": {
+    "name": "azzimut",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:35:36.361Z",
+    "error": "Template 'azzimut' not found in catalog",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 673
+  },
+  "netbird": {
+    "name": "netbird",
+    "status": "pass",
+    "validatedAt": "2026-06-13T01:35:18.455Z",
+    "error": null,
+    "url": "https://qa-netbird-db15.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 35041
+  },
+  "grav": {
+    "name": "grav",
+    "status": "pass",
+    "validatedAt": "2026-06-13T00:34:19.988Z",
+    "error": null,
+    "url": "https://qa-grav-87d6.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 51574
+  },
+  "unleash": {
+    "name": "unleash",
+    "status": "pass",
+    "validatedAt": "2026-06-13T01:36:10.973Z",
+    "error": null,
+    "url": "https://qa-unleash-7474.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 84268
+  },
+  "dokuwiki": {
+    "name": "dokuwiki",
+    "status": "pass",
+    "validatedAt": "2026-06-13T09:15:04.262Z",
+    "error": null,
+    "url": "https://qa-dokuwiki-f342.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 50276
+  },
+  "kuma": {
+    "name": "kuma",
+    "status": "pass",
+    "validatedAt": "2026-06-13T00:35:01.612Z",
+    "error": null,
+    "url": "https://qa-kuma-0f7d.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34557
+  },
+  "etherpad": {
+    "name": "etherpad",
+    "status": "pass",
+    "validatedAt": "2026-06-13T01:37:26.104Z",
+    "error": null,
+    "url": "https://qa-etherpad-2f8f.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 67976
+  },
+  "docuseal": {
+    "name": "docuseal",
+    "status": "pass",
+    "validatedAt": "2026-06-13T01:38:08.858Z",
+    "error": null,
+    "url": "https://qa-docuseal-07ea.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 35225
+  },
+  "wordpress": {
+    "name": "wordpress",
+    "status": "pass",
+    "validatedAt": "2026-06-13T00:36:46.242Z",
+    "error": null,
+    "url": "https://qa-wordpress-35c3.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 52020
+  },
+  "gitea": {
+    "name": "gitea",
+    "status": "pass",
+    "validatedAt": "2026-06-13T00:10:12.189Z",
+    "error": null,
+    "url": "https://qa-gitea-e158.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34757
+  },
+  "logto": {
+    "name": "logto",
+    "status": "fail",
+    "validatedAt": "2026-06-13T04:02:15.353Z",
+    "error": "App did not become ready (phase=unknown)",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 1223420
+  },
+  "chibisafe": {
+    "name": "chibisafe",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:39:02.768Z",
+    "error": "Failed to create app qa-chibisafe: KuberoApp.application.kubero.dev \"qa-chibisafe\" is invalid: spec.deploymentstrategy: Unsupported value: \"chibisafe\": supported values: \"docker\", \"git\", \"git-disabled\"",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 1271
+  },
+  "filestash": {
+    "name": "filestash",
+    "status": "pass",
+    "validatedAt": "2026-06-13T01:41:31.493Z",
+    "error": null,
+    "url": "https://qa-filestash-7edf.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34297
+  },
+  "dashy": {
+    "name": "dashy",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:51:43.478Z",
+    "error": null,
+    "url": "https://qa-dashy-b673.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 18845
+  },
+  "casdoor": {
+    "name": "casdoor",
+    "status": "pass",
+    "validatedAt": "2026-06-13T03:37:55.629Z",
+    "error": null,
+    "url": "https://qa-casdoor-7950.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 67857
+  },
+  "claper": {
+    "name": "claper",
+    "status": "pass",
+    "validatedAt": "2026-06-13T03:40:09.987Z",
+    "error": null,
+    "url": "https://qa-claper-194c.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 68423
+  },
+  "authorizer": {
+    "name": "authorizer",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:45:43.542Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 659577
+  },
+  "nextcloud": {
+    "name": "nextcloud",
+    "status": "pass",
+    "validatedAt": "2026-06-13T00:24:56.258Z",
+    "error": null,
+    "url": "https://qa-nextcloud-f87d.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 51779
+  },
+  "n8n": {
+    "name": "n8n",
+    "status": "pass",
+    "validatedAt": "2026-06-13T01:48:12.212Z",
+    "error": null,
+    "url": "https://qa-n8n-9710.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 51358
+  },
+  "silverbullet": {
+    "name": "silverbullet",
+    "status": "pass",
+    "validatedAt": "2026-06-13T09:15:10.688Z",
+    "error": null,
+    "url": "https://qa-silverbullet-6ac7.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 50212
+  },
+  "affine": {
+    "name": "affine",
+    "status": "pass",
+    "validatedAt": "2026-06-13T03:35:40.635Z",
+    "error": null,
+    "url": "https://qa-affine-7a49.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 119068
+  },
+  "ghost": {
+    "name": "ghost",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:28:38.363Z",
+    "error": null,
+    "url": "https://qa-ghost-8760.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 51804
+  },
+  "appflowy": {
+    "name": "appflowy",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:45:23.051Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 687788
+  },
+  "coral": {
+    "name": "coral",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:40:43.634Z",
+    "error": "Addon qa-coral-coral-valkey: Failed",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 26385
+  },
+  "metabase": {
+    "name": "metabase",
+    "status": "pass",
+    "validatedAt": "2026-06-13T01:55:54.084Z",
+    "error": null,
+    "url": "https://qa-metabase-b216.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 68250
+  },
+  "languagetool": {
+    "name": "languagetool",
+    "status": "pass",
+    "validatedAt": "2026-06-13T09:57:14.544Z",
+    "error": null,
+    "url": "https://qa-languagetool-a3b9.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 18948
+  },
+  "cryptpad": {
+    "name": "cryptpad",
+    "status": "pass",
+    "validatedAt": "2026-06-13T03:41:23.373Z",
+    "error": null,
+    "url": "https://qa-cryptpad-215b.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34917
+  },
+  "excalidraw": {
+    "name": "excalidraw",
+    "status": "pass",
+    "validatedAt": "2026-06-13T08:57:32.633Z",
+    "error": null,
+    "url": "https://qa-excalidraw-17a4.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 18458
+  },
+  "outline": {
+    "name": "outline",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:46:01.292Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 6
+  },
+  "cockpit": {
+    "name": "cockpit",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:39:21.753Z",
+    "error": "request to https://qa-cockpit-d76d.stackblaze.app/ failed, reason: getaddrinfo ENOTFOUND qa-cockpit-d76d.stackblaze.app",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 18271
+  },
+  "chatwoot": {
+    "name": "chatwoot",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:38:54.332Z",
+    "error": "Addon qa-chatwoot-chatwoot-valkey: Failed",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 26048
+  },
+  "bookstack": {
+    "name": "bookstack",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:13:13.959Z",
+    "error": null,
+    "url": "https://qa-bookstack-ec92.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 52298
+  },
+  "concrete5": {
+    "name": "concrete5",
+    "status": "pass",
+    "validatedAt": "2026-06-13T03:40:06.406Z",
+    "error": null,
+    "url": "https://qa-concrete5-cd51.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34758
+  },
+  "freshrss": {
+    "name": "freshrss",
+    "status": "pass",
+    "validatedAt": "2026-06-13T09:26:25.547Z",
+    "error": null,
+    "url": "https://qa-freshrss-7c1e.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 53722
+  },
+  "convertx": {
+    "name": "convertx",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:40:32.357Z",
+    "error": "request to https://qa-convertx-281f.stackblaze.app/ failed, reason: getaddrinfo ENOTFOUND qa-convertx-281f.stackblaze.app",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 18187
+  },
+  "memos": {
+    "name": "memos",
+    "status": "pass",
+    "validatedAt": "2026-06-13T09:08:30.88Z",
+    "error": null,
+    "url": "https://qa-memos-c6da.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 35156
+  },
+  "twenty": {
+    "name": "twenty",
+    "status": "pass",
+    "validatedAt": "2026-06-13T04:01:00.885Z",
+    "error": null,
+    "url": "https://qa-twenty-d6c3.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 215826
+  },
+  "gotify": {
+    "name": "gotify",
+    "status": "pass",
+    "validatedAt": "2026-06-13T16:39:17.941Z",
+    "error": null,
+    "url": "https://qa-gotify-8465.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34239
+  },
+  "atuin": {
+    "name": "atuin",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:45:35.527Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 655359
+  },
+  "rocketchat": {
+    "name": "rocketchat",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:47:50.858Z",
+    "error": "Ingress HTTP check failed (503)",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 115305
+  },
+  "kanboard": {
+    "name": "kanboard",
+    "status": "pass",
+    "validatedAt": "2026-06-13T09:14:53.296Z",
+    "error": null,
+    "url": "https://qa-kanboard-5576.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34704
+  },
+  "corteza": {
+    "name": "corteza",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:41:33.485Z",
+    "error": "request to https://qa-corteza-38c9.stackblaze.app/ failed, reason: getaddrinfo ENOTFOUND qa-corteza-38c9.stackblaze.app",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 51047
+  },
+  "shlink": {
+    "name": "shlink",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:44:14.691Z",
+    "error": null,
+    "url": "https://qa-shlink-d5f4.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34356
+  },
+  "databag": {
+    "name": "databag",
+    "status": "pass",
+    "validatedAt": "2026-06-13T03:41:38.188Z",
+    "error": null,
+    "url": "https://qa-databag-4bef.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 18800
+  },
+  "anse": {
+    "name": "anse",
+    "status": "pass",
+    "validatedAt": "2026-06-13T03:34:19.377Z",
+    "error": null,
+    "url": "https://qa-anse-86b2.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34722
+  },
+  "appsmith": {
+    "name": "appsmith",
+    "status": "pass",
+    "validatedAt": "2026-06-13T03:35:21.748Z",
+    "error": null,
+    "url": "https://qa-appsmith-9b23.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 67674
+  },
+  "archivebox": {
+    "name": "archivebox",
+    "status": "pass",
+    "validatedAt": "2026-06-13T03:35:25.094Z",
+    "error": null,
+    "url": "https://qa-archivebox-cce8.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 51370
+  },
+  "chatpad": {
+    "name": "chatpad",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:38:21.066Z",
+    "error": "request to https://qa-chatpad-57e2.stackblaze.app/ failed, reason: getaddrinfo ENOTFOUND qa-chatpad-57e2.stackblaze.app",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 18495
+  },
+  "filebrowser": {
+    "name": "filebrowser",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:54:24.78Z",
+    "error": null,
+    "url": "https://qa-filebrowser-09e1.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 18699
+  },
+  "directus": {
+    "name": "directus",
+    "status": "pass",
+    "validatedAt": "2026-06-13T18:01:11.984Z",
+    "error": null,
+    "url": "https://qa-directus-9c2e.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 82220
+  },
+  "ntfy": {
+    "name": "ntfy",
+    "status": "pass",
+    "validatedAt": "2026-06-13T08:57:43.797Z",
+    "error": null,
+    "url": "https://qa-ntfy-97f2.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34251
+  },
+  "linkwarden": {
+    "name": "linkwarden",
+    "status": "fail",
+    "validatedAt": "2026-06-13T04:06:15.834Z",
+    "error": "App did not become ready (phase=unknown)",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 1216278
+  },
+  "calcom": {
+    "name": "calcom",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:45:56.831Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 10046
+  },
+  "bitwarden": {
+    "name": "bitwarden",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:45:46.749Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 9921
+  },
+  "rallly": {
+    "name": "rallly",
+    "status": "pass",
+    "validatedAt": "2026-06-13T03:48:18.723Z",
+    "error": null,
+    "url": "https://qa-rallly-6080.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 69025
+  },
+  "wallabag": {
+    "name": "wallabag",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:45:03.291Z",
+    "error": null,
+    "url": "https://qa-wallabag-2e8a.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 82986
+  },
+  "opengist": {
+    "name": "opengist",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:47:09.019Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 4
+  },
+  "homarr": {
+    "name": "homarr",
+    "status": "pass",
+    "validatedAt": "2026-06-13T09:16:28.17Z",
+    "error": null,
+    "url": "https://qa-homarr-c351.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 130238
+  },
+  "navidrome": {
+    "name": "navidrome",
+    "status": "pass",
+    "validatedAt": "2026-06-13T18:25:44.478Z",
+    "error": null,
+    "url": "https://qa-navidrome-9c9c.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34664
+  },
+  "kavita": {
+    "name": "kavita",
+    "status": "pass",
+    "validatedAt": "2026-06-13T18:22:36.851Z",
+    "error": null,
+    "url": "https://qa-kavita-b7ce.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 82244
+  },
+  "homebox": {
+    "name": "homebox",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:47:08.99Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 3
+  },
+  "bluesky-pds": {
+    "name": "bluesky-pds",
+    "status": "fail",
+    "validatedAt": "2026-06-13T03:56:07.185Z",
+    "error": "App did not become ready (phase=unknown)",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 1223502
+  },
+  "shiori": {
+    "name": "shiori",
+    "status": "pass",
+    "validatedAt": "2026-06-13T09:11:21.412Z",
+    "error": null,
+    "url": "https://qa-shiori-721e.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 18932
+  },
+  "workout-tracker": {
+    "name": "workout-tracker",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:47:23.829Z",
+    "error": null,
+    "url": "https://qa-workout-tracker-6a66.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34924
+  },
+  "serpbear": {
+    "name": "serpbear",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:47:23.978Z",
+    "error": null,
+    "url": "https://qa-serpbear-3f69.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34107
+  },
+  "planka": {
+    "name": "planka",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:45:25.481Z",
+    "error": null,
+    "url": "https://qa-planka-c439.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 67710
+  },
+  "flightlog": {
+    "name": "flightlog",
+    "status": "pass",
+    "validatedAt": "2026-06-13T16:27:23.41Z",
+    "error": null,
+    "url": "https://qa-flightlog-dcaf.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 82261
+  },
+  "leantime": {
+    "name": "leantime",
+    "status": "pass",
+    "validatedAt": "2026-06-13T16:50:35.726Z",
+    "error": null,
+    "url": "https://qa-leantime-1978.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 53068
+  },
+  "umami": {
+    "name": "umami",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:49:54.125Z",
+    "error": null,
+    "url": "https://qa-umami-0b55.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 83741
+  },
+  "wikijs": {
+    "name": "wikijs",
+    "status": "pass",
+    "validatedAt": "2026-06-13T18:01:24.188Z",
+    "error": null,
+    "url": "https://qa-wikijs-abfd.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34036
+  },
+  "vaultwarden": {
+    "name": "vaultwarden",
+    "status": "pass",
+    "validatedAt": "2026-06-13T16:58:36.851Z",
+    "error": null,
+    "url": "https://qa-vaultwarden-740f.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 18363
+  },
+  "password-pusher": {
+    "name": "password-pusher",
+    "status": "pass",
+    "validatedAt": "2026-06-13T20:15:45.947Z",
+    "error": null,
+    "url": "https://qa-password-pusher-6dc8.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 67965
+  },
+  "nodebb": {
+    "name": "nodebb",
+    "status": "pass",
+    "validatedAt": "2026-06-13T21:06:59.336Z",
+    "error": null,
+    "url": "https://qa-nodebb-86df.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 51807
+  },
+  "grafana": {
+    "name": "grafana",
+    "status": "fail",
+    "validatedAt": "2026-06-13T18:42:48.268Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 702
+  },
+  "kimai": {
+    "name": "kimai",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:24:23.184Z",
+    "error": null,
+    "url": "https://qa-kimai-485e.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 101609
+  },
+  "homepage": {
+    "name": "homepage",
+    "status": "pass",
+    "validatedAt": "2026-06-13T18:57:52.665Z",
+    "error": null,
+    "url": "https://qa-homepage-ab0f.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 50509
+  },
+  "uptime-kuma": {
+    "name": "uptime-kuma",
+    "status": "pass",
+    "validatedAt": "2026-06-13T18:57:53.382Z",
+    "error": null,
+    "url": "https://qa-uptime-kuma-45a8.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 51210
+  },
+  "stirling-pdf": {
+    "name": "stirling-pdf",
+    "status": "fail",
+    "validatedAt": "2026-06-13T19:10:20.092Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 690
+  },
+  "serge": {
+    "name": "serge",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:14:39.308Z",
+    "error": null,
+    "url": "https://qa-serge-6f24.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 50292
+  },
+  "postiz": {
+    "name": "postiz",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:40:39.487Z",
+    "error": null,
+    "url": "https://qa-postiz-acdc.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 69083
+  },
+  "limesurvey": {
+    "name": "limesurvey",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:27:47.629Z",
+    "error": null,
+    "url": "https://qa-limesurvey-1d8f.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 51580
+  },
+  "paperless-ngx": {
+    "name": "paperless-ngx",
+    "status": "running",
+    "validatedAt": "2026-06-13T22:52:02.162Z",
+    "error": null,
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 2908
+  },
+  "paperless-ngx-postgresql": {
+    "name": "paperless-ngx-postgresql",
+    "status": "fail",
+    "validatedAt": "2026-06-13T22:35:26.34Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 329238
+  },
+  "wekan": {
+    "name": "wekan",
+    "status": "running",
+    "validatedAt": "2026-06-13T22:52:50.124Z",
+    "error": null,
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 7524
+  },
+  "superset": {
+    "name": "superset",
+    "status": "running",
+    "validatedAt": "2026-06-13T22:53:43.954Z",
+    "error": null,
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 14572
+  },
+  "jellyfin": {
+    "name": "jellyfin",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:53:38.061Z",
+    "error": null,
+    "url": "https://qa-jellyfin-2079.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34598
+  },
+  "immich": {
+    "name": "immich",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:57:17.311Z",
+    "error": null,
+    "url": "https://qa-immich-e1b3.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 68991
+  },
+  "infisical": {
+    "name": "infisical",
+    "status": "pass",
+    "validatedAt": "2026-06-13T20:06:05.307Z",
+    "error": null,
+    "url": "https://qa-infisical-e2c4.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 101457
+  },
+  "sterlingpdf": {
+    "name": "sterlingpdf",
+    "status": "fail",
+    "validatedAt": "2026-06-13T18:35:24.344Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 7355
+  },
+  "pairdrop": {
+    "name": "pairdrop",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:22:53.083Z",
+    "error": null,
+    "url": "https://qa-pairdrop-3bf5.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34206
+  },
+  "fider": {
+    "name": "fider",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:48:06.528Z",
+    "error": null,
+    "url": "https://qa-fider-81d6.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 67686
+  },
+  "openproject": {
+    "name": "openproject",
+    "status": "pass",
+    "validatedAt": "2026-06-13T20:44:43.218Z",
+    "error": null,
+    "url": "https://qa-openproject-ac47.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 116111
+  },
+  "tandoor": {
+    "name": "tandoor",
+    "status": "fail",
+    "validatedAt": "2026-06-13T18:42:55.913Z",
+    "error": "Validation cancelled",
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 563529
+  },
+  "fief": {
+    "name": "fief",
+    "status": "pass",
+    "validatedAt": "2026-06-13T16:28:48.165Z",
+    "error": null,
+    "url": "https://qa-fief-31aa.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 57314
+  },
+  "rsshub": {
+    "name": "rsshub",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:11:20.15Z",
+    "error": null,
+    "url": "https://qa-rsshub-3e84.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 18121
+  },
+  "mealie": {
+    "name": "mealie",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:52:13.675Z",
+    "error": null,
+    "url": "https://qa-mealie-0ba5.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 67362
+  },
+  "peppermint": {
+    "name": "peppermint",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:14:56.881Z",
+    "error": null,
+    "url": "https://qa-peppermint-f3e0.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 51362
+  },
+  "monica": {
+    "name": "monica",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:57:09.083Z",
+    "error": null,
+    "url": "https://qa-monica-4cc5.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 51116
+  },
+  "linkding": {
+    "name": "linkding",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:13:30.082Z",
+    "error": null,
+    "url": "https://qa-linkding-88ef.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 50933
+  },
+  "it-tools": {
+    "name": "it-tools",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:13:44.702Z",
+    "error": null,
+    "url": "https://qa-it-tools-79d0.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 18961
+  },
+  "dolibarr": {
+    "name": "dolibarr",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:15:06.835Z",
+    "error": null,
+    "url": "https://qa-dolibarr-3b16.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 165130
+  },
+  "plausible": {
+    "name": "plausible",
+    "status": "running",
+    "validatedAt": "2026-06-13T22:54:49.746Z",
+    "error": null,
+    "url": null,
+    "ingressOk": null,
+    "durationMs": 544004
+  },
+  "focalboard": {
+    "name": "focalboard",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:59:26.248Z",
+    "error": null,
+    "url": "https://qa-focalboard-433f.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34210
+  },
+  "matomo": {
+    "name": "matomo",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:26:52.221Z",
+    "error": null,
+    "url": "https://qa-matomo-dd4c.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 55693
+  },
+  "documenso": {
+    "name": "documenso",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:28:17.671Z",
+    "error": null,
+    "url": "https://qa-documenso-7b27.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 68166
+  },
+  "syncthing": {
+    "name": "syncthing",
+    "status": "pass",
+    "validatedAt": "2026-06-13T18:30:08.501Z",
+    "error": null,
+    "url": "https://qa-syncthing-2f56.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 19243
+  },
+  "formbricks": {
+    "name": "formbricks",
+    "status": "pass",
+    "validatedAt": "2026-06-13T20:38:05.405Z",
+    "error": null,
+    "url": "https://qa-formbricks-f54f.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 494673
+  },
+  "microbin": {
+    "name": "microbin",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:22:50.443Z",
+    "error": null,
+    "url": "https://qa-microbin-84e8.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 36191
+  },
+  "metube": {
+    "name": "metube",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:22:58.379Z",
+    "error": null,
+    "url": "https://qa-metube-1a56.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34261
+  },
+  "forgejo": {
+    "name": "forgejo",
+    "status": "pass",
+    "validatedAt": "2026-06-13T18:47:56.77Z",
+    "error": null,
+    "url": "https://qa-forgejo-9894.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 50585
+  },
+  "lychee": {
+    "name": "lychee",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:44:30.658Z",
+    "error": null,
+    "url": "https://qa-lychee-dffa.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 50372
+  },
+  "guitos": {
+    "name": "guitos",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:27:55.773Z",
+    "error": null,
+    "url": "https://qa-guitos-270c.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 18933
+  },
+  "nocodb": {
+    "name": "nocodb",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:49:21.26Z",
+    "error": null,
+    "url": "https://qa-nocodb-7439.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34580
+  },
+  "raneto": {
+    "name": "raneto",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:28:21.494Z",
+    "error": null,
+    "url": "https://qa-raneto-86b5.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34672
+  },
+  "mirotalk-p2p": {
+    "name": "mirotalk-p2p",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:28:39.018Z",
+    "error": null,
+    "url": "https://qa-mirotalk-p2p-6dac.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 35049
+  },
+  "moodist": {
+    "name": "moodist",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:28:41.244Z",
+    "error": null,
+    "url": "https://qa-moodist-155c.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34527
+  },
+  "keila": {
+    "name": "keila",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:34:12.076Z",
+    "error": null,
+    "url": "https://qa-keila-c1ee.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 68121
+  },
+  "trilium": {
+    "name": "trilium",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:53:47.536Z",
+    "error": null,
+    "url": "https://qa-trilium-b500.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34510
+  },
+  "miniflux": {
+    "name": "miniflux",
+    "status": "pass",
+    "validatedAt": "2026-06-13T17:23:08.471Z",
+    "error": null,
+    "url": "https://qa-miniflux-10af.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 68019
+  },
+  "traggo": {
+    "name": "traggo",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:36:04.308Z",
+    "error": null,
+    "url": "https://qa-traggo-7616.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 113903
+  },
+  "slash": {
+    "name": "slash",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:36:13.386Z",
+    "error": null,
+    "url": "https://qa-slash-993d.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34132
+  },
+  "slink": {
+    "name": "slink",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:12:11.734Z",
+    "error": null,
+    "url": "https://qa-slink-e60a.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 50669
+  },
+  "timetagger": {
+    "name": "timetagger",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:36:46.596Z",
+    "error": null,
+    "url": "https://qa-timetagger-b088.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 161483
+  },
+  "doccano": {
+    "name": "doccano",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:12:58.448Z",
+    "error": null,
+    "url": "https://qa-doccano-61fc.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 83320
+  },
+  "tasksmd": {
+    "name": "tasksmd",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:12:59.027Z",
+    "error": null,
+    "url": "https://qa-tasksmd-0fd5.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 97641
+  },
+  "textbee": {
+    "name": "textbee",
+    "status": "pass",
+    "validatedAt": "2026-06-13T19:19:47.253Z",
+    "error": null,
+    "url": "https://qa-textbee-092d.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 50879
+  },
+  "homer": {
+    "name": "homer",
+    "status": "pass",
+    "validatedAt": "2026-06-13T16:02:21.44Z",
+    "error": null,
+    "url": "https://qa-homer-2cf8.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 19295
+  },
+  "audiobookshelf": {
+    "name": "audiobookshelf",
+    "status": "pass",
+    "validatedAt": "2026-06-13T18:25:44.25Z",
+    "error": null,
+    "url": "https://qa-audiobookshelf-3e07.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34433
+  },
+  "calibre-web": {
+    "name": "calibre-web",
+    "status": "pass",
+    "validatedAt": "2026-06-13T18:26:22.488Z",
+    "error": null,
+    "url": "https://qa-calibre-web-4b97.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 72641
+  },
+  "planning-poker": {
+    "name": "planning-poker",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:41:40.27Z",
+    "error": null,
+    "url": "https://qa-planning-poker-6a76.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 38390
+  },
+  "twofauth": {
+    "name": "twofauth",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:41:43.758Z",
+    "error": null,
+    "url": "https://qa-twofauth-2fe4.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 35186
+  },
+  "whiteboard": {
+    "name": "whiteboard",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:41:56.311Z",
+    "error": null,
+    "url": "https://qa-whiteboard-dd18.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 34264
+  },
+  "zipline": {
+    "name": "zipline",
+    "status": "pass",
+    "validatedAt": "2026-06-13T16:26:42.854Z",
+    "error": null,
+    "url": "https://qa-zipline-7153.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 67365
+  },
+  "flowise": {
+    "name": "flowise",
+    "status": "pass",
+    "validatedAt": "2026-06-13T16:28:47.917Z",
+    "error": null,
+    "url": "https://qa-flowise-65f9.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 192482
+  },
+  "note-mark": {
+    "name": "note-mark",
+    "status": "pass",
+    "validatedAt": "2026-06-13T15:44:42.721Z",
+    "error": null,
+    "url": "https://qa-note-mark-34b4.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 18241
+  },
+  "piwigo": {
+    "name": "piwigo",
+    "status": "pass",
+    "validatedAt": "2026-06-13T16:30:46.58Z",
+    "error": null,
+    "url": "https://qa-piwigo-14f2.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 37114
+  },
+  "hedgedoc": {
+    "name": "hedgedoc",
+    "status": "pass",
+    "validatedAt": "2026-06-13T16:31:28.802Z",
+    "error": null,
+    "url": "https://qa-hedgedoc-191d.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 67768
+  },
+  "easyappointments": {
+    "name": "easyappointments",
+    "status": "pass",
+    "validatedAt": "2026-06-13T20:27:50.322Z",
+    "error": null,
+    "url": "https://qa-easyappointments-857b.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 51283
+  },
+  "plane": {
+    "name": "plane",
+    "status": "pass",
+    "validatedAt": "2026-06-13T22:43:04.62Z",
+    "error": null,
+    "url": "https://qa-plane-2c30.stackblaze.app",
+    "ingressOk": true,
+    "durationMs": 270094
+  }
+}
