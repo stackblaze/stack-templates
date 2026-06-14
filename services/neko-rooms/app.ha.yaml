@@ -67,5 +67,5 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: m1k1o/neko-rooms
+    repository: ghcr.io/m1k1o/neko-rooms
     tag: latest
