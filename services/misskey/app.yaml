@@ -59,6 +59,10 @@ spec:
             initdb:
               database: misskey
               owner: misskey
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO misskey
+                - GRANT CREATE ON SCHEMA public TO misskey
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO misskey
               secret:
                 name: misskey-postgresql-app
           enableSuperuserAccess: true
@@ -158,8 +162,43 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '3000'
     pullPolicy: Always
     repository: misskey/misskey
     tag: latest
+    command:
+    - sh
+    - -c
+    - |
+      grep -q 'kubero-seed' /misskey/.config/default.yml 2>/dev/null || cat > /misskey/.config/default.yml <<EOF
+      # kubero-seed
+      url: ${MISSKEY_URL}
+      port: 3000
+      db:
+        host: ${DATABASE_HOST}
+        port: ${DATABASE_PORT}
+        db: ${DATABASE_DB}
+        user: ${DATABASE_USER}
+        pass: ${DATABASE_PASSWORD}
+      dbReplications: false
+      redis:
+        host: ${REDIS_HOST}
+        port: ${REDIS_PORT}
+      fulltextSearch:
+        provider: sqlLike
+      id: 'aidx'
+      proxyBypassHosts:
+        - api.deepl.com
+        - api-free.deepl.com
+        - www.recaptcha.net
+        - hcaptcha.com
+        - challenges.cloudflare.com
+      EOF
+      exec pnpm run migrateandstart
