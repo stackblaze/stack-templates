@@ -7,18 +7,14 @@ metadata:
     kubero.dev/template.description: Open-source PHP e-commerce platform with a flexible catalog, checkout, promotions and
       a powerful admin for building online stores.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/magento/icon.png
-    kubero.dev/template.installation: 'Bitnami Magento image. The app web container is the PRIMARY service; companion services
-      you must run alongside it: (1) a search engine - Magento 2.4+ REQUIRES Elasticsearch 7/8 or OpenSearch 2.x, which is
-      NOT a provided operator add-on, so deploy it separately (e.g. image bitnami/opensearch or opensearchproject/opensearch)
-      and point MAGENTO_ELASTICSEARCH_HOST/ELASTICSEARCH_HOST at it on port 9200; (2) optional but recommended cron/queue
-      worker running the same bitnami/magento image with command ''php /opt/bitnami/magento/htdocs/bin/magento cron:run''
-      for scheduled tasks, indexers and async order processing. MariaDB stores all catalog/order data; Valkey (Redis-compatible)
-      is wired for page cache and session storage. First run auto-installs Magento and creates the admin user from MAGENTO_USERNAME/MAGENTO_PASSWORD/MAGENTO_EMAIL
-      - rotate MAGENTO_PASSWORD (currently a placeholder), the MariaDB password, and admin email before exposing publicly.
-      Admin panel lives at {{KUBERO_APP_URL}}/admin. Install is slow (several minutes) and memory-heavy; give the web pod
-      >=2Gi RAM (PHP memory_limit). Reindex with ''bin/magento indexer:reindex'' after first boot.'
+    kubero.dev/template.installation: 'Community ataberkylmz/magento2 image (Bitnami Magento was removed from Docker Hub).
+      MariaDB and OpenSearch 1.3 are provisioned as operator add-ons; Valkey is included for optional Redis cache/session
+      wiring after install. First boot auto-installs Magento 2.4.4 from ADMIN_* / DB_* / ELASTICSEARCH_* env vars — rotate
+      ADMIN_PASSWORD and the MariaDB password before exposing publicly. Admin panel lives at {{KUBERO_APP_URL}}/admin.
+      Install is slow (several minutes) and memory-heavy; the web pod requests 2Gi RAM. Optional: deploy a cron worker with
+      ''php bin/magento cron:run'' and configure Redis via bin/magento setup:config:set after first boot.'
     kubero.dev/template.links: '["https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/overview.html",
-      "https://github.com/bitnami/containers/tree/main/bitnami/magento"]'
+      "https://github.com/ataberkylmz/Magento2-Docker"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/magento/magento2
     kubero.dev/template.categories: '["e-commerce", "cms", "work"]'
@@ -108,71 +104,93 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  - displayName: OpenSearch
+    env: []
+    icon: /img/addons/opensearch.svg
+    id: kubero-operator
+    kind: KuberoOpenSearch
+    resourceDefinitions:
+      KuberoOpenSearch:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoOpenSearch
+        metadata:
+          name: magento-elasticsearch
+        spec:
+          opensearch:
+            clusterName: magento-elasticsearch
+            masterService: magento-elasticsearch
+            image:
+              tag: '1.3.20'
+            singleNode: true
+            replicas: 1
+            persistence:
+              enabled: true
+              storageClass: fast
+              size: 5Gi
+            securityConfig:
+              enabled: false
+            config:
+              opensearch.yml: |
+                cluster.name: magento-elasticsearch
+                network.host: 0.0.0.0
+                discovery.type: single-node
+                plugins.security.disabled: true
   envVars:
   - name: MAGENTO_HOST
     value: '{{KUBERO_APP_HOST}}'
-  - name: MAGENTO_ENABLE_HTTPS
-    value: 'yes'
-  - name: MAGENTO_ENABLE_ADMIN_HTTPS
-    value: 'yes'
-  - name: MAGENTO_DEPLOY_STATIC_CONTENT
-    value: 'yes'
-  - name: MAGENTO_USERNAME
-    value: admin
-  - name: MAGENTO_PASSWORD
-    value: replace-with-openssl-rand-base64-32
-  - name: MAGENTO_EMAIL
-    value: admin@example.com
-  - name: MAGENTO_FIRST_NAME
-    value: Store
-  - name: MAGENTO_LAST_NAME
-    value: Admin
-  - name: MAGENTO_DATABASE_HOST
+  - name: USE_SSL
+    value: '1'
+  - name: DB_SERVER
     value: magento-mysql
-  - name: MAGENTO_DATABASE_PORT_NUMBER
+  - name: DB_PORT
     value: '3306'
-  - name: MAGENTO_DATABASE_NAME
+  - name: DB_NAME
     value: magento
-  - name: MAGENTO_DATABASE_USER
+  - name: DB_USER
     value: magento
-  - name: MAGENTO_DATABASE_PASSWORD
+  - name: DB_PASSWORD
     value: magento
-  - name: MAGENTO_SEARCH_ENGINE
-    value: elasticsearch7
-  - name: MAGENTO_ELASTICSEARCH_HOST
+  - name: ELASTICSEARCH_SERVER
     value: magento-elasticsearch
-  - name: MAGENTO_ELASTICSEARCH_PORT_NUMBER
+  - name: ELASTICSEARCH_PORT
     value: '9200'
-  - name: ELASTICSEARCH_HOST
-    value: magento-elasticsearch
-  - name: ELASTICSEARCH_PORT_NUMBER
-    value: '9200'
-  - name: MAGENTO_USE_REDIS_CACHE
-    value: 'yes'
-  - name: MAGENTO_CACHE_HOST
-    value: rfr-magento-valkey-readwrite
-  - name: MAGENTO_CACHE_PORT_NUMBER
-    value: '6379'
-  - name: MAGENTO_USE_REDIS_SESSION
-    value: 'yes'
-  - name: MAGENTO_SESSION_HOST
-    value: rfr-magento-valkey-readwrite
-  - name: MAGENTO_SESSION_PORT_NUMBER
-    value: '6379'
+  - name: ADMIN_USERNAME
+    value: admin
+  - name: ADMIN_PASSWORD
+    value: replace-with-openssl-rand-base64-32
+  - name: ADMIN_EMAIL
+    value: admin@example.com
+  - name: ADMIN_NAME
+    value: Store
+  - name: ADMIN_LASTNAME
+    value: Admin
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /bitnami/magento
+    mountPath: /var/www/html
     name: magento-data
     size: 5Gi
   cronjobs: []
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
   image:
-    containerPort: '8080'
+    containerPort: '80'
     pullPolicy: Always
-    repository: bitnami/magento
-    tag: latest
+    repository: ataberkylmz/magento2
+    tag: 2.4.4
