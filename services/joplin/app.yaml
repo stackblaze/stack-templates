@@ -60,6 +60,10 @@ spec:
               owner: joplin
               secret:
                 name: joplin-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO joplin
+                - GRANT CREATE ON SCHEMA public TO joplin
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO joplin
           enableSuperuserAccess: true
           superuserSecret:
             name: joplin-postgresql-superuser
