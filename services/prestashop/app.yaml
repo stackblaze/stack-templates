@@ -116,7 +116,7 @@ spec:
   healthcheck:
     enabled: true
     path: /
-    startupSeconds: 600
+    startupSeconds: 1200
     timeoutSeconds: 5
     periodSeconds: 10
   image:
