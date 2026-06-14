@@ -120,6 +120,8 @@ spec:
     value: '{{KUBERO_APP_URL}}/api'
   - name: DATABASE_LINK
     value: mysql:unibee:unibee@tcp(unibee-mysql:3306)/unibee?loc=UTC&parseTime=false
+  - name: DB_HOST
+    value: unibee-mysql
   - name: REDIS_ADDRESS
     value: rfr-unibee-valkey-readwrite:6379
   - name: REDIS_PASSWORD
@@ -128,6 +130,12 @@ spec:
     value: ''
   extraVolumes: []
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /health
+    startupSeconds: 180
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -137,3 +145,15 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/unibee-api
     tag: v1.9.0
+    command:
+    - sh
+    - -c
+    - |
+      set -e
+      apk add --no-cache mysql-client netcat-openbsd >/dev/null
+      while ! nc -z "${DB_HOST}" 3306 2>/dev/null; do sleep 2; done
+      if ! mysql -h"${DB_HOST}" -uunibee -punibee unibee -N -e "SHOW TABLES LIKE 'merchant';" 2>/dev/null | grep -q merchant; then
+        curl -fsSL "https://raw.githubusercontent.com/UniBee-Billing/unibee/v1.9.0/mysql/structure.sql" \
+          | mysql -h"${DB_HOST}" -uunibee -punibee unibee
+      fi
+      cd /app && exec ./main
