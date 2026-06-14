@@ -84,6 +84,10 @@ spec:
     value: http://+:80
   - name: ASPNETCORE_ENVIRONMENT
     value: Production
+  - name: ASPNETCORE_FORWARDEDHEADERS_ENABLED
+    value: 'true'
+  - name: HostingConfig__UseProxy
+    value: 'true'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -107,7 +111,3 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/nopcommerce
     tag: '4.90.4'
-    command:
-    - sh
-    - -c
-    - sleep 45 && exec dotnet Nop.Web.dll
