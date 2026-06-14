@@ -9,8 +9,10 @@ metadata:
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/countly/icon.png
     kubero.dev/template.installation: 'Countly Community Edition is a multi-process stack. This template runs the PRIMARY
       all-in-one image countly/countly-server, which bundles Nginx plus BOTH Node.js processes (the API ingestion process
-      and the frontend dashboard) behind a single HTTP port 80. DATASTORE: Countly stores everything in MongoDB. There is
-      no native MongoDB add-on, so this template provisions the MongoDB-wire-compatible ''documentdb'' add-on (Microsoft DocumentDB,
+      and the frontend dashboard) behind a single HTTP port 80. Pin to 23.11.22 — latest Countly (25.x) targets MongoDB 8
+      and fails on the documentdb add-on; 23.11 uses MongoDB 6.x APIs compatible with DocumentDB. Requires at least 1Gi
+      memory; first boot can take several minutes. DATASTORE: Countly stores everything in MongoDB. There is no native
+      MongoDB add-on, so this template provisions the MongoDB-wire-compatible ''documentdb'' add-on (Microsoft DocumentDB,
       SCRAM-SHA-256 + TLS, user mongoadmin). COMPATIBILITY CAVEAT: Countly targets genuine MongoDB and uses some Mongo-specific
       server behaviour; DocumentDB covers the common wire protocol but full feature parity is not guaranteed - if you hit
       issues, point COUNTLY_CONFIG__MONGODB at an external real MongoDB 6.x/7.x instance instead and drop the add-on. The
@@ -69,7 +71,9 @@ spec:
           password: countly
   envVars:
   - name: COUNTLY_CONFIG__MONGODB
-    value: mongodb://mongoadmin:countly@documentdb-service-countly-documentdb:10260/countly?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
+    value: mongodb://mongoadmin:countly@documentdb-service-countly-documentdb:10260/countly?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false&serverSelectionTimeoutMS=60000
+  - name: NODE_OPTIONS
+    value: --max-old-space-size=1536
   - name: COUNTLY_CONFIG_API_API_DOMAIN
     value: '{{KUBERO_APP_HOST}}'
   - name: COUNTLY_CONFIG_FRONTEND_WEB_DOMAIN
@@ -82,6 +86,19 @@ spec:
     name: countly-appimages
     size: 2Gi
   cronjobs: []
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /o/ping
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -90,4 +107,4 @@ spec:
     containerPort: '80'
     pullPolicy: Always
     repository: countly/countly-server
-    tag: latest
+    tag: 23.11.22
