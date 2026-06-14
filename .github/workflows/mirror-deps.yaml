@@ -129,10 +129,20 @@ jobs:
             dest_tag: 'latest'
             dest_name: taiga-back
 
+          # Tracardi API — Docker Hub only; parallel QA hits 429 rate limit.
+          - source: docker.io/tracardi/tracardi-api:1.1.6
+            dest_tag: '1.1.6'
+            dest_name: tracardi-api
+
           # Total.js Flow — Docker Hub only; parallel QA hits 429 rate limit.
           - source: docker.io/totalplatform/flow:latest
             dest_tag: 'latest'
             dest_name: totaljs-flow
+
+          # UniBee API — Docker Hub only; parallel QA hits 429 rate limit.
+          - source: docker.io/unibee/api:v1.9.0
+            dest_tag: 'v1.9.0'
+            dest_name: unibee-api
 
           # Temporal auto-setup — Docker Hub hits 429 rate limit in parallel QA.
           - source: docker.io/temporalio/auto-setup:1.29

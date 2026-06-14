@@ -8,7 +8,7 @@ metadata:
       and segments, and orchestrating real-time customer journeys.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tracardi/icon.png
     kubero.dev/template.installation: 'Tracardi is a multi-container stack; this template runs ONLY the primary API/server
-      image tracardi/tracardi-api on internal port 80. OpenSearch 1.3.x (`tracardi-opensearch`) is provisioned automatically
+      image tracardi/tracardi-api on internal port 80 (mirrored to GHCR to avoid Docker Hub rate limits). OpenSearch 1.3.x (`tracardi-opensearch`) is provisioned automatically
       as the Elasticsearch-compatible datastore for events/profiles/segments (Tracardi supports ES 7.x or OpenSearch). The MySQL
       config DB is provisioned via the mariadb add-on and Redis cache via the valkey add-on. Deploy these COMPANION services
       from the same Tracardi image family, sharing
@@ -194,5 +194,5 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: tracardi/tracardi-api
+    repository: ghcr.io/stackblaze/stack-templates/tracardi-api
     tag: 1.1.6
