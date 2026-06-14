@@ -180,6 +180,11 @@ jobs:
             dest_tag: 'latest'
             dest_name: wger-server
 
+          # UVdesk — community image on Docker Hub hits 429 rate limit in QA.
+          - source: docker.io/dietermartens/uvdesk:latest
+            dest_tag: 'latest'
+            dest_name: uvdesk
+
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@v3

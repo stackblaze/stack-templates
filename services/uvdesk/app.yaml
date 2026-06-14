@@ -105,5 +105,5 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: dietermartens/uvdesk
+    repository: ghcr.io/stackblaze/stack-templates/uvdesk
     tag: latest
