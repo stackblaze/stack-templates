@@ -61,9 +61,9 @@ spec:
               secret:
                 name: metabase-postgres-postgresql-app
               postInitApplicationSQL:
-              - GRANT ALL ON SCHEMA public TO metabase-postgres
-              - GRANT CREATE ON SCHEMA public TO metabase-postgres
-              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO metabase-postgres
+              - GRANT ALL ON SCHEMA public TO "metabase-postgres"
+              - GRANT CREATE ON SCHEMA public TO "metabase-postgres"
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO "metabase-postgres"
           enableSuperuserAccess: true
           superuserSecret:
             name: metabase-postgres-postgresql-superuser
