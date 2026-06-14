@@ -54,6 +54,10 @@ spec:
               owner: airflow
               secret:
                 name: airflow-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO airflow
+              - GRANT CREATE ON SCHEMA public TO airflow
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO airflow
           enableSuperuserAccess: true
           superuserSecret:
             name: airflow-postgresql-superuser
@@ -117,4 +121,5 @@ spec:
     pullPolicy: IfNotPresent
     containerPort: '8080'
     command:
+    - airflow
     - standalone
