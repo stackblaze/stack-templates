@@ -12,7 +12,8 @@ metadata:
       disabled. The bundled MariaDB add-on holds all relational data; rotate the default db password (currently the slug 'minthcm')
       after first deploy. On first run the entrypoint installs the schema using MINT_USER/MINT_PASS (admin/minthcm) and MINT_URL
       ({{KUBERO_APP_URL}}) - log in and change the admin password immediately. Set INSTALL_DEMO_DATA=yes only for evaluation.
-      Persistent app code, config and uploads live under /var/www/html.
+      First boot clones the app and runs MintCLI install (several minutes). Persistent state lives under /var/www/html (.initialized
+      marker) and /var/spool/cron/crontabs (scheduled jobs).
     kubero.dev/template.links: '["https://minthcm.org/support/deploy-minthcm-on-docker/", "https://github.com/minthcm/minthcm"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/minthcm/minthcm
@@ -116,7 +117,26 @@ spec:
     mountPath: /var/www/html
     name: minthcm-data
     size: 5Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/spool/cron/crontabs
+    name: minthcm-cron
+    size: 1Gi
   cronjobs: []
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -126,3 +146,8 @@ spec:
     pullPolicy: Always
     repository: minthcm/minthcm
     tag: latest
+    # Image CMD ends with `exec bash`, which exits immediately without a TTY in Kubernetes.
+    command:
+    - bash
+    - -c
+    - /usr/local/bin/start.sh; exec tail -f /dev/null
