@@ -168,6 +168,13 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  # Laravel migrations + DB seeding exceed the default ~90s startup probe.
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '80'
     pullPolicy: Always
