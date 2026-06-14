@@ -185,4 +185,4 @@ spec:
     command:
     - sh
     - -c
-    - node packages/server/dist/cli.js system:migrate:latest && node packages/server/dist/cli.js tenants:migrate:latest && exec node packages/server/dist/main.js
+    - cd packages/server && node dist/cli.js system:migrate:latest && node dist/cli.js tenants:migrate:latest && exec node dist/main.js
