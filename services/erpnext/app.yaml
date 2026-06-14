@@ -148,6 +148,19 @@ spec:
     name: erpnext-sites
     size: 5Gi
   cronjobs: []
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 10
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -157,3 +170,49 @@ spec:
     pullPolicy: Always
     repository: frappe/erpnext
     tag: version-15
+    command:
+    - bash
+    - -c
+    - |
+      set -e
+      cd /home/frappe/frappe-bench
+      ASSETS_PATH="/home/frappe/frappe-bench/sites/assets"
+      BAKED_PATH="/home/frappe/frappe-bench/assets"
+      echo "Linking fresh assets to volume..."
+      rm -rf "$ASSETS_PATH"
+      mkdir -p "$(dirname "$ASSETS_PATH")"
+      ln -s "$BAKED_PATH" "$ASSETS_PATH"
+      ls -1 apps > sites/apps.txt
+      bench set-config -g db_host "$DB_HOST"
+      bench set-config -gp db_port "$DB_PORT"
+      bench set-config -g redis_cache "$REDIS_CACHE"
+      bench set-config -g redis_queue "$REDIS_QUEUE"
+      bench set-config -g redis_socketio "$REDIS_SOCKETIO"
+      bench set-config -gp socketio_port "$SOCKETIO_PORT"
+      SITE="${FRAPPE_SITE_NAME_HEADER:-frontend}"
+      if [ ! -d "sites/$SITE" ]; then
+        wait-for-it -t 120 "$DB_HOST:$DB_PORT"
+        REDIS_HOST="${REDIS_CACHE#redis://}"
+        REDIS_HOST="${REDIS_HOST%%/*}"
+        wait-for-it -t 120 "$REDIS_HOST"
+        bench new-site "$SITE" \
+          --mariadb-user-host-login-scope=% \
+          --db-root-password="$MARIADB_ROOT_PASSWORD" \
+          --admin-password=admin \
+          --install-app erpnext \
+          --set-default
+      fi
+      GUNICORN_THREADS=${GUNICORN_THREADS:-4}
+      GUNICORN_WORKERS=${GUNICORN_WORKERS:-2}
+      GUNICORN_TIMEOUT=${GUNICORN_TIMEOUT:-120}
+      echo "Booting Gunicorn with $GUNICORN_WORKERS workers and $GUNICORN_THREADS threads..."
+      exec /home/frappe/frappe-bench/env/bin/gunicorn \
+        --chdir=/home/frappe/frappe-bench/sites \
+        --bind=0.0.0.0:8000 \
+        --threads="$GUNICORN_THREADS" \
+        --workers="$GUNICORN_WORKERS" \
+        --worker-class=gthread \
+        --worker-tmp-dir=/dev/shm \
+        --timeout="$GUNICORN_TIMEOUT" \
+        --preload \
+        frappe.app:application
