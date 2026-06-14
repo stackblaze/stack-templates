@@ -15,28 +15,111 @@ metadata:
     kubero.dev/template.website: https://authorizer.dev/
   name: authorizer
 spec:
-  addons: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: authorizer-db
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: authorizer
+              owner: authorizer
+              secret:
+                name: authorizer-db-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO authorizer
+                - GRANT CREATE ON SCHEMA public TO authorizer
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO authorizer
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: authorizer-db-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: authorizer-db-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: authorizer
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: authorizer-db-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: authorizer
+          password: authorizer
   cronjobs: []
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_TYPE
-    value: sqlite
+    value: postgres
   - name: DATABASE_URL
-    value: /database/authorizer.db
+    value: postgresql://authorizer:authorizer@authorizer-db-rw:5432/authorizer
+  - name: CLIENT_ID
+    value: authorizer-client
+  - name: CLIENT_SECRET
+    value: changeMeSecret
   - name: ADMIN_SECRET
     value: changeMe
-  extraVolumes:
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /database
-    name: authorizer-data-volume
-    size: 1Gi
+  - name: JWT_SECRET
+    value: changeMeJwtSecret
+  healthcheck:
+    enabled: true
+    path: /healthz
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
+  extraVolumes: []
   image:
     containerPort: '8080'
+    pullPolicy: Always
     repository: lakhansamani/authorizer
     tag: latest
+    command:
+    - sh
+    - -c
+    - |
+      exec ./authorizer \
+        --database-type=postgres \
+        --database-url="$DATABASE_URL" \
+        --client-id="$CLIENT_ID" \
+        --client-secret="$CLIENT_SECRET" \
+        --admin-secret="$ADMIN_SECRET" \
+        --jwt-type=HS256 \
+        --jwt-secret="$JWT_SECRET" \
+        --allowed-origins="{{KUBERO_APP_URL}},https://{{KUBERO_APP_HOST}}"
   name: authorizer
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 512Mi
   web:
     replicaCount: 1
   worker:
