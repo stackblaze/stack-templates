@@ -145,6 +145,8 @@ spec:
             name: dotcms-opensearch
           spec:
             opensearch:
+              clusterName: dotcms-opensearch
+              masterService: dotcms-opensearch
               image:
                 tag: "1.3.20"
               # 3-node HA OpenSearch. The KuberoOpenSearch chart (opensearch-
