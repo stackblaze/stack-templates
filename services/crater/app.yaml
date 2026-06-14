@@ -13,8 +13,8 @@ metadata:
       32` and prefix with `base64:`, i.e. set APP_KEY=base64:<value>) and the MariaDB password (default ''crater''). APP_URL
       is pre-filled with {{KUBERO_APP_URL}} and MUST match the public URL or cookie-based auth (4.0.0+) will fail. FIRST RUN:
       browse to the app URL and complete the on-boarding wizard (admin account, company, currency); the wizard runs DB migrations
-      automatically. Persistent app data (uploads, generated PDF invoices, logo) lives under storage/ and is kept on
-      the mounted volume at /var/www/html/storage. Cache/queue/session default to the database and file drivers (no Redis required); SMTP for mail
+      automatically. Persistent app data lives under /var/www/html (application code, uploads, storage); mount the
+      volume at the app root so the image auto-installer can bootstrap on first boot. Cache/queue/session default to the database and file drivers (no Redis required); SMTP for mail
       and optional S3 for storage are configured later via env vars or the Settings UI.'
     kubero.dev/template.links: '["https://docs.craterapp.com/", "https://github.com/jee-r/docker-crater"]'
     kubero.dev/template.screenshots: '["https://craterapp.com/static/img/crater-preview.png"]'
@@ -114,7 +114,7 @@ spec:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /var/www/html/storage
+    mountPath: /var/www/html
     name: crater-data
     size: 3Gi
   cronjobs: []
