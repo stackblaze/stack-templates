@@ -171,7 +171,7 @@ spec:
   worker:
     replicaCount: 0
   image:
-    containerPort: '8000'
+    containerPort: '8080'
     pullPolicy: Always
     repository: frappe/erpnext
     tag: version-15
@@ -208,17 +208,26 @@ spec:
           --install-app erpnext \
           --set-default
       fi
+      export BACKEND=127.0.0.1:8000
+      export SOCKETIO=127.0.0.1:9000
+      export UPSTREAM_REAL_IP_ADDRESS=127.0.0.1
+      export UPSTREAM_REAL_IP_HEADER=X-Forwarded-For
+      export UPSTREAM_REAL_IP_RECURSIVE=off
+      export FRAPPE_SITE_NAME_HEADER="$SITE"
       GUNICORN_THREADS=${GUNICORN_THREADS:-4}
       GUNICORN_WORKERS=${GUNICORN_WORKERS:-2}
       GUNICORN_TIMEOUT=${GUNICORN_TIMEOUT:-120}
       echo "Booting Gunicorn with $GUNICORN_WORKERS workers and $GUNICORN_THREADS threads..."
-      exec /home/frappe/frappe-bench/env/bin/gunicorn \
+      /home/frappe/frappe-bench/env/bin/gunicorn \
         --chdir=/home/frappe/frappe-bench/sites \
-        --bind=0.0.0.0:8000 \
+        --bind=127.0.0.1:8000 \
         --threads="$GUNICORN_THREADS" \
         --workers="$GUNICORN_WORKERS" \
         --worker-class=gthread \
         --worker-tmp-dir=/dev/shm \
         --timeout="$GUNICORN_TIMEOUT" \
         --preload \
-        frappe.app:application
+        frappe.app:application &
+      node /home/frappe/frappe-bench/apps/frappe/socketio.js &
+      wait-for-it -t 120 127.0.0.1:8000
+      exec /usr/local/bin/nginx-entrypoint.sh
