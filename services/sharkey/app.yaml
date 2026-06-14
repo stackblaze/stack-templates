@@ -66,6 +66,10 @@ spec:
             initdb:
               database: sharkey
               owner: sharkey
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO sharkey
+                - GRANT CREATE ON SCHEMA public TO sharkey
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO sharkey
               secret:
                 name: sharkey-postgresql-app
           enableSuperuserAccess: true
@@ -165,8 +169,43 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: joinsharkey/sharkey
-    tag: stable
+    repository: registry.activitypub.software/transfem-org/sharkey
+    tag: latest
+    command:
+    - sh
+    - -c
+    - |
+      grep -q 'kubero-seed' /sharkey/.config/default.yml 2>/dev/null || cat > /sharkey/.config/default.yml <<EOF
+      # kubero-seed
+      url: ${SHARKEY_URL}
+      port: 3000
+      db:
+        host: ${DATABASE_HOST}
+        port: ${DATABASE_PORT}
+        db: ${DATABASE_DB}
+        user: ${DATABASE_USER}
+        pass: ${DATABASE_PASSWORD}
+      dbReplications: false
+      redis:
+        host: ${REDIS_HOST}
+        port: ${REDIS_PORT}
+      fulltextSearch:
+        provider: sqlLike
+      id: 'aidx'
+      proxyBypassHosts:
+        - api.deepl.com
+        - api-free.deepl.com
+        - www.recaptcha.net
+        - hcaptcha.com
+        - challenges.cloudflare.com
+      EOF
+      exec pnpm run migrateandstart
