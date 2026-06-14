@@ -167,3 +167,9 @@ spec:
     pullPolicy: Always
     repository: jhpyle/docassemble
     tag: latest
+    command:
+    - bash
+    - -c
+    - |
+      mkdir -p /usr/share/docassemble/log /usr/share/docassemble/config /usr/share/docassemble/files /usr/share/docassemble/backup /usr/share/docassemble/certs
+      exec /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
