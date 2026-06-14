@@ -78,12 +78,14 @@ spec:
     containerPort: '80'
     pullPolicy: Always
     repository: countly/countly-server
-    tag: 22.03.6
+    tag: 23.11.22
     command:
     - sh
     - -c
     - |
+      export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
       ln -sf /usr/bin/mongosh /usr/bin/mongo
+      sed -i 's/mongo localhost/mongosh localhost/g' /etc/service/countly-api/run /etc/service/countly-dashboard/run
       mkdir -p /etc/nginx/sites-enabled
       rm -f /etc/nginx/conf.d/default.conf
       chown -R mongodb:mongodb /var/lib/mongodb
