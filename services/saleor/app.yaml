@@ -123,6 +123,8 @@ spec:
     value: redis://rfr-saleor-valkey-readwrite:6379/1
   - name: SECRET_KEY
     value: replace-with-openssl-rand-hex-32
+  - name: RSA_PRIVATE_KEY
+    value: '-----BEGIN RSA PRIVATE KEY-----\nMIIEogIBAAKCAQEAp8zRrQrPdMq+mn38jXyWe3PwQzbjPZY/am/z1t+ZQ3y0JOqt\ng7mznd06ShlEQ+e2EeyYSfKJoTuJqVuTTTVnXlhWdxR8OFQIgNDpTU17qcSdtoZ3\nYvlZV9UgVBAhxLvl82CTAw3VU3FQzBlIH2Mb0exCuMPsbXU6/xPUnnEaVYJgIDfe\nXWa5vwySkyjgiTBc/9ZwXPAnz32+MVST+oD0WDkUsXXT6BFDIAIT1zAbMvzYeUMR\n3ZztRWI+Fb/U1FECTqjmkAm76ke5k82D9MTCxg5KnWU/g4hS7LP7mf/uueTO2d4f\ncnhiDl+Wv8WGgKplbctD7RfpS5L//HvfFBnCXQIDAQABAoIBAApJCJjP0ZJcrg0N\nXWUKcV/iUKRnZsuQMYATmibo1ZMN1QNGm474MO1jfCPtbgzaf64UFOvtcP21cZ/0\nTsWxWQ4ZoefSf+BlAuYVyBh2qsvnvcIMdnYWMiGAh7wssUvcN5aw1qSzMkkB0wcb\nopstPu03CzTvlMb1zqwIGg+B1RskwAI46cBJ8wMlZEcFWDTQBOzzD8tdJP1E7Ax4\nXOgrtnI9pZvhQkvaW5ydvQkF/ZK2n6YrCBetfyVPgC8unLR9KD/TZsBcuuk5LOqX\nJ8y2o79QsJL8Iqva9/n4vhy7KUbvBnDDHDzAXJv9Wbxs8ytJPgk8uV0t15xblIZu\nY3Z4O/ECgYEA1AyMJGnPxD5bSpq4DK7RCWKlEReMFeW+aCALog4hVFAcCR2Raial\njRpJV/YI2AOSyyxqmS2QB1XE8TKU594UOrS/EeAHVBstOdOZE7Qd2r1yEI7aLK37\nCt0s7q0hLRZr9byuuuZYAQVhbzZk1ypeRjVL3xLv5eHHMB8JRAmm+e0CgYEAypRl\nN/HK43ufI7cELwWHPgMlx4Ye+4CXbXkef96fN9GDlmrt0VJzPQwesFP9QRyXZdN6\n+K6sr4vDzYrOW4dNJdsTfOribFueLE2ygSNeGur5u7HTwCHJujjk6TJmqSk5CxcV\n08sJFFfErGmtWqTKBFmf9S4+HnlnENRbJQVGHDECgYBHWBlmvvsaiehpR3kZO1A1\nmizzfTqyu2O+4NlJIvvvxCxKnNoqHuqgePGoWK1NEJa5KS6MbxoAfckPZfdXtA6W\nWe3Xc8rDb4ld5WWhjX5l9EuGaqnZUogedaAChdmds+eK/HrFg26kmUzZADIZerXR\nZWkrmtGAROChvi995sl5WQKBgC1L7S4LNLCU7cqQm7Df7ZOiJIpupPLbmAB0eqtg\n3f0fLesuUariYr4dvabzwMcUW437MZ31gMtn1wpYpTe2EzwJtlvSMXrFKaMCZI2X\nmO0v6VNcudpWM8MeAaFbEbV1cDnYmZrX5VnVHjbnEkoYWsuKNsgd5Onvf2o18YNf\noIOhAoGALz446ahVqVLVR7hge3exlcD54sVQsbjVmplDAoY2Ay0gCXEjYk353x26\nCNiOxAcP5C6sJ6m7fbHQIMMI2nPVvON2E++XpsWT6zPkX4sfOHfnSm17mcSiiui5\nwBOm/zUUNRD1S1sEVQIdvyopO5w8EtEc4KkWh6+jXH7XBR+Uplc=\n-----END RSA PRIVATE KEY-----\n'
   - name: DEBUG
     value: 'False'
   - name: ALLOWED_HOSTS
@@ -151,6 +153,12 @@ spec:
     name: saleor-media
     size: 5Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /health/
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -160,3 +168,7 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/saleor/saleor
     tag: '3.20'
+    command:
+    - sh
+    - -c
+    - python manage.py migrate --noinput && gunicorn --bind :8000 --workers 4 --worker-class saleor.asgi.gunicorn_worker.UvicornWorker saleor.asgi:application
