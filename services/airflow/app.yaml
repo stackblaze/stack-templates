@@ -85,7 +85,7 @@ spec:
   - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
     value: postgresql+psycopg2://airflow:airflow@airflow-postgresql-rw:5432/airflow
   - name: AIRFLOW__CORE__FERNET_KEY
-    value: 46BKJo028lCzISOp8O8lyi4O6STaT8qtkQeAysY=
+    value: CfPdvNM1LwtKIeqg7rMUA_2cc6mw2DuSVcQ3GIcuauA=
   - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG
     value: 'False'
   - name: _AIRFLOW_WWW_USER_CREATE
