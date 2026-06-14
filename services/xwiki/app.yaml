@@ -60,6 +60,10 @@ spec:
               owner: xwiki
               secret:
                 name: xwiki-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO xwiki
+                - GRANT CREATE ON SCHEMA public TO xwiki
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO xwiki
           enableSuperuserAccess: true
           superuserSecret:
             name: xwiki-postgresql-superuser
@@ -100,6 +104,19 @@ spec:
     name: xwiki-data
     size: 5Gi
   cronjobs: []
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 10
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -107,5 +124,5 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: xwiki
+    repository: ghcr.io/stackblaze/stack-templates/xwiki
     tag: stable-postgres-tomcat

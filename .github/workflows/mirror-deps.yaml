@@ -159,6 +159,11 @@ jobs:
             dest_tag: '24.8.7.41'
             dest_name: clickhouse-server
 
+          # XWiki — official Docker Hub image hits 429 rate limit in parallel QA.
+          - source: docker.io/library/xwiki:stable-postgres-tomcat
+            dest_tag: 'stable-postgres-tomcat'
+            dest_name: xwiki
+
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@v3
