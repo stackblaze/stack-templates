@@ -163,6 +163,8 @@ spec:
     value: '{{KUBERO_APP_HOST}}'
   - name: SETTING_ALLOWED_HOSTS
     value: "['*']"
+  - name: SETTING_ROOT_DOMAIN_LANDING_PAGE
+    value: 'True'
   - name: SETTING_ZULIP_ADMINISTRATOR
     value: admin@example.com
   - name: DB_HOST
