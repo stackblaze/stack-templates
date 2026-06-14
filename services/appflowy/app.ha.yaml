@@ -6,8 +6,8 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source Notion alternative — self-hosted workspace for notes, docs, and collaboration.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/86002201?s=200&v=4
-    kubero.dev/template.installation: Minimal API backend only. Deploy gotrue, minio, and appflowy-web from the AppFlowy-Cloud
-      docker-compose in the same pipeline for a complete self-hosted stack.
+    kubero.dev/template.installation: Bundles AppFlowy Cloud API with GoTrue auth in one pod. Deploy appflowy-web from the AppFlowy-Cloud
+      docker-compose in the same pipeline for the full web UI.
     kubero.dev/template.links: '["https://appflowy-io-appflowy.mintlify.app/self-hosting/installation"]'
     kubero.dev/template.screenshots: '["https://appflowy.io/_next/static/media/appflowy-logo.0a1a0b0b.png"]'
     kubero.dev/template.source: https://github.com/AppFlowy-IO/AppFlowy-Cloud
@@ -155,14 +155,30 @@ spec:
     value: '{{KUBERO_APP_URL}}'
   - name: APPFLOWY_S3_CREATE_BUCKET
     value: 'true'
+  - name: APPFLOWY_ENVIRONMENT
+    value: production
   - name: APPFLOWY_GOTRUE_JWT_SECRET
-    value: replace-with-openssl-rand-hex-32
+    value: '{{KUBERO_GEN_ALNUM:32}}'
   - name: APPFLOWY_GOTRUE_BASE_URL
+    value: http://127.0.0.1:9999
+  - name: GOTRUE_DATABASE_URL
+    value: postgres://appflowy:appflowy@appflowy-postgresql-rw:5432/appflowy?search_path=auth
+  - name: GOTRUE_DB_DRIVER
+    value: postgres
+  - name: GOTRUE_PORT
+    value: '9999'
+  - name: API_EXTERNAL_URL
     value: '{{KUBERO_APP_URL}}/gotrue'
+  - name: GOTRUE_MAILER_AUTOCONFIRM
+    value: 'true'
+  - name: GOTRUE_ADMIN_EMAIL
+    value: admin@example.com
+  - name: GOTRUE_ADMIN_PASSWORD
+    value: appflowy
   - name: APPFLOWY_S3_USE_MINIO
     value: 'true'
   - name: APPFLOWY_S3_MINIO_URL
-    value: http://appflowy-rustfs:9000
+    value: http://appflowy-rustfs-io:9000
   - name: APPFLOWY_S3_ACCESS_KEY
     value: rustfsadmin
   - name: APPFLOWY_S3_SECRET_KEY
@@ -173,15 +189,15 @@ spec:
   cronjobs: []
   resources:
     requests:
-      cpu: 100m
-      memory: 512Mi
+      cpu: 200m
+      memory: 768Mi
     limits:
       cpu: '1'
-      memory: 1Gi
+      memory: 1536Mi
   healthcheck:
     enabled: true
     path: /health
-    startupSeconds: 600
+    startupSeconds: 900
     timeoutSeconds: 5
     periodSeconds: 10
   web:
@@ -193,3 +209,36 @@ spec:
     pullPolicy: Always
     repository: appflowyinc/appflowy_cloud
     tag: latest
+    command:
+    - sh
+    - -c
+    - |
+      set -e
+      ARCH=$(uname -m)
+      case "$ARCH" in
+        x86_64) CRANE_ARCH=x86_64 ;;
+        aarch64) CRANE_ARCH=arm64 ;;
+        *) echo "unsupported arch: $ARCH"; exit 1 ;;
+      esac
+      if [ ! -x /tmp/crane ]; then
+        curl -fsSL "https://github.com/google/go-containerregistry/releases/download/v0.20.2/go-containerregistry_Linux_${CRANE_ARCH}.tar.gz" | tar xz -C /tmp crane
+      fi
+      mkdir -p /tmp/gotrue-root
+      /tmp/crane export appflowyinc/gotrue:latest | tar x -C /tmp/gotrue-root
+      GOTRUE_BIN=$(find /tmp/gotrue-root -name auth -type f | head -1)
+      if [ -z "$GOTRUE_BIN" ]; then
+        echo "failed to locate gotrue auth binary"
+        exit 1
+      fi
+      export PORT="${GOTRUE_PORT:-9999}"
+      export DATABASE_URL="$GOTRUE_DATABASE_URL"
+      export GOTRUE_JWT_SECRET="$APPFLOWY_GOTRUE_JWT_SECRET"
+      "$GOTRUE_BIN" &
+      for i in $(seq 1 120); do
+        if curl -fsS "http://127.0.0.1:${PORT}/health" >/dev/null 2>&1; then
+          break
+        fi
+        sleep 2
+      done
+      curl -fsS "http://127.0.0.1:${PORT}/health" >/dev/null
+      exec appflowy_cloud
