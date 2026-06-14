@@ -139,7 +139,7 @@ spec:
               spec:
                 containers:
                 - name: clickhouse
-                  image: clickhouse/clickhouse-server:24.8.7.41
+                  image: ghcr.io/stackblaze/stack-templates/clickhouse-server:24.8.7.41
             volumeClaimTemplates:
             - name: data-volume-template
               spec:

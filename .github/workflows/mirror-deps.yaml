@@ -129,6 +129,16 @@ jobs:
             dest_tag: '1.29'
             dest_name: temporal-auto-setup
 
+          # Saltcorn — Docker Hub only; parallel QA hits 429 rate limit.
+          - source: docker.io/saltcorn/saltcorn:latest
+            dest_tag: 'latest'
+            dest_name: saltcorn
+
+          # ClickHouse server — Docker Hub only; posthog/dittofeed addons hit 429 in QA.
+          - source: docker.io/clickhouse/clickhouse-server:24.8.7.41
+            dest_tag: '24.8.7.41'
+            dest_name: clickhouse-server
+
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@v3

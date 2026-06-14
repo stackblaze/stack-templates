@@ -113,7 +113,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: saltcorn/saltcorn
+    repository: ghcr.io/stackblaze/stack-templates/saltcorn
     tag: latest
     command:
     - serve
