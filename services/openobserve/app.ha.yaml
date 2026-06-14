@@ -34,7 +34,7 @@ spec:
   - name: ZO_ROOT_USER_EMAIL
     value: admin@example.com
   - name: ZO_ROOT_USER_PASSWORD
-    value: replace-with-openssl-rand-base64-32
+    value: ChangeMe#123
   - name: ZO_HTTP_PORT
     value: '5080'
   - name: ZO_LOCAL_MODE
@@ -64,5 +64,5 @@ spec:
   image:
     containerPort: '5080'
     pullPolicy: Always
-    repository: openobserve/openobserve
+    repository: public.ecr.aws/zinclabs/openobserve
     tag: latest
