@@ -143,5 +143,5 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: papermerge/papermerge
+    repository: ghcr.io/stackblaze/stack-templates/papermerge
     tag: 3.5.3

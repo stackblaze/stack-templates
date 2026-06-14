@@ -74,6 +74,11 @@ jobs:
             dest_tag: 'stable'
             dest_name: passit
 
+          # Papermerge — Docker Hub only; parallel QA hits 429 rate limit.
+          - source: docker.io/papermerge/papermerge:3.5.3
+            dest_tag: '3.5.3'
+            dest_name: papermerge
+
           # PeerTube — Docker Hub only; parallel QA hits 429 rate limit.
           - source: docker.io/chocobozzz/peertube:production-bullseye
             dest_tag: 'production-bullseye'
