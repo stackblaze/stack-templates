@@ -1,0 +1,11 @@
+# Runtime image — the Hermes binary is built on the GHA runner (see build-hermes.yaml).
+FROM alpine:3.21.5
+WORKDIR /app
+RUN apk --no-cache add ca-certificates
+COPY _image/hermes /app/hermes
+COPY _image/configs /app/configs
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh /app/hermes
+EXPOSE 8000
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+CMD ["server"]
