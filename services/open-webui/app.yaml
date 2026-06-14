@@ -46,14 +46,14 @@ spec:
               memory: 1Gi
           bootstrap:
             initdb:
-              database: open-webui
-              owner: open-webui
+              database: openwebui
+              owner: openwebui
               secret:
                 name: open-webui-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO open-webui
-                - GRANT CREATE ON SCHEMA public TO open-webui
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO open-webui
+                - GRANT ALL ON SCHEMA public TO openwebui
+                - GRANT CREATE ON SCHEMA public TO openwebui
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO openwebui
           enableSuperuserAccess: true
           superuserSecret:
             name: open-webui-postgresql-superuser
@@ -73,11 +73,11 @@ spec:
           name: open-webui-postgresql-app
         type: kubernetes.io/basic-auth
         stringData:
-          username: open-webui
-          password: open-webui
+          username: openwebui
+          password: openwebui
   envVars:
   - name: DATABASE_URL
-    value: 'postgresql://open-webui:open-webui@open-webui-postgresql-rw:5432/open-webui'
+    value: 'postgresql://openwebui:openwebui@open-webui-postgresql-rw:5432/openwebui'
   - name: WEBUI_SECRET_KEY
     value: change-me-to-a-random-32char-secret
   - name: WEBUI_URL
