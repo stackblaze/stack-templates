@@ -46,6 +46,20 @@ spec:
     name: hop-config
     size: 2Gi
   cronjobs: []
+  # Default QA LimitRange caps web pods at 512Mi; Hop Web (Tomcat/JVM) OOMs during boot.
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -55,3 +69,34 @@ spec:
     pullPolicy: Always
     repository: apache/hop-web
     tag: latest
+    # Kubero mounts emptyDir on /tmp, hiding the image entrypoint script /tmp/run-web.sh.
+    command:
+    - bash
+    - -c
+    - |
+      set -Euo pipefail
+      if [ -n "${HOP_PROJECT_FOLDER}" ] && [ -n "${HOP_PROJECT_NAME}" ] && [ -d "${HOP_PROJECT_FOLDER}" ]; then
+        if ! "${DEPLOYMENT_PATH}/hop-conf.sh" -pl | grep -q -E "^  ${HOP_PROJECT_NAME} :"; then
+          "${DEPLOYMENT_PATH}/hop-conf.sh" \
+            --project="${HOP_PROJECT_NAME}" \
+            --project-create \
+            --project-home="${HOP_PROJECT_FOLDER}" \
+            --project-config-file="${HOP_PROJECT_CONFIG_FILE_NAME}"
+        fi
+        if [ -n "${HOP_ENVIRONMENT_CONFIG_FILE_NAME_PATHS}" ] && [ -n "${HOP_ENVIRONMENT_NAME}" ]; then
+          if ! "${DEPLOYMENT_PATH}/hop-conf.sh" -el | grep -q -E -x "^  ${HOP_ENVIRONMENT_NAME}"; then
+            "${DEPLOYMENT_PATH}/hop-conf.sh" \
+              --environment="${HOP_ENVIRONMENT_NAME}" \
+              --environment-create \
+              --environment-project="${HOP_PROJECT_NAME}" \
+              --environment-purpose="Apache Hop docker container" \
+              --environment-config-files="${HOP_ENVIRONMENT_CONFIG_FILE_NAME_PATHS}"
+          fi
+        fi
+      fi
+      [ -f /config/tomcat-users.xml ] && cp /config/tomcat-users.xml /usr/local/tomcat/conf/
+      [ -f /config/web.xml ] && cp /config/web.xml /usr/local/tomcat/webapps/ROOT/WEB-INF/
+      catalina.sh run &
+      pid="$!"
+      trap "catalina.sh stop" SIGINT SIGTERM
+      wait "$pid"
