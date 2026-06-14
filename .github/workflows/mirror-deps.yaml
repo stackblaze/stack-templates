@@ -94,6 +94,11 @@ jobs:
             dest_tag: '2.16'
             dest_name: penpot-frontend
 
+          # PicoShare — Docker Hub only; parallel QA hits 429 rate limit.
+          - source: docker.io/mtlynch/picoshare:latest
+            dest_tag: 'latest'
+            dest_name: picoshare
+
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@v3

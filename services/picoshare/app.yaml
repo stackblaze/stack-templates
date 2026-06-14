@@ -45,5 +45,5 @@ spec:
   image:
     containerPort: '3001'
     pullPolicy: Always
-    repository: mtlynch/picoshare
+    repository: ghcr.io/stackblaze/stack-templates/picoshare
     tag: latest
