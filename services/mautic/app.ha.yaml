@@ -99,8 +99,6 @@ spec:
     value: 'true'
   - name: MAUTIC_SITE_URL
     value: '{{KUBERO_APP_URL}}'
-  - name: MAUTIC_TRUSTED_PROXIES
-    value: 0.0.0.0/0
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
