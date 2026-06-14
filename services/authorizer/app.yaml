@@ -87,6 +87,8 @@ spec:
     value: changeMe
   - name: JWT_SECRET
     value: changeMeJwtSecret
+  - name: ALLOWED_ORIGINS
+    value: '{{KUBERO_APP_URL}},https://{{KUBERO_APP_HOST}}'
   healthcheck:
     enabled: true
     path: /healthz
@@ -103,7 +105,7 @@ spec:
     - sh
     - -c
     - |
-      exec ./authorizer \
+      until ./authorizer \
         --database-type=postgres \
         --database-url="$DATABASE_URL" \
         --client-id="$CLIENT_ID" \
@@ -111,7 +113,9 @@ spec:
         --admin-secret="$ADMIN_SECRET" \
         --jwt-type=HS256 \
         --jwt-secret="$JWT_SECRET" \
-        --allowed-origins="{{KUBERO_APP_URL}},https://{{KUBERO_APP_HOST}}"
+        --allowed-origins="$ALLOWED_ORIGINS"; do
+        sleep 5
+      done
   name: authorizer
   resources:
     requests:
