@@ -90,7 +90,7 @@ spec:
   - name: INSTANCE_NAME
     value: convex
   - name: INSTANCE_SECRET
-    value: replace-with-openssl-rand-hex-32
+    value: c0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ffc0ff
   - name: CONVEX_CLOUD_ORIGIN
     value: '{{KUBERO_APP_URL}}'
   - name: CONVEX_SITE_ORIGIN
