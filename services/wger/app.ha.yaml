@@ -56,6 +56,10 @@ spec:
             initdb:
               database: wger
               owner: wger
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO wger
+              - GRANT CREATE ON SCHEMA public TO wger
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO wger
               secret:
                 name: wger-postgresql-app
           enableSuperuserAccess: true
@@ -166,6 +170,12 @@ spec:
     name: wger-media
     size: 5Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 10
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -173,5 +183,5 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: wger/server
+    repository: ghcr.io/stackblaze/stack-templates/wger-server
     tag: latest

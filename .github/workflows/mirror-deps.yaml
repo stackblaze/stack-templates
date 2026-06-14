@@ -170,6 +170,11 @@ jobs:
             dest_tag: 'latest'
             dest_name: wordpress
 
+          # wger — Docker Hub only; parallel QA hits 429 rate limit.
+          - source: docker.io/wger/server:latest
+            dest_tag: 'latest'
+            dest_name: wger-server
+
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@v3
