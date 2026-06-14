@@ -84,6 +84,11 @@ jobs:
             dest_tag: 'production-bullseye'
             dest_name: peertube
 
+          # Photon — Docker Hub only; parallel QA hits 429 rate limit.
+          - source: docker.io/rtuszik/photon-docker:latest
+            dest_tag: 'latest'
+            dest_name: photon-docker
+
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@v3
