@@ -123,6 +123,10 @@ spec:
     value: Store
   - name: ADMIN_LASTNAME
     value: Admin
+  - name: DB_HOST
+    value: magento-mysql
+  - name: ES_HOST
+    value: magento-elasticsearch
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -158,8 +162,8 @@ spec:
     - -c
     - |
       install_magento() {
-        while ! (echo >/dev/tcp/magento-mysql/3306) 2>/dev/null; do sleep 3; done
-        while ! curl -sf "http://magento-elasticsearch:9200/_cat/health" >/dev/null; do sleep 3; done
+        while ! (echo >/dev/tcp/${DB_HOST}/3306) 2>/dev/null; do sleep 3; done
+        while ! curl -sf "http://${ES_HOST}:9200/_cat/health" >/dev/null; do sleep 3; done
         if [ ! -f /var/www/html/bin/magento ]; then
           cd /var/www/html
           if [ ! -f composer.json ]; then
@@ -174,11 +178,11 @@ spec:
         if [ ! -f app/etc/env.php ]; then
           php bin/magento setup:install \
             --base-url="https://${MAGENTO_HOST}/" \
-            --db-host=magento-mysql --db-name=magento --db-user=magento --db-password=magento \
+            --db-host=${DB_HOST} --db-name=magento --db-user=magento --db-password=magento \
             --admin-firstname="${ADMIN_NAME}" --admin-lastname="${ADMIN_LASTNAME}" \
             --admin-email="${ADMIN_EMAIL}" --admin-user="${ADMIN_USERNAME}" --admin-password="${ADMIN_PASSWORD}" \
             --search-engine=elasticsearch7 \
-            --elasticsearch-host=magento-elasticsearch --elasticsearch-port=9200 \
+            --elasticsearch-host=${ES_HOST} --elasticsearch-port=9200 \
             --use-rewrites=1 --backend-frontname=admin -n
           php bin/magento deploy:mode:set production -n
           php bin/magento cache:flush -n
