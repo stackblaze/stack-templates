@@ -84,7 +84,7 @@ spec:
   - name: BW_DB_PASSWORD
     value: bitwarden
   - name: BW_DOMAIN
-    value: bitwarden.localhost
+    value: '{{KUBERO_APP_HOST}}'
   - name: BW_INSTALLATION_ID
     value: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
   - name: BW_INSTALLATION_KEY
@@ -97,12 +97,25 @@ spec:
     mountPath: /etc/bitwarden
     name: bitwarden
     size: 1Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: 8080
     pullPolicy: Always
-    repository: bitwarden/self-host
-    tag: beta
+    repository: ghcr.io/bitwarden/lite
+    tag: latest
   name: bitwarden
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
   web:
     replicaCount: 1
   worker:
