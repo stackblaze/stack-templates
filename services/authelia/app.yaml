@@ -165,7 +165,7 @@ spec:
     - sh
     - -c
     - |
-      grep -q 'kubero-seed' /config/configuration.yml 2>/dev/null || cat > /config/configuration.yml <<EOF
+      grep -q 'kubero-seed' /config/configuration.yml 2>/dev/null || { cat > /config/configuration.yml <<EOF
       # kubero-seed
       authentication_backend:
         file:
@@ -180,5 +180,6 @@ spec:
         filesystem:
           filename: /config/notifications.txt
       EOF
-      test -f /config/users_database.yml || printf 'users: []\n' > /config/users_database.yml
+      printf 'users: {}\n' > /config/users_database.yml; }
+      grep -q 'users: \[\]' /config/users_database.yml 2>/dev/null && printf 'users: {}\n' > /config/users_database.yml
       exec authelia
