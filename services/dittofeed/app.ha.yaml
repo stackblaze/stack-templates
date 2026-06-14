@@ -60,6 +60,10 @@ spec:
               owner: dittofeed
               secret:
                 name: dittofeed-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO dittofeed
+              - GRANT CREATE ON SCHEMA public TO dittofeed
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO dittofeed
           enableSuperuserAccess: true
           superuserSecret:
             name: dittofeed-postgresql-superuser
@@ -81,6 +85,65 @@ spec:
         stringData:
           username: dittofeed
           password: dittofeed
+      temporalService:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: dittofeed-temporal
+        spec:
+          type: ClusterIP
+          selector:
+            app: dittofeed-temporal
+          ports:
+          - name: grpc
+            port: 7233
+            targetPort: 7233
+      temporalDeployment:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: dittofeed-temporal
+        spec:
+          replicas: 1
+          strategy:
+            type: Recreate
+          selector:
+            matchLabels:
+              app: dittofeed-temporal
+          template:
+            metadata:
+              labels:
+                app: dittofeed-temporal
+            spec:
+              containers:
+              - name: temporal
+                image: temporalio/auto-setup:1.22.4
+                imagePullPolicy: Always
+                ports:
+                - name: grpc
+                  containerPort: 7233
+                env:
+                - name: DB
+                  value: postgresql
+                - name: DB_PORT
+                  value: '5432'
+                - name: POSTGRES_SEEDS
+                  value: dittofeed-postgresql-rw
+                - name: POSTGRES_USER
+                  value: postgres
+                - name: POSTGRES_PWD
+                  value: dittofeed
+                - name: ENABLE_ES
+                  value: 'false'
+                - name: BIND_ON_IP
+                  value: 0.0.0.0
+                resources:
+                  requests:
+                    cpu: 100m
+                    memory: 256Mi
+                  limits:
+                    cpu: '1'
+                    memory: 512Mi
   - displayName: ClickHouse
     env: []
     icon: /img/addons/clickhouse.svg
@@ -157,11 +220,17 @@ spec:
   - name: CLICKHOUSE_DATABASE
     value: dittofeed
   - name: TEMPORAL_ADDRESS
-    value: temporal:7233
+    value: dittofeed-temporal:7233
   - name: DASHBOARD_API_BASE
     value: '{{KUBERO_APP_URL}}'
   extraVolumes: []
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 10
+    periodSeconds: 15
   web:
     replicaCount: 1
   worker:
