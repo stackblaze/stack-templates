@@ -12,7 +12,9 @@ metadata:
       the installer automatically on first boot using ADMIN_MAIL/ADMIN_PASSWD - change ADMIN_PASSWD (default ''prestashop''
       here) and ADMIN_MAIL immediately, then delete or rename the /admin folder after install as PrestaShop requires. PS_DOMAIN
       is set to the app host so install URLs resolve; if you later change the domain, update Shop URL under Shop Parameters
-      > Traffic & SEO. Optional: set PS_ENABLE_SSL=1 once TLS is fronting the app.'
+      > Traffic & SEO. Optional: set PS_ENABLE_SSL=1 once TLS is fronting the app. Kubero mounts an emptyDir on /tmp, which
+      hides the image entrypoint script — the template uses a custom command to fetch and run docker_run.sh. Do not mount an
+      empty PVC over /var/www/html (it hides the image seed); add img/upload/var volumes after first install if you need persistence.'
     kubero.dev/template.links: '["https://devdocs.prestashop-project.org/", "https://github.com/PrestaShop/docker"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/PrestaShop/PrestaShop
@@ -105,20 +107,32 @@ spec:
     value: admin@localhost.local
   - name: ADMIN_PASSWD
     value: prestashop
-  extraVolumes:
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /var/www/html
-    name: prestashop-data
-    size: 5Gi
   cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  # PS_INSTALL_AUTO + MariaDB wait can exceed default ~90s startup probe
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '80'
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/prestashop
     tag: 8-apache
+    # Kubero mounts emptyDir on /tmp, hiding the image entrypoint /tmp/docker_run.sh.
+    command:
+    - bash
+    - -c
+    - |
+      set -Eeuo pipefail
+      if [ ! -x /tmp/docker_run.sh ]; then
+        curl -fsSL https://raw.githubusercontent.com/PrestaShop/docker/master/base/config_files/docker_run.sh -o /tmp/docker_run.sh
+        chmod +x /tmp/docker_run.sh
+      fi
+      cd /var/www/html
+      exec /tmp/docker_run.sh
