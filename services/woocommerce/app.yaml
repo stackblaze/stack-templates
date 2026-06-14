@@ -37,17 +37,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: woocommerce-mysql
+          name: "{{KUBERO_APP_NAME}}-mariadb"
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: woocommerce-mysql-root
+            name: "{{KUBERO_APP_NAME}}-mariadb-root"
             key: password
           database: woocommerce
           username: woocommerce
           passwordSecretKeyRef:
-            name: woocommerce-mysql-app
+            name: "{{KUBERO_APP_NAME}}-mariadb-app"
             key: password
           storage:
             size: 5Gi
@@ -64,7 +64,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: woocommerce-mysql-root
+          name: "{{KUBERO_APP_NAME}}-mariadb-root"
         type: Opaque
         stringData:
           password: woocommerce
@@ -72,13 +72,13 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: woocommerce-mysql-app
+          name: "{{KUBERO_APP_NAME}}-mariadb-app"
         type: Opaque
         stringData:
           password: woocommerce
   envVars:
   - name: WORDPRESS_DB_HOST
-    value: woocommerce-mysql:3306
+    value: "{{KUBERO_APP_NAME}}-mariadb"
   - name: WORDPRESS_DB_NAME
     value: woocommerce
   - name: WORDPRESS_DB_USER
@@ -109,8 +109,8 @@ spec:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /var/www/html
-    name: woocommerce-data
+    mountPath: /var/www/html/wp-content
+    name: "{{KUBERO_APP_NAME}}-data"
     size: 5Gi
   cronjobs: []
   web:
@@ -119,6 +119,5 @@ spec:
     replicaCount: 0
   image:
     containerPort: '80'
-    pullPolicy: Always
     repository: wordpress
-    tag: php8.3-apache
+    tag: latest
