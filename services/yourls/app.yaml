@@ -107,5 +107,5 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: yourls
+    repository: ghcr.io/yourls/yourls
     tag: 1.10-apache
