@@ -13,8 +13,9 @@ metadata:
       APP_URL is pre-filled with {{KUBERO_APP_URL}} and must match the public URL. On first boot the entrypoint runs DB migrations
       and seeds the admin user from IN_USER_EMAIL / IN_PASSWORD (rotate IN_PASSWORD) - then log in at the app URL and change
       the password. PDF generation uses the bundled snappdf (headless Chromium) so no companion service is required; set PDF_GENERATOR=snappdf.
-      REQUIRE_HTTPS=false is set because TLS is terminated at the ingress. Uploads, logos and generated PDF invoices persist
-      under /var/www/html/public/storage on the mounted volume. SMTP for mail and optional S3 for storage are configured later
+      REQUIRE_HTTPS=false is set because TLS is terminated at the ingress. The official image is PHP-FPM only (port 9000); this
+      template installs nginx at boot to serve HTTP on :80. Uploads, logos and generated PDF invoices persist under /var/www/app/storage
+      on the mounted volume. SMTP for mail and optional S3 for storage are configured later
       via env vars or the Settings UI.'
     kubero.dev/template.links: '["https://invoiceninja.github.io/", "https://github.com/invoiceninja/dockerfiles"]'
     kubero.dev/template.screenshots: '["https://www.invoiceninja.com/wp-content/uploads/2021/01/dashboard.png"]'
@@ -118,6 +119,8 @@ spec:
     value: production
   - name: APP_DEBUG
     value: 'false'
+  - name: IS_DOCKER
+    value: 'true'
   - name: APP_KEY
     value: base64:replace-with-openssl-rand-base64-32
   - name: REQUIRE_HTTPS
@@ -160,7 +163,7 @@ spec:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /var/www/html/public/storage
+    mountPath: /var/www/app/storage
     name: invoiceninja-data
     size: 3Gi
   cronjobs: []
@@ -180,3 +183,39 @@ spec:
     pullPolicy: Always
     repository: invoiceninja/invoiceninja
     tag: '5'
+    command:
+    - sh
+    - -c
+    - |
+      apk add --no-cache nginx
+      cat > /etc/nginx/http.d/default.conf <<'EOF'
+      server {
+        listen 80 default_server;
+        server_name _;
+        server_tokens off;
+        client_max_body_size 100M;
+        root /var/www/app/public/;
+        index index.php;
+        location / {
+          try_files $uri $uri/ /index.php?$query_string;
+        }
+        location = /favicon.ico { access_log off; log_not_found off; }
+        location = /robots.txt  { access_log off; log_not_found off; }
+        location ~* /storage/.*\.php$ { return 503; }
+        location ~ \.php$ {
+          fastcgi_pass 127.0.0.1:9000;
+          fastcgi_index index.php;
+          include fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          fastcgi_intercept_errors off;
+          fastcgi_buffer_size 16k;
+          fastcgi_buffers 4 16k;
+        }
+      }
+      EOF
+      nginx
+      exec /usr/local/bin/docker-entrypoint supervisord
+    run:
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
