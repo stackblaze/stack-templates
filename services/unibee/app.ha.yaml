@@ -135,5 +135,5 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: unibee/api
+    repository: ghcr.io/stackblaze/stack-templates/unibee-api
     tag: v1.9.0
