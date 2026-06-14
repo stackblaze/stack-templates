@@ -32,6 +32,10 @@ spec:
     value: '1'
   - name: COUNTLY_OVERWRITE_MEM_REQUIREMENT
     value: '1'
+  - name: COUNTLY_PLUGINS
+    value: mobile,web,plugins,views,logger,systemlogs,populator,reports,crashes,push
+  - name: COUNTLY_CONFIG_API_API_WORKERS
+    value: '1'
   - name: NODE_OPTIONS
     value: --max-old-space-size=1536
   - name: COUNTLY_CONFIG_API_API_DOMAIN
@@ -73,7 +77,7 @@ spec:
     containerPort: '80'
     pullPolicy: Always
     repository: countly/countly-server
-    tag: 23.11.22
+    tag: 22.03.6
     command:
     - sh
     - -c
