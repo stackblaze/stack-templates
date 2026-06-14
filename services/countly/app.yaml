@@ -78,5 +78,7 @@ spec:
     - -c
     - |
       mkdir -p /etc/nginx/sites-enabled
+      rm -f /etc/nginx/conf.d/default.conf
       chown -R mongodb:mongodb /var/lib/mongodb
+      node /opt/countly/bin/scripts/create_nginx_conf.js
       exec /usr/bin/python3 -u /sbin/my_init
