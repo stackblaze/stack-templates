@@ -7,16 +7,13 @@ metadata:
     kubero.dev/template.description: Open-source Java/OSGi Customer Data Platform that manages profiles, segments and events
       with a privacy-first context server and standards-based API.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/unomi/icon.png
-    kubero.dev/template.installation: Apache Unomi REQUIRES an external Elasticsearch (1.x/2.x stream) or OpenSearch cluster
-      for all profile/event/segment storage; it is NOT one of the supported operator add-ons, so deploy Elasticsearch/OpenSearch
-      separately and point UNOMI_ELASTICSEARCH_ADDRESSES (or UNOMI_OPENSEARCH_ADDRESSES) at it before Unomi will start. Unomi's
-      own Karaf runtime state and config live on the persistent volume at /opt/apache-unomi/data, so no SQL/NoSQL operator
-      add-on is provisioned here. The HTTP context-server and REST API listen on 8181 (a TLS port 9443 and Karaf SSH 8102
-      are also exposed by the image but are not the HTTP container port and need their own Service/Ingress). UNOMI_THIRDPARTY_PROVIDER1_KEY
-      is the shared secret used by trusted server-side event collectors and MUST be rotated from the template placeholder
-      before production; UNOMI_THIRDPARTY_PROVIDER1_IPADDRESSES whitelists which source IPs may send protected events (here
-      left open as 0.0.0.0/0 for first boot - tighten it). After boot, manage profiles and rules via the REST API / Karaf
-      console; there is no bundled web admin UI.
+    kubero.dev/template.installation: Apache Unomi 3.x requires Elasticsearch 9.x for all profile/event/segment storage. This template
+      provisions a single-node Elasticsearch 9.1.3 companion (`elasticsearch` Service on :9200) automatically; for production
+      HA you may point UNOMI_ELASTICSEARCH_ADDRESSES at an external cluster instead. Unomi's Karaf runtime state lives on the
+      persistent volume at /opt/apache-unomi/data. The HTTP context-server and REST API listen on 8181 (TLS :9443 and Karaf SSH
+      :8102 are also exposed but need separate routing). Rotate UNOMI_THIRDPARTY_PROVIDER1_KEY and UNOMI_ROOT_PASSWORD from
+      the placeholders before production; tighten UNOMI_THIRDPARTY_PROVIDER1_IPADDRESSES from 0.0.0.0/0. Manage profiles and
+      rules via the REST API / Karaf console — there is no bundled web admin UI.
     kubero.dev/template.links: '["https://unomi.apache.org/manual/latest/index.html", "https://github.com/apache/unomi/tree/master/docker"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/apache/unomi
@@ -28,7 +25,103 @@ metadata:
 spec:
   name: unomi
   deploymentstrategy: docker
-  addons: []
+  addons:
+  - displayName: Elasticsearch
+    env: []
+    icon: /img/addons/opensearch.svg
+    id: kubero-app
+    kind: Deployment
+    resourceDefinitions:
+      Deployment:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: elasticsearch
+        spec:
+          replicas: 1
+          strategy:
+            type: Recreate
+          selector:
+            matchLabels:
+              app: elasticsearch
+          template:
+            metadata:
+              labels:
+                app: elasticsearch
+            spec:
+              initContainers:
+              - name: sysctl
+                image: busybox:1.36
+                command:
+                - sh
+                - -c
+                - sysctl -w vm.max_map_count=262144 || true
+                securityContext:
+                  privileged: true
+              containers:
+              - name: elasticsearch
+                image: docker.elastic.co/elasticsearch/elasticsearch:9.1.3
+                imagePullPolicy: Always
+                ports:
+                - name: http
+                  containerPort: 9200
+                env:
+                - name: discovery.type
+                  value: single-node
+                - name: xpack.security.enabled
+                  value: 'false'
+                - name: cluster.name
+                  value: contextElasticSearch
+                - name: ES_JAVA_OPTS
+                  value: -Xms512m -Xmx512m
+                - name: bootstrap.memory_lock
+                  value: 'false'
+                volumeMounts:
+                - name: data
+                  mountPath: /usr/share/elasticsearch/data
+                readinessProbe:
+                  httpGet:
+                    path: /_cluster/health
+                    port: 9200
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  failureThreshold: 12
+                resources:
+                  requests:
+                    cpu: 250m
+                    memory: 1Gi
+                  limits:
+                    cpu: '1'
+                    memory: 1536Mi
+              volumes:
+              - name: data
+                persistentVolumeClaim:
+                  claimName: elasticsearch-data
+      elasticsearchData:
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: elasticsearch-data
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi
+          storageClassName: fast
+      elasticsearchService:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: elasticsearch
+        spec:
+          type: ClusterIP
+          selector:
+            app: elasticsearch
+          ports:
+          - name: http
+            port: 9200
+            targetPort: 9200
   envVars:
   - name: UNOMI_ELASTICSEARCH_ADDRESSES
     value: elasticsearch:9200
@@ -54,6 +147,19 @@ spec:
     name: unomi-data
     size: 2Gi
   cronjobs: []
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
