@@ -100,6 +100,12 @@ spec:
     name: yourls-data
     size: 2Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /readme.html
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
