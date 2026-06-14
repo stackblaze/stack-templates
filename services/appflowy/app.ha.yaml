@@ -52,6 +52,7 @@ spec:
               secret:
                 name: appflowy-postgresql-app
               postInitApplicationSQL:
+                - CREATE EXTENSION IF NOT EXISTS vector
                 - GRANT ALL ON SCHEMA public TO appflowy
                 - GRANT CREATE ON SCHEMA public TO appflowy
                 - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO appflowy
