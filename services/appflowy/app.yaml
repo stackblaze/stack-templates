@@ -51,6 +51,10 @@ spec:
               owner: appflowy
               secret:
                 name: appflowy-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO appflowy
+                - GRANT CREATE ON SCHEMA public TO appflowy
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO appflowy
           enableSuperuserAccess: true
           superuserSecret:
             name: appflowy-postgresql-superuser
@@ -144,6 +148,10 @@ spec:
     value: redis://rfr-appflowy-valkey-readwrite:6379
   - name: APPFLOWY_CLOUD_BASE_URL
     value: '{{KUBERO_APP_URL}}'
+  - name: APPFLOWY_WEB_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: APPFLOWY_S3_CREATE_BUCKET
+    value: 'true'
   - name: APPFLOWY_GOTRUE_JWT_SECRET
     value: replace-with-openssl-rand-hex-32
   - name: APPFLOWY_GOTRUE_BASE_URL
@@ -160,6 +168,19 @@ spec:
     value: appflowy
   extraVolumes: []
   cronjobs: []
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /health
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
