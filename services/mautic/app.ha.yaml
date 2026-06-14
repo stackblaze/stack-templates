@@ -93,6 +93,8 @@ spec:
     value: mautic
   - name: MAUTIC_DB_PASSWORD
     value: mautic
+  - name: MAUTIC_DB_SERVER_VERSION
+    value: mariadb-10.11.7
   - name: MAUTIC_RUN_CRON_JOBS
     value: 'false'
   - name: DOCKER_MAUTIC_LOAD_TEST_DATA
