@@ -67,6 +67,10 @@ spec:
               owner: hyperswitch
               secret:
                 name: hyperswitch-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO hyperswitch
+              - GRANT CREATE ON SCHEMA public TO hyperswitch
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO hyperswitch
           enableSuperuserAccess: true
           superuserSecret:
             name: hyperswitch-postgresql-superuser
@@ -156,24 +160,18 @@ spec:
   - name: ROUTER__SERVER__WORKERS
     value: '8'
   - name: ROUTER__SECRETS__ADMIN_API_KEY
-    value: replace-with-openssl-rand-hex-32
+    value: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
   - name: ROUTER__SECRETS__MASTER_ENC_KEY
-    value: replace-with-openssl-rand-hex-32
+    value: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
   - name: ROUTER__SECRETS__JWT_SECRET
-    value: replace-with-openssl-rand-hex-32
+    value: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
   - name: ROUTER__LOG__CONSOLE__ENABLED
     value: 'true'
   - name: ROUTER__LOG__CONSOLE__LEVEL
     value: INFO
   - name: RUN_ENV
     value: sandbox
-  extraVolumes:
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /local/config
-    name: hyperswitch-config
-    size: 1Gi
+  extraVolumes: []
   cronjobs: []
   web:
     replicaCount: 1
@@ -184,3 +182,8 @@ spec:
     pullPolicy: Always
     repository: juspaydotin/hyperswitch-router
     tag: standalone
+    command:
+    - sh
+    - -c
+    - curl -fsSL -o /tmp/docker_compose.toml https://raw.githubusercontent.com/juspay/hyperswitch/main/config/docker_compose.toml
+      && exec /local/bin/router -f /tmp/docker_compose.toml
