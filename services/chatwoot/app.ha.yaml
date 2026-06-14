@@ -30,7 +30,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: chatwoot-postgresql
+          name: chatwoot-db
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -50,15 +50,19 @@ spec:
               database: chatwoot
               owner: chatwoot
               secret:
-                name: chatwoot-postgresql-app
+                name: chatwoot-db-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO chatwoot
+                - GRANT CREATE ON SCHEMA public TO chatwoot
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO chatwoot
           enableSuperuserAccess: true
           superuserSecret:
-            name: chatwoot-postgresql-superuser
+            name: chatwoot-db-superuser
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: chatwoot-postgresql-superuser
+          name: chatwoot-db-superuser
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -67,7 +71,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: chatwoot-postgresql-app
+          name: chatwoot-db-app
         type: kubernetes.io/basic-auth
         stringData:
           username: chatwoot
@@ -82,7 +86,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: chatwoot-valkey
+          name: chatwoot-cache
         spec:
           version: '8.0'
           arch: failover
@@ -108,7 +112,7 @@ spec:
   - name: FRONTEND_URL
     value: '{{KUBERO_APP_URL}}'
   - name: POSTGRES_HOST
-    value: chatwoot-postgresql-rw
+    value: chatwoot-db-rw
   - name: POSTGRES_PORT
     value: '5432'
   - name: POSTGRES_DATABASE
@@ -118,11 +122,13 @@ spec:
   - name: POSTGRES_PASSWORD
     value: chatwoot
   - name: REDIS_URL
-    value: redis://rfr-chatwoot-valkey-readwrite:6379
+    value: redis://rfr-chatwoot-cache-readwrite:6379
   - name: SECRET_KEY_BASE
-    value: replace-with-openssl-rand-hex-64
+    value: '0000000000000000000000000000000000000000000000000000000000000000'
   - name: RAILS_ENV
     value: production
+  - name: FORCE_SSL
+    value: 'false'
   - name: INSTALLATION_ENV
     value: docker
   - name: ACTIVE_STORAGE_SERVICE
@@ -139,6 +145,19 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '3000'
     pullPolicy: Always
