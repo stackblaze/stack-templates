@@ -8,13 +8,13 @@ metadata:
       invoices and estimates.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/crater/icon.png
     kubero.dev/template.installation: 'Crater is a Laravel (PHP) + Vue invoicing app backed by MariaDB. This template runs
-      the community image j33r/crater on Docker Hub (nginx + PHP-FPM on :8080), since the upstream project ships a build-from-source
+      the community image shinsenter/crater on Docker Hub (nginx + PHP on :80), since the upstream project ships a build-from-source
       docker-compose rather than an official prebuilt image. BEFORE first boot ROTATE: APP_KEY (run `openssl rand -base64
       32` and prefix with `base64:`, i.e. set APP_KEY=base64:<value>) and the MariaDB password (default ''crater''). APP_URL
       is pre-filled with {{KUBERO_APP_URL}} and MUST match the public URL or cookie-based auth (4.0.0+) will fail. FIRST RUN:
       browse to the app URL and complete the on-boarding wizard (admin account, company, currency); the wizard runs DB migrations
-      automatically. Persistent app data (uploads, generated PDF invoices, logo, storage/) lives under /app and is kept on
-      the mounted volume. Cache/queue/session default to the database and file drivers (no Redis required); SMTP for mail
+      automatically. Persistent app data (uploads, generated PDF invoices, logo) lives under storage/ and is kept on
+      the mounted volume at /var/www/html/storage. Cache/queue/session default to the database and file drivers (no Redis required); SMTP for mail
       and optional S3 for storage are configured later via env vars or the Settings UI.'
     kubero.dev/template.links: '["https://docs.craterapp.com/", "https://github.com/jee-r/docker-crater"]'
     kubero.dev/template.screenshots: '["https://craterapp.com/static/img/crater-preview.png"]'
@@ -116,7 +116,7 @@ spec:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /app
+    mountPath: /var/www/html/storage
     name: crater-data
     size: 3Gi
   cronjobs: []
@@ -131,7 +131,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   image:
-    containerPort: '8080'
+    containerPort: '80'
     pullPolicy: Always
-    repository: j33r/crater
+    repository: shinsenter/crater
     tag: latest
