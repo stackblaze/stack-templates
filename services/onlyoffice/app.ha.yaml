@@ -103,18 +103,10 @@ spec:
               memory: 512Mi
             limits:
               memory: 1Gi
-      default-userSecret:
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: onlyoffice-rabbitmq-default-user
-        type: Opaque
-        stringData:
-          username: onlyoffice
-          password: onlyoffice
-          default_user.conf: 'default_user = onlyoffice
-
-            default_pass = onlyoffice'
+          rabbitmq:
+            additionalConfig: |
+              default_user = onlyoffice
+              default_pass = onlyoffice
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
