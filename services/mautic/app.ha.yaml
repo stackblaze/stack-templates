@@ -96,9 +96,9 @@ spec:
   - name: MAUTIC_RUN_CRON_JOBS
     value: 'false'
   - name: DOCKER_MAUTIC_LOAD_TEST_DATA
-    value: 'false'
-  - name: DOCKER_MAUTIC_RUN_MIGRATIONS
     value: 'true'
+  - name: MAUTIC_SITE_URL
+    value: '{{KUBERO_APP_URL}}'
   - name: MAUTIC_TRUSTED_PROXIES
     value: 0.0.0.0/0
   extraVolumes:
@@ -121,6 +121,12 @@ spec:
     name: mautic-media
     size: 3Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
