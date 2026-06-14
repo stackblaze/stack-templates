@@ -17,7 +17,8 @@ metadata:
       going live. The container''s HTTP port is 80 (also exposes 443 for TLS and dynamic broadcast ports 8000-8999 for station
       streams, which must be exposed separately via a NodePort/LoadBalancer for listeners to connect). On first run, browse
       to the app URL and complete the web setup wizard to create the super-admin account and your first station. Station media,
-      recordings and config persist on the mounted /var/azuracast volume; for production-scale media libraries consider increasing
+      station media and recordings persist on the mounted /var/azuracast/stations volume (do not mount the entire /var/azuracast
+      root — that hides image-shipped config); for production-scale media libraries consider increasing
       the volume size or using S3-backed station storage (configured per-station in the AzuraCast UI).'
     kubero.dev/template.links: '["https://docs.azuracast.com/en/getting-started/installation/docker", "https://www.azuracast.com/docs/administration/docker/"]'
     kubero.dev/template.screenshots: '[]'
@@ -157,10 +158,16 @@ spec:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /var/azuracast
-    name: azuracast-data
+    mountPath: /var/azuracast/stations
+    name: azuracast-stations
     size: 5Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
