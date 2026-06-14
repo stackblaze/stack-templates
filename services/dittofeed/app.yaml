@@ -195,6 +195,8 @@ spec:
   envVars:
   - name: NODE_ENV
     value: production
+  - name: NODE_OPTIONS
+    value: --max-old-space-size=824
   - name: AUTH_MODE
     value: single-tenant
   - name: BOOTSTRAP
@@ -235,6 +237,13 @@ spec:
     startupSeconds: 600
     timeoutSeconds: 10
     periodSeconds: 15
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 1536Mi
   web:
     replicaCount: 1
   worker:
