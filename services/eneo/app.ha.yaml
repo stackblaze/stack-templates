@@ -175,6 +175,8 @@ spec:
     value: '64'
   - name: API_KEY_HEADER_NAME
     value: X-API-Key
+  - name: NUM_WORKERS
+    value: '1'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -183,6 +185,19 @@ spec:
     name: eneo-data
     size: 2Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 1536Mi
   web:
     replicaCount: 1
   worker:
