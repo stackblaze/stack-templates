@@ -60,5 +60,5 @@ spec:
   image:
     containerPort: '3001'
     pullPolicy: Always
-    repository: mintplexlabs/anythingllm
+    repository: ghcr.io/stackblaze/stack-templates/anythingllm
     tag: latest

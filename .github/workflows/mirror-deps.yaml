@@ -34,6 +34,11 @@ jobs:
         # The dest_tag MUST match upstream so a registry-only swap
         # in vendored manifests works 1:1 without renaming tags.
         include:
+          # AnythingLLM — Docker Hub hits 429 rate limit in parallel QA.
+          - source: docker.io/mintplexlabs/anythingllm:latest
+            dest_tag: 'latest'
+            dest_name: anythingllm
+
           # busybox — used as the local-path-provisioner helper-pod
           # image on every tenant. Tiny, runs `mkdir` once per PVC
           # create, terminates. The previous mirror at
