@@ -62,7 +62,7 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: parseable/parseable
+    repository: quay.io/parseablehq/parseable
     tag: latest
     command:
     - parseable
