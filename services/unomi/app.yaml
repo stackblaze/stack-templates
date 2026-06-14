@@ -29,10 +29,33 @@ spec:
   - displayName: Elasticsearch
     env: []
     icon: /img/addons/opensearch.svg
-    id: kubero-app
-    kind: Deployment
+    id: kubero-operator
+    kind: Valkey
     resourceDefinitions:
-      Deployment:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: unomi-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+      unomiEsDeployment:
         apiVersion: apps/v1
         kind: Deployment
         metadata:
