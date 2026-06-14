@@ -152,19 +152,19 @@ spec:
   - name: ES_ENABLED
     value: 'false'
   - name: SECRET_KEY_BASE
-    value: replace-with-rake-secret-128-hex
+    value: '0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
   - name: OTP_SECRET
-    value: replace-with-rake-secret-128-hex
+    value: '1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111'
   - name: VAPID_PRIVATE_KEY
-    value: replace-with-webpush-generate-vapid-key
+    value: FdgnBLTtN1OgcbN5k_ZO8B-BnYWzGoUVBi_RQwCSN60=
   - name: VAPID_PUBLIC_KEY
-    value: replace-with-webpush-generate-vapid-key
+    value: BKKrsJ76BdRK78z1XFMJ6lSQNnwWBes3QmW84nqD9hHPucBVgny33QXsT7C8TCwyDO64w6UTIuE16aunqz9V7SI=
   - name: ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY
-    value: replace-with-rails-db-encryption-init
+    value: qaMastodonEncPrimaryKey00000001
   - name: ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY
-    value: replace-with-rails-db-encryption-init
+    value: qaMastodonEncDeterministic01
   - name: ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT
-    value: replace-with-rails-db-encryption-init
+    value: qaMastodonEncDerivationSalt01
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -199,20 +199,5 @@ spec:
     - sh
     - -c
     - |
-      case "$SECRET_KEY_BASE" in *replace-with*)
-        export SECRET_KEY_BASE="$(bundle exec rake secret | head -1 | tr -d '\n')"
-        export OTP_SECRET="$(bundle exec rake secret | head -1 | tr -d '\n')"
-        ;;
-      esac
-      case "$VAPID_PRIVATE_KEY" in *replace-with*)
-        eval "$(bundle exec rake mastodon:webpush:generate_vapid_key)"
-        ;;
-      esac
-      case "$ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY" in *replace-with*)
-        export ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY="$(openssl rand -base64 32 | tr -dc 'A-Za-z0-9' | head -c 32)"
-        export ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY="$(openssl rand -base64 32 | tr -dc 'A-Za-z0-9' | head -c 32)"
-        export ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT="$(openssl rand -base64 32 | tr -dc 'A-Za-z0-9' | head -c 32)"
-        ;;
-      esac
       bundle exec rake db:migrate:setup
       exec bundle exec puma -C config/puma.rb
