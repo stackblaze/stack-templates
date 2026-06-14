@@ -189,11 +189,11 @@ spec:
         apiVersion: v1
         kind: Service
         metadata:
-          name: keycloak
+          name: cryptomator-idp
         spec:
           type: ClusterIP
           selector:
-            app: cryptomator-keycloak
+            app: cryptomator-idp
           ports:
           - name: http
             port: 8080
@@ -205,18 +205,18 @@ spec:
         apiVersion: apps/v1
         kind: Deployment
         metadata:
-          name: keycloak
+          name: cryptomator-idp
         spec:
           replicas: 1
           strategy:
             type: Recreate
           selector:
             matchLabels:
-              app: cryptomator-keycloak
+              app: cryptomator-idp
           template:
             metadata:
               labels:
-                app: cryptomator-keycloak
+                app: cryptomator-idp
             spec:
               containers:
               - name: keycloak
@@ -309,7 +309,7 @@ spec:
   - name: HUB_KEYCLOAK_PUBLIC_URL
     value: '{{KUBERO_APP_URL}}/kc'
   - name: HUB_KEYCLOAK_LOCAL_URL
-    value: http://keycloak:8080
+    value: http://cryptomator-idp:8080
   - name: HUB_KEYCLOAK_REALM
     value: cryptomator
   - name: HUB_KEYCLOAK_SYSTEM_CLIENT_ID
@@ -321,7 +321,7 @@ spec:
   - name: HUB_KEYCLOAK_OIDC_CRYPTOMATOR_CLIENT_ID
     value: cryptomator
   - name: QUARKUS_OIDC_AUTH_SERVER_URL
-    value: http://keycloak:8080/realms/cryptomator
+    value: http://cryptomator-idp:8080/realms/cryptomator
   - name: QUARKUS_OIDC_CLIENT_ID
     value: cryptomatorhub
   - name: QUARKUS_OIDC_TOKEN_ISSUER
