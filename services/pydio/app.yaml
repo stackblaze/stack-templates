@@ -116,5 +116,5 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: pydio/cells
+    repository: ghcr.io/stackblaze/stack-templates/pydio
     tag: latest
