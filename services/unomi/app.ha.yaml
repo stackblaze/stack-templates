@@ -36,18 +36,18 @@ spec:
         apiVersion: apps/v1
         kind: Deployment
         metadata:
-          name: elasticsearch
+          name: unomi-es
         spec:
           replicas: 1
           strategy:
             type: Recreate
           selector:
             matchLabels:
-              app: elasticsearch
+              app: unomi-es
           template:
             metadata:
               labels:
-                app: elasticsearch
+                app: unomi-es
             spec:
               initContainers:
               - name: sysctl
@@ -96,12 +96,12 @@ spec:
               volumes:
               - name: data
                 persistentVolumeClaim:
-                  claimName: elasticsearch-data
-      elasticsearchData:
+                  claimName: unomi-es-data
+      unomiEsData:
         apiVersion: v1
         kind: PersistentVolumeClaim
         metadata:
-          name: elasticsearch-data
+          name: unomi-es-data
         spec:
           accessModes:
           - ReadWriteOnce
@@ -109,22 +109,22 @@ spec:
             requests:
               storage: 2Gi
           storageClassName: fast
-      elasticsearchService:
+      unomiEsService:
         apiVersion: v1
         kind: Service
         metadata:
-          name: elasticsearch
+          name: unomi-es
         spec:
           type: ClusterIP
           selector:
-            app: elasticsearch
+            app: unomi-es
           ports:
           - name: http
             port: 9200
             targetPort: 9200
   envVars:
   - name: UNOMI_ELASTICSEARCH_ADDRESSES
-    value: elasticsearch:9200
+    value: unomi-es:9200
   - name: UNOMI_ELASTICSEARCH_CLUSTERNAME
     value: contextElasticSearch
   - name: UNOMI_CLUSTER_PUBLIC_ADDRESS
