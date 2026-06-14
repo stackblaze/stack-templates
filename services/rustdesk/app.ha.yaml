@@ -48,5 +48,5 @@ spec:
   image:
     containerPort: '21118'
     pullPolicy: Always
-    repository: rustdesk/rustdesk-server-s6
-    tag: latest
+    repository: ghcr.io/rustdesk/rustdesk-server-s6
+    tag: 1.1.15
