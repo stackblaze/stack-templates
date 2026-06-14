@@ -137,6 +137,10 @@ spec:
                   value: 'false'
                 - name: BIND_ON_IP
                   value: 0.0.0.0
+                - name: TEMPORAL_BROADCAST_ADDRESS
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: status.podIP
                 resources:
                   requests:
                     cpu: 100m
