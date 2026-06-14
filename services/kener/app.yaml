@@ -7,13 +7,14 @@ metadata:
     kubero.dev/template.description: Stunning, open-source status pages with incident management, multi-language support,
       monitors and customizable themes.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kener/icon.png
-    kubero.dev/template.installation: 'Kener stores its data in a database that defaults to SQLite but is configured here
-      to use the bundled PostgreSQL add-on via DATABASE_URL (rotate the postgres password from the default ''kener''). Set
-      a strong KENER_SECRET_KEY before first start: replace the placeholder with `openssl rand -hex 32` and rotate it later
-      if needed. ORIGIN is wired to the app''s public URL so server-side calls and links resolve correctly. A 2Gi volume is
-      mounted at /app/uploads to persist logos and uploaded assets; with Postgres selected, the /app/database SQLite directory
-      is not required. First run: open the site and complete the setup/login, then add your monitors and customize site.json
-      from the UI. No SMTP, S3 or external search engine is required.'
+    kubero.dev/template.installation: 'Kener requires Redis (bundled Valkey add-on via REDIS_URL) for BullMQ queues, caching,
+      and the scheduler — the app will not start without it. Data is stored in the bundled PostgreSQL add-on via DATABASE_URL
+      (rotate the postgres password from the default ''kener''). Set a strong KENER_SECRET_KEY before first start: replace
+      the placeholder with `openssl rand -hex 32` and rotate it later if needed. ORIGIN is wired to the app''s public URL
+      so server-side calls and links resolve correctly. A 2Gi volume is mounted at /app/uploads to persist logos and uploaded
+      assets; with Postgres selected, the /app/database SQLite directory is not required. First run: open the site and complete
+      the setup/login, then add your monitors and customize site.json from the UI. No SMTP, S3 or external search engine
+      is required.'
     kubero.dev/template.links: '["https://kener.ing/docs/", "https://kener.ing/docs/deployment"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/rajnandan1/kener
@@ -57,6 +58,10 @@ spec:
               owner: kener
               secret:
                 name: kener-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO kener
+                - GRANT CREATE ON SCHEMA public TO kener
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO kener
           enableSuperuserAccess: true
           superuserSecret:
             name: kener-postgresql-superuser
@@ -78,11 +83,42 @@ spec:
         stringData:
           username: kener
           password: kener
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: kener-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
   envVars:
   - name: ORIGIN
     value: '{{KUBERO_APP_URL}}'
   - name: KENER_SECRET_KEY
     value: replace-with-openssl-rand-hex-32
+  - name: REDIS_URL
+    value: redis://rfr-kener-valkey-readwrite:6379
   - name: DATABASE_URL
     value: postgresql://kener:kener@kener-postgresql-rw:5432/kener
   - name: PORT
