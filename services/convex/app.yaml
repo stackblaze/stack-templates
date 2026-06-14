@@ -96,7 +96,7 @@ spec:
   - name: CONVEX_SITE_ORIGIN
     value: '{{KUBERO_APP_URL}}'
   - name: POSTGRES_URL
-    value: postgresql://convex:convex@convex-postgresql-rw:5432
+    value: postgresql://convex:convex@convex-postgresql-rw:5432?sslmode=disable
   - name: DO_NOT_REQUIRE_SSL
     value: 'true'
   - name: DISABLE_BEACON
