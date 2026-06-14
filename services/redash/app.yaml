@@ -61,6 +61,10 @@ spec:
               owner: redash
               secret:
                 name: redash-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO redash
+              - GRANT CREATE ON SCHEMA public TO redash
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO redash
           enableSuperuserAccess: true
           superuserSecret:
             name: redash-postgresql-superuser
@@ -127,11 +131,17 @@ spec:
   - name: REDASH_HOST
     value: '{{KUBERO_APP_URL}}'
   - name: REDASH_WEB_WORKERS
-    value: '4'
+    value: '1'
   - name: REDASH_ENFORCE_HTTPS
     value: 'false'
   extraVolumes: []
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /ping
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -142,5 +152,6 @@ spec:
     repository: redash/redash
     tag: 10.1.0.b50633
     command:
-    - /app/bin/docker-entrypoint
-    - server
+    - /bin/sh
+    - -c
+    - /app/bin/docker-entrypoint create_db && exec /app/bin/docker-entrypoint server
