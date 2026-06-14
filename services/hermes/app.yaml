@@ -132,4 +132,4 @@ spec:
     containerPort: '8000'
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/hermes
-    tag: v0.5.0
+    tag: main

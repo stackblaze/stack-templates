@@ -28,16 +28,18 @@ jobs:
         with:
           go-version: '1.22'
 
-      - name: Build Hermes v0.5.0 from upstream
+      - name: Build Hermes from upstream
         env:
+          HERMES_REF: main
           SKIP_YARN_COREPACK_CHECK: true
           YARN_IGNORE_NODE: 1
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
           CGO_ENABLED: 0
           GOOS: linux
           GOARCH: amd64
         run: |
           set -euo pipefail
-          git clone --depth 1 --branch v0.5.0 https://github.com/hashicorp-forge/hermes.git /tmp/hermes
+          git clone --depth 1 --branch "${HERMES_REF}" https://github.com/hashicorp-forge/hermes.git /tmp/hermes
           cd /tmp/hermes
           make web/set-yarn-version
           make web/build
@@ -63,5 +65,5 @@ jobs:
           file: services/hermes/Dockerfile.runtime
           push: true
           tags: |
-            ghcr.io/stackblaze/stack-templates/hermes:v0.5.0
+            ghcr.io/stackblaze/stack-templates/hermes:main
             ghcr.io/stackblaze/stack-templates/hermes:latest
