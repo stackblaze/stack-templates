@@ -72,3 +72,10 @@ spec:
     pullPolicy: Always
     repository: countly/countly-server
     tag: 23.11.22
+    command:
+    - sh
+    - -c
+    - |
+      mkdir -p /etc/nginx/sites-enabled
+      chown -R mongodb:mongodb /var/lib/mongodb
+      exec /usr/bin/python3 -u /sbin/my_init
