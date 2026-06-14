@@ -188,6 +188,7 @@ spec:
       mkdir -p "$(dirname "$ASSETS_PATH")"
       ln -s "$BAKED_PATH" "$ASSETS_PATH"
       ls -1 apps > sites/apps.txt
+      [ -f sites/common_site_config.json ] || echo '{}' > sites/common_site_config.json
       bench set-config -g db_host "$DB_HOST"
       bench set-config -gp db_port "$DB_PORT"
       bench set-config -g redis_cache "$REDIS_CACHE"
