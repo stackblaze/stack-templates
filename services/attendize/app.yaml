@@ -114,7 +114,7 @@ spec:
   - name: APP_URL
     value: '{{KUBERO_APP_URL}}'
   - name: APP_KEY
-    value: base64:replace-with-openssl-rand-base64-32
+    value: base64:NOZophDCMGE4GYrdDTo5Zt6yEKW+ymEHy85Wtk/HU58=
   - name: DB_CONNECTION
     value: mysql
   - name: DB_HOST
