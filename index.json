@@ -203,56 +203,6 @@
       ]
     },
     {
-      "name": "netbird",
-      "description": "Connect your devices into a secure WireGuardÂ®-based overlay network with SSO, MFA and granular access controls.",
-      "source": "https://github.com/netbirdio/netbird",
-      "icon": "https://avatars.githubusercontent.com/u/100464677",
-      "website": "https://netbird.io/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "security",
-        "dashboard",
-        "admin"
-      ],
-      "screenshots": [
-        "https://docs.netbird.io/docs-static/img/open-source-zero-trust-networking.png"
-      ],
-      "links": [
-        "https://docs.netbird.io/",
-        "https://docs.netbird.io/selfhosted/selfhosted-guide"
-      ],
-      "addons": [],
-      "stars": 25129,
-      "forks": 1331,
-      "watchers": 25129,
-      "issues": 1513,
-      "last_updated": "2026-05-11T12:32:02Z",
-      "last_pushed": "2026-05-11T12:48:42Z",
-      "created_at": "2021-04-14T12:27:20Z",
-      "size": 125285,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/netbird/app.yaml",
-      "status": "active",
-      "license": "Other",
-      "spdx_id": "NOASSERTION",
-      "dirname": "netbird",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/netbird/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/netbird/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "wordpress",
       "description": "WordPress is a free and open-source content management system written in hypertext preprocessor language.",
       "source": "https://github.com/WordPress/WordPress",
@@ -2076,52 +2026,6 @@
       ]
     },
     {
-      "name": "dashy",
-      "description": "Dashy helps you organize your self-hosted services by making them accessible from a single place.",
-      "source": "https://github.com/Lissy93/dashy",
-      "icon": "https://i.ibb.co/yhbt6CY/dashy.png",
-      "website": "https://dashy.to/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "dashboard",
-        "utilities"
-      ],
-      "screenshots": [
-        "https://i.ibb.co/L8YbNNc/dashy-demo2.gif"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 25064,
-      "forks": 1835,
-      "watchers": 25064,
-      "issues": 82,
-      "last_updated": "2026-05-11T08:15:43Z",
-      "last_pushed": "2026-05-10T20:14:44Z",
-      "created_at": "2021-02-28T10:35:44Z",
-      "size": 903421,
-      "language": "Vue",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dashy/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "dashy",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dashy/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dashy/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "docmost",
       "description": "Docmost is an open-source collaborative wiki and documentation software. It is an open-source alternative to Confluence and Notion.",
       "source": "https://github.com/docmost/docmost",
@@ -3210,52 +3114,6 @@
       ]
     },
     {
-      "name": "slink",
-      "description": "Self-hosted image sharing service.",
-      "source": "https://github.com/andrii-kryvoviaz/slink",
-      "icon": "https://raw.githubusercontent.com/andrii-kryvoviaz/slink/refs/heads/main/services/client/static/favicon.png",
-      "website": "https://github.com/andrii-kryvoviaz/slink",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "work",
-        "utilities"
-      ],
-      "screenshots": [
-        "https://github.com/andrii-kryvoviaz/slink/raw/main/screens/e98ea79e-01bb-4e23-98ba-b18841d09c9b.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 1466,
-      "forks": 39,
-      "watchers": 1466,
-      "issues": 22,
-      "last_updated": "2026-05-10T12:44:45Z",
-      "last_pushed": "2026-05-08T12:30:24Z",
-      "created_at": "2023-11-06T22:22:08Z",
-      "size": 18329,
-      "language": "PHP",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/slink/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "slink",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/slink/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/slink/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "kimai",
       "description": "Kimai is a web-based multi-user time-tracking application. Works great for everyone: freelancers, companies, organizations",
       "source": "https://github.com/kimai/kimai",
@@ -3305,47 +3163,6 @@
       ]
     },
     {
-      "name": "workout-tracker",
-      "description": "A workout tracking web application for personal use (or family, friends), geared towards running and other GPX-based activities",
-      "source": "https://github.com/jovandeginste/workout-tracker",
-      "icon": "https://github.com/cristianmarint/MotionGym/raw/master/docs/imgs/logo.png",
-      "website": "https://github.com/jovandeginste/workout-tracker",
-      "installation": "",
-      "architecture": [],
-      "categories": [],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 1214,
-      "forks": 48,
-      "watchers": 1214,
-      "issues": 41,
-      "last_updated": "2026-05-10T16:19:01Z",
-      "last_pushed": "2026-05-08T10:37:02Z",
-      "created_at": "2024-02-16T20:19:59Z",
-      "size": 193324,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/workout-tracker/app.yaml",
-      "status": "active",
-      "license": "Other",
-      "spdx_id": "NOASSERTION",
-      "dirname": "workout-tracker",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/workout-tracker/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/workout-tracker/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "presentator",
       "description": "Design feedback and presentation platform",
       "source": "https://github.com/presentator/presentator",
@@ -3388,52 +3205,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/presentator/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "note-mark",
-      "description": "Note Mark is a lighting fast and minimal; web-based Markdown notes app.",
-      "source": "https://github.com/enchant97/note-mark",
-      "icon": "https://raw.githubusercontent.com/enchant97/note-mark/refs/heads/main/frontend/public/icon.svg",
-      "website": "https://notemark.docs.enchantedcode.co.uk/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "productivity",
-        "utilities"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/enchant97/note-mark/main/site/static/preview.webp"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 661,
-      "forks": 20,
-      "watchers": 661,
-      "issues": 9,
-      "last_updated": "2026-05-05T05:33:34Z",
-      "last_pushed": "2026-05-07T16:20:02Z",
-      "created_at": "2021-02-18T10:27:08Z",
-      "size": 2073,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/note-mark/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "note-mark",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/note-mark/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/note-mark/app.ha.yaml"
         }
       ]
     },
@@ -3721,54 +3492,6 @@
       ]
     },
     {
-      "name": "vvveb-mysql",
-      "description": "Powerful and easy to use cms to build websites, blogs or ecommerce stores.",
-      "source": "https://github.com/givanz/Vvveb",
-      "icon": "https://camo.githubusercontent.com/d9af82329f3a4ace7ba38d2c21120fadbdd77059bc91abdb32e0a4bdb93a0a38/68747470733a2f2f76767665622e636f6d2f61646d696e2f64656661756c742f696d672f6269676c6f676f2e706e67",
-      "website": "https://www.vvveb.com/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "cms",
-        "e-commerce"
-      ],
-      "screenshots": [
-        "https://camo.githubusercontent.com/12d4a8128b5faca1db589a968bfd0e501c6671f23deb75e5972f80f89748635a/68747470733a2f2f7777772e76767665622e636f6d2f76767665622d61646d696e2f64617368626f6172642d6c696768742e706e67"
-      ],
-      "links": [],
-      "addons": [
-        "MariaDB"
-      ],
-      "stars": 1062,
-      "forks": 197,
-      "watchers": 1062,
-      "issues": 150,
-      "last_updated": "2026-05-10T15:59:21Z",
-      "last_pushed": "2026-05-04T21:27:05Z",
-      "created_at": "2018-05-29T11:33:24Z",
-      "size": 15880,
-      "language": "HTML",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vvveb.mysql/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "vvveb.mysql",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vvveb.mysql/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vvveb.mysql/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "authorizer",
       "description": "Authorizer is an open-source authentication and authorization solution for your applications.",
       "source": "https://github.com/authorizerdev/authorizer",
@@ -3905,50 +3628,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "moodist",
-      "description": "Ambient sounds for focus and calm.",
-      "source": "https://github.com/remvze/moodist",
-      "icon": "https://moodist.mvze.net/favicon.svg",
-      "website": "https://moodist.app/",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "utilities",
-        "productivity"
-      ],
-      "screenshots": null,
-      "links": null,
-      "addons": [],
-      "stars": 3502,
-      "forks": 309,
-      "watchers": 3502,
-      "issues": 39,
-      "last_updated": "2026-05-11T11:23:11Z",
-      "last_pushed": "2026-05-03T09:50:14Z",
-      "created_at": "2023-10-05T13:27:35Z",
-      "size": 164039,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodist/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "moodist",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodist/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodist/app.ha.yaml"
         }
       ]
     },
@@ -4565,52 +4244,6 @@
       ]
     },
     {
-      "name": "homer",
-      "description": "A dead simple static HOMepage for your servER to keep your services on hand, from a simple yaml configuration file.",
-      "source": "https://github.com/bastienwirtz/homer",
-      "icon": "https://raw.githubusercontent.com/bastienwirtz/homer/main/public/logo.png",
-      "website": "https://github.com/bastienwirtz/homer",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "homepage",
-        "dashboard"
-      ],
-      "screenshots": [
-        "https://camo.githubusercontent.com/22f0b90b2c9ec4f1c9ec9ed920bb7b794bc1f1ac93bf61099ef298369b8850e5/68747470733a2f2f7261772e6769746875622e636f6d2f6261737469656e776972747a2f686f6d65722f6d61696e2f646f63732f73637265656e73686f742e706e67"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 11335,
-      "forks": 907,
-      "watchers": 11335,
-      "issues": 165,
-      "last_updated": "2026-05-11T10:04:07Z",
-      "last_pushed": "2026-04-18T14:35:04Z",
-      "created_at": "2018-06-14T04:57:54Z",
-      "size": 4510,
-      "language": "Vue",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/homer/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "homer",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/homer/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/homer/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "databag",
       "description": "A tiny selfhosted federated messenger for the decentralized web.",
       "source": "https://github.com/balzack/databag",
@@ -4701,49 +4334,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evershop/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "bluesky-pds",
-      "description": "Bluesky PDS (Personal Data Server). Your own Personal Data Server that is capable of federating with the wider Bluesky social network",
-      "source": "https://github.com/bluesky-social/pds",
-      "icon": "https://avatars.githubusercontent.com/u/94650532?s=200&v=4",
-      "website": "https://github.com/bluesky-social/pds",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "social"
-      ],
-      "screenshots": null,
-      "links": [],
-      "addons": [],
-      "stars": 2496,
-      "forks": 291,
-      "watchers": 2496,
-      "issues": 108,
-      "last_updated": "2026-05-11T10:38:16Z",
-      "last_pushed": "2026-04-15T08:59:45Z",
-      "created_at": "2023-05-01T20:08:15Z",
-      "size": 696,
-      "language": "Shell",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bluesky-pds/app.yaml",
-      "status": "active",
-      "license": "Other",
-      "spdx_id": "NOASSERTION",
-      "dirname": "bluesky-pds",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bluesky-pds/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bluesky-pds/app.ha.yaml"
         }
       ]
     },
@@ -5080,51 +4670,6 @@
       ]
     },
     {
-      "name": "slash",
-      "description": "An open source, self-hosted platform for sharing and managing your most frequently used links. Easily create customizable, human-readable shortcuts to streamline your link management.",
-      "source": "https://github.com/yourselfhosted/slash",
-      "icon": "https://avatars.githubusercontent.com/u/140182318",
-      "website": "https://github.com/yourselfhosted/slash",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "utilities"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/yourselfhosted/slash/refs/heads/main/docs/assets/demo.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 3151,
-      "forks": 143,
-      "watchers": 3151,
-      "issues": 41,
-      "last_updated": "2026-05-10T10:57:34Z",
-      "last_pushed": "2026-03-01T10:43:30Z",
-      "created_at": "2022-09-03T23:49:13Z",
-      "size": 18269,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/slash/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "slash",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/slash/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/slash/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "traggo",
       "description": "Traggo is a self-hosted time tracking tool. It is designed to be easy to use and to be self-hosted. It is written in Go and uses Vue.js for the frontend. ",
       "source": "https://github.com/traggo/server",
@@ -5170,54 +4715,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/traggo/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "planning-poker",
-      "description": "A hassle-free Planning Poker application to deploy on your NAS.",
-      "source": "https://github.com/axeleroy/self-host-planning-poker",
-      "icon": "https://raw.githubusercontent.com/axeleroy/self-host-planning-poker/main/assets/icon.svg",
-      "website": "https://github.com/axeleroy/self-host-planning-poker",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "utilities",
-        "work"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/axeleroy/self-host-planning-poker/main/assets/screenshot.png"
-      ],
-      "links": [
-        "https://github.com/axeleroy/self-host-planning-poker"
-      ],
-      "addons": [],
-      "stars": 130,
-      "forks": 52,
-      "watchers": 130,
-      "issues": 26,
-      "last_updated": "2026-05-01T17:17:30Z",
-      "last_pushed": "2026-02-01T19:03:04Z",
-      "created_at": "2022-08-17T18:37:33Z",
-      "size": 2176,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/planning-poker/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "planning-poker",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/planning-poker/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/planning-poker/app.ha.yaml"
         }
       ]
     },
@@ -5408,52 +4905,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/fief/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "flightlog",
-      "description": "Flight log web application that keeps track of your personal flight history",
-      "source": "https://github.com/perdian/flightlog",
-      "icon": "https://avatars.githubusercontent.com/u/4271779",
-      "website": "https://github.com/perdian/flightlog",
-      "installation": "",
-      "architecture": [],
-      "categories": [
-        "management",
-        "log"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/perdian/flightlog/main/docs/screenshots/home.png"
-      ],
-      "links": [],
-      "addons": [],
-      "stars": 56,
-      "forks": 5,
-      "watchers": 56,
-      "issues": 0,
-      "last_updated": "2026-04-12T07:34:26Z",
-      "last_pushed": "2025-11-24T20:55:26Z",
-      "created_at": "2017-08-19T10:58:13Z",
-      "size": 8105,
-      "language": "Java",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flightlog/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "flightlog",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flightlog/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flightlog/app.ha.yaml"
         }
       ]
     },
@@ -7483,57 +6934,6 @@
       ]
     },
     {
-      "name": "audiomuse-ai",
-      "description": "Self-hosted sonic analysis engine that auto-generates intelligent, mood-based playlists for Jellyfin, Navidrome, LMS, Lyrion and Emby - no external services.",
-      "source": "https://github.com/NeptuneHub/AudioMuse-AI",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/audiomuse-ai/icon.png",
-      "website": "https://neptunehub.github.io/AudioMuse-AI/",
-      "installation": "This template runs the PRIMARY Flask web/API container ONLY (ghcr.io/neptunehub/audiomuse-ai with SERVICE_TYPE=flask, HTTP port 8000). AudioMuse-AI is a MULTI-CONTAINER stack and is NOT functional with this pod alone - it just serves the UI/API; the actual sonic analysis and playlist generation run in a separate worker. MANDATORY COMPANION SERVICE to deploy as a SEPARATE app using the SAME image (ghcr.io/neptunehub/audiomuse-ai:latest) and the SAME Postgres + Valkey/Redis + analysis volume: (a) the ANALYSIS WORKER - set SERVICE_TYPE=worker and provide identical POSTGRES_* and REDIS_URL env vars; it is an RQ worker that pulls jobs from Redis, performs Librosa/ONNX audio analysis locally, and writes results to Postgres (without it, every analysis/playlist task queues forever). OPTIONAL: a SCHEDULER/beat companion (same image) for periodic re-analysis if you want recurring jobs. MEDIA SERVER: this is an add-on to an EXISTING music server - after first boot, open the web UI at the app URL and configure the connection to your Jellyfin / Navidrome / Emby / LMS server (server URL + API key / credentials) under settings; AudioMuse-AI reads the library from that server, it does not host music itself. ROTATE before going live: the Postgres password (POSTGRES_PASSWORD - change from the template default 'audiomuse-ai'). Valkey/Redis is password-less in-cluster. The /app/temp_audio volume (TEMP_DIR) is scratch space where the worker downloads tracks for analysis and should be persistent/sized for your concurrency. First analysis of a large library is CPU-heavy; give the worker pod a larger size.",
-      "architecture": [],
-      "categories": [
-        "media",
-        "ai",
-        "automation"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://neptunehub.github.io/AudioMuse-AI/",
-        "https://github.com/NeptuneHub/AudioMuse-AI/blob/main/docs/PARAMETERS.md"
-      ],
-      "addons": [
-        "Cluster",
-        "Valkey"
-      ],
-      "stars": 600,
-      "forks": 60,
-      "watchers": 600,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "Python",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/audiomuse-ai/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "audiomuse-ai",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/audiomuse-ai/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/audiomuse-ai/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "authelia",
       "description": "Open-source authentication and authorization server providing SSO and multi-factor auth as a companion to reverse proxies via a login portal.",
       "source": "https://github.com/authelia/authelia",
@@ -8841,59 +8241,6 @@
       ]
     },
     {
-      "name": "firefish",
-      "description": "Free, open-source, federated (ActivityPub) microblogging server - a feature-rich Misskey fork for the Fediverse.",
-      "source": "https://git.joinfirefish.org/firefish/firefish",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefish/icon.png",
-      "website": "https://joinfirefish.org",
-      "installation": "This template runs the PRIMARY Firefish Node.js web/server container only (listens on HTTP port 3000). IMPORTANT IMAGE NOTE: the original official registry (registry.firefish.dev) is now offline as upstream development has stalled; this spec points 'image.repository' at 'registry.firefish.dev/firefish/firefish' with tag 'latest' as the canonical reference - if your cluster cannot pull it, swap in a maintained mirror (e.g. a community-built ghcr image or your own build from the source repo) before deploying. CONFIG: Firefish normally reads .config/default.yml; this template instead drives connection settings via the POSTGRES_* / FIREFISH_DB_* and REDIS_* environment variables (kept in sync below) and mounts /firefish/.config as a persistent volume so you can drop a default.yml there for any setting not exposed as an env var (e.g. 'url', 'id' generation method, object storage). Set the public URL correctly BEFORE first boot - it is baked into ActivityPub actor URLs and cannot be changed cleanly later; {{KUBERO_APP_URL}} is wired into URL/FIREFISH_URL. FIRST-RUN: the entrypoint runs DB migrations automatically on start; once the pod is healthy open the site, create the first account (it becomes the instance admin), then configure the instance in the admin control panel. ROTATE the Postgres password (default 'firefish') and review the placeholder values. ADD-ONS: PostgreSQL (primary datastore) and Valkey/Redis (queue + cache, password-less in-cluster) are provisioned by this template. EXTERNAL SERVICES not provisioned here: object storage (S3-compatible, e.g. the RustFS add-on) is strongly recommended for media at scale - configure it in default.yml under 'objectStorage' or via the admin panel instead of relying on the local /firefish/files volume; SMTP for email; and an optional ElasticSearch/MeiliSearch backend for full-text search (configure in default.yml). COMPANION SERVICES: Firefish's background job queue (federation delivery, media processing, notifications) runs IN-PROCESS in this same image by default, so no separate worker deployment is required for a single-node start; for higher throughput you can run additional replicas of this same image with the queue 'mode' tuned in default.yml pointing at the same Postgres + Valkey.",
-      "architecture": [],
-      "categories": [
-        "social",
-        "communication",
-        "media"
-      ],
-      "screenshots": [
-        "https://joinfirefish.org/img/screenshots/timeline.png"
-      ],
-      "links": [
-        "https://git.joinfirefish.org/firefish/firefish/-/blob/develop/docs/install.md",
-        "https://joinfirefish.org/"
-      ],
-      "addons": [
-        "Cluster",
-        "Valkey"
-      ],
-      "stars": 1300,
-      "forks": 130,
-      "watchers": 1300,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefish/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "firefish",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefish/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefish/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "flarum",
       "description": "Flarum is a simple, fast, free and open-source forum software for building modern community discussion platforms.",
       "source": "https://github.com/flarum/flarum",
@@ -9091,57 +8438,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freescout/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "friendica",
-      "description": "Decentralized social network platform that federates with the Fediverse (ActivityPub), Mastodon, Diaspora and more.",
-      "source": "https://github.com/friendica/friendica",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/friendica/icon.png",
-      "website": "https://friendi.ca",
-      "installation": "First boot auto-installs once MYSQL_* and FRIENDICA_URL/FRIENDICA_ADMIN_MAIL are set; the admin account is linked to FRIENDICA_ADMIN_MAIL (use the email you will register with). REQUIRED companion service: deploy a second container from the SAME image friendica:2026.05-apache but with the startup command set to /cron.sh - this is the Friendica worker/cron daemon that processes the federation queue and background jobs; without it nothing federates and the site stalls. The web and cron containers must share the same MariaDB add-on and the same persistent volume mounted at /var/www/html. Rotate the MariaDB password (default 'friendica') after first deploy. Outbound email is recommended (configure SMTP in the admin panel) for verification mails. The bundled Valkey add-on provides Redis-based locking/caching and is wired via REDIS_HOST. Configure your real public domain via FRIENDICA_URL (defaults to the assigned app URL).",
-      "architecture": [],
-      "categories": [
-        "social",
-        "communication",
-        "collaboration"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://wiki.friendi.ca",
-        "https://github.com/friendica/docker"
-      ],
-      "addons": [
-        "MariaDB",
-        "Valkey"
-      ],
-      "stars": 2200,
-      "forks": 220,
-      "watchers": 2200,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "PHP",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/friendica/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "friendica",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/friendica/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/friendica/app.ha.yaml"
         }
       ]
     },
@@ -9446,55 +8742,6 @@
       ]
     },
     {
-      "name": "growchief",
-      "description": "All-in-one social media outreach automation tool using stealthy human-like browser automation (Playwright/Patchright).",
-      "source": "https://github.com/growchief/growchief",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/growchief/icon.png",
-      "website": "https://www.growchief.com/",
-      "installation": "Primary web/backend image only (ghcr.io/growchief/growchief). GrowChief REQUIRES a Temporal orchestrator cluster as companion services that must be deployed separately: temporalio/auto-setup:1.28.1 (point TEMPORAL_ADDRESS at it on :7233), its own backing store temporalio postgres (postgres:16) and elasticsearch:7.17.27 for Temporal visibility, plus optional temporalio/admin-tools and temporalio/ui:2.34.0. The growchief app container also runs the NestJS workers internally and uses xvfb-driven headless browsers, so give it generous CPU/memory. ROTATE AUTH_SECRET (set to a random value, e.g. openssl rand -hex 32) and the postgres password before exposing. Uploads persist to /uploads via the mounted volume (STORAGE_PROVIDER=local). Set GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET for Google OAuth login, and APOLLO_API_KEY / DATAGMA_API_KEY for enrichment if used. The app listens on port 5000. First run: open the app URL and create the first account.",
-      "architecture": [],
-      "categories": [
-        "automation",
-        "crm",
-        "social"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://docs.growchief.com/"
-      ],
-      "addons": [
-        "Cluster"
-      ],
-      "stars": 3400,
-      "forks": 340,
-      "watchers": 3400,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/growchief/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "growchief",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/growchief/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/growchief/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "hermes",
       "description": "Open-source document management system from HashiCorp Labs for scaling an organization's writing, review and approval workflows.",
       "source": "https://github.com/hashicorp-forge/hermes",
@@ -9744,57 +8991,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hyperswitch/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "indico",
-      "description": "Open-source web platform from CERN for conference and event management, room booking, and collaboration.",
-      "source": "https://github.com/indico/indico",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/indico/icon.png",
-      "website": "https://getindico.io",
-      "installation": "Indico is a multi-container stack; this template runs the primary web/WSGI server (getindico/indico) only. You MUST deploy these companion services from the SAME getindico/indico image, sharing this app's env and the postgres+valkey add-ons: (1) a Celery worker (command: indico celery worker), and (2) a Celery beat scheduler (command: indico celery beat). The upstream production setup also fronts the web container with an nginx reverse proxy (getindico/indico-nginx) that proxies to port 9090 and serves static assets; Kubero's ingress already terminates HTTP, but you may add it if you need Indico's static/asset routing. Rotate SECRET_KEY (openssl rand -hex 32) and the postgres password before going to production. On first boot, exec into the web pod and run 'indico db prepare' to initialize the schema, then 'indico setup wizard' (or 'indico user grant_admin <email>') to create the initial admin. Indico sends email; configure SMTP via the admin UI. Uploads and the indico.conf live on the mounted /opt/indico/data volume.",
-      "architecture": [],
-      "categories": [
-        "productivity",
-        "collaboration",
-        "work"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://docs.getindico.io/en/stable/",
-        "https://github.com/indico/indico-containers"
-      ],
-      "addons": [
-        "Cluster",
-        "Valkey"
-      ],
-      "stars": 1700,
-      "forks": 170,
-      "watchers": 1700,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "Python",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/indico/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "indico",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/indico/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/indico/app.ha.yaml"
         }
       ]
     },
@@ -10056,54 +9252,6 @@
       ]
     },
     {
-      "name": "jibri",
-      "description": "Jitsi Broadcasting Infrastructure - a recording and live-streaming component that captures Jitsi Meet conferences via headless Chrome and ffmpeg.",
-      "source": "https://github.com/jitsi/jibri",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jibri/icon.png",
-      "website": "https://jitsi.org",
-      "installation": "Jibri (Jitsi Broadcasting Infrastructure) is NOT a standalone app: it is the recording/live-streaming worker of the Jitsi Meet stack. It runs a headless Chrome + ffmpeg, joins a conference as a hidden participant, and records to a file (or streams to RTMP/YouTube). It keeps NO SQL database - all state is file-based and conference/auth state lives in Jitsi's Prosody XMPP server - which is why this template declares NO add-on; recordings are written to the mounted /config volume (JIBRI_RECORDING_DIR=/config/recordings). Jibri exposes only an INTERNAL control/health HTTP API on port 2222 (http://host:2222/jibri/api/v1.0/health); it has no end-user web UI, so do not expect a browser page. REQUIRED COMPANION SERVICES (deploy these as SEPARATE Kubero apps - see the 'jitsi' template; ALL must run the SAME Jitsi image version): (a) jitsi/prosody - XMPP signaling server Jibri logs into; (b) jitsi/jicofo - conference focus that dispatches recording requests to Jibri; (c) jitsi/jvb - the videobridge routing media; (d) jitsi/web - the Meet frontend. Jibri authenticates to Prosody with TWO accounts that MUST match the credentials configured on the Jitsi side: the RECORDER client account (JIBRI_RECORDER_USER/JIBRI_RECORDER_PASSWORD on XMPP_RECORDER_DOMAIN) and the internal MUC control account (JIBRI_XMPP_USER/JIBRI_XMPP_PASSWORD on XMPP_AUTH_DOMAIN). FIRST-RUN STEPS: 1) Rotate JIBRI_RECORDER_PASSWORD and JIBRI_XMPP_PASSWORD (placeholder 'replace-with-openssl-rand-hex-16' values) and register those same accounts on the Prosody pod (prosodyctl register / the docker-jitsi-meet jibri provisioning), and set ENABLE_RECORDING=1 + JIBRI_* on the jitsi web/jicofo pods so they advertise recording. 2) Point XMPP_SERVER at your Prosody service (default 'jitsi-prosody', matching the jitsi template). 3) Mount the SAME /config used by the rest of the stack if you want finalize scripts/recordings shared. KERNEL/HOST CAVEAT: Jibri needs the host 'snd-aloop' ALSA loopback kernel module loaded (modprobe snd-aloop) and access to /dev/snd for audio capture, plus extra capabilities for headless Chrome - a vanilla pod cannot record without the node providing snd-aloop and the pod running privileged or with the audio device mounted; provision that on the node before relying on recording.",
-      "architecture": [],
-      "categories": [
-        "communication",
-        "collaboration",
-        "media"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-docker",
-        "https://github.com/jitsi/jibri#readme"
-      ],
-      "addons": [],
-      "stars": 2400,
-      "forks": 240,
-      "watchers": 2400,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "Kotlin",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jibri/app.yaml",
-      "status": "active",
-      "license": "Apache License 2.0",
-      "spdx_id": "Apache-2.0",
-      "dirname": "jibri",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jibri/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jibri/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "jitsi",
       "description": "Self-hosted, end-to-end-encrypted video conferencing platform - a privacy-focused, fully featured alternative to Zoom and Google Meet.",
       "source": "https://github.com/jitsi/docker-jitsi-meet",
@@ -10198,58 +9346,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/joplin/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "kbin",
-      "description": "Federated, content-aggregation and microblogging platform for the fediverse (a libre Reddit/Lemmy alternative built on ActivityPub).",
-      "source": "https://github.com/ernestwisniewski/kbin",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kbin/icon.png",
-      "website": "https://kbin.pub",
-      "installation": "kbin is a multi-container Symfony/PHP stack and does NOT ship a single official all-in-one image; this template runs the primary web tier (combined nginx + PHP-FPM, listening on port 8080) using the community-maintained kbin docker build. After deploy you MUST also run the companion services from the same source image/repo (ernestwisniewski/kbin): a 'messenger' worker container running 'php bin/console messenger:consume async old' for federation/queue processing, and a Mercure SSE hub (image dunglas/mercure) for real-time updates. First run: exec into the web pod and run 'php bin/console doctrine:migrations:migrate', 'php bin/console kbin:user:create <admin> <email> <password>', then 'php bin/console kbin:user:admin <admin>' to grant admin. ROTATE: APP_SECRET (openssl rand -hex 16), MERCURE_JWT_SECRET, and the postgres/rabbitmq passwords (all default to the slug). Media/uploads are stored on disk (/var/www/html/public/media) — mounted as a persistent volume. S3 media storage is optional and can be configured later via S3_* env vars (omitted here). Federation requires that {{KUBERO_APP_HOST}} resolves publicly over HTTPS.",
-      "architecture": [],
-      "categories": [
-        "social",
-        "communication",
-        "media"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://docs.kbin.pub",
-        "https://github.com/ernestwisniewski/kbin/blob/main/docs/admin/installation.md"
-      ],
-      "addons": [
-        "Cluster",
-        "Valkey",
-        "RabbitmqCluster"
-      ],
-      "stars": 2300,
-      "forks": 230,
-      "watchers": 2300,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "PHP",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kbin/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "kbin",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kbin/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kbin/app.ha.yaml"
         }
       ]
     },
@@ -10605,57 +9701,6 @@
       ]
     },
     {
-      "name": "lobsters",
-      "description": "Computing-focused community link aggregator and discussion site built on Ruby on Rails.",
-      "source": "https://github.com/lobsters/lobsters",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lobsters/icon.png",
-      "website": "https://lobste.rs",
-      "installation": "Lobsters has no official container image; this template uses the community-maintained utensils/lobsters image, which is stale (last pushed ~5 years ago) and pinned to the legacy MariaDB schema. For a current deployment, build from source (https://github.com/lobsters/lobsters; note the project is migrating toward SQLite). Required setup: (1) ROTATE SECRET_KEY_BASE and INGRESS_PASSWORD to fresh random values (openssl rand -hex 64 / -hex 32) and rotate the MariaDB password from the slug default. (2) The MariaDB add-on is provisioned automatically; on first boot run rails db:setup / db:migrate inside the app container to create the schema, then create the first admin via rails console (User.create then user.grant_moderatorship / is_admin). (3) DATABASE_URL uses the trilogy/mysql2 adapter against the lobsters-mysql service.",
-      "architecture": [],
-      "categories": [
-        "social",
-        "collaboration",
-        "communication"
-      ],
-      "screenshots": [
-        "https://lobste.rs/s"
-      ],
-      "links": [
-        "https://github.com/lobsters/lobsters/blob/master/README.md"
-      ],
-      "addons": [
-        "MariaDB"
-      ],
-      "stars": 4700,
-      "forks": 470,
-      "watchers": 4700,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "Ruby",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lobsters/app.yaml",
-      "status": "active",
-      "license": "BSD 3-Clause \"New\" or \"Revised\" License",
-      "spdx_id": "BSD-3-Clause",
-      "dirname": "lobsters",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lobsters/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lobsters/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "magento",
       "description": "Open-source PHP e-commerce platform with a flexible catalog, checkout, promotions and a powerful admin for building online stores.",
       "source": "https://github.com/magento/magento2",
@@ -10753,55 +9798,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mantisbt/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "mapzy",
-      "description": "Free, simple, open-source and self-hostable store finder / store locator you can embed on any website.",
-      "source": "https://github.com/mapzy/mapzy",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mapzy/icon.png",
-      "website": "https://mapzy.io",
-      "installation": "Rails (Puma) app backed by PostgreSQL only; no Redis required. Rotate SECRET_KEY_BASE (generate with `openssl rand -hex 64`, must be a long alphanumeric string) and the postgres credentials before going to production. MAPBOX_ACCESS_TOKEN is REQUIRED for map tiles - sign up at mapbox.com and paste your token (Mapbox is an external third-party service, not bundled). On first boot set INIT_USER_EMAIL / INIT_USER_PASSWORD to seed an admin account, or set ALLOW_REGISTRATION=true to self-register. MISSION_CONTROL_USERNAME / _PASSWORD protect the background-jobs dashboard - rotate them. Set RAILS_SERVE_STATIC_FILES=true so assets are served by the container.",
-      "architecture": [],
-      "categories": [
-        "utilities",
-        "productivity",
-        "media"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://github.com/mapzy/mapzy/blob/main/SELFHOSTING.md"
-      ],
-      "addons": [
-        "Cluster"
-      ],
-      "stars": 57,
-      "forks": 5,
-      "watchers": 57,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "Ruby",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mapzy/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "mapzy",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mapzy/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mapzy/app.ha.yaml"
         }
       ]
     },
@@ -11062,54 +10058,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase-postgres/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "metatrader5",
-      "description": "MetaTrader 5 trading terminal running under Wine in a container, accessible from any browser via noVNC (KasmVNC) for forex and CFD trading.",
-      "source": "https://github.com/gmag11/MetaTrader5-Docker",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metatrader5/icon.png",
-      "website": "https://github.com/gmag11/MetaTrader5-Docker",
-      "installation": "MetaTrader 5 is proprietary software by MetaQuotes; there is no official MetaQuotes Docker image. This template uses the community gmag11/metatrader5_vnc image, which runs the full Windows MT5 terminal under Wine and exposes it through a KasmVNC/noVNC web desktop on port 3000. There is NO SQL database: the MT5 installation, account profiles, charts and config all live on disk under /config, so a persistent volume is mounted there and no operator add-on is used. First-run: open the web UI, let the bundled script download and install the MetaTrader5 terminal into the volume (this can take several minutes on first boot), then log in to your broker account inside the terminal. Secure the exposed noVNC desktop with the image's CUSTOM_USER / PASSWORD variables (rotate the placeholder PASSWORD below) or front it with an auth proxy, since anyone reaching the UI controls a live trading session. An optional RPyC/Python automation server is available on port 8001 if you build trading bots against it; expose it separately if needed. No SMTP, S3, Redis or external search engine is required.",
-      "architecture": [],
-      "categories": [
-        "finance",
-        "utilities",
-        "data"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://github.com/gmag11/MetaTrader5-Docker#readme",
-        "https://www.metatrader5.com/en"
-      ],
-      "addons": [],
-      "stars": 334,
-      "forks": 33,
-      "watchers": 334,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "Shell",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metatrader5/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "metatrader5",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metatrader5/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metatrader5/app.ha.yaml"
         }
       ]
     },
@@ -11415,106 +10363,6 @@
       ]
     },
     {
-      "name": "ojs",
-      "description": "Open-source journal management and scholarly publishing platform from the Public Knowledge Project, handling submission, peer review, and publication.",
-      "source": "https://github.com/pkp/ojs",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ojs/icon.png",
-      "website": "https://pkp.sfu.ca/software/ojs/",
-      "installation": "Uses the official pkpofficial/ojs image (MariaDB backend). Set PKP_CLI_INSTALL=1 to auto-run the CLI installer on first boot using the DB_* env vars; otherwise complete the web-based installer at the app URL. ROTATE the mariadb add-on password and the DB_PASSWORD env to match before going to production. The /var/www/html volume persists OJS config (config.inc.php), uploaded submission files, and public files across restarts. SERVERNAME is set from the app host so generated config/URLs are correct.",
-      "architecture": [],
-      "categories": [
-        "cms",
-        "documentation",
-        "collaboration"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://docs.pkp.sfu.ca/",
-        "https://github.com/pkp/docker-ojs"
-      ],
-      "addons": [
-        "MariaDB"
-      ],
-      "stars": 350,
-      "forks": 35,
-      "watchers": 350,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "PHP",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ojs/app.yaml",
-      "status": "active",
-      "license": "GNU General Public License v3.0",
-      "spdx_id": "GPL-3.0",
-      "dirname": "ojs",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ojs/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ojs/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "omeka",
-      "description": "Open-source web publishing platform for sharing digital collections and creating media-rich exhibits, built for libraries, museums, and archives.",
-      "source": "https://github.com/omeka/omeka-s",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/omeka/icon.png",
-      "website": "https://omeka.org/s/",
-      "installation": "There is no official Omeka S image; this uses the actively maintained community image giocomai/omeka-s-docker (Omeka S 4.x on PHP/Apache). Omeka S supports MySQL/MariaDB only, so a mariadb add-on is deployed. ROTATE the mariadb add-on password and the matching MYSQL_PASSWORD env before production. On first boot, complete the web installer at the app URL to create the admin account and the first site. The /var/www/html/volume path persists config (database.ini, local.config.php), uploaded files, themes, and modules across restarts.",
-      "architecture": [],
-      "categories": [
-        "cms",
-        "media",
-        "documentation"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://omeka.org/s/docs/user-manual/",
-        "https://github.com/giocomai/omeka-s-docker"
-      ],
-      "addons": [
-        "MariaDB"
-      ],
-      "stars": 320,
-      "forks": 32,
-      "watchers": 320,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "PHP",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/omeka/app.yaml",
-      "status": "active",
-      "license": "GNU General Public License v3.0",
-      "spdx_id": "GPL-3.0",
-      "dirname": "omeka",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/omeka/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/omeka/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "onlyoffice",
       "description": "Self-hosted online office suite (Document Server) for collaborative real-time editing of documents, spreadsheets and presentations.",
       "source": "https://github.com/ONLYOFFICE/Docker-DocumentServer",
@@ -11615,57 +10463,6 @@
       ]
     },
     {
-      "name": "openslides",
-      "description": "Web-based presentation and assembly system for managing and projecting agendas, motions, elections and live voting at meetings.",
-      "source": "https://github.com/OpenSlides/OpenSlides",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openslides/icon.png",
-      "website": "https://openslides.com/",
-      "installation": "OpenSlides 4 is a microservice stack and CANNOT run from this single image alone; this template deploys the core application server (openslides-backend, action API on container port 9002, presenter on 9003) plus its PostgreSQL (the datastore) and Valkey/Redis (message bus + autoupdate) add-ons. You MUST also deploy the companion services as separate apps and place the proxy in front as the public web entrypoint: openslides/openslides-proxy (HTTP entrypoint, listens on 8000), openslides/openslides-client (Angular frontend), openslides/openslides-datastore-reader and openslides/openslides-datastore-writer (datastore over PostgreSQL), openslides/openslides-auth (login/session, needs Valkey), openslides/openslides-autoupdate (real-time push, needs Valkey), openslides/openslides-vote (electronic voting, needs PostgreSQL + Valkey), openslides/openslides-icc (chat/notify), openslides/openslides-media (uploaded files/PDFs), openslides/openslides-search (full-text, optional), and openslides/openslides-manage-service (one-shot initial-data + superadmin bootstrap). All services share secrets via the AUTH_TOKEN_KEY / AUTH_COOKIE_KEY / internal auth password keys - generate them once with 'openssl rand -hex 32' and set the SAME value across every service; rotate the placeholder values below and the postgres add-on password before production. Run openslides-manage 'initial-data' + 'set-password' once to create the first superadmin (default login admin/admin - change immediately). Point all services at postgres host 'openslides-postgresql-rw' and redis host 'rfr-openslides-valkey-readwrite'. See https://github.com/OpenSlides/OpenSlides/blob/main/DEVELOPMENT.md for the full compose/manifest of every container.",
-      "architecture": [],
-      "categories": [
-        "collaboration",
-        "productivity",
-        "work"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://github.com/OpenSlides/OpenSlides/blob/main/README.md",
-        "https://github.com/OpenSlides/openslides-manage-service"
-      ],
-      "addons": [
-        "Cluster",
-        "Valkey"
-      ],
-      "stars": 620,
-      "forks": 62,
-      "watchers": 620,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "Python",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openslides/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "openslides",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openslides/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openslides/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "opnform",
       "description": "Beautiful open-source form builder to create and share forms, surveys and quizzes with no code, a self-hosted alternative to Typeform and Google Forms.",
       "source": "https://github.com/JhumanJ/OpnForm",
@@ -11715,51 +10512,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/opnform/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "ova-runner",
-      "description": "OVA-Runner is a self-hosted CI/CD job runner that executes workloads inside isolated OVA/VM environments.",
-      "source": "https://github.com/nicholasgasior/ova-runner",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ova-runner/icon.png",
-      "website": "https://github.com/nicholasgasior/ova-runner",
-      "installation": "Configure RUNNER_TOKEN and COORDINATOR_URL before deploying. Ensure the pod has access to the Docker socket or a remote Docker daemon for job execution.",
-      "architecture": [],
-      "categories": [
-        "development",
-        "utilities",
-        "automation"
-      ],
-      "screenshots": [],
-      "links": [],
-      "addons": [],
-      "stars": 80,
-      "forks": 8,
-      "watchers": 80,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "Go",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ova-runner/app.yaml",
-      "status": "active",
-      "license": "MIT License",
-      "spdx_id": "MIT",
-      "dirname": "ova-runner",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ova-runner/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ova-runner/app.ha.yaml"
         }
       ]
     },
@@ -12370,59 +11122,6 @@
       ]
     },
     {
-      "name": "piefed",
-      "description": "Federated (ActivityPub) link-aggregator and discussion platform - a self-hosted, Lemmy/Reddit-style alternative for the Fediverse.",
-      "source": "https://codeberg.org/rimu/pyfedi",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/piefed/icon.png",
-      "website": "https://join.piefed.social",
-      "installation": "This template runs the PRIMARY PieFed web/app container ONLY (ghcr.io/rimu/pyfedi - a Django/Flask gunicorn app listening on HTTP port 5000). PieFed is a MULTI-CONTAINER stack and is NOT complete with this pod alone. REQUIRED before first boot: 1) Rotate SECRET_KEY - it MUST be at least 32 chars; generate with 'openssl rand -hex 32' and replace the placeholder. 2) Rotate the Postgres password (Valkey/Redis is password-less in-cluster). 3) SERVER_NAME is baked into ActivityPub actor URLs and cannot be changed cleanly after federating - set it to your real public host before going live. 4) After the Postgres add-on is up, exec into the pod and initialise the DB ('flask db upgrade' then 'flask init-db'), which creates the schema and the first admin account (note the printed admin password). MANDATORY COMPANION SERVICE to deploy as a SEPARATE app (SAME image ghcr.io/rimu/pyfedi, SAME tag, sharing the SAME Postgres + Valkey + media volume): the CELERY WORKER, command ['celery','-A','celery_worker.celery','worker'] (or run the repo's entrypoint in 'celery' mode) - it handles all async ActivityPub federation send/receive, image processing, and queue delivery; PieFed will appear to work without it but no federation or background jobs will run. SCHEDULED JOBS: PieFed ships cron scripts (daily.sh, send_queue.sh, email_notifs.sh, remove_orphan_files.sh) that must run on a schedule (a Kubero cron/CronJob or celery-beat container using the same image) for federation queue flushing, digest emails, and cleanup. REVERSE PROXY: route public ingress to this web pod on port 5000 (Kubero's ingress handles TLS termination); no separate nginx image is required inside the stack. MEDIA: the /app/app/static/media volume holds uploaded avatars/images - use RWX storage so the worker pod can also read/write it; for production at scale set S3-style object storage (e.g. the RustFS add-on) instead. Optional: a full-text search backend can be configured later; omit for a basic start.",
-      "architecture": [],
-      "categories": [
-        "social",
-        "communication",
-        "collaboration"
-      ],
-      "screenshots": [
-        "https://join.piefed.social/wp-content/uploads/2024/06/piefed-screenshot.png"
-      ],
-      "links": [
-        "https://codeberg.org/rimu/pyfedi/src/branch/main/INSTALL-docker.md",
-        "https://join.piefed.social/docs/"
-      ],
-      "addons": [
-        "Cluster",
-        "Valkey"
-      ],
-      "stars": 700,
-      "forks": 70,
-      "watchers": 700,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "Python",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/piefed/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "piefed",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/piefed/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/piefed/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "pixelfed",
       "description": "Free, federated (ActivityPub) photo-sharing platform - a self-hosted, ethical alternative to Instagram for the Fediverse.",
       "source": "https://github.com/pixelfed/pixelfed",
@@ -12681,58 +11380,6 @@
       ]
     },
     {
-      "name": "pritunl",
-      "description": "Enterprise distributed OpenVPN and WireGuard VPN server with a web admin console for managing users, organizations and networks.",
-      "source": "https://github.com/pritunl/pritunl",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pritunl/icon.png",
-      "website": "https://pritunl.com",
-      "installation": "No official Pritunl VPN container exists; this template uses the actively maintained community image ghcr.io/jippi/docker-pritunl. Pritunl stores all state in MongoDB, provided here by the documentdb add-on (rotate the mongoadmin password). The app connects via PRITUNL_MONGODB_URI. After first boot, exec into the pod and run 'pritunl default-password' to get the temporary admin login, then open the web console at {{KUBERO_APP_URL}} to set the admin URL and finish setup. IMPORTANT VPN caveat: actual VPN tunneling needs the tun device plus NET_ADMIN/privileged and host networking, which a standard Kubero deployment does not grant; the web admin console and user/org management work out of the box, but to terminate live OpenVPN/WireGuard tunnels you must add privileged securityContext and a hostPath /dev/net/tun mount.",
-      "architecture": [],
-      "categories": [
-        "security",
-        "identity",
-        "utilities"
-      ],
-      "screenshots": [
-        "https://pritunl.com/img/pritunl_users.png"
-      ],
-      "links": [
-        "https://docs.pritunl.com",
-        "https://github.com/jippi/docker-pritunl"
-      ],
-      "addons": [
-        "DocumentDB"
-      ],
-      "stars": 4400,
-      "forks": 440,
-      "watchers": 4400,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "Python",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pritunl/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "pritunl",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pritunl/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pritunl/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "pydio",
       "description": "Self-hosted document sharing and collaboration platform: a file-sync, sharing and content-management server for organizations.",
       "source": "https://github.com/pydio/cells",
@@ -12980,57 +11627,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rustfs/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "rybbit",
-      "description": "Open-source, privacy-friendly, cookieless web and product analytics that is a more intuitive alternative to Google Analytics.",
-      "source": "https://github.com/rybbit-io/rybbit",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rybbit/icon.png",
-      "website": "https://rybbit.com",
-      "installation": "Rybbit is a multi-container stack. This template deploys the PRIMARY server image ghcr.io/rybbit-io/rybbit-backend (Node/Koa API, port 3001). You MUST also deploy the companion frontend container ghcr.io/rybbit-io/rybbit-client (Next.js, port 3002) and route browser traffic to it; the client talks to this backend via BASE_URL. Add-ons provisioned: ClickHouse (analytics events), Postgres (accounts/projects), and Valkey/Redis (caching/sessions). Before first run: rotate BETTER_AUTH_SECRET (openssl rand -hex 32), and rotate the Postgres and ClickHouse passwords from the slug defaults. Set BASE_URL/{{KUBERO_APP_URL}} to the public client URL. The first account created becomes the admin; set DISABLE_SIGNUP=true after creating it. Optional: MAPBOX_TOKEN for the world map, OPENROUTER_API_KEY for AI features.",
-      "architecture": [],
-      "categories": [
-        "monitoring",
-        "data",
-        "utilities"
-      ],
-      "screenshots": [],
-      "links": [
-        "https://rybbit.com/docs/self-hosting-manual"
-      ],
-      "addons": [
-        "Cluster",
-        "ClickHouseInstallation",
-        "Valkey"
-      ],
-      "stars": 12284,
-      "forks": 1228,
-      "watchers": 12284,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "TypeScript",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rybbit/app.yaml",
-      "status": "active",
-      "license": "GNU Affero General Public License v3.0",
-      "spdx_id": "AGPL-3.0",
-      "dirname": "rybbit",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rybbit/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rybbit/app.ha.yaml"
         }
       ]
     },
@@ -13746,56 +12342,6 @@
       ]
     },
     {
-      "name": "ubuntu-desktop",
-      "description": "Browser-accessible Ubuntu KDE desktop in a container (LinuxServer.io Webtop), streamed over KasmVNC for remote Linux desktop sessions.",
-      "source": "https://github.com/linuxserver/docker-webtop",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ubuntu-desktop/icon.png",
-      "website": "https://docs.linuxserver.io/images/docker-webtop/",
-      "installation": "This is LinuxServer.io Webtop running the Ubuntu KDE flavor: a full Ubuntu desktop streamed to the browser over KasmVNC on port 3000, with no SQL database. All desktop state, the user home directory, and installed packages persist in the volume mounted at /config, so no add-on is required. The web UI is protected with HTTP Basic auth via CUSTOM_USER / PASSWORD - the template ships defaults (abc / ubuntu-desktop) that you MUST rotate before exposing it publicly; anyone who reaches the URL gets an interactive root-capable desktop. Set PUID/PGID to match your storage's ownership and TZ to your timezone. Desktop images benefit from a larger /dev/shm (the docker run guidance is --shm-size=1gb) - if Chromium or KDE apps crash, raise the pod's shared-memory size. The KDE flavor and any in-desktop Docker-in-Docker usage may require elevated/privileged container settings on the node; plan that before relying on nested containers. No SMTP, S3 or external search engine is needed. Set TITLE to brand the browser tab.",
-      "architecture": [],
-      "categories": [
-        "development",
-        "utilities",
-        "productivity"
-      ],
-      "screenshots": [
-        "https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/webtop-logo.png"
-      ],
-      "links": [
-        "https://docs.linuxserver.io/images/docker-webtop/",
-        "https://github.com/linuxserver/docker-webtop#readme"
-      ],
-      "addons": [],
-      "stars": 740,
-      "forks": 74,
-      "watchers": 740,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "Shell",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ubuntu-desktop/app.yaml",
-      "status": "active",
-      "license": "GNU General Public License v3.0",
-      "spdx_id": "GPL-3.0",
-      "dirname": "ubuntu-desktop",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ubuntu-desktop/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ubuntu-desktop/app.ha.yaml"
-        }
-      ]
-    },
-    {
       "name": "unibee",
       "description": "Open-source, gateway-agnostic subscription billing and invoicing platform for SaaS businesses.",
       "source": "https://github.com/UniBee-Billing/unibee",
@@ -13941,56 +12487,6 @@
           "id": "ha",
           "label": "High availability",
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uvdesk/app.ha.yaml"
-        }
-      ]
-    },
-    {
-      "name": "wazuh",
-      "description": "Open-source security platform delivering unified XDR and SIEM protection for endpoints and cloud workloads, with a web dashboard for alerts and agents.",
-      "source": "https://github.com/wazuh/wazuh",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wazuh/icon.png",
-      "website": "https://wazuh.com",
-      "installation": "This template deploys ONLY the Wazuh Dashboard (web UI, wazuh/wazuh-dashboard), which listens on port 5601 and is a thin front-end. Wazuh is a multi-container stack and will not function until you also deploy its companion services: 1) wazuh/wazuh-indexer:4.12.0 - the OpenSearch-based data store that holds all alerts and events (Wazuh's real datastore; it is NOT one of the supported operator add-ons, so no add-on is provisioned here - run it as a separate StatefulSet with its own volume and TLS certs); 2) wazuh/wazuh-manager:4.12.0 - the analysis/server engine that ingests agent data (exposes 1514/1515/55000) and provides the API the dashboard queries. The dashboard connects to the indexer via OPENSEARCH_HOSTS and to the manager API via WAZUH_API_URL; update those hostnames/ports to match the Services you create for the indexer (:9200) and manager (:55000). Generate the indexer/manager TLS certificates with the official wazuh-certs-tool before first boot. Rotate every credential in this template (INDEXER_PASSWORD, DASHBOARD_PASSWORD, WAZUH_API_PASSWORD and the manager/indexer admin passwords) away from the placeholder values. Log in to the dashboard at {{KUBERO_APP_URL}} with DASHBOARD_USERNAME / DASHBOARD_PASSWORD after the indexer and manager are healthy. Wazuh agents are installed separately on the endpoints you want to monitor and point at the manager.",
-      "architecture": [],
-      "categories": [
-        "security",
-        "monitoring",
-        "data"
-      ],
-      "screenshots": [
-        "https://wazuh.com/uploads/2022/05/Threat-hunting.png"
-      ],
-      "links": [
-        "https://documentation.wazuh.com/current/deployment-options/docker/wazuh-container.html",
-        "https://github.com/wazuh/wazuh-docker"
-      ],
-      "addons": [],
-      "stars": 15400,
-      "forks": 1540,
-      "watchers": 15400,
-      "issues": 0,
-      "last_updated": "2026-06-13T00:00:00Z",
-      "last_pushed": "2026-06-13T00:00:00Z",
-      "created_at": "2020-01-01T00:00:00Z",
-      "size": 0,
-      "language": "C",
-      "gitops": false,
-      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wazuh/app.yaml",
-      "status": "active",
-      "license": "GNU General Public License v2.0",
-      "spdx_id": "GPL-2.0",
-      "dirname": "wazuh",
-      "deploymentTypes": [
-        {
-          "id": "standard",
-          "label": "Standard",
-          "default": true,
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wazuh/app.yaml"
-        },
-        {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wazuh/app.ha.yaml"
         }
       ]
     },
