@@ -119,6 +119,11 @@ jobs:
             dest_tag: 'v8.6.2'
             dest_name: snipe-it
 
+          # SuiteCRM — Bitnami legacy image hits 429 rate limit in QA.
+          - source: docker.io/bitnamilegacy/suitecrm:8
+            dest_tag: '8'
+            dest_name: suitecrm
+
           # Taiga backend — Docker Hub only; parallel QA hits 429 rate limit.
           - source: docker.io/taigaio/taiga-back:latest
             dest_tag: 'latest'
