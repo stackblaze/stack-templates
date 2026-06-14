@@ -6,7 +6,8 @@ metadata:
     kubero.dev/template.description: Ecommerce platform with essential commerce features
       Built with React, modular and fully customizable
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/83757778?s=200&v=4
-    kubero.dev/template.installation: ''
+    kubero.dev/template.installation: Set ADMIN_PASSWORD before first boot. Demo catalog
+      is seeded automatically on first start.
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/evershopcommerce/evershop/dev/.github/images/banner.png"]'
     kubero.dev/template.source: https://github.com/evershopcommerce/evershop
@@ -28,7 +29,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: evershop-postgresql
+          name: evershop-db
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -45,18 +46,22 @@ spec:
               memory: 1Gi
           bootstrap:
             initdb:
-              database: postgresql
+              database: evershop
               owner: evershop
               secret:
-                name: evershop-postgresql-app
+                name: evershop-db-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO evershop
+                - GRANT CREATE ON SCHEMA public TO evershop
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO evershop
           enableSuperuserAccess: true
           superuserSecret:
-            name: evershop-postgresql-superuser
+            name: evershop-db-superuser
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: evershop-postgresql-superuser
+          name: evershop-db-superuser
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -65,7 +70,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: evershop-postgresql-app
+          name: evershop-db-app
         type: kubernetes.io/basic-auth
         stringData:
           username: evershop
@@ -74,23 +79,59 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DB_HOST
-    value: evershop-postgresql-rw
+    value: evershop-db-rw
   - name: DB_PORT
     value: '5432'
   - name: DB_NAME
-    value: postgresql
+    value: evershop
   - name: DB_USER
     value: evershop
   - name: DB_PASSWORD
     value: postgres
+  - name: DB_SSLMODE
+    value: disable
+  - name: ADMIN_EMAIL
+    value: admin@evershop.local
+  - name: ADMIN_PASSWORD
+    value: Evershop1!
+  - name: ADMIN_NAME
+    value: Admin
+  - name: SUPPRESS_NO_CONFIG_WARNING
+    value: 'true'
+  - name: NODE_CONFIG
+    value: '{"shop":{"homeUrl":"https://{{KUBERO_APP_HOST}}"}}'
   extraVolumes: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '3000'
     pullPolicy: Always
     repository: evershop/evershop
     tag: latest
+    command:
+    - sh
+    - -c
+    - |
+      for i in $(seq 1 60); do
+        node -e "const {Pool}=require('pg'); const p=new Pool({host:process.env.DB_HOST,port:process.env.DB_PORT,user:process.env.DB_USER,password:process.env.DB_PASSWORD,database:process.env.DB_NAME}); p.query('SELECT 1').then(()=>process.exit(0)).catch(()=>process.exit(1))" && break
+        sleep 5
+      done
+      npm run user:create -- --email "$ADMIN_EMAIL" --password "$ADMIN_PASSWORD" --name "$ADMIN_NAME" || true
+      npm run seed -- --all || true
+      exec npm run start
   name: evershop
-  web:
-    replicaCount: 1
-  worker:
-    replicaCount: 0
