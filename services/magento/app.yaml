@@ -161,7 +161,7 @@ spec:
     - bash
     - -c
     - |
-      nohup bash -c '
+      (
         while ! (echo >/dev/tcp/${DB_HOST}/3306) 2>/dev/null; do sleep 3; done
         while ! curl -sf "http://${ES_HOST}:9200/_cat/health" >/dev/null; do sleep 3; done
         if [ ! -f /var/www/html/bin/magento ]; then
@@ -187,7 +187,8 @@ spec:
           php bin/magento deploy:mode:set production -n
           php bin/magento cache:flush -n
         fi
-      ' > /var/log/magento-install.log 2>&1 &
+      ) > /var/log/magento-install.log 2>&1 &
+      disown
       for ep in /docker-php-entrypoint /usr/local/bin/docker-php-entrypoint; do
         [ -x "$ep" ] && exec "$ep"
       done
