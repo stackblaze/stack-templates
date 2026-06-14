@@ -632,6 +632,53 @@
       ]
     },
     {
+      "name": "airflow",
+      "description": "Apache Airflow is an open-source platform to programmatically author, schedule, and monitor workflows.",
+      "source": "https://github.com/apache/airflow",
+      "icon": "https://airflow.apache.org/images/airflow-logo-padded.svg",
+      "website": "https://airflow.apache.org/",
+      "installation": "Single-node standalone mode. Change AIRFLOW_ADMIN_PASSWORD and AIRFLOW__CORE__FERNET_KEY before production.",
+      "architecture": [],
+      "categories": [
+        "data",
+        "analytics",
+        "development",
+        "work"
+      ],
+      "screenshots": [
+        "https://airflow.apache.org/docs/apache-airflow/stable/_images/ui-dark.png"
+      ],
+      "links": [
+        "https://airflow.apache.org/docs/"
+      ],
+      "addons": [
+        "Cluster"
+      ],
+      "stars": 38000,
+      "forks": 14000,
+      "watchers": 38000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2015-04-01T00:00:00Z",
+      "size": 0,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/airflow/app.yaml",
+      "status": "active",
+      "license": "Apache License 2.0",
+      "spdx_id": "Apache-2.0",
+      "dirname": "airflow",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/airflow/app.yaml"
+        }
+      ]
+    },
+    {
       "name": "gitea",
       "description": "Painless self-hosted all-in-one software development service, includes Git hosting, code review, team collaboration, package registry and CI/CD",
       "source": "https://github.com/go-gitea/gitea",

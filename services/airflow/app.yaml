@@ -1,0 +1,120 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: airflow
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Apache Airflow is an open-source platform to programmatically author, schedule, and monitor workflows (ETL, ML pipelines, data orchestration).
+    kubero.dev/template.icon: https://airflow.apache.org/images/airflow-logo-padded.svg
+    kubero.dev/template.installation: >-
+      Single-node `standalone` mode (scheduler + webserver). Change AIRFLOW_ADMIN_PASSWORD and
+      AIRFLOW__CORE__FERNET_KEY before production. First boot runs DB migrations automatically.
+      Web UI on port 8080 at {{KUBERO_APP_URL}} — default login admin / (your AIRFLOW_ADMIN_PASSWORD).
+      Metadata DB is the bundled PostgreSQL (CloudNativePG) addon.
+    kubero.dev/template.links: '["https://airflow.apache.org/docs/"]'
+    kubero.dev/template.screenshots: '["https://airflow.apache.org/docs/apache-airflow/stable/_images/ui-dark.png"]'
+    kubero.dev/template.source: https://github.com/apache/airflow
+    kubero.dev/template.categories: '["data", "analytics", "development", "work"]'
+    kubero.dev/template.title: Apache Airflow
+    kubero.dev/template.website: https://airflow.apache.org/
+  labels:
+    manager: kubero
+spec:
+  name: airflow
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: airflow-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: airflow
+              owner: airflow
+              secret:
+                name: airflow-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: airflow-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: airflow-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: airflow
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: airflow-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: airflow
+          password: airflow
+  envVars:
+  - name: AIRFLOW__CORE__EXECUTOR
+    value: LocalExecutor
+  - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+    value: postgresql+psycopg2://airflow:airflow@airflow-postgresql-rw:5432/airflow
+  - name: AIRFLOW__CORE__FERNET_KEY
+    value: 46BKJo028lCzISOp8O8lyi4O6STaT8qtkQeAysY=
+  - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG
+    value: 'False'
+  - name: _AIRFLOW_WWW_USER_CREATE
+    value: 'true'
+  - name: _AIRFLOW_WWW_USER_USERNAME
+    value: admin
+  - name: AIRFLOW_ADMIN_PASSWORD
+    value: change-me
+  - name: _AIRFLOW_WWW_USER_PASSWORD
+    value: change-me
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /health
+    startupSeconds: 300
+    timeoutSeconds: 10
+    periodSeconds: 30
+  image:
+    repository: apache/airflow
+    tag: 2.10.5-python3.12
+    pullPolicy: IfNotPresent
+    containerPort: '8080'
+    command:
+    - standalone
