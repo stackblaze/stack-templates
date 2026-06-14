@@ -176,7 +176,7 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    path: /
+    path: /health
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
@@ -199,6 +199,10 @@ spec:
         index index.php;
         location / {
           try_files $uri $uri/ /index.php?$query_string;
+        }
+        location = /health {
+          return 200 'ok';
+          add_header Content-Type text/plain;
         }
         location ~ \.php$ {
           fastcgi_pass 127.0.0.1:9000;
