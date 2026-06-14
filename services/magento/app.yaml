@@ -184,6 +184,9 @@ spec:
     - bash
     - -c
     - |
+      if [ ! -f /var/www/html/bin/magento ] && [ ! -f /var/www/html/composer.json ]; then
+        find /var/www/html -mindepth 1 -maxdepth 1 ! -name 'lost+found' -exec rm -rf {} + 2>/dev/null || true
+      fi
       install_magento() {
         while ! (echo >/dev/tcp/magento-mysql/3306) 2>/dev/null; do sleep 3; done
         while ! curl -sf "http://magento-elasticsearch:9200/_cat/health" >/dev/null; do sleep 3; done
