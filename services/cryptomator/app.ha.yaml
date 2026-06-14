@@ -7,13 +7,10 @@ metadata:
     kubero.dev/template.description: Self-hosted key management and access control server for sharing Cryptomator-encrypted
       vaults across teams.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cryptomator/icon.png
-    kubero.dev/template.installation: 'Cryptomator Hub is a Quarkus app that REQUIRES two companion services you must deploy
-      separately: (1) a PostgreSQL database (provided here as the ''postgres'' add-on; rotate the default cryptomator/cryptomator/cryptomator
-      db/user/password) and (2) a Keycloak identity server (NOT in the add-on catalog, deploy it separately, e.g. quay.io/keycloak/keycloak,
-      and import the Hub realm). Set HUB_PUBLIC_URL / HUB_KEYCLOAK_PUBLIC_URL to your real ingress URLs and configure the
-      Keycloak realm/clients. The QUARKUS_OIDC_AUTH_SERVER_URL and HUB_KEYCLOAK_* values below point at a Keycloak you must
-      stand up first. Use the official Setup Wizard at cryptomator.org/hub/self-hosted to generate realm config. Rotate all
-      default credentials before exposing publicly.'
+    kubero.dev/template.installation: 'Bundled PostgreSQL (CloudNativePG) and Cryptomator Keycloak (ghcr.io/cryptomator/keycloak)
+      with a seed realm for smoke-test boot. Rotate default cryptomator/cryptomator credentials and HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET
+      before exposing publicly. External /kc ingress routing to Keycloak may require an additional reverse-proxy path rule beyond
+      the Hub web ingress. Use cryptomator.org/hub/self-hosted Setup Wizard output to customize realm/clients for production.'
     kubero.dev/template.links: '["https://docs.cryptomator.org/hub/", "https://docs.cryptomator.org/hub/deployment/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/cryptomator/hub
@@ -57,6 +54,11 @@ spec:
               owner: cryptomator
               secret:
                 name: cryptomator-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO cryptomator
+                - GRANT CREATE ON SCHEMA public TO cryptomator
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO cryptomator
+                - CREATE DATABASE keycloak OWNER cryptomator
           enableSuperuserAccess: true
           superuserSecret:
             name: cryptomator-postgresql-superuser
@@ -78,6 +80,219 @@ spec:
         stringData:
           username: cryptomator
           password: cryptomator
+      keycloakConfig:
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: cryptomator-keycloak-config
+        data:
+          KC_DB: postgres
+          KC_DB_URL: jdbc:postgresql://cryptomator-postgresql-rw:5432/keycloak
+          KC_DB_USERNAME: cryptomator
+          KC_BOOTSTRAP_ADMIN_USERNAME: admin
+          KC_HEALTH_ENABLED: 'true'
+          KC_METRICS_ENABLED: 'true'
+          KC_HTTP_ENABLED: 'true'
+          KC_PROXY_HEADERS: xforwarded
+          KC_HOSTNAME_STRICT: 'false'
+          KC_HOSTNAME_BACKCHANNEL_DYNAMIC: 'true'
+          QUARKUS_TRANSACTION_MANAGER_ENABLE_RECOVERY: 'false'
+      keycloakSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: cryptomator-keycloak-secret
+        type: Opaque
+        stringData:
+          kc_admin_password: cryptomator
+          kc_db_password: cryptomator
+          realm.json: |
+            {
+              "realm": "cryptomator",
+              "displayName": "Cryptomator Hub",
+              "loginTheme": "cryptomator",
+              "enabled": true,
+              "sslRequired": "external",
+              "defaultRole": { "name": "user", "description": "User" },
+              "roles": {
+                "realm": [
+                  { "name": "user", "description": "User", "composite": false },
+                  { "name": "create-vaults", "description": "Can create vaults", "composite": false },
+                  {
+                    "name": "admin",
+                    "description": "Administrator",
+                    "composite": true,
+                    "composites": {
+                      "realm": ["user", "create-vaults"],
+                      "client": { "realm-management": ["realm-admin"] }
+                    }
+                  }
+                ]
+              },
+              "users": [
+                {
+                  "username": "admin",
+                  "enabled": true,
+                  "credentials": [{ "type": "password", "value": "cryptomator", "temporary": true }],
+                  "requiredActions": ["UPDATE_PASSWORD"],
+                  "realmRoles": ["admin"]
+                },
+                {
+                  "username": "system",
+                  "email": "system@localhost",
+                  "enabled": true,
+                  "serviceAccountClientId": "cryptomatorhub-system",
+                  "clientRoles": {
+                    "realm-management": ["realm-admin", "view-system"]
+                  }
+                }
+              ],
+              "scopeMappings": [{ "client": "cryptomatorhub", "roles": ["user", "admin"] }],
+              "clients": [
+                {
+                  "clientId": "cryptomatorhub",
+                  "serviceAccountsEnabled": false,
+                  "publicClient": true,
+                  "name": "Cryptomator Hub",
+                  "enabled": true,
+                  "redirectUris": ["*"],
+                  "webOrigins": ["+"],
+                  "bearerOnly": false,
+                  "frontchannelLogout": false,
+                  "protocol": "openid-connect",
+                  "attributes": { "pkce.code.challenge.method": "S256" }
+                },
+                {
+                  "clientId": "cryptomator",
+                  "serviceAccountsEnabled": false,
+                  "publicClient": true,
+                  "name": "Cryptomator App",
+                  "enabled": true,
+                  "redirectUris": ["*"],
+                  "webOrigins": ["+"],
+                  "protocol": "openid-connect",
+                  "attributes": { "pkce.code.challenge.method": "S256" }
+                },
+                {
+                  "clientId": "cryptomatorhub-system",
+                  "serviceAccountsEnabled": true,
+                  "publicClient": false,
+                  "name": "Cryptomator Hub System",
+                  "enabled": true,
+                  "clientAuthenticatorType": "client-secret",
+                  "secret": "cryptomator",
+                  "standardFlowEnabled": false
+                }
+              ]
+            }
+      keycloakService:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: keycloak
+        spec:
+          type: ClusterIP
+          selector:
+            app: cryptomator-keycloak
+          ports:
+          - name: http
+            port: 8080
+            targetPort: 8080
+          - name: management
+            port: 9000
+            targetPort: 9000
+      keycloakDeployment:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: keycloak
+        spec:
+          replicas: 1
+          strategy:
+            type: Recreate
+          selector:
+            matchLabels:
+              app: cryptomator-keycloak
+          template:
+            metadata:
+              labels:
+                app: cryptomator-keycloak
+            spec:
+              containers:
+              - name: keycloak
+                image: ghcr.io/cryptomator/keycloak:26.6.2
+                imagePullPolicy: Always
+                command:
+                - /opt/keycloak/bin/kc.sh
+                - start
+                - --optimized
+                - --import-realm
+                ports:
+                - name: http
+                  containerPort: 8080
+                - name: management
+                  containerPort: 9000
+                envFrom:
+                - configMapRef:
+                    name: cryptomator-keycloak-config
+                env:
+                - name: KC_DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: cryptomator-keycloak-secret
+                      key: kc_db_password
+                - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: cryptomator-keycloak-secret
+                      key: kc_admin_password
+                startupProbe:
+                  httpGet:
+                    path: /health/started
+                    port: management
+                  initialDelaySeconds: 15
+                  periodSeconds: 5
+                  failureThreshold: 36
+                readinessProbe:
+                  httpGet:
+                    path: /health/ready
+                    port: management
+                  periodSeconds: 5
+                  failureThreshold: 6
+                livenessProbe:
+                  httpGet:
+                    path: /health/live
+                    port: management
+                  periodSeconds: 10
+                  failureThreshold: 6
+                resources:
+                  requests:
+                    cpu: 100m
+                    memory: 256Mi
+                  limits:
+                    cpu: '1'
+                    memory: 768Mi
+                volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+                  subPath: tmp
+                - name: data
+                  mountPath: /opt/keycloak/data
+                - name: realm
+                  mountPath: /opt/keycloak/data/import/realm.json
+                  subPath: realm.json
+                  readOnly: true
+              volumes:
+              - name: tmp
+                emptyDir: {}
+              - name: data
+                emptyDir: {}
+              - name: realm
+                secret:
+                  secretName: cryptomator-keycloak-secret
+                  items:
+                  - key: realm.json
+                    path: realm.json
   envVars:
   - name: QUARKUS_HTTP_PORT
     value: '8080'
@@ -87,26 +302,53 @@ spec:
     value: cryptomator
   - name: QUARKUS_DATASOURCE_PASSWORD
     value: cryptomator
+  - name: HUB_PUBLIC_ROOT_PATH
+    value: /
   - name: HUB_PUBLIC_URL
     value: '{{KUBERO_APP_URL}}'
   - name: HUB_KEYCLOAK_PUBLIC_URL
     value: '{{KUBERO_APP_URL}}/kc'
   - name: HUB_KEYCLOAK_LOCAL_URL
-    value: http://keycloak:8080/kc
+    value: http://keycloak:8080
   - name: HUB_KEYCLOAK_REALM
     value: cryptomator
+  - name: HUB_KEYCLOAK_SYSTEM_CLIENT_ID
+    value: cryptomatorhub-system
+  - name: HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET
+    value: cryptomator
+  - name: HUB_KEYCLOAK_SYNCER_PERIOD
+    value: 5m
+  - name: HUB_KEYCLOAK_OIDC_CRYPTOMATOR_CLIENT_ID
+    value: cryptomator
   - name: QUARKUS_OIDC_AUTH_SERVER_URL
-    value: '{{KUBERO_APP_URL}}/kc/realms/cryptomator'
+    value: http://keycloak:8080/realms/cryptomator
   - name: QUARKUS_OIDC_CLIENT_ID
     value: cryptomatorhub
   - name: QUARKUS_OIDC_TOKEN_ISSUER
     value: any
+  - name: QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING
+    value: 'true'
+  - name: QUARKUS_OTEL_SDK_DISABLED
+    value: 'true'
   extraVolumes: []
   cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 10
+    periodSeconds: 15
   image:
     containerPort: '8080'
     pullPolicy: Always
