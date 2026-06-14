@@ -109,6 +109,11 @@ jobs:
             dest_tag: 'latest'
             dest_name: pydio
 
+          # SeaweedFS — Docker Hub only; parallel QA hits 429 rate limit.
+          - source: docker.io/chrislusf/seaweedfs:latest
+            dest_tag: 'latest'
+            dest_name: seaweedfs
+
     steps:
       - name: Log in to GHCR
         uses: docker/login-action@v3

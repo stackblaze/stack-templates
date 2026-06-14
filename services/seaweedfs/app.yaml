@@ -43,7 +43,7 @@ spec:
   image:
     containerPort: '8888'
     pullPolicy: Always
-    repository: chrislusf/seaweedfs
+    repository: ghcr.io/stackblaze/stack-templates/seaweedfs
     tag: latest
     command:
     - server
