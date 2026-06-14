@@ -211,9 +211,10 @@ spec:
         }
       }
       EOF
+      while ! nc -z "${DB_HOST}" 3306 2>/dev/null; do sleep 2; done
+      while ! nc -z "${REDIS_HOST}" 6379 2>/dev/null; do sleep 2; done
       /usr/local/bin/docker-entrypoint supervisord &
       while ! nc -z 127.0.0.1 9000 2>/dev/null; do sleep 2; done
-      while ! nc -z "${REDIS_HOST}" 6379 2>/dev/null; do sleep 2; done
       nginx
       wait
     run:
