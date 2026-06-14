@@ -1,0 +1,86 @@
+{
+  "slug": "baserow",
+  "title": "Baserow",
+  "description": "Open-source no-code database and Airtable alternative — build relational databases, forms, and automations with a spreadsheet-like UI.",
+  "source": "https://gitlab.com/bramw/baserow",
+  "website": "https://baserow.io",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/icon.png",
+  "categories": [
+    "data",
+    "productivity",
+    "work"
+  ],
+  "installation": "Change SECRET_KEY to a random string. The all-in-one image bundles the API, web frontend, and background workers. On first visit, register an admin account. The media volume stores uploaded files and attachments. For larger deployments, switch to the distributed architecture (separate backend/frontend/worker images).",
+  "screenshots": [],
+  "links": [
+    "https://baserow.io/docs/index"
+  ],
+  "license": "MIT",
+  "spdx_id": "MIT",
+  "stars": 12000,
+  "language": "Python",
+  "image": {
+    "repository": "baserow/baserow",
+    "tag": "latest",
+    "containerPort": "80",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "DATABASE_HOST",
+      "value": "baserow-postgresql-rw"
+    },
+    {
+      "name": "DATABASE_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "DATABASE_NAME",
+      "value": "baserow"
+    },
+    {
+      "name": "DATABASE_USER",
+      "value": "baserow"
+    },
+    {
+      "name": "DATABASE_PASSWORD",
+      "value": "baserow"
+    },
+    {
+      "name": "REDIS_HOST",
+      "value": "rfr-baserow-cache-readwrite"
+    },
+    {
+      "name": "REDIS_PORT",
+      "value": "6379"
+    },
+    {
+      "name": "BASEROW_PUBLIC_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "SECRET_KEY",
+      "value": "change-me-to-random-string"
+    }
+  ],
+  "addons": [
+    {
+      "type": "postgres",
+      "name": "baserow",
+      "db": "baserow",
+      "user": "baserow",
+      "password": "baserow"
+    },
+    {
+      "type": "redis",
+      "name": "baserow"
+    }
+  ],
+  "extraVolumes": [
+    {
+      "mountPath": "/baserow/media",
+      "name": "baserow-media",
+      "size": "10Gi"
+    }
+  ]
+}

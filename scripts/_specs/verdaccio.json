@@ -1,0 +1,51 @@
+{
+  "slug": "verdaccio",
+  "title": "Verdaccio",
+  "description": "Lightweight private npm/yarn/pnpm registry — proxy public packages and publish private ones with simple auth and no external database.",
+  "source": "https://github.com/verdaccio/verdaccio",
+  "website": "https://verdaccio.org",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/icon.png",
+  "categories": [
+    "development",
+    "utilities",
+    "devops"
+  ],
+  "installation": "Configure your npm client: npm set registry {{KUBERO_APP_URL}}. Add users with npm adduser --registry {{KUBERO_APP_URL}}. Publish packages with npm publish --registry {{KUBERO_APP_URL}}. By default Verdaccio proxies missing packages from npmjs.org. Configure auth, package access rules, and proxy uplinks by mounting a custom config.yaml to /verdaccio/conf/config.yaml via the conf volume.",
+  "screenshots": [],
+  "links": [
+    "https://verdaccio.org/docs/installation/"
+  ],
+  "license": "MIT",
+  "spdx_id": "MIT",
+  "stars": 17000,
+  "language": "TypeScript",
+  "image": {
+    "repository": "verdaccio/verdaccio",
+    "tag": "latest",
+    "containerPort": "4873",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "VERDACCIO_PORT",
+      "value": "4873"
+    },
+    {
+      "name": "VERDACCIO_PROTOCOL",
+      "value": "https"
+    }
+  ],
+  "addons": [],
+  "extraVolumes": [
+    {
+      "mountPath": "/verdaccio/storage",
+      "name": "verdaccio-storage",
+      "size": "10Gi"
+    },
+    {
+      "mountPath": "/verdaccio/conf",
+      "name": "verdaccio-conf",
+      "size": "1Gi"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "slug": "questdb",
+  "title": "QuestDB",
+  "description": "High-performance time-series database with SQL — optimised for IoT, financial, and observability data with a built-in web console.",
+  "source": "https://github.com/questdb/questdb",
+  "website": "https://questdb.io",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/questdb/icon.png",
+  "categories": [
+    "database",
+    "analytics",
+    "data"
+  ],
+  "installation": "QuestDB exposes a web console at port 9000 (also accessible via {{KUBERO_APP_URL}}). Query with SQL in the web console or via the REST API at /exec?query=. The PostgreSQL wire protocol runs on port 8812 (not exposed externally). Ingest data via InfluxDB line protocol (TCP 9009) or REST. Partitioned by day/month/year for optimal time-series performance.",
+  "screenshots": [],
+  "links": [
+    "https://questdb.io/docs/"
+  ],
+  "license": "Apache-2.0",
+  "spdx_id": "Apache-2.0",
+  "stars": 15000,
+  "language": "Java",
+  "image": {
+    "repository": "questdb/questdb",
+    "tag": "latest",
+    "containerPort": "9000",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "QDB_HTTP_MIN_ENABLED",
+      "value": "true"
+    },
+    {
+      "name": "QDB_TELEMETRY_ENABLED",
+      "value": "false"
+    }
+  ],
+  "addons": [],
+  "extraVolumes": [
+    {
+      "mountPath": "/var/lib/questdb",
+      "name": "questdb-data",
+      "size": "20Gi"
+    }
+  ]
+}

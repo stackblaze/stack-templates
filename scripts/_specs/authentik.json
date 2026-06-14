@@ -1,0 +1,85 @@
+{
+  "slug": "authentik",
+  "title": "Authentik",
+  "description": "Open-source identity provider — SSO, OAuth2, SAML, LDAP, MFA, and social login. Self-hosted alternative to Okta and Auth0.",
+  "source": "https://github.com/goauthentik/authentik",
+  "website": "https://goauthentik.io",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/authentik/icon.png",
+  "categories": [
+    "security",
+    "development",
+    "utilities"
+  ],
+  "installation": "Change AUTHENTIK_SECRET_KEY to a 50+ character random string. The first admin account is bootstrapped via the /if/flow/initial-setup/ URL on first run. Configure OIDC/SAML applications in the Admin UI at /if/admin/. The worker (background tasks) is bundled in this image when run as 'server' — for production workloads deploy a second instance with command 'worker'.",
+  "screenshots": [],
+  "links": [
+    "https://docs.goauthentik.io/"
+  ],
+  "license": "MIT",
+  "spdx_id": "MIT",
+  "stars": 16000,
+  "language": "Python",
+  "image": {
+    "repository": "ghcr.io/goauthentik/server",
+    "tag": "latest",
+    "containerPort": "9000",
+    "command": [
+      "server"
+    ]
+  },
+  "envVars": [
+    {
+      "name": "AUTHENTIK_POSTGRESQL__HOST",
+      "value": "authentik-postgresql-rw"
+    },
+    {
+      "name": "AUTHENTIK_POSTGRESQL__USER",
+      "value": "authentik"
+    },
+    {
+      "name": "AUTHENTIK_POSTGRESQL__PASSWORD",
+      "value": "authentik"
+    },
+    {
+      "name": "AUTHENTIK_POSTGRESQL__NAME",
+      "value": "authentik"
+    },
+    {
+      "name": "AUTHENTIK_REDIS__HOST",
+      "value": "rfr-authentik-cache-readwrite"
+    },
+    {
+      "name": "AUTHENTIK_SECRET_KEY",
+      "value": "change-me-to-50char-random-string"
+    },
+    {
+      "name": "AUTHENTIK_ERROR_REPORTING__ENABLED",
+      "value": "false"
+    }
+  ],
+  "addons": [
+    {
+      "type": "postgres",
+      "name": "authentik",
+      "db": "authentik",
+      "user": "authentik",
+      "password": "authentik"
+    },
+    {
+      "type": "redis",
+      "name": "authentik"
+    }
+  ],
+  "extraVolumes": [
+    {
+      "mountPath": "/media",
+      "name": "authentik-media",
+      "size": "2Gi"
+    },
+    {
+      "mountPath": "/templates",
+      "name": "authentik-templates",
+      "size": "1Gi"
+    }
+  ]
+}

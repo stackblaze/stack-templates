@@ -1,0 +1,68 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: headscale
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted Tailscale control server — manage your own WireGuard mesh VPN with the full Tailscale client ecosystem but zero vendor lock-in.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/headscale/icon.png
+    kubero.dev/template.installation: 'Headscale uses SQLite by default — no database add-on required. HEADSCALE_SERVER_URL must be the public HTTPS URL of this app. After deploy, create a user with headscale users create <name> (exec into the container or use the gRPC API). Generate a pre-auth key with headscale preauthkeys create --user <name> --reusable, then use it with the Tailscale client: tailscale up --login-server={{KUBERO_APP_URL}}.'
+    kubero.dev/template.links: '["https://headscale.net/running-headscale-container/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/juanfont/headscale
+    kubero.dev/template.categories: '["networking", "security", "utilities"]'
+    kubero.dev/template.title: Headscale
+    kubero.dev/template.website: https://headscale.net
+  labels:
+    manager: kubero
+spec:
+  name: headscale
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: HEADSCALE_LISTEN_ADDR
+    value: '0.0.0.0:8080'
+  - name: HEADSCALE_SERVER_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: HEADSCALE_DB_TYPE
+    value: sqlite3
+  - name: HEADSCALE_DB_PATH
+    value: /etc/headscale/db.sqlite
+  - name: HEADSCALE_PRIVATE_KEY_PATH
+    value: /etc/headscale/private.key
+  - name: HEADSCALE_NOISE_PRIVATE_KEY_PATH
+    value: /etc/headscale/noise_private.key
+  - name: HEADSCALE_IP_PREFIXES
+    value: 100.64.0.0/10
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /etc/headscale
+    name: headscale-data
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: '1'
+      memory: 512Mi
+  healthcheck:
+    enabled: true
+    path: /health
+    startupSeconds: 60
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: headscale/headscale
+    tag: latest
+    command:
+    - serve

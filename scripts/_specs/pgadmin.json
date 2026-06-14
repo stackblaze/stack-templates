@@ -1,0 +1,58 @@
+{
+  "slug": "pgadmin",
+  "title": "pgAdmin 4",
+  "description": "The most popular open-source administration and management platform for PostgreSQL databases, with a full-featured web UI.",
+  "source": "https://github.com/pgadmin-org/pgadmin4",
+  "website": "https://www.pgadmin.org",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pgadmin/icon.png",
+  "categories": [
+    "database",
+    "development",
+    "utilities"
+  ],
+  "installation": "Change PGADMIN_DEFAULT_EMAIL and PGADMIN_DEFAULT_PASSWORD. Log in with those credentials. Add your PostgreSQL servers via Object > Register > Server, entering the cluster host (e.g. myapp-postgresql-rw) and credentials. Connection details are saved in the pgadmin-data volume. For security, restrict ingress access to authorised users only.",
+  "screenshots": [],
+  "links": [
+    "https://www.pgadmin.org/docs/"
+  ],
+  "license": "PostgreSQL",
+  "spdx_id": "PostgreSQL",
+  "stars": 4000,
+  "language": "Python",
+  "image": {
+    "repository": "dpage/pgadmin4",
+    "tag": "latest",
+    "containerPort": "80",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "PGADMIN_DEFAULT_EMAIL",
+      "value": "admin@example.com"
+    },
+    {
+      "name": "PGADMIN_DEFAULT_PASSWORD",
+      "value": "change-me"
+    },
+    {
+      "name": "PGADMIN_LISTEN_PORT",
+      "value": "80"
+    },
+    {
+      "name": "PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION",
+      "value": "True"
+    },
+    {
+      "name": "PGADMIN_CONFIG_LOGIN_BANNER",
+      "value": "'Authorised users only'"
+    }
+  ],
+  "addons": [],
+  "extraVolumes": [
+    {
+      "mountPath": "/var/lib/pgadmin",
+      "name": "pgadmin-data",
+      "size": "1Gi"
+    }
+  ]
+}

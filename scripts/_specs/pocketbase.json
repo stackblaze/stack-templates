@@ -1,0 +1,37 @@
+{
+  "slug": "pocketbase",
+  "title": "PocketBase",
+  "description": "Open-source Firebase alternative — realtime subscriptions, auth, file storage, and admin UI, all in a single Go binary backed by SQLite.",
+  "source": "https://github.com/pocketbase/pocketbase",
+  "website": "https://pocketbase.io",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pocketbase/icon.png",
+  "categories": [
+    "development",
+    "utilities",
+    "data"
+  ],
+  "installation": "PocketBase runs as a single binary with SQLite — no external database needed. Access the Admin UI at /_/ and create the admin account on first visit. Define collections (tables), set up auth providers, and configure file storage rules in the Admin UI. Use the JS/TypeScript SDK or REST API to build your frontend. All data is stored in the pocketbase-data volume.",
+  "screenshots": [],
+  "links": [
+    "https://pocketbase.io/docs/"
+  ],
+  "license": "MIT",
+  "spdx_id": "MIT",
+  "stars": 43000,
+  "language": "Go",
+  "image": {
+    "repository": "ghcr.io/muchobien/pocketbase",
+    "tag": "latest",
+    "containerPort": "8090",
+    "command": []
+  },
+  "envVars": [],
+  "addons": [],
+  "extraVolumes": [
+    {
+      "mountPath": "/pb/pb_data",
+      "name": "pocketbase-data",
+      "size": "5Gi"
+    }
+  ]
+}

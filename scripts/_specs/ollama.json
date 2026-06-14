@@ -1,0 +1,51 @@
+{
+  "slug": "ollama",
+  "title": "Ollama",
+  "description": "Run large language models locally — Llama 3, Mistral, Gemma, Phi, and 100+ models via a simple OpenAI-compatible REST API.",
+  "source": "https://github.com/ollama/ollama",
+  "website": "https://ollama.com",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/icon.png",
+  "categories": [
+    "ai",
+    "utilities",
+    "development"
+  ],
+  "installation": "Ollama runs a local LLM inference server. After deploy, pull a model: POST /api/pull with {\"model\":\"llama3.2\"}. Then chat at POST /api/chat or use the OpenAI-compatible endpoint at /v1. GPU is unavailable on CPU nodes — use quantised models (llama3.2:3b, phi3:mini) for acceptable speed. Increase the volume before pulling large models (7B ~4GB, 70B ~40GB). Pair with Open WebUI for a browser chat interface.",
+  "screenshots": [],
+  "links": [
+    "https://github.com/ollama/ollama",
+    "https://ollama.com/library"
+  ],
+  "license": "MIT",
+  "spdx_id": "MIT",
+  "stars": 120000,
+  "language": "Go",
+  "image": {
+    "repository": "ollama/ollama",
+    "tag": "latest",
+    "containerPort": "11434",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "OLLAMA_HOST",
+      "value": "0.0.0.0"
+    },
+    {
+      "name": "OLLAMA_ORIGINS",
+      "value": "*"
+    },
+    {
+      "name": "OLLAMA_KEEP_ALIVE",
+      "value": "5m"
+    }
+  ],
+  "addons": [],
+  "extraVolumes": [
+    {
+      "mountPath": "/root/.ollama",
+      "name": "ollama-models",
+      "size": "20Gi"
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "slug": "langfuse",
+  "title": "Langfuse",
+  "description": "Open-source LLM observability platform — traces, evals, prompt management, datasets, and cost analytics for AI applications.",
+  "source": "https://github.com/langfuse/langfuse",
+  "website": "https://langfuse.com",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langfuse/icon.png",
+  "categories": [
+    "ai",
+    "monitoring",
+    "development"
+  ],
+  "installation": "Change NEXTAUTH_SECRET, SALT, and ENCRYPTION_KEY to random values before use (ENCRYPTION_KEY must be a 64-char hex string). LANGFUSE_INIT_* variables seed the first org/project/user — change them or delete after first login. Instrument your app with the Langfuse SDK (pip install langfuse) and set LANGFUSE_HOST={{KUBERO_APP_URL}} in your app. The free self-hosted version includes all features.",
+  "screenshots": [],
+  "links": [
+    "https://langfuse.com/docs"
+  ],
+  "license": "MIT",
+  "spdx_id": "MIT",
+  "stars": 13000,
+  "language": "TypeScript",
+  "image": {
+    "repository": "langfuse/langfuse",
+    "tag": "3",
+    "containerPort": "3000",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "DATABASE_URL",
+      "value": "postgresql://langfuse:langfuse@langfuse-postgresql-rw:5432/langfuse"
+    },
+    {
+      "name": "NEXTAUTH_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "NEXTAUTH_SECRET",
+      "value": "change-me-to-random-32char-string"
+    },
+    {
+      "name": "SALT",
+      "value": "change-me-to-random-string"
+    },
+    {
+      "name": "ENCRYPTION_KEY",
+      "value": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "LANGFUSE_INIT_ORG_ID",
+      "value": "my-org"
+    },
+    {
+      "name": "LANGFUSE_INIT_ORG_NAME",
+      "value": "My Org"
+    },
+    {
+      "name": "LANGFUSE_INIT_PROJECT_ID",
+      "value": "my-project"
+    },
+    {
+      "name": "LANGFUSE_INIT_PROJECT_NAME",
+      "value": "My Project"
+    },
+    {
+      "name": "LANGFUSE_INIT_USER_EMAIL",
+      "value": "admin@example.com"
+    },
+    {
+      "name": "LANGFUSE_INIT_USER_NAME",
+      "value": "Admin"
+    },
+    {
+      "name": "LANGFUSE_INIT_USER_PASSWORD",
+      "value": "change-me"
+    }
+  ],
+  "addons": [
+    {
+      "type": "postgres",
+      "name": "langfuse",
+      "db": "langfuse",
+      "user": "langfuse",
+      "password": "langfuse"
+    }
+  ],
+  "extraVolumes": []
+}

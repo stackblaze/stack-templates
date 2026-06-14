@@ -1,0 +1,158 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: firefly-iii
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted personal finance manager — transactions, budgets, bills, piggy banks, reports, and recurring transactions. Full-featured money management.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefly-iii/icon.png
+    kubero.dev/template.installation: 'APP_KEY must be exactly 32 characters — generate with: openssl rand -base64 24 | tr -d ''/+='' | head -c 32. On first visit, register the first user (becomes admin). Configure your currencies, accounts, and categories. For automatic bank import, deploy the separate Firefly III Data Importer container. File uploads go to the firefly-iii-uploads volume.'
+    kubero.dev/template.links: '["https://docs.firefly-iii.org/", "https://hub.docker.com/r/fireflyiii/core"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/firefly-iii/firefly-iii
+    kubero.dev/template.categories: '["finance", "productivity", "utilities"]'
+    kubero.dev/template.title: Firefly III
+    kubero.dev/template.website: https://www.firefly-iii.org
+  labels:
+    manager: kubero
+spec:
+  name: firefly-iii
+  deploymentstrategy: docker
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: firefly-iii-db
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: firefly-iii-db-root
+            key: password
+          database: firefly-iii
+          username: firefly-iii
+          passwordSecretKeyRef:
+            name: firefly-iii-db-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: firefly-iii-db-root
+        type: Opaque
+        stringData:
+          password: firefly-iii
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: firefly-iii-db-app
+        type: Opaque
+        stringData:
+          password: firefly-iii
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: firefly-iii-cache
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: APP_KEY
+    value: SomeRandomStringOf32CharsExactly
+  - name: APP_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: APP_ENV
+    value: production
+  - name: DB_CONNECTION
+    value: mysql
+  - name: DB_HOST
+    value: firefly-iii-db
+  - name: DB_PORT
+    value: 3306
+  - name: DB_DATABASE
+    value: firefly-iii
+  - name: DB_USERNAME
+    value: firefly-iii
+  - name: DB_PASSWORD
+    value: firefly-iii
+  - name: REDIS_HOST
+    value: rfr-firefly-iii-cache-readwrite
+  - name: REDIS_PORT
+    value: 6379
+  - name: CACHE_DRIVER
+    value: redis
+  - name: SESSION_DRIVER
+    value: redis
+  - name: TRUSTED_PROXIES
+    value: **
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/html/storage/upload
+    name: firefly-iii-uploads
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /health
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: fireflyiii/core
+    tag: latest

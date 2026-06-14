@@ -1,0 +1,131 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: zitadel
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Cloud-native identity platform — OIDC, OAuth2, SAML, passkeys, MFA, and multi-tenancy out of the box. Self-hosted alternative to Auth0.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zitadel/icon.png
+    kubero.dev/template.installation: 'Change ZITADEL_MASTERKEY to exactly 32 characters. Set ZITADEL_EXTERNALDOMAIN to the app hostname (without https://). ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD must match the CNPG superuser secret (default: zitadel). On first boot Zitadel auto-migrates the database and prints the initial admin credentials to the container log — retrieve them with kubectl logs.'
+    kubero.dev/template.links: '["https://zitadel.com/docs"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/zitadel/zitadel
+    kubero.dev/template.categories: '["security", "development", "work"]'
+    kubero.dev/template.title: Zitadel
+    kubero.dev/template.website: https://zitadel.com
+  labels:
+    manager: kubero
+spec:
+  name: zitadel
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: zitadel-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: zitadel
+              owner: zitadel
+              secret:
+                name: zitadel-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO zitadel
+                - GRANT CREATE ON SCHEMA public TO zitadel
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zitadel
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: zitadel-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: zitadel-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: zitadel
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: zitadel-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: zitadel
+          password: zitadel
+  envVars:
+  - name: ZITADEL_DATABASE_POSTGRES_HOST
+    value: zitadel-postgresql-rw
+  - name: ZITADEL_DATABASE_POSTGRES_PORT
+    value: 5432
+  - name: ZITADEL_DATABASE_POSTGRES_DATABASE
+    value: zitadel
+  - name: ZITADEL_DATABASE_POSTGRES_USER_USERNAME
+    value: zitadel
+  - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+    value: zitadel
+  - name: ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE
+    value: disable
+  - name: ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME
+    value: postgres
+  - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
+    value: zitadel
+  - name: ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE
+    value: disable
+  - name: ZITADEL_EXTERNALDOMAIN
+    value: '{{KUBERO_APP_HOST}}'
+  - name: ZITADEL_EXTERNALPORT
+    value: 443
+  - name: ZITADEL_EXTERNALSECURE
+    value: true
+  - name: ZITADEL_MASTERKEY
+    value: MasterkeyNeedsToHave32Characters
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /debug/ready
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: ghcr.io/zitadel/zitadel
+    tag: stable
+    command:
+    - start-from-init
+    - --masterkeyFromEnv

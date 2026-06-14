@@ -1,0 +1,78 @@
+{
+  "slug": "keycloak",
+  "title": "Keycloak",
+  "description": "Enterprise-grade open-source identity and access management — SSO, OAuth2, SAML, LDAP federation, MFA, and user management.",
+  "source": "https://github.com/keycloak/keycloak",
+  "website": "https://www.keycloak.org",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/icon.png",
+  "categories": [
+    "security",
+    "development",
+    "work"
+  ],
+  "installation": "Change KC_BOOTSTRAP_ADMIN_PASSWORD before first deploy. start-dev mode is used here for simplicity — for production replace with 'start' and configure proper TLS/hostname. Access the Admin Console at /admin. KC_PROXY=edge enables proxy header trust (required when running behind the kubero ingress). Create realms, clients, and users in the Admin Console.",
+  "screenshots": [],
+  "links": [
+    "https://www.keycloak.org/documentation"
+  ],
+  "license": "Apache-2.0",
+  "spdx_id": "Apache-2.0",
+  "stars": 24000,
+  "language": "Java",
+  "image": {
+    "repository": "quay.io/keycloak/keycloak",
+    "tag": "latest",
+    "containerPort": "8080",
+    "command": [
+      "start-dev"
+    ]
+  },
+  "envVars": [
+    {
+      "name": "KC_DB",
+      "value": "postgres"
+    },
+    {
+      "name": "KC_DB_URL",
+      "value": "jdbc:postgresql://keycloak-postgresql-rw:5432/keycloak"
+    },
+    {
+      "name": "KC_DB_USERNAME",
+      "value": "keycloak"
+    },
+    {
+      "name": "KC_DB_PASSWORD",
+      "value": "keycloak"
+    },
+    {
+      "name": "KC_HOSTNAME",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "KC_PROXY",
+      "value": "edge"
+    },
+    {
+      "name": "KC_HTTP_ENABLED",
+      "value": "true"
+    },
+    {
+      "name": "KC_BOOTSTRAP_ADMIN_USERNAME",
+      "value": "admin"
+    },
+    {
+      "name": "KC_BOOTSTRAP_ADMIN_PASSWORD",
+      "value": "change-me"
+    }
+  ],
+  "addons": [
+    {
+      "type": "postgres",
+      "name": "keycloak",
+      "db": "keycloak",
+      "user": "keycloak",
+      "password": "keycloak"
+    }
+  ],
+  "extraVolumes": []
+}

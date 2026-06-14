@@ -1,0 +1,54 @@
+{
+  "slug": "timescaledb",
+  "title": "TimescaleDB",
+  "description": "Time-series database built on Postgres — hypertables, compression, continuous aggregates, and full SQL compatibility for metrics and events.",
+  "source": "https://github.com/timescale/timescaledb",
+  "website": "https://www.timescale.com",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/timescaledb/icon.png",
+  "categories": [
+    "database",
+    "analytics",
+    "data"
+  ],
+  "installation": "Change POSTGRES_PASSWORD. Connect via PostgreSQL clients on port 5432 (note: this port is internal; use port-forwarding or the kubero connection info to access it). Create hypertables with SELECT create_hypertable('my_table', 'time'). TimescaleDB adds time-series superpowers to standard Postgres — all standard psql tools and ORMs work unchanged.",
+  "screenshots": [],
+  "links": [
+    "https://docs.timescale.com/"
+  ],
+  "license": "Apache-2.0",
+  "spdx_id": "Apache-2.0",
+  "stars": 18000,
+  "language": "C",
+  "image": {
+    "repository": "timescale/timescaledb",
+    "tag": "latest-pg16",
+    "containerPort": "5432",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "POSTGRES_USER",
+      "value": "postgres"
+    },
+    {
+      "name": "POSTGRES_PASSWORD",
+      "value": "change-me"
+    },
+    {
+      "name": "POSTGRES_DB",
+      "value": "timescaledb"
+    },
+    {
+      "name": "TIMESCALEDB_TELEMETRY",
+      "value": "off"
+    }
+  ],
+  "addons": [],
+  "extraVolumes": [
+    {
+      "mountPath": "/var/lib/postgresql/data",
+      "name": "timescaledb-data",
+      "size": "20Gi"
+    }
+  ]
+}

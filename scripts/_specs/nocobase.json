@@ -1,0 +1,78 @@
+{
+  "slug": "nocobase",
+  "title": "NocoBase",
+  "description": "Open-source no-code/low-code platform for building CRMs, ERPs, and internal tools with a plugin-based extensible architecture.",
+  "source": "https://github.com/nocobase/nocobase",
+  "website": "https://www.nocobase.com",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocobase/icon.png",
+  "categories": [
+    "data",
+    "development",
+    "productivity"
+  ],
+  "installation": "Change APP_KEY to a random string. On first load, NocoBase auto-migrates the database and shows the setup wizard. Default admin: admin@nocobase.com / admin123 (change immediately). Use the plugin manager to install additional plugins. Supports building custom data models, forms, workflows, and dashboards without code.",
+  "screenshots": [],
+  "links": [
+    "https://docs.nocobase.com/"
+  ],
+  "license": "AGPL-3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 16000,
+  "language": "TypeScript",
+  "image": {
+    "repository": "nocobase/nocobase",
+    "tag": "latest",
+    "containerPort": "13000",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "DB_DIALECT",
+      "value": "postgres"
+    },
+    {
+      "name": "DB_HOST",
+      "value": "nocobase-postgresql-rw"
+    },
+    {
+      "name": "DB_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "DB_DATABASE",
+      "value": "nocobase"
+    },
+    {
+      "name": "DB_USER",
+      "value": "nocobase"
+    },
+    {
+      "name": "DB_PASSWORD",
+      "value": "nocobase"
+    },
+    {
+      "name": "APP_KEY",
+      "value": "change-me-to-random-string"
+    },
+    {
+      "name": "APP_PORT",
+      "value": "13000"
+    }
+  ],
+  "addons": [
+    {
+      "type": "postgres",
+      "name": "nocobase",
+      "db": "nocobase",
+      "user": "nocobase",
+      "password": "nocobase"
+    }
+  ],
+  "extraVolumes": [
+    {
+      "mountPath": "/app/nocobase/storage",
+      "name": "nocobase-storage",
+      "size": "5Gi"
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "slug": "seafile",
+  "title": "Seafile",
+  "description": "High-performance self-hosted file sync and share — encrypted libraries, version history, team collaboration, and Office online editing.",
+  "source": "https://github.com/haiwen/seafile",
+  "website": "https://www.seafile.com",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seafile/icon.png",
+  "categories": [
+    "storage",
+    "productivity",
+    "work"
+  ],
+  "installation": "Change SEAFILE_ADMIN_EMAIL and SEAFILE_ADMIN_PASSWORD. SEAFILE_SERVER_HOSTNAME must be just the hostname (no https://, e.g. seafile.example.com). DB_ROOT_PASSWD must match the MariaDB root password from the add-on (default: seafile). On first start, Seafile auto-creates its databases (seafile, seahub, ccnet). The seafile-data volume holds all uploaded files. SEAFILE_SERVER_LETSENCRYPT=false because TLS is handled by the kubero ingress.",
+  "screenshots": [],
+  "links": [
+    "https://manual.seafile.com/"
+  ],
+  "license": "Apache-2.0",
+  "spdx_id": "Apache-2.0",
+  "stars": 13000,
+  "language": "Python",
+  "image": {
+    "repository": "seafileltd/seafile-mc",
+    "tag": "latest",
+    "containerPort": "80",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "DB_HOST",
+      "value": "seafile-db"
+    },
+    {
+      "name": "DB_ROOT_PASSWD",
+      "value": "seafile"
+    },
+    {
+      "name": "TIME_ZONE",
+      "value": "Etc/UTC"
+    },
+    {
+      "name": "SEAFILE_ADMIN_EMAIL",
+      "value": "admin@example.com"
+    },
+    {
+      "name": "SEAFILE_ADMIN_PASSWORD",
+      "value": "change-me"
+    },
+    {
+      "name": "SEAFILE_SERVER_HOSTNAME",
+      "value": "{{KUBERO_APP_HOST}}"
+    },
+    {
+      "name": "SEAFILE_SERVER_LETSENCRYPT",
+      "value": "false"
+    }
+  ],
+  "addons": [
+    {
+      "type": "mariadb",
+      "name": "seafile",
+      "db": "seafile",
+      "user": "seafile",
+      "password": "seafile"
+    }
+  ],
+  "extraVolumes": [
+    {
+      "mountPath": "/shared",
+      "name": "seafile-data",
+      "size": "50Gi"
+    }
+  ]
+}

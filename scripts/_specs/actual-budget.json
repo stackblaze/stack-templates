@@ -1,0 +1,42 @@
+{
+  "slug": "actual-budget",
+  "title": "Actual Budget",
+  "description": "Local-first personal finance app with envelope budgeting, bank sync, and end-to-end encryption. Self-hosted YNAB alternative.",
+  "source": "https://github.com/actualbudget/actual",
+  "website": "https://actualbudget.org",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/actual-budget/icon.png",
+  "categories": [
+    "finance",
+    "productivity",
+    "utilities"
+  ],
+  "installation": "Actual Budget stores budgets as SQLite files in the /data volume. On first visit, create a password for the server. Each budget file can be synced across devices. Bank sync requires a GoCardless or SimpleFIN subscription (optional — manual entry also works). All data is end-to-end encrypted client-side. No external database needed.",
+  "screenshots": [],
+  "links": [
+    "https://actualbudget.org/docs/"
+  ],
+  "license": "MIT",
+  "spdx_id": "MIT",
+  "stars": 17000,
+  "language": "JavaScript",
+  "image": {
+    "repository": "actualbudget/actual-server",
+    "tag": "latest",
+    "containerPort": "5006",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "ACTUAL_SERVER_HOSTNAME",
+      "value": "0.0.0.0"
+    }
+  ],
+  "addons": [],
+  "extraVolumes": [
+    {
+      "mountPath": "/data",
+      "name": "actual-data",
+      "size": "2Gi"
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "slug": "firefly-iii",
+  "title": "Firefly III",
+  "description": "Self-hosted personal finance manager — transactions, budgets, bills, piggy banks, reports, and recurring transactions. Full-featured money management.",
+  "source": "https://github.com/firefly-iii/firefly-iii",
+  "website": "https://www.firefly-iii.org",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefly-iii/icon.png",
+  "categories": [
+    "finance",
+    "productivity",
+    "utilities"
+  ],
+  "installation": "APP_KEY must be exactly 32 characters — generate with: openssl rand -base64 24 | tr -d '/+=' | head -c 32. On first visit, register the first user (becomes admin). Configure your currencies, accounts, and categories. For automatic bank import, deploy the separate Firefly III Data Importer container. File uploads go to the firefly-iii-uploads volume.",
+  "screenshots": [],
+  "links": [
+    "https://docs.firefly-iii.org/",
+    "https://hub.docker.com/r/fireflyiii/core"
+  ],
+  "license": "AGPL-3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 16000,
+  "language": "PHP",
+  "image": {
+    "repository": "fireflyiii/core",
+    "tag": "latest",
+    "containerPort": "8080",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "APP_KEY",
+      "value": "SomeRandomStringOf32CharsExactly"
+    },
+    {
+      "name": "APP_URL",
+      "value": "{{KUBERO_APP_URL}}"
+    },
+    {
+      "name": "APP_ENV",
+      "value": "production"
+    },
+    {
+      "name": "DB_CONNECTION",
+      "value": "mysql"
+    },
+    {
+      "name": "DB_HOST",
+      "value": "firefly-iii-db"
+    },
+    {
+      "name": "DB_PORT",
+      "value": "3306"
+    },
+    {
+      "name": "DB_DATABASE",
+      "value": "firefly-iii"
+    },
+    {
+      "name": "DB_USERNAME",
+      "value": "firefly-iii"
+    },
+    {
+      "name": "DB_PASSWORD",
+      "value": "firefly-iii"
+    },
+    {
+      "name": "REDIS_HOST",
+      "value": "rfr-firefly-iii-cache-readwrite"
+    },
+    {
+      "name": "REDIS_PORT",
+      "value": "6379"
+    },
+    {
+      "name": "CACHE_DRIVER",
+      "value": "redis"
+    },
+    {
+      "name": "SESSION_DRIVER",
+      "value": "redis"
+    },
+    {
+      "name": "TRUSTED_PROXIES",
+      "value": "**"
+    }
+  ],
+  "addons": [
+    {
+      "type": "mariadb",
+      "name": "firefly-iii",
+      "db": "firefly-iii",
+      "user": "firefly-iii",
+      "password": "firefly-iii"
+    },
+    {
+      "type": "redis",
+      "name": "firefly-iii"
+    }
+  ],
+  "extraVolumes": [
+    {
+      "mountPath": "/var/www/html/storage/upload",
+      "name": "firefly-iii-uploads",
+      "size": "5Gi"
+    }
+  ]
+}

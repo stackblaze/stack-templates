@@ -1,0 +1,64 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: anythingllm
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: All-in-one private AI workspace — RAG, multi-user chat, web browsing, custom agents, and 100+ LLM integrations with a clean browser UI.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/icon.png
+    kubero.dev/template.installation: Change JWT_SECRET, SIG_KEY, and SIG_SALT to random strings before use. On first load, set up the admin account. Connect your LLM in Settings (supports Ollama, OpenAI, Anthropic, and more). Upload documents to workspaces for RAG. AnythingLLM uses SQLite by default (stored in the volume) — no database add-on required.
+    kubero.dev/template.links: '["https://docs.anythingllm.com/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/Mintplex-Labs/anything-llm
+    kubero.dev/template.categories: '["ai", "utilities", "documentation"]'
+    kubero.dev/template.title: AnythingLLM
+    kubero.dev/template.website: https://anythingllm.com
+  labels:
+    manager: kubero
+spec:
+  name: anythingllm
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: STORAGE_DIR
+    value: /app/server/storage
+  - name: JWT_SECRET
+    value: change-me-to-random-secret
+  - name: SIG_KEY
+    value: change-me-to-32char-string
+  - name: SIG_SALT
+    value: change-me-to-32char-string
+  - name: SERVER_PORT
+    value: 3001
+  - name: DISABLE_TELEMETRY
+    value: true
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/server/storage
+    name: anythingllm-storage
+    size: 10Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /api/ping
+    startupSeconds: 120
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '3001'
+    pullPolicy: Always
+    repository: mintplexlabs/anythingllm
+    tag: latest

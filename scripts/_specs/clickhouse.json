@@ -1,0 +1,54 @@
+{
+  "slug": "clickhouse",
+  "title": "ClickHouse",
+  "description": "Column-oriented OLAP database for real-time analytics — processes billions of rows per second with sub-second query latency.",
+  "source": "https://github.com/ClickHouse/ClickHouse",
+  "website": "https://clickhouse.com",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/clickhouse/icon.png",
+  "categories": [
+    "database",
+    "analytics",
+    "data"
+  ],
+  "installation": "Change CLICKHOUSE_PASSWORD. Access the HTTP interface at port 8123 and the Play UI at /play. Connect with any ClickHouse client using host={{KUBERO_APP_HOST}}, port=443, user=admin, password=<your-password>. The native TCP port 9000 is not exposed externally — use the HTTP interface or the JDBC/ODBC drivers via HTTP. Note: ClickHouse is also available as an operator-managed add-on for higher availability.",
+  "screenshots": [],
+  "links": [
+    "https://clickhouse.com/docs/"
+  ],
+  "license": "Apache-2.0",
+  "spdx_id": "Apache-2.0",
+  "stars": 41000,
+  "language": "C++",
+  "image": {
+    "repository": "clickhouse/clickhouse-server",
+    "tag": "latest",
+    "containerPort": "8123",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "CLICKHOUSE_DB",
+      "value": "default"
+    },
+    {
+      "name": "CLICKHOUSE_USER",
+      "value": "admin"
+    },
+    {
+      "name": "CLICKHOUSE_PASSWORD",
+      "value": "change-me"
+    },
+    {
+      "name": "CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT",
+      "value": "1"
+    }
+  ],
+  "addons": [],
+  "extraVolumes": [
+    {
+      "mountPath": "/var/lib/clickhouse",
+      "name": "clickhouse-data",
+      "size": "20Gi"
+    }
+  ]
+}

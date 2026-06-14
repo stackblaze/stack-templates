@@ -1,0 +1,98 @@
+{
+  "slug": "strapi",
+  "title": "Strapi",
+  "description": "Most popular open-source headless CMS — REST and GraphQL APIs, role-based access, media library, and a customisable admin panel.",
+  "source": "https://github.com/strapi/strapi",
+  "website": "https://strapi.io",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/icon.png",
+  "categories": [
+    "cms",
+    "development",
+    "data"
+  ],
+  "installation": "Change JWT_SECRET, ADMIN_JWT_SECRET, APP_KEYS, API_TOKEN_SALT, and TRANSFER_TOKEN_SALT to unique random values. Access the Admin Panel at /admin and create the first admin user. Define Content-Types in the Content-Type Builder, then query them via REST at /api/<collection> or GraphQL at /graphql. Media uploads go to the strapi-uploads volume.",
+  "screenshots": [],
+  "links": [
+    "https://docs.strapi.io/"
+  ],
+  "license": "MIT",
+  "spdx_id": "MIT",
+  "stars": 65000,
+  "language": "JavaScript",
+  "image": {
+    "repository": "elestio/strapi",
+    "tag": "latest",
+    "containerPort": "1337",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "DATABASE_CLIENT",
+      "value": "postgres"
+    },
+    {
+      "name": "DATABASE_HOST",
+      "value": "strapi-postgresql-rw"
+    },
+    {
+      "name": "DATABASE_PORT",
+      "value": "5432"
+    },
+    {
+      "name": "DATABASE_NAME",
+      "value": "strapi"
+    },
+    {
+      "name": "DATABASE_USERNAME",
+      "value": "strapi"
+    },
+    {
+      "name": "DATABASE_PASSWORD",
+      "value": "strapi"
+    },
+    {
+      "name": "DATABASE_SSL",
+      "value": "false"
+    },
+    {
+      "name": "JWT_SECRET",
+      "value": "change-me-jwt-secret"
+    },
+    {
+      "name": "ADMIN_JWT_SECRET",
+      "value": "change-me-admin-jwt-secret"
+    },
+    {
+      "name": "APP_KEYS",
+      "value": "key1,key2,key3,key4"
+    },
+    {
+      "name": "API_TOKEN_SALT",
+      "value": "change-me-token-salt"
+    },
+    {
+      "name": "TRANSFER_TOKEN_SALT",
+      "value": "change-me-transfer-salt"
+    },
+    {
+      "name": "NODE_ENV",
+      "value": "production"
+    }
+  ],
+  "addons": [
+    {
+      "type": "postgres",
+      "name": "strapi",
+      "db": "strapi",
+      "user": "strapi",
+      "password": "strapi"
+    }
+  ],
+  "extraVolumes": [
+    {
+      "mountPath": "/srv/app/public/uploads",
+      "name": "strapi-uploads",
+      "size": "10Gi"
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: langfuse
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source LLM observability platform — traces, evals, prompt management, datasets, and cost analytics for AI applications.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langfuse/icon.png
+    kubero.dev/template.installation: 'Change NEXTAUTH_SECRET, SALT, and ENCRYPTION_KEY to random values before use (ENCRYPTION_KEY must be a 64-char hex string). LANGFUSE_INIT_* variables seed the first org/project/user — change them or delete after first login. Instrument your app with the Langfuse SDK (pip install langfuse) and set LANGFUSE_HOST={{KUBERO_APP_URL}} in your app. The free self-hosted version includes all features.'
+    kubero.dev/template.links: '["https://langfuse.com/docs"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/langfuse/langfuse
+    kubero.dev/template.categories: '["ai", "monitoring", "development"]'
+    kubero.dev/template.title: Langfuse
+    kubero.dev/template.website: https://langfuse.com
+  labels:
+    manager: kubero
+spec:
+  name: langfuse
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: langfuse-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: langfuse
+              owner: langfuse
+              secret:
+                name: langfuse-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO langfuse
+                - GRANT CREATE ON SCHEMA public TO langfuse
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO langfuse
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: langfuse-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: langfuse-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: langfuse
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: langfuse-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: langfuse
+          password: langfuse
+  envVars:
+  - name: DATABASE_URL
+    value: 'postgresql://langfuse:langfuse@langfuse-postgresql-rw:5432/langfuse'
+  - name: NEXTAUTH_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: NEXTAUTH_SECRET
+    value: change-me-to-random-32char-string
+  - name: SALT
+    value: change-me-to-random-string
+  - name: ENCRYPTION_KEY
+    value: 0000000000000000000000000000000000000000000000000000000000000000
+  - name: LANGFUSE_INIT_ORG_ID
+    value: my-org
+  - name: LANGFUSE_INIT_ORG_NAME
+    value: My Org
+  - name: LANGFUSE_INIT_PROJECT_ID
+    value: my-project
+  - name: LANGFUSE_INIT_PROJECT_NAME
+    value: My Project
+  - name: LANGFUSE_INIT_USER_EMAIL
+    value: admin@example.com
+  - name: LANGFUSE_INIT_USER_NAME
+    value: Admin
+  - name: LANGFUSE_INIT_USER_PASSWORD
+    value: change-me
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /api/public/health
+    startupSeconds: 180
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: langfuse/langfuse
+    tag: 3

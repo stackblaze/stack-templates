@@ -12847,6 +12847,1098 @@
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zammad/app.ha.yaml"
         }
       ]
+    },
+    {
+      "name": "ollama",
+      "description": "Run large language models locally — Llama 3, Mistral, Gemma, Phi, and 100+ models via a simple OpenAI-compatible REST API.",
+      "source": "https://github.com/ollama/ollama",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/icon.png",
+      "website": "https://ollama.com",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "ai",
+        "utilities",
+        "development"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://github.com/ollama/ollama",
+        "https://ollama.com/library"
+      ],
+      "addons": [],
+      "stars": 120000,
+      "forks": 0,
+      "watchers": 120000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Go",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/app.yaml",
+      "status": "active",
+      "license": "MIT",
+      "spdx_id": "MIT",
+      "dirname": "ollama",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "open-webui",
+      "description": "ChatGPT-style web interface for Ollama and any OpenAI-compatible API — supports RAG, web search, image generation, and multi-model chat.",
+      "source": "https://github.com/open-webui/open-webui",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/open-webui/icon.png",
+      "website": "https://openwebui.com",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "ai",
+        "utilities"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://docs.openwebui.com/"
+      ],
+      "addons": [],
+      "stars": 136000,
+      "forks": 0,
+      "watchers": 136000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/open-webui/app.yaml",
+      "status": "active",
+      "license": "MIT",
+      "spdx_id": "MIT",
+      "dirname": "open-webui",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/open-webui/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "litellm",
+      "description": "LLM proxy and gateway — unified OpenAI-compatible API for 100+ providers including OpenAI, Anthropic, Gemini, Ollama, and Bedrock with cost tracking and rate limiting.",
+      "source": "https://github.com/BerriAI/litellm",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/icon.png",
+      "website": "https://litellm.ai",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "ai",
+        "development",
+        "utilities"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://docs.litellm.ai/"
+      ],
+      "addons": [],
+      "stars": 24000,
+      "forks": 0,
+      "watchers": 24000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/app.yaml",
+      "status": "active",
+      "license": "MIT",
+      "spdx_id": "MIT",
+      "dirname": "litellm",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "langfuse",
+      "description": "Open-source LLM observability platform — traces, evals, prompt management, datasets, and cost analytics for AI applications.",
+      "source": "https://github.com/langfuse/langfuse",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langfuse/icon.png",
+      "website": "https://langfuse.com",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "ai",
+        "monitoring",
+        "development"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://langfuse.com/docs"
+      ],
+      "addons": [],
+      "stars": 13000,
+      "forks": 0,
+      "watchers": 13000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langfuse/app.yaml",
+      "status": "active",
+      "license": "MIT",
+      "spdx_id": "MIT",
+      "dirname": "langfuse",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langfuse/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "localai",
+      "description": "Self-hosted, OpenAI-compatible REST API for running LLMs, image generation, audio transcription, and embeddings locally — no GPU required.",
+      "source": "https://github.com/mudler/LocalAI",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/localai/icon.png",
+      "website": "https://localai.io",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "ai",
+        "utilities"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://localai.io/basics/getting_started/"
+      ],
+      "addons": [],
+      "stars": 30000,
+      "forks": 0,
+      "watchers": 30000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Go",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/localai/app.yaml",
+      "status": "active",
+      "license": "MIT",
+      "spdx_id": "MIT",
+      "dirname": "localai",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/localai/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "anythingllm",
+      "description": "All-in-one private AI workspace — RAG, multi-user chat, web browsing, custom agents, and 100+ LLM integrations with a clean browser UI.",
+      "source": "https://github.com/Mintplex-Labs/anything-llm",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/icon.png",
+      "website": "https://anythingllm.com",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "ai",
+        "utilities",
+        "documentation"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://docs.anythingllm.com/"
+      ],
+      "addons": [],
+      "stars": 42000,
+      "forks": 0,
+      "watchers": 42000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "JavaScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/app.yaml",
+      "status": "active",
+      "license": "MIT",
+      "spdx_id": "MIT",
+      "dirname": "anythingllm",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "authentik",
+      "description": "Open-source identity provider — SSO, OAuth2, SAML, LDAP, MFA, and social login. Self-hosted alternative to Okta and Auth0.",
+      "source": "https://github.com/goauthentik/authentik",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/authentik/icon.png",
+      "website": "https://goauthentik.io",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "security",
+        "development",
+        "utilities"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://docs.goauthentik.io/"
+      ],
+      "addons": [],
+      "stars": 16000,
+      "forks": 0,
+      "watchers": 16000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/authentik/app.yaml",
+      "status": "active",
+      "license": "MIT",
+      "spdx_id": "MIT",
+      "dirname": "authentik",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/authentik/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "keycloak",
+      "description": "Enterprise-grade open-source identity and access management — SSO, OAuth2, SAML, LDAP federation, MFA, and user management.",
+      "source": "https://github.com/keycloak/keycloak",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/icon.png",
+      "website": "https://www.keycloak.org",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "security",
+        "development",
+        "work"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://www.keycloak.org/documentation"
+      ],
+      "addons": [],
+      "stars": 24000,
+      "forks": 0,
+      "watchers": 24000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Java",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/app.yaml",
+      "status": "active",
+      "license": "Apache-2.0",
+      "spdx_id": "Apache-2.0",
+      "dirname": "keycloak",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "zitadel",
+      "description": "Cloud-native identity platform — OIDC, OAuth2, SAML, passkeys, MFA, and multi-tenancy out of the box. Self-hosted alternative to Auth0.",
+      "source": "https://github.com/zitadel/zitadel",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zitadel/icon.png",
+      "website": "https://zitadel.com",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "security",
+        "development",
+        "work"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://zitadel.com/docs"
+      ],
+      "addons": [],
+      "stars": 9000,
+      "forks": 0,
+      "watchers": 9000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Go",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zitadel/app.yaml",
+      "status": "active",
+      "license": "Apache-2.0",
+      "spdx_id": "Apache-2.0",
+      "dirname": "zitadel",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zitadel/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "baserow",
+      "description": "Open-source no-code database and Airtable alternative — build relational databases, forms, and automations with a spreadsheet-like UI.",
+      "source": "https://gitlab.com/bramw/baserow",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/icon.png",
+      "website": "https://baserow.io",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "data",
+        "productivity",
+        "work"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://baserow.io/docs/index"
+      ],
+      "addons": [],
+      "stars": 12000,
+      "forks": 0,
+      "watchers": 12000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/app.yaml",
+      "status": "active",
+      "license": "MIT",
+      "spdx_id": "MIT",
+      "dirname": "baserow",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "teable",
+      "description": "Open-source Airtable alternative built on native Postgres — spreadsheet UI over real SQL tables with automations, views, and API.",
+      "source": "https://github.com/teableio/teable",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/teable/icon.png",
+      "website": "https://teable.io",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "data",
+        "productivity",
+        "work"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://help.teable.io/"
+      ],
+      "addons": [],
+      "stars": 19000,
+      "forks": 0,
+      "watchers": 19000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/teable/app.yaml",
+      "status": "active",
+      "license": "AGPL-3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "teable",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/teable/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "nocobase",
+      "description": "Open-source no-code/low-code platform for building CRMs, ERPs, and internal tools with a plugin-based extensible architecture.",
+      "source": "https://github.com/nocobase/nocobase",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocobase/icon.png",
+      "website": "https://www.nocobase.com",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "data",
+        "development",
+        "productivity"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://docs.nocobase.com/"
+      ],
+      "addons": [],
+      "stars": 16000,
+      "forks": 0,
+      "watchers": 16000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocobase/app.yaml",
+      "status": "active",
+      "license": "AGPL-3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "nocobase",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocobase/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "pocketbase",
+      "description": "Open-source Firebase alternative — realtime subscriptions, auth, file storage, and admin UI, all in a single Go binary backed by SQLite.",
+      "source": "https://github.com/pocketbase/pocketbase",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pocketbase/icon.png",
+      "website": "https://pocketbase.io",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "development",
+        "utilities",
+        "data"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://pocketbase.io/docs/"
+      ],
+      "addons": [],
+      "stars": 43000,
+      "forks": 0,
+      "watchers": 43000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Go",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pocketbase/app.yaml",
+      "status": "active",
+      "license": "MIT",
+      "spdx_id": "MIT",
+      "dirname": "pocketbase",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pocketbase/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "strapi",
+      "description": "Most popular open-source headless CMS — REST and GraphQL APIs, role-based access, media library, and a customisable admin panel.",
+      "source": "https://github.com/strapi/strapi",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/icon.png",
+      "website": "https://strapi.io",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "cms",
+        "development",
+        "data"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://docs.strapi.io/"
+      ],
+      "addons": [],
+      "stars": 65000,
+      "forks": 0,
+      "watchers": 65000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "JavaScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/app.yaml",
+      "status": "active",
+      "license": "MIT",
+      "spdx_id": "MIT",
+      "dirname": "strapi",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "clickhouse",
+      "description": "Column-oriented OLAP database for real-time analytics — processes billions of rows per second with sub-second query latency.",
+      "source": "https://github.com/ClickHouse/ClickHouse",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/clickhouse/icon.png",
+      "website": "https://clickhouse.com",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "database",
+        "analytics",
+        "data"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://clickhouse.com/docs/"
+      ],
+      "addons": [],
+      "stars": 41000,
+      "forks": 0,
+      "watchers": 41000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "C++",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/clickhouse/app.yaml",
+      "status": "active",
+      "license": "Apache-2.0",
+      "spdx_id": "Apache-2.0",
+      "dirname": "clickhouse",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/clickhouse/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "questdb",
+      "description": "High-performance time-series database with SQL — optimised for IoT, financial, and observability data with a built-in web console.",
+      "source": "https://github.com/questdb/questdb",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/questdb/icon.png",
+      "website": "https://questdb.io",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "database",
+        "analytics",
+        "data"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://questdb.io/docs/"
+      ],
+      "addons": [],
+      "stars": 15000,
+      "forks": 0,
+      "watchers": 15000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Java",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/questdb/app.yaml",
+      "status": "active",
+      "license": "Apache-2.0",
+      "spdx_id": "Apache-2.0",
+      "dirname": "questdb",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/questdb/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "timescaledb",
+      "description": "Time-series database built on Postgres — hypertables, compression, continuous aggregates, and full SQL compatibility for metrics and events.",
+      "source": "https://github.com/timescale/timescaledb",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/timescaledb/icon.png",
+      "website": "https://www.timescale.com",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "database",
+        "analytics",
+        "data"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://docs.timescale.com/"
+      ],
+      "addons": [],
+      "stars": 18000,
+      "forks": 0,
+      "watchers": 18000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "C",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/timescaledb/app.yaml",
+      "status": "active",
+      "license": "Apache-2.0",
+      "spdx_id": "Apache-2.0",
+      "dirname": "timescaledb",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/timescaledb/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "adminer",
+      "description": "Lightweight single-file database manager for MySQL, PostgreSQL, SQLite, MongoDB, and more — simpler alternative to phpMyAdmin.",
+      "source": "https://github.com/vrana/adminer",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/adminer/icon.png",
+      "website": "https://www.adminer.org",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "database",
+        "development",
+        "utilities"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://www.adminer.org/"
+      ],
+      "addons": [],
+      "stars": 7000,
+      "forks": 0,
+      "watchers": 7000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "PHP",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/adminer/app.yaml",
+      "status": "active",
+      "license": "Apache-2.0",
+      "spdx_id": "Apache-2.0",
+      "dirname": "adminer",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/adminer/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "pgadmin",
+      "description": "The most popular open-source administration and management platform for PostgreSQL databases, with a full-featured web UI.",
+      "source": "https://github.com/pgadmin-org/pgadmin4",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pgadmin/icon.png",
+      "website": "https://www.pgadmin.org",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "database",
+        "development",
+        "utilities"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://www.pgadmin.org/docs/"
+      ],
+      "addons": [],
+      "stars": 4000,
+      "forks": 0,
+      "watchers": 4000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pgadmin/app.yaml",
+      "status": "active",
+      "license": "PostgreSQL",
+      "spdx_id": "PostgreSQL",
+      "dirname": "pgadmin",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pgadmin/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "headscale",
+      "description": "Self-hosted Tailscale control server — manage your own WireGuard mesh VPN with the full Tailscale client ecosystem but zero vendor lock-in.",
+      "source": "https://github.com/juanfont/headscale",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/headscale/icon.png",
+      "website": "https://headscale.net",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "networking",
+        "security",
+        "utilities"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://headscale.net/running-headscale-container/"
+      ],
+      "addons": [],
+      "stars": 24000,
+      "forks": 0,
+      "watchers": 24000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Go",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/headscale/app.yaml",
+      "status": "active",
+      "license": "BSD-3-Clause",
+      "spdx_id": "BSD-3-Clause",
+      "dirname": "headscale",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/headscale/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "listmonk",
+      "description": "Self-hosted high-performance newsletter and mailing list manager with analytics, templating, and multi-list support. Mailchimp alternative.",
+      "source": "https://github.com/knadh/listmonk",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/icon.png",
+      "website": "https://listmonk.app",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "email",
+        "marketing",
+        "communication"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://listmonk.app/docs/"
+      ],
+      "addons": [],
+      "stars": 16000,
+      "forks": 0,
+      "watchers": 16000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Go",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/app.yaml",
+      "status": "active",
+      "license": "AGPL-3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "listmonk",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "stalwart-mail",
+      "description": "All-in-one mail server with SMTP, IMAP, JMAP, and ManageSieve — modern Rust implementation with built-in anti-spam, DKIM, and web admin.",
+      "source": "https://github.com/stalwartlabs/mail-server",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stalwart-mail/icon.png",
+      "website": "https://stalw.art",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "email",
+        "communication",
+        "utilities"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://stalw.art/docs/get-started/"
+      ],
+      "addons": [],
+      "stars": 8000,
+      "forks": 0,
+      "watchers": 8000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Rust",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stalwart-mail/app.yaml",
+      "status": "active",
+      "license": "AGPL-3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "stalwart-mail",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stalwart-mail/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "actual-budget",
+      "description": "Local-first personal finance app with envelope budgeting, bank sync, and end-to-end encryption. Self-hosted YNAB alternative.",
+      "source": "https://github.com/actualbudget/actual",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/actual-budget/icon.png",
+      "website": "https://actualbudget.org",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "finance",
+        "productivity",
+        "utilities"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://actualbudget.org/docs/"
+      ],
+      "addons": [],
+      "stars": 17000,
+      "forks": 0,
+      "watchers": 17000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "JavaScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/actual-budget/app.yaml",
+      "status": "active",
+      "license": "MIT",
+      "spdx_id": "MIT",
+      "dirname": "actual-budget",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/actual-budget/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "firefly-iii",
+      "description": "Self-hosted personal finance manager — transactions, budgets, bills, piggy banks, reports, and recurring transactions. Full-featured money management.",
+      "source": "https://github.com/firefly-iii/firefly-iii",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefly-iii/icon.png",
+      "website": "https://www.firefly-iii.org",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "finance",
+        "productivity",
+        "utilities"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://docs.firefly-iii.org/",
+        "https://hub.docker.com/r/fireflyiii/core"
+      ],
+      "addons": [],
+      "stars": 16000,
+      "forks": 0,
+      "watchers": 16000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "PHP",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefly-iii/app.yaml",
+      "status": "active",
+      "license": "AGPL-3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "firefly-iii",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefly-iii/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "verdaccio",
+      "description": "Lightweight private npm/yarn/pnpm registry — proxy public packages and publish private ones with simple auth and no external database.",
+      "source": "https://github.com/verdaccio/verdaccio",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/icon.png",
+      "website": "https://verdaccio.org",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "development",
+        "utilities",
+        "devops"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://verdaccio.org/docs/installation/"
+      ],
+      "addons": [],
+      "stars": 17000,
+      "forks": 0,
+      "watchers": 17000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/app.yaml",
+      "status": "active",
+      "license": "MIT",
+      "spdx_id": "MIT",
+      "dirname": "verdaccio",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "seafile",
+      "description": "High-performance self-hosted file sync and share — encrypted libraries, version history, team collaboration, and Office online editing.",
+      "source": "https://github.com/haiwen/seafile",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seafile/icon.png",
+      "website": "https://www.seafile.com",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "storage",
+        "productivity",
+        "work"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://manual.seafile.com/"
+      ],
+      "addons": [],
+      "stars": 13000,
+      "forks": 0,
+      "watchers": 13000,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seafile/app.yaml",
+      "status": "active",
+      "license": "Apache-2.0",
+      "spdx_id": "Apache-2.0",
+      "dirname": "seafile",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seafile/app.yaml"
+        }
+      ]
     }
   ],
   "categories": {

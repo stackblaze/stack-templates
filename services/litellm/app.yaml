@@ -1,0 +1,114 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: litellm
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: LLM proxy and gateway — unified OpenAI-compatible API for 100+ providers including OpenAI, Anthropic, Gemini, Ollama, and Bedrock with cost tracking and rate limiting.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/icon.png
+    kubero.dev/template.installation: 'LiteLLM provides a single OpenAI-compatible endpoint that proxies to any LLM provider. Set LITELLM_MASTER_KEY (must start with sk-). Add models via the /ui dashboard (login with UI_USERNAME/UI_PASSWORD) or via the /models API. The Postgres add-on persists model configs, spend logs, and keys. Connect any OpenAI SDK client to {{KUBERO_APP_URL}}/v1 with Authorization: Bearer sk-change-me.'
+    kubero.dev/template.links: '["https://docs.litellm.ai/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/BerriAI/litellm
+    kubero.dev/template.categories: '["ai", "development", "utilities"]'
+    kubero.dev/template.title: LiteLLM
+    kubero.dev/template.website: https://litellm.ai
+  labels:
+    manager: kubero
+spec:
+  name: litellm
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: litellm-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: litellm
+              owner: litellm
+              secret:
+                name: litellm-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO litellm
+                - GRANT CREATE ON SCHEMA public TO litellm
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO litellm
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: litellm-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: litellm-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: litellm
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: litellm-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: litellm
+          password: litellm
+  envVars:
+  - name: DATABASE_URL
+    value: 'postgresql://litellm:litellm@litellm-postgresql-rw:5432/litellm'
+  - name: LITELLM_MASTER_KEY
+    value: sk-change-me
+  - name: STORE_MODEL_IN_DB
+    value: True
+  - name: LITELLM_LOG
+    value: INFO
+  - name: UI_USERNAME
+    value: admin
+  - name: UI_PASSWORD
+    value: change-me
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /health/liveliness
+    startupSeconds: 120
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '4000'
+    pullPolicy: Always
+    repository: ghcr.io/berriai/litellm
+    tag: main-latest

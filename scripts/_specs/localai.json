@@ -1,0 +1,53 @@
+{
+  "slug": "localai",
+  "title": "LocalAI",
+  "description": "Self-hosted, OpenAI-compatible REST API for running LLMs, image generation, audio transcription, and embeddings locally — no GPU required.",
+  "source": "https://github.com/mudler/LocalAI",
+  "website": "https://localai.io",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/localai/icon.png",
+  "categories": [
+    "ai",
+    "utilities"
+  ],
+  "installation": "LocalAI provides an OpenAI-compatible API for local models. Use the latest-cpu tag (no GPU). Download a model by placing a GGUF file in the /models volume, or use the gallery API to install models: POST /models/apply with {\"id\":\"gpt4all-j\"}. Set THREADS to the number of CPU cores available. Use the /v1 endpoints with any OpenAI client library — just point the base URL at {{KUBERO_APP_URL}}/v1.",
+  "screenshots": [],
+  "links": [
+    "https://localai.io/basics/getting_started/"
+  ],
+  "license": "MIT",
+  "spdx_id": "MIT",
+  "stars": 30000,
+  "language": "Go",
+  "image": {
+    "repository": "localai/localai",
+    "tag": "latest-cpu",
+    "containerPort": "8080",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "MODELS_PATH",
+      "value": "/models"
+    },
+    {
+      "name": "CONTEXT_SIZE",
+      "value": "512"
+    },
+    {
+      "name": "THREADS",
+      "value": "4"
+    },
+    {
+      "name": "DEBUG",
+      "value": "false"
+    }
+  ],
+  "addons": [],
+  "extraVolumes": [
+    {
+      "mountPath": "/models",
+      "name": "localai-models",
+      "size": "20Gi"
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: open-webui
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: ChatGPT-style web interface for Ollama and any OpenAI-compatible API — supports RAG, web search, image generation, and multi-model chat.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/open-webui/icon.png
+    kubero.dev/template.installation: 'Set OLLAMA_BASE_URL to your Ollama instance (e.g. http://ollama:11434) OR set OPENAI_API_KEY for cloud LLMs. WEBUI_SECRET_KEY must be changed before use. On first visit create the admin account. The Postgres add-on persists users, chats, and settings. RAG document storage uses the open-webui-data volume.'
+    kubero.dev/template.links: '["https://docs.openwebui.com/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/open-webui/open-webui
+    kubero.dev/template.categories: '["ai", "utilities"]'
+    kubero.dev/template.title: Open WebUI
+    kubero.dev/template.website: https://openwebui.com
+  labels:
+    manager: kubero
+spec:
+  name: open-webui
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: open-webui-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: open-webui
+              owner: open-webui
+              secret:
+                name: open-webui-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO open-webui
+                - GRANT CREATE ON SCHEMA public TO open-webui
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO open-webui
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: open-webui-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: open-webui-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: open-webui
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: open-webui-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: open-webui
+          password: open-webui
+  envVars:
+  - name: DATABASE_URL
+    value: 'postgresql://open-webui:open-webui@open-webui-postgresql-rw:5432/open-webui'
+  - name: WEBUI_SECRET_KEY
+    value: change-me-to-a-random-32char-secret
+  - name: WEBUI_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: OLLAMA_BASE_URL
+    value: 
+  - name: OPENAI_API_KEY
+    value: 
+  - name: OPENAI_API_BASE_URL
+    value: 'https://api.openai.com/v1'
+  - name: ENABLE_SIGNUP
+    value: true
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/backend/data
+    name: open-webui-data
+    size: 5Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /health
+    startupSeconds: 120
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: ghcr.io/open-webui/open-webui
+    tag: main

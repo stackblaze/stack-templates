@@ -1,0 +1,42 @@
+{
+  "slug": "stalwart-mail",
+  "title": "Stalwart Mail",
+  "description": "All-in-one mail server with SMTP, IMAP, JMAP, and ManageSieve — modern Rust implementation with built-in anti-spam, DKIM, and web admin.",
+  "source": "https://github.com/stalwartlabs/mail-server",
+  "website": "https://stalw.art",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stalwart-mail/icon.png",
+  "categories": [
+    "email",
+    "communication",
+    "utilities"
+  ],
+  "installation": "Stalwart stores all data (config, mail, SQLite) in the /opt/stalwart-mail volume. The web admin UI is at port 8080 (the kubero app URL). IMPORTANT: SMTP (25), SMTPS (465/587), IMAP (143/993), and ManageSieve (4190) ports are NOT exposed via the default HTTP ingress — you need a TCP/LoadBalancer service for mail ports. Access the admin panel first, set the admin password, then configure domains and DNS records. Use with an external SMTP relay or expose mail ports via a LoadBalancer.",
+  "screenshots": [],
+  "links": [
+    "https://stalw.art/docs/get-started/"
+  ],
+  "license": "AGPL-3.0",
+  "spdx_id": "AGPL-3.0",
+  "stars": 8000,
+  "language": "Rust",
+  "image": {
+    "repository": "stalwartlabs/mail-server",
+    "tag": "latest",
+    "containerPort": "8080",
+    "command": []
+  },
+  "envVars": [
+    {
+      "name": "TZ",
+      "value": "UTC"
+    }
+  ],
+  "addons": [],
+  "extraVolumes": [
+    {
+      "mountPath": "/opt/stalwart-mail",
+      "name": "stalwart-data",
+      "size": "20Gi"
+    }
+  ]
+}
