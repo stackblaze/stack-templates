@@ -116,5 +116,5 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: makunz/phpbb
+    repository: ghcr.io/stackblaze/stack-templates/phpbb
     tag: 3.3.15
