@@ -45,10 +45,10 @@ spec:
       value: dotcmsdbuser
     - name: DB_PASSWORD
       value: password
-    # KuberoOpenSearch exposes HTTP on the CR metadata.name service hostname
-    # (dotcms-opensearch → qa-dotcms-dotcms-opensearch after uniquify).
+    # KuberoOpenSearch chart always exposes the main Service as `opensearch`
+    # (masterService default); it is not derived from the CR metadata.name.
     - name: DOT_ES_ENDPOINTS
-      value: "http://dotcms-opensearch:9200"
+      value: "http://opensearch:9200"
     - name: DOT_ES_AUTH_TYPE
       value: "NONE"
     - name: DOT_INITIAL_ADMIN_PASSWORD
@@ -148,8 +148,6 @@ spec:
             name: dotcms-opensearch
           spec:
             opensearch:
-              clusterName: dotcms-opensearch
-              masterService: dotcms-opensearch
               image:
                 tag: "1.3.20"
               singleNode: true
