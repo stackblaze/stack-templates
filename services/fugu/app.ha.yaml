@@ -124,4 +124,7 @@ spec:
     command:
       - sh
       - -c
-      - sed -i 's/config.force_ssl = ENV.fetch("FORCE_SSL_PROD", true)/config.force_ssl = false/' /app/config/environments/production.rb && exec sh /app/docker-entrypoint.sh rails server -b 0.0.0.0
+      - |
+        sed -i 's/config.force_ssl = ENV.fetch("FORCE_SSL_PROD", true)/config.force_ssl = false/' /app/config/environments/production.rb
+        until pg_isready -h "$(echo "$DATABASE_URL" | sed -E 's|.*@([^:/]+).*|\1|')" -p 5432 -U fugu; do sleep 2; done
+        exec sh /app/docker-entrypoint.sh rails server -b 0.0.0.0
