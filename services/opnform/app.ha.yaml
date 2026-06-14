@@ -188,3 +188,34 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/opnform-api
     tag: '1.13.2'
+    command:
+    - sh
+    - -c
+    - |
+      apk add --no-cache nginx netcat-openbsd
+      cat > /etc/nginx/http.d/default.conf <<'EOF'
+      server {
+        listen 80 default_server;
+        server_name _;
+        root /usr/share/nginx/html/public;
+        client_max_body_size 64m;
+        index index.php;
+        location / {
+          try_files $uri $uri/ /index.php?$query_string;
+        }
+        location ~ \.php$ {
+          fastcgi_pass 127.0.0.1:9000;
+          fastcgi_index index.php;
+          include fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        }
+      }
+      EOF
+      while ! nc -z "${REDIS_HOST}" 6379 2>/dev/null; do sleep 2; done
+      /usr/local/bin/opnform-entrypoint php-fpm &
+      while ! nc -z 127.0.0.1 9000 2>/dev/null; do sleep 2; done
+      nginx -g 'daemon off;'
+    run:
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
