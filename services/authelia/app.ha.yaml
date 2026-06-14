@@ -167,4 +167,4 @@ spec:
     command:
     - sh
     - -c
-    - test -f /config/configuration.yml || printf '%s\n' 'authentication_backend:' '  file:' '    path: /config/users_database.yml' 'access_control:' '  default_policy: one_factor' 'session:' '  cookies:' "    - domain: '${AUTHELIA_COOKIE_DOMAIN}'" "      authelia_url: '${AUTHELIA_PUBLIC_URL}'" 'notifier:' '  filesystem:' '    filename: /config/notifications.txt' > /config/configuration.yml; test -f /config/users_database.yml || printf 'users: []\n' > /config/users_database.yml; exec authelia
+    - test -f /config/configuration.yml && grep -q 'kubero-seed' /config/configuration.yml || printf '%s\n' '# kubero-seed' 'authentication_backend:' '  file:' '    path: /config/users_database.yml' 'access_control:' '  default_policy: one_factor' 'session:' '  cookies:' "    - domain: '${AUTHELIA_COOKIE_DOMAIN}'" "      authelia_url: '${AUTHELIA_PUBLIC_URL}'" 'notifier:' '  filesystem:' '    filename: /config/notifications.txt' > /config/configuration.yml; test -f /config/users_database.yml || printf 'users: []\n' > /config/users_database.yml; exec authelia
