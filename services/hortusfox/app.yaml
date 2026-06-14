@@ -10,10 +10,10 @@ metadata:
     kubero.dev/template.installation: 'Image: ghcr.io/danielbrendel/hortusfox-web (official). Uses MariaDB (the mariadb add-on,
       host hortusfox-mysql). Rotate the MariaDB password (default ''hortusfox'') and set a strong APP_ADMIN_PASSWORD (default
       placeholder) before exposing publicly; the first-run admin account is seeded from APP_ADMIN_EMAIL / APP_ADMIN_PASSWORD
-      on initial migration. DB_CHARSET must be utf8mb4. Persistent volumes hold uploaded plant images (/var/www/html/public/img),
-      backups (/var/www/html/public/backup), custom themes (/var/www/html/public/themes), app logs (/var/www/html/app/logs)
-      and applied migration markers (/var/www/html/app/migrations) so data and migration state survive restarts. Set APP_TIMEZONE
-      to your timezone.'
+      on initial migration. DB_CHARSET must be utf8mb4. Persistent volumes hold backups (/var/www/html/public/backup) and app
+      logs (/var/www/html/app/logs). Do not mount empty PVCs over /var/www/html/public/img, /public/themes, or /app/migrations
+      — Kubero''s shared /tmp emptyDir hides the image seed copies the entrypoint expects. Add img/themes volumes only after
+      first boot if you accept re-seeding defaults. Set APP_TIMEZONE to your timezone.'
     kubero.dev/template.links: '["https://github.com/danielbrendel/hortusfox-web/blob/master/README.md"]'
     kubero.dev/template.screenshots: '["https://www.hortusfox.com/img/screenshot.png"]'
     kubero.dev/template.source: https://github.com/danielbrendel/hortusfox-web
@@ -98,40 +98,29 @@ spec:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /var/www/html/public/img
-    name: hortusfox-images
-    size: 5Gi
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
     mountPath: /var/www/html/public/backup
     name: hortusfox-backup
     size: 2Gi
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /var/www/html/public/themes
-    name: hortusfox-themes
-    size: 1Gi
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
     mountPath: /var/www/html/app/logs
     name: hortusfox-logs
-    size: 1Gi
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /var/www/html/app/migrations
-    name: hortusfox-migrate
     size: 1Gi
   cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  # entrypoint: timezone + MariaDB migrations exceed default ~90s startup probe
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
-    containerPort: '8080'
+    containerPort: '80'
     pullPolicy: Always
     repository: ghcr.io/danielbrendel/hortusfox-web
     tag: latest
