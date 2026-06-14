@@ -61,6 +61,11 @@ spec:
               owner: hermes
               secret:
                 name: hermes-postgresql-app
+              postInitApplicationSQL:
+                - CREATE EXTENSION IF NOT EXISTS citext;
+                - GRANT ALL ON SCHEMA public TO hermes
+                - GRANT CREATE ON SCHEMA public TO hermes
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO hermes
           enableSuperuserAccess: true
           superuserSecret:
             name: hermes-postgresql-superuser
@@ -93,12 +98,18 @@ spec:
     value: hermes
   - name: HERMES_SERVER_POSTGRES_PASSWORD
     value: hermes
-  - name: HERMES_SERVER_BASE_URL
+  - name: HERMES_BASE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: HERMES_WEB_BASE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: HERMES_SERVER_ADDR
     value: 0.0.0.0:8000
+  - name: HERMES_ALGOLIA_APPLICATION_ID
+    value: placeholder-app-id
+  - name: HERMES_ALGOLIA_SEARCH_API_KEY
+    value: placeholder-search-key
+  - name: HERMES_ALGOLIA_WRITE_API_KEY
+    value: placeholder-write-key
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -107,6 +118,12 @@ spec:
     name: hermes-config
     size: 1Gi
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /health
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
@@ -114,5 +131,5 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: ghcr.io/hashicorp-forge/hermes
-    tag: latest
+    repository: ghcr.io/stackblaze/stack-templates/hermes
+    tag: v0.5.0
