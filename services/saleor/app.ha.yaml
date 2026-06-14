@@ -130,6 +130,8 @@ spec:
     value: 'False'
   - name: ALLOWED_HOSTS
     value: '{{KUBERO_APP_HOST}}'
+  - name: ALLOWED_CLIENT_HOSTS
+    value: '{{KUBERO_APP_HOST}}'
   - name: ALLOWED_GRAPHQL_ORIGINS
     value: '{{KUBERO_APP_URL}}'
   - name: PUBLIC_URL
