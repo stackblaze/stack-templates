@@ -98,6 +98,12 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /health
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '8000'
     pullPolicy: Always
