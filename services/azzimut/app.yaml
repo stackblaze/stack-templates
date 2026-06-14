@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Azimutt is a full-stack database exploration tool. It allows you to explore your database, run queries, and visualize the results.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/89384563
-    kubero.dev/template.installation: A full list of environment variables can be found here : https://github.com/azimuttapp/azimutt/blob/main/.env.example
+    kubero.dev/template.installation: 'A full list of environment variables can be found here : https://github.com/azimuttapp/azimutt/blob/main/.env.example'
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/azimuttapp/azimutt
