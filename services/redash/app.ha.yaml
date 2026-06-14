@@ -145,4 +145,5 @@ spec:
     repository: redash/redash
     tag: 10.1.0.b50633
     command:
+    - /app/bin/docker-entrypoint
     - server
