@@ -65,6 +65,10 @@ spec:
               owner: lemmy
               secret:
                 name: lemmy-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO lemmy
+                - GRANT CREATE ON SCHEMA public TO lemmy
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO lemmy
           enableSuperuserAccess: true
           superuserSecret:
             name: lemmy-postgresql-superuser
@@ -89,6 +93,10 @@ spec:
   envVars:
   - name: RUST_LOG
     value: info
+  - name: LEMMY_INITIALIZE_WITH_DEFAULT_SETTINGS
+    value: 'true'
+  - name: LEMMY_TLS__ENABLED
+    value: 'false'
   - name: LEMMY_HOSTNAME
     value: '{{KUBERO_APP_HOST}}'
   - name: LEMMY_DATABASE_URL
