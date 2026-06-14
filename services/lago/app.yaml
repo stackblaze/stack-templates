@@ -45,7 +45,7 @@ spec:
           name: lago-postgresql
         spec:
           instances: 1
-          imageName: getlago/postgres-partman:15.0-alpine
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
           primaryUpdateStrategy: unsupervised
           storage:
             storageClass: fast
@@ -65,7 +65,6 @@ spec:
                 name: lago-postgresql-app
               postInitApplicationSQL:
                 - CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
-                - CREATE EXTENSION IF NOT EXISTS pg_partman
                 - GRANT ALL ON SCHEMA public TO lago
                 - GRANT CREATE ON SCHEMA public TO lago
                 - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO lago
