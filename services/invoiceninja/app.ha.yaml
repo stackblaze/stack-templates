@@ -122,7 +122,7 @@ spec:
   - name: IS_DOCKER
     value: 'true'
   - name: APP_KEY
-    value: base64:replace-with-openssl-rand-base64-32
+    value: base64:S3ViZXJvVGVtcGxhdGVRYVNtb2tlVGVzdEtleSEhMTI=
   - name: REQUIRE_HTTPS
     value: 'false'
   - name: TRUSTED_PROXIES
@@ -187,7 +187,7 @@ spec:
     - sh
     - -c
     - |
-      apk add --no-cache nginx
+      apk add --no-cache nginx netcat-openbsd
       cat > /etc/nginx/http.d/default.conf <<'EOF'
       server {
         listen 80 default_server;
@@ -213,8 +213,10 @@ spec:
         }
       }
       EOF
+      /usr/local/bin/docker-entrypoint supervisord &
+      while ! nc -z 127.0.0.1 9000 2>/dev/null; do sleep 2; done
       nginx
-      exec /usr/local/bin/docker-entrypoint supervisord
+      wait
     run:
       securityContext:
         runAsNonRoot: false
