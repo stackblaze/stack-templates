@@ -183,4 +183,6 @@ spec:
     - sh
     - -c
     - curl -fsSL -o /tmp/docker_compose.toml https://raw.githubusercontent.com/juspay/hyperswitch/2026.06.11.0/config/docker_compose.toml
-      && exec /local/bin/router -f /tmp/docker_compose.toml
+      && mkdir -p /tmp/config
+      && curl -fsSL -o /tmp/config/superposition_seed.toml https://raw.githubusercontent.com/juspay/hyperswitch/2026.06.11.0/config/superposition_seed.toml
+      && cd /tmp && exec /local/bin/router -f /tmp/docker_compose.toml
