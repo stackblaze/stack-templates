@@ -12,8 +12,8 @@ metadata:
       MUST ALSO deploy a companion HEADLESS BROWSER deployment from image `ghcr.io/browserless/chromium:latest` (formerly
       browserless/chrome), exposing port 3000 on an in-cluster service named to match HEADLESS_BROWSER_HOST below; it renders
       charts/dashboards for scheduled deliveries, image downloads, and PDF exports. Lightdash also needs S3-COMPATIBLE OBJECT
-      STORAGE for results/file caching and scheduled-delivery artifacts — point S3_ENDPOINT/S3_BUCKET/S3_REGION/S3_ACCESS_KEY/S3_SECRET_KEY
-      at the RustFS S3 add-on or any S3 bucket (omitted from add-ons because it is not one of the supported operator datastores).
+      STORAGE for results/file caching and scheduled-delivery artifacts — the bundled RustFS add-on supplies S3_ENDPOINT/S3_BUCKET/S3_REGION/S3_ACCESS_KEY/S3_SECRET_KEY
+      (rotate the RustFS credentials before exposing; point at any other S3 bucket instead if preferred).
       ROTATE before exposing: LIGHTDASH_SECRET (`openssl rand -base64 32`; do NOT change it after data exists or saved warehouse
       credentials become undecryptable) and the Postgres add-on password (keep PGPASSWORD in sync). Set SITE_URL via the {{KUBERO_APP_URL}}
       token (already wired). The first user to register becomes the admin/owner. Optional outbound email needs the EMAIL_SMTP_*
@@ -61,6 +61,10 @@ spec:
               owner: lightdash
               secret:
                 name: lightdash-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO lightdash
+                - GRANT CREATE ON SCHEMA public TO lightdash
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO lightdash
           enableSuperuserAccess: true
           superuserSecret:
             name: lightdash-postgresql-superuser
@@ -82,6 +86,42 @@ spec:
         stringData:
           username: lightdash
           password: lightdash
+  - displayName: RustFS
+    env: []
+    icon: /img/addons/rustfs.svg
+    id: kubero-operator
+    kind: Tenant
+    resourceDefinitions:
+      Tenant:
+        apiVersion: rustfs.com/v1alpha1
+        kind: Tenant
+        metadata:
+          name: lightdash-rustfs
+        spec:
+          image: rustfs/rustfs:latest
+          credsSecret:
+            name: lightdash-rustfs-credentials
+          pools:
+          - name: pool-0
+            servers: 1
+            persistence:
+              volumesPerServer: 4
+              volumeClaimTemplate:
+                accessModes:
+                - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 2Gi
+                storageClassName: slow
+      credsSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: lightdash-rustfs-credentials
+        type: Opaque
+        stringData:
+          accesskey: lightdashadmin
+          secretkey: changeme
   envVars:
   - name: PGHOST
     value: lightdash-postgresql-rw
@@ -111,8 +151,26 @@ spec:
     value: '3000'
   - name: LIGHTDASH_INSTALL_TYPE
     value: kubero
+  - name: S3_ENDPOINT
+    value: http://lightdash-rustfs:9000
+  - name: S3_BUCKET
+    value: lightdash
+  - name: S3_REGION
+    value: us-east-1
+  - name: S3_ACCESS_KEY
+    value: lightdashadmin
+  - name: S3_SECRET_KEY
+    value: changeme
+  - name: S3_FORCE_PATH_STYLE
+    value: 'true'
   extraVolumes: []
   cronjobs: []
+  healthcheck:
+    enabled: true
+    path: /api/v1/health
+    startupSeconds: 900
+    timeoutSeconds: 10
+    periodSeconds: 15
   web:
     replicaCount: 1
   worker:
