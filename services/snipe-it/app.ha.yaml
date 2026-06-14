@@ -109,7 +109,7 @@ spec:
             quorum: 2
   envVars:
   - name: APP_KEY
-    value: base64:replace-with-openssl-rand-base64-32
+    value: base64:S3ViZXJvVGVtcGxhdGVRYVNtb2tlVGVzdEtleSEhMTI=
   - name: APP_URL
     value: '{{KUBERO_APP_URL}}'
   - name: APP_ENV
@@ -135,7 +135,7 @@ spec:
   - name: REDIS_PORT
     value: '6379'
   - name: REDIS_PASSWORD
-    value: 'null'
+    value: ''
   - name: CACHE_DRIVER
     value: redis
   - name: SESSION_DRIVER
