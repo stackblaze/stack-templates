@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: phpBB is a free, open-source flat-forum bulletin board software for building and running
       an online community discussion board.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/phpbb/icon.png
-    kubero.dev/template.installation: Uses the actively-maintained bitnami/phpbb image, which bundles Apache + PHP and only
+    kubero.dev/template.installation: Uses the makunz/phpbb image (community continuation of the discontinued Bitnami image), which bundles Apache + PHP and only
       supports MariaDB/MySQL (phpBB does support PostgreSQL upstream, but this image does not), so the mariadb add-on is shipped.
       On first boot the container runs the phpBB installer non-interactively against the MariaDB add-on, creating the admin
       account from PHPBB_USERNAME / PHPBB_PASSWORD / PHPBB_EMAIL. ROTATE the admin password (PHPBB_PASSWORD, currently a placeholder)
@@ -116,5 +116,5 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: bitnami/phpbb
-    tag: latest
+    repository: makunz/phpbb
+    tag: 3.3.15
