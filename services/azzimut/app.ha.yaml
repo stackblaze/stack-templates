@@ -1,0 +1,137 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: azzimut
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Azimutt is a full-stack database exploration tool. It allows you to explore your database, run queries, and visualize the results.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/89384563
+    kubero.dev/template.installation: A full list of environment variables can be found here : https://github.com/azimuttapp/azimutt/blob/main/.env.example
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/azimuttapp/azimutt
+    kubero.dev/template.categories: '["data", "debug", "development"]'
+    kubero.dev/template.title: Azimutt
+    kubero.dev/template.website: https://azimutt.app/
+  labels:
+    manager: kubero
+spec:
+  name: azzimut
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: azimutt-db
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: azimutt
+              owner: azimutt
+              secret:
+                name: azimutt-db-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO azimutt
+              - GRANT CREATE ON SCHEMA public TO azimutt
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO azimutt
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: azimutt-db-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: azimutt-db-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: azimutt
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: azimutt-db-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: azimutt
+          password: azimutt
+  envVars:
+  - name: PHX_SERVER
+    value: 'true'
+  - name: PHX_PROTOCOL
+    value: ipv4
+  - name: PHX_HOST
+    value: '{{KUBERO_APP_HOST}}'
+  - name: PORT
+    value: '4000'
+  - name: SECRET_KEY_BASE
+    value: '{{KUBERO_GEN_ALNUM:64}}'
+  - name: DATABASE_URL
+    value: postgresql://azimutt:azimutt@azimutt-db-rw:5432/azimutt
+  - name: FILE_STORAGE_ADAPTER
+    value: local
+  - name: AUTH_PASSWORD
+    value: 'true'
+  - name: SKIP_EMAIL_CONFIRMATION
+    value: 'true'
+  - name: SKIP_ONBOARDING_FUNNEL
+    value: 'true'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/bin/uploads
+    name: azimutt-uploads
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '4000'
+    pullPolicy: Always
+    repository: ghcr.io/azimuttapp/azimutt
+    tag: main
+    command:
+    - sh
+    - -c
+    - |
+      for i in $(seq 1 90); do
+        if /app/bin/migrate; then break; fi
+        sleep 5
+      done
+      exec /app/bin/server
