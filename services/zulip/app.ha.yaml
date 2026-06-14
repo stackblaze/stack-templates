@@ -53,6 +53,10 @@ spec:
               owner: zulip
               secret:
                 name: zulip-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO zulip
+                - GRANT CREATE ON SCHEMA public TO zulip
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zulip
           enableSuperuserAccess: true
           superuserSecret:
             name: zulip-postgresql-superuser
@@ -164,17 +168,25 @@ spec:
             resources: {}
   envVars:
   - name: SETTING_EXTERNAL_HOST
-    value: zulip.localhost
+    value: '{{KUBERO_APP_HOST}}'
   - name: SETTING_ZULIP_ADMINISTRATOR
     value: admin@example.com
   - name: SETTING_REMOTE_POSTGRES_HOST
     value: zulip-postgresql-rw
+  - name: SETTING_REMOTE_POSTGRES_SSLMODE
+    value: prefer
   - name: SETTING_RABBITMQ_HOST
     value: zulip-rabbitmq
   - name: SETTING_REDIS_HOST
     value: rfr-zulip-valkey-readwrite
   - name: SETTING_MEMCACHED_LOCATION
     value: zulip-memcached:11211
+  - name: DISABLE_HTTPS
+    value: 'True'
+  - name: SSL_CERTIFICATE_GENERATION
+    value: self-signed
+  - name: TRUST_GATEWAY_IP
+    value: 'True'
   - name: SECRETS_postgres_password
     value: zulip
   - name: SECRETS_rabbitmq_password
@@ -184,7 +196,7 @@ spec:
   - name: SECRETS_memcached_password
     value: ''
   - name: SECRETS_secret_key
-    value: replace-with-openssl-rand-hex-50
+    value: '{{KUBERO_GEN_ALNUM:50}}'
   - name: POSTGRES_DB
     value: zulip
   - name: POSTGRES_USER
@@ -203,6 +215,19 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: '2'
+      memory: 4Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 1200
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '80'
     pullPolicy: Always
