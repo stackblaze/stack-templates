@@ -109,7 +109,11 @@ spec:
   extraVolumes: []
   cronjobs: []
   healthcheck:
-    enabled: false
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
