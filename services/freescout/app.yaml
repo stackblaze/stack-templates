@@ -116,6 +116,10 @@ spec:
     value: Etc/UTC
   - name: NGINX_ENABLE_EXPLOIT_PROTECTION
     value: 'FALSE'
+  - name: NGINX_SERVER_NAME
+    value: '_'
+  - name: NGINX_ENABLE_DENY_HIDDEN_FILES
+    value: 'FALSE'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
