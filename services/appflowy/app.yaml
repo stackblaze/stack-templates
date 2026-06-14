@@ -198,7 +198,7 @@ spec:
       memory: 1536Mi
   healthcheck:
     enabled: true
-    path: /health
+    path: /api/health
     startupSeconds: 900
     timeoutSeconds: 5
     periodSeconds: 10
