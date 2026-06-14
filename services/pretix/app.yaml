@@ -170,4 +170,5 @@ spec:
     repository: pretix/standalone
     tag: stable
     command:
+    - pretix
     - web
