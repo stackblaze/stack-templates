@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/redash/icon.png
     kubero.dev/template.installation: 'Redash is a multi-process stack: every service runs the SAME redash/redash image with
       a different command. This template runs the primary web server (command `server`, port 5000). You MUST ALSO deploy these
-      companion deployments from the identical redash/redash:10.1.0 image, same env vars, to make it functional: a Celery
+      companion deployments from the identical redash/redash:10.1.0.b50633 image, same env vars, to make it functional: a Celery
       WORKER (`celery worker --app=redash.worker --queue=queries,celery`) for running queries, a SCHEDULER (`celery worker
       --app=redash.worker --beat --queue=periodic,emails,schemas`) for refreshes and alerts, and a one-time INIT/migration
       job (`create_db`) that must run ONCE before first boot to create the schema. Bundled add-ons Postgres and Redis (provided
@@ -143,6 +143,6 @@ spec:
     containerPort: '5000'
     pullPolicy: Always
     repository: redash/redash
-    tag: 10.1.0
+    tag: 10.1.0.b50633
     command:
     - server
