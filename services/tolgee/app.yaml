@@ -35,6 +35,8 @@ spec:
           value: tolgee
         - name: SPRING_DATASOURCE_PASSWORD
           value: tolgee
+        - name: TOLGEE_FRONTEND_URL
+          value: '{{KUBERO_APP_URL}}'
     extraVolumes:
         - accessMode: ReadWriteOnce
           accessModes:
@@ -105,6 +107,14 @@ spec:
         replicaCount: 1
     worker:
         replicaCount: 0
+    # Default QA LimitRange caps web pods at 512Mi; JVM + Liquibase OOM during boot.
+    resources:
+        requests:
+            cpu: 500m
+            memory: 1Gi
+        limits:
+            cpu: "1"
+            memory: 2Gi
     image:
         containerPort: 8080
         pullPolicy: Always
@@ -113,7 +123,7 @@ spec:
     # Spring Boot + Liquibase migrations exceed the default ~90s startup probe.
     healthcheck:
         enabled: true
-        path: /
-        startupSeconds: 300
+        path: /actuator/health
+        startupSeconds: 600
         timeoutSeconds: 5
         periodSeconds: 10
