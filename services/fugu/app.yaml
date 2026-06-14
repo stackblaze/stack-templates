@@ -9,8 +9,8 @@ metadata:
     kubero.dev/template.installation: Ruby on Rails product analytics backed by PostgreSQL. ROTATE SECRET_KEY_BASE (a 128-char
       hex/alphanumeric string; generate with `openssl rand -hex 64`) and rotate the postgres credentials. DATABASE_URL points
       at the bundled postgres add-on. Set INIT_USER_EMAIL and INIT_USER_PASSWORD to auto-create the first admin on first boot,
-      or visit the root URL and register (ALLOW_REGISTRATION=true). Leave FORCE_SSL_PROD empty (disables in-app SSL redirect)
-      so Kubernetes HTTP probes succeed behind ingress TLS; set true only if the app receives HTTPS directly. App listens on port 3000.
+      or visit the root URL and register (ALLOW_REGISTRATION=true). The template disables in-app SSL redirect so Kubernetes HTTP
+      probes work behind ingress TLS. App listens on port 3000.
     kubero.dev/template.links: '["https://github.com/shafy/fugu/blob/main/SELFHOSTING.md"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/shafy/fugu
@@ -100,8 +100,6 @@ spec:
     value: '0000000000000000000000000000000000000000000000000000000000000000'
   - name: ALLOW_REGISTRATION
     value: 'true'
-  - name: FORCE_SSL_PROD
-    value: ''
   - name: INIT_USER_EMAIL
     value: admin@example.com
   - name: INIT_USER_PASSWORD
@@ -123,3 +121,7 @@ spec:
     pullPolicy: Always
     repository: shafyy/fugu
     tag: latest
+    command:
+      - sh
+      - -c
+      - sed -i 's/config.force_ssl = ENV.fetch("FORCE_SSL_PROD", true)/config.force_ssl = false/' /app/config/environments/production.rb && exec /app/docker-entrypoint.sh rails server -b 0.0.0.0
