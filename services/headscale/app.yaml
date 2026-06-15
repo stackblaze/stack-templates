@@ -38,6 +38,8 @@ spec:
     value: fd7a:115c:a1e0::/48
   - name: HEADSCALE_DNS_OVERRIDE_LOCAL_DNS
     value: 'false'
+  - name: HEADSCALE_DNS_MAGIC_DNS
+    value: 'false'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -74,6 +76,6 @@ spec:
     - |
       mkdir -p /var/lib/headscale
       if [ ! -f /var/lib/headscale/config.yaml ]; then
-        printf '%s\n' 'server_url: http://127.0.0.1:8080' 'noise:' '  private_key_path: /var/lib/headscale/noise_private.key' > /var/lib/headscale/config.yaml
+        printf '%s\n' 'server_url: http://127.0.0.1:8080' 'noise:' '  private_key_path: /var/lib/headscale/noise_private.key' 'dns:' '  override_local_dns: false' '  magic_dns: false' > /var/lib/headscale/config.yaml
       fi
       exec /ko-app/headscale -c /var/lib/headscale/config.yaml serve
