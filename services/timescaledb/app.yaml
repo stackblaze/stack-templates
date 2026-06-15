@@ -28,6 +28,8 @@ spec:
     value: timescaledb
   - name: TIMESCALEDB_TELEMETRY
     value: off
+  - name: PGDATA
+    value: /var/lib/postgresql/data/pgdata
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -36,6 +38,10 @@ spec:
     name: timescaledb-data
     size: 20Gi
   cronjobs: []
+  healthcheck:
+    enabled: false
+  ingress:
+    enabled: false
   web:
     replicaCount: 1
   worker:
@@ -47,12 +53,6 @@ spec:
     limits:
       cpu: '4'
       memory: 4Gi
-  healthcheck:
-    enabled: true
-    path: /
-    startupSeconds: 120
-    timeoutSeconds: 5
-    periodSeconds: 10
   image:
     containerPort: '5432'
     pullPolicy: Always
