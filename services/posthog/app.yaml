@@ -378,6 +378,14 @@ spec:
     value: 'true'
   - name: DEPLOYMENT
     value: hobby
+  - name: POSTHOG_SKIP_MIGRATION_CHECKS
+    value: '1'
+  - name: SKIP_ASYNC_MIGRATIONS_SETUP
+    value: '1'
+  - name: PERSONHOG_ENABLED
+    value: 'false'
+  - name: OTEL_SDK_DISABLED
+    value: 'true'
   - name: OBJECT_STORAGE_ENABLED
     value: 'false'
   extraVolumes: []
