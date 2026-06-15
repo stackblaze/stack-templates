@@ -84,8 +84,6 @@ spec:
     value: http://+:80
   - name: ASPNETCORE_ENVIRONMENT
     value: Production
-  - name: ASPNETCORE_FORWARDEDHEADERS_ENABLED
-    value: 'true'
   - name: HostingConfig__UseProxy
     value: 'true'
   - name: HostingConfig__KnownProxies
