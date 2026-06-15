@@ -303,6 +303,7 @@ spec:
                 image: docker.redpanda.com/redpandadata/redpanda:v25.1.9
                 imagePullPolicy: Always
                 command:
+                - rpk
                 - redpanda
                 - start
                 - --kafka-addr
