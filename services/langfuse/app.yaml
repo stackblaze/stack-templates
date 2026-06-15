@@ -313,4 +313,4 @@ spec:
     - sh
     - -c
     - |
-      node -e "const net=require('net');const wait=(h,p)=>new Promise(r=>{const go=()=>{const s=net.connect(p,h,()=>{s.end();r();});s.on('error',()=>setTimeout(go,2000));};go();});Promise.all([wait(process.env.PGHOST,5432),wait(process.env.CHHOST,8123),wait(process.env.REDIS_HOST,+process.env.REDIS_PORT),wait(process.env.S3HOST,9000)]).then(()=>process.exit(0));" && exec dumb-init -- ./web/entrypoint.sh
+      node -e "const net=require('net');const wait=(h,p)=>new Promise(r=>{const go=()=>{const s=net.connect(p,h,()=>{s.end();r();});s.on('error',()=>setTimeout(go,2000));};go();});Promise.all([wait(process.env.PGHOST,5432),wait(process.env.CHHOST,8123),wait(process.env.REDIS_HOST,+process.env.REDIS_PORT),wait(process.env.S3HOST,9000)]).then(()=>process.exit(0));" && dumb-init -- ./web/entrypoint.sh sh -c 'node ./web/server.js --keepAliveTimeout 110000'
