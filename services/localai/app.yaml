@@ -34,7 +34,7 @@ spec:
     emptyDir: false
     mountPath: /models
     name: localai-models
-    size: 5Gi
+    size: 2Gi
   cronjobs: []
   web:
     replicaCount: 1
