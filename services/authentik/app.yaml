@@ -116,7 +116,7 @@ spec:
   - name: AUTHENTIK_REDIS__HOST
     value: rfr-authentik-cache-readwrite
   - name: AUTHENTIK_SECRET_KEY
-    value: change-me-to-50char-random-string
+    value: change-me-to-a-random-50-character-secret-key-value
   - name: AUTHENTIK_ERROR_REPORTING__ENABLED
     value: false
   extraVolumes:
@@ -156,4 +156,7 @@ spec:
     repository: ghcr.io/goauthentik/server
     tag: latest
     command:
+    - dumb-init
+    - --
+    - ak
     - server
