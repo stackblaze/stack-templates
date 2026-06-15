@@ -117,32 +117,15 @@ spec:
           name: posthog-clickhouse
         spec:
           configuration:
+            zookeeper:
+              nodes:
+              - host: 127.0.0.1
+                port: 2181
+              session_timeout_ms: 30000
+              operation_timeout_ms: 10000
             files:
               config.d/posthog-remote-servers.xml: |
                 <clickhouse>
-                  <keeper_server>
-                    <tcp_port>9181</tcp_port>
-                    <server_id>1</server_id>
-                    <log_storage_path>/var/lib/clickhouse/coordination/log</log_storage_path>
-                    <snapshot_storage_path>/var/lib/clickhouse/coordination/snapshots</snapshot_storage_path>
-                    <coordination_settings>
-                      <operation_timeout_ms>10000</operation_timeout_ms>
-                      <session_timeout_ms>30000</session_timeout_ms>
-                    </coordination_settings>
-                    <raft_configuration>
-                      <server>
-                        <id>1</id>
-                        <hostname>localhost</hostname>
-                        <port>9234</port>
-                      </server>
-                    </raft_configuration>
-                  </keeper_server>
-                  <zookeeper>
-                    <node>
-                      <host>127.0.0.1</host>
-                      <port>9181</port>
-                    </node>
-                  </zookeeper>
                   <remote_servers>
                     <posthog>
                       <shard>
@@ -216,6 +199,20 @@ spec:
                     limits:
                       cpu: '1'
                       memory: 2Gi
+                - name: zookeeper
+                  image: zookeeper:3.7.0
+                  env:
+                  - name: ZOO_AUTOPURGE_PURGEINTERVAL
+                    value: '1'
+                  - name: ZOO_AUTOPURGE_SNAPRETAINCOUNT
+                    value: '3'
+                  resources:
+                    requests:
+                      cpu: 50m
+                      memory: 256Mi
+                    limits:
+                      cpu: 500m
+                      memory: 512Mi
             volumeClaimTemplates:
             - name: data-volume-template
               spec:
