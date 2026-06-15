@@ -123,6 +123,10 @@ spec:
     value: change-me-to-random-string
   - name: DISABLE_VOLUME_CHECK
     value: '1'
+  - name: BASEROW_CELERY_BEAT_STARTUP_DELAY
+    value: '300'
+  - name: BASEROW_TRIGGER_SYNC_TEMPLATES_AFTER_MIGRATION
+    value: 'false'
   cronjobs: []
   web:
     replicaCount: 1
@@ -131,10 +135,10 @@ spec:
   resources:
     requests:
       cpu: 500m
-      memory: 1Gi
+      memory: 2Gi
     limits:
       cpu: '2'
-      memory: 2Gi
+      memory: 4Gi
   healthcheck:
     enabled: true
     path: /api/_health/
@@ -145,4 +149,4 @@ spec:
     containerPort: '80'
     pullPolicy: Always
     repository: baserow/baserow
-    tag: latest
+    tag: 2.2.2
