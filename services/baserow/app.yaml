@@ -127,8 +127,8 @@ spec:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /baserow/media
-    name: baserow-media
+    mountPath: /baserow/data
+    name: baserow-data
     size: 1Gi
   cronjobs: []
   web:
