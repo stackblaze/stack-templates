@@ -80,6 +80,27 @@ spec:
     value: wordpress
   - name: WORDPRESS_DB_NAME
     value: wordpress
+  # Auth cookie keys + salts — PINNED so every web replica signs login cookies
+  # identically. Without these, each pod generates its own random salts in its
+  # (un-shared) wp-config.php, so a cookie issued by one replica is rejected by
+  # the next and you can never stay logged in behind >1 replica. Generated once
+  # per deploy by the server's {{KUBERO_GEN_ALNUM}} token, then persisted.
+  - name: WORDPRESS_AUTH_KEY
+    value: "{{KUBERO_GEN_ALNUM:64}}"
+  - name: WORDPRESS_SECURE_AUTH_KEY
+    value: "{{KUBERO_GEN_ALNUM:64}}"
+  - name: WORDPRESS_LOGGED_IN_KEY
+    value: "{{KUBERO_GEN_ALNUM:64}}"
+  - name: WORDPRESS_NONCE_KEY
+    value: "{{KUBERO_GEN_ALNUM:64}}"
+  - name: WORDPRESS_AUTH_SALT
+    value: "{{KUBERO_GEN_ALNUM:64}}"
+  - name: WORDPRESS_SECURE_AUTH_SALT
+    value: "{{KUBERO_GEN_ALNUM:64}}"
+  - name: WORDPRESS_LOGGED_IN_SALT
+    value: "{{KUBERO_GEN_ALNUM:64}}"
+  - name: WORDPRESS_NONCE_SALT
+    value: "{{KUBERO_GEN_ALNUM:64}}"
   # Shared content (wp-content: themes/plugins/uploads) on the RWX class so
   # multiple web replicas can run for HA.
   extraVolumes:
