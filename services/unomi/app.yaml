@@ -204,3 +204,7 @@ spec:
     pullPolicy: Always
     repository: apache/unomi
     tag: 3.0.0
+    command:
+    - bash
+    - -c
+    - sed -i '/org.ops4j.pax.web.config.file/d' /opt/apache-unomi/etc/org.ops4j.pax.web.cfg && exec ./entrypoint.sh
