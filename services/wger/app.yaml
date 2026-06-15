@@ -159,6 +159,20 @@ spec:
     value: /home/wger/media
   - name: STATIC_ROOT
     value: /home/wger/static
+  - name: WGER_USE_GUNICORN
+    value: 'True'
+  - name: DJANGO_COLLECTSTATIC_ON_STARTUP
+    value: 'True'
+  - name: SYNC_EXERCISES_ON_STARTUP
+    value: 'False'
+  - name: SYNC_EXERCISES_CELERY
+    value: 'False'
+  - name: SYNC_EXERCISE_IMAGES_CELERY
+    value: 'False'
+  - name: SYNC_INGREDIENTS_CELERY
+    value: 'False'
+  - name: CACHE_API_EXERCISES_CELERY
+    value: 'False'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -166,10 +180,16 @@ spec:
     mountPath: /home/wger/media
     name: wger-media
     size: 5Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /home/wger/static
+    name: wger-static
+    size: 2Gi
   cronjobs: []
   healthcheck:
     enabled: true
-    path: /
+    path: /api/v2/version/
     startupSeconds: 900
     timeoutSeconds: 10
     periodSeconds: 10
