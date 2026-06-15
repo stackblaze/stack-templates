@@ -129,6 +129,8 @@ spec:
     value: 'false'
   - name: WEB_FRONTEND_PORT
     value: '3000'
+  - name: PORT
+    value: '3000'
   cronjobs: []
   web:
     replicaCount: 1
