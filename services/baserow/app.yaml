@@ -127,6 +127,8 @@ spec:
     value: '300'
   - name: BASEROW_TRIGGER_SYNC_TEMPLATES_AFTER_MIGRATION
     value: 'false'
+  - name: WEB_FRONTEND_PORT
+    value: '3000'
   cronjobs: []
   web:
     replicaCount: 1
