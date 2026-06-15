@@ -175,6 +175,19 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: '2'
+      memory: 4Gi
+  healthcheck:
+    enabled: true
+    path: /healthcheck
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '80'
     pullPolicy: Always
