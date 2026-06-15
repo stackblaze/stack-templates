@@ -127,5 +127,6 @@ spec:
     repository: ghcr.io/zitadel/zitadel
     tag: stable
     command:
+    - /app/zitadel
     - start-from-init
     - --masterkeyFromEnv
