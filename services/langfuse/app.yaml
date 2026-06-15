@@ -232,7 +232,7 @@ spec:
   - name: SALT
     value: change-me-to-random-string
   - name: ENCRYPTION_KEY
-    value: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+    value: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
   - name: CLICKHOUSE_MIGRATION_URL
     value: clickhouse://clickhouse-langfuse-clickhouse:9000
   - name: CLICKHOUSE_URL
