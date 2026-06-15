@@ -300,25 +300,26 @@ spec:
             spec:
               containers:
               - name: redpanda
-                image: redpandadata/redpanda:v24.2.4
+                image: docker.redpanda.com/redpandadata/redpanda:v25.1.9
                 imagePullPolicy: Always
                 command:
                 - redpanda
                 - start
-                - --overprovisioned
+                - --kafka-addr
+                - internal://0.0.0.0:9092
+                - --advertise-kafka-addr
+                - internal://posthog-kafka:9092
+                - --mode
+                - dev-container
                 - --smp
                 - '1'
                 - --memory
                 - 512M
                 - --reserve-memory
                 - 0M
-                - --node-id
-                - '0'
-                - --check=false
-                - --kafka-addr
-                - PLAINTEXT://0.0.0.0:9092
-                - --advertise-kafka-addr
-                - PLAINTEXT://posthog-kafka:9092
+                - --overprovisioned
+                - --set
+                - redpanda.auto_create_topics_enabled=true
                 ports:
                 - name: kafka
                   containerPort: 9092
