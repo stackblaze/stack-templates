@@ -115,7 +115,8 @@ spec:
     - -ec
     - |
       apt-get -qq update && apt-get -qq install -y wget ca-certificates
-      until (echo >/dev/tcp/documize-postgresql-rw/5432) 2>/dev/null; do sleep 2; done
+      DB_HOST="${DOCUMIZEDB#*host=}"; DB_HOST="${DB_HOST%% *}"
+      until (echo >/dev/tcp/"${DB_HOST}"/5432) 2>/dev/null; do sleep 2; done
       wget -q https://downloads.documize.com/documize-community-plus-linux-amd64 -O /tmp/documize
       chmod +x /tmp/documize
       exec /tmp/documize
