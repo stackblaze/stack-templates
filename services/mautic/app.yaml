@@ -121,7 +121,7 @@ spec:
   cronjobs: []
   healthcheck:
     enabled: true
-    path: /
+    path: /s/login
     startupSeconds: 900
     timeoutSeconds: 5
     periodSeconds: 10
@@ -134,3 +134,7 @@ spec:
     pullPolicy: Always
     repository: mautic/mautic
     tag: 5-apache
+    command:
+    - sh
+    - -c
+    - sleep 45 && exec /entrypoint.sh apache2-foreground
