@@ -104,8 +104,8 @@ spec:
       memory: 2Gi
   healthcheck:
     enabled: true
-    path: /
-    startupSeconds: 300
+    path: /api2/ping/
+    startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
   image:
