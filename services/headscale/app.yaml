@@ -24,21 +24,23 @@ spec:
     value: '0.0.0.0:8080'
   - name: HEADSCALE_SERVER_URL
     value: '{{KUBERO_APP_URL}}'
-  - name: HEADSCALE_DB_TYPE
-    value: sqlite3
-  - name: HEADSCALE_DB_PATH
-    value: /etc/headscale/db.sqlite
+  - name: HEADSCALE_DATABASE_TYPE
+    value: sqlite
+  - name: HEADSCALE_DATABASE_SQLITE_PATH
+    value: /var/lib/headscale/db.sqlite
   - name: HEADSCALE_PRIVATE_KEY_PATH
-    value: /etc/headscale/private.key
+    value: /var/lib/headscale/private.key
   - name: HEADSCALE_NOISE_PRIVATE_KEY_PATH
-    value: /etc/headscale/noise_private.key
-  - name: HEADSCALE_IP_PREFIXES
+    value: /var/lib/headscale/noise_private.key
+  - name: HEADSCALE_PREFIXES_V4
     value: 100.64.0.0/10
+  - name: HEADSCALE_PREFIXES_V6
+    value: fd7a:115c:a1e0::/48
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /etc/headscale
+    mountPath: /var/lib/headscale
     name: headscale-data
     size: 1Gi
   cronjobs: []
@@ -63,6 +65,13 @@ spec:
     containerPort: '8080'
     pullPolicy: Always
     repository: ghcr.io/juanfont/headscale
-    tag: '0.28.0'
+    tag: '0.28.0-debug'
     command:
-    - serve
+    - sh
+    - -c
+    - |
+      mkdir -p /var/lib/headscale
+      if [ ! -f /var/lib/headscale/config.yaml ]; then
+        printf '%s\n' 'server_url: http://127.0.0.1:8080' 'noise:' '  private_key_path: /var/lib/headscale/noise_private.key' > /var/lib/headscale/config.yaml
+      fi
+      exec /ko-app/headscale -c /var/lib/headscale/config.yaml serve
