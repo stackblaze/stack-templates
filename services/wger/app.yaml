@@ -202,3 +202,21 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/wger-server
     tag: latest
+    command:
+    - /bin/bash
+    - -ec
+    - |
+      until python3 -c "import psycopg; psycopg.connect(host='${DJANGO_DB_HOST}', port=int('${DJANGO_DB_PORT}'), user='${DJANGO_DB_USER}', password='${DJANGO_DB_PASSWORD}', dbname='${DJANGO_DB_DATABASE}')"; do
+        echo 'Waiting for PostgreSQL...'
+        sleep 3
+      done
+      REDIS_HOST="${DJANGO_CACHE_LOCATION#redis://}"
+      REDIS_HOST="${REDIS_HOST%%/*}"
+      REDIS_HOST="${REDIS_HOST%%:*}"
+      REDIS_PORT="${DJANGO_CACHE_LOCATION##*:}"
+      REDIS_PORT="${REDIS_PORT%%/*}"
+      until (echo >/dev/tcp/"${REDIS_HOST}"/"${REDIS_PORT}") 2>/dev/null; do
+        echo 'Waiting for Valkey...'
+        sleep 2
+      done
+      exec /home/wger/entrypoint.sh
