@@ -1,0 +1,113 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: atuin
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted Atuin sync server for encrypted shell history backup and sync across machines.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/122059230?s=200&v=4
+    kubero.dev/template.installation: 'ATUIN_OPEN_REGISTRATION is true for first boot so you can run `atuin register` against {{KUBERO_APP_URL}} (include port 8888 in sync_address if not using the Kubero ingress URL). Set ATUIN_OPEN_REGISTRATION=false after creating accounts. Rotate the default postgres password (atuin) before production. Server config persists on the /config volume.'
+    kubero.dev/template.links: '["https://docs.atuin.sh/cli/self-hosting/server-setup/", "https://docs.atuin.sh/cli/self-hosting/docker/"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/atuinsh/atuin/main/demo.gif"]'
+    kubero.dev/template.source: https://github.com/atuinsh/atuin
+    kubero.dev/template.categories: '["development", "utilities"]'
+    kubero.dev/template.title: Atuin
+    kubero.dev/template.website: https://atuin.sh/
+  labels:
+    manager: kubero
+spec:
+  name: atuin
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: atuin-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: atuin
+              owner: atuin
+              secret:
+                name: atuin-postgresql-app
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO atuin
+                - GRANT CREATE ON SCHEMA public TO atuin
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO atuin
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: atuin-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: atuin-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: atuin
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: atuin-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: atuin
+          password: atuin
+  envVars:
+  - name: ATUIN_HOST
+    value: 0.0.0.0
+  - name: ATUIN_PORT
+    value: '8888'
+  - name: ATUIN_OPEN_REGISTRATION
+    value: 'true'
+  - name: ATUIN_DB_URI
+    value: postgres://atuin:atuin@atuin-postgresql-rw:5432/atuin
+  - name: RUST_LOG
+    value: info,atuin_server=debug
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /config
+    name: atuin-config
+    size: 1Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /healthz
+    startupSeconds: 120
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    command:
+    - start
+    containerPort: '8888'
+    pullPolicy: Always
+    repository: ghcr.io/atuinsh/atuin
+    tag: latest

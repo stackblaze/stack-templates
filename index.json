@@ -4047,6 +4047,57 @@
       ]
     },
     {
+      "name": "atuin",
+      "description": "Self-hosted Atuin sync server for encrypted shell history backup and sync across machines.",
+      "source": "https://github.com/atuinsh/atuin",
+      "icon": "https://avatars.githubusercontent.com/u/122059230?s=200&v=4",
+      "website": "https://atuin.sh/",
+      "installation": "ATUIN_OPEN_REGISTRATION is true for first boot so you can run `atuin register` against {{KUBERO_APP_URL}} (include port 8888 in sync_address if not using the Kubero ingress URL). Set ATUIN_OPEN_REGISTRATION=false after creating accounts. Rotate the default postgres password (atuin) before production. Server config persists on the /config volume.",
+      "architecture": [],
+      "categories": [
+        "development",
+        "utilities"
+      ],
+      "screenshots": [
+        "https://raw.githubusercontent.com/atuinsh/atuin/main/demo.gif"
+      ],
+      "links": [
+        "https://docs.atuin.sh/cli/self-hosting/server-setup/",
+        "https://docs.atuin.sh/cli/self-hosting/docker/"
+      ],
+      "addons": [
+        "Cluster"
+      ],
+      "stars": 29670,
+      "forks": 838,
+      "watchers": 29670,
+      "issues": 484,
+      "last_updated": "2026-06-15T00:00:00Z",
+      "last_pushed": "2026-06-15T00:00:00Z",
+      "created_at": "2020-10-04T23:01:58Z",
+      "size": 50882,
+      "language": "Rust",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/atuin/app.yaml",
+      "status": "active",
+      "license": "MIT License",
+      "spdx_id": "MIT",
+      "dirname": "atuin",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/atuin/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/atuin/app.ha.yaml"
+        }
+      ]
+    },
+    {
       "name": "audiobookshelf",
       "description": "Self-hosted audiobook and podcast server with multi-user support, progress sync, and OPDS.",
       "source": "https://github.com/advplyr/audiobookshelf",
@@ -13999,7 +14050,7 @@
     "cms": 19,
     "documentation": 28,
     "accessories": 8,
-    "ai": 11,
+    "ai": 12,
     "data": 38,
     "social": 30,
     "dashboard": 3,
@@ -14031,7 +14082,7 @@
     "finance": 13
   },
   "stats": {
-    "total": 291,
+    "total": 292,
     "categories": 40,
     "gitops": 2,
     "stars": 4431669
