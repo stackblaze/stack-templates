@@ -140,6 +140,13 @@ spec:
                 containers:
                 - name: clickhouse
                   image: ghcr.io/stackblaze/stack-templates/clickhouse-server:24.8.7.41
+                  resources:
+                    requests:
+                      cpu: 100m
+                      memory: 512Mi
+                    limits:
+                      cpu: '1'
+                      memory: 2Gi
             volumeClaimTemplates:
             - name: data-volume-template
               spec:
@@ -245,7 +252,7 @@ spec:
   healthcheck:
     enabled: true
     path: /
-    startupSeconds: 900
+    startupSeconds: 1800
     timeoutSeconds: 10
     periodSeconds: 10
   web:
