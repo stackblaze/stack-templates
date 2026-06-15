@@ -115,12 +115,8 @@ spec:
     value: baserow
   - name: DATABASE_PASSWORD
     value: baserow
-  - name: REDIS_HOST
-    value: rfr-baserow-cache-readwrite
-  - name: REDIS_PORT
-    value: 6379
-  - name: REDIS_PASSWORD
-    value: ''
+  - name: REDIS_URL
+    value: redis://rfr-baserow-cache-readwrite:6379/0
   - name: BASEROW_PUBLIC_URL
     value: '{{KUBERO_APP_URL}}'
   - name: SECRET_KEY
