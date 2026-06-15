@@ -100,6 +100,8 @@ spec:
     value: 443
   - name: ZITADEL_EXTERNALSECURE
     value: true
+  - name: ZITADEL_TLS_ENABLED
+    value: false
   - name: ZITADEL_MASTERKEY
     value: MasterkeyNeedsToHave32Characters
   extraVolumes: []
@@ -118,7 +120,7 @@ spec:
   healthcheck:
     enabled: true
     path: /debug/ready
-    startupSeconds: 300
+    startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
   image:
@@ -130,3 +132,5 @@ spec:
     - /app/zitadel
     - start-from-init
     - --masterkeyFromEnv
+    - --tlsMode
+    - external
