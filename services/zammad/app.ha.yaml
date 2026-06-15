@@ -89,28 +89,6 @@ spec:
         stringData:
           username: zammad
           password: zammad
-  - displayName: Memcached
-    env: []
-    icon: /img/addons/memcached.svg
-    id: kubero-operator
-    kind: KuberoAddonMemcached
-    resourceDefinitions:
-      KuberoAddonMemcached:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoAddonMemcached
-        metadata:
-          name: zammad-memcached
-        spec:
-          memcached:
-            image:
-              tag: 1.6.39
-            replicaCount: 2
-            config:
-              memoryLimit: 128
-              maxConnections: 1024
-              extraArgs: []
-              verbosity: 0
-            resources: {}
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -156,8 +134,6 @@ spec:
     value: zammad
   - name: POSTGRESQL_OPTIONS
     value: ?pool=50
-  - name: MEMCACHE_SERVERS
-    value: zammad-memcached:11211
   - name: REDIS_URL
     value: redis://rfr-zammad-valkey-readwrite:6379
   - name: NGINX_PORT
@@ -215,11 +191,10 @@ spec:
       EP=/opt/zammad/bin/docker-entrypoint
       REDIS_HOST="${REDIS_URL#redis://}"
       REDIS_HOST="${REDIS_HOST%%/*}"
+      REDIS_HOST="${REDIS_HOST%%:*}"
       REDIS_PORT="${REDIS_URL##*:}"
       REDIS_PORT="${REDIS_PORT%%/*}"
-      MC_HOST="${MEMCACHE_SERVERS%%:*}"
       until pg_isready -q -h "${POSTGRESQL_HOST}" -p "${POSTGRESQL_PORT}"; do sleep 2; done
-      until (echo >/dev/tcp/"${MC_HOST}"/11211) 2>/dev/null; do sleep 2; done
       until (echo >/dev/tcp/"${REDIS_HOST}"/"${REDIS_PORT}") 2>/dev/null; do sleep 2; done
       "${EP}" zammad-init
       "${EP}" zammad-railsserver &
