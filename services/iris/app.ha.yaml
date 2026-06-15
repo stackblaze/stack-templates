@@ -66,6 +66,9 @@ spec:
                 - GRANT ALL ON SCHEMA public TO iris
                 - GRANT CREATE ON SCHEMA public TO iris
                 - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO iris
+              postInitSQL:
+                - CREATE DATABASE iris_tasks OWNER iris
+                - ALTER ROLE iris CREATEDB
           enableSuperuserAccess: true
           superuserSecret:
             name: iris-postgresql-superuser
@@ -119,7 +122,7 @@ spec:
   - name: POSTGRES_PASSWORD
     value: iris
   - name: POSTGRES_ADMIN_USER
-    value: iris
+    value: postgres
   - name: POSTGRES_ADMIN_PASSWORD
     value: iris
   - name: POSTGRES_DB
