@@ -107,25 +107,27 @@ spec:
   envVars:
   - name: PRISMA_DATABASE_URL
     value: 'postgresql://teable:teable@teable-postgresql-rw:5432/teable'
+  - name: BACKEND_CACHE_PROVIDER
+    value: redis
   - name: BACKEND_CACHE_REDIS_URI
     value: 'redis://rfr-teable-cache-readwrite:6379/0'
   - name: SECRET_KEY
     value: change-me-to-random-string
   - name: PUBLIC_ORIGIN
     value: '{{KUBERO_APP_URL}}'
-  - name: BACKEND_STORAGE_TYPE
+  - name: BACKEND_STORAGE_PROVIDER
     value: local
-  - name: BACKEND_LOCAL_STORAGE_PATH
+  - name: BACKEND_STORAGE_LOCAL_PATH
     value: /app/.teable
-  - name: BACKEND_UPLOAD_FILE_SIZE_LIMIT
-    value: 209715200
+  - name: MAX_ATTACHMENT_UPLOAD_SIZE
+    value: '209715200'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /app/.teable
     name: teable-storage
-    size: 10Gi
+    size: 1Gi
   cronjobs: []
   web:
     replicaCount: 1
