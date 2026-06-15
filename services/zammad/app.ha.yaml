@@ -132,6 +132,8 @@ spec:
     value: zammad
   - name: POSTGRESQL_PASS
     value: zammad
+  - name: POSTGRESQL_DB_CREATE
+    value: 'false'
   - name: POSTGRESQL_OPTIONS
     value: ?pool=50
   - name: REDIS_URL
