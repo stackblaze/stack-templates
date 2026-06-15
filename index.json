@@ -1356,6 +1356,51 @@
       ]
     },
     {
+      "name": "sterlingpdf",
+      "description": "Stirling PDF is a hosted web application that allows you to perform various operations on PDF files, such as splitting and adding images.",
+      "source": "https://github.com/Frooodle/Stirling-PDF",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/icon.png",
+      "website": "https://docs.stirlingpdf.com/",
+      "installation": "First boot may take several minutes while Java starts and optional assets download.",
+      "architecture": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "categories": [
+        "productivity",
+        "utilities",
+        "work"
+      ],
+      "screenshots": [
+        "https://raw.githubusercontent.com/Frooodle/Stirling-PDF/main/images/stirling-home.png"
+      ],
+      "links": [],
+      "addons": [],
+      "stars": 78556,
+      "forks": 6876,
+      "watchers": 78556,
+      "issues": 394,
+      "last_updated": "2026-05-11T12:36:12Z",
+      "last_pushed": "2026-05-11T11:10:23Z",
+      "created_at": "2023-01-27T18:22:42Z",
+      "size": 276295,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sterlingpdf/app.yaml",
+      "status": "active",
+      "license": "Other",
+      "spdx_id": "NOASSERTION",
+      "dirname": "sterlingpdf",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sterlingpdf/app.yaml"
+        }
+      ]
+    },
+    {
       "name": "documenso",
       "description": "The Open Source DocuSign Alternative.",
       "source": "https://github.com/documenso/documenso",
