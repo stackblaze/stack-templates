@@ -89,7 +89,9 @@ spec:
   - name: DATABASE_PASSWORD
     value: strapi
   - name: DATABASE_SSL
-    value: false
+    value: 'false'
+  - name: ENCRYPTION_KEY
+    value: change-me-encryption-key
   - name: JWT_SECRET
     value: change-me-jwt-secret
   - name: ADMIN_JWT_SECRET
@@ -106,7 +108,7 @@ spec:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /srv/app/public/uploads
+    mountPath: /opt/app/public/uploads
     name: strapi-uploads
     size: 10Gi
   cronjobs: []
@@ -130,5 +132,5 @@ spec:
   image:
     containerPort: '1337'
     pullPolicy: Always
-    repository: elestio/strapi
-    tag: latest
+    repository: kubekanvas/strapi
+    tag: '5.30.2'
