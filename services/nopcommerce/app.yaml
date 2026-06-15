@@ -111,3 +111,19 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/nopcommerce
     tag: '4.90.4'
+    command:
+    - sh
+    - -c
+    - |
+      mkdir -p /app/App_Data
+      cat > /app/App_Data/appsettings.json <<'EOF'
+      {
+        "HostingConfig": {
+          "UseProxy": true,
+          "ForwardedProtoHeaderName": "X-Forwarded-Proto",
+          "ForwardedForHeaderName": "X-Forwarded-For",
+          "KnownNetworks": "10.0.0.0/8,172.16.0.0/12"
+        }
+      }
+      EOF
+      exec dotnet Nop.Web.dll
