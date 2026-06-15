@@ -2069,7 +2069,7 @@
       ]
     },
     {
-      "name": "paperless-ngx",
+      "name": "paperless-ngx-postgresql",
       "description": "A community-supported supercharged version of paperless: scan, index and archive all your physical documents",
       "source": "https://github.com/paperless-ngx/paperless-ngx",
       "icon": "https://avatars.githubusercontent.com/u/99562962",
@@ -2106,7 +2106,7 @@
       "status": "active",
       "license": "GNU General Public License v3.0",
       "spdx_id": "GPL-3.0",
-      "dirname": "paperless-ngx",
+      "dirname": "paperless-ngx-postgresql",
       "deploymentTypes": [
         {
           "id": "standard",
