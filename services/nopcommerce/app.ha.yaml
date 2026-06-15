@@ -88,6 +88,10 @@ spec:
     value: 'true'
   - name: HostingConfig__UseProxy
     value: 'true'
+  - name: HostingConfig__KnownProxies
+    value: ''
+  - name: HostingConfig__KnownNetworks
+    value: ''
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -102,7 +106,7 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    path: /keepalive/index
+    path: /install
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
