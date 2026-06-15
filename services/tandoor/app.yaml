@@ -96,6 +96,10 @@ spec:
     value: Etc/UTC
   - name: GUNICORN_MEDIA
     value: '1'
+  - name: GUNICORN_WORKERS
+    value: '1'
+  - name: GUNICORN_THREADS
+    value: '2'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -110,10 +114,17 @@ spec:
     name: tandoor-media
     size: 2Gi
   cronjobs: []
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 2Gi
   healthcheck:
     enabled: true
     path: /
-    startupSeconds: 300
+    startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
   web:
@@ -128,4 +139,4 @@ spec:
     command:
     - sh
     - -c
-    - cd /opt/recipes && . venv/bin/activate && until pg_isready --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --user="$POSTGRES_USER" -q; do sleep 5; done && python manage.py migrate --noinput && python manage.py collectstatic --noinput --clear && chmod -R 755 /opt/recipes/mediafiles && exec gunicorn --bind 0.0.0.0:8080 --workers ${GUNICORN_WORKERS:-3} --threads ${GUNICORN_THREADS:-2} --timeout ${GUNICORN_TIMEOUT:-30} --access-logfile - --error-logfile - --log-level ${GUNICORN_LOG_LEVEL:-info} recipes.wsgi
+    - cd /opt/recipes && . venv/bin/activate && until pg_isready --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --user="$POSTGRES_USER" -q; do sleep 5; done && python manage.py migrate --noinput && (test -f /opt/recipes/staticfiles/.collectstatic_done || (python manage.py collectstatic --noinput && touch /opt/recipes/staticfiles/.collectstatic_done)) && chmod -R 755 /opt/recipes/mediafiles && exec gunicorn --bind 0.0.0.0:8080 --workers ${GUNICORN_WORKERS:-1} --threads ${GUNICORN_THREADS:-2} --timeout ${GUNICORN_TIMEOUT:-30} --access-logfile - --error-logfile - --log-level ${GUNICORN_LOG_LEVEL:-info} recipes.wsgi
