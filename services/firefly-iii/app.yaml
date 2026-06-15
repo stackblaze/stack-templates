@@ -125,7 +125,7 @@ spec:
   - name: SESSION_DRIVER
     value: redis
   - name: TRUSTED_PROXIES
-    value: **
+    value: '**'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
