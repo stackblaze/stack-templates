@@ -86,6 +86,8 @@ spec:
     value: listmonk
   - name: LISTMONK_db__database
     value: listmonk
+  - name: LISTMONK_db__ssl_mode
+    value: disable
   - name: LISTMONK_app__admin_username
     value: admin
   - name: LISTMONK_app__admin_password
@@ -114,7 +116,7 @@ spec:
   healthcheck:
     enabled: true
     path: /health
-    startupSeconds: 120
+    startupSeconds: 180
     timeoutSeconds: 5
     periodSeconds: 10
   image:
@@ -122,3 +124,7 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/knadh/listmonk
     tag: v6.1.0
+    command:
+    - sh
+    - -c
+    - ./listmonk --install --idempotent --yes --config '' && ./listmonk --upgrade --yes --config '' && exec ./listmonk --config ''
