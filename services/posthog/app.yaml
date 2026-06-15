@@ -117,6 +117,52 @@ spec:
           name: posthog-clickhouse
         spec:
           configuration:
+            files:
+              config.d/posthog-remote-servers.xml: |
+                <clickhouse>
+                  <remote_servers>
+                    <posthog>
+                      <shard>
+                        <replica>
+                          <host>localhost</host>
+                          <port>9000</port>
+                        </replica>
+                      </shard>
+                    </posthog>
+                    <posthog_migrations>
+                      <shard>
+                        <replica>
+                          <host>localhost</host>
+                          <port>9000</port>
+                        </replica>
+                      </shard>
+                    </posthog_migrations>
+                    <posthog_single_shard>
+                      <shard>
+                        <replica>
+                          <host>localhost</host>
+                          <port>9000</port>
+                        </replica>
+                      </shard>
+                    </posthog_single_shard>
+                    <posthog_writable>
+                      <shard>
+                        <replica>
+                          <host>localhost</host>
+                          <port>9000</port>
+                        </replica>
+                      </shard>
+                    </posthog_writable>
+                    <posthog_primary_replica>
+                      <shard>
+                        <replica>
+                          <host>localhost</host>
+                          <port>9000</port>
+                        </replica>
+                      </shard>
+                    </posthog_primary_replica>
+                  </remote_servers>
+                </clickhouse>
             users:
               admin/password: posthog
               admin/networks/ip:
