@@ -106,6 +106,7 @@ spec:
     periodSeconds: 10
   image:
     command:
+    - /usr/local/bin/atuin-server
     - start
     containerPort: '8888'
     pullPolicy: Always
