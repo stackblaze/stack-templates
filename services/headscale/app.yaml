@@ -40,6 +40,8 @@ spec:
     value: 'false'
   - name: HEADSCALE_DNS_MAGIC_DNS
     value: 'false'
+  - name: HEADSCALE_DERP_URLS
+    value: https://controlplane.tailscale.com/derpmap/default
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
