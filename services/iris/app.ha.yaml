@@ -128,8 +128,6 @@ spec:
     value: iris-postgresql-rw
   - name: CELERY_HOST
     value: iris-rabbitmq
-  - name: IRIS_WORKER
-    value: '0'
   - name: IRIS_SECRET_KEY
     value: 8f3c2a1b9e7d6c5b4a39281706f5e4d3c2b1a0987654321fedcba0987654321
   - name: IRIS_SECURITY_PASSWORD_SALT
