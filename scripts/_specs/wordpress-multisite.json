@@ -51,7 +51,7 @@
     },
     {
       "name": "WORDPRESS_CONFIG_EXTRA",
-      "value": "define('WP_ALLOW_MULTISITE', true); define('WP_HOME', '{{KUBERO_APP_URL}}'); define('WP_SITEURL', '{{KUBERO_APP_URL}}');"
+      "value": "define('WP_ALLOW_MULTISITE', true); define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST']); define('WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST']);"
     },
     {
       "name": "WORDPRESS_AUTH_KEY",

@@ -80,6 +80,10 @@ spec:
     value: wordpress
   - name: WORDPRESS_DB_NAME
     value: wordpress
+  # Pin site URL to the incoming Host header so redeploys that get a new
+  # ingress hostname don't 500 when wp_options still points at the old domain.
+  - name: WORDPRESS_CONFIG_EXTRA
+    value: "define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST']); define('WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST']);"
   # Auth cookie keys + salts — PINNED so every web replica signs login cookies
   # identically. Without these, each pod generates its own random salts in its
   # (un-shared) wp-config.php, so a cookie issued by one replica is rejected by
