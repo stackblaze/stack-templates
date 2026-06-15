@@ -101,6 +101,10 @@ spec:
     value: '{{KUBERO_APP_HOST}}'
   - name: PS_HANDLE_DYNAMIC_DOMAIN
     value: '0'
+  - name: PS_ENABLE_SSL
+    value: '1'
+  - name: PS_TRUSTED_PROXIES
+    value: 10.0.0.0/8,172.16.0.0/12
   - name: PS_FOLDER_INSTALL
     value: install
   - name: PS_FOLDER_ADMIN
