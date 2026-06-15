@@ -88,6 +88,10 @@ spec:
     value: 'true'
   - name: HostingConfig__KnownNetworks
     value: 10.0.0.0/8,172.16.0.0/12
+  - name: DataConfig__ConnectionString
+    value: Host=nopcommerce-postgresql-rw;Port=5432;Database=nopcommerce;Username=nopcommerce;Password=nopcommerce;
+  - name: DataConfig__DataProvider
+    value: PostgreSQL
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -102,7 +106,7 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    path: /install
+    path: /keepalive/index
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
