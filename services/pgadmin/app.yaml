@@ -58,5 +58,5 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: dpage/pgadmin4
+    repository: ghcr.io/stackblaze/stack-templates/pgadmin4
     tag: latest

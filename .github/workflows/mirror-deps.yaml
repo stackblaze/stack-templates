@@ -84,6 +84,11 @@ jobs:
             dest_tag: '3.5.3'
             dest_name: papermerge
 
+          # pgAdmin 4 — Docker Hub only; parallel QA hits 429 rate limit.
+          - source: docker.io/dpage/pgadmin4:latest
+            dest_tag: 'latest'
+            dest_name: pgadmin4
+
           # PeerTube — Docker Hub only; parallel QA hits 429 rate limit.
           - source: docker.io/chocobozzz/peertube:production-bullseye
             dest_tag: 'production-bullseye'
