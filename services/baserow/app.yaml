@@ -129,7 +129,7 @@ spec:
     emptyDir: false
     mountPath: /baserow/media
     name: baserow-media
-    size: 10Gi
+    size: 1Gi
   cronjobs: []
   web:
     replicaCount: 1
