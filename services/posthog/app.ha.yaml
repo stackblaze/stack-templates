@@ -104,6 +104,72 @@ spec:
         stringData:
           username: posthog
           password: posthog
+      posthogKafkaService:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: posthog-kafka
+        spec:
+          type: ClusterIP
+          selector:
+            app: posthog-kafka
+          ports:
+          - name: kafka
+            port: 9092
+            targetPort: 9092
+      posthogKafkaDeployment:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: posthog-kafka
+        spec:
+          replicas: 1
+          strategy:
+            type: Recreate
+          selector:
+            matchLabels:
+              app: posthog-kafka
+          template:
+            metadata:
+              labels:
+                app: posthog-kafka
+            spec:
+              containers:
+              - name: redpanda
+                image: redpandadata/redpanda:v24.2.4
+                imagePullPolicy: Always
+                command:
+                - redpanda
+                - start
+                - --overprovisioned
+                - --smp
+                - '1'
+                - --memory
+                - 512M
+                - --reserve-memory
+                - 0M
+                - --node-id
+                - '0'
+                - --check=false
+                - --kafka-addr
+                - PLAINTEXT://0.0.0.0:9092
+                - --advertise-kafka-addr
+                - PLAINTEXT://posthog-kafka:9092
+                ports:
+                - name: kafka
+                  containerPort: 9092
+                readinessProbe:
+                  tcpSocket:
+                    port: 9092
+                  initialDelaySeconds: 5
+                  periodSeconds: 5
+                resources:
+                  requests:
+                    cpu: 100m
+                    memory: 256Mi
+                  limits:
+                    cpu: 500m
+                    memory: 512Mi
   - displayName: ClickHouse
     env: []
     icon: /img/addons/clickhouse.svg
