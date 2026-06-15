@@ -29,7 +29,7 @@ spec:
   - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
     value: True
   - name: PGADMIN_CONFIG_LOGIN_BANNER
-    value: 'Authorised users only'
+    value: "'Authorised users only'"
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -52,7 +52,7 @@ spec:
   healthcheck:
     enabled: true
     path: /misc/ping
-    startupSeconds: 60
+    startupSeconds: 120
     timeoutSeconds: 5
     periodSeconds: 10
   image:
