@@ -119,6 +119,8 @@ spec:
     value: rfr-baserow-cache-readwrite
   - name: REDIS_PORT
     value: 6379
+  - name: REDIS_PASSWORD
+    value: ''
   - name: BASEROW_PUBLIC_URL
     value: '{{KUBERO_APP_URL}}'
   - name: SECRET_KEY
