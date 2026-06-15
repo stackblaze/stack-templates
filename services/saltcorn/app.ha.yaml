@@ -116,5 +116,6 @@ spec:
     repository: ghcr.io/stackblaze/stack-templates/saltcorn
     tag: latest
     command:
+    - /usr/local/bin/saltcorn
     - serve
     - -a
