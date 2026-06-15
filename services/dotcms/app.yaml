@@ -193,3 +193,11 @@ spec:
     pullPolicy: Always
     repository: dotcms/dotcms
     tag: latest
+    run:
+      # dotCMS copies files into its OWN root filesystem at startup (e.g. Tomcat's
+      # /srv/dotserver/tomcat/conf/logging.properties), so it CANNOT run with a
+      # read-only root filesystem. Pin it writable here so the app never inherits a
+      # hardened securityContext (readOnlyRootFilesystem: true) — which crashloops
+      # the container with "cp: cannot create ... Read-only file system".
+      securityContext:
+        readOnlyRootFilesystem: false
