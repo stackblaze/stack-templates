@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open-source LLM observability platform — traces, evals, prompt management, datasets, and cost analytics for AI applications.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langfuse/icon.png
-    kubero.dev/template.installation: 'Langfuse v3 is a multi-service stack. This template runs the PRIMARY web/API container (ghcr.io/langfuse/langfuse:3, port 3000). Bundled add-ons provision Postgres (transactional data), ClickHouse (trace/observation store), Valkey (Redis-compatible queue/cache), and RustFS (S3-compatible object storage for event uploads). For full ingestion throughput you should ALSO deploy a companion WORKER from image ghcr.io/langfuse/langfuse-worker:3 (port 3030) sharing the same env vars below. ROTATE before production: NEXTAUTH_SECRET, SALT, ENCRYPTION_KEY (64-char hex via openssl rand -hex 32), Postgres/ClickHouse/RustFS credentials, and LANGFUSE_INIT_* seed values. Instrument your app with the Langfuse SDK and set LANGFUSE_HOST={{KUBERO_APP_URL}}.'
+    kubero.dev/template.installation: 'Langfuse v3 is a multi-service stack. This template runs the PRIMARY web/API container (ghcr.io/langfuse/langfuse:3, port 3000). Bundled add-ons provision Postgres (transactional data), ClickHouse (trace/observation store), Valkey (Redis-compatible queue/cache), plus an in-cluster MinIO deployment (ephemeral S3 for event uploads). For production durability swap MinIO for the RustFS add-on or external S3. For full ingestion throughput you should ALSO deploy a companion WORKER from image ghcr.io/langfuse/langfuse-worker:3 (port 3030) sharing the same env vars below. ROTATE before production: NEXTAUTH_SECRET, SALT, ENCRYPTION_KEY (64-char hex via openssl rand -hex 32), Postgres/ClickHouse/MinIO credentials, and LANGFUSE_INIT_* seed values. Instrument your app with the Langfuse SDK and set LANGFUSE_HOST={{KUBERO_APP_URL}}.'
     kubero.dev/template.links: '["https://langfuse.com/docs", "https://langfuse.com/self-hosting"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/langfuse/langfuse
@@ -75,6 +75,65 @@ spec:
         stringData:
           username: langfuse
           password: langfuse
+      minioService:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: langfuse-minio
+        spec:
+          type: ClusterIP
+          selector:
+            app: langfuse-minio
+          ports:
+          - name: s3
+            port: 9000
+            targetPort: 9000
+      minioDeployment:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: langfuse-minio
+        spec:
+          replicas: 1
+          strategy:
+            type: Recreate
+          selector:
+            matchLabels:
+              app: langfuse-minio
+          template:
+            metadata:
+              labels:
+                app: langfuse-minio
+            spec:
+              containers:
+              - name: minio
+                image: cgr.dev/chainguard/minio:latest
+                imagePullPolicy: Always
+                command:
+                - sh
+                - -c
+                - mkdir -p /data/langfuse && minio server --address :9000 --console-address :9001 /data
+                env:
+                - name: MINIO_ROOT_USER
+                  value: langfuseadmin
+                - name: MINIO_ROOT_PASSWORD
+                  value: changeme
+                ports:
+                - name: s3
+                  containerPort: 9000
+                volumeMounts:
+                - name: minio-data
+                  mountPath: /data
+                resources:
+                  requests:
+                    cpu: 50m
+                    memory: 128Mi
+                  limits:
+                    cpu: 500m
+                    memory: 512Mi
+              volumes:
+              - name: minio-data
+                emptyDir: {}
   - displayName: ClickHouse
     env: []
     icon: /img/addons/clickhouse.svg
@@ -119,7 +178,7 @@ spec:
                 storageClassName: fast
                 resources:
                   requests:
-                    storage: 5Gi
+                    storage: 2Gi
             - name: log-volume-template
               spec:
                 accessModes:
@@ -127,7 +186,7 @@ spec:
                 storageClassName: fast
                 resources:
                   requests:
-                    storage: 1Gi
+                    storage: 512Mi
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -157,43 +216,13 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
-  - displayName: RustFS
-    env: []
-    icon: /img/addons/rustfs.svg
-    id: kubero-operator
-    kind: Tenant
-    resourceDefinitions:
-      Tenant:
-        apiVersion: rustfs.com/v1alpha1
-        kind: Tenant
-        metadata:
-          name: langfuse-rustfs
-        spec:
-          image: rustfs/rustfs:latest
-          credsSecret:
-            name: langfuse-rustfs-credentials
-          pools:
-          - name: pool-0
-            servers: 1
-            persistence:
-              volumesPerServer: 4
-              volumeClaimTemplate:
-                accessModes:
-                - ReadWriteOnce
-                resources:
-                  requests:
-                    storage: 2Gi
-                storageClassName: slow
-      credsSecret:
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: langfuse-rustfs-credentials
-        type: Opaque
-        stringData:
-          accesskey: langfuseadmin
-          secretkey: changeme
   envVars:
+  - name: PGHOST
+    value: langfuse-postgresql-rw
+  - name: CHHOST
+    value: clickhouse-langfuse-clickhouse
+  - name: S3HOST
+    value: langfuse-minio
   - name: DATABASE_URL
     value: 'postgresql://langfuse:langfuse@langfuse-postgresql-rw:5432/langfuse'
   - name: NEXTAUTH_URL
@@ -227,7 +256,7 @@ spec:
   - name: LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY
     value: changeme
   - name: LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT
-    value: http://langfuse-rustfs:9000
+    value: http://langfuse-minio:9000
   - name: LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE
     value: 'true'
   - name: LANGFUSE_S3_MEDIA_UPLOAD_BUCKET
@@ -239,7 +268,7 @@ spec:
   - name: LANGFUSE_S3_MEDIA_UPLOAD_SECRET_ACCESS_KEY
     value: changeme
   - name: LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT
-    value: http://langfuse-rustfs:9000
+    value: http://langfuse-minio:9000
   - name: LANGFUSE_S3_MEDIA_UPLOAD_FORCE_PATH_STYLE
     value: 'true'
   - name: LANGFUSE_INIT_ORG_ID
@@ -280,3 +309,8 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/langfuse/langfuse
     tag: '3'
+    command:
+    - sh
+    - -c
+    - |
+      node -e "const net=require('net');const wait=(h,p)=>new Promise(r=>{const go=()=>{const s=net.connect(p,h,()=>{s.end();r();});s.on('error',()=>setTimeout(go,2000));};go();});Promise.all([wait(process.env.PGHOST,5432),wait(process.env.CHHOST,8123),wait(process.env.REDIS_HOST,+process.env.REDIS_PORT),wait(process.env.S3HOST,9000)]).then(()=>process.exit(0));" && exec dumb-init -- ./web/entrypoint.sh
