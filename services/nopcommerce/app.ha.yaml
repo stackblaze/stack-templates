@@ -88,10 +88,6 @@ spec:
     value: 'true'
   - name: HostingConfig__KnownNetworks
     value: 10.0.0.0/8,172.16.0.0/12
-  - name: ConnectionStrings__ConnectionString
-    value: Host=nopcommerce-postgresql-rw;Port=5432;Database=nopcommerce;Username=nopcommerce;Password=nopcommerce;
-  - name: ConnectionStrings__DataProvider
-    value: PostgreSQL
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -106,7 +102,7 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    path: /keepalive/index
+    path: /install
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
@@ -127,10 +123,6 @@ spec:
           "ForwardedProtoHeaderName": "X-Forwarded-Proto",
           "ForwardedForHeaderName": "X-Forwarded-For",
           "KnownNetworks": "10.0.0.0/8,172.16.0.0/12"
-        },
-        "ConnectionStrings": {
-          "ConnectionString": "Host=nopcommerce-postgresql-rw;Port=5432;Database=nopcommerce;Username=nopcommerce;Password=nopcommerce;",
-          "DataProvider": "PostgreSQL"
         }
       }
       EOF
