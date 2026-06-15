@@ -142,7 +142,7 @@ spec:
   - name: DJANGO_CACHE_TIMEOUT
     value: '1296000'
   - name: USE_CELERY
-    value: 'True'
+    value: 'False'
   - name: CELERY_BROKER
     value: redis://rfr-wger-valkey-readwrite:6379/2
   - name: CELERY_BACKEND
@@ -189,8 +189,8 @@ spec:
   cronjobs: []
   healthcheck:
     enabled: true
-    path: /api/v2/version/
-    startupSeconds: 900
+    path: /robots.txt
+    startupSeconds: 1800
     timeoutSeconds: 10
     periodSeconds: 10
   web:
