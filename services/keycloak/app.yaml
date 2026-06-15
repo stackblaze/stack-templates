@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Enterprise-grade open-source identity and access management — SSO, OAuth2, SAML, LDAP federation, MFA, and user management.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/icon.png
-    kubero.dev/template.installation: 'Change KC_BOOTSTRAP_ADMIN_PASSWORD before first deploy. start-dev mode is used here for simplicity — for production replace with ''start'' and configure proper TLS/hostname. Access the Admin Console at /admin. KC_PROXY=edge enables proxy header trust (required when running behind the kubero ingress). Create realms, clients, and users in the Admin Console.'
+    kubero.dev/template.installation: 'Change KC_BOOTSTRAP_ADMIN_PASSWORD before first deploy. start-dev mode is used here for simplicity — for production replace with ''start'' and configure proper TLS/hostname. Access the Admin Console at /admin. KC_PROXY_HEADERS=xforwarded enables proxy header trust (required when running behind the kubero ingress). Create realms, clients, and users in the Admin Console.'
     kubero.dev/template.links: '["https://www.keycloak.org/documentation"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/keycloak/keycloak
@@ -86,10 +86,14 @@ spec:
     value: keycloak
   - name: KC_HOSTNAME
     value: '{{KUBERO_APP_URL}}'
-  - name: KC_PROXY
-    value: edge
+  - name: KC_PROXY_HEADERS
+    value: xforwarded
   - name: KC_HTTP_ENABLED
     value: true
+  - name: KC_HEALTH_ENABLED
+    value: true
+  - name: KC_HTTP_MANAGEMENT_HEALTH_ENABLED
+    value: false
   - name: KC_BOOTSTRAP_ADMIN_USERNAME
     value: admin
   - name: KC_BOOTSTRAP_ADMIN_PASSWORD
