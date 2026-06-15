@@ -127,7 +127,7 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    path: /
+    path: /index.php
     startupSeconds: 1200
     timeoutSeconds: 5
     periodSeconds: 10

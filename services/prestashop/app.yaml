@@ -126,7 +126,7 @@ spec:
   # PS_INSTALL_AUTO + MariaDB wait can exceed default ~90s startup probe
   healthcheck:
     enabled: true
-    path: /
+    path: /index.php
     startupSeconds: 1200
     timeoutSeconds: 5
     periodSeconds: 10
