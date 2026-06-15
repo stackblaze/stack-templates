@@ -119,4 +119,5 @@ spec:
     repository: quay.io/keycloak/keycloak
     tag: latest
     command:
+    - /opt/keycloak/bin/kc.sh
     - start-dev
