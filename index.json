@@ -47,6 +47,54 @@
       ]
     },
     {
+      "name": "tandoor",
+      "description": "Self-hosted Django recipe manager for organizing recipes, meal plans, and shopping lists.",
+      "source": "https://github.com/TandoorRecipes/recipes",
+      "icon": "https://avatars.githubusercontent.com/u/67073608?s=200&v=4",
+      "website": "https://tandoor.dev/",
+      "installation": "Set SECRET_KEY to a random 50+ character string. First boot runs migrations and collectstatic (may take several minutes).",
+      "architecture": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "categories": [
+        "utilities",
+        "productivity"
+      ],
+      "screenshots": [
+        "https://docs.tandoor.dev/assets/img/logo.png"
+      ],
+      "links": [
+        "https://docs.tandoor.dev/"
+      ],
+      "addons": [
+        "Cluster"
+      ],
+      "stars": 6000,
+      "forks": 600,
+      "watchers": 6000,
+      "issues": 0,
+      "last_updated": "2026-06-11T00:00:00Z",
+      "last_pushed": "2026-06-11T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "tandoor",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/app.yaml"
+        }
+      ]
+    },
+    {
       "name": "twenty",
       "description": "Building a modern alternative to Salesforce, powered by the community.",
       "source": "https://github.com/twentyhq/twenty",
@@ -14075,6 +14123,101 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seafile/app.yaml"
+        }
+      ]
+    },
+    {
+      "name": "payload",
+      "description": "Headless CMS and application framework built with TypeScript, Node.js and React — an auto-generated admin UI, REST & GraphQL APIs, authentication, and a flexible code-first content model.",
+      "source": "https://github.com/payloadcms/payload",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/icon.png",
+      "website": "https://payloadcms.com",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "cms",
+        "development",
+        "data"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://payloadcms.com/docs"
+      ],
+      "addons": [],
+      "stars": 28000,
+      "forks": 0,
+      "watchers": 28000,
+      "issues": 0,
+      "last_updated": "2026-06-14T00:00:00Z",
+      "last_pushed": "2026-06-14T00:00:00Z",
+      "created_at": "2018-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "TypeScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/app.yaml",
+      "status": "active",
+      "license": "MIT",
+      "spdx_id": "MIT",
+      "dirname": "payload",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/app.ha.yaml"
+        }
+      ]
+    },
+    {
+      "name": "wagtail",
+      "description": "Wagtail is a popular open-source CMS built on Django — a refined editing experience, rich page modelling, a powerful image library and full content control. This template runs the official Wagtail \"bakerydemo\" sample site.",
+      "source": "https://github.com/wagtail/wagtail",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wagtail/icon.png",
+      "website": "https://wagtail.org",
+      "installation": "",
+      "architecture": [],
+      "categories": [
+        "cms",
+        "development",
+        "media"
+      ],
+      "screenshots": [],
+      "links": [
+        "https://docs.wagtail.org/",
+        "https://github.com/wagtail/bakerydemo"
+      ],
+      "addons": [],
+      "stars": 19000,
+      "forks": 0,
+      "watchers": 19000,
+      "issues": 0,
+      "last_updated": "2026-06-14T00:00:00Z",
+      "last_pushed": "2026-06-14T00:00:00Z",
+      "created_at": "2014-01-01T00:00:00Z",
+      "size": 1000,
+      "language": "Python",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wagtail/app.yaml",
+      "status": "active",
+      "license": "BSD-3-Clause",
+      "spdx_id": "BSD-3-Clause",
+      "dirname": "wagtail",
+      "deploymentTypes": [
+        {
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wagtail/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wagtail/app.ha.yaml"
         }
       ]
     }
