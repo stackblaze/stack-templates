@@ -108,7 +108,7 @@ spec:
   image:
     containerPort: '5001'
     pullPolicy: Always
-    repository: debian
+    repository: public.ecr.aws/docker/library/debian
     tag: bookworm-slim
     command:
     - /bin/bash
