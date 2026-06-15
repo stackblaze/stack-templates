@@ -392,7 +392,7 @@ spec:
   healthcheck:
     enabled: true
     path: /
-    startupSeconds: 1800
+    startupSeconds: 3600
     timeoutSeconds: 10
     periodSeconds: 10
   web:
