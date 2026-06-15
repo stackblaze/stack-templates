@@ -6,10 +6,10 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: All-in-one mail server with SMTP, IMAP, JMAP, and ManageSieve — modern Rust implementation with built-in anti-spam, DKIM, and web admin.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stalwart-mail/icon.png
-    kubero.dev/template.installation: 'Stalwart stores all data (config, mail, SQLite) in the /opt/stalwart-mail volume. The web admin UI is at port 8080 (the kubero app URL). IMPORTANT: SMTP (25), SMTPS (465/587), IMAP (143/993), and ManageSieve (4190) ports are NOT exposed via the default HTTP ingress — you need a TCP/LoadBalancer service for mail ports. Access the admin panel first, set the admin password, then configure domains and DNS records. Use with an external SMTP relay or expose mail ports via a LoadBalancer.'
+    kubero.dev/template.installation: 'Stalwart stores mail data in /var/lib/stalwart and config in /etc/stalwart (both persisted). The web admin UI is at port 8080 (the kubero app URL). IMPORTANT: SMTP (25), SMTPS (465/587), IMAP (143/993), and ManageSieve (4190) ports are NOT exposed via the default HTTP ingress — you need a TCP/LoadBalancer service for mail ports. Access the admin panel first, set the admin password, then configure domains and DNS records. Use with an external SMTP relay or expose mail ports via a LoadBalancer.'
     kubero.dev/template.links: '["https://stalw.art/docs/get-started/"]'
     kubero.dev/template.screenshots: '[]'
-    kubero.dev/template.source: https://github.com/stalwartlabs/mail-server
+    kubero.dev/template.source: https://github.com/stalwartlabs/stalwart
     kubero.dev/template.categories: '["email", "communication", "utilities"]'
     kubero.dev/template.title: Stalwart Mail
     kubero.dev/template.website: https://stalw.art
@@ -26,9 +26,15 @@ spec:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /opt/stalwart-mail
+    mountPath: /var/lib/stalwart
     name: stalwart-data
     size: 20Gi
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /etc/stalwart
+    name: stalwart-config
+    size: 1Gi
   cronjobs: []
   web:
     replicaCount: 1
@@ -43,12 +49,12 @@ spec:
       memory: 1Gi
   healthcheck:
     enabled: true
-    path: /healthz
-    startupSeconds: 60
+    path: /healthz/live
+    startupSeconds: 120
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: stalwartlabs/mail-server
-    tag: latest
+    repository: stalwartlabs/stalwart
+    tag: v0.16
