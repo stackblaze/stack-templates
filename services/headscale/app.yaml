@@ -62,7 +62,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: headscale/headscale
-    tag: latest
+    repository: ghcr.io/juanfont/headscale
+    tag: '0.28.0'
     command:
     - serve
