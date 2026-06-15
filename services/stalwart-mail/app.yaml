@@ -56,5 +56,5 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: stalwartlabs/stalwart
+    repository: ghcr.io/stalwartlabs/stalwart
     tag: v0.16
