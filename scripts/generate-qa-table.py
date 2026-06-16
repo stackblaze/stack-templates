@@ -24,7 +24,6 @@ KIND_DISPLAY = {
     "Valkey": "Valkey",
     "ClickHouseInstallation": "ClickHouse Cluster",
     "KuberoAddonMemcached": "Memcached",
-    "KuberoMail": "Haraka Mail Server",
     "KuberoOpenSearch": "OpenSearch",
     "KuberoFerretDB": "FerretDB",
     "KuberoCouchDB": "CouchDB",

@@ -21,7 +21,6 @@ RETIRED_KINDS = {
     "PerconaServerMongoDB",
     "PostgresCluster",
     "WeaviateCluster",
-    "KuberoMail",
     "Elasticsearch",
     "Redis",
     "RedisCluster",
