@@ -24,12 +24,12 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /srv
     name: filebrowser-srv
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
     - ReadWriteOnce
     emptyDir: false

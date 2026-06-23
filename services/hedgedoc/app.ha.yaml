@@ -86,12 +86,12 @@ spec:
     value: replace-with-openssl-rand-hex-32
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /hedgedoc/public/uploads
     name: hedgedoc-uploads
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

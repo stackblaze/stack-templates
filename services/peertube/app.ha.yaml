@@ -179,12 +179,12 @@ spec:
     value: 'false'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: peertube-data
     size: 5Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
     - ReadWriteOnce
     emptyDir: false

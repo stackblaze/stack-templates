@@ -7,12 +7,11 @@ metadata:
     kubero.dev/template.description: Self-hosted, WeTransfer-style file-sharing platform
       with secure links, passwords, and download limits, built on Laravel and Vue.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/erugo/icon.png
-    kubero.dev/template.installation: Erugo stores all data (SQLite database, uploaded
-      files, and config) under /var/www/html/storage, which is backed by a persistent
-      volume; no external database add-on is required. The app listens on port 80.
-      On first run, open the app URL to complete the setup wizard and create the initial
-      admin account. Erugo generates its own APP_KEY on first boot if one is not provided.
-      The container expects exclusive control of the mounted storage directory.
+    kubero.dev/template.installation: Database is provisioned via the bundled add-on.
+      The app listens on port 80. On first run, open the app URL to complete the setup
+      wizard and create the initial admin account. Erugo generates its own APP_KEY
+      on first boot if one is not provided. The container expects exclusive control
+      of the mounted storage directory.
     kubero.dev/template.links: '["https://erugo.app/docs/getting-started/quickstart/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/ErugoOSS/Erugo
@@ -24,18 +23,81 @@ metadata:
 spec:
   name: erugo
   deploymentstrategy: docker
-  addons: []
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: erugo-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: erugo-mysql-root
+            key: password
+          database: erugo
+          username: erugo
+          passwordSecretKeyRef:
+            name: erugo-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          galera:
+            enabled: true
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: erugo-mysql-root
+        type: Opaque
+        stringData:
+          password: erugo
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: erugo-mysql-app
+        type: Opaque
+        stringData:
+          password: erugo
   envVars:
   - name: APP_URL
     value: '{{KUBERO_APP_URL}}'
+  - name: DB_CONNECTION
+    value: mysql
+  - name: DB_HOST
+    value: erugo-mysql
+  - name: DB_PORT
+    value: '3306'
+  - name: DB_DATABASE
+    value: erugo
+  - name: DB_USERNAME
+    value: erugo
+  - name: DB_PASSWORD
+    value: erugo
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/storage
     name: erugo-storage
     size: 5Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

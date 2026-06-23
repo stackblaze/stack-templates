@@ -174,12 +174,12 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /sharkey/files
     name: sharkey-files
     size: 5Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

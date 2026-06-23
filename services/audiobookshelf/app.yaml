@@ -41,19 +41,19 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /audiobooks
     name: audiobookshelf-audiobooks
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /podcasts
     name: audiobookshelf-podcasts
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   healthcheck:
     enabled: true
     path: /

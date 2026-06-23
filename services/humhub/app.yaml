@@ -102,12 +102,12 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/localhost/htdocs/uploads
     name: humhub-uploads
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

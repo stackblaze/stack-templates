@@ -122,12 +122,12 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/docroot/media
     name: mautic-media
     size: 3Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

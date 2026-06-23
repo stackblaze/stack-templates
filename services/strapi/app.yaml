@@ -112,12 +112,12 @@ spec:
     value: production
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/app/public/uploads
     name: strapi-uploads
     size: 10Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

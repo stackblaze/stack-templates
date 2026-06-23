@@ -66,12 +66,12 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /usr/src/paperless/media
     name: paperless-media-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
     - ReadWriteOnce
     emptyDir: false

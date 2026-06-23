@@ -92,12 +92,12 @@ spec:
     value: vikunja
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/vikunja/files
     name: vikunja-files
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

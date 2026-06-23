@@ -31,19 +31,19 @@ spec:
     value: Etc/UTC
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /config
     name: calibre-web-config
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /books
     name: calibre-web-books
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   healthcheck:
     enabled: true
     path: /

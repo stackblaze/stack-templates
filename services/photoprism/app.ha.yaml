@@ -113,19 +113,19 @@ spec:
     value: '2'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /photoprism/originals
     name: photoprism-originals
     size: 5Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /photoprism/storage
     name: photoprism-storage
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

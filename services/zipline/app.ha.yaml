@@ -32,19 +32,19 @@ spec:
     value: postgres://zipline:zipline@zipline-postgresql-rw:5432/zipline
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /zipline/uploads
     name: zipline-uploads-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /zipline/public
     name: zipline-public-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   addons:
   - displayName: PostgreSQL (CloudNativePG)

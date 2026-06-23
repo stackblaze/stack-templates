@@ -97,12 +97,12 @@ spec:
     value: '{{KUBERO_APP_URL}}'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/uvdesk/public/assets
     name: uvdesk-data
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

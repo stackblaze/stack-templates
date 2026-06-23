@@ -73,12 +73,12 @@ spec:
     value: mongodb://mongoadmin:trudesk@documentdb-service-trudesk-documentdb:10260/trudesk?authSource=admin&directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /usr/src/trudesk/public/uploads
     name: trudesk-data
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

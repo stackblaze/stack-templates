@@ -32,19 +32,19 @@ spec:
     value: Etc/UTC
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: navidrome-data
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /music
     name: navidrome-music
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   healthcheck:
     enabled: true
     path: /

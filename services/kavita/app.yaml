@@ -33,12 +33,12 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: kavita-library
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   healthcheck:
     enabled: true
     path: /

@@ -18,7 +18,56 @@ metadata:
     manager: kubero
   name: wallabag
 spec:
-  addons: []
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: wallabag-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: wallabag-mysql-root
+            key: password
+          database: wallabag
+          username: wallabag
+          passwordSecretKeyRef:
+            name: wallabag-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: wallabag-mysql-root
+        type: Opaque
+        stringData:
+          password: wallabag
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: wallabag-mysql-app
+        type: Opaque
+        stringData:
+          password: wallabag
   cronjobs: []
   deploymentstrategy: docker
   envVars:
@@ -32,21 +81,26 @@ spec:
     value: ovmpmAWXRCabNlMgzlzFXDYmCFfzGv
   - name: SYMFONY__ENV__FOSUSER_REGISTRATION
     value: 'false'
+  - name: SYMFONY__ENV__DATABASE_DRIVER
+    value: pdo_mysql
+  - name: SYMFONY__ENV__DATABASE_HOST
+    value: wallabag-mysql
+  - name: SYMFONY__ENV__DATABASE_PORT
+    value: '3306'
+  - name: SYMFONY__ENV__DATABASE_NAME
+    value: wallabag
+  - name: SYMFONY__ENV__DATABASE_USER
+    value: wallabag
+  - name: SYMFONY__ENV__DATABASE_PASSWORD
+    value: wallabag
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /var/www/wallabag/data
-    name: wallabag-data
-    size: 1Gi
-    storageClass: slow
-  - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/wallabag/web/assets/images
     name: wallabag-images
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   healthcheck:
     enabled: true
     path: /

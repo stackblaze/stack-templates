@@ -1,50 +1,116 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: flowise
-    annotations:
-        kubero.dev/template.architecture: "[]"
-        kubero.dev/template.description: "Drag & drop UI to build your customized LLM flow"
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/128289781?s=200&v=4"
-        kubero.dev/template.installation: ""
-        kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: "[]"
-        kubero.dev/template.source: "https://github.com/FlowiseAI/Flowise"
-        kubero.dev/template.categories: '[ "ai" ]'
-        kubero.dev/template.title: "Flowise"
-        kubero.dev/template.website: "https://flowiseai.com"
-    labels:
-        manager: kubero
+  name: flowise
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Drag & drop UI to build your customized LLM flow
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/128289781?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/FlowiseAI/Flowise
+    kubero.dev/template.categories: '[ "ai" ]'
+    kubero.dev/template.title: Flowise
+    kubero.dev/template.website: https://flowiseai.com
+  labels:
+    manager: kubero
 spec:
-    name: flowise
-    deploymentstrategy: docker
-    envVars:
-        - name: FLOWISE_SECRETKEY_OVERWRITE
-          value: "1234567891234567"
-        - name: FLOWISE_PASSWORD
-          value: password
-        - name: FLOWISE_USERNAME
-          value: flowise
-        - name: DISABLE_FLOWISE_TELEMETRY
-          value: "false"
-    extraVolumes: []
-    cronjobs: []
-    addons: []
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: 3000
-        pullPolicy: Always
-        repository: flowiseai/flowise
-        tag: latest
-    # Default QA LimitRange caps web pods at 512Mi; Flowise (Node) segfaults
-    # (exit 139) on boot under that. Give it headroom like metabase.
-    resources:
-        requests:
-            cpu: 250m
-            memory: 1Gi
-        limits:
-            cpu: "1"
-            memory: 2Gi
+  name: flowise
+  deploymentstrategy: docker
+  envVars:
+  - name: FLOWISE_SECRETKEY_OVERWRITE
+    value: '1234567891234567'
+  - name: FLOWISE_PASSWORD
+    value: password
+  - name: FLOWISE_USERNAME
+    value: flowise
+  - name: DISABLE_FLOWISE_TELEMETRY
+    value: 'false'
+  - name: DATABASE_TYPE
+    value: postgres
+  - name: DATABASE_HOST
+    value: flowise-postgresql-rw
+  - name: DATABASE_PORT
+    value: '5432'
+  - name: DATABASE_NAME
+    value: flowise
+  - name: DATABASE_USER
+    value: flowise
+  - name: DATABASE_PASSWORD
+    value: flowise
+  extraVolumes: []
+  cronjobs: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: flowise-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: flowise
+              owner: flowise
+              secret:
+                name: flowise-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO flowise
+              - GRANT CREATE ON SCHEMA public TO flowise
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO flowise
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: flowise-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: flowise-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: flowise
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: flowise-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: flowise
+          password: flowise
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: 3000
+    pullPolicy: Always
+    repository: flowiseai/flowise
+    tag: latest
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi

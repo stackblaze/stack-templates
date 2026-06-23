@@ -15,20 +15,81 @@ metadata:
     kubero.dev/template.website: https://www.nocodb.com
   name: nocodb
 spec:
-  addons: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: nocodb-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: nocodb
+              owner: nocodb
+              secret:
+                name: nocodb-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO nocodb
+              - GRANT CREATE ON SCHEMA public TO nocodb
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nocodb
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: nocodb-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: nocodb-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: nocodb
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: nocodb-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: nocodb
+          password: nocodb
   cronjobs: []
   deploymentstrategy: docker
   envVars:
   - name: NODE_OPTIONS
     value: --max-old-space-size=1536
-  extraVolumes:
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /usr/app/data/
-    name: nocodb-data-volume
-    size: 1Gi
-    storageClass: slow
+  - name: NC_DB
+    value: pg
+  - name: NC_DB_HOST
+    value: nocodb-postgresql-rw
+  - name: NC_DB_PORT
+    value: '5432'
+  - name: NC_DB_USER
+    value: nocodb
+  - name: NC_DB_PASSWORD
+    value: nocodb
+  - name: NC_DB_DATABASE_NAME
+    value: nocodb
+  extraVolumes: []
   image:
     containerPort: '8080'
     repository: nocodb/nocodb

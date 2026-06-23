@@ -48,12 +48,12 @@ spec:
     value: http://claper.localhost
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/uploads
     name: claper-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   addons:
   - displayName: PostgreSQL (CloudNativePG)

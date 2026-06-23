@@ -33,16 +33,72 @@ spec:
     value: SomeRandomStringOf32CharsExactly
   - name: APP_URL
     value: https://twofauth.localhost
-  extraVolumes:
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /2fauth
-    name: twofauth-volume
-    size: 1Gi
-    storageClass: slow
+  - name: DB_CONNECTION
+    value: mysql
+  - name: DB_HOST
+    value: twofauth-mysql
+  - name: DB_PORT
+    value: '3306'
+  - name: DB_DATABASE
+    value: twofauth
+  - name: DB_USERNAME
+    value: twofauth
+  - name: DB_PASSWORD
+    value: twofauth
+  - name: APP_ENV
+    value: production
+  extraVolumes: []
   cronjobs: []
-  addons: []
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: twofauth-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: twofauth-mysql-root
+            key: password
+          database: twofauth
+          username: twofauth
+          passwordSecretKeyRef:
+            name: twofauth-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: twofauth-mysql-root
+        type: Opaque
+        stringData:
+          password: twofauth
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: twofauth-mysql-app
+        type: Opaque
+        stringData:
+          password: twofauth
   web:
     replicaCount: 1
   worker:

@@ -23,12 +23,12 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /downloads
     name: downloads-volume
     size: 10Gi
-    storageClass: slow
+    storageClass: shared
   image:
     containerPort: '8081'
     pullPolicy: Always

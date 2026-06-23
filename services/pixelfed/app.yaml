@@ -190,12 +190,12 @@ spec:
     value: 'true'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/storage
     name: pixelfed-storage
     size: 5Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

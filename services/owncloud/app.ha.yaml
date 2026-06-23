@@ -144,12 +144,12 @@ spec:
     value: '6379'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /mnt/data
     name: owncloud-data
     size: 5Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

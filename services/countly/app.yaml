@@ -8,17 +8,12 @@ metadata:
       platform for tracking web, mobile and desktop apps with funnels, retention,
       crashes and push.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/countly/icon.png
-    kubero.dev/template.installation: 'Countly Community Edition all-in-one image
-      (countly/countly-server:23.11.22) bundles Nginx, the API + dashboard Node.js
-      processes, and an embedded MongoDB on port 80. Pin to 23.11.22 — Countly 25.x
-      needs MongoDB 8 features and the documentdb add-on lacks capped collections
-      Countly requires. DATASTORE: analytics data lives in the bundled MongoDB; persist
-      /var/lib/mongodb (minimum 2Gi). Requires at least 2Gi RAM for MongoDB + Countly;
-      first boot can take several minutes. For production scale-out use separate countly/api
-      + countly/frontend images with an external MongoDB 6.x replica set via COUNTLY_CONFIG__MONGODB.
-      FIRST-RUN: open the site, complete the setup wizard to create the global admin
-      account, then add your first application for its App Key/API Key. The /opt/countly/frontend/express/public/appimages
-      volume keeps uploaded app icons/avatars.'
+    kubero.dev/template.installation: 'Countly Community Edition (countly/countly-server:23.11.22)
+      with the DocumentDB add-on for analytics storage. Pin to 23.11.22 — Countly
+      25.x needs MongoDB 8 features this add-on may lack. Requires at least 2Gi RAM;
+      first boot can take several minutes. FIRST-RUN: open the site, complete the
+      setup wizard to create the global admin account, then add your first application
+      for its App Key/API Key. The appimages volume keeps uploaded app icons/avatars.'
     kubero.dev/template.links: '["https://support.countly.com/hc/en-us/articles/360037814511-Setting-Up-Countly-with-Docker",
       "https://support.countly.com/hc/en-us/articles/360036862332-Installing-the-Countly-Server"]'
     kubero.dev/template.screenshots: '[]'
@@ -31,10 +26,38 @@ metadata:
 spec:
   name: countly
   deploymentstrategy: docker
-  addons: []
+  addons:
+  - displayName: Document DB
+    env: []
+    icon: /img/addons/mongo.svg
+    id: kubero-operator
+    kind: DocumentDB
+    resourceDefinitions:
+      DocumentDB:
+        apiVersion: documentdb.io/preview
+        kind: DocumentDB
+        metadata:
+          name: countly-documentdb
+        spec:
+          nodeCount: 1
+          instancesPerNode: 1
+          documentDbCredentialSecret: documentdb-credentials
+          resource:
+            storage:
+              pvcSize: 1Gi
+              storageClass: default
+          exposeViaService:
+            serviceType: ClusterIP
+      credentialSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: documentdb-credentials
+        type: Opaque
+        stringData:
+          username: mongoadmin
+          password: countly
   envVars:
-  - name: COUNTLY_MONGO_INSIDE
-    value: '1'
   - name: COUNTLY_OVERWRITE_MEM_REQUIREMENT
     value: '1'
   - name: COUNTLY_PLUGINS
@@ -47,21 +70,16 @@ spec:
     value: '{{KUBERO_APP_HOST}}'
   - name: COUNTLY_CONFIG_FRONTEND_WEB_DOMAIN
     value: '{{KUBERO_APP_HOST}}'
+  - name: COUNTLY_CONFIG__MONGODB
+    value: mongodb://mongoadmin:countly@documentdb-service-countly-documentdb:10260/countly?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /var/lib/mongodb
-    name: countly-mongodb
-    size: 5Gi
-    storageClass: slow
-  - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/countly/frontend/express/public/appimages
     name: countly-appimages
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   resources:
     requests:
@@ -85,24 +103,3 @@ spec:
     pullPolicy: Always
     repository: countly/countly-server
     tag: 23.11.22
-    command:
-    - sh
-    - -c
-    - 'export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-
-      ln -sf /usr/bin/mongosh /usr/bin/mongo
-
-      sed -i ''s/mongo localhost/mongosh localhost/g'' /etc/service/countly-api/run
-      /etc/service/countly-dashboard/run
-
-      mkdir -p /etc/nginx/sites-enabled
-
-      rm -f /etc/nginx/conf.d/default.conf
-
-      chown -R mongodb:mongodb /var/lib/mongodb
-
-      node /opt/countly/bin/scripts/create_nginx_conf.js
-
-      exec /usr/bin/python3 -u /sbin/my_init
-
-      '

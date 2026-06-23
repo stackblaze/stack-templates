@@ -14,18 +14,72 @@ metadata:
     kubero.dev/template.website: https://uptime.kuma.pet
   name: uptime-kuma
 spec:
-  addons: []
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: uptimekuma-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: uptimekuma-mysql-root
+            key: password
+          database: uptimekuma
+          username: uptimekuma
+          passwordSecretKeyRef:
+            name: uptimekuma-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: uptimekuma-mysql-root
+        type: Opaque
+        stringData:
+          password: uptimekuma
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: uptimekuma-mysql-app
+        type: Opaque
+        stringData:
+          password: uptimekuma
   cronjobs: []
   deploymentstrategy: docker
-  envVars: []
-  extraVolumes:
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /app/data
-    name: uptime-kuma-data
-    size: 1Gi
-    storageClass: slow
+  envVars:
+  - name: DB_TYPE
+    value: mariadb
+  - name: DB_MYSQL_HOST
+    value: uptimekuma-mysql
+  - name: DB_MYSQL_PORT
+    value: '3306'
+  - name: DB_MYSQL_USER
+    value: uptimekuma
+  - name: DB_MYSQL_PASSWORD
+    value: uptimekuma
+  - name: DB_MYSQL_DATABASE
+    value: uptimekuma
+  extraVolumes: []
   image:
     containerPort: '3001'
     repository: louislam/uptime-kuma

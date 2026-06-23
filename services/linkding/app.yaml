@@ -18,7 +18,63 @@ metadata:
     manager: kubero
   name: linkding
 spec:
-  addons: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: linkding-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: linkding
+              owner: linkding
+              secret:
+                name: linkding-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO linkding
+              - GRANT CREATE ON SCHEMA public TO linkding
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO linkding
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: linkding-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: linkding-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: linkding
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: linkding-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: linkding
+          password: linkding
   cronjobs: []
   deploymentstrategy: docker
   envVars:
@@ -34,14 +90,19 @@ spec:
     value: '{{KUBERO_APP_URL}}'
   - name: LD_USE_X_FORWARDED_HOST
     value: 'true'
-  extraVolumes:
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /etc/linkding/data
-    name: linkding-data
-    size: 1Gi
-    storageClass: slow
+  - name: LD_DB_ENGINE
+    value: postgres
+  - name: LD_DB_HOST
+    value: linkding-postgresql-rw
+  - name: LD_DB_PORT
+    value: '5432'
+  - name: LD_DB_DATABASE
+    value: linkding
+  - name: LD_DB_USER
+    value: linkding
+  - name: LD_DB_PASSWORD
+    value: linkding
+  extraVolumes: []
   image:
     containerPort: '9090'
     pullPolicy: Always

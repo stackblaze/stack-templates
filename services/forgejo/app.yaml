@@ -7,9 +7,9 @@ metadata:
       software forge with Git hosting, code review, team collaboration, package registry
       and CI/CD.
     kubero.dev/template.icon: https://codeberg.org/forgejo/Forgejo/raw/branch/forgejo/public/assets/img/logo.svg
-    kubero.dev/template.installation: First boot initializes SQLite under /data and
-      creates app.ini automatically. Set FORGEJO__server__ROOT_URL to your public
-      URL before first deploy if not using Kubero ingress substitution.
+    kubero.dev/template.installation: PostgreSQL is provisioned via the bundled add-on.
+      Git data lives under /data. Set FORGEJO__server__ROOT_URL to your public URL
+      before first deploy if not using Kubero ingress substitution.
     kubero.dev/template.links: '["https://forgejo.org/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://codeberg.org/forgejo/Forgejo
@@ -18,7 +18,63 @@ metadata:
     kubero.dev/template.website: https://forgejo.org/
   name: forgejo
 spec:
-  addons: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: forgejo-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: forgejo
+              owner: forgejo
+              secret:
+                name: forgejo-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO forgejo
+              - GRANT CREATE ON SCHEMA public TO forgejo
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO forgejo
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: forgejo-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: forgejo-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: forgejo
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: forgejo-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: forgejo
+          password: forgejo
   cronjobs: []
   deploymentstrategy: docker
   envVars:
@@ -28,6 +84,18 @@ spec:
     value: '1000'
   - name: FORGEJO__server__ROOT_URL
     value: '{{KUBERO_APP_URL}}'
+  - name: FORGEJO__database__DB_TYPE
+    value: postgres
+  - name: FORGEJO__database__HOST
+    value: forgejo-postgresql-rw
+  - name: FORGEJO__database__PORT
+    value: '5432'
+  - name: FORGEJO__database__NAME
+    value: forgejo
+  - name: FORGEJO__database__USER
+    value: forgejo
+  - name: FORGEJO__database__PASSWD
+    value: forgejo
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

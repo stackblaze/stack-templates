@@ -15,10 +15,68 @@ metadata:
     kubero.dev/template.website: https://github.com/thomiceli/opengist
   name: opengist
 spec:
-  addons: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: opengist-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: opengist
+              owner: opengist
+              secret:
+                name: opengist-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO opengist
+              - GRANT CREATE ON SCHEMA public TO opengist
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO opengist
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: opengist-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: opengist-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: opengist
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: opengist-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: opengist
+          password: opengist
   cronjobs: []
   deploymentstrategy: docker
-  envVars: []
+  envVars:
+  - name: OG_DB_URI
+    value: postgres://opengist:opengist@opengist-postgresql-rw:5432/opengist?sslmode=disable
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

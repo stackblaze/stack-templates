@@ -17,20 +17,65 @@ metadata:
     manager: kubero
   name: lychee
 spec:
-  addons: []
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: lychee-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: lychee-mysql-root
+            key: password
+          database: lychee
+          username: lychee
+          passwordSecretKeyRef:
+            name: lychee-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: lychee-mysql-root
+        type: Opaque
+        stringData:
+          password: lychee
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: lychee-mysql-app
+        type: Opaque
+        stringData:
+          password: lychee
   cronjobs: []
   deploymentstrategy: docker
   envVars:
   - name: PHP_TZ
     value: UTC
-  - name: DB_CONNECTION
-    value: sqlite
   - name: APP_ENV
     value: local
   - name: APP_KEY
     value: base64:B0SHakyMaw8rozeNKm+XcT1ZukIc9xSNPghJiWh9ivc=
-  - name: DB_DATABASE
-    value: /app/sqlite/lychee.sqlite
   - name: STARTUP_DELAY
     value: '5'
   - name: TRUSTED_PROXIES
@@ -43,21 +88,26 @@ spec:
     value: '1000'
   - name: PGID
     value: '1000'
+  - name: DB_CONNECTION
+    value: mysql
+  - name: DB_HOST
+    value: lychee-mysql
+  - name: DB_PORT
+    value: '3306'
+  - name: DB_DATABASE
+    value: lychee
+  - name: DB_USERNAME
+    value: lychee
+  - name: DB_PASSWORD
+    value: lychee
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /app/sqlite
-    name: lychee-db-volume
-    size: 1Gi
-    storageClass: slow
-  - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/public/uploads
     name: lychee-upload-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   image:
     containerPort: '8000'
     pullPolicy: Always
@@ -66,9 +116,9 @@ spec:
     command:
     - sh
     - -c
-    - mkdir -p /app/sqlite /app/public/uploads && touch /app/sqlite/lychee.sqlite
-      && chown -R 1000:1000 /app/sqlite /app/public/uploads && chmod 0775 /app/sqlite
-      /app/public/uploads && chmod 0664 /app/sqlite/lychee.sqlite && exec /usr/local/bin/entrypoint.sh
+    - mkdir -p /app/public/uploads && chown -R 1000:1000 /app/public/uploads && chmod
+      0775 /app/public/uploads && until mysqladmin ping -h"$DB_HOST" -P"$DB_PORT"
+      -u"$DB_USERNAME" -p"$DB_PASSWORD" --silent; do sleep 3; done && exec /usr/local/bin/entrypoint.sh
       php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8000
     run:
       securityContext:

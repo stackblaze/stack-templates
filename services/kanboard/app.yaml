@@ -17,20 +17,72 @@ metadata:
     manager: kubero
   name: kanboard
 spec:
-  addons: []
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: kanboard-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: kanboard-mysql-root
+            key: password
+          database: kanboard
+          username: kanboard
+          passwordSecretKeyRef:
+            name: kanboard-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: kanboard-mysql-root
+        type: Opaque
+        stringData:
+          password: kanboard
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: kanboard-mysql-app
+        type: Opaque
+        stringData:
+          password: kanboard
   cronjobs: []
   deploymentstrategy: docker
   envVars:
   - name: PLUGIN_INSTALLER
     value: 'true'
+  - name: DB_DRIVER
+    value: mysql
+  - name: DB_USERNAME
+    value: kanboard
+  - name: DB_PASSWORD
+    value: kanboard
+  - name: DB_NAME
+    value: kanboard
+  - name: DB_HOSTNAME
+    value: kanboard-mysql
   extraVolumes:
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /var/www/app/data
-    name: kanboard-data-volume
-    size: 1Gi
-    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false

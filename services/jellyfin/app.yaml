@@ -37,12 +37,12 @@ spec:
     size: 4Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /media
     name: jellyfin-media
     size: 10Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

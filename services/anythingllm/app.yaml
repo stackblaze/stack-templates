@@ -11,8 +11,8 @@ metadata:
     kubero.dev/template.installation: Change JWT_SECRET, SIG_KEY, and SIG_SALT to
       random strings before use. On first load, set up the admin account. Connect
       your LLM in Settings (supports Ollama, OpenAI, Anthropic, and more). Upload
-      documents to workspaces for RAG. AnythingLLM uses SQLite by default (stored
-      in the volume) — no database add-on required.
+      documents to workspaces for RAG. PostgreSQL is provisioned via the bundled add-on;
+      file storage persists in the volume.
     kubero.dev/template.links: '["https://docs.anythingllm.com/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/Mintplex-Labs/anything-llm
@@ -24,7 +24,63 @@ metadata:
 spec:
   name: anythingllm
   deploymentstrategy: docker
-  addons: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: anythingllm-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: anythingllm
+              owner: anythingllm
+              secret:
+                name: anythingllm-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO anythingllm
+              - GRANT CREATE ON SCHEMA public TO anythingllm
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO anythingllm
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: anythingllm-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: anythingllm-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: anythingllm
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: anythingllm-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: anythingllm
+          password: anythingllm
   envVars:
   - name: STORAGE_DIR
     value: /app/server/storage
@@ -38,6 +94,8 @@ spec:
     value: 3001
   - name: DISABLE_TELEMETRY
     value: true
+  - name: DATABASE_URL
+    value: postgresql://anythingllm:anythingllm@anythingllm-postgresql-rw:5432/anythingllm
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

@@ -14,15 +14,88 @@ metadata:
     kubero.dev/template.website: https://github.com/go-shiori/shiori
   name: shiori
 spec:
-  addons: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: shiori-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: shiori
+              owner: shiori
+              secret:
+                name: shiori-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO shiori
+              - GRANT CREATE ON SCHEMA public TO shiori
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO shiori
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: shiori-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: shiori-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: shiori
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: shiori-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: shiori
+          password: shiori
   cronjobs: []
   deploymentstrategy: docker
-  envVars: []
-  extraVolumes: []
+  envVars:
+  - name: SHIORI_DIR
+    value: /srv/shiori
+  - name: SHIORI_DATABASE_URL
+    value: postgres://shiori:shiori@shiori-postgresql-rw:5432/shiori?sslmode=disable
+  - name: SHIORI_HTTP_SECRET_KEY
+    value: change-me-to-a-random-string
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /srv/shiori
+    name: shiori-data
+    size: 2Gi
+    storageClass: shared
   image:
     containerPort: '8080'
     repository: ghcr.io/go-shiori/shiori
     tag: latest
+    command:
+    - sh
+    - -c
+    - shiori migrate && exec shiori serve
   name: shiori
   web:
     replicaCount: 1

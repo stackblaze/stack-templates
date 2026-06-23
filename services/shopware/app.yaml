@@ -144,19 +144,19 @@ spec:
     value: 512M
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/files
     name: shopware-files
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/public/media
     name: shopware-media
     size: 5Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   resources:
     requests:

@@ -25,27 +25,28 @@ spec:
     value: admin@example.com
   - name: ADMIN_PASSWORD
     value: example
-  - name: DB_CLIENT
-    value: sqlite3
-  - name: DB_FILENAME
-    value: /directus/database/data.db
   - name: WEBSOCKETS_ENABLED
     value: 'true'
+  - name: DB_CLIENT
+    value: pg
+  - name: DB_HOST
+    value: directus-postgresql-rw
+  - name: DB_PORT
+    value: '5432'
+  - name: DB_DATABASE
+    value: directus
+  - name: DB_USER
+    value: directus
+  - name: DB_PASSWORD
+    value: directus
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /directus/database
-    name: directus-db-volume
-    size: 1Gi
-    storageClass: slow
-  - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /directus/uploads
     name: directus-uploads-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
@@ -61,7 +62,63 @@ spec:
     size: 1Gi
     storageClass: slow
   cronjobs: []
-  addons: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: directus-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: directus
+              owner: directus
+              secret:
+                name: directus-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO directus
+              - GRANT CREATE ON SCHEMA public TO directus
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO directus
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: directus-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: directus-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: directus
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: directus-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: directus
+          password: directus
   web:
     replicaCount: 1
   worker:

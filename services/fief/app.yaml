@@ -16,7 +16,63 @@ metadata:
     manager: kubero
   name: fief
 spec:
-  addons: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: fief-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: fief
+              owner: fief
+              secret:
+                name: fief-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO fief
+              - GRANT CREATE ON SCHEMA public TO fief
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO fief
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: fief-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: fief-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: fief
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: fief-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: fief
+          password: fief
   cronjobs: []
   deploymentstrategy: docker
   envVars:
@@ -52,14 +108,9 @@ spec:
     value: 'True'
   - name: FORWARDED_ALLOW_IPS
     value: '*'
-  extraVolumes:
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /data/db
-    name: fief-db-volume
-    size: 1Gi
-    storageClass: slow
+  - name: DATABASE_URL
+    value: postgresql+asyncpg://fief:fief@fief-postgresql-rw:5432/fief
+  extraVolumes: []
   image:
     containerPort: '8000'
     pullPolicy: Always

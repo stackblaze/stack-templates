@@ -47,12 +47,12 @@ spec:
     value: INFO
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /photon/data
     name: photon-data
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

@@ -105,19 +105,19 @@ spec:
     value: '2'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/recipes/staticfiles
     name: tandoor-static
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/recipes/mediafiles
     name: tandoor-media
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   resources:
     requests:

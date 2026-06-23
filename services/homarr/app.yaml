@@ -6,37 +6,100 @@ metadata:
     kubero.dev/template.description: Homarr is a simple and lightweight homepage for
       your server, that helps you easily access all of your services in one place.
     kubero.dev/template.icon: https://github.com/ajnart/homarr/raw/dev/public/imgs/logo/logo-color.svg
-    kubero.dev/template.installation: ''
+    kubero.dev/template.installation: Uses Homarr v1 (homarr-labs) with the bundled
+      PostgreSQL add-on. Set AUTH_SECRET and SECRET_ENCRYPTION_KEY to random values
+      before production use.
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/71191962/169860380-856634fb-4f41-47cb-ba54-6a9e7b3b9c81.gif"]'
-    kubero.dev/template.source: https://github.com/ajnart/homarr
+    kubero.dev/template.source: https://github.com/homarr-labs/homarr
     kubero.dev/template.categories: '["homepage"]'
     kubero.dev/template.title: Homarr
     kubero.dev/template.website: https://homarr.dev
   name: homarr
 spec:
-  addons: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: homarr-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: homarr
+              owner: homarr
+              secret:
+                name: homarr-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO homarr
+              - GRANT CREATE ON SCHEMA public TO homarr
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO homarr
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: homarr-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: homarr-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: homarr
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: homarr-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: homarr
+          password: homarr
   cronjobs: []
   deploymentstrategy: docker
-  envVars: []
+  envVars:
+  - name: DB_DRIVER
+    value: node-postgres
+  - name: DB_HOST
+    value: homarr-postgresql-rw
+  - name: DB_PORT
+    value: '5432'
+  - name: DB_NAME
+    value: homarr
+  - name: DB_USER
+    value: homarr
+  - name: DB_PASSWORD
+    value: homarr
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
-    mountPath: /app/data/configs
-    name: homar-config
-    size: 10Mi
-    storageClass: shared
-  - accessModes:
-    - ReadWriteMany
-    emptyDir: false
-    mountPath: /app/public/icons
-    name: homarr-icons
-    size: 200Mi
+    mountPath: /appdata
+    name: homarr-appdata
+    size: 1Gi
     storageClass: shared
   image:
     containerPort: '7575'
-    repository: ghcr.io/ajnart/homarr
+    repository: ghcr.io/homarr-labs/homarr
     tag: latest
   name: homarr
   web:
