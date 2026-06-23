@@ -42,8 +42,8 @@ jobs:
           git clone --depth 1 --branch "${HERMES_REF}" https://github.com/hashicorp-forge/hermes.git /tmp/hermes
           cd /tmp/hermes
           make web/set-yarn-version
-          make web/build
-          make bin/linux
+          # main embeds hermes-plugin/dist; build/linux runs web + plugin builds first.
+          make build/linux
           mkdir -p "${GITHUB_WORKSPACE}/services/hermes/_image"
           cp hermes "${GITHUB_WORKSPACE}/services/hermes/_image/hermes"
           cp -r configs "${GITHUB_WORKSPACE}/services/hermes/_image/configs"

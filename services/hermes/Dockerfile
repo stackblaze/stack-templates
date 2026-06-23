@@ -15,6 +15,7 @@ ENV SKIP_YARN_COREPACK_CHECK=true \
     CGO_ENABLED=0 \
     GOOS=linux \
     GOARCH=amd64
+# v0.5.0 has no Word add-in embed; newer refs need `make build/linux` instead.
 RUN make web/set-yarn-version && make web/build && make bin/linux
 
 FROM alpine:3.21.5
