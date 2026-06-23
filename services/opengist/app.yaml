@@ -26,7 +26,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: opengist-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -46,19 +46,19 @@ spec:
               database: opengist
               owner: opengist
               secret:
-                name: opengist-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO opengist
               - GRANT CREATE ON SCHEMA public TO opengist
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO opengist
           enableSuperuserAccess: true
           superuserSecret:
-            name: opengist-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: opengist-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: opengist-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: opengist
@@ -76,7 +76,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: OG_DB_URI
-    value: postgres://opengist:opengist@opengist-postgresql-rw:5432/opengist?sslmode=disable
+    value: postgres://opengist:opengist@{{KUBERO_APP_NAME}}-postgresql-rw:5432/opengist?sslmode=disable
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

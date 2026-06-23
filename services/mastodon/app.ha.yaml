@@ -55,7 +55,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: mastodon-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -79,15 +79,15 @@ spec:
               - GRANT CREATE ON SCHEMA public TO mastodon
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO mastodon
               secret:
-                name: mastodon-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: mastodon-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: mastodon-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -96,7 +96,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: mastodon-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: mastodon
@@ -111,7 +111,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: mastodon-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -145,7 +145,7 @@ spec:
   - name: RAILS_SERVE_STATIC_FILES
     value: 'true'
   - name: DB_HOST
-    value: mastodon-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DB_PORT
     value: '5432'
   - name: DB_NAME
@@ -155,7 +155,7 @@ spec:
   - name: DB_PASS
     value: mastodon
   - name: REDIS_HOST
-    value: rfr-mastodon-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
   - name: ES_ENABLED

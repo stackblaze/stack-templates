@@ -4,8 +4,8 @@ metadata:
   name: plausible
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Privacy-friendly alternative to Google Analytics
-      — lightweight and open source.
+    kubero.dev/template.description: "Privacy-friendly alternative to Google Analytics\
+      \ \u2014 lightweight and open source."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plausible/icon.png
     kubero.dev/template.installation: Generate SECRET_KEY_BASE with `openssl rand
       -hex 64` and TOTP_VAULT_KEY with `openssl rand -base64 32`. Update BASE_URL
@@ -32,7 +32,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: plausible-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -52,19 +52,19 @@ spec:
               database: plausible
               owner: plausible
               secret:
-                name: plausible-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO plausible
               - GRANT CREATE ON SCHEMA public TO plausible
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO plausible
           enableSuperuserAccess: true
           superuserSecret:
-            name: plausible-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: plausible-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -73,7 +73,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: plausible-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: plausible
@@ -88,7 +88,7 @@ spec:
         apiVersion: clickhouse.altinity.com/v1
         kind: ClickHouseInstallation
         metadata:
-          name: plausible-clickhouse
+          name: '{{KUBERO_APP_NAME}}-clickhouse'
         spec:
           configuration:
             users:
@@ -130,9 +130,9 @@ spec:
   - name: TOTP_VAULT_KEY
     value: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
   - name: DATABASE_URL
-    value: postgresql://plausible:plausible@plausible-postgresql-rw:5432/plausible
+    value: postgresql://plausible:plausible@{{KUBERO_APP_NAME}}-postgresql-rw:5432/plausible
   - name: CLICKHOUSE_DATABASE_URL
-    value: http://admin:plausible@chi-plausible-clickhouse-db-0-0:8123/plausible_events
+    value: http://admin:plausible@chi-{{KUBERO_APP_NAME}}-clickhouse-db-0-0:8123/plausible_events
   extraVolumes: []
   cronjobs: []
   web:

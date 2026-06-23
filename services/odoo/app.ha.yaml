@@ -45,7 +45,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: odoo-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -65,7 +65,7 @@ spec:
               database: odoo
               owner: odoo
               secret:
-                name: odoo-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO odoo
               - GRANT CREATE ON SCHEMA public TO odoo
@@ -74,12 +74,12 @@ spec:
               - ALTER ROLE odoo CREATEDB
           enableSuperuserAccess: true
           superuserSecret:
-            name: odoo-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: odoo-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -88,14 +88,14 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: odoo-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: odoo
           password: odoo
   envVars:
   - name: HOST
-    value: odoo-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: PORT
     value: '5432'
   - name: USER
@@ -107,7 +107,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/odoo
-    name: odoo-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

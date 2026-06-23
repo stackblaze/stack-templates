@@ -4,8 +4,8 @@ metadata:
   name: easyappointments
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source appointment scheduler for service
-      providers — booking pages, calendars, and notifications.
+    kubero.dev/template.description: "Open-source appointment scheduler for service\
+      \ providers \u2014 booking pages, calendars, and notifications."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/easyappointments/icon.png
     kubero.dev/template.installation: Set BASE_URL to your public URL before first
       visit. Complete admin setup on first login.
@@ -31,17 +31,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: easyappointments-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: easyappointments-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: easyappointments
           username: easyappointments
           passwordSecretKeyRef:
-            name: easyappointments-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -58,7 +58,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: easyappointments-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: easyappointments
@@ -66,7 +66,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: easyappointments-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: easyappointments
@@ -76,7 +76,7 @@ spec:
   - name: DEBUG_MODE
     value: 'FALSE'
   - name: DB_HOST
-    value: easyappointments-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: DB_NAME
     value: easyappointments
   - name: DB_USERNAME
@@ -88,7 +88,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/storage
-    name: easyappointments-storage
+    name: '{{KUBERO_APP_NAME}}-storage'
     size: 1Gi
     storageClass: slow
   cronjobs: []

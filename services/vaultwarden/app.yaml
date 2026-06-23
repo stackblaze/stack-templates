@@ -26,7 +26,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: vaultwarden-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -46,19 +46,19 @@ spec:
               database: vaultwarden
               owner: vaultwarden
               secret:
-                name: vaultwarden-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO vaultwarden
               - GRANT CREATE ON SCHEMA public TO vaultwarden
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO vaultwarden
           enableSuperuserAccess: true
           superuserSecret:
-            name: vaultwarden-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: vaultwarden-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: vaultwarden-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: vaultwarden
@@ -76,13 +76,13 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgresql://vaultwarden:vaultwarden@vaultwarden-postgresql-rw:5432/vaultwarden
+    value: postgresql://vaultwarden:vaultwarden@{{KUBERO_APP_NAME}}-postgresql-rw:5432/vaultwarden
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /data
-    name: vaultwarden-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
     storageClass: slow
   image:

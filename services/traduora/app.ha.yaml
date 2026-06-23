@@ -41,7 +41,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: traduora-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -61,15 +61,15 @@ spec:
               database: traduora
               owner: traduora
               secret:
-                name: traduora-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: traduora-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: traduora-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -78,7 +78,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: traduora-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: traduora
@@ -95,7 +95,7 @@ spec:
   - name: TR_DB_TYPE
     value: postgres
   - name: TR_DB_HOST
-    value: traduora-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: TR_DB_PORT
     value: '5432'
   - name: TR_DB_USER

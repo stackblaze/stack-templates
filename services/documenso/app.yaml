@@ -33,9 +33,9 @@ spec:
   - name: NEXT_PRIVATE_INTERNAL_WEBAPP_URL
     value: '{{KUBERO_APP_URL}}'
   - name: NEXT_PRIVATE_DATABASE_URL
-    value: postgresql://documenso:documenso@documenso-postgresql-rw:5432/documenso
+    value: postgresql://documenso:documenso@{{KUBERO_APP_NAME}}-postgresql-rw:5432/documenso
   - name: NEXT_PRIVATE_DIRECT_DATABASE_URL
-    value: postgresql://documenso:documenso@documenso-postgresql-rw:5432/documenso
+    value: postgresql://documenso:documenso@{{KUBERO_APP_NAME}}-postgresql-rw:5432/documenso
   - name: NEXT_PRIVATE_SMTP_TRANSPORT
     value: smtp-auth
   - name: NEXT_PRIVATE_SMTP_HOST
@@ -65,7 +65,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: documenso-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -85,19 +85,19 @@ spec:
               database: documenso
               owner: documenso
               secret:
-                name: documenso-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO documenso
               - GRANT CREATE ON SCHEMA public TO documenso
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO documenso
           enableSuperuserAccess: true
           superuserSecret:
-            name: documenso-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: documenso-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -106,7 +106,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: documenso-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: documenso

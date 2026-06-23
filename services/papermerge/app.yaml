@@ -48,7 +48,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: papermerge-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -68,15 +68,15 @@ spec:
               database: papermerge
               owner: papermerge
               secret:
-                name: papermerge-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: papermerge-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: papermerge-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -85,7 +85,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: papermerge-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: papermerge
@@ -100,7 +100,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: papermerge-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -127,9 +127,9 @@ spec:
   - name: PAPERMERGE__AUTH__PASSWORD
     value: papermerge
   - name: PAPERMERGE__DATABASE__URL
-    value: postgresql://papermerge:papermerge@papermerge-postgresql-rw:5432/papermerge
+    value: postgresql://papermerge:papermerge@{{KUBERO_APP_NAME}}-postgresql-rw:5432/papermerge
   - name: PAPERMERGE__REDIS__URL
-    value: redis://rfr-papermerge-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: PAPERMERGE__MAIN__MEDIA_ROOT
     value: /db/media
   - name: PAPERMERGE__OCR__LANG_CODES
@@ -141,7 +141,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /db/media
-    name: papermerge-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: slow
   cronjobs: []

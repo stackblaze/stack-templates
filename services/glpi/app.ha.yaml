@@ -4,11 +4,11 @@ metadata:
   name: glpi
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: IT service management and asset tracking — helpdesk,
-      inventory, and CMDB in one platform.
+    kubero.dev/template.description: "IT service management and asset tracking \u2014\
+      \ helpdesk, inventory, and CMDB in one platform."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/glpi/icon.png
-    kubero.dev/template.installation: GLPI auto-installs when all GLPI_DB_* variables
-      are set. Default login admin/glpi — change immediately.
+    kubero.dev/template.installation: "GLPI auto-installs when all GLPI_DB_* variables\
+      \ are set. Default login admin/glpi \u2014 change immediately."
     kubero.dev/template.links: '["https://help.glpi-project.org/"]'
     kubero.dev/template.screenshots: '["https://glpi-project.org/images/glpi.png"]'
     kubero.dev/template.source: https://github.com/glpi-project/glpi
@@ -31,17 +31,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: glpi-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: glpi-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: glpi
           username: glpi
           passwordSecretKeyRef:
-            name: glpi-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -60,7 +60,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: glpi-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: glpi
@@ -68,13 +68,13 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: glpi-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: glpi
   envVars:
   - name: GLPI_DB_HOST
-    value: glpi-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: GLPI_DB_PORT
     value: '3306'
   - name: GLPI_DB_NAME
@@ -88,7 +88,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/glpi
-    name: glpi-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []

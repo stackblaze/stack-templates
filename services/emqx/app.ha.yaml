@@ -54,7 +54,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /opt/emqx/data
-    name: emqx-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []

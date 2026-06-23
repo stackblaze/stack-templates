@@ -55,7 +55,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: hyperswitch-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -75,19 +75,19 @@ spec:
               database: hyperswitch
               owner: hyperswitch
               secret:
-                name: hyperswitch-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO hyperswitch
               - GRANT CREATE ON SCHEMA public TO hyperswitch
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO hyperswitch
           enableSuperuserAccess: true
           superuserSecret:
-            name: hyperswitch-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: hyperswitch-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -96,7 +96,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: hyperswitch-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: hyperswitch
@@ -111,7 +111,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: hyperswitch-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -141,7 +141,7 @@ spec:
   - name: ROUTER__SERVER__BASE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: ROUTER__MASTER_DATABASE__HOST
-    value: hyperswitch-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: ROUTER__MASTER_DATABASE__PORT
     value: '5432'
   - name: ROUTER__MASTER_DATABASE__USERNAME
@@ -151,7 +151,7 @@ spec:
   - name: ROUTER__MASTER_DATABASE__DBNAME
     value: hyperswitch
   - name: ROUTER__REPLICA_DATABASE__HOST
-    value: hyperswitch-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: ROUTER__REPLICA_DATABASE__PORT
     value: '5432'
   - name: ROUTER__REPLICA_DATABASE__USERNAME
@@ -161,7 +161,7 @@ spec:
   - name: ROUTER__REPLICA_DATABASE__DBNAME
     value: hyperswitch
   - name: ROUTER__REDIS__HOST
-    value: rfr-hyperswitch-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: ROUTER__REDIS__PORT
     value: '6379'
   - name: ROUTER__REDIS__CLUSTER_ENABLED

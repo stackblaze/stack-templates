@@ -41,7 +41,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: chiefonboarding-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -61,15 +61,15 @@ spec:
               database: chiefonboarding
               owner: chiefonboarding
               secret:
-                name: chiefonboarding-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: chiefonboarding-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: chiefonboarding-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -78,7 +78,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: chiefonboarding-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: chiefonboarding
@@ -87,7 +87,7 @@ spec:
   - name: SECRET_KEY
     value: replace-with-openssl-rand-hex-32
   - name: DATABASE_URL
-    value: postgres://chiefonboarding:chiefonboarding@chiefonboarding-postgresql-rw:5432/chiefonboarding
+    value: postgres://chiefonboarding:chiefonboarding@{{KUBERO_APP_NAME}}-postgresql-rw:5432/chiefonboarding
   - name: ALLOWED_HOSTS
     value: '* {{KUBERO_APP_HOST}}'
   - name: BASE_URL

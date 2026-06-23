@@ -4,8 +4,8 @@ metadata:
   name: vikunja
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: The open-source to-do app — organize tasks, projects,
-      and teams on all platforms.
+    kubero.dev/template.description: "The open-source to-do app \u2014 organize tasks,\
+      \ projects, and teams on all platforms."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vikunja/icon.png
     kubero.dev/template.installation: Set VIKUNJA_SERVICE_PUBLICURL and rotate VIKUNJA_SERVICE_JWTSECRET
       before production use.
@@ -31,7 +31,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: vikunja-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -51,15 +51,15 @@ spec:
               database: vikunja
               owner: vikunja
               secret:
-                name: vikunja-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: vikunja-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: vikunja-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -68,7 +68,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: vikunja-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: vikunja
@@ -83,7 +83,7 @@ spec:
   - name: VIKUNJA_DATABASE_TYPE
     value: postgres
   - name: VIKUNJA_DATABASE_HOST
-    value: vikunja-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: VIKUNJA_DATABASE_USER
     value: vikunja
   - name: VIKUNJA_DATABASE_PASSWORD
@@ -95,7 +95,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /app/vikunja/files
-    name: vikunja-files
+    name: '{{KUBERO_APP_NAME}}-files'
     size: 2Gi
     storageClass: slow
   cronjobs: []

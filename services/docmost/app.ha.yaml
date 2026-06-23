@@ -26,9 +26,9 @@ spec:
   - name: APP_SECRET
     value: 0LZiQBLw4WvqPlz4cz8RsHJlxNiSqM9B48y4ChyJ5v1oA0L/TPIqRjQNdPZN3iEG
   - name: DATABASE_URL
-    value: postgresql://docmost:docmost@docmost-postgresql-rw:5432/docmost?schema=public
+    value: postgresql://docmost:docmost@{{KUBERO_APP_NAME}}-postgresql-rw:5432/docmost?schema=public
   - name: REDIS_URL
-    value: redis://rfr-docmost-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   extraVolumes: []
   cronjobs: []
   addons:
@@ -42,7 +42,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: docmost-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -62,15 +62,15 @@ spec:
               database: docmost
               owner: docmost
               secret:
-                name: docmost-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: docmost-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: docmost-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -79,7 +79,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: docmost-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: docmost
@@ -94,7 +94,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: docmost-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover

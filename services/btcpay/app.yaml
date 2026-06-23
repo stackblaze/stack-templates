@@ -49,7 +49,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: btcpay-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -69,19 +69,19 @@ spec:
               database: btcpay
               owner: btcpay
               secret:
-                name: btcpay-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO btcpay
               - GRANT CREATE ON SCHEMA public TO btcpay
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO btcpay
           enableSuperuserAccess: true
           superuserSecret:
-            name: btcpay-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: btcpay-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -90,7 +90,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: btcpay-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: btcpay
@@ -111,10 +111,10 @@ spec:
   - name: BTCPAY_ROOTPATH
     value: /
   - name: BTCPAY_POSTGRES
-    value: User ID=btcpay;Password=btcpay;Host=btcpay-postgresql-rw;Port=5432;Database=btcpay;Include
+    value: User ID=btcpay;Password=btcpay;Host={{KUBERO_APP_NAME}}-postgresql-rw;Port=5432;Database=btcpay;Include
       Error Detail=true
   - name: BTCPAY_EXPLORERPOSTGRES
-    value: User ID=btcpay;Password=btcpay;Host=btcpay-postgresql-rw;Port=5432;Database=btcpay;Include
+    value: User ID=btcpay;Password=btcpay;Host={{KUBERO_APP_NAME}}-postgresql-rw;Port=5432;Database=btcpay;Include
       Error Detail=true
   - name: BTCPAY_BTCEXPLORERURL
     value: http://nbxplorer:32838/
@@ -127,7 +127,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /datadir
-    name: btcpay-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: slow
   cronjobs: []

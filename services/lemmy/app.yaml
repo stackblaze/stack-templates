@@ -53,7 +53,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: lemmy-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -73,19 +73,19 @@ spec:
               database: lemmy
               owner: lemmy
               secret:
-                name: lemmy-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO lemmy
               - GRANT CREATE ON SCHEMA public TO lemmy
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO lemmy
           enableSuperuserAccess: true
           superuserSecret:
-            name: lemmy-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: lemmy-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -94,7 +94,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: lemmy-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: lemmy
@@ -109,7 +109,7 @@ spec:
   - name: LEMMY_HOSTNAME
     value: '{{KUBERO_APP_HOST}}'
   - name: LEMMY_DATABASE_URL
-    value: postgresql://lemmy:lemmy@lemmy-postgresql-rw:5432/lemmy
+    value: postgresql://lemmy:lemmy@{{KUBERO_APP_NAME}}-postgresql-rw:5432/lemmy
   - name: LEMMY_PICTRS__URL
     value: http://lemmy-pictrs:8080/
   - name: LEMMY_PICTRS__API_KEY
@@ -119,7 +119,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /config
-    name: lemmy-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: slow
   cronjobs: []

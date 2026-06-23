@@ -29,7 +29,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: forgejo-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -49,19 +49,19 @@ spec:
               database: forgejo
               owner: forgejo
               secret:
-                name: forgejo-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO forgejo
               - GRANT CREATE ON SCHEMA public TO forgejo
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO forgejo
           enableSuperuserAccess: true
           superuserSecret:
-            name: forgejo-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: forgejo-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -70,7 +70,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: forgejo-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: forgejo
@@ -87,7 +87,7 @@ spec:
   - name: FORGEJO__database__DB_TYPE
     value: postgres
   - name: FORGEJO__database__HOST
-    value: forgejo-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: FORGEJO__database__PORT
     value: '5432'
   - name: FORGEJO__database__NAME
@@ -101,7 +101,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /data
-    name: forgejo-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 10Gi
     storageClass: slow
   image:

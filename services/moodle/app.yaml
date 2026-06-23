@@ -48,17 +48,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: moodle-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: moodle-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: moodle
           username: moodle
           passwordSecretKeyRef:
-            name: moodle-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -75,7 +75,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: moodle-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: moodle
@@ -83,7 +83,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: moodle-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: moodle
@@ -91,7 +91,7 @@ spec:
   - name: MOODLE_DATABASE_TYPE
     value: mariadb
   - name: MOODLE_DATABASE_HOST
-    value: moodle-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: MOODLE_DATABASE_PORT_NUMBER
     value: '3306'
   - name: MOODLE_DATABASE_NAME
@@ -126,7 +126,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /bitnami/moodledata
-    name: moodle-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: slow
   cronjobs: []

@@ -8,15 +8,16 @@ metadata:
       for small businesses and freelancers, with invoicing, expense tracking, and
       reporting.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/akaunting/icon.png
-    kubero.dev/template.installation: Akaunting is a Laravel app backed by MariaDB/MySQL
-      (it does NOT support Postgres). On first boot the entrypoint installs the schema
-      and seeds the admin user from ADMIN_EMAIL/ADMIN_PASSWORD, then the web installer
-      is bypassed. Rotate the MariaDB password (default 'akaunting'), ADMIN_PASSWORD,
-      and APP_KEY (must be a 32-char value; the placeholder is intentionally weak
-      — regenerate with 'php artisan key:generate' or set base64:<openssl rand -base64
-      32>). After the DB add-on is healthy, log in at the app URL with ADMIN_EMAIL/ADMIN_PASSWORD
-      and change the admin password immediately. Uploaded files, generated PDFs, and
-      logos persist under /var/www/html/storage (mounted volume).
+    kubero.dev/template.installation: "Akaunting is a Laravel app backed by MariaDB/MySQL\
+      \ (it does NOT support Postgres). On first boot the entrypoint installs the\
+      \ schema and seeds the admin user from ADMIN_EMAIL/ADMIN_PASSWORD, then the\
+      \ web installer is bypassed. Rotate the MariaDB password (default 'akaunting'),\
+      \ ADMIN_PASSWORD, and APP_KEY (must be a 32-char value; the placeholder is intentionally\
+      \ weak \u2014 regenerate with 'php artisan key:generate' or set base64:<openssl\
+      \ rand -base64 32>). After the DB add-on is healthy, log in at the app URL with\
+      \ ADMIN_EMAIL/ADMIN_PASSWORD and change the admin password immediately. Uploaded\
+      \ files, generated PDFs, and logos persist under /var/www/html/storage (mounted\
+      \ volume)."
     kubero.dev/template.links: '["https://akaunting.com/hc/docs/on-premise/installation/",
       "https://github.com/akaunting/docker"]'
     kubero.dev/template.screenshots: '[]'
@@ -40,17 +41,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: akaunting-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: akaunting-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: akaunting
           username: akaunting
           passwordSecretKeyRef:
-            name: akaunting-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -69,7 +70,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: akaunting-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: akaunting
@@ -77,7 +78,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: akaunting-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: akaunting
@@ -95,7 +96,7 @@ spec:
   - name: DB_CONNECTION
     value: mysql
   - name: DB_HOST
-    value: akaunting-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: DB_PORT
     value: '3306'
   - name: DB_DATABASE
@@ -123,7 +124,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/storage
-    name: akaunting-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []

@@ -33,7 +33,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: openobserve-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -53,19 +53,19 @@ spec:
               database: openobserve
               owner: openobserve
               secret:
-                name: openobserve-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO openobserve
               - GRANT CREATE ON SCHEMA public TO openobserve
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO openobserve
           enableSuperuserAccess: true
           superuserSecret:
-            name: openobserve-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: openobserve-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -74,7 +74,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: openobserve-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: openobserve
@@ -99,13 +99,13 @@ spec:
   - name: ZO_META_STORE
     value: postgres
   - name: ZO_META_POSTGRES_DSN
-    value: postgresql://openobserve:openobserve@openobserve-postgresql-rw:5432/openobserve
+    value: postgresql://openobserve:openobserve@{{KUBERO_APP_NAME}}-postgresql-rw:5432/openobserve
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
-    name: openobserve-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

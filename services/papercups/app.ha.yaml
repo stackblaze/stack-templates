@@ -41,7 +41,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: papercups-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -61,15 +61,15 @@ spec:
               database: papercups
               owner: papercups
               secret:
-                name: papercups-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: papercups-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: papercups-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -78,14 +78,14 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: papercups-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: papercups
           password: papercups
   envVars:
   - name: DATABASE_URL
-    value: ecto://papercups:papercups@papercups-postgresql-rw:5432/papercups
+    value: ecto://papercups:papercups@{{KUBERO_APP_NAME}}-postgresql-rw:5432/papercups
   - name: REQUIRE_DB_SSL
     value: 'false'
   - name: SECRET_KEY_BASE

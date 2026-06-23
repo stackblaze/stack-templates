@@ -33,7 +33,7 @@ spec:
   - name: TOLGEE_POSTGRES_AUTOSTART_ENABLED
     value: 'false'
   - name: SPRING_DATASOURCE_URL
-    value: jdbc:postgresql://tolgee-postgresql-rw:5432/tolgee
+    value: jdbc:postgresql://{{KUBERO_APP_NAME}}-postgresql-rw:5432/tolgee
   - name: SPRING_DATASOURCE_USERNAME
     value: tolgee
   - name: SPRING_DATASOURCE_PASSWORD
@@ -60,7 +60,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: tolgee-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -80,19 +80,19 @@ spec:
               database: tolgee
               owner: tolgee
               secret:
-                name: tolgee-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO tolgee
               - GRANT CREATE ON SCHEMA public TO tolgee
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO tolgee
           enableSuperuserAccess: true
           superuserSecret:
-            name: tolgee-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: tolgee-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -101,7 +101,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: tolgee-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: tolgee

@@ -43,7 +43,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: xwiki-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -63,19 +63,19 @@ spec:
               database: xwiki
               owner: xwiki
               secret:
-                name: xwiki-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO xwiki
               - GRANT CREATE ON SCHEMA public TO xwiki
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO xwiki
           enableSuperuserAccess: true
           superuserSecret:
-            name: xwiki-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: xwiki-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -84,14 +84,14 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: xwiki-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: xwiki
           password: xwiki
   envVars:
   - name: DB_HOST
-    value: xwiki-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DB_DATABASE
     value: xwiki
   - name: DB_USER
@@ -105,7 +105,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /usr/local/xwiki
-    name: xwiki-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: slow
   cronjobs: []

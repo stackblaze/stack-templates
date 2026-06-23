@@ -8,12 +8,12 @@ metadata:
       platform for tracking web, mobile and desktop apps with funnels, retention,
       crashes and push.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/countly/icon.png
-    kubero.dev/template.installation: 'Countly Community Edition (countly/countly-server:23.11.22)
-      with the DocumentDB add-on for analytics storage. Pin to 23.11.22 — Countly
-      25.x needs MongoDB 8 features this add-on may lack. Requires at least 2Gi RAM;
-      first boot can take several minutes. FIRST-RUN: open the site, complete the
-      setup wizard to create the global admin account, then add your first application
-      for its App Key/API Key. The appimages volume keeps uploaded app icons/avatars.'
+    kubero.dev/template.installation: "Countly Community Edition (countly/countly-server:23.11.22)\
+      \ with the DocumentDB add-on for analytics storage. Pin to 23.11.22 \u2014 Countly\
+      \ 25.x needs MongoDB 8 features this add-on may lack. Requires at least 2Gi\
+      \ RAM; first boot can take several minutes. FIRST-RUN: open the site, complete\
+      \ the setup wizard to create the global admin account, then add your first application\
+      \ for its App Key/API Key. The appimages volume keeps uploaded app icons/avatars."
     kubero.dev/template.links: '["https://support.countly.com/hc/en-us/articles/360037814511-Setting-Up-Countly-with-Docker",
       "https://support.countly.com/hc/en-us/articles/360036862332-Installing-the-Countly-Server"]'
     kubero.dev/template.screenshots: '[]'
@@ -37,7 +37,7 @@ spec:
         apiVersion: documentdb.io/preview
         kind: DocumentDB
         metadata:
-          name: countly-documentdb
+          name: '{{KUBERO_APP_NAME}}-documentdb'
         spec:
           nodeCount: 3
           instancesPerNode: 1
@@ -71,7 +71,7 @@ spec:
   - name: COUNTLY_CONFIG_FRONTEND_WEB_DOMAIN
     value: '{{KUBERO_APP_HOST}}'
   - name: COUNTLY_CONFIG__MONGODB
-    value: mongodb://mongoadmin:countly@documentdb-service-countly-documentdb:10260/countly?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
+    value: mongodb://mongoadmin:countly@documentdb-service-{{KUBERO_APP_NAME}}-documentdb:10260/countly?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
   extraVolumes:
   - accessModes:
     - ReadWriteMany

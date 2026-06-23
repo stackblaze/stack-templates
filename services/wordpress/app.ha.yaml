@@ -26,17 +26,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: wordpress-mariadb
+          name: '{{KUBERO_APP_NAME}}-mariadb'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: wordpress-mariadb-root
+            name: '{{KUBERO_APP_NAME}}-mariadb-root'
             key: password
           database: wordpress
           username: wordpress
           passwordSecretKeyRef:
-            name: wordpress-mariadb-app
+            name: '{{KUBERO_APP_NAME}}-mariadb-app'
             key: password
           storage:
             size: 5Gi
@@ -55,7 +55,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: wordpress-mariadb-root
+          name: '{{KUBERO_APP_NAME}}-mariadb-root'
         type: Opaque
         stringData:
           password: wordpress
@@ -63,7 +63,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: wordpress-mariadb-app
+          name: '{{KUBERO_APP_NAME}}-mariadb-app'
         type: Opaque
         stringData:
           password: wordpress
@@ -71,7 +71,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: WORDPRESS_DB_HOST
-    value: wordpress-mariadb
+    value: '{{KUBERO_APP_NAME}}-mariadb'
   - name: WORDPRESS_DB_USER
     value: wordpress
   - name: WORDPRESS_DB_PASSWORD
@@ -103,7 +103,7 @@ spec:
     storageClass: shared
     emptyDir: false
     mountPath: /var/www/html/wp-content
-    name: wordpress-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
   image:
     containerPort: '80'

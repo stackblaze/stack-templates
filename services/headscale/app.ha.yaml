@@ -4,9 +4,9 @@ metadata:
   name: headscale
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted Tailscale control server — manage
-      your own WireGuard mesh VPN with the full Tailscale client ecosystem but zero
-      vendor lock-in.
+    kubero.dev/template.description: "Self-hosted Tailscale control server \u2014\
+      \ manage your own WireGuard mesh VPN with the full Tailscale client ecosystem\
+      \ but zero vendor lock-in."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/headscale/icon.png
     kubero.dev/template.installation: 'PostgreSQL is provisioned via the bundled add-on.
       HEADSCALE_SERVER_URL must be the public HTTPS URL of this app. After deploy,
@@ -36,7 +36,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: headscale-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -56,19 +56,19 @@ spec:
               database: headscale
               owner: headscale
               secret:
-                name: headscale-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO headscale
               - GRANT CREATE ON SCHEMA public TO headscale
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO headscale
           enableSuperuserAccess: true
           superuserSecret:
-            name: headscale-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: headscale-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -77,7 +77,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: headscale-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: headscale
@@ -104,7 +104,7 @@ spec:
   - name: HEADSCALE_DATABASE_TYPE
     value: postgres
   - name: HEADSCALE_DATABASE_POSTGRES_HOST
-    value: headscale-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: HEADSCALE_DATABASE_POSTGRES_PORT
     value: '5432'
   - name: HEADSCALE_DATABASE_POSTGRES_NAME
@@ -118,7 +118,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/headscale
-    name: headscale-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
     storageClass: shared
   cronjobs: []

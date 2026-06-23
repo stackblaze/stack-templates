@@ -8,26 +8,26 @@ metadata:
       suite for running internet radio stations, with streaming, automation, and live
       DJ support.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/azuracast/icon.png
-    kubero.dev/template.installation: 'AzuraCast is a multi-container stack; this
-      template runs the PRIMARY web/application image (ghcr.io/azuracast/azuracast)
-      which bundles nginx, PHP-FPM and the supervisord-managed background workers
-      (scheduler, message queue, sync tasks) inside the single image, plus the Liquidsoap/Icecast/SHOUTcast
-      streaming processes. External datastores are wired via add-ons: a MariaDB add-on
-      (AzuraCast supports ONLY MySQL/MariaDB, not Postgres) and a Valkey add-on used
-      as the Redis cache (REDIS_HOST points at the Valkey service; Valkey is Redis-protocol
-      compatible and password-less here). Setting MYSQL_HOST to a non-localhost value
-      automatically disables the image''s bundled internal MariaDB; ENABLE_REDIS=true
-      + REDIS_HOST disables the bundled Redis. Rotate MARIADB_PASSWORD / MYSQL_PASSWORD
-      and the MariaDB add-on password before going live. The container''s HTTP port
-      is 80 (also exposes 443 for TLS and dynamic broadcast ports 8000-8999 for station
-      streams, which must be exposed separately via a NodePort/LoadBalancer for listeners
-      to connect). On first run, browse to the app URL and complete the web setup
-      wizard to create the super-admin account and your first station. Station media,
-      station media and recordings persist on the mounted /var/azuracast/stations
-      volume (do not mount the entire /var/azuracast root — that hides image-shipped
-      config); for production-scale media libraries consider increasing the volume
-      size or using S3-backed station storage (configured per-station in the AzuraCast
-      UI).'
+    kubero.dev/template.installation: "AzuraCast is a multi-container stack; this\
+      \ template runs the PRIMARY web/application image (ghcr.io/azuracast/azuracast)\
+      \ which bundles nginx, PHP-FPM and the supervisord-managed background workers\
+      \ (scheduler, message queue, sync tasks) inside the single image, plus the Liquidsoap/Icecast/SHOUTcast\
+      \ streaming processes. External datastores are wired via add-ons: a MariaDB\
+      \ add-on (AzuraCast supports ONLY MySQL/MariaDB, not Postgres) and a Valkey\
+      \ add-on used as the Redis cache (REDIS_HOST points at the Valkey service; Valkey\
+      \ is Redis-protocol compatible and password-less here). Setting MYSQL_HOST to\
+      \ a non-localhost value automatically disables the image's bundled internal\
+      \ MariaDB; ENABLE_REDIS=true + REDIS_HOST disables the bundled Redis. Rotate\
+      \ MARIADB_PASSWORD / MYSQL_PASSWORD and the MariaDB add-on password before going\
+      \ live. The container's HTTP port is 80 (also exposes 443 for TLS and dynamic\
+      \ broadcast ports 8000-8999 for station streams, which must be exposed separately\
+      \ via a NodePort/LoadBalancer for listeners to connect). On first run, browse\
+      \ to the app URL and complete the web setup wizard to create the super-admin\
+      \ account and your first station. Station media, station media and recordings\
+      \ persist on the mounted /var/azuracast/stations volume (do not mount the entire\
+      \ /var/azuracast root \u2014 that hides image-shipped config); for production-scale\
+      \ media libraries consider increasing the volume size or using S3-backed station\
+      \ storage (configured per-station in the AzuraCast UI)."
     kubero.dev/template.links: '["https://docs.azuracast.com/en/getting-started/installation/docker",
       "https://www.azuracast.com/docs/administration/docker/"]'
     kubero.dev/template.screenshots: '[]'
@@ -51,17 +51,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: azuracast-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: azuracast-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: azuracast
           username: azuracast
           passwordSecretKeyRef:
-            name: azuracast-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -78,7 +78,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: azuracast-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: azuracast
@@ -86,7 +86,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: azuracast-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: azuracast
@@ -100,7 +100,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: azuracast-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -131,7 +131,7 @@ spec:
   - name: PGID
     value: '1000'
   - name: MYSQL_HOST
-    value: azuracast-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: MYSQL_PORT
     value: '3306'
   - name: MYSQL_DATABASE
@@ -141,7 +141,7 @@ spec:
   - name: MYSQL_PASSWORD
     value: azuracast
   - name: MARIADB_HOST
-    value: azuracast-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: MARIADB_PORT
     value: '3306'
   - name: MARIADB_DATABASE
@@ -153,7 +153,7 @@ spec:
   - name: ENABLE_REDIS
     value: 'true'
   - name: REDIS_HOST
-    value: rfr-azuracast-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
   - name: REDIS_DB

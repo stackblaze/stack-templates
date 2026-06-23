@@ -8,11 +8,11 @@ metadata:
       programmatically author, schedule, and monitor workflows (ETL, ML pipelines,
       data orchestration).
     kubero.dev/template.icon: https://airflow.apache.org/images/airflow-logo-padded.svg
-    kubero.dev/template.installation: Single-node `standalone` mode (scheduler + webserver).
-      Change AIRFLOW_ADMIN_PASSWORD and AIRFLOW__CORE__FERNET_KEY before production.
-      First boot runs DB migrations automatically. Web UI on port 8080 at {{KUBERO_APP_URL}}
-      — default login admin / (your AIRFLOW_ADMIN_PASSWORD). Metadata DB is the bundled
-      PostgreSQL (CloudNativePG) addon.
+    kubero.dev/template.installation: "Single-node `standalone` mode (scheduler +\
+      \ webserver). Change AIRFLOW_ADMIN_PASSWORD and AIRFLOW__CORE__FERNET_KEY before\
+      \ production. First boot runs DB migrations automatically. Web UI on port 8080\
+      \ at {{KUBERO_APP_URL}} \u2014 default login admin / (your AIRFLOW_ADMIN_PASSWORD).\
+      \ Metadata DB is the bundled PostgreSQL (CloudNativePG) addon."
     kubero.dev/template.links: '["https://airflow.apache.org/docs/"]'
     kubero.dev/template.screenshots: '["https://airflow.apache.org/docs/apache-airflow/stable/_images/ui-dark.png"]'
     kubero.dev/template.source: https://github.com/apache/airflow
@@ -35,7 +35,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: airflow-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -55,19 +55,19 @@ spec:
               database: airflow
               owner: airflow
               secret:
-                name: airflow-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO airflow
               - GRANT CREATE ON SCHEMA public TO airflow
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO airflow
           enableSuperuserAccess: true
           superuserSecret:
-            name: airflow-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: airflow-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -76,7 +76,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: airflow-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: airflow
@@ -85,7 +85,7 @@ spec:
   - name: AIRFLOW__CORE__EXECUTOR
     value: LocalExecutor
   - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-    value: postgresql+psycopg2://airflow:airflow@airflow-postgresql-rw:5432/airflow
+    value: postgresql+psycopg2://airflow:airflow@{{KUBERO_APP_NAME}}-postgresql-rw:5432/airflow
   - name: AIRFLOW__CORE__FERNET_KEY
     value: CfPdvNM1LwtKIeqg7rMUA_2cc6mw2DuSVcQ3GIcuauA=
   - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG

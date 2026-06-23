@@ -8,19 +8,19 @@ metadata:
       contacts, accounts, leads, opportunities, activities, workflows, reporting and
       email.'
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/8108711?s=200&v=4
-    kubero.dev/template.installation: Runs the official EspoCRM image (espocrm/espocrm,
-      apache variant). EspoCRM only supports MySQL/MariaDB (no PostgreSQL) — this
-      template ships the bundled mariadb addon (default db/user/password 'espocrm',
-      rotate before production and keep ESPOCRM_DATABASE_PASSWORD in sync). On first
-      boot the admin account is provisioned from ESPOCRM_ADMIN_USERNAME / ESPOCRM_ADMIN_PASSWORD
-      — rotate ESPOCRM_ADMIN_PASSWORD (placeholder value). ESPOCRM_SITE_URL is wired
-      to the app URL token so generated links resolve. The valkey addon is wired as
-      an optional Redis cache backend (Valkey is Redis-compatible and password-less
-      here) via ESPOCRM_CONFIG_USE_CACHE / the Redis host/port vars; remove it if
-      not wanted. Persistent app data (uploads, custom code, config, extensions) lives
-      at /var/www/html — back this up. EspoCRM needs a scheduled cron job hitting
-      cron.php every ~1 minute; run it via an external CronJob after install. For
-      outbound email configure SMTP from the EspoCRM admin UI.
+    kubero.dev/template.installation: "Runs the official EspoCRM image (espocrm/espocrm,\
+      \ apache variant). EspoCRM only supports MySQL/MariaDB (no PostgreSQL) \u2014\
+      \ this template ships the bundled mariadb addon (default db/user/password 'espocrm',\
+      \ rotate before production and keep ESPOCRM_DATABASE_PASSWORD in sync). On first\
+      \ boot the admin account is provisioned from ESPOCRM_ADMIN_USERNAME / ESPOCRM_ADMIN_PASSWORD\
+      \ \u2014 rotate ESPOCRM_ADMIN_PASSWORD (placeholder value). ESPOCRM_SITE_URL\
+      \ is wired to the app URL token so generated links resolve. The valkey addon\
+      \ is wired as an optional Redis cache backend (Valkey is Redis-compatible and\
+      \ password-less here) via ESPOCRM_CONFIG_USE_CACHE / the Redis host/port vars;\
+      \ remove it if not wanted. Persistent app data (uploads, custom code, config,\
+      \ extensions) lives at /var/www/html \u2014 back this up. EspoCRM needs a scheduled\
+      \ cron job hitting cron.php every ~1 minute; run it via an external CronJob\
+      \ after install. For outbound email configure SMTP from the EspoCRM admin UI."
     kubero.dev/template.links: '["https://docs.espocrm.com/administration/docker/installation/",
       "https://hub.docker.com/r/espocrm/espocrm"]'
     kubero.dev/template.screenshots: '[]'
@@ -44,17 +44,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: espocrm-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: espocrm-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: espocrm
           username: espocrm
           passwordSecretKeyRef:
-            name: espocrm-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -71,7 +71,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: espocrm-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: espocrm
@@ -79,7 +79,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: espocrm-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: espocrm
@@ -93,7 +93,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: espocrm-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -116,7 +116,7 @@ spec:
   - name: ESPOCRM_DATABASE_PLATFORM
     value: Mysql
   - name: ESPOCRM_DATABASE_HOST
-    value: espocrm-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: ESPOCRM_DATABASE_PORT
     value: '3306'
   - name: ESPOCRM_DATABASE_NAME
@@ -136,7 +136,7 @@ spec:
   - name: ESPOCRM_CONFIG_CACHE_PROVIDER
     value: Redis
   - name: ESPOCRM_CONFIG_REDIS_HOST
-    value: rfr-espocrm-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: ESPOCRM_CONFIG_REDIS_PORT
     value: '6379'
   extraVolumes:
@@ -144,7 +144,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html
-    name: espocrm-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: slow
   cronjobs: []

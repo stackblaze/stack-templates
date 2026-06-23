@@ -35,7 +35,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /data
-    name: navidrome-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
     storageClass: slow
   - accessModes:

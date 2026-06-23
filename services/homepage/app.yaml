@@ -30,7 +30,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /app/config
-    name: homepage-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 100Mi
     storageClass: slow
   healthcheck:

@@ -41,7 +41,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /data
-    name: rustdesk-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: slow
   cronjobs: []

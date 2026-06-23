@@ -4,8 +4,9 @@ metadata:
   name: mattermost
   annotations:
     kubero.dev/template.architecture: '["arm64", "amd64"]'
-    kubero.dev/template.description: Mattermost is an open-source, self-hosted collaboration
-      platform for messaging, file sharing and ChatOps — an alternative to Slack.
+    kubero.dev/template.description: "Mattermost is an open-source, self-hosted collaboration\
+      \ platform for messaging, file sharing and ChatOps \u2014 an alternative to\
+      \ Slack."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/icon.png
     kubero.dev/template.installation: Ships the MIT-licensed Team Edition. After the
       first boot open the Site URL and create the initial admin account at /signup_user_complete.
@@ -36,7 +37,7 @@ spec:
     storageClass: shared
     emptyDir: false
     mountPath: /mattermost/data
-    name: mattermost-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
   cronjobs: []
   addons:
@@ -50,7 +51,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: mattermost-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -70,15 +71,15 @@ spec:
               database: mattermost
               owner: mattermost
               secret:
-                name: mattermost-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: mattermost-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: mattermost-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -87,7 +88,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: mattermost-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: mattermost

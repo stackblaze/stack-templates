@@ -6,8 +6,8 @@ metadata:
     kubero.dev/template.description: Self-hostable read-it-later app for saving and
       classifying web pages to read later.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4573139?s=200&v=4
-    kubero.dev/template.installation: Default login is wallabag:wallabag — change
-      the password after first login.
+    kubero.dev/template.installation: "Default login is wallabag:wallabag \u2014 change\
+      \ the password after first login."
     kubero.dev/template.links: '["https://doc.wallabag.org/"]'
     kubero.dev/template.screenshots: '["https://www.wallabag.org/images/logo-wallabag.svg"]'
     kubero.dev/template.source: https://github.com/wallabag/wallabag
@@ -29,17 +29,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: wallabag-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: wallabag-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: wallabag
           username: wallabag
           passwordSecretKeyRef:
-            name: wallabag-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -56,7 +56,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: wallabag-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: wallabag
@@ -64,7 +64,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: wallabag-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: wallabag
@@ -84,7 +84,7 @@ spec:
   - name: SYMFONY__ENV__DATABASE_DRIVER
     value: pdo_mysql
   - name: SYMFONY__ENV__DATABASE_HOST
-    value: wallabag-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: SYMFONY__ENV__DATABASE_PORT
     value: '3306'
   - name: SYMFONY__ENV__DATABASE_NAME

@@ -45,7 +45,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: dittofeed-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -65,19 +65,19 @@ spec:
               database: dittofeed
               owner: dittofeed
               secret:
-                name: dittofeed-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO dittofeed
               - GRANT CREATE ON SCHEMA public TO dittofeed
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO dittofeed
           enableSuperuserAccess: true
           superuserSecret:
-            name: dittofeed-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: dittofeed-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -86,7 +86,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: dittofeed-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: dittofeed
@@ -134,7 +134,7 @@ spec:
                 - name: DB_PORT
                   value: '5432'
                 - name: POSTGRES_SEEDS
-                  value: dittofeed-postgresql-rw
+                  value: '{{KUBERO_APP_NAME}}-postgresql-rw'
                 - name: POSTGRES_USER
                   value: postgres
                 - name: POSTGRES_PWD
@@ -164,7 +164,7 @@ spec:
         apiVersion: clickhouse.altinity.com/v1
         kind: ClickHouseInstallation
         metadata:
-          name: dittofeed-clickhouse
+          name: '{{KUBERO_APP_NAME}}-clickhouse'
         spec:
           configuration:
             users:
@@ -214,7 +214,7 @@ spec:
   - name: PASSWORD
     value: dittofeed
   - name: DATABASE_HOST
-    value: dittofeed-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DATABASE_PORT
     value: '5432'
   - name: DATABASE_USER
@@ -224,7 +224,7 @@ spec:
   - name: DATABASE_NAME
     value: dittofeed
   - name: CLICKHOUSE_HOST
-    value: http://clickhouse-dittofeed-clickhouse:8123
+    value: http://clickhouse-{{KUBERO_APP_NAME}}-clickhouse:8123
   - name: CLICKHOUSE_USER
     value: admin
   - name: CLICKHOUSE_PASSWORD

@@ -28,7 +28,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/databag
-    name: databag-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
     storageClass: shared
   image:

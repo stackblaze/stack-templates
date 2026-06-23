@@ -37,7 +37,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: maybe-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -57,15 +57,15 @@ spec:
               database: maybe
               owner: maybe
               secret:
-                name: maybe-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: maybe-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: maybe-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -74,7 +74,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: maybe-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: maybe
@@ -89,7 +89,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: maybe-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -118,11 +118,11 @@ spec:
   - name: RAILS_ASSUME_SSL
     value: 'false'
   - name: DB_HOST
-    value: maybe-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DB_PORT
     value: '5432'
   - name: POSTGRES_HOST
-    value: maybe-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: POSTGRES_DB
     value: maybe
   - name: POSTGRES_USER
@@ -130,7 +130,7 @@ spec:
   - name: POSTGRES_PASSWORD
     value: maybe
   - name: REDIS_URL
-    value: redis://rfr-maybe-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   extraVolumes: []
   cronjobs: []
   web:

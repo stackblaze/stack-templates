@@ -41,7 +41,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: ghostfolio-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -61,19 +61,19 @@ spec:
               database: ghostfolio
               owner: ghostfolio
               secret:
-                name: ghostfolio-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO ghostfolio
               - GRANT CREATE ON SCHEMA public TO ghostfolio
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ghostfolio
           enableSuperuserAccess: true
           superuserSecret:
-            name: ghostfolio-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: ghostfolio-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -82,7 +82,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: ghostfolio-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: ghostfolio
@@ -97,7 +97,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: ghostfolio-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -123,7 +123,7 @@ spec:
   - name: NODE_ENV
     value: production
   - name: DATABASE_URL
-    value: postgresql://ghostfolio:ghostfolio@ghostfolio-postgresql-rw:5432/ghostfolio?connect_timeout=300&sslmode=disable
+    value: postgresql://ghostfolio:ghostfolio@{{KUBERO_APP_NAME}}-postgresql-rw:5432/ghostfolio?connect_timeout=300&sslmode=disable
   - name: POSTGRES_DB
     value: ghostfolio
   - name: POSTGRES_USER
@@ -131,7 +131,7 @@ spec:
   - name: POSTGRES_PASSWORD
     value: ghostfolio
   - name: REDIS_HOST
-    value: rfr-ghostfolio-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
   - name: REDIS_PASSWORD

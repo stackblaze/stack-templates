@@ -4,8 +4,8 @@ metadata:
   name: superset
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Modern data exploration and visualization platform
-      — enterprise-ready business intelligence.
+    kubero.dev/template.description: "Modern data exploration and visualization platform\
+      \ \u2014 enterprise-ready business intelligence."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/superset/icon.png
     kubero.dev/template.installation: First boot runs migrations and init automatically
       (several minutes). Change SUPERSET_SECRET_KEY and ADMIN_PASSWORD before production
@@ -32,7 +32,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: superset-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -52,19 +52,19 @@ spec:
               database: superset
               owner: superset
               secret:
-                name: superset-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO superset
               - GRANT CREATE ON SCHEMA public TO superset
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO superset
           enableSuperuserAccess: true
           superuserSecret:
-            name: superset-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: superset-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -73,7 +73,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: superset-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: superset
@@ -88,7 +88,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: superset-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -124,11 +124,11 @@ spec:
   - name: PYTHONPATH
     value: /app/pythonpath:/app/docker/pythonpath_dev
   - name: SUPERSET__SQLALCHEMY_DATABASE_URI
-    value: postgresql+psycopg2://superset:superset@superset-postgresql-rw:5432/superset
+    value: postgresql+psycopg2://superset:superset@{{KUBERO_APP_NAME}}-postgresql-rw:5432/superset
   - name: DATABASE_DIALECT
     value: postgresql
   - name: DATABASE_HOST
-    value: superset-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DATABASE_PORT
     value: '5432'
   - name: DATABASE_DB
@@ -138,7 +138,7 @@ spec:
   - name: DATABASE_PASSWORD
     value: superset
   - name: REDIS_HOST
-    value: rfr-superset-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
   extraVolumes: []

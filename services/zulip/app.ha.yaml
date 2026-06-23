@@ -4,13 +4,13 @@ metadata:
   name: zulip
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Powerful open-source team chat organized into
-      topic-based threads — an alternative to Slack.
+    kubero.dev/template.description: "Powerful open-source team chat organized into\
+      \ topic-based threads \u2014 an alternative to Slack."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zulip/icon.png
-    kubero.dev/template.installation: Set SETTING_EXTERNAL_HOST and SECRETS_secret_key
-      before first boot. Initial startup can take 5–10 minutes while Zulip configures
-      all services. Requires `kubero-operator/operators/install.sh` (RabbitMQ Cluster
-      operator).
+    kubero.dev/template.installation: "Set SETTING_EXTERNAL_HOST and SECRETS_secret_key\
+      \ before first boot. Initial startup can take 5\u201310 minutes while Zulip\
+      \ configures all services. Requires `kubero-operator/operators/install.sh` (RabbitMQ\
+      \ Cluster operator)."
     kubero.dev/template.links: '["https://zulip.readthedocs.io/projects/docker/"]'
     kubero.dev/template.screenshots: '["https://zulip.com/static/images/landing-page/zulip-hero.png"]'
     kubero.dev/template.source: https://github.com/zulip/zulip
@@ -33,7 +33,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: zulip-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -53,19 +53,19 @@ spec:
               database: zulip
               owner: zulip
               secret:
-                name: zulip-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO zulip
               - GRANT CREATE ON SCHEMA public TO zulip
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zulip
           enableSuperuserAccess: true
           superuserSecret:
-            name: zulip-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: zulip-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -74,7 +74,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: zulip-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: zulip
@@ -89,7 +89,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: zulip-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -173,7 +173,7 @@ spec:
   - name: SETTING_ZULIP_ADMINISTRATOR
     value: admin@example.com
   - name: DB_HOST
-    value: zulip-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DB_HOST_PORT
     value: '5432'
   - name: DB_NAME
@@ -185,7 +185,7 @@ spec:
   - name: SETTING_RABBITMQ_HOST
     value: zulip-rabbitmq
   - name: SETTING_REDIS_HOST
-    value: rfr-zulip-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: SETTING_MEMCACHED_LOCATION
     value: zulip-memcached:11211
   - name: DISABLE_HTTPS
@@ -215,7 +215,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
-    name: zulip-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

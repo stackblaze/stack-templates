@@ -29,13 +29,13 @@ spec:
   - name: CORE_PORT
     value: '3000'
   - name: DATABASE_URL
-    value: postgres://zipline:zipline@zipline-postgresql-rw:5432/zipline
+    value: postgres://zipline:zipline@{{KUBERO_APP_NAME}}-postgresql-rw:5432/zipline
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /zipline/uploads
-    name: zipline-uploads-volume
+    name: '{{KUBERO_APP_NAME}}-uploads-volume'
     size: 1Gi
     storageClass: shared
   - accessModes:
@@ -57,7 +57,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: zipline-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -77,19 +77,19 @@ spec:
               database: zipline
               owner: zipline
               secret:
-                name: zipline-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO zipline
               - GRANT CREATE ON SCHEMA public TO zipline
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zipline
           enableSuperuserAccess: true
           superuserSecret:
-            name: zipline-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: zipline-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -98,7 +98,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: zipline-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: zipline

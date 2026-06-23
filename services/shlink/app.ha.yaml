@@ -29,17 +29,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: shlink-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: shlink-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: shlink
           username: shlink
           passwordSecretKeyRef:
-            name: shlink-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -56,7 +56,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: shlink-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: shlink
@@ -64,7 +64,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: shlink-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: shlink
@@ -88,7 +88,7 @@ spec:
   - name: DB_PASSWORD
     value: shlink
   - name: DB_HOST
-    value: shlink-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: DB_PORT
     value: '3306'
   healthcheck:

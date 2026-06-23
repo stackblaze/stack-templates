@@ -38,7 +38,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: yopass-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -64,7 +64,7 @@ spec:
   - name: DATABASE
     value: redis
   - name: REDIS
-    value: redis://rfr-yopass-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: PORT
     value: '1337'
   - name: ADDRESS

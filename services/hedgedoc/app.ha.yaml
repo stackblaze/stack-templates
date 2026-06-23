@@ -31,7 +31,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: hedgedoc-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -51,15 +51,15 @@ spec:
               database: hedgedoc
               owner: hedgedoc
               secret:
-                name: hedgedoc-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: hedgedoc-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: hedgedoc-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -68,14 +68,14 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: hedgedoc-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: hedgedoc
           password: hedgedoc
   envVars:
   - name: CMD_DB_URL
-    value: postgres://hedgedoc:hedgedoc@hedgedoc-postgresql-rw:5432/hedgedoc
+    value: postgres://hedgedoc:hedgedoc@{{KUBERO_APP_NAME}}-postgresql-rw:5432/hedgedoc
   - name: CMD_DOMAIN
     value: hedgedoc.localhost
   - name: CMD_PROTOCOL_USESSL
@@ -89,7 +89,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /hedgedoc/public/uploads
-    name: hedgedoc-uploads
+    name: '{{KUBERO_APP_NAME}}-uploads'
     size: 2Gi
     storageClass: shared
   cronjobs: []

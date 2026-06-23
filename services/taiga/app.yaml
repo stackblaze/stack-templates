@@ -47,7 +47,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: taiga-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -67,19 +67,19 @@ spec:
               database: taiga
               owner: taiga
               secret:
-                name: taiga-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO taiga
               - GRANT CREATE ON SCHEMA public TO taiga
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO taiga
           enableSuperuserAccess: true
           superuserSecret:
-            name: taiga-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: taiga-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -88,7 +88,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: taiga-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: taiga
@@ -123,7 +123,7 @@ spec:
               '
   envVars:
   - name: POSTGRES_HOST
-    value: taiga-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: POSTGRES_PORT
     value: '5432'
   - name: POSTGRES_DB
@@ -159,7 +159,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /taiga-back/media
-    name: taiga-media
+    name: '{{KUBERO_APP_NAME}}-media'
     size: 5Gi
     storageClass: slow
   cronjobs: []

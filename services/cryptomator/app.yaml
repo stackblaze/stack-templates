@@ -35,7 +35,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: cryptomator-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -55,7 +55,7 @@ spec:
               database: cryptomator
               owner: cryptomator
               secret:
-                name: cryptomator-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO cryptomator
               - GRANT CREATE ON SCHEMA public TO cryptomator
@@ -63,12 +63,12 @@ spec:
               - CREATE DATABASE keycloak OWNER cryptomator
           enableSuperuserAccess: true
           superuserSecret:
-            name: cryptomator-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: cryptomator-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -77,7 +77,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: cryptomator-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: cryptomator
@@ -86,7 +86,7 @@ spec:
         apiVersion: v1
         kind: ConfigMap
         metadata:
-          name: cryptomator-keycloak-config
+          name: '{{KUBERO_APP_NAME}}-config'
         data:
           KC_DB: postgres
           KC_DB_URL: jdbc:postgresql://cryptomator-postgresql-rw:5432/keycloak
@@ -194,7 +194,7 @@ spec:
                   containerPort: 9000
                 envFrom:
                 - configMapRef:
-                    name: cryptomator-keycloak-config
+                    name: '{{KUBERO_APP_NAME}}-config'
                 env:
                 - name: KC_DB_PASSWORD
                   valueFrom:
@@ -257,7 +257,7 @@ spec:
   - name: QUARKUS_HTTP_PORT
     value: '8080'
   - name: QUARKUS_DATASOURCE_JDBC_URL
-    value: jdbc:postgresql://cryptomator-postgresql-rw:5432/cryptomator
+    value: jdbc:postgresql://{{KUBERO_APP_NAME}}-postgresql-rw:5432/cryptomator
   - name: QUARKUS_DATASOURCE_USERNAME
     value: cryptomator
   - name: QUARKUS_DATASOURCE_PASSWORD

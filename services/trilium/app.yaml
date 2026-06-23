@@ -24,7 +24,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /home/node/trilium-data
-    name: trilium-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
     storageClass: slow
   image:

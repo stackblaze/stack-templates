@@ -24,7 +24,7 @@ spec:
   - name: VIRTUAL_HOST
     value: corteza.localhost
   - name: DB_DSN
-    value: postgres://corteza:corteza@corteza-postgresql-rw:5432/corteza?sslmode=disable
+    value: postgres://corteza:corteza@{{KUBERO_APP_NAME}}-postgresql-rw:5432/corteza?sslmode=disable
   - name: HTTP_WEBAPP_ENABLED
     value: 'true'
   - name: ACTIONLOG_ENABLED
@@ -42,7 +42,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: corteza-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -62,15 +62,15 @@ spec:
               database: corteza
               owner: corteza
               secret:
-                name: corteza-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: corteza-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: corteza-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -79,7 +79,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: corteza-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: corteza

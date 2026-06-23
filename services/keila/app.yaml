@@ -27,7 +27,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: keila-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -47,15 +47,15 @@ spec:
               database: postgresql
               owner: postgres
               secret:
-                name: keila-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: keila-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: keila-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -64,7 +64,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: keila-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -75,7 +75,7 @@ spec:
   - name: SECRET_KEY_BASE
     value: EiHaPZPt+t8SA9MuAIeVixPhDJI1T+XhYr1S54PcOAxNh+Z30PNWM/WSIhfREUvo
   - name: DB_URL
-    value: postgres://postgres:keila@keila-postgresql-rw/postgresql
+    value: postgres://postgres:keila@{{KUBERO_APP_NAME}}-postgresql-rw/postgresql
   - name: MAILER_SMTP_HOST
     value: 127.0.0.1
   - name: MAILER_SMTP_PORT

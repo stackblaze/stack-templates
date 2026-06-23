@@ -55,7 +55,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: penpot-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -75,19 +75,19 @@ spec:
               database: penpot
               owner: penpot
               secret:
-                name: penpot-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO penpot
               - GRANT CREATE ON SCHEMA public TO penpot
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO penpot
           enableSuperuserAccess: true
           superuserSecret:
-            name: penpot-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: penpot-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -96,7 +96,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: penpot-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: penpot
@@ -111,7 +111,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: penpot-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -144,13 +144,13 @@ spec:
     value: enable-registration enable-login-with-password disable-email-verification
       disable-secure-session-cookies
   - name: PENPOT_DATABASE_URI
-    value: postgresql://penpot-postgresql-rw:5432/penpot
+    value: postgresql://{{KUBERO_APP_NAME}}-postgresql-rw:5432/penpot
   - name: PENPOT_DATABASE_USERNAME
     value: penpot
   - name: PENPOT_DATABASE_PASSWORD
     value: penpot
   - name: PENPOT_REDIS_URI
-    value: redis://rfr-penpot-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: PENPOT_SECRET_KEY
     value: replace-with-openssl-rand-hex-32
   - name: PENPOT_ASSETS_STORAGE_BACKEND
@@ -162,7 +162,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /opt/data/assets
-    name: penpot-assets
+    name: '{{KUBERO_APP_NAME}}-assets'
     size: 5Gi
     storageClass: shared
   cronjobs: []

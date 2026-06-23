@@ -59,7 +59,7 @@ spec:
         apiVersion: documentdb.io/preview
         kind: DocumentDB
         metadata:
-          name: revolt-documentdb
+          name: '{{KUBERO_APP_NAME}}-documentdb'
         spec:
           nodeCount: 3
           instancesPerNode: 1
@@ -89,7 +89,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: revolt-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -141,9 +141,9 @@ spec:
               '
   envVars:
   - name: REVOLT__DATABASE__MONGODB
-    value: mongodb://mongoadmin:revolt@documentdb-service-revolt-documentdb:10260/?authSource=admin&directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&retryWrites=false
+    value: mongodb://mongoadmin:revolt@documentdb-service-{{KUBERO_APP_NAME}}-documentdb:10260/?authSource=admin&directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&retryWrites=false
   - name: REVOLT__DATABASE__REDIS
-    value: redis://rfr-revolt-valkey-readwrite:6379/
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/
   - name: REVOLT__RABBIT__HOST
     value: revolt-rabbitmq
   - name: REVOLT__RABBIT__PORT
@@ -165,7 +165,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /config
-    name: revolt-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: shared
   cronjobs: []

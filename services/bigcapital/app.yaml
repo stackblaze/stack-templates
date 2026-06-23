@@ -7,25 +7,26 @@ metadata:
     kubero.dev/template.description: Open-source double-entry accounting and financial
       reporting platform, a self-hosted alternative to QuickBooks, Xero and Wave.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bigcapital/icon.png
-    kubero.dev/template.installation: 'Multi-container stack. This template runs the
-      PRIMARY backend API only: bigcapitalhq/server (listens on :3000). It is NOT
-      usable on its own — you MUST also deploy these companion services and route
-      them behind a reverse proxy (Envoy/Nginx): (1) FRONTEND/webapp: bigcapitalhq/webapp:latest
-      (the SPA UI); (2) GATEWAY/proxy: envoyproxy/envoy:v1.30-latest fronting / ->
-      webapp and /api -> server, terminating TLS on 80/443; (3) PDF rendering: gotenberg/gotenberg:7
-      (point GOTENBERG_URL at it, e.g. http://gotenberg:9000); (4) DB MIGRATION: a
-      one-shot run of the same bigcapitalhq/server image with the migration command
-      to provision the system + tenant schemas before first boot. The server multi-tenants:
-      SYSTEM_DB_NAME is the control DB and each org gets its own DB prefixed by TENANT_DB_NAME_PERFIX.
-      Add-ons wired: MariaDB (bigcapital-mysql:3306, app uses MySQL—not Postgres)
-      and Valkey/Redis (rfr-bigcapital-valkey-readwrite:6379, no password) used for
-      both cache and the BullMQ job queue. BEFORE exposing publicly ROTATE: JWT_SECRET
-      (openssl rand -hex 32) and the MariaDB password (default ''bigcapital''). Set
-      BASE_URL to your public URL (pre-filled with {{KUBERO_APP_URL}}). After the
-      stack is up, browse to the gateway URL and create the first account (no default
-      account exists); set SIGNUP_DISABLED=true afterward to lock down registration.
-      Optional integrations (Plaid bank sync, Stripe/Lemon Squeezy billing, S3 attachments,
-      SMTP mail) are configured via additional env vars.'
+    kubero.dev/template.installation: "Multi-container stack. This template runs the\
+      \ PRIMARY backend API only: bigcapitalhq/server (listens on :3000). It is NOT\
+      \ usable on its own \u2014 you MUST also deploy these companion services and\
+      \ route them behind a reverse proxy (Envoy/Nginx): (1) FRONTEND/webapp: bigcapitalhq/webapp:latest\
+      \ (the SPA UI); (2) GATEWAY/proxy: envoyproxy/envoy:v1.30-latest fronting /\
+      \ -> webapp and /api -> server, terminating TLS on 80/443; (3) PDF rendering:\
+      \ gotenberg/gotenberg:7 (point GOTENBERG_URL at it, e.g. http://gotenberg:9000);\
+      \ (4) DB MIGRATION: a one-shot run of the same bigcapitalhq/server image with\
+      \ the migration command to provision the system + tenant schemas before first\
+      \ boot. The server multi-tenants: SYSTEM_DB_NAME is the control DB and each\
+      \ org gets its own DB prefixed by TENANT_DB_NAME_PERFIX. Add-ons wired: MariaDB\
+      \ (bigcapital-mysql:3306, app uses MySQL\u2014not Postgres) and Valkey/Redis\
+      \ (rfr-bigcapital-valkey-readwrite:6379, no password) used for both cache and\
+      \ the BullMQ job queue. BEFORE exposing publicly ROTATE: JWT_SECRET (openssl\
+      \ rand -hex 32) and the MariaDB password (default 'bigcapital'). Set BASE_URL\
+      \ to your public URL (pre-filled with {{KUBERO_APP_URL}}). After the stack is\
+      \ up, browse to the gateway URL and create the first account (no default account\
+      \ exists); set SIGNUP_DISABLED=true afterward to lock down registration. Optional\
+      \ integrations (Plaid bank sync, Stripe/Lemon Squeezy billing, S3 attachments,\
+      \ SMTP mail) are configured via additional env vars."
     kubero.dev/template.links: '["https://docs.bigcapital.app/deployment/docker",
       "https://github.com/bigcapitalhq/bigcapital/blob/develop/docker-compose.prod.yml"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/bigcapitalhq/bigcapital/develop/static/bigcapital-screenshot.png"]'
@@ -49,17 +50,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: bigcapital-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: bigcapital-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: bigcapital
           username: bigcapital
           passwordSecretKeyRef:
-            name: bigcapital-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -76,7 +77,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: bigcapital-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: bigcapital
@@ -84,7 +85,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: bigcapital-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: bigcapital
@@ -98,7 +99,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: bigcapital-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -127,7 +128,7 @@ spec:
   - name: JWT_SECRET
     value: replace-with-openssl-rand-hex-32
   - name: DB_HOST
-    value: bigcapital-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: DB_PORT
     value: '3306'
   - name: DB_USER
@@ -141,11 +142,11 @@ spec:
   - name: TENANT_DB_NAME_PERFIX
     value: bigcapital_tenant_
   - name: REDIS_HOST
-    value: rfr-bigcapital-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
   - name: QUEUE_HOST
-    value: rfr-bigcapital-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: QUEUE_PORT
     value: '6379'
   - name: GOTENBERG_URL
@@ -171,7 +172,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /data
-    name: bigcapital-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: slow
   cronjobs: []

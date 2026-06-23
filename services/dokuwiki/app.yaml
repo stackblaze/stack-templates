@@ -24,7 +24,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /config
-    name: dokuwiki-config-volume
+    name: '{{KUBERO_APP_NAME}}-config-volume'
     size: 1Gi
     storageClass: slow
   cronjobs: []

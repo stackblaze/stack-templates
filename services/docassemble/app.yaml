@@ -50,7 +50,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: docassemble-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -70,19 +70,19 @@ spec:
               database: docassemble
               owner: docassemble
               secret:
-                name: docassemble-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO docassemble
               - GRANT CREATE ON SCHEMA public TO docassemble
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO docassemble
           enableSuperuserAccess: true
           superuserSecret:
-            name: docassemble-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: docassemble-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -91,7 +91,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: docassemble-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: docassemble
@@ -106,7 +106,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: docassemble-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -131,7 +131,7 @@ spec:
   - name: DBPREFIX
     value: postgresql+psycopg2://
   - name: DBHOST
-    value: docassemble-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DBPORT
     value: '5432'
   - name: DBNAME
@@ -141,7 +141,7 @@ spec:
   - name: DBPASSWORD
     value: docassemble
   - name: REDIS
-    value: redis://rfr-docassemble-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: SECRETKEY
     value: replace-with-openssl-rand-base64-32
   - name: DAHOSTNAME
@@ -159,7 +159,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /usr/share/docassemble/backup
-    name: docassemble-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: slow
   cronjobs: []

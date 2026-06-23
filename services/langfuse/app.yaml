@@ -4,8 +4,8 @@ metadata:
   name: langfuse
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source LLM observability platform — traces,
-      evals, prompt management, datasets, and cost analytics for AI applications.
+    kubero.dev/template.description: "Open-source LLM observability platform \u2014\
+      \ traces, evals, prompt management, datasets, and cost analytics for AI applications."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langfuse/icon.png
     kubero.dev/template.installation: 'Langfuse v3 is a multi-service stack. This
       template runs the PRIMARY web/API container (ghcr.io/langfuse/langfuse:3, port
@@ -40,7 +40,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: langfuse-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -60,19 +60,19 @@ spec:
               database: langfuse
               owner: langfuse
               secret:
-                name: langfuse-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO langfuse
               - GRANT CREATE ON SCHEMA public TO langfuse
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO langfuse
           enableSuperuserAccess: true
           superuserSecret:
-            name: langfuse-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: langfuse-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -81,7 +81,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: langfuse-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: langfuse
@@ -134,7 +134,7 @@ spec:
                 - name: s3
                   containerPort: 9000
                 volumeMounts:
-                - name: minio-data
+                - name: '{{KUBERO_APP_NAME}}-data'
                   mountPath: /data
                 resources:
                   requests:
@@ -144,7 +144,7 @@ spec:
                     cpu: 500m
                     memory: 512Mi
               volumes:
-              - name: minio-data
+              - name: '{{KUBERO_APP_NAME}}-data'
                 emptyDir: {}
   - displayName: ClickHouse
     env: []
@@ -156,7 +156,7 @@ spec:
         apiVersion: clickhouse.altinity.com/v1
         kind: ClickHouseInstallation
         metadata:
-          name: langfuse-clickhouse
+          name: '{{KUBERO_APP_NAME}}-clickhouse'
         spec:
           configuration:
             users:
@@ -209,7 +209,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: langfuse-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -230,13 +230,13 @@ spec:
               memory: 256Mi
   envVars:
   - name: PGHOST
-    value: langfuse-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: CHHOST
-    value: clickhouse-langfuse-clickhouse
+    value: clickhouse-{{KUBERO_APP_NAME}}-clickhouse
   - name: S3HOST
     value: langfuse-minio
   - name: DATABASE_URL
-    value: postgresql://langfuse:langfuse@langfuse-postgresql-rw:5432/langfuse
+    value: postgresql://langfuse:langfuse@{{KUBERO_APP_NAME}}-postgresql-rw:5432/langfuse
   - name: NEXTAUTH_URL
     value: '{{KUBERO_APP_URL}}'
   - name: NEXTAUTH_SECRET
@@ -246,9 +246,9 @@ spec:
   - name: ENCRYPTION_KEY
     value: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
   - name: CLICKHOUSE_MIGRATION_URL
-    value: clickhouse://clickhouse-langfuse-clickhouse:9000
+    value: clickhouse://clickhouse-{{KUBERO_APP_NAME}}-clickhouse:9000
   - name: CLICKHOUSE_URL
-    value: http://clickhouse-langfuse-clickhouse:8123
+    value: http://clickhouse-{{KUBERO_APP_NAME}}-clickhouse:8123
   - name: CLICKHOUSE_USER
     value: admin
   - name: CLICKHOUSE_PASSWORD
@@ -256,7 +256,7 @@ spec:
   - name: CLICKHOUSE_CLUSTER_ENABLED
     value: 'false'
   - name: REDIS_HOST
-    value: rfr-langfuse-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
   - name: LANGFUSE_S3_EVENT_UPLOAD_BUCKET

@@ -37,7 +37,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /opt/kimai/var/data
-    name: kimai-data-volume
+    name: '{{KUBERO_APP_NAME}}-data-volume'
     size: 1Gi
     storageClass: shared
   - accessModes:

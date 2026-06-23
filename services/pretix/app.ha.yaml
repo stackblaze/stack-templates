@@ -50,7 +50,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: pretix-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -70,15 +70,15 @@ spec:
               database: pretix
               owner: pretix
               secret:
-                name: pretix-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: pretix-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: pretix-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -87,7 +87,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: pretix-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: pretix
@@ -102,7 +102,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: pretix-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -134,11 +134,11 @@ spec:
   - name: PRETIX_DATABASE_PASSWORD
     value: pretix
   - name: PRETIX_DATABASE_HOST
-    value: pretix-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: PRETIX_DATABASE_PORT
     value: '5432'
   - name: PRETIX_REDIS_LOCATION
-    value: redis://rfr-pretix-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: PRETIX_REDIS_SESSIONS
     value: 'true'
   - name: PRETIX_CELERY_BROKER
@@ -170,7 +170,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
-    name: pretix-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

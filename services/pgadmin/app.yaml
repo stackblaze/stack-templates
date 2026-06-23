@@ -40,7 +40,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/lib/pgadmin
-    name: pgadmin-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
     storageClass: slow
   cronjobs: []

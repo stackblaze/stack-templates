@@ -4,14 +4,14 @@ metadata:
   name: authentik
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source identity provider — SSO, OAuth2,
-      SAML, LDAP, MFA, and social login. Self-hosted alternative to Okta and Auth0.
+    kubero.dev/template.description: "Open-source identity provider \u2014 SSO, OAuth2,\
+      \ SAML, LDAP, MFA, and social login. Self-hosted alternative to Okta and Auth0."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/authentik/icon.png
-    kubero.dev/template.installation: Change AUTHENTIK_SECRET_KEY to a 50+ character
-      random string. The first admin account is bootstrapped via the /if/flow/initial-setup/
-      URL on first run. Configure OIDC/SAML applications in the Admin UI at /if/admin/.
-      The worker (background tasks) is bundled in this image when run as 'server'
-      — for production workloads deploy a second instance with command 'worker'.
+    kubero.dev/template.installation: "Change AUTHENTIK_SECRET_KEY to a 50+ character\
+      \ random string. The first admin account is bootstrapped via the /if/flow/initial-setup/\
+      \ URL on first run. Configure OIDC/SAML applications in the Admin UI at /if/admin/.\
+      \ The worker (background tasks) is bundled in this image when run as 'server'\
+      \ \u2014 for production workloads deploy a second instance with command 'worker'."
     kubero.dev/template.links: '["https://docs.goauthentik.io/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/goauthentik/authentik
@@ -34,7 +34,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: authentik-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -54,19 +54,19 @@ spec:
               database: authentik
               owner: authentik
               secret:
-                name: authentik-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO authentik
               - GRANT CREATE ON SCHEMA public TO authentik
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO authentik
           enableSuperuserAccess: true
           superuserSecret:
-            name: authentik-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: authentik-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -75,7 +75,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: authentik-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: authentik
@@ -90,7 +90,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: authentik-cache
+          name: '{{KUBERO_APP_NAME}}-cache'
         spec:
           version: '8.0'
           arch: replica
@@ -111,7 +111,7 @@ spec:
               memory: 256Mi
   envVars:
   - name: AUTHENTIK_POSTGRESQL__HOST
-    value: authentik-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: AUTHENTIK_POSTGRESQL__USER
     value: authentik
   - name: AUTHENTIK_POSTGRESQL__PASSWORD
@@ -119,7 +119,7 @@ spec:
   - name: AUTHENTIK_POSTGRESQL__NAME
     value: authentik
   - name: AUTHENTIK_REDIS__HOST
-    value: rfr-authentik-cache-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-cache-readwrite
   - name: AUTHENTIK_SECRET_KEY
     value: change-me-to-a-random-50-character-secret-key-value
   - name: AUTHENTIK_ERROR_REPORTING__ENABLED
@@ -129,7 +129,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /media
-    name: authentik-media
+    name: '{{KUBERO_APP_NAME}}-media'
     size: 2Gi
     storageClass: slow
   - accessModes:

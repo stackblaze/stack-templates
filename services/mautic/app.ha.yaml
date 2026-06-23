@@ -44,17 +44,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: mautic-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: mautic-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: mautic
           username: mautic
           passwordSecretKeyRef:
-            name: mautic-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -73,7 +73,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: mautic-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: mautic
@@ -81,7 +81,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: mautic-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: mautic
@@ -89,7 +89,7 @@ spec:
   - name: DOCKER_MAUTIC_ROLE
     value: mautic_web
   - name: MAUTIC_DB_HOST
-    value: mautic-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: MAUTIC_DB_PORT
     value: '3306'
   - name: MAUTIC_DB_DATABASE
@@ -111,21 +111,21 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/config
-    name: mautic-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/var/logs
-    name: mautic-logs
+    name: '{{KUBERO_APP_NAME}}-logs'
     size: 1Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/docroot/media
-    name: mautic-media
+    name: '{{KUBERO_APP_NAME}}-media'
     size: 3Gi
     storageClass: shared
   cronjobs: []

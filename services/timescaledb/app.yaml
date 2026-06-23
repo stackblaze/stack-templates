@@ -4,15 +4,15 @@ metadata:
   name: timescaledb
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Time-series database built on Postgres — hypertables,
-      compression, continuous aggregates, and full SQL compatibility for metrics and
-      events.
+    kubero.dev/template.description: "Time-series database built on Postgres \u2014\
+      \ hypertables, compression, continuous aggregates, and full SQL compatibility\
+      \ for metrics and events."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/timescaledb/icon.png
-    kubero.dev/template.installation: 'Change POSTGRES_PASSWORD. Connect via PostgreSQL
-      clients on port 5432 (note: this port is internal; use port-forwarding or the
-      kubero connection info to access it). Create hypertables with SELECT create_hypertable(''my_table'',
-      ''time''). TimescaleDB adds time-series superpowers to standard Postgres — all
-      standard psql tools and ORMs work unchanged.'
+    kubero.dev/template.installation: "Change POSTGRES_PASSWORD. Connect via PostgreSQL\
+      \ clients on port 5432 (note: this port is internal; use port-forwarding or\
+      \ the kubero connection info to access it). Create hypertables with SELECT create_hypertable('my_table',\
+      \ 'time'). TimescaleDB adds time-series superpowers to standard Postgres \u2014\
+      \ all standard psql tools and ORMs work unchanged."
     kubero.dev/template.links: '["https://docs.timescale.com/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/timescale/timescaledb
@@ -41,7 +41,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/lib/postgresql/data
-    name: timescaledb-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 20Gi
     storageClass: slow
   cronjobs: []

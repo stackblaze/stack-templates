@@ -50,7 +50,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: temporal-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -70,7 +70,7 @@ spec:
               database: temporal
               owner: temporal
               secret:
-                name: temporal-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO temporal
               - GRANT CREATE ON SCHEMA public TO temporal
@@ -80,12 +80,12 @@ spec:
               - ALTER ROLE temporal CREATEDB
           enableSuperuserAccess: true
           superuserSecret:
-            name: temporal-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: temporal-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -94,7 +94,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: temporal-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: temporal
@@ -105,7 +105,7 @@ spec:
   - name: DB_PORT
     value: '5432'
   - name: POSTGRES_SEEDS
-    value: temporal-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: POSTGRES_USER
     value: temporal
   - name: POSTGRES_PWD

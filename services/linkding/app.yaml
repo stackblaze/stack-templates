@@ -29,7 +29,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: linkding-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -49,19 +49,19 @@ spec:
               database: linkding
               owner: linkding
               secret:
-                name: linkding-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO linkding
               - GRANT CREATE ON SCHEMA public TO linkding
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO linkding
           enableSuperuserAccess: true
           superuserSecret:
-            name: linkding-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: linkding-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -70,7 +70,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: linkding-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: linkding
@@ -93,7 +93,7 @@ spec:
   - name: LD_DB_ENGINE
     value: postgres
   - name: LD_DB_HOST
-    value: linkding-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: LD_DB_PORT
     value: '5432'
   - name: LD_DB_DATABASE

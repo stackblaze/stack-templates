@@ -4,9 +4,9 @@ metadata:
   name: anythingllm
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: All-in-one private AI workspace — RAG, multi-user
-      chat, web browsing, custom agents, and 100+ LLM integrations with a clean browser
-      UI.
+    kubero.dev/template.description: "All-in-one private AI workspace \u2014 RAG,\
+      \ multi-user chat, web browsing, custom agents, and 100+ LLM integrations with\
+      \ a clean browser UI."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/icon.png
     kubero.dev/template.installation: Change JWT_SECRET, SIG_KEY, and SIG_SALT to
       random strings before use. On first load, set up the admin account. Connect
@@ -35,7 +35,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: anythingllm-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -55,19 +55,19 @@ spec:
               database: anythingllm
               owner: anythingllm
               secret:
-                name: anythingllm-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO anythingllm
               - GRANT CREATE ON SCHEMA public TO anythingllm
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO anythingllm
           enableSuperuserAccess: true
           superuserSecret:
-            name: anythingllm-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: anythingllm-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -76,7 +76,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: anythingllm-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: anythingllm
@@ -95,13 +95,13 @@ spec:
   - name: DISABLE_TELEMETRY
     value: true
   - name: DATABASE_URL
-    value: postgresql://anythingllm:anythingllm@anythingllm-postgresql-rw:5432/anythingllm
+    value: postgresql://anythingllm:anythingllm@{{KUBERO_APP_NAME}}-postgresql-rw:5432/anythingllm
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /app/server/storage
-    name: anythingllm-storage
+    name: '{{KUBERO_APP_NAME}}-storage'
     size: 10Gi
     storageClass: slow
   cronjobs: []

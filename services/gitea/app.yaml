@@ -27,7 +27,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: gitea-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -47,19 +47,19 @@ spec:
               database: gitea
               owner: gitea
               secret:
-                name: gitea-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO gitea
               - GRANT CREATE ON SCHEMA public TO gitea
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO gitea
           enableSuperuserAccess: true
           superuserSecret:
-            name: gitea-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: gitea-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -68,7 +68,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: gitea-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: gitea
@@ -79,7 +79,7 @@ spec:
   - name: GITEA__database__DB_TYPE
     value: postgres
   - name: GITEA__database__HOST
-    value: gitea-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: GITEA__database__PORT
     value: '5432'
   - name: GITEA__database__NAME
@@ -93,7 +93,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /data
-    name: gitea-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 10Gi
     storageClass: slow
   image:

@@ -26,7 +26,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: gotify-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -46,19 +46,19 @@ spec:
               database: gotify
               owner: gotify
               secret:
-                name: gotify-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO gotify
               - GRANT CREATE ON SCHEMA public TO gotify
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO gotify
           enableSuperuserAccess: true
           superuserSecret:
-            name: gotify-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: gotify-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: gotify-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: gotify
@@ -86,7 +86,7 @@ spec:
   - name: GOTIFY_DATABASE_DIALECT
     value: postgres
   - name: GOTIFY_DATABASE_HOST
-    value: gotify-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: GOTIFY_DATABASE_PORT
     value: '5432'
   - name: GOTIFY_DATABASE_USER

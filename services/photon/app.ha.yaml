@@ -50,7 +50,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /photon/data
-    name: photon-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
     storageClass: shared
   cronjobs: []

@@ -4,9 +4,9 @@ metadata:
   name: open-webui
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: ChatGPT-style web interface for Ollama and any
-      OpenAI-compatible API — supports RAG, web search, image generation, and multi-model
-      chat.
+    kubero.dev/template.description: "ChatGPT-style web interface for Ollama and any\
+      \ OpenAI-compatible API \u2014 supports RAG, web search, image generation, and\
+      \ multi-model chat."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/open-webui/icon.png
     kubero.dev/template.installation: Set OLLAMA_BASE_URL to your Ollama instance
       (e.g. http://ollama:11434) OR set OPENAI_API_KEY for cloud LLMs. WEBUI_SECRET_KEY
@@ -35,7 +35,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: open-webui-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -55,19 +55,19 @@ spec:
               database: openwebui
               owner: openwebui
               secret:
-                name: open-webui-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO openwebui
               - GRANT CREATE ON SCHEMA public TO openwebui
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO openwebui
           enableSuperuserAccess: true
           superuserSecret:
-            name: open-webui-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: open-webui-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -76,14 +76,14 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: open-webui-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: openwebui
           password: openwebui
   envVars:
   - name: DATABASE_URL
-    value: postgresql://openwebui:openwebui@open-webui-postgresql-rw:5432/openwebui
+    value: postgresql://openwebui:openwebui@{{KUBERO_APP_NAME}}-postgresql-rw:5432/openwebui
   - name: WEBUI_SECRET_KEY
     value: change-me-to-a-random-32char-secret
   - name: WEBUI_URL
@@ -101,7 +101,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/backend/data
-    name: open-webui-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

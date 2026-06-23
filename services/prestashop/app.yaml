@@ -42,17 +42,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: prestashop-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: prestashop-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: prestashop
           username: prestashop
           passwordSecretKeyRef:
-            name: prestashop-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -69,7 +69,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: prestashop-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: prestashop
@@ -77,13 +77,13 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: prestashop-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: prestashop
   envVars:
   - name: DB_SERVER
-    value: prestashop-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: DB_PORT
     value: '3306'
   - name: DB_NAME
@@ -121,7 +121,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html
-    name: prestashop-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: slow
   cronjobs: []

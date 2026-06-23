@@ -8,19 +8,20 @@ metadata:
       for sales, marketing and service teams: accounts, contacts, leads, opportunities,
       cases and workflows.'
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/suitecrm/icon.png
-    kubero.dev/template.installation: Runs the Bitnami Legacy SuiteCRM image mirrored
-      to GHCR (bitnamilegacy/suitecrm — Bitnami removed free images from Docker Hub).
-      SuiteCRM only supports MariaDB/MySQL (no PostgreSQL) — this template ships the
-      bundled mariadb addon (default db/user/password 'suitecrm', rotate before production).
-      On first boot the admin account is provisioned from SUITECRM_USERNAME / SUITECRM_PASSWORD
-      / SUITECRM_EMAIL — rotate SUITECRM_PASSWORD (placeholder value) and the mariadb
-      password to match SUITECRM_DATABASE_PASSWORD. The valkey addon is wired as the
-      optional Redis cache/session store via SUITECRM_REDIS_HOST (Valkey is Redis-compatible
-      and password-less here); remove it if not wanted. SUITECRM_HOST is set from
-      the app URL token so generated links resolve. Persistent app data (uploads,
-      custom modules, config) lives at /bitnami/suitecrm — back this up. For outbound
-      email configure SMTP from the SuiteCRM admin UI after install. Scheduler/cron
-      jobs should be run via an external CronJob hitting cron.php.
+    kubero.dev/template.installation: "Runs the Bitnami Legacy SuiteCRM image mirrored\
+      \ to GHCR (bitnamilegacy/suitecrm \u2014 Bitnami removed free images from Docker\
+      \ Hub). SuiteCRM only supports MariaDB/MySQL (no PostgreSQL) \u2014 this template\
+      \ ships the bundled mariadb addon (default db/user/password 'suitecrm', rotate\
+      \ before production). On first boot the admin account is provisioned from SUITECRM_USERNAME\
+      \ / SUITECRM_PASSWORD / SUITECRM_EMAIL \u2014 rotate SUITECRM_PASSWORD (placeholder\
+      \ value) and the mariadb password to match SUITECRM_DATABASE_PASSWORD. The valkey\
+      \ addon is wired as the optional Redis cache/session store via SUITECRM_REDIS_HOST\
+      \ (Valkey is Redis-compatible and password-less here); remove it if not wanted.\
+      \ SUITECRM_HOST is set from the app URL token so generated links resolve. Persistent\
+      \ app data (uploads, custom modules, config) lives at /bitnami/suitecrm \u2014\
+      \ back this up. For outbound email configure SMTP from the SuiteCRM admin UI\
+      \ after install. Scheduler/cron jobs should be run via an external CronJob hitting\
+      \ cron.php."
     kubero.dev/template.links: '["https://docs.suitecrm.com/admin/installation-guide/",
       "https://techdocs.broadcom.com/us/en/vmware-tanzu/bitnami-secure-images/bitnami-secure-images/services/bsi-app-doc/apps-containers-suitecrm-index.html"]'
     kubero.dev/template.screenshots: '[]'
@@ -44,17 +45,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: suitecrm-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: suitecrm-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: suitecrm
           username: suitecrm
           passwordSecretKeyRef:
-            name: suitecrm-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -73,7 +74,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: suitecrm-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: suitecrm
@@ -81,7 +82,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: suitecrm-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: suitecrm
@@ -95,7 +96,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: suitecrm-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -119,7 +120,7 @@ spec:
             quorum: 2
   envVars:
   - name: SUITECRM_DATABASE_HOST
-    value: suitecrm-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: SUITECRM_DATABASE_PORT_NUMBER
     value: '3306'
   - name: SUITECRM_DATABASE_NAME
@@ -139,7 +140,7 @@ spec:
   - name: SUITECRM_ENABLE_REDIS
     value: 'yes'
   - name: SUITECRM_REDIS_HOST
-    value: rfr-suitecrm-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: SUITECRM_REDIS_PORT_NUMBER
     value: '6379'
   extraVolumes:
@@ -147,7 +148,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /bitnami/suitecrm
-    name: suitecrm-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

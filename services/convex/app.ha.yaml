@@ -51,7 +51,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: convex-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -71,15 +71,15 @@ spec:
               database: convex
               owner: convex
               secret:
-                name: convex-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: convex-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: convex-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -88,7 +88,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: convex-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: convex
@@ -103,7 +103,7 @@ spec:
   - name: CONVEX_SITE_ORIGIN
     value: '{{KUBERO_APP_URL}}'
   - name: POSTGRES_URL
-    value: postgresql://convex:convex@convex-postgresql-rw:5432?sslmode=disable
+    value: postgresql://convex:convex@{{KUBERO_APP_NAME}}-postgresql-rw:5432?sslmode=disable
   - name: DO_NOT_REQUIRE_SSL
     value: 'true'
   - name: DISABLE_BEACON
@@ -115,7 +115,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /convex/data
-    name: convex-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

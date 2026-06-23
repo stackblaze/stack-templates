@@ -25,7 +25,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: shiori-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -45,19 +45,19 @@ spec:
               database: shiori
               owner: shiori
               secret:
-                name: shiori-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO shiori
               - GRANT CREATE ON SCHEMA public TO shiori
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO shiori
           enableSuperuserAccess: true
           superuserSecret:
-            name: shiori-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: shiori-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -66,7 +66,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: shiori-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: shiori
@@ -77,7 +77,7 @@ spec:
   - name: SHIORI_DIR
     value: /srv/shiori
   - name: SHIORI_DATABASE_URL
-    value: postgres://shiori:shiori@shiori-postgresql-rw:5432/shiori?sslmode=disable
+    value: postgres://shiori:shiori@{{KUBERO_APP_NAME}}-postgresql-rw:5432/shiori?sslmode=disable
   - name: SHIORI_HTTP_SECRET_KEY
     value: change-me-to-a-random-string
   extraVolumes:
@@ -85,7 +85,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /srv/shiori
-    name: shiori-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   image:

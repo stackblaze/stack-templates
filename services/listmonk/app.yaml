@@ -7,11 +7,11 @@ metadata:
     kubero.dev/template.description: Self-hosted high-performance newsletter and mailing
       list manager with analytics, templating, and multi-list support. Mailchimp alternative.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/icon.png
-    kubero.dev/template.installation: Change LISTMONK_app__admin_password. On first
-      boot, listmonk runs database migrations automatically. Log in at /admin with
-      admin/<password>. Configure an SMTP server in Settings > SMTP to send campaigns.
-      Import subscribers via CSV or the API. Listmonk is extremely efficient — a single
-      instance can send millions of emails per hour with a good SMTP provider.
+    kubero.dev/template.installation: "Change LISTMONK_app__admin_password. On first\
+      \ boot, listmonk runs database migrations automatically. Log in at /admin with\
+      \ admin/<password>. Configure an SMTP server in Settings > SMTP to send campaigns.\
+      \ Import subscribers via CSV or the API. Listmonk is extremely efficient \u2014\
+      \ a single instance can send millions of emails per hour with a good SMTP provider."
     kubero.dev/template.links: '["https://listmonk.app/docs/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/knadh/listmonk
@@ -34,7 +34,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: listmonk-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -54,19 +54,19 @@ spec:
               database: listmonk
               owner: listmonk
               secret:
-                name: listmonk-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO listmonk
               - GRANT CREATE ON SCHEMA public TO listmonk
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO listmonk
           enableSuperuserAccess: true
           superuserSecret:
-            name: listmonk-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: listmonk-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -75,14 +75,14 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: listmonk-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: listmonk
           password: listmonk
   envVars:
   - name: LISTMONK_db__host
-    value: listmonk-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: LISTMONK_db__port
     value: 5432
   - name: LISTMONK_db__user
@@ -104,7 +104,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /listmonk/uploads
-    name: listmonk-uploads
+    name: '{{KUBERO_APP_NAME}}-uploads'
     size: 5Gi
     storageClass: slow
   cronjobs: []

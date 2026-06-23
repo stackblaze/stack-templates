@@ -42,17 +42,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: unibee-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: unibee-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: unibee
           username: unibee
           passwordSecretKeyRef:
-            name: unibee-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -69,7 +69,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: unibee-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: unibee
@@ -77,7 +77,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: unibee-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: unibee
@@ -91,7 +91,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: unibee-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -120,11 +120,11 @@ spec:
   - name: UNIBEE_API_URL
     value: '{{KUBERO_APP_URL}}/api'
   - name: DATABASE_LINK
-    value: mysql:unibee:unibee@tcp(unibee-mysql:3306)/unibee?loc=UTC&parseTime=false
+    value: mysql:unibee:unibee@tcp({{KUBERO_APP_NAME}}-mysql:3306)/unibee?loc=UTC&parseTime=false
   - name: DB_HOST
-    value: unibee-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: REDIS_ADDRESS
-    value: rfr-unibee-valkey-readwrite:6379
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: REDIS_PASSWORD
     value: ''
   - name: UNIBEE_LICENSE

@@ -72,7 +72,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: posthog-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -92,19 +92,19 @@ spec:
               database: posthog
               owner: posthog
               secret:
-                name: posthog-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO posthog
               - GRANT CREATE ON SCHEMA public TO posthog
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO posthog
           enableSuperuserAccess: true
           superuserSecret:
-            name: posthog-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: posthog-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -113,7 +113,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: posthog-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: posthog
@@ -128,7 +128,7 @@ spec:
         apiVersion: clickhouse.altinity.com/v1
         kind: ClickHouseInstallation
         metadata:
-          name: posthog-clickhouse
+          name: '{{KUBERO_APP_NAME}}-clickhouse'
         spec:
           configuration:
             zookeeper:
@@ -226,7 +226,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: posthog-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -249,7 +249,7 @@ spec:
         apiVersion: v1
         kind: Service
         metadata:
-          name: posthog-kafka
+          name: '{{KUBERO_APP_NAME}}-kafka'
         spec:
           type: ClusterIP
           selector:
@@ -262,7 +262,7 @@ spec:
         apiVersion: apps/v1
         kind: Deployment
         metadata:
-          name: posthog-kafka
+          name: '{{KUBERO_APP_NAME}}-kafka'
         spec:
           replicas: 1
           strategy:
@@ -315,7 +315,7 @@ spec:
                     memory: 384Mi
   envVars:
   - name: DATABASE_URL
-    value: postgresql://posthog:posthog@posthog-postgresql-rw:5432/posthog
+    value: postgresql://posthog:posthog@{{KUBERO_APP_NAME}}-postgresql-rw:5432/posthog
   - name: POSTHOG_DB_NAME
     value: posthog
   - name: POSTHOG_DB_USER
@@ -323,11 +323,11 @@ spec:
   - name: POSTHOG_DB_PASSWORD
     value: posthog
   - name: POSTHOG_POSTGRES_HOST
-    value: posthog-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: POSTHOG_POSTGRES_PORT
     value: '5432'
   - name: CLICKHOUSE_HOST
-    value: clickhouse-posthog-clickhouse
+    value: clickhouse-{{KUBERO_APP_NAME}}-clickhouse
   - name: CLICKHOUSE_DATABASE
     value: posthog
   - name: CLICKHOUSE_USER
@@ -339,11 +339,11 @@ spec:
   - name: CLICKHOUSE_VERIFY
     value: 'false'
   - name: REDIS_URL
-    value: redis://rfr-posthog-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: KAFKA_HOSTS
-    value: posthog-kafka:9092
+    value: '{{KUBERO_APP_NAME}}-kafka:9092'
   - name: KAFKA_URL
-    value: kafka://posthog-kafka:9092
+    value: kafka://{{KUBERO_APP_NAME}}-kafka:9092
   - name: SITE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: SECRET_KEY

@@ -7,12 +7,12 @@ metadata:
     kubero.dev/template.description: Open-source PHP e-commerce platform with a flexible
       catalog, checkout, promotions and a powerful admin for building online stores.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/magento/icon.png
-    kubero.dev/template.installation: shinsenter/magento image (Bitnami Magento was
-      removed from Docker Hub). MariaDB Galera and OpenSearch 1.3 (3-node) are provisioned
-      as operator add-ons. On first boot the container bootstraps Magento via composer
-      then runs setup:install — rotate ADMIN_PASSWORD and the MariaDB password before
-      exposing publicly. Admin panel lives at {{KUBERO_APP_URL}}/admin. Install is
-      slow (10–15 min) and memory-heavy; the web pod requests 2Gi RAM.
+    kubero.dev/template.installation: "shinsenter/magento image (Bitnami Magento was\
+      \ removed from Docker Hub). MariaDB Galera and OpenSearch 1.3 (3-node) are provisioned\
+      \ as operator add-ons. On first boot the container bootstraps Magento via composer\
+      \ then runs setup:install \u2014 rotate ADMIN_PASSWORD and the MariaDB password\
+      \ before exposing publicly. Admin panel lives at {{KUBERO_APP_URL}}/admin. Install\
+      \ is slow (10\u201315 min) and memory-heavy; the web pod requests 2Gi RAM."
     kubero.dev/template.links: '["https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/overview.html",
       "https://hub.docker.com/r/shinsenter/magento"]'
     kubero.dev/template.screenshots: '[]'
@@ -36,17 +36,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: magento-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: magento-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: magento
           username: magento
           passwordSecretKeyRef:
-            name: magento-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -65,7 +65,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: magento-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: magento
@@ -73,7 +73,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: magento-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: magento
@@ -87,11 +87,11 @@ spec:
         apiVersion: application.kubero.dev/v1alpha1
         kind: KuberoOpenSearch
         metadata:
-          name: magento-elasticsearch
+          name: '{{KUBERO_APP_NAME}}-elasticsearch'
         spec:
           opensearch:
-            clusterName: magento-elasticsearch
-            masterService: magento-elasticsearch
+            clusterName: '{{KUBERO_APP_NAME}}-elasticsearch'
+            masterService: '{{KUBERO_APP_NAME}}-elasticsearch'
             image:
               tag: 1.3.20
             singleNode: false
@@ -139,15 +139,15 @@ spec:
   - name: ADMIN_LASTNAME
     value: Admin
   - name: DB_HOST
-    value: magento-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: ES_HOST
-    value: magento-elasticsearch
+    value: '{{KUBERO_APP_NAME}}-elasticsearch'
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html
-    name: magento-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

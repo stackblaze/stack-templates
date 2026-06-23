@@ -3,9 +3,9 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Your friendliest open source all-in-one automation
-      tool ✨ Workflow automation tool 100+ integration / Enterprise automation tool
-      / Zapier Alternative
+    kubero.dev/template.description: "Your friendliest open source all-in-one automation\
+      \ tool \u2728 Workflow automation tool 100+ integration / Enterprise automation\
+      \ tool / Zapier Alternative"
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/activepieces/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
@@ -29,7 +29,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: activepieces-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -49,17 +49,17 @@ spec:
               database: postgresql
               owner: activepieces
               secret:
-                name: activepieces-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - CREATE EXTENSION IF NOT EXISTS vector;
           enableSuperuserAccess: true
           superuserSecret:
-            name: activepieces-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: activepieces-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -68,7 +68,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: activepieces-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: activepieces
@@ -83,7 +83,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: activepieces-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -127,7 +127,7 @@ spec:
   - name: AP_TRIGGER_DEFAULT_POLL_INTERVAL
     value: '5'
   - name: AP_REDIS_HOST
-    value: rfr-activepieces-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: AP_REDIS_PORT
     value: '6379'
   - name: AP_SANDBOX_RUN_TIME_SECONDS
@@ -137,7 +137,7 @@ spec:
   - name: AP_TEMPLATES_SOURCE_URL
     value: https://cloud.activepieces.com/api/v1/flow-templates
   - name: AP_POSTGRES_HOST
-    value: activepieces-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: AP_POSTGRES_PORT
     value: '5432'
   - name: AP_REDIS_PASSWORD

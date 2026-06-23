@@ -40,17 +40,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: wordpress-multisite-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: wordpress-multisite-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: wordpress-multisite
           username: wordpress-multisite
           passwordSecretKeyRef:
-            name: wordpress-multisite-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -69,7 +69,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: wordpress-multisite-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: wordpress-multisite
@@ -77,13 +77,13 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: wordpress-multisite-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: wordpress-multisite
   envVars:
   - name: WORDPRESS_DB_HOST
-    value: wordpress-multisite-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: WORDPRESS_DB_NAME
     value: wordpress-multisite
   - name: WORDPRESS_DB_USER
@@ -116,7 +116,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/wp-content
-    name: wordpress-multisite-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

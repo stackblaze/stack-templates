@@ -28,9 +28,9 @@ spec:
     value: random string that is unique to every install - just type random characters
       here!
   - name: DATABASE_URL
-    value: postgresql://postiz:postiz@postiz-postgresql-rw:5432/postiz
+    value: postgresql://postiz:postiz@{{KUBERO_APP_NAME}}-postgresql-rw:5432/postiz
   - name: REDIS_URL
-    value: redis://rfr-postiz-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: IS_GENERAL
     value: 'true'
   - name: STORAGE_PROVIDER
@@ -55,7 +55,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /config
-    name: postiz-config-volume
+    name: '{{KUBERO_APP_NAME}}-config-volume'
     size: 1Gi
     storageClass: shared
   cronjobs: []
@@ -70,7 +70,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: postiz-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -90,19 +90,19 @@ spec:
               database: postiz
               owner: postiz
               secret:
-                name: postiz-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO postiz
               - GRANT CREATE ON SCHEMA public TO postiz
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO postiz
           enableSuperuserAccess: true
           superuserSecret:
-            name: postiz-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: postiz-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -111,7 +111,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: postiz-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: postiz
@@ -126,7 +126,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: postiz-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover

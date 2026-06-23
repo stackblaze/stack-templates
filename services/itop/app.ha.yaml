@@ -40,17 +40,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: itop-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: itop-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: itop
           username: itop
           passwordSecretKeyRef:
-            name: itop-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -69,7 +69,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: itop-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: itop
@@ -77,7 +77,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: itop-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: itop
@@ -85,7 +85,7 @@ spec:
   - name: TZ
     value: UTC
   - name: MYSQL_HOST
-    value: itop-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: MYSQL_PASS
     value: itop
   extraVolumes:
@@ -93,7 +93,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/data
-    name: itop-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 3Gi
     storageClass: shared
   - accessModes:

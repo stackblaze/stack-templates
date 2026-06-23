@@ -49,7 +49,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: lago-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -69,7 +69,7 @@ spec:
               database: lago
               owner: lago
               secret:
-                name: lago-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
               - GRANT ALL ON SCHEMA public TO lago
@@ -77,12 +77,12 @@ spec:
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO lago
           enableSuperuserAccess: true
           superuserSecret:
-            name: lago-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: lago-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -91,7 +91,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: lago-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: lago
@@ -106,7 +106,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: lago-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -139,9 +139,9 @@ spec:
   - name: LAGO_ORG_NAME
     value: Lago QA
   - name: DATABASE_URL
-    value: postgresql://lago:lago@lago-postgresql-rw:5432/lago
+    value: postgresql://lago:lago@{{KUBERO_APP_NAME}}-postgresql-rw:5432/lago
   - name: POSTGRES_HOST
-    value: lago-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: POSTGRES_PORT
     value: '5432'
   - name: POSTGRES_DB
@@ -151,9 +151,9 @@ spec:
   - name: POSTGRES_PASSWORD
     value: lago
   - name: REDIS_URL
-    value: redis://rfr-lago-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: REDIS_HOST
-    value: rfr-lago-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
   - name: SECRET_KEY_BASE
@@ -173,7 +173,7 @@ spec:
   - name: LAGO_PDF_URL
     value: http://lago-pdf:3000
   - name: LAGO_REDIS_CACHE_URL
-    value: redis://rfr-lago-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: LAGO_SIDEKIQ_WEB
     value: 'false'
   - name: LAGO_DISABLE_SEGMENT

@@ -7,22 +7,22 @@ metadata:
     kubero.dev/template.description: Open-source BI platform that turns your dbt project
       into a self-serve analytics tool with explores, charts, and dashboards.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lightdash/icon.png
-    kubero.dev/template.installation: 'This template runs the PRIMARY Lightdash web/api
-      server (lightdash/lightdash, port 8080), which on boot also runs its own DB
-      migrations against the bundled Postgres add-on. To be fully functional you MUST
-      ALSO deploy a companion HEADLESS BROWSER deployment from image `ghcr.io/browserless/chromium:latest`
-      (formerly browserless/chrome), exposing port 3000 on an in-cluster service named
-      to match HEADLESS_BROWSER_HOST below; it renders charts/dashboards for scheduled
-      deliveries, image downloads, and PDF exports. Lightdash also needs S3-COMPATIBLE
-      OBJECT STORAGE for results/file caching and scheduled-delivery artifacts — the
-      bundled RustFS add-on supplies S3_ENDPOINT/S3_BUCKET/S3_REGION/S3_ACCESS_KEY/S3_SECRET_KEY
-      (rotate the RustFS credentials before exposing; point at any other S3 bucket
-      instead if preferred). ROTATE before exposing: LIGHTDASH_SECRET (`openssl rand
-      -base64 32`; do NOT change it after data exists or saved warehouse credentials
-      become undecryptable) and the Postgres add-on password (keep PGPASSWORD in sync).
-      Set SITE_URL via the {{KUBERO_APP_URL}} token (already wired). The first user
-      to register becomes the admin/owner. Optional outbound email needs the EMAIL_SMTP_*
-      env vars (not provisioned).'
+    kubero.dev/template.installation: "This template runs the PRIMARY Lightdash web/api\
+      \ server (lightdash/lightdash, port 8080), which on boot also runs its own DB\
+      \ migrations against the bundled Postgres add-on. To be fully functional you\
+      \ MUST ALSO deploy a companion HEADLESS BROWSER deployment from image `ghcr.io/browserless/chromium:latest`\
+      \ (formerly browserless/chrome), exposing port 3000 on an in-cluster service\
+      \ named to match HEADLESS_BROWSER_HOST below; it renders charts/dashboards for\
+      \ scheduled deliveries, image downloads, and PDF exports. Lightdash also needs\
+      \ S3-COMPATIBLE OBJECT STORAGE for results/file caching and scheduled-delivery\
+      \ artifacts \u2014 the bundled RustFS add-on supplies S3_ENDPOINT/S3_BUCKET/S3_REGION/S3_ACCESS_KEY/S3_SECRET_KEY\
+      \ (rotate the RustFS credentials before exposing; point at any other S3 bucket\
+      \ instead if preferred). ROTATE before exposing: LIGHTDASH_SECRET (`openssl\
+      \ rand -base64 32`; do NOT change it after data exists or saved warehouse credentials\
+      \ become undecryptable) and the Postgres add-on password (keep PGPASSWORD in\
+      \ sync). Set SITE_URL via the {{KUBERO_APP_URL}} token (already wired). The\
+      \ first user to register becomes the admin/owner. Optional outbound email needs\
+      \ the EMAIL_SMTP_* env vars (not provisioned)."
     kubero.dev/template.links: '["https://docs.lightdash.com/self-host/self-host-lightdash",
       "https://docs.lightdash.com/self-host/customize-deployment/environment-variables"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/lightdash/lightdash/main/static/screenshots/lightdash-dashboard.png"]'
@@ -46,7 +46,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: lightdash-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -66,19 +66,19 @@ spec:
               database: lightdash
               owner: lightdash
               secret:
-                name: lightdash-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO lightdash
               - GRANT CREATE ON SCHEMA public TO lightdash
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO lightdash
           enableSuperuserAccess: true
           superuserSecret:
-            name: lightdash-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: lightdash-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -87,7 +87,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: lightdash-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: lightdash
@@ -130,7 +130,7 @@ spec:
           secretkey: changeme
   envVars:
   - name: PGHOST
-    value: lightdash-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: PGPORT
     value: '5432'
   - name: PGUSER

@@ -26,7 +26,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/cache/ntfy
-    name: ntfy-cache-volume
+    name: '{{KUBERO_APP_NAME}}-cache-volume'
     size: 500Mi
     storageClass: shared
   image:

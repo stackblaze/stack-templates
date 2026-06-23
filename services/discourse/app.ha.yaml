@@ -4,12 +4,12 @@ metadata:
   name: discourse
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source community discussion platform — modern
-      forum software.
+    kubero.dev/template.description: "Open-source community discussion platform \u2014\
+      \ modern forum software."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/icon.png
-    kubero.dev/template.installation: Set DISCOURSE_HOST to your public hostname (without
-      protocol) before first boot. Default admin password is configured via DISCOURSE_PASSWORD
-      — change it after install.
+    kubero.dev/template.installation: "Set DISCOURSE_HOST to your public hostname\
+      \ (without protocol) before first boot. Default admin password is configured\
+      \ via DISCOURSE_PASSWORD \u2014 change it after install."
     kubero.dev/template.links: '["https://meta.discourse.org/"]'
     kubero.dev/template.screenshots: '["https://www.discourse.org/a/images/discourse-screen.jpg"]'
     kubero.dev/template.source: https://github.com/discourse/discourse
@@ -32,7 +32,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: discourse-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -52,19 +52,19 @@ spec:
               database: bitnami_discourse
               owner: bn_discourse
               secret:
-                name: discourse-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO bn_discourse
               - GRANT CREATE ON SCHEMA public TO bn_discourse
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO bn_discourse
           enableSuperuserAccess: true
           superuserSecret:
-            name: discourse-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: discourse-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -73,7 +73,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: discourse-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: bn_discourse
@@ -88,7 +88,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: discourse-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -128,7 +128,7 @@ spec:
   - name: DISCOURSE_SMTP_PROTOCOL
     value: tls
   - name: DISCOURSE_DATABASE_HOST
-    value: discourse-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DISCOURSE_DATABASE_PORT_NUMBER
     value: '5432'
   - name: DISCOURSE_DATABASE_USER
@@ -138,7 +138,7 @@ spec:
   - name: DISCOURSE_DATABASE_NAME
     value: bitnami_discourse
   - name: DISCOURSE_REDIS_HOST
-    value: rfr-discourse-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: DISCOURSE_REDIS_PORT_NUMBER
     value: '6379'
   - name: ALLOW_EMPTY_PASSWORD
@@ -148,7 +148,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /bitnami/discourse
-    name: discourse-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

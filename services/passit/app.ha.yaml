@@ -41,7 +41,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: passit-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -61,15 +61,15 @@ spec:
               database: passit
               owner: passit
               secret:
-                name: passit-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: passit-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: passit-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -78,7 +78,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: passit-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: passit
@@ -93,7 +93,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: passit-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -119,9 +119,9 @@ spec:
   - name: SECRET_KEY
     value: replace-with-openssl-rand-hex-32
   - name: DATABASE_URL
-    value: postgres://passit:passit@passit-postgresql-rw:5432/passit
+    value: postgres://passit:passit@{{KUBERO_APP_NAME}}-postgresql-rw:5432/passit
   - name: REDIS_URL
-    value: redis://rfr-passit-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: ALLOWED_HOSTS
     value: '*'
   - name: SITE_URL

@@ -42,7 +42,7 @@ spec:
         apiVersion: documentdb.io/preview
         kind: DocumentDB
         metadata:
-          name: trudesk-documentdb
+          name: '{{KUBERO_APP_NAME}}-documentdb'
         spec:
           nodeCount: 3
           instancesPerNode: 1
@@ -70,13 +70,13 @@ spec:
   - name: USE_XFORWARDIP
     value: 'true'
   - name: TD_MONGODB_URI
-    value: mongodb://mongoadmin:trudesk@documentdb-service-trudesk-documentdb:10260/trudesk?authSource=admin&directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false
+    value: mongodb://mongoadmin:trudesk@documentdb-service-{{KUBERO_APP_NAME}}-documentdb:10260/trudesk?authSource=admin&directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /usr/src/trudesk/public/uploads
-    name: trudesk-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []

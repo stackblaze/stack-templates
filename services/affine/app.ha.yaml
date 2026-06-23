@@ -28,7 +28,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: affine-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -48,15 +48,15 @@ spec:
               database: postgresql
               owner: affine
               secret:
-                name: affine-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: affine-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: affine-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -65,7 +65,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: affine-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: affine
@@ -80,7 +80,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: affine-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -108,9 +108,9 @@ spec:
   - name: NODE_OPTIONS
     value: --import=./scripts/register.js
   - name: REDIS_SERVER_HOST
-    value: rfr-affine-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: DATABASE_URL
-    value: postgres://affine:afffine@affine-postgresql-rw:5432/postgresql
+    value: postgres://affine:afffine@{{KUBERO_APP_NAME}}-postgresql-rw:5432/postgresql
   - name: NODE_ENV
     value: production
   - name: AFFINE_ADMIN_EMAIL

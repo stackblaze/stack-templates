@@ -4,15 +4,16 @@ metadata:
   name: pocketbase
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source Firebase alternative — realtime subscriptions,
-      auth, file storage, and admin UI, all in a single Go binary backed by SQLite.
+    kubero.dev/template.description: "Open-source Firebase alternative \u2014 realtime\
+      \ subscriptions, auth, file storage, and admin UI, all in a single Go binary\
+      \ backed by SQLite."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pocketbase/icon.png
-    kubero.dev/template.installation: PocketBase runs as a single binary with SQLite
-      — no external database needed. Access the Admin UI at /_/ and create the admin
-      account on first visit. Define collections (tables), set up auth providers,
-      and configure file storage rules in the Admin UI. Use the JS/TypeScript SDK
-      or REST API to build your frontend. All data is stored in the pocketbase-data
-      volume.
+    kubero.dev/template.installation: "PocketBase runs as a single binary with SQLite\
+      \ \u2014 no external database needed. Access the Admin UI at /_/ and create\
+      \ the admin account on first visit. Define collections (tables), set up auth\
+      \ providers, and configure file storage rules in the Admin UI. Use the JS/TypeScript\
+      \ SDK or REST API to build your frontend. All data is stored in the pocketbase-data\
+      \ volume."
     kubero.dev/template.links: '["https://pocketbase.io/docs/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/pocketbase/pocketbase
@@ -31,7 +32,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /pb/pb_data
-    name: pocketbase-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

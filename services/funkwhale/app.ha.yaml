@@ -60,7 +60,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: funkwhale-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -84,15 +84,15 @@ spec:
               - GRANT CREATE ON SCHEMA public TO funkwhale
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO funkwhale
               secret:
-                name: funkwhale-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: funkwhale-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: funkwhale-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -101,7 +101,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: funkwhale-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: funkwhale
@@ -116,7 +116,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: funkwhale-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -154,9 +154,9 @@ spec:
   - name: DJANGO_ALLOWED_HOSTS
     value: '{{KUBERO_APP_HOST}}'
   - name: DATABASE_URL
-    value: postgresql://funkwhale:funkwhale@funkwhale-postgresql-rw:5432/funkwhale
+    value: postgresql://funkwhale:funkwhale@{{KUBERO_APP_NAME}}-postgresql-rw:5432/funkwhale
   - name: DB_HOST
-    value: funkwhale-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DB_PORT
     value: '5432'
   - name: DB_NAME
@@ -166,9 +166,9 @@ spec:
   - name: DB_PASSWORD
     value: funkwhale
   - name: CACHE_URL
-    value: redis://rfr-funkwhale-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: CELERY_BROKER_URL
-    value: redis://rfr-funkwhale-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: MEDIA_ROOT
     value: /srv/funkwhale/data/media
   - name: STATIC_ROOT
@@ -190,7 +190,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /srv/funkwhale/data/media
-    name: funkwhale-media
+    name: '{{KUBERO_APP_NAME}}-media'
     size: 5Gi
     storageClass: shared
   - accessModes:
@@ -204,7 +204,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /srv/funkwhale/data/static
-    name: funkwhale-static
+    name: '{{KUBERO_APP_NAME}}-static'
     size: 1Gi
     storageClass: shared
   cronjobs: []

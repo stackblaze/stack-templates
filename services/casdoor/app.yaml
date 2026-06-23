@@ -26,12 +26,12 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: casdoor-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: casdoor-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: casdoor
           storage:
@@ -49,7 +49,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: casdoor-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: casdoor

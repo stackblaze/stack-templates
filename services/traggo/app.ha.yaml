@@ -24,7 +24,7 @@ spec:
   - accessModes:
     - ReadWriteMany
     mountPath: /opt/traggo/data
-    name: traggo-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
     storageClass: shared
   image:

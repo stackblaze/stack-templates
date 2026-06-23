@@ -6,9 +6,9 @@ metadata:
     kubero.dev/template.description: Calibre-Web is a web app for browsing, reading,
       and downloading eBooks using an existing Calibre database.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/18373368?s=200&v=4
-    kubero.dev/template.installation: Default login is admin/admin123 — change the
-      password after first login. Mount your Calibre library at /books (must contain
-      metadata.db).
+    kubero.dev/template.installation: "Default login is admin/admin123 \u2014 change\
+      \ the password after first login. Mount your Calibre library at /books (must\
+      \ contain metadata.db)."
     kubero.dev/template.links: '["https://github.com/janeczku/calibre-web/wiki"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/janeczku/calibre-web
@@ -34,7 +34,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /config
-    name: calibre-web-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: slow
   - accessModes:

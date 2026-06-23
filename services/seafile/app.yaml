@@ -4,9 +4,9 @@ metadata:
   name: seafile
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: High-performance self-hosted file sync and share
-      — encrypted libraries, version history, team collaboration, and Office online
-      editing.
+    kubero.dev/template.description: "High-performance self-hosted file sync and share\
+      \ \u2014 encrypted libraries, version history, team collaboration, and Office\
+      \ online editing."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seafile/icon.png
     kubero.dev/template.installation: 'Change SEAFILE_ADMIN_EMAIL and SEAFILE_ADMIN_PASSWORD.
       SEAFILE_SERVER_HOSTNAME must be just the hostname (no https://, e.g. seafile.example.com).
@@ -36,17 +36,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: seafile-db
+          name: '{{KUBERO_APP_NAME}}-db'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: seafile-db-root
+            name: '{{KUBERO_APP_NAME}}-db-root'
             key: password
           database: seafile
           username: seafile
           passwordSecretKeyRef:
-            name: seafile-db-app
+            name: '{{KUBERO_APP_NAME}}-db-app'
             key: password
           storage:
             size: 5Gi
@@ -63,7 +63,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: seafile-db-root
+          name: '{{KUBERO_APP_NAME}}-db-root'
         type: Opaque
         stringData:
           password: seafile
@@ -71,13 +71,13 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: seafile-db-app
+          name: '{{KUBERO_APP_NAME}}-db-app'
         type: Opaque
         stringData:
           password: seafile
   envVars:
   - name: DB_HOST
-    value: seafile-db
+    value: '{{KUBERO_APP_NAME}}-db'
   - name: DB_ROOT_PASSWD
     value: seafile
   - name: TIME_ZONE
@@ -95,7 +95,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /shared
-    name: seafile-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 50Gi
     storageClass: slow
   cronjobs: []

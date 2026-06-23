@@ -50,7 +50,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: inventree-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -70,15 +70,15 @@ spec:
               database: inventree
               owner: inventree
               secret:
-                name: inventree-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: inventree-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: inventree-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -87,7 +87,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: inventree-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: inventree
@@ -102,7 +102,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: inventree-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -147,13 +147,13 @@ spec:
   - name: INVENTREE_DB_PASSWORD
     value: inventree
   - name: INVENTREE_DB_HOST
-    value: inventree-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: INVENTREE_DB_PORT
     value: '5432'
   - name: INVENTREE_CACHE_ENABLED
     value: 'True'
   - name: INVENTREE_CACHE_HOST
-    value: rfr-inventree-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: INVENTREE_CACHE_PORT
     value: '6379'
   - name: INVENTREE_EXT_VOLUME
@@ -165,7 +165,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /home/inventree/data
-    name: inventree-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: slow
   cronjobs: []

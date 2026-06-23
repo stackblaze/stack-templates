@@ -29,7 +29,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /kavita/config
-    name: kavita-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: slow
   - accessModes:

@@ -22,7 +22,7 @@ spec:
   - name: BASE_URL
     value: https://fider.localhost
   - name: DATABASE_URL
-    value: postgres://fider:fider@fider-postgresql-rw/fider?sslmode=disable
+    value: postgres://fider:fider@{{KUBERO_APP_NAME}}-postgresql-rw/fider?sslmode=disable
   - name: JWT_SECRET
     value: random64
   - name: EMAIL_NOREPLY
@@ -50,7 +50,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: fider-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -70,15 +70,15 @@ spec:
               database: fider
               owner: fider
               secret:
-                name: fider-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: fider-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: fider-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -87,7 +87,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: fider-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: fider

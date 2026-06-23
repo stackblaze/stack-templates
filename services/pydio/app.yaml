@@ -40,17 +40,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: pydio-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: pydio-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: pydio
           username: pydio
           passwordSecretKeyRef:
-            name: pydio-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: pydio-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: pydio
@@ -75,7 +75,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: pydio-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: pydio
@@ -93,7 +93,7 @@ spec:
   - name: CELLS_WORKING_DIR
     value: /var/cells
   - name: CELLS_DB_HOST
-    value: pydio-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: CELLS_DB_PORT
     value: '3306'
   - name: CELLS_DB_NAME
@@ -103,13 +103,13 @@ spec:
   - name: CELLS_DB_PASSWORD
     value: pydio
   - name: CELLS_DB_DSN
-    value: pydio:pydio@tcp(pydio-mysql:3306)/pydio?parseTime=true
+    value: pydio:pydio@tcp({{KUBERO_APP_NAME}}-mysql:3306)/pydio?parseTime=true
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/cells
-    name: pydio-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: slow
   cronjobs: []

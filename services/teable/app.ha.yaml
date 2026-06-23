@@ -4,15 +4,15 @@ metadata:
   name: teable
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source Airtable alternative built on native
-      Postgres — spreadsheet UI over real SQL tables with automations, views, and
-      API.
+    kubero.dev/template.description: "Open-source Airtable alternative built on native\
+      \ Postgres \u2014 spreadsheet UI over real SQL tables with automations, views,\
+      \ and API."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/teable/icon.png
-    kubero.dev/template.installation: Change SECRET_KEY to a random string. PUBLIC_ORIGIN
-      must match the app URL exactly (used for OAuth callbacks and magic links). Teable
-      stores data directly in Postgres — each table becomes a real SQL table you can
-      query. The storage volume holds file attachments. Register on first visit to
-      create the admin workspace.
+    kubero.dev/template.installation: "Change SECRET_KEY to a random string. PUBLIC_ORIGIN\
+      \ must match the app URL exactly (used for OAuth callbacks and magic links).\
+      \ Teable stores data directly in Postgres \u2014 each table becomes a real SQL\
+      \ table you can query. The storage volume holds file attachments. Register on\
+      \ first visit to create the admin workspace."
     kubero.dev/template.links: '["https://help.teable.io/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/teableio/teable
@@ -35,7 +35,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: teable-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -55,19 +55,19 @@ spec:
               database: teable
               owner: teable
               secret:
-                name: teable-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO teable
               - GRANT CREATE ON SCHEMA public TO teable
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO teable
           enableSuperuserAccess: true
           superuserSecret:
-            name: teable-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: teable-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -76,7 +76,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: teable-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: teable
@@ -91,7 +91,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: teable-cache
+          name: '{{KUBERO_APP_NAME}}-cache'
         spec:
           version: '8.0'
           arch: replica
@@ -112,11 +112,11 @@ spec:
               memory: 256Mi
   envVars:
   - name: PRISMA_DATABASE_URL
-    value: postgresql://teable:teable@teable-postgresql-rw:5432/teable
+    value: postgresql://teable:teable@{{KUBERO_APP_NAME}}-postgresql-rw:5432/teable
   - name: BACKEND_CACHE_PROVIDER
     value: redis
   - name: BACKEND_CACHE_REDIS_URI
-    value: redis://rfr-teable-cache-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-cache-readwrite:6379/0
   - name: SECRET_KEY
     value: change-me-to-random-string
   - name: PUBLIC_ORIGIN
@@ -132,7 +132,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/.teable
-    name: teable-storage
+    name: '{{KUBERO_APP_NAME}}-storage'
     size: 1Gi
     storageClass: shared
   cronjobs: []

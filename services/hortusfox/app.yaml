@@ -7,16 +7,17 @@ metadata:
     kubero.dev/template.description: Self-hosted collaborative plant management system
       for tracking, organizing and caring for your indoor and outdoor plants.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hortusfox/icon.png
-    kubero.dev/template.installation: 'Image: ghcr.io/danielbrendel/hortusfox-web
-      (official). Uses MariaDB (the mariadb add-on, host hortusfox-mysql). Rotate
-      the MariaDB password (default ''hortusfox'') and set a strong APP_ADMIN_PASSWORD
-      (default placeholder) before exposing publicly; the first-run admin account
-      is seeded from APP_ADMIN_EMAIL / APP_ADMIN_PASSWORD on initial migration. DB_CHARSET
-      must be utf8mb4. Persistent volumes hold backups (/var/www/html/public/backup)
-      and app logs (/var/www/html/app/logs). Do not mount empty PVCs over /var/www/html/public/img,
-      /public/themes, or /app/migrations — Kubero''s shared /tmp emptyDir hides the
-      image seed copies the entrypoint expects. Add img/themes volumes only after
-      first boot if you accept re-seeding defaults. Set APP_TIMEZONE to your timezone.'
+    kubero.dev/template.installation: "Image: ghcr.io/danielbrendel/hortusfox-web\
+      \ (official). Uses MariaDB (the mariadb add-on, host hortusfox-mysql). Rotate\
+      \ the MariaDB password (default 'hortusfox') and set a strong APP_ADMIN_PASSWORD\
+      \ (default placeholder) before exposing publicly; the first-run admin account\
+      \ is seeded from APP_ADMIN_EMAIL / APP_ADMIN_PASSWORD on initial migration.\
+      \ DB_CHARSET must be utf8mb4. Persistent volumes hold backups (/var/www/html/public/backup)\
+      \ and app logs (/var/www/html/app/logs). Do not mount empty PVCs over /var/www/html/public/img,\
+      \ /public/themes, or /app/migrations \u2014 Kubero's shared /tmp emptyDir hides\
+      \ the image seed copies the entrypoint expects. Add img/themes volumes only\
+      \ after first boot if you accept re-seeding defaults. Set APP_TIMEZONE to your\
+      \ timezone."
     kubero.dev/template.links: '["https://github.com/danielbrendel/hortusfox-web/blob/master/README.md"]'
     kubero.dev/template.screenshots: '["https://www.hortusfox.com/img/screenshot.png"]'
     kubero.dev/template.source: https://github.com/danielbrendel/hortusfox-web
@@ -39,17 +40,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: hortusfox-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: hortusfox-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: hortusfox
           username: hortusfox
           passwordSecretKeyRef:
-            name: hortusfox-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -66,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: hortusfox-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: hortusfox
@@ -74,7 +75,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: hortusfox-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: hortusfox
@@ -86,7 +87,7 @@ spec:
   - name: APP_TIMEZONE
     value: UTC
   - name: DB_HOST
-    value: hortusfox-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: DB_PORT
     value: '3306'
   - name: DB_DATABASE
@@ -109,7 +110,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/app/logs
-    name: hortusfox-logs
+    name: '{{KUBERO_APP_NAME}}-logs'
     size: 1Gi
     storageClass: slow
   cronjobs: []

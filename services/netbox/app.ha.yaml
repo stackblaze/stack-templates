@@ -31,7 +31,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: netbox-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -51,19 +51,19 @@ spec:
               database: netbox
               owner: netbox
               secret:
-                name: netbox-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO netbox
               - GRANT CREATE ON SCHEMA public TO netbox
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO netbox
           enableSuperuserAccess: true
           superuserSecret:
-            name: netbox-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: netbox-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -72,7 +72,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: netbox-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: netbox
@@ -87,7 +87,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: netbox-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -111,7 +111,7 @@ spec:
             quorum: 2
   envVars:
   - name: DB_HOST
-    value: netbox-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DB_NAME
     value: netbox
   - name: DB_USER
@@ -119,13 +119,13 @@ spec:
   - name: DB_PASSWORD
     value: netbox
   - name: REDIS_HOST
-    value: rfr-netbox-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PASSWORD
     value: ''
   - name: REDIS_DATABASE
     value: '0'
   - name: REDIS_CACHE_HOST
-    value: rfr-netbox-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_CACHE_PASSWORD
     value: ''
   - name: REDIS_CACHE_DATABASE
@@ -149,7 +149,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /opt/netbox/netbox/media
-    name: netbox-media
+    name: '{{KUBERO_APP_NAME}}-media'
     size: 2Gi
     storageClass: shared
   cronjobs: []

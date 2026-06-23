@@ -4,13 +4,14 @@ metadata:
   name: plane
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source project management platform — modern
-      alternative to Jira and Linear.
+    kubero.dev/template.description: "Open-source project management platform \u2014\
+      \ modern alternative to Jira and Linear."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/icon.png
-    kubero.dev/template.installation: This template deploys the Plane API backend
-      with PostgreSQL and Valkey. Plane CE also requires web, worker, beat, and proxy
-      containers — use the official Plane Helm chart for a full stack, or deploy makeplane/plane-frontend
-      and makeplane/plane-proxy companions pointed at this API service.
+    kubero.dev/template.installation: "This template deploys the Plane API backend\
+      \ with PostgreSQL and Valkey. Plane CE also requires web, worker, beat, and\
+      \ proxy containers \u2014 use the official Plane Helm chart for a full stack,\
+      \ or deploy makeplane/plane-frontend and makeplane/plane-proxy companions pointed\
+      \ at this API service."
     kubero.dev/template.links: '["https://developers.plane.so/"]'
     kubero.dev/template.screenshots: '["https://plane.so/og-image.png"]'
     kubero.dev/template.source: https://github.com/makeplane/plane
@@ -33,7 +34,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: plane-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -53,19 +54,19 @@ spec:
               database: plane
               owner: plane
               secret:
-                name: plane-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO plane
               - GRANT CREATE ON SCHEMA public TO plane
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO plane
           enableSuperuserAccess: true
           superuserSecret:
-            name: plane-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: plane-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -74,7 +75,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: plane-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: plane
@@ -89,7 +90,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: plane-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -150,11 +151,11 @@ spec:
   - name: CORS_ALLOWED_ORIGINS
     value: '{{KUBERO_APP_URL}}'
   - name: DATABASE_URL
-    value: postgresql://plane:plane@plane-postgresql-rw:5432/plane
+    value: postgresql://plane:plane@{{KUBERO_APP_NAME}}-postgresql-rw:5432/plane
   - name: REDIS_URL
-    value: redis://rfr-plane-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: CELERY_BROKER_URL
-    value: redis://rfr-plane-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: CELERY_RESULT_BACKEND
     value: redis://rfr-plane-valkey-readwrite:6379/0
   - name: SECRET_KEY

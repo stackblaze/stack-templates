@@ -38,7 +38,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: saltcorn-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -62,15 +62,15 @@ spec:
               - GRANT CREATE ON SCHEMA public TO saltcorn
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO saltcorn
               secret:
-                name: saltcorn-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: saltcorn-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: saltcorn-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -79,7 +79,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: saltcorn-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: saltcorn
@@ -90,7 +90,7 @@ spec:
   - name: SALTCORN_MULTI_TENANT
     value: 'false'
   - name: PGHOST
-    value: saltcorn-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: PGPORT
     value: '5432'
   - name: PGDATABASE
@@ -106,7 +106,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /saltcorn
-    name: saltcorn-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

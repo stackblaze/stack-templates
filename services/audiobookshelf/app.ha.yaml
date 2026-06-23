@@ -30,7 +30,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /config
-    name: audiobookshelf-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: shared
   - accessModes:

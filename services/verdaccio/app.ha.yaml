@@ -4,9 +4,9 @@ metadata:
   name: verdaccio
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Lightweight private npm/yarn/pnpm registry —
-      proxy public packages and publish private ones with simple auth and no external
-      database.
+    kubero.dev/template.description: "Lightweight private npm/yarn/pnpm registry \u2014\
+      \ proxy public packages and publish private ones with simple auth and no external\
+      \ database."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/icon.png
     kubero.dev/template.installation: 'Configure your npm client: npm set registry
       {{KUBERO_APP_URL}}. Add users with npm adduser --registry {{KUBERO_APP_URL}}.
@@ -37,7 +37,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /verdaccio/storage
-    name: verdaccio-storage
+    name: '{{KUBERO_APP_NAME}}-storage'
     size: 10Gi
     storageClass: shared
   cronjobs: []

@@ -4,8 +4,8 @@ metadata:
   name: appflowy
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source Notion alternative — self-hosted
-      workspace for notes, docs, and collaboration.
+    kubero.dev/template.description: "Open-source Notion alternative \u2014 self-hosted\
+      \ workspace for notes, docs, and collaboration."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/appflowy/icon.png
     kubero.dev/template.installation: Bundles AppFlowy Cloud API with GoTrue auth
       in one pod. Deploy appflowy-web from the AppFlowy-Cloud docker-compose in the
@@ -32,7 +32,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: appflowy-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -52,7 +52,7 @@ spec:
               database: appflowy
               owner: appflowy
               secret:
-                name: appflowy-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - CREATE EXTENSION IF NOT EXISTS vector
               - GRANT ALL ON SCHEMA public TO appflowy
@@ -60,12 +60,12 @@ spec:
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO appflowy
           enableSuperuserAccess: true
           superuserSecret:
-            name: appflowy-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: appflowy-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -74,7 +74,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: appflowy-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: appflowy
@@ -89,7 +89,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: appflowy-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -149,9 +149,9 @@ spec:
           secretkey: changeme
   envVars:
   - name: APPFLOWY_DATABASE_URL
-    value: postgres://appflowy:appflowy@appflowy-postgresql-rw:5432/appflowy
+    value: postgres://appflowy:appflowy@{{KUBERO_APP_NAME}}-postgresql-rw:5432/appflowy
   - name: APPFLOWY_REDIS_URI
-    value: redis://rfr-appflowy-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: APPFLOWY_CLOUD_BASE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: APPFLOWY_WEB_URL
@@ -165,7 +165,7 @@ spec:
   - name: APPFLOWY_GOTRUE_BASE_URL
     value: http://127.0.0.1:9999
   - name: GOTRUE_DATABASE_URL
-    value: postgres://appflowy:appflowy@appflowy-postgresql-rw:5432/appflowy?search_path=auth
+    value: postgres://appflowy:appflowy@{{KUBERO_APP_NAME}}-postgresql-rw:5432/appflowy?search_path=auth
   - name: GOTRUE_DB_DRIVER
     value: postgres
   - name: GOTRUE_PORT

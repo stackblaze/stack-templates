@@ -40,7 +40,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: lightldap-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -60,15 +60,15 @@ spec:
               database: lightldap
               owner: lightldap
               secret:
-                name: lightldap-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: lightldap-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: lightldap-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -77,7 +77,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: lightldap-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: lightldap
@@ -92,7 +92,7 @@ spec:
   - name: LLDAP_LDAP_BASE_DN
     value: dc=example,dc=com
   - name: LLDAP_DATABASE_URL
-    value: postgres://lightldap:lightldap@lightldap-postgresql-rw:5432/lightldap
+    value: postgres://lightldap:lightldap@{{KUBERO_APP_NAME}}-postgresql-rw:5432/lightldap
   - name: LLDAP_HTTP_URL
     value: '{{KUBERO_APP_URL}}'
   - name: TZ
@@ -102,7 +102,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /data
-    name: lightldap-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: slow
   cronjobs: []

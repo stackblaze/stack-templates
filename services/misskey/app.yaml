@@ -47,7 +47,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: misskey-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -71,15 +71,15 @@ spec:
               - GRANT CREATE ON SCHEMA public TO misskey
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO misskey
               secret:
-                name: misskey-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: misskey-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: misskey-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -88,7 +88,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: misskey-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: misskey
@@ -103,7 +103,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: misskey-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -126,7 +126,7 @@ spec:
   - name: MISSKEY_URL
     value: '{{KUBERO_APP_URL}}'
   - name: DATABASE_HOST
-    value: misskey-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DATABASE_PORT
     value: '5432'
   - name: DATABASE_DB
@@ -136,7 +136,7 @@ spec:
   - name: DATABASE_PASSWORD
     value: misskey
   - name: POSTGRES_HOST
-    value: misskey-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: POSTGRES_PORT
     value: '5432'
   - name: POSTGRES_DB
@@ -146,7 +146,7 @@ spec:
   - name: POSTGRES_PASSWORD
     value: misskey
   - name: REDIS_HOST
-    value: rfr-misskey-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
   - name: NODE_ENV
@@ -156,14 +156,14 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /misskey/files
-    name: misskey-files
+    name: '{{KUBERO_APP_NAME}}-files'
     size: 5Gi
     storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /misskey/.config
-    name: misskey-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: slow
   cronjobs: []

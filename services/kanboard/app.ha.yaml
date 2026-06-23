@@ -28,17 +28,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: kanboard-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: kanboard-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: kanboard
           username: kanboard
           passwordSecretKeyRef:
-            name: kanboard-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -55,7 +55,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: kanboard-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: kanboard
@@ -63,7 +63,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: kanboard-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: kanboard
@@ -81,7 +81,7 @@ spec:
   - name: DB_NAME
     value: kanboard
   - name: DB_HOSTNAME
-    value: kanboard-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

@@ -26,7 +26,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: nocodb-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -46,19 +46,19 @@ spec:
               database: nocodb
               owner: nocodb
               secret:
-                name: nocodb-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO nocodb
               - GRANT CREATE ON SCHEMA public TO nocodb
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nocodb
           enableSuperuserAccess: true
           superuserSecret:
-            name: nocodb-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: nocodb-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: nocodb-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: nocodb
@@ -80,7 +80,7 @@ spec:
   - name: NC_DB
     value: pg
   - name: NC_DB_HOST
-    value: nocodb-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: NC_DB_PORT
     value: '5432'
   - name: NC_DB_USER

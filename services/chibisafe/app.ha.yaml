@@ -6,9 +6,9 @@ metadata:
     kubero.dev/template.description: Blazing fast file uploader and awesome bunker
       written in node!
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/115422728?s=200&v=4
-    kubero.dev/template.installation: Default login is admin/admin — change the password
-      after first sign-in. SQLite data persists under the database, uploads, and logs
-      volumes.
+    kubero.dev/template.installation: "Default login is admin/admin \u2014 change\
+      \ the password after first sign-in. SQLite data persists under the database,\
+      \ uploads, and logs volumes."
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/7425261/245041422-659068cd-f154-4fe0-860f-4478e0f859d5.png","https://user-images.githubusercontent.com/7425261/245041448-83dae9d1-5f71-404a-b79c-19fb4d0dfd62.png","https://user-images.githubusercontent.com/7425261/245041459-0dad05a8-f42b-4834-983f-2ca82eedb176.png"]'
     kubero.dev/template.source: https://github.com/chibisafe/chibisafe
@@ -26,21 +26,21 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /home/node/chibisafe/database
-    name: chibisafe-db-volume
+    name: '{{KUBERO_APP_NAME}}-db-volume'
     size: 1Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /home/node/chibisafe/uploads
-    name: chibisafe-uploads-volume
+    name: '{{KUBERO_APP_NAME}}-uploads-volume'
     size: 1Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /home/node/chibisafe/logs
-    name: chibisafe-logs-volume
+    name: '{{KUBERO_APP_NAME}}-logs-volume'
     size: 1Gi
     storageClass: shared
   healthcheck:

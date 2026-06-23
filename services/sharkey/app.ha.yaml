@@ -58,7 +58,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: sharkey-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -82,15 +82,15 @@ spec:
               - GRANT CREATE ON SCHEMA public TO sharkey
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO sharkey
               secret:
-                name: sharkey-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: sharkey-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: sharkey-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -99,7 +99,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: sharkey-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: sharkey
@@ -114,7 +114,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: sharkey-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -142,7 +142,7 @@ spec:
   - name: SHARKEY_URL
     value: '{{KUBERO_APP_URL}}'
   - name: DATABASE_HOST
-    value: sharkey-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DATABASE_PORT
     value: '5432'
   - name: DATABASE_DB
@@ -152,7 +152,7 @@ spec:
   - name: DATABASE_PASSWORD
     value: sharkey
   - name: POSTGRES_HOST
-    value: sharkey-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: POSTGRES_PORT
     value: '5432'
   - name: POSTGRES_DB
@@ -162,7 +162,7 @@ spec:
   - name: POSTGRES_PASSWORD
     value: sharkey
   - name: REDIS_HOST
-    value: rfr-sharkey-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
   extraVolumes:
@@ -170,14 +170,14 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /sharkey/.config
-    name: sharkey-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /sharkey/files
-    name: sharkey-files
+    name: '{{KUBERO_APP_NAME}}-files'
     size: 5Gi
     storageClass: shared
   cronjobs: []

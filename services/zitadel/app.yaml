@@ -4,15 +4,15 @@ metadata:
   name: zitadel
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Cloud-native identity platform — OIDC, OAuth2,
-      SAML, passkeys, MFA, and multi-tenancy out of the box. Self-hosted alternative
-      to Auth0.
+    kubero.dev/template.description: "Cloud-native identity platform \u2014 OIDC,\
+      \ OAuth2, SAML, passkeys, MFA, and multi-tenancy out of the box. Self-hosted\
+      \ alternative to Auth0."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zitadel/icon.png
-    kubero.dev/template.installation: 'Change ZITADEL_MASTERKEY to exactly 32 characters.
-      Set ZITADEL_EXTERNALDOMAIN to the app hostname (without https://). ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
-      must match the CNPG superuser secret (default: zitadel). On first boot Zitadel
-      auto-migrates the database and prints the initial admin credentials to the container
-      log — retrieve them with kubectl logs.'
+    kubero.dev/template.installation: "Change ZITADEL_MASTERKEY to exactly 32 characters.\
+      \ Set ZITADEL_EXTERNALDOMAIN to the app hostname (without https://). ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD\
+      \ must match the CNPG superuser secret (default: zitadel). On first boot Zitadel\
+      \ auto-migrates the database and prints the initial admin credentials to the\
+      \ container log \u2014 retrieve them with kubectl logs."
     kubero.dev/template.links: '["https://zitadel.com/docs"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/zitadel/zitadel
@@ -35,7 +35,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: zitadel-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -55,19 +55,19 @@ spec:
               database: zitadel
               owner: zitadel
               secret:
-                name: zitadel-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO zitadel
               - GRANT CREATE ON SCHEMA public TO zitadel
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zitadel
           enableSuperuserAccess: true
           superuserSecret:
-            name: zitadel-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: zitadel-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -76,14 +76,14 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: zitadel-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: zitadel
           password: zitadel
   envVars:
   - name: ZITADEL_DATABASE_POSTGRES_HOST
-    value: zitadel-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: ZITADEL_DATABASE_POSTGRES_PORT
     value: 5432
   - name: ZITADEL_DATABASE_POSTGRES_DATABASE

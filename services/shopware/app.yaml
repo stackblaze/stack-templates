@@ -47,17 +47,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: shopware-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: shopware-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: shopware
           username: shopware
           passwordSecretKeyRef:
-            name: shopware-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -74,7 +74,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: shopware-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: shopware
@@ -82,7 +82,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: shopware-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: shopware
@@ -96,7 +96,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: shopware-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -125,13 +125,13 @@ spec:
   - name: INSTANCE_ID_HASH
     value: replace-with-openssl-rand-hex-32
   - name: DATABASE_URL
-    value: mysql://shopware:shopware@shopware-mysql:3306/shopware
+    value: mysql://shopware:shopware@{{KUBERO_APP_NAME}}-mysql:3306/shopware
   - name: REDIS_URL
-    value: redis://rfr-shopware-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: REDIS_CACHE_URL
-    value: redis://rfr-shopware-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: REDIS_SESSION_URL
-    value: redis://rfr-shopware-valkey-readwrite:6379/1
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/1
   - name: SHOPWARE_HTTP_CACHE_ENABLED
     value: '1'
   - name: SHOPWARE_ES_ENABLED
@@ -147,14 +147,14 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/files
-    name: shopware-files
+    name: '{{KUBERO_APP_NAME}}-files'
     size: 2Gi
     storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/public/media
-    name: shopware-media
+    name: '{{KUBERO_APP_NAME}}-media'
     size: 5Gi
     storageClass: slow
   cronjobs: []

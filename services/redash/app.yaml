@@ -44,7 +44,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: redash-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -64,19 +64,19 @@ spec:
               database: redash
               owner: redash
               secret:
-                name: redash-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO redash
               - GRANT CREATE ON SCHEMA public TO redash
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO redash
           enableSuperuserAccess: true
           superuserSecret:
-            name: redash-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: redash-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -85,7 +85,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: redash-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: redash
@@ -100,7 +100,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: redash-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -125,9 +125,9 @@ spec:
   - name: REDASH_LOG_LEVEL
     value: INFO
   - name: REDASH_DATABASE_URL
-    value: postgresql://redash:redash@redash-postgresql-rw:5432/redash
+    value: postgresql://redash:redash@{{KUBERO_APP_NAME}}-postgresql-rw:5432/redash
   - name: REDASH_REDIS_URL
-    value: redis://rfr-redash-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: REDASH_COOKIE_SECRET
     value: replace-with-openssl-rand-hex-32
   - name: REDASH_SECRET_KEY

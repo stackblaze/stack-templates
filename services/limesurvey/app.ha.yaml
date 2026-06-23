@@ -6,8 +6,8 @@ metadata:
     kubero.dev/template.description: LimeSurvey is the simple, quick and anonymous
       online survey tool that's bursting with juicy insights.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/limesurvey/icon.png
-    kubero.dev/template.installation: Auto-installs on first boot when LIMESURVEY_DB_*
-      and admin env vars are set. Default login admin/root — change immediately.
+    kubero.dev/template.installation: "Auto-installs on first boot when LIMESURVEY_DB_*\
+      \ and admin env vars are set. Default login admin/root \u2014 change immediately."
     kubero.dev/template.links: '"https://manual.limesurvey.org/LimeSurvey_Manual"'
     kubero.dev/template.screenshots: '["https://manual.limesurvey.org/images/1/15/Surveys-alternative_button.png","https://manual.limesurvey.org/images/5/50/Newsurveyscreen.png"]'
     kubero.dev/template.source: https://github.com/LimeSurvey/LimeSurvey
@@ -29,12 +29,12 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: limesurvey-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: limesurvey-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: limesurvey
           storage:
@@ -54,7 +54,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: limesurvey-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: root
@@ -62,7 +62,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: LIMESURVEY_DB_HOST
-    value: limesurvey-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: LIMESURVEY_DB_PASSWORD
     value: root
   - name: LIMESURVEY_ADMIN_USER
@@ -97,7 +97,7 @@ spec:
     storageClass: shared
     emptyDir: false
     mountPath: /var/www/html/application/config
-    name: limesurvey-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
   image:
     containerPort: '80'

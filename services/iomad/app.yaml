@@ -45,17 +45,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: iomad-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: iomad-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: iomad
           username: iomad
           passwordSecretKeyRef:
-            name: iomad-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -72,7 +72,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: iomad-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: iomad
@@ -80,13 +80,13 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: iomad-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: iomad
   envVars:
   - name: MYSQL_HOST
-    value: iomad-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: MYSQL_PORT
     value: '3306'
   - name: MYSQL_DATABASE

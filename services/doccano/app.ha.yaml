@@ -31,13 +31,13 @@ spec:
   - name: DEBUG
     value: 'False'
   - name: DATABASE_URL
-    value: postgresql://doccano:doccano@doccano-postgresql-rw:5432/doccano
+    value: postgresql://doccano:doccano@{{KUBERO_APP_NAME}}-postgresql-rw:5432/doccano
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
-    name: doccano-data-volume
+    name: '{{KUBERO_APP_NAME}}-data-volume'
     size: 1Gi
     storageClass: shared
   cronjobs: []
@@ -52,7 +52,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: doccano-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -72,19 +72,19 @@ spec:
               database: doccano
               owner: doccano
               secret:
-                name: doccano-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO doccano
               - GRANT CREATE ON SCHEMA public TO doccano
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO doccano
           enableSuperuserAccess: true
           superuserSecret:
-            name: doccano-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: doccano-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -93,7 +93,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: doccano-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: doccano

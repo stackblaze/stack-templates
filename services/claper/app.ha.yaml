@@ -21,7 +21,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgres://claper:claper@claper-postgresql-rw:5432/postgresql
+    value: postgres://claper:claper@{{KUBERO_APP_NAME}}-postgresql-rw:5432/postgresql
   - name: SECRET_KEY_BASE
     value: 0LZiQBLw4WvqPlz4cz8RsHJlxNiSqM9B48y4ChyJ5v1oA0L/TPIqRjQNdPZN3iEG
   - name: PRESENTATION_STORAGE
@@ -66,7 +66,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: claper-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -86,15 +86,15 @@ spec:
               database: postgresql
               owner: claper
               secret:
-                name: claper-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: claper-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: claper-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -103,7 +103,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: claper-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: claper

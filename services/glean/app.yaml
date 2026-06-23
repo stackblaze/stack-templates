@@ -44,7 +44,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: glean-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -64,15 +64,15 @@ spec:
               database: glean
               owner: glean
               secret:
-                name: glean-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: glean-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: glean-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -81,7 +81,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: glean-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: glean
@@ -96,7 +96,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: glean-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -117,7 +117,7 @@ spec:
               memory: 256Mi
   envVars:
   - name: DATABASE_URL
-    value: postgresql+asyncpg://glean:glean@glean-postgresql-rw:5432/glean
+    value: postgresql+asyncpg://glean:glean@{{KUBERO_APP_NAME}}-postgresql-rw:5432/glean
   - name: POSTGRES_DB
     value: glean
   - name: POSTGRES_USER
@@ -125,7 +125,7 @@ spec:
   - name: POSTGRES_PASSWORD
     value: glean
   - name: REDIS_URL
-    value: redis://rfr-glean-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: SECRET_KEY
     value: replace-with-openssl-rand-hex-32
   - name: ADMIN_USERNAME
@@ -153,7 +153,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /app/logs
-    name: glean-logs
+    name: '{{KUBERO_APP_NAME}}-logs'
     size: 1Gi
     storageClass: slow
   cronjobs: []

@@ -31,7 +31,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: infisical-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -51,19 +51,19 @@ spec:
               database: infisical
               owner: infisical
               secret:
-                name: infisical-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO infisical
               - GRANT CREATE ON SCHEMA public TO infisical
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO infisical
           enableSuperuserAccess: true
           superuserSecret:
-            name: infisical-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: infisical-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -72,7 +72,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: infisical-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: infisical
@@ -87,7 +87,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: infisical-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -114,9 +114,9 @@ spec:
   - name: PORT
     value: '8080'
   - name: DB_CONNECTION_URI
-    value: postgresql://infisical:infisical@infisical-postgresql-rw:5432/infisical
+    value: postgresql://infisical:infisical@{{KUBERO_APP_NAME}}-postgresql-rw:5432/infisical
   - name: REDIS_URL
-    value: redis://rfr-infisical-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: ENCRYPTION_KEY
     value: f13dbc92aaaf86fa7cb0ed8ac3265f47
   - name: AUTH_SECRET

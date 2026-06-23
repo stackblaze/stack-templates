@@ -4,8 +4,8 @@ metadata:
   name: chatwoot
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source customer engagement platform — an
-      alternative to Intercom and Zendesk.
+    kubero.dev/template.description: "Open-source customer engagement platform \u2014\
+      \ an alternative to Intercom and Zendesk."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/icon.png
     kubero.dev/template.installation: Background jobs run inline in this minimal template.
       For production throughput, deploy a dedicated Sidekiq worker using the same
@@ -32,7 +32,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: chatwoot-db
+          name: '{{KUBERO_APP_NAME}}-db'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -52,7 +52,7 @@ spec:
               database: chatwoot
               owner: chatwoot
               secret:
-                name: chatwoot-db-app
+                name: '{{KUBERO_APP_NAME}}-db-app'
               postInitApplicationSQL:
               - CREATE EXTENSION IF NOT EXISTS vector
               - CREATE EXTENSION IF NOT EXISTS pgcrypto
@@ -62,12 +62,12 @@ spec:
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO chatwoot
           enableSuperuserAccess: true
           superuserSecret:
-            name: chatwoot-db-superuser
+            name: '{{KUBERO_APP_NAME}}-db-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: chatwoot-db-superuser
+          name: '{{KUBERO_APP_NAME}}-db-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -76,7 +76,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: chatwoot-db-app
+          name: '{{KUBERO_APP_NAME}}-db-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: chatwoot
@@ -91,7 +91,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: chatwoot-cache
+          name: '{{KUBERO_APP_NAME}}-cache'
         spec:
           version: '8.0'
           arch: failover
@@ -117,7 +117,7 @@ spec:
   - name: FRONTEND_URL
     value: '{{KUBERO_APP_URL}}'
   - name: POSTGRES_HOST
-    value: chatwoot-db-rw
+    value: '{{KUBERO_APP_NAME}}-db-rw'
   - name: POSTGRES_PORT
     value: '5432'
   - name: POSTGRES_DATABASE
@@ -127,7 +127,7 @@ spec:
   - name: POSTGRES_PASSWORD
     value: chatwoot
   - name: REDIS_URL
-    value: redis://rfr-chatwoot-cache-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-cache-readwrite:6379
   - name: SECRET_KEY_BASE
     value: '0000000000000000000000000000000000000000000000000000000000000000'
   - name: RAILS_ENV
@@ -145,7 +145,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/storage
-    name: chatwoot-storage
+    name: '{{KUBERO_APP_NAME}}-storage'
     size: 2Gi
     storageClass: shared
   cronjobs: []

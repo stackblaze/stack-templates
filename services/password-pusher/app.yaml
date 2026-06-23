@@ -4,8 +4,8 @@ metadata:
   name: password-pusher
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Securely share passwords and files with expiring
-      links — open-source alternative to one-time secret services.
+    kubero.dev/template.description: "Securely share passwords and files with expiring\
+      \ links \u2014 open-source alternative to one-time secret services."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/password-pusher/icon.png
     kubero.dev/template.installation: Generate PWPUSH_MASTER_KEY before production.
       Set TLS_DOMAIN for automatic HTTPS if supported.
@@ -31,7 +31,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: pwpush-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -51,15 +51,15 @@ spec:
               database: pwpush
               owner: pwpush
               secret:
-                name: pwpush-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: pwpush-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: pwpush-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -68,14 +68,14 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: pwpush-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: pwpush
           password: pwpush
   envVars:
   - name: DATABASE_URL
-    value: postgres://pwpush:pwpush@pwpush-postgresql-rw:5432/pwpush
+    value: postgres://pwpush:pwpush@{{KUBERO_APP_NAME}}-postgresql-rw:5432/pwpush
   - name: PWPUSH_MASTER_KEY
     value: replace-with-generated-master-key
   - name: PWP__ALLOW_ANONYMOUS
@@ -87,7 +87,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/PasswordPusher/storage
-    name: pwpush-storage
+    name: '{{KUBERO_APP_NAME}}-storage'
     size: 1Gi
     storageClass: slow
   cronjobs: []

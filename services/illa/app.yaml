@@ -30,7 +30,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/illa/database
-    name: illa-database
+    name: '{{KUBERO_APP_NAME}}-database'
     size: 5Gi
     storageClass: slow
   - accessModes:

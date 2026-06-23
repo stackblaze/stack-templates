@@ -29,7 +29,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: evershop-db
+          name: '{{KUBERO_APP_NAME}}-db'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -49,19 +49,19 @@ spec:
               database: evershop
               owner: evershop
               secret:
-                name: evershop-db-app
+                name: '{{KUBERO_APP_NAME}}-db-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO evershop
               - GRANT CREATE ON SCHEMA public TO evershop
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO evershop
           enableSuperuserAccess: true
           superuserSecret:
-            name: evershop-db-superuser
+            name: '{{KUBERO_APP_NAME}}-db-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: evershop-db-superuser
+          name: '{{KUBERO_APP_NAME}}-db-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -70,7 +70,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: evershop-db-app
+          name: '{{KUBERO_APP_NAME}}-db-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: evershop
@@ -79,7 +79,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DB_HOST
-    value: evershop-db-rw
+    value: '{{KUBERO_APP_NAME}}-db-rw'
   - name: DB_PORT
     value: '5432'
   - name: DB_NAME

@@ -56,7 +56,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: peertube-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -76,15 +76,15 @@ spec:
               database: peertube
               owner: peertube
               secret:
-                name: peertube-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: peertube-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: peertube-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -93,7 +93,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: peertube-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: peertube
@@ -108,7 +108,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: peertube-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -148,7 +148,7 @@ spec:
   - name: PEERTUBE_ADMIN_EMAIL
     value: admin@example.com
   - name: PEERTUBE_DB_HOSTNAME
-    value: peertube-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: PEERTUBE_DB_PORT
     value: '5432'
   - name: PEERTUBE_DB_NAME
@@ -162,7 +162,7 @@ spec:
   - name: PEERTUBE_DB_SSL
     value: 'false'
   - name: PEERTUBE_REDIS_HOSTNAME
-    value: rfr-peertube-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: PEERTUBE_REDIS_PORT
     value: '6379'
   - name: PEERTUBE_REDIS_AUTH
@@ -182,14 +182,14 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
-    name: peertube-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /config
-    name: peertube-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: shared
   cronjobs: []

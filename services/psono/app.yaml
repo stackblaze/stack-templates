@@ -4,16 +4,16 @@ metadata:
   name: psono
   annotations:
     kubero.dev/template.architecture: '["amd64"]'
-    kubero.dev/template.description: Psono is an open-source, self-hosted password
-      manager for teams — end-to-end encrypted secret storage with sharing, an admin
-      portal and a REST API.
+    kubero.dev/template.description: "Psono is an open-source, self-hosted password\
+      \ manager for teams \u2014 end-to-end encrypted secret storage with sharing,\
+      \ an admin portal and a REST API."
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/29746989?s=200&v=4
-    kubero.dev/template.installation: The six server keys are generated uniquely per
-      deploy by kubero and persisted (they never change for the life of the instance)
-      — no manual setup. The web client is served at /, the admin portal at /portal
-      and the server API at /server; create the first admin account via the registration
-      flow. The optional file-repository (large file storage) needs a separate psono-fileserver
-      deployment.
+    kubero.dev/template.installation: "The six server keys are generated uniquely\
+      \ per deploy by kubero and persisted (they never change for the life of the\
+      \ instance) \u2014 no manual setup. The web client is served at /, the admin\
+      \ portal at /portal and the server API at /server; create the first admin account\
+      \ via the registration flow. The optional file-repository (large file storage)\
+      \ needs a separate psono-fileserver deployment."
     kubero.dev/template.links: '["https://doc.psono.com/"]'
     kubero.dev/template.screenshots: '["https://psono.com/static/img/section-3.png"]'
     kubero.dev/template.source: https://gitlab.com/psono/psono-combo
@@ -31,7 +31,7 @@ spec:
   - name: PSONO_ALLOWED_HOSTS
     value: '*'
   - name: PSONO_DATABASE_URL
-    value: postgres://psono:psono@psono-postgresql-rw:5432/psono
+    value: postgres://psono:psono@{{KUBERO_APP_NAME}}-postgresql-rw:5432/psono
   - name: PSONO_SECRET_KEY
     value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: PSONO_ACTIVATION_LINK_SECRET
@@ -57,7 +57,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: psono-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -77,15 +77,15 @@ spec:
               database: psono
               owner: psono
               secret:
-                name: psono-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: psono-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: psono-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -94,7 +94,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: psono-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: psono

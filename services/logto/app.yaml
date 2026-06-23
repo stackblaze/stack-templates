@@ -24,7 +24,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DB_URL
-    value: postgresql://postgres:logto@logto-db-rw:5432/logto
+    value: postgresql://postgres:logto@{{KUBERO_APP_NAME}}-db-rw:5432/logto
   - name: TRUST_PROXY_HEADER
     value: '1'
   - name: ENDPOINT
@@ -44,7 +44,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: logto-db
+          name: '{{KUBERO_APP_NAME}}-db'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -64,19 +64,19 @@ spec:
               database: logto
               owner: postgres
               secret:
-                name: logto-db-app
+                name: '{{KUBERO_APP_NAME}}-db-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO postgres
               - GRANT CREATE ON SCHEMA public TO postgres
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO postgres
           enableSuperuserAccess: true
           superuserSecret:
-            name: logto-db-superuser
+            name: '{{KUBERO_APP_NAME}}-db-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: logto-db-superuser
+          name: '{{KUBERO_APP_NAME}}-db-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -85,7 +85,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: logto-db-app
+          name: '{{KUBERO_APP_NAME}}-db-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres

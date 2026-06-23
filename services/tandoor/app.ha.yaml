@@ -32,7 +32,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: tandoor-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -52,19 +52,19 @@ spec:
               database: tandoor
               owner: tandoor
               secret:
-                name: tandoor-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO tandoor
               - GRANT CREATE ON SCHEMA public TO tandoor
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO tandoor
           enableSuperuserAccess: true
           superuserSecret:
-            name: tandoor-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: tandoor-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -73,7 +73,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: tandoor-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: tandoor
@@ -84,7 +84,7 @@ spec:
   - name: DB_ENGINE
     value: django.db.backends.postgresql
   - name: POSTGRES_HOST
-    value: tandoor-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: POSTGRES_PORT
     value: '5432'
   - name: POSTGRES_USER
@@ -108,14 +108,14 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /opt/recipes/staticfiles
-    name: tandoor-static
+    name: '{{KUBERO_APP_NAME}}-static'
     size: 1Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /opt/recipes/mediafiles
-    name: tandoor-media
+    name: '{{KUBERO_APP_NAME}}-media'
     size: 2Gi
     storageClass: shared
   cronjobs: []

@@ -27,7 +27,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: planka-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -47,15 +47,15 @@ spec:
               database: postgresql
               owner: postgresql
               secret:
-                name: planka-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: planka-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: planka-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -64,7 +64,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: planka-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgresql
@@ -77,7 +77,7 @@ spec:
   - name: BASE_URL
     value: http://planka.localhost:80
   - name: DATABASE_URL
-    value: postgresql://postgresql:postgresql@planka-postgresql-rw/postgresql
+    value: postgresql://postgresql:postgresql@{{KUBERO_APP_NAME}}-postgresql-rw/postgresql
   - name: DEFAULT_ADMIN_EMAIL
     value: emo@demo.demo
   - name: DEFAULT_ADMIN_PASSWORD

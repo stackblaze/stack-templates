@@ -45,7 +45,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: docspell-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -65,15 +65,15 @@ spec:
               database: docspell
               owner: docspell
               secret:
-                name: docspell-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: docspell-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: docspell-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -82,7 +82,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: docspell-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: docspell
@@ -101,7 +101,7 @@ spec:
   - name: DOCSPELL_SERVER_ADMIN__ENDPOINT_SECRET
     value: replace-with-openssl-rand-hex-32
   - name: DOCSPELL_SERVER_BACKEND_JDBC_URL
-    value: jdbc:postgresql://docspell-postgresql-rw:5432/docspell
+    value: jdbc:postgresql://{{KUBERO_APP_NAME}}-postgresql-rw:5432/docspell
   - name: DOCSPELL_SERVER_BACKEND_JDBC_USER
     value: docspell
   - name: DOCSPELL_SERVER_BACKEND_JDBC_PASSWORD

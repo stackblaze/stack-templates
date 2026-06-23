@@ -92,7 +92,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /config
-    name: jitsi-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 2Gi
     storageClass: slow
   cronjobs: []

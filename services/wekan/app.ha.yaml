@@ -23,7 +23,7 @@ spec:
   - name: WRITABLE_PATH
     value: /data
   - name: MONGO_URL
-    value: mongodb://mongoadmin:changeme@documentdb-service-wekan-documentdb:10260/wekan?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false
+    value: mongodb://mongoadmin:changeme@documentdb-service-{{KUBERO_APP_NAME}}-documentdb:10260/wekan?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false
   - name: ROOT_URL
     value: '{{KUBERO_APP_URL}}'
   - name: WITH_API
@@ -60,7 +60,7 @@ spec:
         apiVersion: documentdb.io/preview
         kind: DocumentDB
         metadata:
-          name: wekan-documentdb
+          name: '{{KUBERO_APP_NAME}}-documentdb'
         spec:
           nodeCount: 1
           instancesPerNode: 1

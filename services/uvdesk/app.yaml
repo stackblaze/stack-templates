@@ -39,17 +39,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: uvdesk-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: uvdesk-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: uvdesk
           username: uvdesk
           passwordSecretKeyRef:
-            name: uvdesk-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -66,7 +66,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: uvdesk-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: uvdesk
@@ -74,13 +74,13 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: uvdesk-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: uvdesk
   envVars:
   - name: MYSQL_HOST
-    value: uvdesk-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: MYSQL_PORT
     value: '3306'
   - name: MYSQL_DATABASE
@@ -98,7 +98,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/uvdesk/public/assets
-    name: uvdesk-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: slow
   cronjobs: []

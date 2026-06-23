@@ -31,7 +31,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: azimutt-db
+          name: '{{KUBERO_APP_NAME}}-db'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -51,19 +51,19 @@ spec:
               database: azimutt
               owner: azimutt
               secret:
-                name: azimutt-db-app
+                name: '{{KUBERO_APP_NAME}}-db-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO azimutt
               - GRANT CREATE ON SCHEMA public TO azimutt
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO azimutt
           enableSuperuserAccess: true
           superuserSecret:
-            name: azimutt-db-superuser
+            name: '{{KUBERO_APP_NAME}}-db-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: azimutt-db-superuser
+          name: '{{KUBERO_APP_NAME}}-db-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -72,7 +72,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: azimutt-db-app
+          name: '{{KUBERO_APP_NAME}}-db-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: azimutt
@@ -89,7 +89,7 @@ spec:
   - name: SECRET_KEY_BASE
     value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: DATABASE_URL
-    value: postgresql://azimutt:azimutt@azimutt-db-rw:5432/azimutt
+    value: postgresql://azimutt:azimutt@{{KUBERO_APP_NAME}}-db-rw:5432/azimutt
   - name: FILE_STORAGE_ADAPTER
     value: local
   - name: AUTH_PASSWORD
@@ -103,7 +103,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /app/bin/uploads
-    name: azimutt-uploads
+    name: '{{KUBERO_APP_NAME}}-uploads'
     size: 1Gi
     storageClass: slow
   cronjobs: []

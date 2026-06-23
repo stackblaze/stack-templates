@@ -38,17 +38,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: mantisbt-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: mantisbt-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: mantisbt
           username: mantisbt
           passwordSecretKeyRef:
-            name: mantisbt-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -65,7 +65,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: mantisbt-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: mantisbt
@@ -73,7 +73,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: mantisbt-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: mantisbt
@@ -85,7 +85,7 @@ spec:
   - name: PHP_MAX_UPLOAD_SIZE
     value: 32M
   - name: MANTIS_DB_HOST
-    value: mantisbt-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: MANTIS_DB_NAME
     value: mantisbt
   - name: MANTIS_DB_USER
@@ -97,7 +97,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/config
-    name: mantisbt-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: slow
   - accessModes:

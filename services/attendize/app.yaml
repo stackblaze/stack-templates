@@ -42,17 +42,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: attendize-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: attendize-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: attendize
           username: attendize
           passwordSecretKeyRef:
-            name: attendize-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -69,7 +69,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: attendize-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: attendize
@@ -77,7 +77,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: attendize-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: attendize
@@ -91,7 +91,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: attendize-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -122,7 +122,7 @@ spec:
   - name: DB_CONNECTION
     value: mysql
   - name: DB_HOST
-    value: attendize-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: DB_PORT
     value: '3306'
   - name: DB_DATABASE
@@ -138,7 +138,7 @@ spec:
   - name: SESSION_DRIVER
     value: redis
   - name: REDIS_HOST
-    value: rfr-attendize-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
   - name: REDIS_PASSWORD
@@ -164,7 +164,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/public/uploads
-    name: attendize-uploads
+    name: '{{KUBERO_APP_NAME}}-uploads'
     size: 5Gi
     storageClass: slow
   cronjobs: []

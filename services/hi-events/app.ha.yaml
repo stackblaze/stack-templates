@@ -53,7 +53,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: hi-events-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -73,15 +73,15 @@ spec:
               database: hi-events
               owner: hi-events
               secret:
-                name: hi-events-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: hi-events-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: hi-events-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -90,7 +90,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: hi-events-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: hi-events
@@ -105,7 +105,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: hi-events-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -151,11 +151,11 @@ spec:
   - name: VITE_API_URL_SERVER
     value: '{{KUBERO_APP_URL}}/api'
   - name: DATABASE_URL
-    value: postgresql://hi-events:hi-events@hi-events-postgresql-rw:5432/hi-events
+    value: postgresql://hi-events:hi-events@{{KUBERO_APP_NAME}}-postgresql-rw:5432/hi-events
   - name: DB_CONNECTION
     value: pgsql
   - name: DB_HOST
-    value: hi-events-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DB_PORT
     value: '5432'
   - name: DB_DATABASE
@@ -165,7 +165,7 @@ spec:
   - name: DB_PASSWORD
     value: hi-events
   - name: REDIS_HOST
-    value: rfr-hi-events-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
   - name: REDIS_PASSWORD
@@ -209,7 +209,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/backend/storage/app
-    name: hi-events-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

@@ -42,7 +42,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: searxng-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -70,7 +70,7 @@ spec:
   - name: SEARXNG_SECRET
     value: replace-with-openssl-rand-hex-32
   - name: SEARXNG_REDIS_URL
-    value: redis://rfr-searxng-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: SEARXNG_PORT
     value: '8080'
   - name: SEARXNG_BIND_ADDRESS
@@ -82,7 +82,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /etc/searxng
-    name: searxng-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: shared
   cronjobs: []

@@ -51,17 +51,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: pixelfed-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: pixelfed-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: pixelfed
           username: pixelfed
           passwordSecretKeyRef:
-            name: pixelfed-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -80,7 +80,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: pixelfed-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: pixelfed
@@ -88,7 +88,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: pixelfed-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: pixelfed
@@ -102,7 +102,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: pixelfed-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -146,7 +146,7 @@ spec:
   - name: DB_CONNECTION
     value: mysql
   - name: DB_HOST
-    value: pixelfed-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: DB_PORT
     value: '3306'
   - name: DB_DATABASE
@@ -160,7 +160,7 @@ spec:
   - name: REDIS_SCHEME
     value: tcp
   - name: REDIS_HOST
-    value: rfr-pixelfed-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
   - name: REDIS_PASSWORD
@@ -198,7 +198,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/storage
-    name: pixelfed-storage
+    name: '{{KUBERO_APP_NAME}}-storage'
     size: 5Gi
     storageClass: shared
   cronjobs: []

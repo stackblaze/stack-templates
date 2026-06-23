@@ -26,7 +26,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: calcom-db
+          name: '{{KUBERO_APP_NAME}}-db'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -46,19 +46,19 @@ spec:
               database: calcom
               owner: calcom
               secret:
-                name: calcom-db-app
+                name: '{{KUBERO_APP_NAME}}-db-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO calcom
               - GRANT CREATE ON SCHEMA public TO calcom
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO calcom
           enableSuperuserAccess: true
           superuserSecret:
-            name: calcom-db-superuser
+            name: '{{KUBERO_APP_NAME}}-db-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: calcom-db-superuser
+          name: '{{KUBERO_APP_NAME}}-db-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: calcom-db-app
+          name: '{{KUBERO_APP_NAME}}-db-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: calcom
@@ -76,11 +76,11 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgresql://calcom:calcom@calcom-db-rw:5432/calcom
+    value: postgresql://calcom:calcom@{{KUBERO_APP_NAME}}-db-rw:5432/calcom
   - name: DATABASE_DIRECT_URL
-    value: postgresql://calcom:calcom@calcom-db-rw:5432/calcom
+    value: postgresql://calcom:calcom@{{KUBERO_APP_NAME}}-db-rw:5432/calcom
   - name: DATABASE_HOST
-    value: calcom-db-rw:5432
+    value: '{{KUBERO_APP_NAME}}-db-rw:5432'
   - name: NODE_ENV
     value: production
   - name: NEXT_PUBLIC_LICENSE_CONSENT

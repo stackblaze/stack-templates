@@ -7,21 +7,21 @@ metadata:
     kubero.dev/template.description: Self-hosted sync server for the Joplin open-source
       note-taking and to-do app, with end-to-end-encrypted multi-device sync and sharing.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/joplin/icon.png
-    kubero.dev/template.installation: Deploy with the bundled PostgreSQL add-on; rotate
-      the Postgres password (and after first login the admin password) from the template
-      defaults before production. Joplin Server validates incoming requests against
-      APP_BASE_URL, so it is set to the deployed public URL via {{KUBERO_APP_URL}}
-      — if you change the hostname you must update this or clients get an 'invalid
-      origin' error. The server listens on port 22300 (APP_PORT) and serves both the
-      web admin UI and the sync API. Storage driver defaults to the database (DB_CLIENT=pg),
-      so notes, attachments and blobs live in Postgres; the joplin-storage volume
-      mounted at /home/joplin/storage is only used if you switch to the filesystem
-      storage driver. On first run the database is migrated automatically; log in
-      to the web UI with the default admin account admin@localhost / admin and change
-      the password immediately, then point Joplin desktop/mobile clients at the URL
-      using the 'Joplin Server' sync target. No external object store, search engine
-      or SMTP is required for a base install (configure MAILER_* env vars later if
-      you want email invitations).
+    kubero.dev/template.installation: "Deploy with the bundled PostgreSQL add-on;\
+      \ rotate the Postgres password (and after first login the admin password) from\
+      \ the template defaults before production. Joplin Server validates incoming\
+      \ requests against APP_BASE_URL, so it is set to the deployed public URL via\
+      \ {{KUBERO_APP_URL}} \u2014 if you change the hostname you must update this\
+      \ or clients get an 'invalid origin' error. The server listens on port 22300\
+      \ (APP_PORT) and serves both the web admin UI and the sync API. Storage driver\
+      \ defaults to the database (DB_CLIENT=pg), so notes, attachments and blobs live\
+      \ in Postgres; the joplin-storage volume mounted at /home/joplin/storage is\
+      \ only used if you switch to the filesystem storage driver. On first run the\
+      \ database is migrated automatically; log in to the web UI with the default\
+      \ admin account admin@localhost / admin and change the password immediately,\
+      \ then point Joplin desktop/mobile clients at the URL using the 'Joplin Server'\
+      \ sync target. No external object store, search engine or SMTP is required for\
+      \ a base install (configure MAILER_* env vars later if you want email invitations)."
     kubero.dev/template.links: '["https://joplinapp.org/help/install/sync", "https://github.com/laurent22/joplin/blob/dev/packages/server/README.md"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/laurent22/joplin
@@ -44,7 +44,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: joplin-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -64,19 +64,19 @@ spec:
               database: joplin
               owner: joplin
               secret:
-                name: joplin-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO joplin
               - GRANT CREATE ON SCHEMA public TO joplin
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO joplin
           enableSuperuserAccess: true
           superuserSecret:
-            name: joplin-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: joplin-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -85,7 +85,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: joplin-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: joplin
@@ -98,7 +98,7 @@ spec:
   - name: DB_CLIENT
     value: pg
   - name: POSTGRES_HOST
-    value: joplin-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: POSTGRES_PORT
     value: '5432'
   - name: POSTGRES_DATABASE
@@ -112,7 +112,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /home/joplin/storage
-    name: joplin-storage
+    name: '{{KUBERO_APP_NAME}}-storage'
     size: 2Gi
     storageClass: slow
   cronjobs: []

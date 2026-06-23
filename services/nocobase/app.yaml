@@ -34,7 +34,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: nocobase-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -54,19 +54,19 @@ spec:
               database: nocobase
               owner: nocobase
               secret:
-                name: nocobase-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO nocobase
               - GRANT CREATE ON SCHEMA public TO nocobase
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nocobase
           enableSuperuserAccess: true
           superuserSecret:
-            name: nocobase-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: nocobase-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -75,7 +75,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: nocobase-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: nocobase
@@ -84,7 +84,7 @@ spec:
   - name: DB_DIALECT
     value: postgres
   - name: DB_HOST
-    value: nocobase-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DB_PORT
     value: 5432
   - name: DB_DATABASE
@@ -102,7 +102,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /app/nocobase/storage
-    name: nocobase-storage
+    name: '{{KUBERO_APP_NAME}}-storage'
     size: 5Gi
     storageClass: slow
   cronjobs: []

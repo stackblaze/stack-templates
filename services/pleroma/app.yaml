@@ -59,7 +59,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: pleroma-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -79,7 +79,7 @@ spec:
               database: pleroma
               owner: pleroma
               secret:
-                name: pleroma-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - CREATE EXTENSION IF NOT EXISTS citext
               - CREATE EXTENSION IF NOT EXISTS pg_trgm
@@ -89,12 +89,12 @@ spec:
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO pleroma
           enableSuperuserAccess: true
           superuserSecret:
-            name: pleroma-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: pleroma-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -103,7 +103,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: pleroma-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: pleroma
@@ -118,7 +118,7 @@ spec:
   - name: NOTIFY_EMAIL
     value: admin@example.com
   - name: DB_HOST
-    value: pleroma-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DB_PORT
     value: '5432'
   - name: DB_NAME
@@ -128,20 +128,20 @@ spec:
   - name: DB_PASS
     value: pleroma
   - name: DATABASE_URL
-    value: postgresql://pleroma:pleroma@pleroma-postgresql-rw:5432/pleroma
+    value: postgresql://pleroma:pleroma@{{KUBERO_APP_NAME}}-postgresql-rw:5432/pleroma
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/lib/pleroma/uploads
-    name: pleroma-uploads
+    name: '{{KUBERO_APP_NAME}}-uploads'
     size: 5Gi
     storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/lib/pleroma/static
-    name: pleroma-static
+    name: '{{KUBERO_APP_NAME}}-static'
     size: 1Gi
     storageClass: slow
   cronjobs: []

@@ -4,15 +4,15 @@ metadata:
   name: firefly-iii
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted personal finance manager — transactions,
-      budgets, bills, piggy banks, reports, and recurring transactions. Full-featured
-      money management.
+    kubero.dev/template.description: "Self-hosted personal finance manager \u2014\
+      \ transactions, budgets, bills, piggy banks, reports, and recurring transactions.\
+      \ Full-featured money management."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefly-iii/icon.png
-    kubero.dev/template.installation: 'APP_KEY must be exactly 32 characters — generate
-      with: openssl rand -base64 24 | tr -d ''/+='' | head -c 32. On first visit,
-      register the first user (becomes admin). Configure your currencies, accounts,
-      and categories. For automatic bank import, deploy the separate Firefly III Data
-      Importer container. File uploads go to the firefly-iii-uploads volume.'
+    kubero.dev/template.installation: "APP_KEY must be exactly 32 characters \u2014\
+      \ generate with: openssl rand -base64 24 | tr -d '/+=' | head -c 32. On first\
+      \ visit, register the first user (becomes admin). Configure your currencies,\
+      \ accounts, and categories. For automatic bank import, deploy the separate Firefly\
+      \ III Data Importer container. File uploads go to the firefly-iii-uploads volume."
     kubero.dev/template.links: '["https://docs.firefly-iii.org/", "https://hub.docker.com/r/fireflyiii/core"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/firefly-iii/firefly-iii
@@ -35,17 +35,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: firefly-iii-db
+          name: '{{KUBERO_APP_NAME}}-db'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: firefly-iii-db-root
+            name: '{{KUBERO_APP_NAME}}-db-root'
             key: password
           database: firefly-iii
           username: firefly-iii
           passwordSecretKeyRef:
-            name: firefly-iii-db-app
+            name: '{{KUBERO_APP_NAME}}-db-app'
             key: password
           storage:
             size: 5Gi
@@ -62,7 +62,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: firefly-iii-db-root
+          name: '{{KUBERO_APP_NAME}}-db-root'
         type: Opaque
         stringData:
           password: firefly-iii
@@ -70,7 +70,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: firefly-iii-db-app
+          name: '{{KUBERO_APP_NAME}}-db-app'
         type: Opaque
         stringData:
           password: firefly-iii
@@ -84,7 +84,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: firefly-iii-cache
+          name: '{{KUBERO_APP_NAME}}-cache'
         spec:
           version: '8.0'
           arch: replica
@@ -113,7 +113,7 @@ spec:
   - name: DB_CONNECTION
     value: mysql
   - name: DB_HOST
-    value: firefly-iii-db
+    value: '{{KUBERO_APP_NAME}}-db'
   - name: DB_PORT
     value: 3306
   - name: DB_DATABASE
@@ -123,7 +123,7 @@ spec:
   - name: DB_PASSWORD
     value: firefly-iii
   - name: REDIS_HOST
-    value: rfr-firefly-iii-cache-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-cache-readwrite
   - name: REDIS_PORT
     value: 6379
   - name: CACHE_DRIVER
@@ -137,7 +137,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/storage/upload
-    name: firefly-iii-uploads
+    name: '{{KUBERO_APP_NAME}}-uploads'
     size: 5Gi
     storageClass: shared
   cronjobs: []

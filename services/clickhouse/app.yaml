@@ -4,15 +4,16 @@ metadata:
   name: clickhouse
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Column-oriented OLAP database for real-time analytics
-      — processes billions of rows per second with sub-second query latency.
+    kubero.dev/template.description: "Column-oriented OLAP database for real-time\
+      \ analytics \u2014 processes billions of rows per second with sub-second query\
+      \ latency."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/clickhouse/icon.png
-    kubero.dev/template.installation: 'Change CLICKHOUSE_PASSWORD. Access the HTTP
-      interface at port 8123 and the Play UI at /play. Connect with any ClickHouse
-      client using host={{KUBERO_APP_HOST}}, port=443, user=admin, password=<your-password>.
-      The native TCP port 9000 is not exposed externally — use the HTTP interface
-      or the JDBC/ODBC drivers via HTTP. Note: ClickHouse is also available as an
-      operator-managed add-on for higher availability.'
+    kubero.dev/template.installation: "Change CLICKHOUSE_PASSWORD. Access the HTTP\
+      \ interface at port 8123 and the Play UI at /play. Connect with any ClickHouse\
+      \ client using host={{KUBERO_APP_HOST}}, port=443, user=admin, password=<your-password>.\
+      \ The native TCP port 9000 is not exposed externally \u2014 use the HTTP interface\
+      \ or the JDBC/ODBC drivers via HTTP. Note: ClickHouse is also available as an\
+      \ operator-managed add-on for higher availability."
     kubero.dev/template.links: '["https://clickhouse.com/docs/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/ClickHouse/ClickHouse
@@ -39,7 +40,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/lib/clickhouse
-    name: clickhouse-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 20Gi
     storageClass: slow
   cronjobs: []

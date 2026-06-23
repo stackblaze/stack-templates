@@ -47,7 +47,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: saleor-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -67,15 +67,15 @@ spec:
               database: saleor
               owner: saleor
               secret:
-                name: saleor-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: saleor-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: saleor-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -84,7 +84,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: saleor-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: saleor
@@ -99,7 +99,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: saleor-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -120,13 +120,13 @@ spec:
               memory: 256Mi
   envVars:
   - name: DATABASE_URL
-    value: postgresql://saleor:saleor@saleor-postgresql-rw:5432/saleor
+    value: postgresql://saleor:saleor@{{KUBERO_APP_NAME}}-postgresql-rw:5432/saleor
   - name: REDIS_URL
-    value: redis://rfr-saleor-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: CACHE_URL
-    value: redis://rfr-saleor-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: CELERY_BROKER_URL
-    value: redis://rfr-saleor-valkey-readwrite:6379/1
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/1
   - name: SECRET_KEY
     value: replace-with-openssl-rand-hex-32
   - name: RSA_PRIVATE_KEY
@@ -208,7 +208,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /app/media
-    name: saleor-media
+    name: '{{KUBERO_APP_NAME}}-media'
     size: 5Gi
     storageClass: slow
   cronjobs: []

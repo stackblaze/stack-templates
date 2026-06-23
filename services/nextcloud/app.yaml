@@ -31,17 +31,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: nextcloud-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: nextcloud-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: nextcloud
           username: nextcloud
           passwordSecretKeyRef:
-            name: nextcloud-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -58,7 +58,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: nextcloud-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: nextcloud
@@ -66,13 +66,13 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: nextcloud-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: nextcloud
   envVars:
   - name: MYSQL_HOST
-    value: nextcloud-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: MYSQL_DATABASE
     value: nextcloud
   - name: MYSQL_USER
@@ -89,7 +89,7 @@ spec:
     storageClass: slow
     emptyDir: false
     mountPath: /var/www/html/data
-    name: nextcloud-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
   cronjobs: []
   web:

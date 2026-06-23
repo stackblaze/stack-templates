@@ -52,17 +52,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: erpnext-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: erpnext-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: erpnext
           username: erpnext
           passwordSecretKeyRef:
-            name: erpnext-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -81,7 +81,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: erpnext-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: erpnext
@@ -89,7 +89,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: erpnext-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: erpnext
@@ -103,7 +103,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: erpnext-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -127,7 +127,7 @@ spec:
             quorum: 2
   envVars:
   - name: DB_HOST
-    value: erpnext-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: DB_PORT
     value: '3306'
   - name: DB_NAME
@@ -137,11 +137,11 @@ spec:
   - name: MARIADB_ROOT_PASSWORD
     value: erpnext
   - name: REDIS_CACHE
-    value: redis://rfr-erpnext-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: REDIS_QUEUE
-    value: redis://rfr-erpnext-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: REDIS_SOCKETIO
-    value: redis://rfr-erpnext-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: SOCKETIO_PORT
     value: '9000'
   - name: GUNICORN_WORKERS

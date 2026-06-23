@@ -46,7 +46,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: hermes-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -66,7 +66,7 @@ spec:
               database: hermes
               owner: hermes
               secret:
-                name: hermes-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - CREATE EXTENSION IF NOT EXISTS citext;
               - GRANT ALL ON SCHEMA public TO hermes
@@ -74,12 +74,12 @@ spec:
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO hermes
           enableSuperuserAccess: true
           superuserSecret:
-            name: hermes-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: hermes-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -88,14 +88,14 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: hermes-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: hermes
           password: hermes
   envVars:
   - name: HERMES_SERVER_POSTGRES_HOST
-    value: hermes-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: HERMES_SERVER_POSTGRES_PORT
     value: '5432'
   - name: HERMES_SERVER_POSTGRES_DBNAME
@@ -121,7 +121,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /hermes/config
-    name: hermes-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: slow
   cronjobs: []

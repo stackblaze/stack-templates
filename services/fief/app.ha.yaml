@@ -27,7 +27,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: fief-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -47,19 +47,19 @@ spec:
               database: fief
               owner: fief
               secret:
-                name: fief-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO fief
               - GRANT CREATE ON SCHEMA public TO fief
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO fief
           enableSuperuserAccess: true
           superuserSecret:
-            name: fief-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: fief-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -68,7 +68,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: fief-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: fief
@@ -109,7 +109,7 @@ spec:
   - name: FORWARDED_ALLOW_IPS
     value: '*'
   - name: DATABASE_URL
-    value: postgresql+asyncpg://fief:fief@fief-postgresql-rw:5432/fief
+    value: postgresql+asyncpg://fief:fief@{{KUBERO_APP_NAME}}-postgresql-rw:5432/fief
   extraVolumes: []
   image:
     containerPort: '8000'

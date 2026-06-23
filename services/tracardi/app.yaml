@@ -45,17 +45,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: tracardi-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: tracardi-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: tracardi
           username: tracardi
           passwordSecretKeyRef:
-            name: tracardi-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -72,7 +72,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: tracardi-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: tracardi
@@ -80,7 +80,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: tracardi-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: tracardi
@@ -94,7 +94,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: tracardi-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -123,11 +123,11 @@ spec:
         apiVersion: application.kubero.dev/v1alpha1
         kind: KuberoOpenSearch
         metadata:
-          name: tracardi-opensearch
+          name: '{{KUBERO_APP_NAME}}-opensearch'
         spec:
           opensearch:
-            clusterName: tracardi-opensearch
-            masterService: tracardi-opensearch
+            clusterName: '{{KUBERO_APP_NAME}}-opensearch'
+            masterService: '{{KUBERO_APP_NAME}}-opensearch'
             image:
               tag: 1.3.20
             singleNode: true
@@ -139,7 +139,7 @@ spec:
             securityConfig:
               enabled: false
             config:
-              opensearch.yml: 'cluster.name: tracardi-opensearch
+              opensearch.yml: 'cluster.name: {{KUBERO_APP_NAME}}-opensearch
 
                 network.host: 0.0.0.0
 
@@ -150,11 +150,11 @@ spec:
                 '
   envVars:
   - name: ELASTIC_HOST
-    value: http://tracardi-opensearch:9200
+    value: http://{{KUBERO_APP_NAME}}-opensearch:9200
   - name: REDIS_HOST
-    value: redis://rfr-tracardi-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: MYSQL_HOST
-    value: tracardi-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: MYSQL_PORT
     value: '3306'
   - name: MYSQL_USERNAME

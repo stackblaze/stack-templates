@@ -33,7 +33,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/data
-    name: owncast-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

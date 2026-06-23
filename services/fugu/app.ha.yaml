@@ -36,7 +36,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: fugu-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -56,7 +56,7 @@ spec:
               database: fugu
               owner: fugu
               secret:
-                name: fugu-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitSQL:
               - ALTER ROLE fugu CREATEDB
               postInitApplicationSQL:
@@ -65,12 +65,12 @@ spec:
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO fugu
           enableSuperuserAccess: true
           superuserSecret:
-            name: fugu-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: fugu-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -79,7 +79,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: fugu-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: fugu
@@ -92,7 +92,7 @@ spec:
   - name: RAILS_SERVE_STATIC_FILES
     value: 'true'
   - name: DATABASE_URL
-    value: postgresql://fugu:fugu@fugu-postgresql-rw:5432/fugu
+    value: postgresql://fugu:fugu@{{KUBERO_APP_NAME}}-postgresql-rw:5432/fugu
   - name: DATABASE_NAME
     value: fugu
   - name: DATABASE_USER

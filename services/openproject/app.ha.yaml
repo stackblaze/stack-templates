@@ -31,7 +31,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: openproject-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -51,19 +51,19 @@ spec:
               database: openproject
               owner: openproject
               secret:
-                name: openproject-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO openproject
               - GRANT CREATE ON SCHEMA public TO openproject
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO openproject
           enableSuperuserAccess: true
           superuserSecret:
-            name: openproject-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: openproject-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -72,7 +72,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: openproject-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: openproject
@@ -83,7 +83,7 @@ spec:
   - name: OPENPROJECT_HOST__NAME
     value: '{{KUBERO_APP_HOST}}'
   - name: DATABASE_URL
-    value: postgresql://openproject:openproject@openproject-postgresql-rw:5432/openproject
+    value: postgresql://openproject:openproject@{{KUBERO_APP_NAME}}-postgresql-rw:5432/openproject
   - name: OPENPROJECT_SECRET_KEY_BASE
     value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: MIGRATE
@@ -95,7 +95,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/openproject/assets
-    name: openproject-assets
+    name: '{{KUBERO_APP_NAME}}-assets'
     size: 5Gi
     storageClass: shared
   cronjobs: []

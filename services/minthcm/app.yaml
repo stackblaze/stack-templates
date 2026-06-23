@@ -40,17 +40,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: minthcm-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: minthcm-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: minthcm
           username: minthcm
           passwordSecretKeyRef:
-            name: minthcm-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: minthcm-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: minthcm
@@ -75,13 +75,13 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: minthcm-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: minthcm
   envVars:
   - name: DB_HOST
-    value: minthcm-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: DB_PORT
     value: '3306'
   - name: DB_NAME
@@ -99,7 +99,7 @@ spec:
   - name: MINT_PASS
     value: minthcm
   - name: ELASTICSEARCH_HOST
-    value: minthcm-elasticsearch
+    value: '{{KUBERO_APP_NAME}}-elasticsearch'
   - name: ELASTICSEARCH_PORT
     value: '9200'
   - name: ELASTICSEARCH_USERNAME
@@ -117,7 +117,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html
-    name: minthcm-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: slow
   - accessModes:

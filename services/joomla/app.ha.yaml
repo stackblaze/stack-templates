@@ -27,17 +27,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: joomla-db
+          name: '{{KUBERO_APP_NAME}}-db'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: joomla-db-root
+            name: '{{KUBERO_APP_NAME}}-db-root'
             key: password
           database: joomla
           username: joomla
           passwordSecretKeyRef:
-            name: joomla-db-app
+            name: '{{KUBERO_APP_NAME}}-db-app'
             key: password
           storage:
             size: 5Gi
@@ -56,7 +56,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: joomla-db-root
+          name: '{{KUBERO_APP_NAME}}-db-root'
         type: Opaque
         stringData:
           password: joomla
@@ -64,7 +64,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: joomla-db-app
+          name: '{{KUBERO_APP_NAME}}-db-app'
         type: Opaque
         stringData:
           password: joomla
@@ -72,7 +72,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: JOOMLA_DB_HOST
-    value: joomla-db
+    value: '{{KUBERO_APP_NAME}}-db'
   - name: JOOMLA_DB_USER
     value: joomla
   - name: JOOMLA_DB_PASSWORD

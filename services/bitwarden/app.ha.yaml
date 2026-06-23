@@ -28,7 +28,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: bitwarden-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -48,15 +48,15 @@ spec:
               database: bitwarden
               owner: bitwarden
               secret:
-                name: bitwarden-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: bitwarden-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: bitwarden-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -65,7 +65,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: bitwarden-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: bitwarden
@@ -76,7 +76,7 @@ spec:
   - name: BW_DB_PROVIDER
     value: postgresql
   - name: BW_DB_SERVER
-    value: bitwarden-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: BW_DB_DATABASE
     value: bitwarden
   - name: BW_DB_USERNAME

@@ -39,7 +39,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: cryptgeon-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -60,7 +60,7 @@ spec:
               memory: 256Mi
   envVars:
   - name: REDIS
-    value: redis://rfr-cryptgeon-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: SIZE_LIMIT
     value: 4 MiB
   - name: MAX_VIEWS

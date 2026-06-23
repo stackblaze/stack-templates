@@ -26,7 +26,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: undleash-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -46,15 +46,15 @@ spec:
               database: postgres
               owner: postgres
               secret:
-                name: undleash-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: undleash-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: undleash-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -63,7 +63,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: undleash-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -80,7 +80,7 @@ spec:
   - name: INIT_CLIENT_API_TOKENS
     value: default:development.unleash-insecure-api-token
   - name: DATABASE_URL
-    value: postgres://postgres:postgres@undleash-postgresql-rw/postgres
+    value: postgres://postgres:postgres@{{KUBERO_APP_NAME}}-postgresql-rw/postgres
   extraVolumes: []
   image:
     containerPort: '4242'

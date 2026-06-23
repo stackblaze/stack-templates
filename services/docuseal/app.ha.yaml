@@ -21,13 +21,13 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgresql://docuseal:docuseal@docuseal-postgresql-rw:5432/docuseal
+    value: postgresql://docuseal:docuseal@{{KUBERO_APP_NAME}}-postgresql-rw:5432/docuseal
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
-    name: docuseal-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []
@@ -42,7 +42,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: docuseal-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -62,19 +62,19 @@ spec:
               database: docuseal
               owner: docuseal
               secret:
-                name: docuseal-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO docuseal
               - GRANT CREATE ON SCHEMA public TO docuseal
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO docuseal
           enableSuperuserAccess: true
           superuserSecret:
-            name: docuseal-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: docuseal-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -83,7 +83,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: docuseal-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: docuseal

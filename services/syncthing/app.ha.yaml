@@ -4,8 +4,8 @@ metadata:
   name: syncthing
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Continuous file synchronization — decentralized
-      alternative to proprietary sync services.
+    kubero.dev/template.description: "Continuous file synchronization \u2014 decentralized\
+      \ alternative to proprietary sync services."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/syncthing/icon.png
     kubero.dev/template.installation: Access the web UI to pair devices and configure
       sync folders.
@@ -31,7 +31,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/syncthing
-    name: syncthing-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 2Gi
     storageClass: shared
   cronjobs: []

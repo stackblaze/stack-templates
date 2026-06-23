@@ -8,17 +8,17 @@ metadata:
       that manages profiles, segments and events with a privacy-first context server
       and standards-based API.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/unomi/icon.png
-    kubero.dev/template.installation: Apache Unomi 3.x requires Elasticsearch 9.x
-      for all profile/event/segment storage. This template provisions a single-node
-      Elasticsearch 9.1.3 companion (`elasticsearch` Service on :9200) automatically;
-      for production HA you may point UNOMI_ELASTICSEARCH_ADDRESSES at an external
-      cluster instead. Unomi's Karaf runtime state lives on the persistent volume
-      at /opt/apache-unomi/data. The HTTP context-server and REST API listen on 8181
-      (TLS :9443 and Karaf SSH :8102 are also exposed but need separate routing).
-      Rotate UNOMI_THIRDPARTY_PROVIDER1_KEY and UNOMI_ROOT_PASSWORD from the placeholders
-      before production; tighten UNOMI_THIRDPARTY_PROVIDER1_IPADDRESSES from 0.0.0.0/0.
-      Manage profiles and rules via the REST API / Karaf console — there is no bundled
-      web admin UI.
+    kubero.dev/template.installation: "Apache Unomi 3.x requires Elasticsearch 9.x\
+      \ for all profile/event/segment storage. This template provisions a single-node\
+      \ Elasticsearch 9.1.3 companion (`elasticsearch` Service on :9200) automatically;\
+      \ for production HA you may point UNOMI_ELASTICSEARCH_ADDRESSES at an external\
+      \ cluster instead. Unomi's Karaf runtime state lives on the persistent volume\
+      \ at /opt/apache-unomi/data. The HTTP context-server and REST API listen on\
+      \ 8181 (TLS :9443 and Karaf SSH :8102 are also exposed but need separate routing).\
+      \ Rotate UNOMI_THIRDPARTY_PROVIDER1_KEY and UNOMI_ROOT_PASSWORD from the placeholders\
+      \ before production; tighten UNOMI_THIRDPARTY_PROVIDER1_IPADDRESSES from 0.0.0.0/0.\
+      \ Manage profiles and rules via the REST API / Karaf console \u2014 there is\
+      \ no bundled web admin UI."
     kubero.dev/template.links: '["https://unomi.apache.org/manual/latest/index.html",
       "https://github.com/apache/unomi/tree/master/docker"]'
     kubero.dev/template.screenshots: '[]'
@@ -42,7 +42,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: unomi-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -65,7 +65,7 @@ spec:
         apiVersion: apps/v1
         kind: Deployment
         metadata:
-          name: unomi-es
+          name: '{{KUBERO_APP_NAME}}-es'
         spec:
           replicas: 3
           strategy:
@@ -100,7 +100,7 @@ spec:
                 - name: data
                   mountPath: /usr/share/elasticsearch/data
               containers:
-              - name: unomi-es
+              - name: '{{KUBERO_APP_NAME}}-es'
                 image: docker.elastic.co/elasticsearch/elasticsearch:9.1.3
                 imagePullPolicy: Always
                 ports:
@@ -142,7 +142,7 @@ spec:
         apiVersion: v1
         kind: PersistentVolumeClaim
         metadata:
-          name: unomi-es-data
+          name: '{{KUBERO_APP_NAME}}-es-data'
         spec:
           accessModes:
           - ReadWriteOnce
@@ -154,7 +154,7 @@ spec:
         apiVersion: v1
         kind: Service
         metadata:
-          name: unomi-es
+          name: '{{KUBERO_APP_NAME}}-es'
         spec:
           type: ClusterIP
           selector:
@@ -165,7 +165,7 @@ spec:
             targetPort: 9200
   envVars:
   - name: UNOMI_ELASTICSEARCH_ADDRESSES
-    value: unomi-es:9200
+    value: '{{KUBERO_APP_NAME}}-es:9200'
   - name: UNOMI_ELASTICSEARCH_CLUSTERNAME
     value: contextElasticSearch
   - name: UNOMI_CLUSTER_PUBLIC_ADDRESS
@@ -185,7 +185,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /opt/apache-unomi/data
-    name: unomi-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []

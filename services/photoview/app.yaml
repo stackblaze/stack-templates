@@ -27,17 +27,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: photoview-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: photoview-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: photoview
           username: photoview
           passwordSecretKeyRef:
-            name: photoview-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -54,7 +54,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: photoview-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: rootpw
@@ -62,7 +62,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: photoview-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: photoview
@@ -76,7 +76,7 @@ spec:
   - name: PHOTOVIEW_DATABASE_DRIVER
     value: mysql
   - name: PHOTOVIEW_MYSQL_URL
-    value: photoview:photoview@tcp(photoview-mysql)/photoview
+    value: photoview:photoview@tcp({{KUBERO_APP_NAME}}-mysql)/photoview
   - name: PHOTOVIEW_LISTEN_IP
     value: 0.0.0.0
   - name: PHOTOVIEW_LISTEN_PORT

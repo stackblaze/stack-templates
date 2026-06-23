@@ -39,7 +39,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /config
-    name: tasksmd-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: slow
   healthcheck:

@@ -8,29 +8,17 @@ metadata:
       building modern websites, apps and digital experiences with a Java-based, API-first
       platform.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1005263?s=200&v=4
-    kubero.dev/template.installation: 'Default admin login is `admin@dotcms.com` /
-      `admin`. Change `DOT_INITIAL_ADMIN_PASSWORD` before exposing the instance.
-
-
-      Provisions two addons automatically:
-
-      - **PostgreSQL 16** via the **CloudNativePG** operator (`dotcms-db`) — dotCMS
-      supports PostgreSQL 13–16. Requires the CloudNativePG operator on the cluster.
-
-      - **OpenSearch 1.3.x** (`dotcms-opensearch`) — dotCMS does *not* support OpenSearch
-      2.x or 3.x. Do not bump the image tag.
-
-
-      This is the single-instance tier. For a clustered, failover-capable deployment
-      (3-node Postgres + 2 dotCMS replicas) pick the **High availability** deployment
-      type when installing.
-
-
-      First boot takes 2–5 minutes while dotCMS initializes the schema and indices.
-      Wait for both addons to become Ready before the dotCMS pod will pass its startup
-      checks.
-
-      '
+    kubero.dev/template.installation: "Default admin login is `admin@dotcms.com` /\
+      \ `admin`. Change `DOT_INITIAL_ADMIN_PASSWORD` before exposing the instance.\n\
+      \nProvisions two addons automatically:\n- **PostgreSQL 16** via the **CloudNativePG**\
+      \ operator (`dotcms-db`) \u2014 dotCMS supports PostgreSQL 13\u201316. Requires\
+      \ the CloudNativePG operator on the cluster.\n- **OpenSearch 1.3.x** (`dotcms-opensearch`)\
+      \ \u2014 dotCMS does *not* support OpenSearch 2.x or 3.x. Do not bump the image\
+      \ tag.\n\nThis is the single-instance tier. For a clustered, failover-capable\
+      \ deployment (3-node Postgres + 2 dotCMS replicas) pick the **High availability**\
+      \ deployment type when installing.\n\nFirst boot takes 2\u20135 minutes while\
+      \ dotCMS initializes the schema and indices. Wait for both addons to become\
+      \ Ready before the dotCMS pod will pass its startup checks.\n"
     kubero.dev/template.links: '["https://dev.dotcms.com/docs/", "https://github.com/dotCMS/core"]'
     kubero.dev/template.screenshots: '["https://www.dotcms.com/dA/cd72e798-1e69/1000w/dotcms-edit-mode.png"]'
     kubero.dev/template.source: https://github.com/dotCMS/core
@@ -50,13 +38,13 @@ spec:
   - name: TZ
     value: UTC
   - name: DB_BASE_URL
-    value: jdbc:postgresql://dotcms-db-rw:5432/dotcms
+    value: jdbc:postgresql://{{KUBERO_APP_NAME}}-db-rw:5432/dotcms
   - name: DB_USERNAME
     value: dotcmsdbuser
   - name: DB_PASSWORD
     value: password
   - name: DOT_ES_ENDPOINTS
-    value: http://dotcms-opensearch:9200
+    value: http://{{KUBERO_APP_NAME}}-opensearch:9200
   - name: DOT_ES_AUTH_TYPE
     value: NONE
   - name: DOT_INITIAL_ADMIN_PASSWORD
@@ -69,7 +57,7 @@ spec:
     storageClass: slow
     emptyDir: false
     mountPath: /data/shared
-    name: dotcms-shared
+    name: '{{KUBERO_APP_NAME}}-shared'
     size: 10Gi
   cronjobs: []
   addons:
@@ -83,7 +71,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: dotcms-db
+          name: '{{KUBERO_APP_NAME}}-db'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -103,19 +91,19 @@ spec:
               database: dotcms
               owner: dotcmsdbuser
               secret:
-                name: dotcms-db-app
+                name: '{{KUBERO_APP_NAME}}-db-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO dotcmsdbuser
               - GRANT CREATE ON SCHEMA public TO dotcmsdbuser
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO dotcmsdbuser
           enableSuperuserAccess: true
           superuserSecret:
-            name: dotcms-db-superuser
+            name: '{{KUBERO_APP_NAME}}-db-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: dotcms-db-superuser
+          name: '{{KUBERO_APP_NAME}}-db-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -124,7 +112,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: dotcms-db-app
+          name: '{{KUBERO_APP_NAME}}-db-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: dotcmsdbuser
@@ -139,11 +127,11 @@ spec:
         apiVersion: application.kubero.dev/v1alpha1
         kind: KuberoOpenSearch
         metadata:
-          name: dotcms-opensearch
+          name: '{{KUBERO_APP_NAME}}-opensearch'
         spec:
           opensearch:
-            clusterName: dotcms-opensearch
-            masterService: dotcms-opensearch
+            clusterName: '{{KUBERO_APP_NAME}}-opensearch'
+            masterService: '{{KUBERO_APP_NAME}}-opensearch'
             image:
               tag: 1.3.20
             singleNode: true
@@ -155,7 +143,7 @@ spec:
             securityConfig:
               enabled: false
             config:
-              opensearch.yml: 'cluster.name: dotcms-opensearch
+              opensearch.yml: 'cluster.name: {{KUBERO_APP_NAME}}-opensearch
 
                 network.host: 0.0.0.0
 

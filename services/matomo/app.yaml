@@ -4,8 +4,8 @@ metadata:
   name: matomo
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Full-featured PHP analytics platform — privacy-focused
-      alternative to Google Analytics.
+    kubero.dev/template.description: "Full-featured PHP analytics platform \u2014\
+      \ privacy-focused alternative to Google Analytics."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/matomo/icon.png
     kubero.dev/template.installation: Complete the web setup wizard using the MariaDB
       credentials from this template.
@@ -31,17 +31,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: matomo-mysql
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: matomo-mysql-root
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: matomo
           username: matomo
           passwordSecretKeyRef:
-            name: matomo-mysql-app
+            name: '{{KUBERO_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -58,7 +58,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: matomo-mysql-root
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: matomo
@@ -66,7 +66,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: matomo-mysql-app
+          name: '{{KUBERO_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: matomo
@@ -74,7 +74,7 @@ spec:
   - name: MATOMO_DATABASE_ADAPTER
     value: mysql
   - name: MATOMO_DATABASE_HOST
-    value: matomo-mysql
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: MATOMO_DATABASE_USERNAME
     value: matomo
   - name: MATOMO_DATABASE_PASSWORD
@@ -88,7 +88,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html
-    name: matomo-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: slow
   cronjobs: []

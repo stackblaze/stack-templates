@@ -55,7 +55,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /opt/dremio/data
-    name: dremio-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

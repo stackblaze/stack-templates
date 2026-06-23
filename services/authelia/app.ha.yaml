@@ -47,7 +47,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: authelia-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -67,19 +67,19 @@ spec:
               database: authelia
               owner: authelia
               secret:
-                name: authelia-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO authelia
               - GRANT CREATE ON SCHEMA public TO authelia
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO authelia
           enableSuperuserAccess: true
           superuserSecret:
-            name: authelia-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: authelia-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -88,7 +88,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: authelia-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: authelia
@@ -103,7 +103,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: authelia-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover
@@ -127,7 +127,7 @@ spec:
             quorum: 2
   envVars:
   - name: AUTHELIA_STORAGE_POSTGRES_ADDRESS
-    value: tcp://authelia-postgresql-rw:5432
+    value: tcp://{{KUBERO_APP_NAME}}-postgresql-rw:5432
   - name: AUTHELIA_STORAGE_POSTGRES_DATABASE
     value: authelia
   - name: AUTHELIA_STORAGE_POSTGRES_USERNAME
@@ -135,7 +135,7 @@ spec:
   - name: AUTHELIA_STORAGE_POSTGRES_PASSWORD
     value: authelia
   - name: AUTHELIA_SESSION_REDIS_HOST
-    value: rfr-authelia-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: AUTHELIA_SESSION_REDIS_PORT
     value: '6379'
   - name: AUTHELIA_STORAGE_ENCRYPTION_KEY
@@ -153,7 +153,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /config
-    name: authelia-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: shared
   cronjobs: []

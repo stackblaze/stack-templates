@@ -4,9 +4,9 @@ metadata:
   name: baserow
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source no-code database and Airtable alternative
-      — build relational databases, forms, and automations with a spreadsheet-like
-      UI.
+    kubero.dev/template.description: "Open-source no-code database and Airtable alternative\
+      \ \u2014 build relational databases, forms, and automations with a spreadsheet-like\
+      \ UI."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/icon.png
     kubero.dev/template.installation: Change SECRET_KEY to a random string. The all-in-one
       image bundles the API, web frontend, and background workers. On first visit,
@@ -35,7 +35,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: baserow-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -55,19 +55,19 @@ spec:
               database: baserow
               owner: baserow
               secret:
-                name: baserow-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO baserow
               - GRANT CREATE ON SCHEMA public TO baserow
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO baserow
           enableSuperuserAccess: true
           superuserSecret:
-            name: baserow-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: baserow-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -76,7 +76,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: baserow-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: baserow
@@ -91,7 +91,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: baserow-cache
+          name: '{{KUBERO_APP_NAME}}-cache'
         spec:
           version: '8.0'
           arch: replica
@@ -112,7 +112,7 @@ spec:
               memory: 256Mi
   envVars:
   - name: DATABASE_HOST
-    value: baserow-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DATABASE_PORT
     value: 5432
   - name: DATABASE_NAME
@@ -122,7 +122,7 @@ spec:
   - name: DATABASE_PASSWORD
     value: baserow
   - name: REDIS_URL
-    value: redis://rfr-baserow-cache-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-cache-readwrite:6379/0
   - name: BASEROW_PUBLIC_URL
     value: '{{KUBERO_APP_URL}}'
   - name: SECRET_KEY

@@ -50,7 +50,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: opnform-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -74,15 +74,15 @@ spec:
               - GRANT CREATE ON SCHEMA public TO opnform
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO opnform
               secret:
-                name: opnform-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: opnform-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: opnform-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -91,7 +91,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: opnform-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: opnform
@@ -106,7 +106,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: opnform-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -141,7 +141,7 @@ spec:
   - name: DB_CONNECTION
     value: pgsql
   - name: DB_HOST
-    value: opnform-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DB_PORT
     value: '5432'
   - name: DB_DATABASE
@@ -151,7 +151,7 @@ spec:
   - name: DB_PASSWORD
     value: opnform
   - name: REDIS_HOST
-    value: rfr-opnform-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: REDIS_PORT
     value: '6379'
   - name: QUEUE_CONNECTION
@@ -175,7 +175,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /usr/share/nginx/html/storage/app
-    name: opnform-storage
+    name: '{{KUBERO_APP_NAME}}-storage'
     size: 5Gi
     storageClass: slow
   cronjobs: []

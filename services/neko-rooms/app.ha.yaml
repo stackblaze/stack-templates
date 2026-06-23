@@ -63,7 +63,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
-    name: neko-rooms-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

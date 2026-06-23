@@ -30,14 +30,14 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/storage/data
-    name: cockpit-storage-data
+    name: '{{KUBERO_APP_NAME}}-storage-data'
     size: 1Gi
     storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/storage/uploads
-    name: cockpit-storage-uploads
+    name: '{{KUBERO_APP_NAME}}-storage-uploads'
     size: 1Gi
     storageClass: slow
   cronjobs: []

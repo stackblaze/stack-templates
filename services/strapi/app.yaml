@@ -4,9 +4,9 @@ metadata:
   name: strapi
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Most popular open-source headless CMS — REST
-      and GraphQL APIs, role-based access, media library, and a customisable admin
-      panel.
+    kubero.dev/template.description: "Most popular open-source headless CMS \u2014\
+      \ REST and GraphQL APIs, role-based access, media library, and a customisable\
+      \ admin panel."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/icon.png
     kubero.dev/template.installation: Change JWT_SECRET, ADMIN_JWT_SECRET, APP_KEYS,
       API_TOKEN_SALT, and TRANSFER_TOKEN_SALT to unique random values. Access the
@@ -35,7 +35,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: strapi-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -55,19 +55,19 @@ spec:
               database: strapi
               owner: strapi
               secret:
-                name: strapi-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO strapi
               - GRANT CREATE ON SCHEMA public TO strapi
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO strapi
           enableSuperuserAccess: true
           superuserSecret:
-            name: strapi-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: strapi-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -76,7 +76,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: strapi-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: strapi
@@ -85,7 +85,7 @@ spec:
   - name: DATABASE_CLIENT
     value: postgres
   - name: DATABASE_HOST
-    value: strapi-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: DATABASE_PORT
     value: 5432
   - name: DATABASE_NAME
@@ -115,7 +115,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/app/public/uploads
-    name: strapi-uploads
+    name: '{{KUBERO_APP_NAME}}-uploads'
     size: 10Gi
     storageClass: slow
   cronjobs: []

@@ -44,7 +44,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /www/flow
-    name: totaljs-flow-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []

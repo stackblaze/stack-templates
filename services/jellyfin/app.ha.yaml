@@ -33,14 +33,14 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /config
-    name: jellyfin-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 4Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /media
-    name: jellyfin-media
+    name: '{{KUBERO_APP_NAME}}-media'
     size: 10Gi
     storageClass: shared
   cronjobs: []

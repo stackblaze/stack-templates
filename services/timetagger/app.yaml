@@ -30,7 +30,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /data/_timetagger
-    name: timetagger-data
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
     storageClass: slow
   image:

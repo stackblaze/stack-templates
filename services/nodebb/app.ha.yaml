@@ -4,8 +4,8 @@ metadata:
   name: nodebb
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Next-generation forum software — powerful, mobile-ready,
-      and fully customizable.
+    kubero.dev/template.description: "Next-generation forum software \u2014 powerful,\
+      \ mobile-ready, and fully customizable."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nodebb/icon.png
     kubero.dev/template.installation: First boot runs automated install via NODEBB_*
       env vars (takes several minutes). Change admin password after login.
@@ -31,7 +31,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: nodebb-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -51,19 +51,19 @@ spec:
               database: nodebb
               owner: nodebb
               secret:
-                name: nodebb-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO nodebb
               - GRANT CREATE ON SCHEMA public TO nodebb
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nodebb
           enableSuperuserAccess: true
           superuserSecret:
-            name: nodebb-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: nodebb-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -72,7 +72,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: nodebb-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: nodebb
@@ -91,7 +91,7 @@ spec:
   - name: NODEBB_DB
     value: postgres
   - name: NODEBB_DB_HOST
-    value: nodebb-postgresql-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: NODEBB_DB_PORT
     value: '5432'
   - name: NODEBB_DB_USER
@@ -112,14 +112,14 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /usr/src/app/public/uploads
-    name: nodebb-uploads
+    name: '{{KUBERO_APP_NAME}}-uploads'
     size: 2Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /opt/config
-    name: nodebb-config
+    name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
     storageClass: shared
   cronjobs: []

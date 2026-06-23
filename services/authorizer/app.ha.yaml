@@ -26,7 +26,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: authorizer-db
+          name: '{{KUBERO_APP_NAME}}-db'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -46,19 +46,19 @@ spec:
               database: authorizer
               owner: authorizer
               secret:
-                name: authorizer-db-app
+                name: '{{KUBERO_APP_NAME}}-db-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO authorizer
               - GRANT CREATE ON SCHEMA public TO authorizer
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO authorizer
           enableSuperuserAccess: true
           superuserSecret:
-            name: authorizer-db-superuser
+            name: '{{KUBERO_APP_NAME}}-db-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: authorizer-db-superuser
+          name: '{{KUBERO_APP_NAME}}-db-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: authorizer-db-app
+          name: '{{KUBERO_APP_NAME}}-db-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: authorizer
@@ -78,7 +78,7 @@ spec:
   - name: DATABASE_TYPE
     value: postgres
   - name: DATABASE_URL
-    value: postgresql://authorizer:authorizer@authorizer-db-rw:5432/authorizer
+    value: postgresql://authorizer:authorizer@{{KUBERO_APP_NAME}}-db-rw:5432/authorizer
   - name: CLIENT_ID
     value: authorizer-client
   - name: CLIENT_SECRET

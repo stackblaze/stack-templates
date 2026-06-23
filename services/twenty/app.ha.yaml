@@ -31,7 +31,7 @@ spec:
   - name: CACHE_STORAGE_TYPE
     value: redis
   - name: REDIS_URL
-    value: redis://rfr-twenty-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: API_RATE_LIMITING_TTL
     value: '100'
   - name: API_RATE_LIMITING_LIMIT
@@ -41,7 +41,7 @@ spec:
   - name: POSTGRES_ADMIN_PASSWORD
     value: twenty
   - name: PG_DATABASE_URL
-    value: postgres://twenty:twenty@twenty-postgresql-rw:5432/twenty
+    value: postgres://twenty:twenty@{{KUBERO_APP_NAME}}-postgresql-rw:5432/twenty
   - name: IS_SIGN_UP_DISABLED
     value: 'false'
   - name: PASSWORD_RESET_TOKEN_EXPIRES_IN
@@ -69,7 +69,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/docker-data/
-    name: twenty-data-volume
+    name: '{{KUBERO_APP_NAME}}-data-volume'
     size: 1Gi
     storageClass: shared
   cronjobs: []
@@ -84,7 +84,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: twenty-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -104,19 +104,19 @@ spec:
               database: twenty
               owner: twenty
               secret:
-                name: twenty-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO twenty
               - GRANT CREATE ON SCHEMA public TO twenty
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO twenty
           enableSuperuserAccess: true
           superuserSecret:
-            name: twenty-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: twenty-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -125,7 +125,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: twenty-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: twenty
@@ -140,7 +140,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: twenty-valkey
+          name: '{{KUBERO_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: failover

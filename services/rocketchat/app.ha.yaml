@@ -7,9 +7,10 @@ metadata:
       communications platform developed in JavaScript for organizations with high
       standards of data protection.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rocketchat/icon.png
-    kubero.dev/template.installation: First boot can take several minutes while Rocket.Chat
-      runs MongoDB migrations. Requires at least 2Gi memory. Pin to 5.4.10 — Microsoft
-      DocumentDB lacks MongoDB collation indexes (breaks 6.x) and full oplog support.
+    kubero.dev/template.installation: "First boot can take several minutes while Rocket.Chat\
+      \ runs MongoDB migrations. Requires at least 2Gi memory. Pin to 5.4.10 \u2014\
+      \ Microsoft DocumentDB lacks MongoDB collation indexes (breaks 6.x) and full\
+      \ oplog support."
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://global-uploads.webflow.com/611a19b9853b7414a0f6b3f6/6464d93d33af48db33864025_Team%20Collab.webp","https://global-uploads.webflow.com/611a19b9853b7414a0f6b3f6/615d85d3d3ae5682e8571dfb_Group%203924%20(1).png"]'
     kubero.dev/template.source: https://github.com/RocketChat/Rocket.Chat
@@ -29,7 +30,7 @@ spec:
         apiVersion: documentdb.io/preview
         kind: DocumentDB
         metadata:
-          name: rocketchat-documentdb
+          name: '{{KUBERO_APP_NAME}}-documentdb'
         spec:
           nodeCount: 1
           instancesPerNode: 1
@@ -53,9 +54,9 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: MONGO_URL
-    value: mongodb://mongoadmin:changeme@documentdb-service-rocketchat-documentdb:10260/rocketchat?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false&serverSelectionTimeoutMS=60000
+    value: mongodb://mongoadmin:changeme@documentdb-service-{{KUBERO_APP_NAME}}-documentdb:10260/rocketchat?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false&serverSelectionTimeoutMS=60000
   - name: MONGO_OPLOG_URL
-    value: mongodb://mongoadmin:changeme@documentdb-service-rocketchat-documentdb:10260/local?authSource=admin&directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false
+    value: mongodb://mongoadmin:changeme@documentdb-service-{{KUBERO_APP_NAME}}-documentdb:10260/local?authSource=admin&directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false
   - name: ROOT_URL
     value: '{{KUBERO_APP_URL}}'
   - name: HTTP_FORWARDED_COUNT

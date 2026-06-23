@@ -28,7 +28,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: ryot-postgresql
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -48,19 +48,19 @@ spec:
               database: ryot
               owner: ryot
               secret:
-                name: ryot-postgresql-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO ryot
               - GRANT CREATE ON SCHEMA public TO ryot
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ryot
           enableSuperuserAccess: true
           superuserSecret:
-            name: ryot-postgresql-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: ryot-postgresql-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -69,7 +69,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: ryot-postgresql-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: ryot
@@ -78,7 +78,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgres://ryot:ryot@ryot-postgresql-rw:5432/ryot
+    value: postgres://ryot:ryot@{{KUBERO_APP_NAME}}-postgresql-rw:5432/ryot
   - name: FRONTEND_URL
     value: '{{KUBERO_APP_URL}}'
   - name: SERVER_ADMIN_ACCESS_TOKEN

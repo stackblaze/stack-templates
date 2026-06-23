@@ -104,7 +104,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/storage
-    name: monica-storage
+    name: '{{KUBERO_APP_NAME}}-storage'
     size: 1Gi
     storageClass: shared
   cronjobs: []
