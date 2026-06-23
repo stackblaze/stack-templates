@@ -176,12 +176,12 @@ spec:
     value: 'false'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /data
     name: peertube-data
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
@@ -199,3 +199,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/peertube
     tag: production-bullseye
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

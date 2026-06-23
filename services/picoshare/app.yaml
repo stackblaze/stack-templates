@@ -34,12 +34,12 @@ spec:
     value: replace-with-openssl-rand-hex-32
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /data
     name: picoshare-data
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -50,3 +50,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/picoshare
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

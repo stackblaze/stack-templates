@@ -99,3 +99,6 @@ spec:
     pullPolicy: Always
     repository: glpi/glpi
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

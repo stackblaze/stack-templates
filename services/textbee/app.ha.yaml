@@ -1,0 +1,104 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: textbee
+  annotations:
+    kubero.dev/template.architecture: '["amd64", "arm64"]'
+    kubero.dev/template.description: textbee.dev is an opensource and free sms-gatway
+      for sending SMS messages through API or dashboard web interface.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/38871878
+    kubero.dev/template.installation: Includes web dashboard and DocumentDB. Deploy
+      ghcr.io/vernu/textbee/api in the same pipeline phase as a second app named textbee-api
+      (port 3001) so the web UI can reach the SMS API at http://textbee-api:3001/api/v1.
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/vernu/textbee
+    kubero.dev/template.categories: '["notification"]'
+    kubero.dev/template.title: Textbee
+    kubero.dev/template.website: https://textbee.dev/
+  labels:
+    manager: kubero
+spec:
+  name: textbee
+  deploymentstrategy: docker
+  envVars:
+  - name: NEXTAUTH_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: AUTH_SECRET
+    value: random32
+  - name: CONTAINER_RUNTIME
+    value: k8s
+  - name: NEXT_PUBLIC_API_BASE_URL
+    value: http://textbee-api:3001/api/v1
+  - name: NEXT_PUBLIC_GOOGLE_CLIENT_ID
+    value: ''
+  - name: NEXT_PUBLIC_TAWKTO_EMBED_URL
+    value: ''
+  - name: ADMIN_EMAIL
+    value: ''
+  - name: DATABASE_URL
+    value: mongodb://mongoadmin:changeme@documentdb-service-textbee-documentdb:10260/textbee?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
+  - name: MAIL_HOST
+    value: ''
+  - name: MAIL_PORT
+    value: ''
+  - name: MAIL_USER
+    value: ''
+  - name: MAIL_PASS
+    value: ''
+  - name: MAIL_FROM
+    value: ''
+  extraVolumes: []
+  cronjobs: []
+  addons:
+  - displayName: Document DB
+    env: []
+    icon: /img/addons/mongo.svg
+    id: kubero-operator
+    kind: DocumentDB
+    resourceDefinitions:
+      DocumentDB:
+        apiVersion: documentdb.io/preview
+        kind: DocumentDB
+        metadata:
+          name: textbee-documentdb
+        spec:
+          nodeCount: 1
+          instancesPerNode: 1
+          documentDbCredentialSecret: documentdb-credentials
+          resource:
+            storage:
+              pvcSize: 1Gi
+              storageClass: default
+          exposeViaService:
+            serviceType: ClusterIP
+      credentialSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: documentdb-credentials
+        type: Opaque
+        stringData:
+          username: mongoadmin
+          password: changeme
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: ghcr.io/vernu/textbee/web
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: false

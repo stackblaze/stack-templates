@@ -28,17 +28,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: "{{KUBERO_APP_NAME}}-bookstack-mysql"
+          name: '{{KUBERO_APP_NAME}}-bookstack-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: "{{KUBERO_APP_NAME}}-bookstack-mysql-root"
+            name: '{{KUBERO_APP_NAME}}-bookstack-mysql-root'
             key: password
           database: bookstack
           username: bookstack
           passwordSecretKeyRef:
-            name: "{{KUBERO_APP_NAME}}-bookstack-mysql-app"
+            name: '{{KUBERO_APP_NAME}}-bookstack-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -49,13 +49,13 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
       rootSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: "{{KUBERO_APP_NAME}}-bookstack-mysql-root"
+          name: '{{KUBERO_APP_NAME}}-bookstack-mysql-root'
         type: Opaque
         stringData:
           password: bookstack
@@ -63,7 +63,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: "{{KUBERO_APP_NAME}}-bookstack-mysql-app"
+          name: '{{KUBERO_APP_NAME}}-bookstack-mysql-app'
         type: Opaque
         stringData:
           password: bookstack
@@ -77,11 +77,11 @@ spec:
   - name: TZ
     value: Etc/UTC
   - name: APP_URL
-    value: "{{KUBERO_APP_URL}}"
+    value: '{{KUBERO_APP_URL}}'
   - name: APP_KEY
     value: base64:dm1hdnZvbmdvaDhxcTlnZXZkeXVzdmU4MnRnaWlhcDg=
   - name: DB_HOST
-    value: "{{KUBERO_APP_NAME}}-bookstack-mysql"
+    value: '{{KUBERO_APP_NAME}}-bookstack-mysql'
   - name: DB_PORT
     value: '3306'
   - name: DB_USERNAME
@@ -96,6 +96,9 @@ spec:
     pullPolicy: Always
     repository: lscr.io/linuxserver/bookstack
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: bookstack
   web:
     replicaCount: 1

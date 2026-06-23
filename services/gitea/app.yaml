@@ -101,7 +101,7 @@ spec:
     repository: gitea/gitea
     run:
       securityContext:
-        readOnlyRootFilesystem: false
+        readOnlyRootFilesystem: true
     tag: latest
   name: gitea
   web:

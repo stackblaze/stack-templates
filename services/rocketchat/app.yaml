@@ -71,8 +71,10 @@ spec:
     containerPort: '3000'
     pullPolicy: Always
     repository: rocketchat/rocket.chat
-    tag: '5.4.10'
-  # Default QA LimitRange caps web pods at 512Mi; Rocket.Chat OOMs during boot.
+    tag: 5.4.10
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   resources:
     requests:
       cpu: 500m
@@ -80,7 +82,6 @@ spec:
     limits:
       cpu: '1'
       memory: 2Gi
-  # /api/info returns 200 JSON once Meteor is ready; / often 503 during boot.
   healthcheck:
     enabled: true
     path: /api/info

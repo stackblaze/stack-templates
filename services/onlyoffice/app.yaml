@@ -201,3 +201,6 @@ spec:
     pullPolicy: Always
     repository: onlyoffice/documentserver
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

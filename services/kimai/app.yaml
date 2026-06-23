@@ -113,3 +113,6 @@ spec:
     pullPolicy: Always
     repository: kimai/kimai2
     tag: apache
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

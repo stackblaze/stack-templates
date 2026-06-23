@@ -128,3 +128,6 @@ spec:
     pullPolicy: Always
     repository: nocobase/nocobase
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

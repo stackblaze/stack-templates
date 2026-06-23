@@ -90,12 +90,12 @@ spec:
     value: erugo
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/storage
     name: erugo-storage
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -106,3 +106,6 @@ spec:
     pullPolicy: Always
     repository: wardy784/erugo
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

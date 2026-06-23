@@ -27,19 +27,19 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/storage/data
     name: cockpit-storage-data
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/storage/uploads
     name: cockpit-storage-uploads
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   addons: []
   name: cockpit
@@ -53,3 +53,6 @@ spec:
     pullPolicy: Always
     repository: cockpithq/cockpit
     tag: core-latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

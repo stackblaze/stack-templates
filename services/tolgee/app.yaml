@@ -122,6 +122,9 @@ spec:
     pullPolicy: Always
     repository: tolgee/tolgee
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   healthcheck:
     enabled: true
     path: /actuator/health

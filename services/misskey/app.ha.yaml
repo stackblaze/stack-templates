@@ -163,15 +163,15 @@ spec:
     size: 5Gi
     storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /misskey/.config
     name: misskey-config
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   healthcheck:
@@ -195,3 +195,6 @@ spec:
       \  port: ${REDIS_PORT}\nfulltextSearch:\n  provider: sqlLike\nid: 'aidx'\nproxyBypassHosts:\n\
       \  - api.deepl.com\n  - api-free.deepl.com\n  - www.recaptcha.net\n  - hcaptcha.com\n\
       \  - challenges.cloudflare.com\nEOF\nexec pnpm run migrateandstart\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

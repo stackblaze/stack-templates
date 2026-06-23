@@ -22,15 +22,18 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     mountPath: /opt/traggo/data
     name: traggo-data
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '3030'
     repository: traggo/server
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: traggo
   web:
     replicaCount: 1

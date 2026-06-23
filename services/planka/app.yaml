@@ -88,30 +88,33 @@ spec:
     value: demo
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /app/public/user-avatars
     name: planka-user-avatars
     size: 0.1Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /app/public/project-background-images
     name: planka-project-background-images
     size: 0.5Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /app/private/attachments
     name: planka-attachments
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '1337'
     repository: ghcr.io/plankanban/planka
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: planka
   web:
     replicaCount: 1

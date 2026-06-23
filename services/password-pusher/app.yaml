@@ -84,12 +84,12 @@ spec:
     value: 'true'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/PasswordPusher/storage
     name: pwpush-storage
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -100,3 +100,6 @@ spec:
     pullPolicy: Always
     repository: pglombardo/pwpush
     tag: stable
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

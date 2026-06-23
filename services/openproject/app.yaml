@@ -92,12 +92,12 @@ spec:
     value: /var/openproject/assets
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/openproject/assets
     name: openproject-assets
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -121,3 +121,6 @@ spec:
     pullPolicy: Always
     repository: openproject/openproject
     tag: 16-slim
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

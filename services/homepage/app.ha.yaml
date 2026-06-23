@@ -1,0 +1,54 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: A highly customizable homepage (or startpage
+      / application dashboard) with Docker and service API integrations.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/gethomepage/homepage/dev/public/homepage.png
+    kubero.dev/template.installation: Config YAML files are created under /app/config
+      on first visit. Set HOMEPAGE_ALLOWED_HOSTS to your public hostname if you change
+      the default.
+    kubero.dev/template.links: '["https://gethomepage.dev/"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/gethomepage/homepage/dev/docs/public/images/homepage.png"]'
+    kubero.dev/template.source: https://github.com/gethomepage/homepage
+    kubero.dev/template.categories: '["homepage", "dashboard"]'
+    kubero.dev/template.title: Homepage
+    kubero.dev/template.website: https://gethomepage.dev
+  labels:
+    manager: kubero
+  name: homepage
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: HOMEPAGE_ALLOWED_HOSTS
+    value: '{{KUBERO_APP_HOST}}'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /app/config
+    name: homepage-config
+    size: 100Mi
+    storageClass: shared
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 120
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: ghcr.io/gethomepage/homepage
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  name: homepage
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

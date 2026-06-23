@@ -1,93 +1,98 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: peppermint
-    annotations:
-        kubero.dev/template.architecture: "[]"
-        kubero.dev/template.description: "Ticket Management System in order to help helpdesks & service desks manage internal staff & customer requests"
-        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/peppermint/icon.png
-        kubero.dev/template.installation: "Default user is 'admin@admin.com' with password '1234'."
-        kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: "[]"
-        kubero.dev/template.source: "https://github.com/Peppermint-Lab/peppermint"
-        kubero.dev/template.categories: '["helpdesk", "work"]'
-        kubero.dev/template.title: "Peppermint"
-        kubero.dev/template.website: "https://peppermint.sh/"
-    labels:
-        manager: kubero
+  name: peppermint
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Ticket Management System in order to help helpdesks
+      & service desks manage internal staff & customer requests
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/peppermint/icon.png
+    kubero.dev/template.installation: Default user is 'admin@admin.com' with password
+      '1234'.
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/Peppermint-Lab/peppermint
+    kubero.dev/template.categories: '["helpdesk", "work"]'
+    kubero.dev/template.title: Peppermint
+    kubero.dev/template.website: https://peppermint.sh/
+  labels:
+    manager: kubero
 spec:
-    name: peppermint
-    deploymentstrategy: docker
-    envVars:
-        - name: DB_USERNAME
-          value: peppermint
-        - name: DB_PASSWORD
-          value: peppermint
-        - name: DB_HOST
-          value: peppermint-postgresql-rw
-        - name: SECRET
-          value: peppermint4life
-    extraVolumes: []
-    cronjobs: []
-    addons:
-        - displayName: PostgreSQL (CloudNativePG)
-          env: []
-          icon: /img/addons/pgsql.svg
-          id: kubero-operator
-          kind: Cluster
-          resourceDefinitions:
-              Cluster:
-                  apiVersion: postgresql.cnpg.io/v1
-                  kind: Cluster
-                  metadata:
-                      name: peppermint-postgresql
-                  spec:
-                      instances: 1
-                      imageName: ghcr.io/cloudnative-pg/postgresql:16
-                      primaryUpdateStrategy: unsupervised
-                      storage:
-                          storageClass: fast
-                          size: 5Gi
-                      resources:
-                          requests:
-                              cpu: 100m
-                              memory: 256Mi
-                          limits:
-                              cpu: "1"
-                              memory: 1Gi
-                      bootstrap:
-                          initdb:
-                              database: peppermint
-                              owner: peppermint
-                              secret:
-                                  name: peppermint-postgresql-app
-                      enableSuperuserAccess: true
-                      superuserSecret:
-                          name: peppermint-postgresql-superuser
-              superuserSecret:
-                  apiVersion: v1
-                  kind: Secret
-                  metadata:
-                      name: peppermint-postgresql-superuser
-                  type: kubernetes.io/basic-auth
-                  stringData:
-                      username: postgres
-                      password: peppermint
-              appUserSecret:
-                  apiVersion: v1
-                  kind: Secret
-                  metadata:
-                      name: peppermint-postgresql-app
-                  type: kubernetes.io/basic-auth
-                  stringData:
-                      username: peppermint
-                      password: peppermint
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: "3000"
-        pullPolicy: Always
-        repository: pepperlabs/peppermint
-        tag: latest
+  name: peppermint
+  deploymentstrategy: docker
+  envVars:
+  - name: DB_USERNAME
+    value: peppermint
+  - name: DB_PASSWORD
+    value: peppermint
+  - name: DB_HOST
+    value: peppermint-postgresql-rw
+  - name: SECRET
+    value: peppermint4life
+  extraVolumes: []
+  cronjobs: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: peppermint-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: peppermint
+              owner: peppermint
+              secret:
+                name: peppermint-postgresql-app
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: peppermint-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: peppermint-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: peppermint
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: peppermint-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: peppermint
+          password: peppermint
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: pepperlabs/peppermint
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

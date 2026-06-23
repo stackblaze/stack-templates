@@ -4,17 +4,21 @@ metadata:
   name: traduora
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source translation management platform (TMS) for teams to collaboratively manage
-      app localization, with a REST API, CLI, and import/export.
+    kubero.dev/template.description: Open-source translation management platform (TMS)
+      for teams to collaboratively manage app localization, with a REST API, CLI,
+      and import/export.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/traduora/icon.png
-    kubero.dev/template.installation: 'Single all-in-one everco/ever-traduora image (API + web UI) on port 8080, backed by
-      the bundled PostgreSQL add-on (TR_DB_TYPE=postgres; Traduora supports both MySQL and Postgres and we pick Postgres per
-      convention). ROTATE before production: TR_SECRET (used to sign/verify auth tokens; generate with `openssl rand -hex
-      32`) and the Postgres add-on password. Database tables are created/migrated automatically on first boot. TR_SIGNUPS_ENABLED
-      is left true so you can register the first account from the UI, which becomes the org owner; set it to false afterwards
-      to lock down public signups. Set TR_VIRTUAL_HOST to the deployed host so URLs in invitation/password emails resolve
-      correctly. Outbound email (TR_MAIL_*) and any S3 export targets are NOT provisioned here and must be configured separately
-      if needed.'
+    kubero.dev/template.installation: 'Single all-in-one everco/ever-traduora image
+      (API + web UI) on port 8080, backed by the bundled PostgreSQL add-on (TR_DB_TYPE=postgres;
+      Traduora supports both MySQL and Postgres and we pick Postgres per convention).
+      ROTATE before production: TR_SECRET (used to sign/verify auth tokens; generate
+      with `openssl rand -hex 32`) and the Postgres add-on password. Database tables
+      are created/migrated automatically on first boot. TR_SIGNUPS_ENABLED is left
+      true so you can register the first account from the UI, which becomes the org
+      owner; set it to false afterwards to lock down public signups. Set TR_VIRTUAL_HOST
+      to the deployed host so URLs in invitation/password emails resolve correctly.
+      Outbound email (TR_MAIL_*) and any S3 export targets are NOT provisioned here
+      and must be configured separately if needed.'
     kubero.dev/template.links: '["https://docs.traduora.co/docs/configuration", "https://docs.traduora.co/docs/getting-started/self-hosting"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/ever-co/ever-traduora
@@ -111,3 +115,6 @@ spec:
     pullPolicy: Always
     repository: everco/ever-traduora
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

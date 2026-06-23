@@ -38,3 +38,6 @@ spec:
     pullPolicy: Always
     repository: lscr.io/linuxserver/dokuwiki
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -24,6 +24,9 @@ spec:
     containerPort: '80'
     repository: corentinth/it-tools
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: it-tools
   web:
     replicaCount: 1

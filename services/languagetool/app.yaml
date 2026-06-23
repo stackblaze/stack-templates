@@ -43,6 +43,9 @@ spec:
     containerPort: '8010'
     repository: erikvl87/languagetool
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   resources:
     requests:
       cpu: 250m

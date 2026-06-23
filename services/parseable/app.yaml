@@ -73,3 +73,6 @@ spec:
     command:
     - parseable
     - local-store
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

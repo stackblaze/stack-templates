@@ -39,7 +39,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
           bootstrap:
             initdb:
@@ -48,9 +48,9 @@ spec:
               secret:
                 name: rallly-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO rallly
-                - GRANT CREATE ON SCHEMA public TO rallly
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO rallly
+              - GRANT ALL ON SCHEMA public TO rallly
+              - GRANT CREATE ON SCHEMA public TO rallly
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO rallly
           enableSuperuserAccess: true
           superuserSecret:
             name: rallly-postgresql-superuser
@@ -138,13 +138,15 @@ spec:
     containerPort: '3000'
     repository: lukevella/rallly
     tag: '4'
-  # Default QA LimitRange caps web pods at 512Mi; Rallly OOMs during Next.js boot.
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
   resources:
     requests:
       cpu: 500m
       memory: 1Gi
     limits:
-      cpu: "1"
+      cpu: '1'
       memory: 2Gi
   healthcheck:
     enabled: true
@@ -154,6 +156,6 @@ spec:
     periodSeconds: 10
   name: rallly
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0

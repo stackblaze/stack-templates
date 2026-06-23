@@ -102,3 +102,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/wekan/wekan
     tag: v8.74
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

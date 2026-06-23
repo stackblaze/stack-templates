@@ -1,0 +1,63 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: actual-budget
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Local-first personal finance app with envelope
+      budgeting, bank sync, and end-to-end encryption. Self-hosted YNAB alternative.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/actual-budget/icon.png
+    kubero.dev/template.installation: Actual Budget stores budgets as SQLite files
+      in the /data volume. On first visit, create a password for the server. Each
+      budget file can be synced across devices. Bank sync requires a GoCardless or
+      SimpleFIN subscription (optional — manual entry also works). All data is end-to-end
+      encrypted client-side. No external database needed.
+    kubero.dev/template.links: '["https://actualbudget.org/docs/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/actualbudget/actual
+    kubero.dev/template.categories: '["finance", "productivity", "utilities"]'
+    kubero.dev/template.title: Actual Budget
+    kubero.dev/template.website: https://actualbudget.org
+  labels:
+    manager: kubero
+spec:
+  name: actual-budget
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: ACTUAL_SERVER_HOSTNAME
+    value: 0.0.0.0
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /data
+    name: actual-data
+    size: 2Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: '1'
+      memory: 512Mi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 30
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '5006'
+    pullPolicy: Always
+    repository: actualbudget/actual-server
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

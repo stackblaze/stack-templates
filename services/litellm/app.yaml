@@ -4,9 +4,16 @@ metadata:
   name: litellm
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: LLM proxy and gateway — unified OpenAI-compatible API for 100+ providers including OpenAI, Anthropic, Gemini, Ollama, and Bedrock with cost tracking and rate limiting.
+    kubero.dev/template.description: LLM proxy and gateway — unified OpenAI-compatible
+      API for 100+ providers including OpenAI, Anthropic, Gemini, Ollama, and Bedrock
+      with cost tracking and rate limiting.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/icon.png
-    kubero.dev/template.installation: 'LiteLLM provides a single OpenAI-compatible endpoint that proxies to any LLM provider. Set LITELLM_MASTER_KEY (must start with sk-). Add models via the /ui dashboard (login with UI_USERNAME/UI_PASSWORD) or via the /models API. The Postgres add-on persists model configs, spend logs, and keys. Connect any OpenAI SDK client to {{KUBERO_APP_URL}}/v1 with Authorization: Bearer sk-change-me.'
+    kubero.dev/template.installation: 'LiteLLM provides a single OpenAI-compatible
+      endpoint that proxies to any LLM provider. Set LITELLM_MASTER_KEY (must start
+      with sk-). Add models via the /ui dashboard (login with UI_USERNAME/UI_PASSWORD)
+      or via the /models API. The Postgres add-on persists model configs, spend logs,
+      and keys. Connect any OpenAI SDK client to {{KUBERO_APP_URL}}/v1 with Authorization:
+      Bearer sk-change-me.'
     kubero.dev/template.links: '["https://docs.litellm.ai/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/BerriAI/litellm
@@ -51,9 +58,9 @@ spec:
               secret:
                 name: litellm-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO litellm
-                - GRANT CREATE ON SCHEMA public TO litellm
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO litellm
+              - GRANT ALL ON SCHEMA public TO litellm
+              - GRANT CREATE ON SCHEMA public TO litellm
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO litellm
           enableSuperuserAccess: true
           superuserSecret:
             name: litellm-postgresql-superuser
@@ -77,11 +84,11 @@ spec:
           password: litellm
   envVars:
   - name: DATABASE_URL
-    value: 'postgresql://litellm:litellm@litellm-postgresql-rw:5432/litellm'
+    value: postgresql://litellm:litellm@litellm-postgresql-rw:5432/litellm
   - name: LITELLM_MASTER_KEY
     value: sk-change-me
   - name: STORE_MODEL_IN_DB
-    value: True
+    value: true
   - name: LITELLM_LOG
     value: INFO
   - name: UI_USERNAME
@@ -112,3 +119,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/berriai/litellm
     tag: main-latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -101,22 +101,22 @@ spec:
     value: utf8mb4
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/public/backup
     name: hortusfox-backup
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/app/logs
     name: hortusfox-logs
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   healthcheck:
@@ -130,3 +130,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/danielbrendel/hortusfox-web
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

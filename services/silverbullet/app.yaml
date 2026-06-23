@@ -41,3 +41,6 @@ spec:
     pullPolicy: Always
     repository: zefhemel/silverbullet
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -67,3 +67,6 @@ spec:
     pullPolicy: Always
     repository: emqx/emqx
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

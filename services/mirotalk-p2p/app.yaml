@@ -48,6 +48,9 @@ spec:
     containerPort: '3000'
     repository: mirotalk/p2p
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: mirotalk-p2p
   web:
     replicaCount: 1

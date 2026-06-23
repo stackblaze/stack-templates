@@ -190,12 +190,12 @@ spec:
     value: 'true'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/storage
     name: pixelfed-storage
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true
@@ -212,3 +212,6 @@ spec:
     pullPolicy: Always
     repository: quay.io/zknt/pixelfed
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

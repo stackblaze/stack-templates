@@ -4,15 +4,18 @@ metadata:
   name: kroki
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Unified API that turns textual descriptions into diagrams (PlantUML, Mermaid, GraphViz,
-      BPMN, C4, and many more).
+    kubero.dev/template.description: Unified API that turns textual descriptions into
+      diagrams (PlantUML, Mermaid, GraphViz, BPMN, C4, and many more).
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kroki/icon.png
-    kubero.dev/template.installation: Kroki is a stateless rendering gateway and needs no database or persistent volume. The
-      main yuzutech/kroki container renders most diagram types (PlantUML, GraphViz, C4, etc.) on its own. To enable Mermaid,
-      BPMN and Excalidraw diagrams, deploy the optional companion containers (yuzutech/kroki-mermaid on :8002, yuzutech/kroki-bpmn
-      on :8003, yuzutech/kroki-excalidraw on :8004) as separate apps and point the KROKI_*_HOST env vars at their in-cluster
-      service names. The diagrams.net companion (yuzutech/kroki-diagramsnet) is experimental. Tune KROKI_MAX_URI_OPENING_COUNT
-      / KROKI_MAX_URI_OPENING_TIMEOUT to harden against SSRF if exposing publicly.
+    kubero.dev/template.installation: Kroki is a stateless rendering gateway and needs
+      no database or persistent volume. The main yuzutech/kroki container renders
+      most diagram types (PlantUML, GraphViz, C4, etc.) on its own. To enable Mermaid,
+      BPMN and Excalidraw diagrams, deploy the optional companion containers (yuzutech/kroki-mermaid
+      on :8002, yuzutech/kroki-bpmn on :8003, yuzutech/kroki-excalidraw on :8004)
+      as separate apps and point the KROKI_*_HOST env vars at their in-cluster service
+      names. The diagrams.net companion (yuzutech/kroki-diagramsnet) is experimental.
+      Tune KROKI_MAX_URI_OPENING_COUNT / KROKI_MAX_URI_OPENING_TIMEOUT to harden against
+      SSRF if exposing publicly.
     kubero.dev/template.links: '["https://docs.kroki.io"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/yuzutech/kroki
@@ -45,3 +48,6 @@ spec:
     pullPolicy: Always
     repository: yuzutech/kroki
     tag: 0.31.0
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

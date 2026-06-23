@@ -4,9 +4,11 @@ metadata:
   name: chatpad
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Chatpad sets itself apart with a broader vision - to become the ultimate interface for ChatGPT users.
+    kubero.dev/template.description: Chatpad sets itself apart with a broader vision
+      - to become the ultimate interface for ChatGPT users.
     kubero.dev/template.icon: https://raw.githubusercontent.com/deiucanta/chatpad/refs/heads/main/src/assets/favicon.png
-    kubero.dev/template.installation: 'Static ChatGPT web UI — add your OpenAI API key in the app settings after opening the URL. No server-side storage is required.'
+    kubero.dev/template.installation: Static ChatGPT web UI — add your OpenAI API
+      key in the app settings after opening the URL. No server-side storage is required.
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/deiucanta/chatpad/main/banner.png"]'
     kubero.dev/template.source: https://github.com/deiucanta/chatpad
@@ -46,3 +48,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/deiucanta/chatpad
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

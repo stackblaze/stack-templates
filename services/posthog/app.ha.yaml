@@ -4,38 +4,52 @@ metadata:
   name: posthog
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source product analytics, session replay, feature flags, A/B testing and surveys
-      platform built on PostgreSQL, ClickHouse and Kafka.
+    kubero.dev/template.description: Open-source product analytics, session replay,
+      feature flags, A/B testing and surveys platform built on PostgreSQL, ClickHouse
+      and Kafka.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/posthog/icon.png
-    kubero.dev/template.installation: "PostHog is a LARGE multi-service stack; this template runs the PRIMARY all-in-one image\
-      \ posthog/posthog (the `web` role: Django backend + frontend) on HTTP port 8000. It is NOT fully functional alone -\
-      \ PostHog needs several companion services and TWO datastores that are NOT in the allowed add-on set (Kafka and S3-compatible\
-      \ object storage), so plan to deploy those alongside it.\n\nADD-ONS provisioned here: postgres (relational app DB),\
-      \ clickhouse (the OLAP event store - the heart of PostHog analytics, reached at clickhouse-posthog-clickhouse:8123 over\
-      \ plain HTTP, so CLICKHOUSE_SECURE=false and CLICKHOUSE_VERIFY=false), and valkey (Redis-compatible cache/broker at\
-      \ rfr-posthog-valkey-readwrite:6379, no password).\n\nNOT provisionable as add-ons - deploy these as separate Kubero\
-      \ apps and update the *_HOSTS/endpoint env vars to point at them:\n  - KAFKA / event bus: PostHog requires Kafka. Use\
-      \ Redpanda (image `redpandadata/redpanda:latest`, Kafka API on 9092) or `bitnami/kafka`. Set KAFKA_HOSTS on EVERY PostHog\
-      \ container to host:9092.\n  - OBJECT STORAGE (session recordings, exports, uploads): PostHog requires S3-compatible\
-      \ storage. Deploy the platform's RustFS/S3 add-on or `minio/minio`, then set OBJECT_STORAGE_ENABLED=true, OBJECT_STORAGE_ENDPOINT,\
-      \ OBJECT_STORAGE_ACCESS_KEY_ID, OBJECT_STORAGE_SECRET_ACCESS_KEY, OBJECT_STORAGE_BUCKET.\n  - TEMPORAL (batch exports\
-      \ / scheduled jobs): image `temporalio/auto-setup` on gRPC 7233; only needed if you use batch exports.\n\nCOMPANION\
-      \ POSTHOG CONTAINERS (same posthog/posthog image, different command - deploy each as its own Kubero app sharing the\
-      \ SAME env vars / DATABASE_URL / CLICKHOUSE / KAFKA / REDIS):\n  - WORKER (Celery): command `./bin/docker-worker-celery\
-      \ --with-scheduler` - runs async tasks AND the scheduler; REQUIRED for the app to work.\n  - PLUGIN-SERVER / ingestion:\
-      \ command `./bin/plugin-server` - consumes Kafka events into ClickHouse; REQUIRED for any analytics data to appear.\n\
-      \  - MIGRATE (one-shot, run FIRST): command `python manage.py migrate && python manage.py migrate_clickhouse` to create\
-      \ Postgres + ClickHouse schemas before the web/worker start. The migrate-clickhouse step needs Kafka reachable.\n  -\
-      \ (Optional high-scale, separate Rust images) CAPTURE -> `ghcr.io/posthog/posthog/capture:latest` (event intake on Kafka),\
-      \ FEATURE-FLAGS -> `ghcr.io/posthog/posthog/feature-flags:latest`.\n\nROTATE before production: SECRET_KEY and ENCRYPTION_SALT_KEYS\
-      \ (both set here to placeholder `replace-with-openssl-rand-hex-32` values - generate real ones with `openssl rand -hex\
-      \ 32`; ENCRYPTION_SALT_KEYS must be a 32-byte base64/urlsafe key and CANNOT change after first boot or stored secrets\
-      \ break), plus the postgres and clickhouse add-on passwords (default `posthog`).\n\nFIRST-RUN: run the MIGRATE job,\
-      \ then start web + worker + plugin-server; open {{KUBERO_APP_URL}} and complete the on-screen setup wizard to create\
-      \ the first organization and admin user. SITE_URL is preset to your public URL and IS_BEHIND_PROXY=true / DISABLE_SECURE_SSL_REDIRECT=true\
-      \ are set because TLS is terminated at the Kubero ingress. NOTE: PostHog deprecated its official Helm chart - self-hosting\
-      \ is officially Docker-Compose-based and unsupported for high scale; PostHog Cloud is the recommended path for large\
-      \ workloads."
+    kubero.dev/template.installation: "PostHog is a LARGE multi-service stack; this\
+      \ template runs the PRIMARY all-in-one image posthog/posthog (the `web` role:\
+      \ Django backend + frontend) on HTTP port 8000. It is NOT fully functional alone\
+      \ - PostHog needs several companion services and TWO datastores that are NOT\
+      \ in the allowed add-on set (Kafka and S3-compatible object storage), so plan\
+      \ to deploy those alongside it.\n\nADD-ONS provisioned here: postgres (relational\
+      \ app DB), clickhouse (the OLAP event store - the heart of PostHog analytics,\
+      \ reached at clickhouse-posthog-clickhouse:8123 over plain HTTP, so CLICKHOUSE_SECURE=false\
+      \ and CLICKHOUSE_VERIFY=false), and valkey (Redis-compatible cache/broker at\
+      \ rfr-posthog-valkey-readwrite:6379, no password).\n\nNOT provisionable as add-ons\
+      \ - deploy these as separate Kubero apps and update the *_HOSTS/endpoint env\
+      \ vars to point at them:\n  - KAFKA / event bus: PostHog requires Kafka. Use\
+      \ Redpanda (image `redpandadata/redpanda:latest`, Kafka API on 9092) or `bitnami/kafka`.\
+      \ Set KAFKA_HOSTS on EVERY PostHog container to host:9092.\n  - OBJECT STORAGE\
+      \ (session recordings, exports, uploads): PostHog requires S3-compatible storage.\
+      \ Deploy the platform's RustFS/S3 add-on or `minio/minio`, then set OBJECT_STORAGE_ENABLED=true,\
+      \ OBJECT_STORAGE_ENDPOINT, OBJECT_STORAGE_ACCESS_KEY_ID, OBJECT_STORAGE_SECRET_ACCESS_KEY,\
+      \ OBJECT_STORAGE_BUCKET.\n  - TEMPORAL (batch exports / scheduled jobs): image\
+      \ `temporalio/auto-setup` on gRPC 7233; only needed if you use batch exports.\n\
+      \nCOMPANION POSTHOG CONTAINERS (same posthog/posthog image, different command\
+      \ - deploy each as its own Kubero app sharing the SAME env vars / DATABASE_URL\
+      \ / CLICKHOUSE / KAFKA / REDIS):\n  - WORKER (Celery): command `./bin/docker-worker-celery\
+      \ --with-scheduler` - runs async tasks AND the scheduler; REQUIRED for the app\
+      \ to work.\n  - PLUGIN-SERVER / ingestion: command `./bin/plugin-server` - consumes\
+      \ Kafka events into ClickHouse; REQUIRED for any analytics data to appear.\n\
+      \  - MIGRATE (one-shot, run FIRST): command `python manage.py migrate && python\
+      \ manage.py migrate_clickhouse` to create Postgres + ClickHouse schemas before\
+      \ the web/worker start. The migrate-clickhouse step needs Kafka reachable.\n\
+      \  - (Optional high-scale, separate Rust images) CAPTURE -> `ghcr.io/posthog/posthog/capture:latest`\
+      \ (event intake on Kafka), FEATURE-FLAGS -> `ghcr.io/posthog/posthog/feature-flags:latest`.\n\
+      \nROTATE before production: SECRET_KEY and ENCRYPTION_SALT_KEYS (both set here\
+      \ to placeholder `replace-with-openssl-rand-hex-32` values - generate real ones\
+      \ with `openssl rand -hex 32`; ENCRYPTION_SALT_KEYS must be a 32-byte base64/urlsafe\
+      \ key and CANNOT change after first boot or stored secrets break), plus the\
+      \ postgres and clickhouse add-on passwords (default `posthog`).\n\nFIRST-RUN:\
+      \ run the MIGRATE job, then start web + worker + plugin-server; open {{KUBERO_APP_URL}}\
+      \ and complete the on-screen setup wizard to create the first organization and\
+      \ admin user. SITE_URL is preset to your public URL and IS_BEHIND_PROXY=true\
+      \ / DISABLE_SECURE_SSL_REDIRECT=true are set because TLS is terminated at the\
+      \ Kubero ingress. NOTE: PostHog deprecated its official Helm chart - self-hosting\
+      \ is officially Docker-Compose-based and unsupported for high scale; PostHog\
+      \ Cloud is the recommended path for large workloads."
     kubero.dev/template.links: '["https://posthog.com/docs/self-host", "https://posthog.com/docs/self-host/configure/environment-variables"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/PostHog/posthog
@@ -124,57 +138,23 @@ spec:
               session_timeout_ms: 30000
               operation_timeout_ms: 10000
             files:
-              config.d/posthog-remote-servers.xml: |
-                <clickhouse>
-                  <macros>
-                    <shard>01</shard>
-                    <replica>ch1</replica>
-                    <hostClusterType>online</hostClusterType>
-                    <hostClusterRole>data</hostClusterRole>
-                  </macros>
-                  <remote_servers>
-                    <posthog>
-                      <shard>
-                        <replica>
-                          <host>localhost</host>
-                          <port>9000</port>
-                        </replica>
-                      </shard>
-                    </posthog>
-                    <posthog_migrations>
-                      <shard>
-                        <replica>
-                          <host>localhost</host>
-                          <port>9000</port>
-                        </replica>
-                      </shard>
-                    </posthog_migrations>
-                    <posthog_single_shard>
-                      <shard>
-                        <replica>
-                          <host>localhost</host>
-                          <port>9000</port>
-                        </replica>
-                      </shard>
-                    </posthog_single_shard>
-                    <posthog_writable>
-                      <shard>
-                        <replica>
-                          <host>localhost</host>
-                          <port>9000</port>
-                        </replica>
-                      </shard>
-                    </posthog_writable>
-                    <posthog_primary_replica>
-                      <shard>
-                        <replica>
-                          <host>localhost</host>
-                          <port>9000</port>
-                        </replica>
-                      </shard>
-                    </posthog_primary_replica>
-                  </remote_servers>
-                </clickhouse>
+              config.d/posthog-remote-servers.xml: "<clickhouse>\n  <macros>\n   \
+                \ <shard>01</shard>\n    <replica>ch1</replica>\n    <hostClusterType>online</hostClusterType>\n\
+                \    <hostClusterRole>data</hostClusterRole>\n  </macros>\n  <remote_servers>\n\
+                \    <posthog>\n      <shard>\n        <replica>\n          <host>localhost</host>\n\
+                \          <port>9000</port>\n        </replica>\n      </shard>\n\
+                \    </posthog>\n    <posthog_migrations>\n      <shard>\n       \
+                \ <replica>\n          <host>localhost</host>\n          <port>9000</port>\n\
+                \        </replica>\n      </shard>\n    </posthog_migrations>\n \
+                \   <posthog_single_shard>\n      <shard>\n        <replica>\n   \
+                \       <host>localhost</host>\n          <port>9000</port>\n    \
+                \    </replica>\n      </shard>\n    </posthog_single_shard>\n   \
+                \ <posthog_writable>\n      <shard>\n        <replica>\n         \
+                \ <host>localhost</host>\n          <port>9000</port>\n        </replica>\n\
+                \      </shard>\n    </posthog_writable>\n    <posthog_primary_replica>\n\
+                \      <shard>\n        <replica>\n          <host>localhost</host>\n\
+                \          <port>9000</port>\n        </replica>\n      </shard>\n\
+                \    </posthog_primary_replica>\n  </remote_servers>\n</clickhouse>\n"
             users:
               admin/password: posthog
               admin/networks/ip:
@@ -287,7 +267,7 @@ spec:
         metadata:
           name: posthog-kafka
         spec:
-          replicas: 1
+          replicas: 3
           strategy:
             type: Recreate
           selector:
@@ -399,7 +379,7 @@ spec:
     timeoutSeconds: 10
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -407,3 +387,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/posthog/posthog
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

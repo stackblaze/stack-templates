@@ -140,3 +140,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/prestashop
     tag: 8-apache
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

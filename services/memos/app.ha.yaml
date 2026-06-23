@@ -1,0 +1,93 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'Memos is a simple note taking app. '
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/memos/icon.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://usememos.com/demo.webp"]'
+    kubero.dev/template.source: https://github.com/usememos/memos
+    kubero.dev/template.categories: '["productivity", "work"]'
+    kubero.dev/template.title: Memos
+    kubero.dev/template.website: https://usememos.com/
+  name: memos
+spec:
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: memos-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: memos
+              owner: memos
+              secret:
+                name: memos-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO memos
+              - GRANT CREATE ON SCHEMA public TO memos
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO memos
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: memos-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: memos-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: memos
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: memos-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: memos
+          password: memos
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: MEMOS_DRIVER
+    value: postgres
+  - name: MEMOS_DSN
+    value: postgresql://memos:memos@memos-postgresql-rw:5432/memos
+  extraVolumes: []
+  image:
+    containerPort: '5230'
+    repository: neosmemo/memos
+    tag: stable
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  name: memos
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

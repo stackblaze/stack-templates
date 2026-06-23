@@ -143,12 +143,12 @@ spec:
     value: change-me
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/netbox/netbox/media
     name: netbox-media
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -172,3 +172,6 @@ spec:
     pullPolicy: Always
     repository: netboxcommunity/netbox
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

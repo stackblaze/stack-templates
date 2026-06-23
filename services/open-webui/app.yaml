@@ -127,3 +127,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/open-webui/open-webui
     tag: main
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

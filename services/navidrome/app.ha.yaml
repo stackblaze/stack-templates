@@ -1,0 +1,66 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+    kubero.dev/template.description: Navidrome is a self-hosted music streaming server
+      with Subsonic-compatible API, multi-user support, and transcoding.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/66823122?s=200&v=4
+    kubero.dev/template.installation: Default admin user is admin with password admin.
+      Change credentials after first login. Upload music to the music volume at /music.
+    kubero.dev/template.links: '["https://www.navidrome.org/docs/"]'
+    kubero.dev/template.screenshots: '["https://www.navidrome.org/img/screenshots/home.png"]'
+    kubero.dev/template.source: https://github.com/navidrome/navidrome
+    kubero.dev/template.categories: '["media", "utilities"]'
+    kubero.dev/template.title: Navidrome
+    kubero.dev/template.website: https://www.navidrome.org/
+  labels:
+    manager: kubero
+  name: navidrome
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: ND_MUSICFOLDER
+    value: /music
+  - name: ND_DATAFOLDER
+    value: /data
+  - name: ND_LOGLEVEL
+    value: info
+  - name: TZ
+    value: Etc/UTC
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /data
+    name: navidrome-data
+    size: 1Gi
+    storageClass: shared
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /music
+    name: navidrome-music
+    size: 1Gi
+    storageClass: shared
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '4533'
+    pullPolicy: Always
+    repository: deluan/navidrome
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  name: navidrome
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

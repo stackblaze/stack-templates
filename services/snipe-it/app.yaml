@@ -160,3 +160,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/snipe-it
     tag: v8.6.2
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

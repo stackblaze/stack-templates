@@ -155,3 +155,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/suitecrm
     tag: '8'
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

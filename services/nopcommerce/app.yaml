@@ -125,3 +125,6 @@ spec:
       : \"X-Forwarded-Proto\",\n    \"ForwardedForHeaderName\": \"X-Forwarded-For\"\
       ,\n    \"KnownNetworks\": \"10.0.0.0/8,172.16.0.0/12\"\n  }\n}\nEOF\nexec dotnet\
       \ Nop.Web.dll\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

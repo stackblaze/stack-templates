@@ -21,18 +21,18 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /appsmith-stacks
     name: appsmith-volume
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '80'
     repository: appsmith/appsmith-ce
     run:
       securityContext:
-        readOnlyRootFilesystem: false
+        readOnlyRootFilesystem: true
     tag: latest
   name: appsmith
   web:

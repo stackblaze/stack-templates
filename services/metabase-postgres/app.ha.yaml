@@ -4,18 +4,24 @@ metadata:
   name: metabase-postgres
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source business intelligence and analytics tool to query, visualize, and share dashboards
-      from your databases without writing SQL.
+    kubero.dev/template.description: Open-source business intelligence and analytics
+      tool to query, visualize, and share dashboards from your databases without writing
+      SQL.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase-postgres/icon.png
-    kubero.dev/template.installation: 'This template runs the official metabase/metabase image and stores all application
-      state (questions, dashboards, users, saved data-source credentials, settings) in the bundled PostgreSQL add-on via the
-      MB_DB_* variables, so no persistent volume is needed. Rotate the Postgres add-on password before exposing. CRITICAL:
-      set MB_ENCRYPTION_SECRET_KEY to a fixed random value (openssl rand -base64 32) and NEVER change it after first boot,
-      because it encrypts the credentials of the external databases you connect to; if it is lost or changed, those saved
-      connections become undecryptable. MB_SITE_URL is wired to the public URL token; keep it correct or password-reset and
-      embedding links will break. On first run, open the app and complete the setup wizard to create the initial admin account.
-      Outbound email (alerts, invites, pulses) requires SMTP settings configured in Admin > Email (not provisioned here).
-      To analyze data, add your own external database connections from the admin panel after setup.'
+    kubero.dev/template.installation: 'This template runs the official metabase/metabase
+      image and stores all application state (questions, dashboards, users, saved
+      data-source credentials, settings) in the bundled PostgreSQL add-on via the
+      MB_DB_* variables, so no persistent volume is needed. Rotate the Postgres add-on
+      password before exposing. CRITICAL: set MB_ENCRYPTION_SECRET_KEY to a fixed
+      random value (openssl rand -base64 32) and NEVER change it after first boot,
+      because it encrypts the credentials of the external databases you connect to;
+      if it is lost or changed, those saved connections become undecryptable. MB_SITE_URL
+      is wired to the public URL token; keep it correct or password-reset and embedding
+      links will break. On first run, open the app and complete the setup wizard to
+      create the initial admin account. Outbound email (alerts, invites, pulses) requires
+      SMTP settings configured in Admin > Email (not provisioned here). To analyze
+      data, add your own external database connections from the admin panel after
+      setup.'
     kubero.dev/template.links: '["https://www.metabase.com/docs/latest/installation-and-operation/running-metabase-on-docker",
       "https://www.metabase.com/docs/latest/configuring-metabase/environment-variables"]'
     kubero.dev/template.screenshots: '["https://www.metabase.com/images/home/hero-2.png"]'
@@ -111,7 +117,7 @@ spec:
   extraVolumes: []
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -119,6 +125,9 @@ spec:
     pullPolicy: Always
     repository: metabase/metabase
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
   resources:
     requests:
       cpu: 500m

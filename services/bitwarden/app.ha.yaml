@@ -91,12 +91,12 @@ spec:
     value: XXXXXXXXXXXXXXXXXXXX
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /etc/bitwarden
     name: bitwarden
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   healthcheck:
     enabled: true
     path: /
@@ -108,6 +108,9 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/bitwarden/lite
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
   name: bitwarden
   resources:
     requests:
@@ -117,6 +120,6 @@ spec:
       cpu: '1'
       memory: 1Gi
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0

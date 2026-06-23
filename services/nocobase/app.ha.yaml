@@ -1,0 +1,133 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: nocobase
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source no-code/low-code platform for building
+      CRMs, ERPs, and internal tools with a plugin-based extensible architecture.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocobase/icon.png
+    kubero.dev/template.installation: 'Change APP_KEY to a random string. On first
+      load, NocoBase auto-migrates the database and shows the setup wizard. Default
+      admin: admin@nocobase.com / admin123 (change immediately). Use the plugin manager
+      to install additional plugins. Supports building custom data models, forms,
+      workflows, and dashboards without code.'
+    kubero.dev/template.links: '["https://docs.nocobase.com/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/nocobase/nocobase
+    kubero.dev/template.categories: '["data", "development", "productivity"]'
+    kubero.dev/template.title: NocoBase
+    kubero.dev/template.website: https://www.nocobase.com
+  labels:
+    manager: kubero
+spec:
+  name: nocobase
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: nocobase-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: nocobase
+              owner: nocobase
+              secret:
+                name: nocobase-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO nocobase
+              - GRANT CREATE ON SCHEMA public TO nocobase
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nocobase
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: nocobase-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: nocobase-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: nocobase
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: nocobase-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: nocobase
+          password: nocobase
+  envVars:
+  - name: DB_DIALECT
+    value: postgres
+  - name: DB_HOST
+    value: nocobase-postgresql-rw
+  - name: DB_PORT
+    value: 5432
+  - name: DB_DATABASE
+    value: nocobase
+  - name: DB_USER
+    value: nocobase
+  - name: DB_PASSWORD
+    value: nocobase
+  - name: APP_KEY
+    value: change-me-to-random-string
+  - name: APP_PORT
+    value: 13000
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /app/nocobase/storage
+    name: nocobase-storage
+    size: 5Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /api/app:getInfo
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '13000'
+    pullPolicy: Always
+    repository: nocobase/nocobase
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

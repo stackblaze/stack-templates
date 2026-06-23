@@ -177,7 +177,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -185,3 +185,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/dockware-mirror/play
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

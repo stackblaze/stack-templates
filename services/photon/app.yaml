@@ -47,12 +47,12 @@ spec:
     value: INFO
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /photon/data
     name: photon-data
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true
@@ -69,3 +69,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/photon-docker
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

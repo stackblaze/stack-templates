@@ -82,16 +82,19 @@ spec:
     value: http://ghost.lacolhost.com:81
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/lib/ghost/content
     name: ghost-volume
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '2368'
     repository: ghost
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: ghost
   web:
     replicaCount: 1

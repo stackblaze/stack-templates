@@ -93,3 +93,6 @@ spec:
       \ /usr/local/tomcat/conf/\n[ -f /config/web.xml ] && cp /config/web.xml /usr/local/tomcat/webapps/ROOT/WEB-INF/\n\
       catalina.sh run &\npid=\"$!\"\ntrap \"catalina.sh stop\" SIGINT SIGTERM\nwait\
       \ \"$pid\"\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

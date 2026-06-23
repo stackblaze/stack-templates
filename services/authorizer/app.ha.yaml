@@ -1,0 +1,126 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Authorizer is an open-source authentication and
+      authorization solution for your applications.
+    kubero.dev/template.icon: https://authorizer.dev/images/favicon_io/android-chrome-192x192.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://docs.authorizer.dev/images/authorizer-arch.png"]'
+    kubero.dev/template.source: https://github.com/authorizerdev/authorizer
+    kubero.dev/template.categories: '["security", "accessories"]'
+    kubero.dev/template.title: Authorizer
+    kubero.dev/template.website: https://authorizer.dev/
+  name: authorizer
+spec:
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: authorizer-db
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: authorizer
+              owner: authorizer
+              secret:
+                name: authorizer-db-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO authorizer
+              - GRANT CREATE ON SCHEMA public TO authorizer
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO authorizer
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: authorizer-db-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: authorizer-db-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: authorizer
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: authorizer-db-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: authorizer
+          password: authorizer
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: DATABASE_TYPE
+    value: postgres
+  - name: DATABASE_URL
+    value: postgresql://authorizer:authorizer@authorizer-db-rw:5432/authorizer
+  - name: CLIENT_ID
+    value: authorizer-client
+  - name: CLIENT_SECRET
+    value: changeMeSecret
+  - name: ADMIN_SECRET
+    value: changeMe
+  - name: JWT_SECRET
+    value: changeMeJwtSecret
+  - name: ALLOWED_ORIGINS
+    value: '{{KUBERO_APP_URL}},https://{{KUBERO_APP_HOST}}'
+  healthcheck:
+    enabled: true
+    path: /healthz
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
+  extraVolumes: []
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: lakhansamani/authorizer
+    tag: latest
+    command:
+    - sh
+    - -c
+    - "until ./authorizer \\\n  --database-type=postgres \\\n  --database-url=\"$DATABASE_URL\"\
+      \ \\\n  --client-id=\"$CLIENT_ID\" \\\n  --client-secret=\"$CLIENT_SECRET\"\
+      \ \\\n  --admin-secret=\"$ADMIN_SECRET\" \\\n  --jwt-type=HS256 \\\n  --jwt-secret=\"\
+      $JWT_SECRET\" \\\n  --allowed-origins=\"$ALLOWED_ORIGINS\"; do\n  sleep 5\n\
+      done\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  name: authorizer
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 512Mi
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

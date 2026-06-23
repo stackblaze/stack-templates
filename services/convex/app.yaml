@@ -128,3 +128,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/get-convex/convex-backend
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

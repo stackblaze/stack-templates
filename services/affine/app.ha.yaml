@@ -123,19 +123,22 @@ spec:
     value: ''
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /root/.affine
     name: affine-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   image:
     containerPort: '3010'
     pullPolicy: Always
     repository: ghcr.io/toeverything/affine-graphql
     tag: stable
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
   name: affine
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0

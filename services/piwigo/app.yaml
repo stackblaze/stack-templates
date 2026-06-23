@@ -30,12 +30,12 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /gallery
     name: piwigo-gallery-volume
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   addons:
   - displayName: MariaDB
@@ -98,3 +98,6 @@ spec:
     pullPolicy: Always
     repository: lscr.io/linuxserver/piwigo
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

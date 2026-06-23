@@ -1,0 +1,75 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+    kubero.dev/template.description: Self-hosted audiobook and podcast server with
+      multi-user support, progress sync, and OPDS.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/88282323?s=200&v=4
+    kubero.dev/template.installation: Upload media to the audiobooks and podcasts
+      volumes, then add libraries in Settings. Config and metadata persist under /config
+      and /metadata.
+    kubero.dev/template.links: '["https://www.audiobookshelf.org/docs/"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/advplyr/audiobookshelf/master/images/banner.jpg"]'
+    kubero.dev/template.source: https://github.com/advplyr/audiobookshelf
+    kubero.dev/template.categories: '["media", "utilities"]'
+    kubero.dev/template.title: Audiobookshelf
+    kubero.dev/template.website: https://www.audiobookshelf.org/
+  labels:
+    manager: kubero
+  name: audiobookshelf
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: TZ
+    value: Etc/UTC
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /config
+    name: audiobookshelf-config
+    size: 1Gi
+    storageClass: shared
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /metadata
+    name: audiobookshelf-metadata
+    size: 1Gi
+    storageClass: shared
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /audiobooks
+    name: audiobookshelf-audiobooks
+    size: 1Gi
+    storageClass: shared
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /podcasts
+    name: audiobookshelf-podcasts
+    size: 1Gi
+    storageClass: shared
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: ghcr.io/advplyr/audiobookshelf
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  name: audiobookshelf
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

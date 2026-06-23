@@ -136,3 +136,6 @@ spec:
     - /usr/local/bin/saltcorn
     - serve
     - -a
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

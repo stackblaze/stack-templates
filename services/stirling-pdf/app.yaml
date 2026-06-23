@@ -38,6 +38,9 @@ spec:
     pullPolicy: Always
     repository: stirlingtools/stirling-pdf
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   resources:
     requests:
       cpu: 250m

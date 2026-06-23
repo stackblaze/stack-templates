@@ -36,6 +36,9 @@ spec:
     pullPolicy: Always
     repository: balzack/databag
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: databag
   web:
     replicaCount: 1

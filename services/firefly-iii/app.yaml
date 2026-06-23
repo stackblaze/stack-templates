@@ -134,12 +134,12 @@ spec:
     value: '**'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/storage/upload
     name: firefly-iii-uploads
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -163,3 +163,6 @@ spec:
     pullPolicy: Always
     repository: fireflyiii/core
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

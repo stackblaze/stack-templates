@@ -1,0 +1,62 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: pocketbase
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source Firebase alternative — realtime subscriptions,
+      auth, file storage, and admin UI, all in a single Go binary backed by SQLite.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pocketbase/icon.png
+    kubero.dev/template.installation: PocketBase runs as a single binary with SQLite
+      — no external database needed. Access the Admin UI at /_/ and create the admin
+      account on first visit. Define collections (tables), set up auth providers,
+      and configure file storage rules in the Admin UI. Use the JS/TypeScript SDK
+      or REST API to build your frontend. All data is stored in the pocketbase-data
+      volume.
+    kubero.dev/template.links: '["https://pocketbase.io/docs/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/pocketbase/pocketbase
+    kubero.dev/template.categories: '["development", "utilities", "data"]'
+    kubero.dev/template.title: PocketBase
+    kubero.dev/template.website: https://pocketbase.io
+  labels:
+    manager: kubero
+spec:
+  name: pocketbase
+  deploymentstrategy: docker
+  addons: []
+  envVars: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /pb/pb_data
+    name: pocketbase-data
+    size: 5Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: '1'
+      memory: 512Mi
+  healthcheck:
+    enabled: true
+    path: /api/health
+    startupSeconds: 60
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8090'
+    pullPolicy: Always
+    repository: ghcr.io/muchobien/pocketbase
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

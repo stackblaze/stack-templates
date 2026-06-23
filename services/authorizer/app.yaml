@@ -48,9 +48,9 @@ spec:
               secret:
                 name: authorizer-db-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO authorizer
-                - GRANT CREATE ON SCHEMA public TO authorizer
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO authorizer
+              - GRANT ALL ON SCHEMA public TO authorizer
+              - GRANT CREATE ON SCHEMA public TO authorizer
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO authorizer
           enableSuperuserAccess: true
           superuserSecret:
             name: authorizer-db-superuser
@@ -104,18 +104,14 @@ spec:
     command:
     - sh
     - -c
-    - |
-      until ./authorizer \
-        --database-type=postgres \
-        --database-url="$DATABASE_URL" \
-        --client-id="$CLIENT_ID" \
-        --client-secret="$CLIENT_SECRET" \
-        --admin-secret="$ADMIN_SECRET" \
-        --jwt-type=HS256 \
-        --jwt-secret="$JWT_SECRET" \
-        --allowed-origins="$ALLOWED_ORIGINS"; do
-        sleep 5
-      done
+    - "until ./authorizer \\\n  --database-type=postgres \\\n  --database-url=\"$DATABASE_URL\"\
+      \ \\\n  --client-id=\"$CLIENT_ID\" \\\n  --client-secret=\"$CLIENT_SECRET\"\
+      \ \\\n  --admin-secret=\"$ADMIN_SECRET\" \\\n  --jwt-type=HS256 \\\n  --jwt-secret=\"\
+      $JWT_SECRET\" \\\n  --allowed-origins=\"$ALLOWED_ORIGINS\"; do\n  sleep 5\n\
+      done\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: authorizer
   resources:
     requests:

@@ -1,0 +1,67 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: ILLA is a robust open source low-code platform
+      for developers to build internal tools.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/illa/icon.png
+    kubero.dev/template.installation: All-in-one image bundles PostgreSQL, Redis,
+      and MinIO. Default login is root / password. Data persists under /opt/illa/database
+      and /opt/illa/drive.
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://www.illacloud.com/_next/image?url=https%3A%2F%2Fcdn.illacloud.com%2Fofficial-website%2Fimg%2Fhome%2FplayVideoCover.png&w=3840&q=75"]'
+    kubero.dev/template.source: https://github.com/illacloud/illa-builder
+    kubero.dev/template.categories: '["work", "development", "utilities"]'
+    kubero.dev/template.title: Illa
+    kubero.dev/template.website: https://illacloud.com
+  name: illa
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: ILLA_INSTANCE_ID
+    value: SELF_HOST_CLOUD
+  - name: ILLA_APP_ENV
+    value: production
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /opt/illa/database
+    name: illa-database
+    size: 5Gi
+    storageClass: shared
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /opt/illa/drive
+    name: illa-drive
+    size: 5Gi
+    storageClass: shared
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '2022'
+    repository: illasoft/illa-builder
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+    tag: latest
+  name: illa
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

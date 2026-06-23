@@ -108,6 +108,9 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/sissbruecker/linkding
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: linkding
   web:
     replicaCount: 1

@@ -94,6 +94,9 @@ spec:
     containerPort: '3000'
     repository: ghcr.io/requarks/wiki
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: wikijs
   web:
     replicaCount: 1

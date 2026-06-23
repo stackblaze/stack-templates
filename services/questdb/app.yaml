@@ -60,3 +60,6 @@ spec:
     pullPolicy: Always
     repository: questdb/questdb
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

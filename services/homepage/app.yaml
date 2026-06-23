@@ -44,6 +44,9 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/gethomepage/homepage
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: homepage
   web:
     replicaCount: 1

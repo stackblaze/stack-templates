@@ -1,0 +1,172 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: authentik
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source identity provider — SSO, OAuth2,
+      SAML, LDAP, MFA, and social login. Self-hosted alternative to Okta and Auth0.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/authentik/icon.png
+    kubero.dev/template.installation: Change AUTHENTIK_SECRET_KEY to a 50+ character
+      random string. The first admin account is bootstrapped via the /if/flow/initial-setup/
+      URL on first run. Configure OIDC/SAML applications in the Admin UI at /if/admin/.
+      The worker (background tasks) is bundled in this image when run as 'server'
+      — for production workloads deploy a second instance with command 'worker'.
+    kubero.dev/template.links: '["https://docs.goauthentik.io/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/goauthentik/authentik
+    kubero.dev/template.categories: '["security", "development", "utilities"]'
+    kubero.dev/template.title: Authentik
+    kubero.dev/template.website: https://goauthentik.io
+  labels:
+    manager: kubero
+spec:
+  name: authentik
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: authentik-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: authentik
+              owner: authentik
+              secret:
+                name: authentik-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO authentik
+              - GRANT CREATE ON SCHEMA public TO authentik
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO authentik
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: authentik-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: authentik-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: authentik
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: authentik-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: authentik
+          password: authentik
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: authentik-cache
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: AUTHENTIK_POSTGRESQL__HOST
+    value: authentik-postgresql-rw
+  - name: AUTHENTIK_POSTGRESQL__USER
+    value: authentik
+  - name: AUTHENTIK_POSTGRESQL__PASSWORD
+    value: authentik
+  - name: AUTHENTIK_POSTGRESQL__NAME
+    value: authentik
+  - name: AUTHENTIK_REDIS__HOST
+    value: rfr-authentik-cache-readwrite
+  - name: AUTHENTIK_SECRET_KEY
+    value: change-me-to-a-random-50-character-secret-key-value
+  - name: AUTHENTIK_ERROR_REPORTING__ENABLED
+    value: false
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /media
+    name: authentik-media
+    size: 2Gi
+    storageClass: shared
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /templates
+    name: authentik-templates
+    size: 1Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /-/health/ready/
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '9000'
+    pullPolicy: Always
+    repository: ghcr.io/goauthentik/server
+    tag: latest
+    command:
+    - dumb-init
+    - --
+    - ak
+    - server
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

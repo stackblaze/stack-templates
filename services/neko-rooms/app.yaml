@@ -76,3 +76,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/m1k1o/neko-rooms
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -92,3 +92,6 @@ spec:
     pullPolicy: Always
     repository: searxng/searxng
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -28,15 +28,15 @@ spec:
     value: '1000'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/syncthing
     name: syncthing-config
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -44,3 +44,6 @@ spec:
     pullPolicy: Always
     repository: syncthing/syncthing
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

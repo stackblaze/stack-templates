@@ -38,6 +38,9 @@ spec:
     containerPort: '8008'
     repository: ghcr.io/serge-chat/serge
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: serge
   web:
     replicaCount: 1

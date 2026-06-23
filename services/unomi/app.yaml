@@ -216,3 +216,6 @@ spec:
     - -c
     - sed -i '/org.ops4j.pax.web.config.file/d' /opt/apache-unomi/etc/org.ops4j.pax.web.cfg
       && exec ./entrypoint.sh
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

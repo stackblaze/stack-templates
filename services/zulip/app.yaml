@@ -238,3 +238,6 @@ spec:
     pullPolicy: Always
     repository: zulip/docker-zulip
     tag: 11.6-0
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

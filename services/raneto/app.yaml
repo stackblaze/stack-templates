@@ -41,3 +41,6 @@ spec:
     pullPolicy: Always
     repository: lscr.io/linuxserver/raneto
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

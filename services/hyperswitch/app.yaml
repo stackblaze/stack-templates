@@ -4,27 +4,36 @@ metadata:
   name: hyperswitch
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source, Rust-based payment switch and orchestration platform for routing, retrying
-      and reconciling payments across 100+ processors.
+    kubero.dev/template.description: Open-source, Rust-based payment switch and orchestration
+      platform for routing, retrying and reconciling payments across 100+ processors.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hyperswitch/icon.png
-    kubero.dev/template.installation: 'Hyperswitch is a multi-container stack. This template deploys the PRIMARY API server,
-      the `hyperswitch-router` (the `standalone` image is the all-in-one self-host variant that bundles config + migrations).
-      It listens on HTTP 8080 (health check: GET /health). Add-ons: a Postgres add-on (the system of record) and a Valkey/Redis
-      add-on (used for caching, locking and as the scheduler/queue backend) are provisioned. CONFIG: Hyperswitch is normally
-      driven by a TOML file, but every value can be overridden with `ROUTER__<SECTION>__<KEY>` env vars (double underscores)
-      - that is what this template uses to wire the add-ons. The router reads both a MASTER and a REPLICA database config;
-      both are pointed at the same Postgres add-on here. COMPANION SERVICES to deploy as their own Kubero apps, each with
-      the SAME database + redis env as this router: (1) SCHEDULER PRODUCER -> image `juspaydotin/hyperswitch-producer:standalone`
-      (enqueues scheduled tasks like retries/webhooks); (2) SCHEDULER CONSUMER -> image `juspaydotin/hyperswitch-consumer:standalone`
-      (executes those tasks); both are required for retries, payment-method-tokenization expiry and outgoing webhooks to work.
-      (3) CONTROL CENTER (admin dashboard) -> image `juspaydotin/hyperswitch-control-center:latest` (HTTP 9000); set its api_url
-      to this router''s {{KUBERO_APP_URL}}. (4) CHECKOUT/SDK WEB -> image `juspaydotin/hyperswitch-web:latest` (the unified
-      client-side payment SDK, served on 9050/9060). FIRST RUN: the standalone router auto-applies DB migrations on boot;
-      create your first merchant/admin-api-key via the /user/signup or admin APIs. SECRETS to ROTATE before going live: replace
-      the Postgres password and set strong values for `ROUTER__SECRETS__ADMIN_API_KEY`, `ROUTER__SECRETS__MASTER_ENC_KEY`
-      (a 32-byte hex key, `openssl rand -hex 32`) and `ROUTER__SECRETS__JWT_SECRET`. KMS/managed-encryption and an external
-      message queue are optional and NOT provisioned here.'
-    kubero.dev/template.links: '["https://docs.hyperswitch.io/hyperswitch-open-source/overview", "https://docs.hyperswitch.io/hyperswitch-open-source/account-setup"]'
+    kubero.dev/template.installation: 'Hyperswitch is a multi-container stack. This
+      template deploys the PRIMARY API server, the `hyperswitch-router` (the `standalone`
+      image is the all-in-one self-host variant that bundles config + migrations).
+      It listens on HTTP 8080 (health check: GET /health). Add-ons: a Postgres add-on
+      (the system of record) and a Valkey/Redis add-on (used for caching, locking
+      and as the scheduler/queue backend) are provisioned. CONFIG: Hyperswitch is
+      normally driven by a TOML file, but every value can be overridden with `ROUTER__<SECTION>__<KEY>`
+      env vars (double underscores) - that is what this template uses to wire the
+      add-ons. The router reads both a MASTER and a REPLICA database config; both
+      are pointed at the same Postgres add-on here. COMPANION SERVICES to deploy as
+      their own Kubero apps, each with the SAME database + redis env as this router:
+      (1) SCHEDULER PRODUCER -> image `juspaydotin/hyperswitch-producer:standalone`
+      (enqueues scheduled tasks like retries/webhooks); (2) SCHEDULER CONSUMER ->
+      image `juspaydotin/hyperswitch-consumer:standalone` (executes those tasks);
+      both are required for retries, payment-method-tokenization expiry and outgoing
+      webhooks to work. (3) CONTROL CENTER (admin dashboard) -> image `juspaydotin/hyperswitch-control-center:latest`
+      (HTTP 9000); set its api_url to this router''s {{KUBERO_APP_URL}}. (4) CHECKOUT/SDK
+      WEB -> image `juspaydotin/hyperswitch-web:latest` (the unified client-side payment
+      SDK, served on 9050/9060). FIRST RUN: the standalone router auto-applies DB
+      migrations on boot; create your first merchant/admin-api-key via the /user/signup
+      or admin APIs. SECRETS to ROTATE before going live: replace the Postgres password
+      and set strong values for `ROUTER__SECRETS__ADMIN_API_KEY`, `ROUTER__SECRETS__MASTER_ENC_KEY`
+      (a 32-byte hex key, `openssl rand -hex 32`) and `ROUTER__SECRETS__JWT_SECRET`.
+      KMS/managed-encryption and an external message queue are optional and NOT provisioned
+      here.'
+    kubero.dev/template.links: '["https://docs.hyperswitch.io/hyperswitch-open-source/overview",
+      "https://docs.hyperswitch.io/hyperswitch-open-source/account-setup"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/juspay/hyperswitch
     kubero.dev/template.categories: '["finance", "e-commerce", "development"]'
@@ -189,6 +198,9 @@ spec:
     - sh
     - -c
     - curl -fsSL -o /tmp/docker_compose.toml https://raw.githubusercontent.com/juspay/hyperswitch/2026.06.11.0/config/docker_compose.toml
-      && mkdir -p /tmp/config
-      && curl -fsSL -o /tmp/config/superposition_seed.toml https://raw.githubusercontent.com/juspay/hyperswitch/2026.06.11.0/config/superposition_seed.toml
+      && mkdir -p /tmp/config && curl -fsSL -o /tmp/config/superposition_seed.toml
+      https://raw.githubusercontent.com/juspay/hyperswitch/2026.06.11.0/config/superposition_seed.toml
       && cd /tmp && exec /local/bin/router -f /tmp/docker_compose.toml
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

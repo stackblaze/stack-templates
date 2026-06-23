@@ -144,19 +144,19 @@ spec:
     value: 512M
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/files
     name: shopware-files
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/public/media
     name: shopware-media
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   resources:
     requests:
@@ -180,3 +180,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/dockware-mirror/play
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

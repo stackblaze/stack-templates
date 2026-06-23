@@ -1,0 +1,70 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: timescaledb
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Time-series database built on Postgres — hypertables,
+      compression, continuous aggregates, and full SQL compatibility for metrics and
+      events.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/timescaledb/icon.png
+    kubero.dev/template.installation: 'Change POSTGRES_PASSWORD. Connect via PostgreSQL
+      clients on port 5432 (note: this port is internal; use port-forwarding or the
+      kubero connection info to access it). Create hypertables with SELECT create_hypertable(''my_table'',
+      ''time''). TimescaleDB adds time-series superpowers to standard Postgres — all
+      standard psql tools and ORMs work unchanged.'
+    kubero.dev/template.links: '["https://docs.timescale.com/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/timescale/timescaledb
+    kubero.dev/template.categories: '["database", "analytics", "data"]'
+    kubero.dev/template.title: TimescaleDB
+    kubero.dev/template.website: https://www.timescale.com
+  labels:
+    manager: kubero
+spec:
+  name: timescaledb
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: POSTGRES_USER
+    value: postgres
+  - name: POSTGRES_PASSWORD
+    value: change-me
+  - name: POSTGRES_DB
+    value: timescaledb
+  - name: TIMESCALEDB_TELEMETRY
+    value: false
+  - name: PGDATA
+    value: /var/lib/postgresql/data/pgdata
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /var/lib/postgresql/data
+    name: timescaledb-data
+    size: 20Gi
+    storageClass: shared
+  cronjobs: []
+  healthcheck:
+    enabled: false
+  ingress:
+    enabled: false
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '4'
+      memory: 4Gi
+  image:
+    containerPort: '5432'
+    pullPolicy: Always
+    repository: timescale/timescaledb
+    tag: latest-pg16
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

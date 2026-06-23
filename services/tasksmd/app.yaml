@@ -53,6 +53,9 @@ spec:
     pullPolicy: Always
     repository: baldissaramatheus/tasks.md
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: tasksmd
   web:
     replicaCount: 1

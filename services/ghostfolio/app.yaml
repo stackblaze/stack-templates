@@ -4,17 +4,21 @@ metadata:
   name: ghostfolio
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source wealth management software to track stocks, ETFs, crypto and other assets
-      across accounts in one privacy-focused dashboard.
+    kubero.dev/template.description: Open-source wealth management software to track
+      stocks, ETFs, crypto and other assets across accounts in one privacy-focused
+      dashboard.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghostfolio/icon.png
-    kubero.dev/template.installation: 'NestJS/Angular app served on port 3333. Companion services deployed as add-ons: PostgreSQL
-      (primary DB) and a Valkey (Redis-protocol) instance used for caching and the queue. Database migrations run automatically
-      on boot. Rotate ACCESS_TOKEN_SALT and JWT_SECRET_KEY to unique random values (openssl rand -hex 32 each) and rotate
-      the postgres password before exposing publicly. The Valkey add-on runs without a password, so REDIS_PASSWORD is left
-      empty. After first launch, create your account from the start page; the FIRST registered user (or one whose security
-      token you promote) can be granted admin by setting their role to ADMIN in the Postgres _user table. Stock/crypto market
-      data is fetched from external providers (Yahoo Finance by default); configure additional DATA_SOURCE provider API keys
-      via env if you need them.'
+    kubero.dev/template.installation: 'NestJS/Angular app served on port 3333. Companion
+      services deployed as add-ons: PostgreSQL (primary DB) and a Valkey (Redis-protocol)
+      instance used for caching and the queue. Database migrations run automatically
+      on boot. Rotate ACCESS_TOKEN_SALT and JWT_SECRET_KEY to unique random values
+      (openssl rand -hex 32 each) and rotate the postgres password before exposing
+      publicly. The Valkey add-on runs without a password, so REDIS_PASSWORD is left
+      empty. After first launch, create your account from the start page; the FIRST
+      registered user (or one whose security token you promote) can be granted admin
+      by setting their role to ADMIN in the Postgres _user table. Stock/crypto market
+      data is fetched from external providers (Yahoo Finance by default); configure
+      additional DATA_SOURCE provider API keys via env if you need them.'
     kubero.dev/template.links: '["https://github.com/ghostfolio/ghostfolio/blob/main/README.md"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/ghostfolio/ghostfolio
@@ -59,9 +63,9 @@ spec:
               secret:
                 name: ghostfolio-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO ghostfolio
-                - GRANT CREATE ON SCHEMA public TO ghostfolio
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ghostfolio
+              - GRANT ALL ON SCHEMA public TO ghostfolio
+              - GRANT CREATE ON SCHEMA public TO ghostfolio
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ghostfolio
           enableSuperuserAccess: true
           superuserSecret:
             name: ghostfolio-postgresql-superuser
@@ -161,3 +165,6 @@ spec:
     pullPolicy: Always
     repository: ghostfolio/ghostfolio
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

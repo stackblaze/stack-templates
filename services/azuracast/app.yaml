@@ -160,12 +160,12 @@ spec:
     value: '1'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/azuracast/stations
     name: azuracast-stations
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true
@@ -182,3 +182,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/azuracast/azuracast
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

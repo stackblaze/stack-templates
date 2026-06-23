@@ -79,16 +79,19 @@ spec:
     value: postgresql://vaultwarden:vaultwarden@vaultwarden-postgresql-rw:5432/vaultwarden
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /data
     name: vaultwarden-data
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '80'
     repository: vaultwarden/server
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: vaultwarden
   web:
     replicaCount: 1

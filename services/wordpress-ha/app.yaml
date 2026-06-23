@@ -26,34 +26,34 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: "{{KUBERO_APP_NAME}}-mariadb"
+          name: '{{KUBERO_APP_NAME}}-mariadb'
         spec:
           rootPasswordSecretKeyRef:
-            name: "{{KUBERO_APP_NAME}}-mariadb-root"
+            name: '{{KUBERO_APP_NAME}}-mariadb-root'
             key: password
           database: wordpress
           username: wordpress
           passwordSecretKeyRef:
-            name: "{{KUBERO_APP_NAME}}-mariadb-app"
+            name: '{{KUBERO_APP_NAME}}-mariadb-app'
             key: password
           storage:
             size: 5Gi
             storageClassName: fast
           galera:
-            enabled: true
-          replicas: 3
+            enabled: false
+          replicas: 1
           resources:
             requests:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
       rootSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: "{{KUBERO_APP_NAME}}-mariadb-root"
+          name: '{{KUBERO_APP_NAME}}-mariadb-root'
         type: Opaque
         stringData:
           password: wordpress
@@ -61,39 +61,38 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: "{{KUBERO_APP_NAME}}-mariadb-app"
+          name: '{{KUBERO_APP_NAME}}-mariadb-app'
         type: Opaque
         stringData:
           password: wordpress
   cronjobs: []
   deploymentstrategy: docker
-  # Official WordPress image env vars (WORDPRESS_DB_*), not the bitnami
-  # WORDPRESS_DATABASE_* names.
   envVars:
   - name: WORDPRESS_DB_HOST
-    value: "{{KUBERO_APP_NAME}}-mariadb"
+    value: '{{KUBERO_APP_NAME}}-mariadb'
   - name: WORDPRESS_DB_USER
     value: wordpress
   - name: WORDPRESS_DB_PASSWORD
     value: wordpress
   - name: WORDPRESS_DB_NAME
     value: wordpress
-  # Shared content (wp-content: themes/plugins/uploads) on the RWX class so
-  # multiple web replicas can run for HA.
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
-    storageClass: shared
+    - ReadWriteOnce
+    storageClass: slow
     emptyDir: false
     mountPath: /var/www/html
-    name: "{{KUBERO_APP_NAME}}-data"
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
   image:
     containerPort: '80'
     repository: wordpress
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: wordpress-ha
   web:
-    replicaCount: 2
+    replicaCount: 1
   worker:
     replicaCount: 0

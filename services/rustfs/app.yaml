@@ -67,3 +67,6 @@ spec:
     pullPolicy: Always
     repository: rustfs/rustfs
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

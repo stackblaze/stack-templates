@@ -156,12 +156,12 @@ spec:
     value: 'False'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /taiga-back/media
     name: taiga-media
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true
@@ -178,3 +178,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/taiga-back
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

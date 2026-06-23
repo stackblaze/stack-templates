@@ -1,0 +1,136 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: keycloak
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Enterprise-grade open-source identity and access
+      management — SSO, OAuth2, SAML, LDAP federation, MFA, and user management.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/icon.png
+    kubero.dev/template.installation: Change KC_BOOTSTRAP_ADMIN_PASSWORD before first
+      deploy. start-dev mode is used here for simplicity — for production replace
+      with 'start' and configure proper TLS/hostname. Access the Admin Console at
+      /admin. KC_PROXY_HEADERS=xforwarded enables proxy header trust (required when
+      running behind the kubero ingress). Create realms, clients, and users in the
+      Admin Console.
+    kubero.dev/template.links: '["https://www.keycloak.org/documentation"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/keycloak/keycloak
+    kubero.dev/template.categories: '["security", "development", "work"]'
+    kubero.dev/template.title: Keycloak
+    kubero.dev/template.website: https://www.keycloak.org
+  labels:
+    manager: kubero
+spec:
+  name: keycloak
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: keycloak-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: keycloak
+              owner: keycloak
+              secret:
+                name: keycloak-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO keycloak
+              - GRANT CREATE ON SCHEMA public TO keycloak
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO keycloak
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: keycloak-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: keycloak-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: keycloak
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: keycloak-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: keycloak
+          password: keycloak
+  envVars:
+  - name: KC_DB
+    value: postgres
+  - name: KC_DB_URL
+    value: jdbc:postgresql://keycloak-postgresql-rw:5432/keycloak
+  - name: KC_DB_USERNAME
+    value: keycloak
+  - name: KC_DB_PASSWORD
+    value: keycloak
+  - name: KC_HOSTNAME
+    value: '{{KUBERO_APP_URL}}'
+  - name: KC_PROXY_HEADERS
+    value: xforwarded
+  - name: KC_HTTP_ENABLED
+    value: true
+  - name: KC_HEALTH_ENABLED
+    value: true
+  - name: KC_HTTP_MANAGEMENT_HEALTH_ENABLED
+    value: false
+  - name: KC_BOOTSTRAP_ADMIN_USERNAME
+    value: admin
+  - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+    value: change-me
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /health/ready
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: quay.io/keycloak/keycloak
+    tag: latest
+    command:
+    - /opt/keycloak/bin/kc.sh
+    - start-dev
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

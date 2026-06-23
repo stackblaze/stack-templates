@@ -115,3 +115,6 @@ spec:
     pullPolicy: Always
     repository: lldap/lldap
     tag: stable
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

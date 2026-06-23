@@ -169,3 +169,6 @@ spec:
     command:
     - ./iris-entrypoint.sh
     - app
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

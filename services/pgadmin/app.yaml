@@ -66,3 +66,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/pgadmin4
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

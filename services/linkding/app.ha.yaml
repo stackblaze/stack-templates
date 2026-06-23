@@ -1,0 +1,118 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted bookmark manager that is minimal,
+      fast, and easy to set up.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/34423368?s=200&v=4
+    kubero.dev/template.installation: Set LD_SUPERUSER_NAME and LD_SUPERUSER_PASSWORD
+      before first deploy to create the admin user.
+    kubero.dev/template.links: '["https://linkding.link/"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/sissbruecker/linkding/master/assets/page-overview-dark.png"]'
+    kubero.dev/template.source: https://github.com/sissbruecker/linkding
+    kubero.dev/template.categories: '["documentation", "productivity", "utilities"]'
+    kubero.dev/template.title: Linkding
+    kubero.dev/template.website: https://linkding.link/
+  labels:
+    manager: kubero
+  name: linkding
+spec:
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: linkding-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: linkding
+              owner: linkding
+              secret:
+                name: linkding-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO linkding
+              - GRANT CREATE ON SCHEMA public TO linkding
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO linkding
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: linkding-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: linkding-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: linkding
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: linkding-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: linkding
+          password: linkding
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: LD_SUPERUSER_NAME
+    value: admin
+  - name: LD_SUPERUSER_PASSWORD
+    value: linkding-qa-admin
+  - name: LD_SUPERUSER_EMAIL
+    value: admin@example.com
+  - name: LD_SERVER_PORT
+    value: '9090'
+  - name: LD_CSRF_TRUSTED_ORIGINS
+    value: '{{KUBERO_APP_URL}}'
+  - name: LD_USE_X_FORWARDED_HOST
+    value: 'true'
+  - name: LD_DB_ENGINE
+    value: postgres
+  - name: LD_DB_HOST
+    value: linkding-postgresql-rw
+  - name: LD_DB_PORT
+    value: '5432'
+  - name: LD_DB_DATABASE
+    value: linkding
+  - name: LD_DB_USER
+    value: linkding
+  - name: LD_DB_PASSWORD
+    value: linkding
+  extraVolumes: []
+  image:
+    containerPort: '9090'
+    pullPolicy: Always
+    repository: ghcr.io/sissbruecker/linkding
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  name: linkding
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

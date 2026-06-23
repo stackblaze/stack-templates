@@ -205,12 +205,12 @@ spec:
     value: 'False'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /app/media
     name: saleor-media
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true
@@ -232,3 +232,6 @@ spec:
     - -c
     - python manage.py migrate --noinput && gunicorn --bind :8000 --workers 4 --worker-class
       saleor.asgi.gunicorn_worker.UvicornWorker saleor.asgi:application
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

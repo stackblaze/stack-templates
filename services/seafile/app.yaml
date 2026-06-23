@@ -92,12 +92,12 @@ spec:
     value: false
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /shared
     name: seafile-data
     size: 50Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -121,3 +121,6 @@ spec:
     pullPolicy: Always
     repository: seafileltd/seafile-mc
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -109,12 +109,12 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /usr/src/app/public/uploads
     name: nodebb-uploads
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
@@ -145,3 +145,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/nodebb/nodebb
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

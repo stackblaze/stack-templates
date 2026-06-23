@@ -97,16 +97,19 @@ spec:
     value: gotify
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /app/data
     name: gotify-volume
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '8080'
     repository: gotify/server
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: gotify
   web:
     replicaCount: 1

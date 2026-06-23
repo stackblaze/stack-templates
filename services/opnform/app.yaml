@@ -172,12 +172,12 @@ spec:
     value: 64m
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /usr/share/nginx/html/storage/app
     name: opnform-storage
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -211,3 +211,4 @@ spec:
       securityContext:
         runAsNonRoot: false
         runAsUser: 0
+        readOnlyRootFilesystem: true

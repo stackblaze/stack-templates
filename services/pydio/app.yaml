@@ -106,12 +106,12 @@ spec:
     value: pydio:pydio@tcp(pydio-mysql:3306)/pydio?parseTime=true
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/cells
     name: pydio-data
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -122,3 +122,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/pydio
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

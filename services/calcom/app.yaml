@@ -39,7 +39,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
           bootstrap:
             initdb:
@@ -48,9 +48,9 @@ spec:
               secret:
                 name: calcom-db-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO calcom
-                - GRANT CREATE ON SCHEMA public TO calcom
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO calcom
+              - GRANT ALL ON SCHEMA public TO calcom
+              - GRANT CREATE ON SCHEMA public TO calcom
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO calcom
           enableSuperuserAccess: true
           superuserSecret:
             name: calcom-db-superuser
@@ -117,6 +117,6 @@ spec:
     repository: calcom.docker.scarf.sh/calcom/cal.com
     run:
       securityContext:
-        readOnlyRootFilesystem: false
+        readOnlyRootFilesystem: true
     tag: latest
   name: calcom

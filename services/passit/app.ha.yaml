@@ -4,17 +4,21 @@ metadata:
   name: passit
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source, self-hosted password manager with end-to-end encryption and team sharing,
-      plus browser extensions and a REST API.
+    kubero.dev/template.description: Open-source, self-hosted password manager with
+      end-to-end encryption and team sharing, plus browser extensions and a REST API.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/passit/icon.png
-    kubero.dev/template.installation: 'Image: passit/passit:stable (official, on Docker Hub; project is hosted on GitLab).
-      This is a Django app. ROTATE SECRET_KEY (set it to `openssl rand -hex 32`) and the Postgres password (default ''passit'')
-      before exposing publicly. ALLOWED_HOSTS is set to ''*'' for first boot; tighten it to your real host. The container
-      runs Django migrations on start, then serves via gunicorn on port 5000. Create the first admin/user via the web sign-up
-      flow (registration is open by default; disable open registration with SIGN_UP_ENABLED=false after creating your accounts).
-      DATABASE_URL points at the bundled postgres add-on (passit-postgresql-rw) and REDIS_URL at the valkey add-on (used for
-      Celery background jobs / caching). For password-reset and invite emails, configure SMTP via EMAIL_* / SERVER_EMAIL env
-      vars or the Django settings after install. No object storage required.'
+    kubero.dev/template.installation: 'Image: passit/passit:stable (official, on Docker
+      Hub; project is hosted on GitLab). This is a Django app. ROTATE SECRET_KEY (set
+      it to `openssl rand -hex 32`) and the Postgres password (default ''passit'')
+      before exposing publicly. ALLOWED_HOSTS is set to ''*'' for first boot; tighten
+      it to your real host. The container runs Django migrations on start, then serves
+      via gunicorn on port 5000. Create the first admin/user via the web sign-up flow
+      (registration is open by default; disable open registration with SIGN_UP_ENABLED=false
+      after creating your accounts). DATABASE_URL points at the bundled postgres add-on
+      (passit-postgresql-rw) and REDIS_URL at the valkey add-on (used for Celery background
+      jobs / caching). For password-reset and invite emails, configure SMTP via EMAIL_*
+      / SERVER_EMAIL env vars or the Django settings after install. No object storage
+      required.'
     kubero.dev/template.links: '["https://passit.io/getting-started/", "https://gitlab.com/passit/passit"]'
     kubero.dev/template.screenshots: '["https://passit.io/static/img/screenshot.png"]'
     kubero.dev/template.source: https://gitlab.com/passit/passit
@@ -127,7 +131,7 @@ spec:
   extraVolumes: []
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -135,3 +139,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/passit
     tag: stable
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

@@ -102,12 +102,12 @@ spec:
     value: lychee
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /app/public/uploads
     name: lychee-upload-volume
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '8000'
     pullPolicy: Always
@@ -124,6 +124,7 @@ spec:
       securityContext:
         runAsNonRoot: false
         runAsUser: 0
+        readOnlyRootFilesystem: true
   name: lychee
   web:
     replicaCount: 1

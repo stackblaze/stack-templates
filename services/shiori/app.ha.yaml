@@ -1,0 +1,106 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'Shiori is a simple bookmark manager. '
+    kubero.dev/template.icon: https://raw.githubusercontent.com/go-shiori/shiori/master/internal/view/assets/res/apple-touch-icon-152x152.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/go-shiori/shiori/master/docs/readme/cover.png","https://raw.githubusercontent.com/go-shiori/shiori/master/docs/screenshots/02-home.png","https://raw.githubusercontent.com/go-shiori/shiori/master/docs/screenshots/04-options.png"]'
+    kubero.dev/template.source: https://github.com/go-shiori/shiori
+    kubero.dev/template.categories: '["work", "utilities"]'
+    kubero.dev/template.title: Shiori
+    kubero.dev/template.website: https://github.com/go-shiori/shiori
+  name: shiori
+spec:
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: shiori-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: shiori
+              owner: shiori
+              secret:
+                name: shiori-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO shiori
+              - GRANT CREATE ON SCHEMA public TO shiori
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO shiori
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: shiori-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: shiori-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: shiori
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: shiori-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: shiori
+          password: shiori
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: SHIORI_DIR
+    value: /srv/shiori
+  - name: SHIORI_DATABASE_URL
+    value: postgres://shiori:shiori@shiori-postgresql-rw:5432/shiori?sslmode=disable
+  - name: SHIORI_HTTP_SECRET_KEY
+    value: change-me-to-a-random-string
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /srv/shiori
+    name: shiori-data
+    size: 2Gi
+    storageClass: shared
+  image:
+    containerPort: '8080'
+    repository: ghcr.io/go-shiori/shiori
+    tag: latest
+    command:
+    - sh
+    - -c
+    - shiori migrate && exec shiori serve
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  name: shiori
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

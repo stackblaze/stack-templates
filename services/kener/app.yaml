@@ -128,12 +128,12 @@ spec:
     value: '3000'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /app/uploads
     name: kener-uploads
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -144,3 +144,6 @@ spec:
     pullPolicy: Always
     repository: rajnandan1/kener
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

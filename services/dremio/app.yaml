@@ -81,3 +81,6 @@ spec:
     pullPolicy: Always
     repository: dremio/dremio-oss
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

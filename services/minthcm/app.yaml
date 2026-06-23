@@ -154,3 +154,6 @@ spec:
     - bash
     - -c
     - /usr/local/bin/start.sh; exec tail -f /dev/null
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

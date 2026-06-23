@@ -4,20 +4,25 @@ metadata:
   name: tracardi
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source API-first Customer Data Platform (CDP) for collecting events, building profiles
-      and segments, and orchestrating real-time customer journeys.
+    kubero.dev/template.description: Open-source API-first Customer Data Platform
+      (CDP) for collecting events, building profiles and segments, and orchestrating
+      real-time customer journeys.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tracardi/icon.png
-    kubero.dev/template.installation: 'Tracardi is a multi-container stack; this template runs ONLY the primary API/server
-      image tracardi/tracardi-api on internal port 80 (mirrored to GHCR to avoid Docker Hub rate limits). OpenSearch 1.3.x (`tracardi-opensearch`) is provisioned automatically
-      as the Elasticsearch-compatible datastore for events/profiles/segments (Tracardi supports ES 7.x or OpenSearch). The MySQL
-      config DB is provisioned via the mariadb add-on and Redis cache via the valkey add-on. Deploy these COMPANION services
-      from the same Tracardi image family, sharing
-      the SAME ELASTIC_HOST / REDIS_HOST / MYSQL_HOST env values: tracardi/tracardi-gui (the web admin GUI, internal port
-      80 - expose it with its own Service/Ingress, this is what operators log into), tracardi/update-worker (background workflow/segmentation
-      worker), and tracardi/apm (auto profile-merging / background processing worker). Set PRODUCTION=yes and DEMO=no for
-      a clean install. ROTATE before exposing: the mariadb (MYSQL) and any admin passwords; the default admin login is created
-      on first boot (admin@tracardi.com) - change it immediately. AUTOLOAD_BRIDGE/DEMO data and the default credentials are
-      for evaluation only.'
+    kubero.dev/template.installation: 'Tracardi is a multi-container stack; this template
+      runs ONLY the primary API/server image tracardi/tracardi-api on internal port
+      80 (mirrored to GHCR to avoid Docker Hub rate limits). OpenSearch 1.3.x (`tracardi-opensearch`)
+      is provisioned automatically as the Elasticsearch-compatible datastore for events/profiles/segments
+      (Tracardi supports ES 7.x or OpenSearch). The MySQL config DB is provisioned
+      via the mariadb add-on and Redis cache via the valkey add-on. Deploy these COMPANION
+      services from the same Tracardi image family, sharing the SAME ELASTIC_HOST
+      / REDIS_HOST / MYSQL_HOST env values: tracardi/tracardi-gui (the web admin GUI,
+      internal port 80 - expose it with its own Service/Ingress, this is what operators
+      log into), tracardi/update-worker (background workflow/segmentation worker),
+      and tracardi/apm (auto profile-merging / background processing worker). Set
+      PRODUCTION=yes and DEMO=no for a clean install. ROTATE before exposing: the
+      mariadb (MYSQL) and any admin passwords; the default admin login is created
+      on first boot (admin@tracardi.com) - change it immediately. AUTOLOAD_BRIDGE/DEMO
+      data and the default credentials are for evaluation only.'
     kubero.dev/template.links: '["https://docs.tracardi.com", "https://github.com/Tracardi/tracardi-api"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/Tracardi/tracardi
@@ -129,7 +134,7 @@ spec:
             clusterName: tracardi-opensearch
             masterService: tracardi-opensearch
             image:
-              tag: '1.3.20'
+              tag: 1.3.20
             singleNode: false
             replicas: 3
             roles:
@@ -150,10 +155,13 @@ spec:
             securityConfig:
               enabled: false
             config:
-              opensearch.yml: |
-                cluster.name: tracardi-opensearch
+              opensearch.yml: 'cluster.name: tracardi-opensearch
+
                 network.host: 0.0.0.0
+
                 plugins.security.disabled: true
+
+                '
   envVars:
   - name: ELASTIC_HOST
     value: http://tracardi-opensearch:9200
@@ -188,7 +196,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -196,3 +204,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/tracardi-api
     tag: 1.1.6
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

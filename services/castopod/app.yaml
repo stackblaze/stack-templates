@@ -143,12 +143,12 @@ spec:
     value: '1'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /app/public/media
     name: castopod-data
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -165,3 +165,6 @@ spec:
     pullPolicy: Always
     repository: castopod/castopod
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -128,3 +128,6 @@ spec:
     pullPolicy: Always
     repository: civicrm/civicrm
     tag: '5'
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

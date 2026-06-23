@@ -105,19 +105,19 @@ spec:
     value: '2'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/recipes/staticfiles
     name: tandoor-static
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/recipes/mediafiles
     name: tandoor-media
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   resources:
     requests:
@@ -141,3 +141,6 @@ spec:
     pullPolicy: Always
     repository: vabene1111/recipes
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

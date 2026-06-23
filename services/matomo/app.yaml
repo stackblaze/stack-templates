@@ -101,3 +101,6 @@ spec:
     pullPolicy: Always
     repository: matomo
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

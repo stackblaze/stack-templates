@@ -58,3 +58,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/rustdesk/rustdesk-server-s6
     tag: 1.1.15
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

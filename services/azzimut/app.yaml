@@ -100,12 +100,12 @@ spec:
     value: 'true'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /app/bin/uploads
     name: azimutt-uploads
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -134,3 +134,6 @@ spec:
     - -c
     - "for i in $(seq 1 90); do\n  if /app/bin/migrate; then break; fi\n  sleep 5\n\
       done\nexec /app/bin/server\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

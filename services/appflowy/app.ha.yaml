@@ -4,10 +4,12 @@ metadata:
   name: appflowy
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source Notion alternative — self-hosted workspace for notes, docs, and collaboration.
+    kubero.dev/template.description: Open-source Notion alternative — self-hosted
+      workspace for notes, docs, and collaboration.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/appflowy/icon.png
-    kubero.dev/template.installation: Bundles AppFlowy Cloud API with GoTrue auth in one pod. Deploy appflowy-web from the AppFlowy-Cloud
-      docker-compose in the same pipeline for the full web UI.
+    kubero.dev/template.installation: Bundles AppFlowy Cloud API with GoTrue auth
+      in one pod. Deploy appflowy-web from the AppFlowy-Cloud docker-compose in the
+      same pipeline for the full web UI.
     kubero.dev/template.links: '["https://appflowy-io-appflowy.mintlify.app/self-hosting/installation"]'
     kubero.dev/template.screenshots: '["https://appflowy.io/_next/static/media/appflowy-logo.0a1a0b0b.png"]'
     kubero.dev/template.source: https://github.com/AppFlowy-IO/AppFlowy-Cloud
@@ -52,10 +54,10 @@ spec:
               secret:
                 name: appflowy-postgresql-app
               postInitApplicationSQL:
-                - CREATE EXTENSION IF NOT EXISTS vector
-                - GRANT ALL ON SCHEMA public TO appflowy
-                - GRANT CREATE ON SCHEMA public TO appflowy
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO appflowy
+              - CREATE EXTENSION IF NOT EXISTS vector
+              - GRANT ALL ON SCHEMA public TO appflowy
+              - GRANT CREATE ON SCHEMA public TO appflowy
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO appflowy
           enableSuperuserAccess: true
           superuserSecret:
             name: appflowy-postgresql-superuser
@@ -206,7 +208,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -217,33 +219,17 @@ spec:
     command:
     - sh
     - -c
-    - |
-      set -e
-      ARCH=$(uname -m)
-      case "$ARCH" in
-        x86_64) CRANE_ARCH=x86_64 ;;
-        aarch64) CRANE_ARCH=arm64 ;;
-        *) echo "unsupported arch: $ARCH"; exit 1 ;;
-      esac
-      if [ ! -x /tmp/crane ]; then
-        curl -fsSL "https://github.com/google/go-containerregistry/releases/download/v0.20.2/go-containerregistry_Linux_${CRANE_ARCH}.tar.gz" | tar xz -C /tmp crane
-      fi
-      mkdir -p /tmp/gotrue-root
-      /tmp/crane export appflowyinc/gotrue:latest | tar x -C /tmp/gotrue-root
-      GOTRUE_BIN=$(find /tmp/gotrue-root -name auth -type f | head -1)
-      if [ -z "$GOTRUE_BIN" ]; then
-        echo "failed to locate gotrue auth binary"
-        exit 1
-      fi
-      export PORT="${GOTRUE_PORT:-9999}"
-      export DATABASE_URL="$GOTRUE_DATABASE_URL"
-      export GOTRUE_JWT_SECRET="$APPFLOWY_GOTRUE_JWT_SECRET"
-      "$GOTRUE_BIN" &
-      for i in $(seq 1 120); do
-        if curl -fsS "http://127.0.0.1:${PORT}/health" >/dev/null 2>&1; then
-          break
-        fi
-        sleep 2
-      done
-      curl -fsS "http://127.0.0.1:${PORT}/health" >/dev/null
-      exec appflowy_cloud
+    - "set -e\nARCH=$(uname -m)\ncase \"$ARCH\" in\n  x86_64) CRANE_ARCH=x86_64 ;;\n\
+      \  aarch64) CRANE_ARCH=arm64 ;;\n  *) echo \"unsupported arch: $ARCH\"; exit\
+      \ 1 ;;\nesac\nif [ ! -x /tmp/crane ]; then\n  curl -fsSL \"https://github.com/google/go-containerregistry/releases/download/v0.20.2/go-containerregistry_Linux_${CRANE_ARCH}.tar.gz\"\
+      \ | tar xz -C /tmp crane\nfi\nmkdir -p /tmp/gotrue-root\n/tmp/crane export appflowyinc/gotrue:latest\
+      \ | tar x -C /tmp/gotrue-root\nGOTRUE_BIN=$(find /tmp/gotrue-root -name auth\
+      \ -type f | head -1)\nif [ -z \"$GOTRUE_BIN\" ]; then\n  echo \"failed to locate\
+      \ gotrue auth binary\"\n  exit 1\nfi\nexport PORT=\"${GOTRUE_PORT:-9999}\"\n\
+      export DATABASE_URL=\"$GOTRUE_DATABASE_URL\"\nexport GOTRUE_JWT_SECRET=\"$APPFLOWY_GOTRUE_JWT_SECRET\"\
+      \n\"$GOTRUE_BIN\" &\nfor i in $(seq 1 120); do\n  if curl -fsS \"http://127.0.0.1:${PORT}/health\"\
+      \ >/dev/null 2>&1; then\n    break\n  fi\n  sleep 2\ndone\ncurl -fsS \"http://127.0.0.1:${PORT}/health\"\
+      \ >/dev/null\nexec appflowy_cloud\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

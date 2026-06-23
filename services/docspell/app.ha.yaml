@@ -4,19 +4,25 @@ metadata:
   name: docspell
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted document organizer (DMS) that auto-tags, OCRs and full-text-searches your
-      scanned PDFs, emails and uploads.
+    kubero.dev/template.description: Self-hosted document organizer (DMS) that auto-tags,
+      OCRs and full-text-searches your scanned PDFs, emails and uploads.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docspell/icon.png
-    kubero.dev/template.installation: 'This is the Docspell rest server (web UI + REST API) listening on internal port 7880.
-      It REQUIRES a companion job executor deployed alongside it for OCR, text extraction and document conversion: deploy
-      docspell/joex:latest pointed at the SAME Postgres add-on (set its DOCSPELL_JOEX_JDBC_* / DOCSPELL_JOEX_BASE__URL env).
-      Both containers must share the file storage; this template stores binaries in the bundled Postgres (DOCSPELL_SERVER_BACKEND_FILES_DEFAULT__STORE=database),
-      so no shared volume between server and joex is needed for files. Rotate the random secrets before production: DOCSPELL_SERVER_AUTH_SERVER__SECRET
-      (openssl rand -hex 32) and DOCSPELL_SERVER_ADMIN__ENDPOINT_SECRET, and rotate the Postgres password. Full-text search
-      defaults here to the built-in PostgreSQL FTS backend (DOCSPELL_SERVER_FULL__TEXT__SEARCH_ENABLED=true + DOCSPELL_SERVER_FULL__TEXT__SEARCH_BACKEND=postgresql),
-      so no external Apache Solr is needed; only add a Solr instance if you set the backend to solr. First run: open the web
-      UI, register a new account using the same name for both ''collective'' and ''user'', then log in. Optional companions
-      for inbound mail/scanner ingest (docspell-consumedir, IMAP poller) are described in the docs and reuse the same Postgres.'
+    kubero.dev/template.installation: 'This is the Docspell rest server (web UI +
+      REST API) listening on internal port 7880. It REQUIRES a companion job executor
+      deployed alongside it for OCR, text extraction and document conversion: deploy
+      docspell/joex:latest pointed at the SAME Postgres add-on (set its DOCSPELL_JOEX_JDBC_*
+      / DOCSPELL_JOEX_BASE__URL env). Both containers must share the file storage;
+      this template stores binaries in the bundled Postgres (DOCSPELL_SERVER_BACKEND_FILES_DEFAULT__STORE=database),
+      so no shared volume between server and joex is needed for files. Rotate the
+      random secrets before production: DOCSPELL_SERVER_AUTH_SERVER__SECRET (openssl
+      rand -hex 32) and DOCSPELL_SERVER_ADMIN__ENDPOINT_SECRET, and rotate the Postgres
+      password. Full-text search defaults here to the built-in PostgreSQL FTS backend
+      (DOCSPELL_SERVER_FULL__TEXT__SEARCH_ENABLED=true + DOCSPELL_SERVER_FULL__TEXT__SEARCH_BACKEND=postgresql),
+      so no external Apache Solr is needed; only add a Solr instance if you set the
+      backend to solr. First run: open the web UI, register a new account using the
+      same name for both ''collective'' and ''user'', then log in. Optional companions
+      for inbound mail/scanner ingest (docspell-consumedir, IMAP poller) are described
+      in the docs and reuse the same Postgres.'
     kubero.dev/template.links: '["https://docspell.org/docs/install/docker/", "https://docspell.org/docs/configure/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/eikek/docspell
@@ -109,7 +115,7 @@ spec:
   extraVolumes: []
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -117,3 +123,6 @@ spec:
     pullPolicy: Always
     repository: docspell/restserver
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

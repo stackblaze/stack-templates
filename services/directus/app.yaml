@@ -41,12 +41,12 @@ spec:
     value: directus
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /directus/uploads
     name: directus-uploads-volume
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
@@ -128,3 +128,6 @@ spec:
     pullPolicy: Always
     repository: directus/directus
     tag: '11'
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

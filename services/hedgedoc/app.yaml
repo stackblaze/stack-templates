@@ -86,12 +86,12 @@ spec:
     value: replace-with-openssl-rand-hex-32
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /hedgedoc/public/uploads
     name: hedgedoc-uploads
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -102,3 +102,6 @@ spec:
     pullPolicy: Always
     repository: quay.io/hedgedoc/hedgedoc
     tag: 1.10.8
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

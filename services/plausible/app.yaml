@@ -4,10 +4,12 @@ metadata:
   name: plausible
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Privacy-friendly alternative to Google Analytics — lightweight and open source.
+    kubero.dev/template.description: Privacy-friendly alternative to Google Analytics
+      — lightweight and open source.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plausible/icon.png
-    kubero.dev/template.installation: Generate SECRET_KEY_BASE with `openssl rand -hex 64` and TOTP_VAULT_KEY with `openssl
-      rand -base64 32`. Update BASE_URL before going live.
+    kubero.dev/template.installation: Generate SECRET_KEY_BASE with `openssl rand
+      -hex 64` and TOTP_VAULT_KEY with `openssl rand -base64 32`. Update BASE_URL
+      before going live.
     kubero.dev/template.links: '["https://plausible.io/docs/"]'
     kubero.dev/template.screenshots: '["https://plausible.io/docs/img/plausible-analytics.png"]'
     kubero.dev/template.source: https://github.com/plausible/analytics
@@ -158,9 +160,9 @@ spec:
     command:
     - sh
     - -c
-    - |
-      for i in $(seq 1 90); do
-        if wget -q -O- http://chi-plausible-clickhouse-db-0-0:8123/ping 2>/dev/null | grep -q Ok; then break; fi
-        sleep 5
-      done
-      /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run
+    - "for i in $(seq 1 90); do\n  if wget -q -O- http://chi-plausible-clickhouse-db-0-0:8123/ping\
+      \ 2>/dev/null | grep -q Ok; then break; fi\n  sleep 5\ndone\n/entrypoint.sh\
+      \ db createdb && /entrypoint.sh db migrate && /entrypoint.sh run\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

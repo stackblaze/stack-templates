@@ -4,20 +4,26 @@ metadata:
   name: dittofeed
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source customer engagement and marketing automation platform for building messaging
-      campaigns and user journeys across email, SMS, and push.
+    kubero.dev/template.description: Open-source customer engagement and marketing
+      automation platform for building messaging campaigns and user journeys across
+      email, SMS, and push.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dittofeed/icon.png
-    kubero.dev/template.installation: 'Dittofeed is a multi-service stack. This template runs the all-in-one dittofeed/dittofeed-lite
-      image (API + dashboard + worker in one process) on port 3000 in single-tenant mode. It needs two operator add-ons (Postgres
-      + ClickHouse, both provisioned here) AND an external Temporal cluster, which is NOT an available add-on: deploy Temporal
-      separately (image temporalio/auto-setup:1.22.4 with its own Postgres, plus optional temporalio/ui:2.22.1) and point
-      TEMPORAL_ADDRESS at it (default temporal:7233). For production scale you may instead run the split images dittofeed/api,
-      dittofeed/dashboard, and dittofeed/worker (worker handles the Temporal-driven journey processing) rather than the lite
-      bundle; blob storage (any S3/MinIO) is optional. BOOTSTRAP=true auto-creates the default workspace and tables on first
-      start. ROTATE before exposing: SECRET_KEY (openssl rand -base64 32), the admin PASSWORD env, plus the Postgres and ClickHouse
-      add-on passwords. Set DASHBOARD_API_BASE / dashboard URLs to your public host. CLICKHOUSE_HOST must be the full http://host:8123
-      URL.'
-    kubero.dev/template.links: '["https://docs.dittofeed.com/deployment/self-hosted", "https://docs.dittofeed.com/deployment/self-hosted/docker-compose"]'
+    kubero.dev/template.installation: 'Dittofeed is a multi-service stack. This template
+      runs the all-in-one dittofeed/dittofeed-lite image (API + dashboard + worker
+      in one process) on port 3000 in single-tenant mode. It needs two operator add-ons
+      (Postgres + ClickHouse, both provisioned here) AND an external Temporal cluster,
+      which is NOT an available add-on: deploy Temporal separately (image temporalio/auto-setup:1.22.4
+      with its own Postgres, plus optional temporalio/ui:2.22.1) and point TEMPORAL_ADDRESS
+      at it (default temporal:7233). For production scale you may instead run the
+      split images dittofeed/api, dittofeed/dashboard, and dittofeed/worker (worker
+      handles the Temporal-driven journey processing) rather than the lite bundle;
+      blob storage (any S3/MinIO) is optional. BOOTSTRAP=true auto-creates the default
+      workspace and tables on first start. ROTATE before exposing: SECRET_KEY (openssl
+      rand -base64 32), the admin PASSWORD env, plus the Postgres and ClickHouse add-on
+      passwords. Set DASHBOARD_API_BASE / dashboard URLs to your public host. CLICKHOUSE_HOST
+      must be the full http://host:8123 URL.'
+    kubero.dev/template.links: '["https://docs.dittofeed.com/deployment/self-hosted",
+      "https://docs.dittofeed.com/deployment/self-hosted/docker-compose"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/dittofeed/dittofeed
     kubero.dev/template.categories: '["communication", "automation", "crm"]'
@@ -253,3 +259,6 @@ spec:
     pullPolicy: Always
     repository: dittofeed/dittofeed-lite
     tag: v0.23.0
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

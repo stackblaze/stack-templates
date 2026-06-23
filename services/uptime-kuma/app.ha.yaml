@@ -1,0 +1,94 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted monitoring tool like "Uptime Robot".
+    kubero.dev/template.icon: https://github.com/louislam/uptime-kuma/raw/master/public/icon.svg
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/9674a2b1b7d094b060fd79e6df7dca10b86a484ce6015b2668cff768dfc786ee/68747470733a2f2f757074696d652e6b756d612e7065742f696d672f6461726b2e6a7067"]'
+    kubero.dev/template.source: https://github.com/louislam/uptime-kuma
+    kubero.dev/template.categories: '["monitoring"]'
+    kubero.dev/template.title: Uptime Kuma
+    kubero.dev/template.website: https://uptime.kuma.pet
+  name: uptime-kuma
+spec:
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: uptimekuma-mysql
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: uptimekuma-mysql-root
+            key: password
+          database: uptimekuma
+          username: uptimekuma
+          passwordSecretKeyRef:
+            name: uptimekuma-mysql-app
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: uptimekuma-mysql-root
+        type: Opaque
+        stringData:
+          password: uptimekuma
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: uptimekuma-mysql-app
+        type: Opaque
+        stringData:
+          password: uptimekuma
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: DB_TYPE
+    value: mariadb
+  - name: DB_MYSQL_HOST
+    value: uptimekuma-mysql
+  - name: DB_MYSQL_PORT
+    value: '3306'
+  - name: DB_MYSQL_USER
+    value: uptimekuma
+  - name: DB_MYSQL_PASSWORD
+    value: uptimekuma
+  - name: DB_MYSQL_DATABASE
+    value: uptimekuma
+  extraVolumes: []
+  image:
+    containerPort: '3001'
+    repository: louislam/uptime-kuma
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  name: uptime-kuma
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

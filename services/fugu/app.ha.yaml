@@ -4,13 +4,16 @@ metadata:
   name: fugu
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Free, privacy-friendly, simple, open-source and self-hostable product analytics.
+    kubero.dev/template.description: Free, privacy-friendly, simple, open-source and
+      self-hostable product analytics.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/fugu/icon.png
-    kubero.dev/template.installation: Ruby on Rails product analytics backed by PostgreSQL. ROTATE SECRET_KEY_BASE (a 128-char
-      hex/alphanumeric string; generate with `openssl rand -hex 64`) and rotate the postgres credentials. DATABASE_URL points
-      at the bundled postgres add-on. Set INIT_USER_EMAIL and INIT_USER_PASSWORD to auto-create the first admin on first boot,
-      or visit the root URL and register (ALLOW_REGISTRATION=true). The template disables in-app SSL redirect so Kubernetes HTTP
-      probes work behind ingress TLS. App listens on port 3000.
+    kubero.dev/template.installation: Ruby on Rails product analytics backed by PostgreSQL.
+      ROTATE SECRET_KEY_BASE (a 128-char hex/alphanumeric string; generate with `openssl
+      rand -hex 64`) and rotate the postgres credentials. DATABASE_URL points at the
+      bundled postgres add-on. Set INIT_USER_EMAIL and INIT_USER_PASSWORD to auto-create
+      the first admin on first boot, or visit the root URL and register (ALLOW_REGISTRATION=true).
+      The template disables in-app SSL redirect so Kubernetes HTTP probes work behind
+      ingress TLS. App listens on port 3000.
     kubero.dev/template.links: '["https://github.com/shafy/fugu/blob/main/SELFHOSTING.md"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/shafy/fugu
@@ -55,11 +58,11 @@ spec:
               secret:
                 name: fugu-postgresql-app
               postInitSQL:
-                - ALTER ROLE fugu CREATEDB
+              - ALTER ROLE fugu CREATEDB
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO fugu
-                - GRANT CREATE ON SCHEMA public TO fugu
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO fugu
+              - GRANT ALL ON SCHEMA public TO fugu
+              - GRANT CREATE ON SCHEMA public TO fugu
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO fugu
           enableSuperuserAccess: true
           superuserSecret:
             name: fugu-postgresql-superuser
@@ -113,7 +116,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -122,9 +125,17 @@ spec:
     repository: shafyy/fugu
     tag: latest
     command:
-      - sh
-      - -c
-      - |
-        sed -i 's/config.force_ssl = ENV.fetch("FORCE_SSL_PROD", true)/config.force_ssl = false/' /app/config/environments/production.rb
-        until ruby -rpg -e "PG.connect(ENV.fetch('DATABASE_URL'))" 2>/dev/null; do sleep 2; done
-        exec sh /app/docker-entrypoint.sh rails server -b 0.0.0.0
+    - sh
+    - -c
+    - 'sed -i ''s/config.force_ssl = ENV.fetch("FORCE_SSL_PROD", true)/config.force_ssl
+      = false/'' /app/config/environments/production.rb
+
+      until ruby -rpg -e "PG.connect(ENV.fetch(''DATABASE_URL''))" 2>/dev/null; do
+      sleep 2; done
+
+      exec sh /app/docker-entrypoint.sh rails server -b 0.0.0.0
+
+      '
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

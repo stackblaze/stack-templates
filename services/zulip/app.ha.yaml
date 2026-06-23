@@ -212,15 +212,15 @@ spec:
     value: zulip
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: zulip-data
     size: 5Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   resources:
@@ -241,3 +241,6 @@ spec:
     pullPolicy: Always
     repository: zulip/docker-zulip
     tag: 11.6-0
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

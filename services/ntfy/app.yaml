@@ -36,6 +36,9 @@ spec:
     containerPort: '80'
     repository: binwiederhier/ntfy
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: ntfy
   web:
     replicaCount: 1

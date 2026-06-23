@@ -148,3 +148,6 @@ spec:
     pullPolicy: Always
     repository: nfrastack/freescout
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -171,3 +171,6 @@ spec:
     pullPolicy: Always
     repository: bitnamilegacy/discourse
     tag: 3-debian-12
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

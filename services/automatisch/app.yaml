@@ -147,12 +147,12 @@ spec:
     value: '6379'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /automatisch/storage
     name: automatisch-storage
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -163,3 +163,6 @@ spec:
     pullPolicy: Always
     repository: automatischio/automatisch
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

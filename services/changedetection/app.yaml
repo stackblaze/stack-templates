@@ -21,16 +21,19 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /datastore
     name: changedetection-volume
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '5000'
     repository: dgtlmoon/changedetection.io
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: changedetection
   web:
     replicaCount: 1

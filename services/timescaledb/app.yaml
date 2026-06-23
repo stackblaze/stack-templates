@@ -65,3 +65,6 @@ spec:
     pullPolicy: Always
     repository: timescale/timescaledb
     tag: latest-pg16
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -117,3 +117,6 @@ spec:
     pullPolicy: Always
     repository: xlrl/mantisbt
     tag: 2.28.3
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

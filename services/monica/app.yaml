@@ -99,12 +99,12 @@ spec:
     value: sync
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/storage
     name: monica-storage
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -121,3 +121,6 @@ spec:
     pullPolicy: Always
     repository: monica
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

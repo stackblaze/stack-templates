@@ -173,15 +173,15 @@ spec:
     value: 'false'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: bigcapital-data
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   healthcheck:
@@ -200,3 +200,6 @@ spec:
     - -c
     - cd packages/server && node dist/cli.js system:migrate:latest && node dist/cli.js
       tenants:migrate:latest && exec node dist/main.js
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

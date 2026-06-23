@@ -40,7 +40,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
           bootstrap:
             initdb:
@@ -79,7 +79,7 @@ spec:
   - name: MAILER_SMTP_HOST
     value: 127.0.0.1
   - name: MAILER_SMTP_PORT
-    value: "1025"
+    value: '1025'
   - name: MAILER_SMTP_USER
     value: keila
   - name: MAILER_SMTP_PASSWORD
@@ -96,6 +96,9 @@ spec:
     pullPolicy: Always
     repository: pentacent/keila
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: keila
   serviceAccount:
     annotations: {}
