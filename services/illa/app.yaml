@@ -6,8 +6,8 @@ metadata:
     kubero.dev/template.description: ILLA is a robust open source low-code platform
       for developers to build internal tools.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/illa/icon.png
-    kubero.dev/template.installation: All-in-one image bundles PostgreSQL, Redis, and
-      MinIO. Default login is root / password. Data persists under /opt/illa/database
+    kubero.dev/template.installation: All-in-one image bundles PostgreSQL, Redis,
+      and MinIO. Default login is root / password. Data persists under /opt/illa/database
       and /opt/illa/drive.
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://www.illacloud.com/_next/image?url=https%3A%2F%2Fcdn.illacloud.com%2Fofficial-website%2Fimg%2Fhome%2FplayVideoCover.png&w=3840&q=75"]'
@@ -32,12 +32,14 @@ spec:
     mountPath: /opt/illa/database
     name: illa-database
     size: 5Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/illa/drive
     name: illa-drive
     size: 5Gi
+    storageClass: slow
   healthcheck:
     enabled: true
     path: /
@@ -57,7 +59,7 @@ spec:
       cpu: 500m
       memory: 1Gi
     limits:
-      cpu: "2"
+      cpu: '2'
       memory: 2Gi
   web:
     replicaCount: 1

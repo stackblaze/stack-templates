@@ -4,17 +4,21 @@ metadata:
   name: xwiki
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source advanced enterprise wiki platform for building collaborative web applications,
-      knowledge bases and intranets.
+    kubero.dev/template.description: Open-source advanced enterprise wiki platform
+      for building collaborative web applications, knowledge bases and intranets.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/xwiki/icon.png
-    kubero.dev/template.installation: Uses the official xwiki image (Tomcat, postgres variant) on internal port 8080. Deploy
-      with the bundled PostgreSQL add-on; the DB_USER/DB_PASSWORD/DB_DATABASE/DB_HOST env vars point XWiki at the '{{KUBERO_APP_NAME}}-postgresql-rw'
-      Postgres service (rotate the Postgres add-on password after install). On first boot XWiki connects to the empty database,
-      runs the Distribution Wizard to install the default flavor (XWiki Standard), and prompts you to create the admin (superadmin)
-      user and password at the app URL, complete the wizard and set a strong admin password before going to production. The
-      permanent directory (config, extensions, attachments cache, Solr search index) lives under /usr/local/xwiki and is persisted
-      by the xwiki-data volume, no external Solr/Elasticsearch is required since XWiki ships an embedded Solr index there.
-      Increase the app pod size (JVM heap) for larger wikis. The 'stable-postgres-tomcat' tag tracks the latest stable XWiki
+    kubero.dev/template.installation: Uses the official xwiki image (Tomcat, postgres
+      variant) on internal port 8080. Deploy with the bundled PostgreSQL add-on; the
+      DB_USER/DB_PASSWORD/DB_DATABASE/DB_HOST env vars point XWiki at the '{{KUBERO_APP_NAME}}-postgresql-rw'
+      Postgres service (rotate the Postgres add-on password after install). On first
+      boot XWiki connects to the empty database, runs the Distribution Wizard to install
+      the default flavor (XWiki Standard), and prompts you to create the admin (superadmin)
+      user and password at the app URL, complete the wizard and set a strong admin
+      password before going to production. The permanent directory (config, extensions,
+      attachments cache, Solr search index) lives under /usr/local/xwiki and is persisted
+      by the xwiki-data volume, no external Solr/Elasticsearch is required since XWiki
+      ships an embedded Solr index there. Increase the app pod size (JVM heap) for
+      larger wikis. The 'stable-postgres-tomcat' tag tracks the latest stable XWiki
       release, switch to an 'lts-postgres-tomcat' tag for long-term-support builds.
     kubero.dev/template.links: '["https://www.xwiki.org/xwiki/bin/view/Documentation/AdminGuide/Installation/InstallationDocker/",
       "https://github.com/xwiki-contrib/docker-xwiki/blob/master/README.md"]'
@@ -61,9 +65,9 @@ spec:
               secret:
                 name: xwiki-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO xwiki
-                - GRANT CREATE ON SCHEMA public TO xwiki
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO xwiki
+              - GRANT ALL ON SCHEMA public TO xwiki
+              - GRANT CREATE ON SCHEMA public TO xwiki
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO xwiki
           enableSuperuserAccess: true
           superuserSecret:
             name: xwiki-postgresql-superuser
@@ -103,6 +107,7 @@ spec:
     mountPath: /usr/local/xwiki
     name: xwiki-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   resources:
     requests:

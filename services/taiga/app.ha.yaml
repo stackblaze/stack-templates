@@ -4,22 +4,27 @@ metadata:
   name: taiga
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source agile project management platform with Scrum and Kanban boards, backlogs,
-      sprints, and issue tracking.
+    kubero.dev/template.description: Open-source agile project management platform
+      with Scrum and Kanban boards, backlogs, sprints, and issue tracking.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/taiga/icon.png
-    kubero.dev/template.installation: 'This template deploys taiga-back (the Django API server) ONLY. Taiga is a multi-container
-      stack and is NOT functional without its companion services, which must be deployed separately as their own apps/sidecars:
-      (1) taiga-async = same image taigaio/taiga-back:latest with command celery worker (the background task/Celery worker,
-      shares POSTGRES_* + RABBITMQ + TAIGA_SECRET_KEY); (2) taiga-front = taigaio/taiga-front:latest (the web UI, served on
-      port 80); (3) taiga-events = taigaio/taiga-events:latest (websocket push server, needs its own RabbitMQ broker + the
-      same TAIGA_SECRET_KEY); (4) taiga-protected = taigaio/taiga-protected:latest (signed-URL attachment proxy, needs TAIGA_SECRET_KEY);
-      (5) taiga-gateway = nginx:1.19-alpine routing front/back/events/protected on port 9000 (the real public entrypoint).
-      This template provisions the shared postgres and rabbitmq add-ons that taiga-back, taiga-async, and taiga-events all
-      connect to. ROTATE: TAIGA_SECRET_KEY (set to replace-with-openssl-rand-hex-32 here; generate with `openssl rand -hex
-      32` and use the SAME value across back/async/events/protected), the postgres password, and the RABBITMQ_PASS. FIRST
-      RUN: exec into taiga-back and run `python manage.py migrate` then `python manage.py loaddata initial_project_templates`
-      and create a superuser with `python manage.py createsuperuser`. Note EVENTS_PUSH_BACKEND_URL and CELERY_BROKER_URL point
-      at the rabbitmq add-on (amqp://taiga:taiga@taiga-rabbitmq:5672).'
+    kubero.dev/template.installation: 'This template deploys taiga-back (the Django
+      API server) ONLY. Taiga is a multi-container stack and is NOT functional without
+      its companion services, which must be deployed separately as their own apps/sidecars:
+      (1) taiga-async = same image taigaio/taiga-back:latest with command celery worker
+      (the background task/Celery worker, shares POSTGRES_* + RABBITMQ + TAIGA_SECRET_KEY);
+      (2) taiga-front = taigaio/taiga-front:latest (the web UI, served on port 80);
+      (3) taiga-events = taigaio/taiga-events:latest (websocket push server, needs
+      its own RabbitMQ broker + the same TAIGA_SECRET_KEY); (4) taiga-protected =
+      taigaio/taiga-protected:latest (signed-URL attachment proxy, needs TAIGA_SECRET_KEY);
+      (5) taiga-gateway = nginx:1.19-alpine routing front/back/events/protected on
+      port 9000 (the real public entrypoint). This template provisions the shared
+      postgres and rabbitmq add-ons that taiga-back, taiga-async, and taiga-events
+      all connect to. ROTATE: TAIGA_SECRET_KEY (set to replace-with-openssl-rand-hex-32
+      here; generate with `openssl rand -hex 32` and use the SAME value across back/async/events/protected),
+      the postgres password, and the RABBITMQ_PASS. FIRST RUN: exec into taiga-back
+      and run `python manage.py migrate` then `python manage.py loaddata initial_project_templates`
+      and create a superuser with `python manage.py createsuperuser`. Note EVENTS_PUSH_BACKEND_URL
+      and CELERY_BROKER_URL point at the rabbitmq add-on (amqp://taiga:taiga@taiga-rabbitmq:5672).'
     kubero.dev/template.links: '["https://docs.taiga.io/setup-production.html", "https://github.com/taigaio/taiga-docker"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/taigaio/taiga-back
@@ -64,9 +69,9 @@ spec:
               secret:
                 name: taiga-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO taiga
-                - GRANT CREATE ON SCHEMA public TO taiga
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO taiga
+              - GRANT ALL ON SCHEMA public TO taiga
+              - GRANT CREATE ON SCHEMA public TO taiga
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO taiga
           enableSuperuserAccess: true
           superuserSecret:
             name: taiga-postgresql-superuser
@@ -111,9 +116,11 @@ spec:
             limits:
               memory: 1Gi
           rabbitmq:
-            additionalConfig: |
-              default_user = taiga
+            additionalConfig: 'default_user = taiga
+
               default_pass = taiga
+
+              '
   envVars:
   - name: POSTGRES_HOST
     value: taiga-postgresql-rw
@@ -154,6 +161,7 @@ spec:
     mountPath: /taiga-back/media
     name: taiga-media
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true

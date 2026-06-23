@@ -6,7 +6,8 @@ metadata:
     kubero.dev/template.description: AFFiNE is a next-gen knowledge base that brings
       planning, sorting and creating all together
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/affine/icon.png
-    kubero.dev/template.installation: First boot runs database migrations via self-host-predeploy.js; startup can take several minutes.
+    kubero.dev/template.installation: First boot runs database migrations via self-host-predeploy.js;
+      startup can take several minutes.
     kubero.dev/template.links: '["https://docs.affine.pro/docs/hello-bonjour-aloha-%E4%BD%A0%E5%A5%BD"]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/toeverything/AFFiNE
@@ -41,7 +42,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
           bootstrap:
             initdb:
@@ -50,9 +51,9 @@ spec:
               secret:
                 name: affine-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO affine
-                - GRANT CREATE ON SCHEMA public TO affine
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO affine
+              - GRANT ALL ON SCHEMA public TO affine
+              - GRANT CREATE ON SCHEMA public TO affine
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO affine
           enableSuperuserAccess: true
           superuserSecret:
             name: affine-postgresql-superuser
@@ -86,7 +87,7 @@ spec:
         metadata:
           name: affine-valkey
         spec:
-          version: "8.0"
+          version: '8.0'
           arch: replica
           replicas:
             shards: 1
@@ -121,15 +122,15 @@ spec:
   - name: TELEMETRY_ENABLE
     value: 'false'
   - name: REDIS_SERVER_PASSWORD
-    value: ""
+    value: ''
   extraVolumes:
-  - accessMode: ReadWriteOnce
-    accessModes:
+  - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /root/.affine
     name: affine-volume
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '3010'
     pullPolicy: Always

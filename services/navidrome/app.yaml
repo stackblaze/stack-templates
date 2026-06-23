@@ -37,12 +37,14 @@ spec:
     mountPath: /data
     name: navidrome-data
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /music
     name: navidrome-music
     size: 1Gi
+    storageClass: slow
   healthcheck:
     enabled: true
     path: /

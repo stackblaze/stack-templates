@@ -40,7 +40,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
           bootstrap:
             initdb:
@@ -87,27 +87,27 @@ spec:
   - name: DEFAULT_ADMIN_USERNAME
     value: demo
   extraVolumes:
-  - accessMode: ReadWriteOnce
-    accessModes:
+  - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /app/public/user-avatars
     name: planka-user-avatars
     size: 0.1Gi
-  - accessMode: ReadWriteOnce
-    accessModes:
+    storageClass: slow
+  - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /app/public/project-background-images
     name: planka-project-background-images
     size: 0.5Gi
-  - accessMode: ReadWriteOnce
-    accessModes:
+    storageClass: slow
+  - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /app/private/attachments
     name: planka-attachments
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '1337'
     repository: ghcr.io/plankanban/planka

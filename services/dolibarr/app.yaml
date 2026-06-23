@@ -4,9 +4,12 @@ metadata:
   name: dolibarr
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Dolibarr ERP CRM — contacts, invoices, orders, stocks, agenda, and accounting for businesses and freelancers.
+    kubero.dev/template.description: Dolibarr ERP CRM — contacts, invoices, orders,
+      stocks, agenda, and accounting for businesses and freelancers.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dolibarr/icon.png
-    kubero.dev/template.installation: Auto-installs on first boot when DOLI_DB_* and DOLI_URL_ROOT are set. Default login admin/admin — change immediately. First boot may take several minutes while MariaDB initializes.
+    kubero.dev/template.installation: Auto-installs on first boot when DOLI_DB_* and
+      DOLI_URL_ROOT are set. Default login admin/admin — change immediately. First
+      boot may take several minutes while MariaDB initializes.
     kubero.dev/template.links: '["https://wiki.dolibarr.org/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/Dolibarr/dolibarr
@@ -29,17 +32,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: "{{KUBERO_APP_NAME}}-dolibarr-mysql"
+          name: '{{KUBERO_APP_NAME}}-dolibarr-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: "{{KUBERO_APP_NAME}}-dolibarr-mysql-root"
+            name: '{{KUBERO_APP_NAME}}-dolibarr-mysql-root'
             key: password
           database: dolidb
           username: dolidbuser
           passwordSecretKeyRef:
-            name: "{{KUBERO_APP_NAME}}-dolibarr-mysql-app"
+            name: '{{KUBERO_APP_NAME}}-dolibarr-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -56,7 +59,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: "{{KUBERO_APP_NAME}}-dolibarr-mysql-root"
+          name: '{{KUBERO_APP_NAME}}-dolibarr-mysql-root'
         type: Opaque
         stringData:
           password: dolidbpass
@@ -64,13 +67,13 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: "{{KUBERO_APP_NAME}}-dolibarr-mysql-app"
+          name: '{{KUBERO_APP_NAME}}-dolibarr-mysql-app'
         type: Opaque
         stringData:
           password: dolidbpass
   envVars:
   - name: DOLI_DB_HOST
-    value: "{{KUBERO_APP_NAME}}-dolibarr-mysql"
+    value: '{{KUBERO_APP_NAME}}-dolibarr-mysql'
   - name: DOLI_DB_NAME
     value: dolidb
   - name: DOLI_DB_USER
@@ -78,7 +81,7 @@ spec:
   - name: DOLI_DB_PASSWORD
     value: dolidbpass
   - name: DOLI_URL_ROOT
-    value: "{{KUBERO_APP_URL}}"
+    value: '{{KUBERO_APP_URL}}'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -86,6 +89,7 @@ spec:
     mountPath: /var/www/documents
     name: dolibarr-documents
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

@@ -1,116 +1,117 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: kimai
-    annotations:
-        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
-        kubero.dev/template.description: "Kimai is a web-based multi-user time-tracking application. Works great for everyone: freelancers, companies, organizations"
-        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kimai/icon.png
-        kubero.dev/template.installation: ""
-        kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: "[]"
-        kubero.dev/template.source: "https://github.com/kimai/kimai"
-        kubero.dev/template.categories: '["work", "productivity"]'
-        kubero.dev/template.title: "Kimai"
-        kubero.dev/template.website: "https://www.kimai.org"
-    labels:
-        manager: kubero
+  name: kimai
+  annotations:
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+    kubero.dev/template.description: 'Kimai is a web-based multi-user time-tracking
+      application. Works great for everyone: freelancers, companies, organizations'
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kimai/icon.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/kimai/kimai
+    kubero.dev/template.categories: '["work", "productivity"]'
+    kubero.dev/template.title: Kimai
+    kubero.dev/template.website: https://www.kimai.org
+  labels:
+    manager: kubero
 spec:
-    name: kimai
-    deploymentstrategy: docker
-    envVars:
-        - name: APP_SECRET
-          value: 0LZiQBLw4WvqPlz4cz8RsHJlxNiSqM9B48y4ChyJ5v1oA0L/TPIqRjQNdPZN3iEG
-        - name: ADMINMAIL
-          value: admin@kimai.local
-        - name: ADMINPASS
-          value: changemeplease
-        - name: TRUSTED_HOSTS
-          value: "{{KUBERO_APP_HOST}}|localhost|127.0.0.1|10\\..+"
-        - name: TRUSTED_PROXIES
-          value: "10.0.0.0/8,REMOTE_ADDR"
-        - name: DATABASE_URL
-          value: mysql://kimai:kimai@{{KUBERO_APP_NAME}}-kimai-mysql/kimai?charset=utf8mb4
-    extraVolumes:
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /opt/kimai/var/data
-          name: kimai-data-volume
-          size: 1Gi
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /opt/kimai/var/plugins
-          name: kimai-plugins-volume
-          size: 1Gi
-    cronjobs: []
-    addons:
-        - displayName: MariaDB
-          env: []
-          icon: /img/addons/mysql.svg
-          id: kubero-operator
-          kind: MariaDB
-          resourceDefinitions:
-              MariaDB:
-                  apiVersion: k8s.mariadb.com/v1alpha1
-                  kind: MariaDB
-                  metadata:
-                      name: "{{KUBERO_APP_NAME}}-kimai-mysql"
-                  spec:
-                      metrics:
-                        enabled: true
-                      rootPasswordSecretKeyRef:
-                          name: "{{KUBERO_APP_NAME}}-kimai-mysql-root"
-                          key: password
-                      database: kimai
-                      username: kimai
-                      passwordSecretKeyRef:
-                          name: "{{KUBERO_APP_NAME}}-kimai-mysql-app"
-                          key: password
-                      storage:
-                          size: 5Gi
-                          storageClassName: fast
-                      replicas: 3
-                      galera:
-                          enabled: true
-                      resources:
-                          requests:
-                              cpu: 100m
-                              memory: 256Mi
-                          limits:
-                              cpu: "1"
-                              memory: 1Gi
-              rootSecret:
-                  apiVersion: v1
-                  kind: Secret
-                  metadata:
-                      name: "{{KUBERO_APP_NAME}}-kimai-mysql-root"
-                  type: Opaque
-                  stringData:
-                      password: kimai
-              appSecret:
-                  apiVersion: v1
-                  kind: Secret
-                  metadata:
-                      name: "{{KUBERO_APP_NAME}}-kimai-mysql-app"
-                  type: Opaque
-                  stringData:
-                      password: kimai
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    healthcheck:
-        enabled: true
-        path: /
-        startupSeconds: 300
-        timeoutSeconds: 5
-        periodSeconds: 10
-    image:
-        containerPort: "8001"
-        pullPolicy: Always
-        repository: kimai/kimai2
-        tag: apache
+  name: kimai
+  deploymentstrategy: docker
+  envVars:
+  - name: APP_SECRET
+    value: 0LZiQBLw4WvqPlz4cz8RsHJlxNiSqM9B48y4ChyJ5v1oA0L/TPIqRjQNdPZN3iEG
+  - name: ADMINMAIL
+    value: admin@kimai.local
+  - name: ADMINPASS
+    value: changemeplease
+  - name: TRUSTED_HOSTS
+    value: '{{KUBERO_APP_HOST}}|localhost|127.0.0.1|10\..+'
+  - name: TRUSTED_PROXIES
+    value: 10.0.0.0/8,REMOTE_ADDR
+  - name: DATABASE_URL
+    value: mysql://kimai:kimai@{{KUBERO_APP_NAME}}-kimai-mysql/kimai?charset=utf8mb4
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /opt/kimai/var/data
+    name: kimai-data-volume
+    size: 1Gi
+    storageClass: slow
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /opt/kimai/var/plugins
+    name: kimai-plugins-volume
+    size: 1Gi
+    storageClass: slow
+  cronjobs: []
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-kimai-mysql'
+        spec:
+          metrics:
+            enabled: true
+          rootPasswordSecretKeyRef:
+            name: '{{KUBERO_APP_NAME}}-kimai-mysql-root'
+            key: password
+          database: kimai
+          username: kimai
+          passwordSecretKeyRef:
+            name: '{{KUBERO_APP_NAME}}-kimai-mysql-app'
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          replicas: 3
+          galera:
+            enabled: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-kimai-mysql-root'
+        type: Opaque
+        stringData:
+          password: kimai
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-kimai-mysql-app'
+        type: Opaque
+        stringData:
+          password: kimai
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8001'
+    pullPolicy: Always
+    repository: kimai/kimai2
+    tag: apache

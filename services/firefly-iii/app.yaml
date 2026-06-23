@@ -4,9 +4,15 @@ metadata:
   name: firefly-iii
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted personal finance manager — transactions, budgets, bills, piggy banks, reports, and recurring transactions. Full-featured money management.
+    kubero.dev/template.description: Self-hosted personal finance manager — transactions,
+      budgets, bills, piggy banks, reports, and recurring transactions. Full-featured
+      money management.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefly-iii/icon.png
-    kubero.dev/template.installation: 'APP_KEY must be exactly 32 characters — generate with: openssl rand -base64 24 | tr -d ''/+='' | head -c 32. On first visit, register the first user (becomes admin). Configure your currencies, accounts, and categories. For automatic bank import, deploy the separate Firefly III Data Importer container. File uploads go to the firefly-iii-uploads volume.'
+    kubero.dev/template.installation: 'APP_KEY must be exactly 32 characters — generate
+      with: openssl rand -base64 24 | tr -d ''/+='' | head -c 32. On first visit,
+      register the first user (becomes admin). Configure your currencies, accounts,
+      and categories. For automatic bank import, deploy the separate Firefly III Data
+      Importer container. File uploads go to the firefly-iii-uploads volume.'
     kubero.dev/template.links: '["https://docs.firefly-iii.org/", "https://hub.docker.com/r/fireflyiii/core"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/firefly-iii/firefly-iii
@@ -133,6 +139,7 @@ spec:
     mountPath: /var/www/html/storage/upload
     name: firefly-iii-uploads
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

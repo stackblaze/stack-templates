@@ -4,16 +4,20 @@ metadata:
   name: photoprism
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: AI-powered, self-hosted photo and video management app that organizes your library with
-      automatic tagging, face recognition, and search.
+    kubero.dev/template.description: AI-powered, self-hosted photo and video management
+      app that organizes your library with automatic tagging, face recognition, and
+      search.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/photoprism/icon.png
-    kubero.dev/template.installation: Deploy with the bundled MariaDB add-on (PhotoPrism recommends MariaDB over SQLite for
-      performance). On first run, log in as 'admin' with the password set in PHOTOPRISM_ADMIN_PASSWORD and rotate it immediately.
-      Rotate the MariaDB password and PHOTOPRISM_ADMIN_PASSWORD from their template defaults. Upload originals via the web
-      UI or place them under /photoprism/originals; the /photoprism/storage volume holds the sidecar/cache/index data and
-      must be persistent. Indexing and face recognition run in the background after import. For large libraries, increase
-      PHOTOPRISM_WORKERS or the app pod size.
-    kubero.dev/template.links: '["https://docs.photoprism.app/getting-started/docker-compose/", "https://docs.photoprism.app/getting-started/config-options/"]'
+    kubero.dev/template.installation: Deploy with the bundled MariaDB add-on (PhotoPrism
+      recommends MariaDB over SQLite for performance). On first run, log in as 'admin'
+      with the password set in PHOTOPRISM_ADMIN_PASSWORD and rotate it immediately.
+      Rotate the MariaDB password and PHOTOPRISM_ADMIN_PASSWORD from their template
+      defaults. Upload originals via the web UI or place them under /photoprism/originals;
+      the /photoprism/storage volume holds the sidecar/cache/index data and must be
+      persistent. Indexing and face recognition run in the background after import.
+      For large libraries, increase PHOTOPRISM_WORKERS or the app pod size.
+    kubero.dev/template.links: '["https://docs.photoprism.app/getting-started/docker-compose/",
+      "https://docs.photoprism.app/getting-started/config-options/"]'
     kubero.dev/template.screenshots: '["https://dl.photoprism.app/img/ui/library.jpg"]'
     kubero.dev/template.source: https://github.com/photoprism/photoprism
     kubero.dev/template.categories: '["media", "storage", "ai"]'
@@ -114,12 +118,14 @@ spec:
     mountPath: /photoprism/originals
     name: photoprism-originals
     size: 5Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /photoprism/storage
     name: photoprism-storage
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

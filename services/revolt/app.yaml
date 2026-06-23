@@ -4,29 +4,39 @@ metadata:
   name: revolt
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: 'Open-source, self-hostable Discord alternative: a real-time chat platform with servers,
-      channels, DMs, voice and file sharing (now branded Stoat).'
+    kubero.dev/template.description: 'Open-source, self-hostable Discord alternative:
+      a real-time chat platform with servers, channels, DMs, voice and file sharing
+      (now branded Stoat).'
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/revolt/icon.png
-    kubero.dev/template.installation: 'This template runs ONLY the PRIMARY Revolt backend API (the Rust ''delta'' monolith,
-      image ghcr.io/stoatchat/api, HTTP port 8000). Revolt (recently rebranded ''Stoat'') is a MULTI-CONTAINER microservice
-      stack; the API alone is not a usable deployment - you MUST deploy the companion services below pointing at the SAME
-      datastores, and supply a shared Revolt.toml config file. CONFIG: Revolt is configured PRIMARILY via a Revolt.toml file
-      bind-mounted at /Revolt.toml (mounted here at the persistent /config volume - drop your Revolt.toml there or mount it
-      at the root); the env vars below override the database/redis/rabbit connection URLs that Revolt.toml otherwise carries.
-      In Revolt.toml set hosts.app to your public https URL ({{KUBERO_APP_URL}}), generate the auth/file/voice secrets, and
-      configure the S3/MinIO file backend. ROTATE: the documentdb mongoadmin password, and ALL secrets in Revolt.toml (api
-      keys, auth pepper, file-server token, vapid/push keys, livekit keys) - the defaults are placeholders. ADD-ONS PROVISIONED
-      HERE: documentdb (MongoDB-compatible - Revolt''s primary datastore), valkey (Redis/KeyDB-compatible cache + pub/sub),
-      and rabbitmq (push-notification + cross-service message queue). EXTERNAL SERVICE NOT PROVISIONED: Revolt requires an
-      S3-compatible object store for ALL uploaded files/avatars/attachments (upstream ships MinIO image minio/minio) - deploy
-      the RustFS/MinIO S3 add-on and point autumn at it via Revolt.toml [files] s3 settings; the local /config volume does
-      NOT hold attachments. COMPANION SERVICES to deploy (all ghcr.io/stoatchat, pin to the same tag e.g. v0.13.6, all share
-      Revolt.toml + the same Mongo/Redis/Rabbit/S3): events (websocket gateway, ghcr.io/stoatchat/events), autumn (file server,
-      ghcr.io/stoatchat/file-server), january (link/media proxy, ghcr.io/stoatchat/proxy), crond (scheduled tasks, ghcr.io/stoatchat/crond),
-      pushd (push-notification worker / rabbit consumer, ghcr.io/stoatchat/pushd), web (frontend client, ghcr.io/stoatchat/for-web),
-      and a reverse proxy (caddy) to route the public domain to web/api/events/autumn. Voice is optional via voice-ingress
-      + livekit (ghcr.io/stoatchat/livekit-server). FIRST-RUN: bring up Mongo/Redis/Rabbit and S3, then the api + companion
-      services; open the web client, create the first account, and configure the instance.'
+    kubero.dev/template.installation: 'This template runs ONLY the PRIMARY Revolt
+      backend API (the Rust ''delta'' monolith, image ghcr.io/stoatchat/api, HTTP
+      port 8000). Revolt (recently rebranded ''Stoat'') is a MULTI-CONTAINER microservice
+      stack; the API alone is not a usable deployment - you MUST deploy the companion
+      services below pointing at the SAME datastores, and supply a shared Revolt.toml
+      config file. CONFIG: Revolt is configured PRIMARILY via a Revolt.toml file bind-mounted
+      at /Revolt.toml (mounted here at the persistent /config volume - drop your Revolt.toml
+      there or mount it at the root); the env vars below override the database/redis/rabbit
+      connection URLs that Revolt.toml otherwise carries. In Revolt.toml set hosts.app
+      to your public https URL ({{KUBERO_APP_URL}}), generate the auth/file/voice
+      secrets, and configure the S3/MinIO file backend. ROTATE: the documentdb mongoadmin
+      password, and ALL secrets in Revolt.toml (api keys, auth pepper, file-server
+      token, vapid/push keys, livekit keys) - the defaults are placeholders. ADD-ONS
+      PROVISIONED HERE: documentdb (MongoDB-compatible - Revolt''s primary datastore),
+      valkey (Redis/KeyDB-compatible cache + pub/sub), and rabbitmq (push-notification
+      + cross-service message queue). EXTERNAL SERVICE NOT PROVISIONED: Revolt requires
+      an S3-compatible object store for ALL uploaded files/avatars/attachments (upstream
+      ships MinIO image minio/minio) - deploy the RustFS/MinIO S3 add-on and point
+      autumn at it via Revolt.toml [files] s3 settings; the local /config volume does
+      NOT hold attachments. COMPANION SERVICES to deploy (all ghcr.io/stoatchat, pin
+      to the same tag e.g. v0.13.6, all share Revolt.toml + the same Mongo/Redis/Rabbit/S3):
+      events (websocket gateway, ghcr.io/stoatchat/events), autumn (file server, ghcr.io/stoatchat/file-server),
+      january (link/media proxy, ghcr.io/stoatchat/proxy), crond (scheduled tasks,
+      ghcr.io/stoatchat/crond), pushd (push-notification worker / rabbit consumer,
+      ghcr.io/stoatchat/pushd), web (frontend client, ghcr.io/stoatchat/for-web),
+      and a reverse proxy (caddy) to route the public domain to web/api/events/autumn.
+      Voice is optional via voice-ingress + livekit (ghcr.io/stoatchat/livekit-server).
+      FIRST-RUN: bring up Mongo/Redis/Rabbit and S3, then the api + companion services;
+      open the web client, create the first account, and configure the instance.'
     kubero.dev/template.links: '["https://github.com/revoltchat/self-hosted", "https://developers.revolt.chat/"]'
     kubero.dev/template.screenshots: '["https://revolt.chat/static/img/hero.png"]'
     kubero.dev/template.source: https://github.com/revoltchat/self-hosted
@@ -121,9 +131,11 @@ spec:
             limits:
               memory: 1Gi
           rabbitmq:
-            additionalConfig: |
-              default_user = revolt
+            additionalConfig: 'default_user = revolt
+
               default_pass = revolt
+
+              '
   envVars:
   - name: REVOLT__DATABASE__MONGODB
     value: mongodb://mongoadmin:revolt@documentdb-service-revolt-documentdb:10260/?authSource=admin&directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&retryWrites=false
@@ -152,6 +164,7 @@ spec:
     mountPath: /config
     name: revolt-config
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true

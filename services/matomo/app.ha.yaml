@@ -4,9 +4,11 @@ metadata:
   name: matomo
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Full-featured PHP analytics platform — privacy-focused alternative to Google Analytics.
+    kubero.dev/template.description: Full-featured PHP analytics platform — privacy-focused
+      alternative to Google Analytics.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/matomo/icon.png
-    kubero.dev/template.installation: Complete the web setup wizard using the MariaDB credentials from this template.
+    kubero.dev/template.installation: Complete the web setup wizard using the MariaDB
+      credentials from this template.
     kubero.dev/template.links: '["https://matomo.org/docs/"]'
     kubero.dev/template.screenshots: '["https://matomo.org/wp-content/uploads/2020/10/matomo-dashboard.png"]'
     kubero.dev/template.source: https://github.com/matomo-org/matomo
@@ -90,6 +92,7 @@ spec:
     mountPath: /var/www/html
     name: matomo-data
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

@@ -4,9 +4,11 @@ metadata:
   name: mealie
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted recipe manager and meal planner with a clean, modern interface.
+    kubero.dev/template.description: Self-hosted recipe manager and meal planner with
+      a clean, modern interface.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/92342333?s=200&v=4
-    kubero.dev/template.installation: Set BASE_URL to your public URL. Default login is created on first visit.
+    kubero.dev/template.installation: Set BASE_URL to your public URL. Default login
+      is created on first visit.
     kubero.dev/template.links: '["https://docs.mealie.io/"]'
     kubero.dev/template.screenshots: '["https://docs.mealie.io/assets/img/home-screen.png"]'
     kubero.dev/template.source: https://github.com/mealie-recipes/mealie
@@ -95,6 +97,7 @@ spec:
     mountPath: /app/data
     name: mealie-data
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

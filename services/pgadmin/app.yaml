@@ -4,9 +4,14 @@ metadata:
   name: pgadmin
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: The most popular open-source administration and management platform for PostgreSQL databases, with a full-featured web UI.
+    kubero.dev/template.description: The most popular open-source administration and
+      management platform for PostgreSQL databases, with a full-featured web UI.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pgadmin/icon.png
-    kubero.dev/template.installation: 'Change PGADMIN_DEFAULT_EMAIL and PGADMIN_DEFAULT_PASSWORD. Log in with those credentials. Add your PostgreSQL servers via Object > Register > Server, entering the cluster host (e.g. myapp-postgresql-rw) and credentials. Connection details are saved in the pgadmin-data volume. For security, restrict ingress access to authorised users only.'
+    kubero.dev/template.installation: Change PGADMIN_DEFAULT_EMAIL and PGADMIN_DEFAULT_PASSWORD.
+      Log in with those credentials. Add your PostgreSQL servers via Object > Register
+      > Server, entering the cluster host (e.g. myapp-postgresql-rw) and credentials.
+      Connection details are saved in the pgadmin-data volume. For security, restrict
+      ingress access to authorised users only.
     kubero.dev/template.links: '["https://www.pgadmin.org/docs/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/pgadmin-org/pgadmin4
@@ -27,9 +32,9 @@ spec:
   - name: PGADMIN_LISTEN_PORT
     value: 80
   - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
-    value: True
+    value: true
   - name: PGADMIN_CONFIG_LOGIN_BANNER
-    value: "'Authorised users only'"
+    value: '''Authorised users only'''
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -37,6 +42,7 @@ spec:
     mountPath: /var/lib/pgadmin
     name: pgadmin-data
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

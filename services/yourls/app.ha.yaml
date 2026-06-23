@@ -4,14 +4,18 @@ metadata:
   name: yourls
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: 'Your Own URL Shortener: a small, self-hosted PHP service to run your own short-link
-      service with stats, plugins, and a developer API.'
+    kubero.dev/template.description: 'Your Own URL Shortener: a small, self-hosted
+      PHP service to run your own short-link service with stats, plugins, and a developer
+      API.'
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/yourls/icon.png
-    kubero.dev/template.installation: YOURLS only supports MySQL/MariaDB (no PostgreSQL), so this template ships the mariadb
-      add-on. The admin account is bootstrapped from YOURLS_USER / YOURLS_PASS on first boot, and YOURLS_SITE is bound to
-      the deploy URL via {{KUBERO_APP_URL}} (must be the exact public URL, no trailing slash). The admin UI lives at /admin/.
-      Before going to production, rotate the MariaDB password, the YOURLS_PASS admin password, and the YOURLS_COOKIEKEY (openssl
-      rand -hex 32). User-supplied plugins, custom pages, and language packs persist on the mounted volume at /var/www/html/user.
+    kubero.dev/template.installation: YOURLS only supports MySQL/MariaDB (no PostgreSQL),
+      so this template ships the mariadb add-on. The admin account is bootstrapped
+      from YOURLS_USER / YOURLS_PASS on first boot, and YOURLS_SITE is bound to the
+      deploy URL via {{KUBERO_APP_URL}} (must be the exact public URL, no trailing
+      slash). The admin UI lives at /admin/. Before going to production, rotate the
+      MariaDB password, the YOURLS_PASS admin password, and the YOURLS_COOKIEKEY (openssl
+      rand -hex 32). User-supplied plugins, custom pages, and language packs persist
+      on the mounted volume at /var/www/html/user.
     kubero.dev/template.links: '["https://yourls.org/docs/", "https://hub.docker.com/_/yourls"]'
     kubero.dev/template.screenshots: '["https://yourls.org/images/screenshots/admin.png"]'
     kubero.dev/template.source: https://github.com/YOURLS/YOURLS
@@ -101,6 +105,7 @@ spec:
     mountPath: /var/www/html/user
     name: yourls-data
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true

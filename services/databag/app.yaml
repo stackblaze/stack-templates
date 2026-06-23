@@ -24,13 +24,13 @@ spec:
   - name: ADMIN
     value: secret
   extraVolumes:
-  - accessMode: ReadWriteOnce
-    accessModes:
+  - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/lib/databag
     name: databag-data
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '7000'
     pullPolicy: Always

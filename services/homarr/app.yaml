@@ -26,12 +26,14 @@ spec:
     mountPath: /app/data/configs
     name: homar-config
     size: 10Mi
+    storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/public/icons
     name: homarr-icons
     size: 200Mi
+    storageClass: shared
   image:
     containerPort: '7575'
     repository: ghcr.io/ajnart/homarr

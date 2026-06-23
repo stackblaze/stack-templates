@@ -4,10 +4,11 @@ metadata:
   name: freshrss
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted RSS feed aggregator — lightweight and extensible.
+    kubero.dev/template.description: Self-hosted RSS feed aggregator — lightweight
+      and extensible.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freshrss/icon.png
-    kubero.dev/template.installation: Auto-install runs once on first boot via FRESHRSS_INSTALL. Change the default admin
-      password after login.
+    kubero.dev/template.installation: Auto-install runs once on first boot via FRESHRSS_INSTALL.
+      Change the default admin password after login.
     kubero.dev/template.links: '["https://freshrss.github.io/FreshRSS/en/"]'
     kubero.dev/template.screenshots: '["https://freshrss.github.io/FreshRSS/img/FreshRSS-logo.png"]'
     kubero.dev/template.source: https://github.com/FreshRSS/FreshRSS
@@ -30,17 +31,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: "{{KUBERO_APP_NAME}}-freshrss-mysql"
+          name: '{{KUBERO_APP_NAME}}-freshrss-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: "{{KUBERO_APP_NAME}}-freshrss-mysql-root"
+            name: '{{KUBERO_APP_NAME}}-freshrss-mysql-root'
             key: password
           database: freshrss
           username: freshrss
           passwordSecretKeyRef:
-            name: "{{KUBERO_APP_NAME}}-freshrss-mysql-app"
+            name: '{{KUBERO_APP_NAME}}-freshrss-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -57,7 +58,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: "{{KUBERO_APP_NAME}}-freshrss-mysql-root"
+          name: '{{KUBERO_APP_NAME}}-freshrss-mysql-root'
         type: Opaque
         stringData:
           password: freshrss
@@ -65,7 +66,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: "{{KUBERO_APP_NAME}}-freshrss-mysql-app"
+          name: '{{KUBERO_APP_NAME}}-freshrss-mysql-app'
         type: Opaque
         stringData:
           password: freshrss
@@ -75,8 +76,8 @@ spec:
   - name: CRON_MIN
     value: 13,43
   - name: FRESHRSS_INSTALL
-    value: --default-user admin --db-type mysql --db-host {{KUBERO_APP_NAME}}-freshrss-mysql --db-user freshrss --db-password freshrss
-      --db-base freshrss
+    value: --default-user admin --db-type mysql --db-host {{KUBERO_APP_NAME}}-freshrss-mysql
+      --db-user freshrss --db-password freshrss --db-base freshrss
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -84,6 +85,7 @@ spec:
     mountPath: /var/www/FreshRSS/data
     name: freshrss-data
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

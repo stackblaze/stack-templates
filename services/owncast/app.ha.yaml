@@ -4,15 +4,17 @@ metadata:
   name: owncast
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted live video streaming and chat server, a free and open-source alternative
-      to services like Twitch.
+    kubero.dev/template.description: Self-hosted live video streaming and chat server,
+      a free and open-source alternative to services like Twitch.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/owncast/icon.png
-    kubero.dev/template.installation: Owncast stores all state (SQLite database, config, uploaded logos/emojis, and HLS video
-      segments) under /app/data, so no external datastore add-on is required; the persistent volume is mandatory. On first
-      run open the web UI, then visit Admin (/admin, default login admin / abc123) and immediately change the stream key and
-      admin password. Point your broadcasting software (OBS, etc.) at rtmp://<host>:1935/live using your stream key. For production
-      scale you may offload HLS segments to S3-compatible object storage and front it with a CDN, configured in the admin
-      Storage settings (not an operator add-on).
+    kubero.dev/template.installation: Owncast stores all state (SQLite database, config,
+      uploaded logos/emojis, and HLS video segments) under /app/data, so no external
+      datastore add-on is required; the persistent volume is mandatory. On first run
+      open the web UI, then visit Admin (/admin, default login admin / abc123) and
+      immediately change the stream key and admin password. Point your broadcasting
+      software (OBS, etc.) at rtmp://<host>:1935/live using your stream key. For production
+      scale you may offload HLS segments to S3-compatible object storage and front
+      it with a CDN, configured in the admin Storage settings (not an operator add-on).
     kubero.dev/template.links: '["https://owncast.online/docs/", "https://owncast.online/docs/quickstart/"]'
     kubero.dev/template.screenshots: '["https://owncast.online/images/owncast-screenshot.png"]'
     kubero.dev/template.source: https://github.com/owncast/owncast
@@ -33,6 +35,7 @@ spec:
     mountPath: /app/data
     name: owncast-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

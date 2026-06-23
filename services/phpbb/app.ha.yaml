@@ -4,18 +4,24 @@ metadata:
   name: phpbb
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: phpBB is a free, open-source flat-forum bulletin board software for building and running
-      an online community discussion board.
+    kubero.dev/template.description: phpBB is a free, open-source flat-forum bulletin
+      board software for building and running an online community discussion board.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/phpbb/icon.png
-    kubero.dev/template.installation: Uses the makunz/phpbb image (community continuation of the discontinued Bitnami image), which bundles Apache + PHP and only
-      supports MariaDB/MySQL (phpBB does support PostgreSQL upstream, but this image does not), so the mariadb add-on is shipped.
-      On first boot the container runs the phpBB installer non-interactively against the MariaDB add-on, creating the admin
-      account from PHPBB_USERNAME / PHPBB_PASSWORD / PHPBB_EMAIL. ROTATE the admin password (PHPBB_PASSWORD, currently a placeholder)
-      and the mariadb add-on credentials (db/user/password all default to 'phpbb') before going to production, then log in
-      at /adm to harden settings. PHPBB_HOST is wired to the public host via {{KUBERO_APP_HOST}} so generated links use the
-      live URL. Persistent data (config, uploads/attachments, avatars, cache) lives under /bitnami/phpbb on the mounted volume.
-      Configure SMTP via the board's ACP or PHPBB_SMTP_* env vars for outbound email. ALLOW_EMPTY_PASSWORD is disabled.
-    kubero.dev/template.links: '["https://www.phpbb.com/support/docs/en/3.3/ug/", "https://github.com/bitnami/containers/tree/main/bitnami/phpbb"]'
+    kubero.dev/template.installation: Uses the makunz/phpbb image (community continuation
+      of the discontinued Bitnami image), which bundles Apache + PHP and only supports
+      MariaDB/MySQL (phpBB does support PostgreSQL upstream, but this image does not),
+      so the mariadb add-on is shipped. On first boot the container runs the phpBB
+      installer non-interactively against the MariaDB add-on, creating the admin account
+      from PHPBB_USERNAME / PHPBB_PASSWORD / PHPBB_EMAIL. ROTATE the admin password
+      (PHPBB_PASSWORD, currently a placeholder) and the mariadb add-on credentials
+      (db/user/password all default to 'phpbb') before going to production, then log
+      in at /adm to harden settings. PHPBB_HOST is wired to the public host via {{KUBERO_APP_HOST}}
+      so generated links use the live URL. Persistent data (config, uploads/attachments,
+      avatars, cache) lives under /bitnami/phpbb on the mounted volume. Configure
+      SMTP via the board's ACP or PHPBB_SMTP_* env vars for outbound email. ALLOW_EMPTY_PASSWORD
+      is disabled.
+    kubero.dev/template.links: '["https://www.phpbb.com/support/docs/en/3.3/ug/",
+      "https://github.com/bitnami/containers/tree/main/bitnami/phpbb"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/phpbb/phpbb
     kubero.dev/template.categories: '["communication", "collaboration", "social"]'
@@ -108,6 +114,7 @@ spec:
     mountPath: /bitnami/phpbb
     name: phpbb-data
     size: 3Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

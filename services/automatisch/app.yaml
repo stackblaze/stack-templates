@@ -4,19 +4,24 @@ metadata:
   name: automatisch
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source business automation tool (a self-hostable Zapier alternative) for connecting
-      apps and building no-code integration workflows.
+    kubero.dev/template.description: Open-source business automation tool (a self-hostable
+      Zapier alternative) for connecting apps and building no-code integration workflows.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/automatisch/icon.png
-    kubero.dev/template.installation: 'Automatisch is a multi-service stack. This template runs the main web/API server from
-      automatischio/automatisch on port 3000. It REQUIRES a companion WORKER service: deploy a second app with the SAME image
-      (automatischio/automatisch), the SAME environment variables PLUS WORKER=true, and the same Postgres + Redis connection
-      settings -- the worker runs the background queues that actually execute your flows, so without it nothing fires. It
-      needs two operator add-ons (Postgres + Valkey/Redis, both provisioned here). ROTATE before exposing: ENCRYPTION_KEY,
-      WEBHOOK_SECRET_KEY, and APP_SECRET_KEY (generate each with `openssl rand -base64 36`) plus the Postgres add-on password.
-      On first start the server runs DB migrations and seeds the admin user; the default login is created from the docker
-      env or the install wizard -- check the docs and change the admin password immediately. Set HOST/PROTOCOL to match your
-      public URL so OAuth redirect URIs and webhook URLs resolve correctly.'
-    kubero.dev/template.links: '["https://automatisch.io/docs/guide/installation", "https://automatisch.io/docs"]'
+    kubero.dev/template.installation: 'Automatisch is a multi-service stack. This
+      template runs the main web/API server from automatischio/automatisch on port
+      3000. It REQUIRES a companion WORKER service: deploy a second app with the SAME
+      image (automatischio/automatisch), the SAME environment variables PLUS WORKER=true,
+      and the same Postgres + Redis connection settings -- the worker runs the background
+      queues that actually execute your flows, so without it nothing fires. It needs
+      two operator add-ons (Postgres + Valkey/Redis, both provisioned here). ROTATE
+      before exposing: ENCRYPTION_KEY, WEBHOOK_SECRET_KEY, and APP_SECRET_KEY (generate
+      each with `openssl rand -base64 36`) plus the Postgres add-on password. On first
+      start the server runs DB migrations and seeds the admin user; the default login
+      is created from the docker env or the install wizard -- check the docs and change
+      the admin password immediately. Set HOST/PROTOCOL to match your public URL so
+      OAuth redirect URIs and webhook URLs resolve correctly.'
+    kubero.dev/template.links: '["https://automatisch.io/docs/guide/installation",
+      "https://automatisch.io/docs"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/automatisch/automatisch
     kubero.dev/template.categories: '["automation", "productivity", "work"]'
@@ -147,6 +152,7 @@ spec:
     mountPath: /automatisch/storage
     name: automatisch-storage
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

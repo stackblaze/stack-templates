@@ -4,10 +4,16 @@ metadata:
   name: atuin
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted Atuin sync server for encrypted shell history backup and sync across machines.
+    kubero.dev/template.description: Self-hosted Atuin sync server for encrypted shell
+      history backup and sync across machines.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/122059230?s=200&v=4
-    kubero.dev/template.installation: 'ATUIN_OPEN_REGISTRATION is true for first boot so you can run `atuin register` against {{KUBERO_APP_URL}} (include port 8888 in sync_address if not using the Kubero ingress URL). Set ATUIN_OPEN_REGISTRATION=false after creating accounts. Rotate the default postgres password (atuin) before production. Server config persists on the /config volume.'
-    kubero.dev/template.links: '["https://docs.atuin.sh/cli/self-hosting/server-setup/", "https://docs.atuin.sh/cli/self-hosting/docker/"]'
+    kubero.dev/template.installation: ATUIN_OPEN_REGISTRATION is true for first boot
+      so you can run `atuin register` against {{KUBERO_APP_URL}} (include port 8888
+      in sync_address if not using the Kubero ingress URL). Set ATUIN_OPEN_REGISTRATION=false
+      after creating accounts. Rotate the default postgres password (atuin) before
+      production. Server config persists on the /config volume.
+    kubero.dev/template.links: '["https://docs.atuin.sh/cli/self-hosting/server-setup/",
+      "https://docs.atuin.sh/cli/self-hosting/docker/"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/atuinsh/atuin/main/demo.gif"]'
     kubero.dev/template.source: https://github.com/atuinsh/atuin
     kubero.dev/template.categories: '["development", "utilities"]'
@@ -51,9 +57,9 @@ spec:
               secret:
                 name: atuin-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO atuin
-                - GRANT CREATE ON SCHEMA public TO atuin
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO atuin
+              - GRANT ALL ON SCHEMA public TO atuin
+              - GRANT CREATE ON SCHEMA public TO atuin
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO atuin
           enableSuperuserAccess: true
           superuserSecret:
             name: atuin-postgresql-superuser
@@ -93,6 +99,7 @@ spec:
     mountPath: /config
     name: atuin-config
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

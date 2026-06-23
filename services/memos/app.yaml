@@ -25,6 +25,7 @@ spec:
     mountPath: /var/opt/memos
     name: memos-data
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '5230'
     repository: neosmemo/memos

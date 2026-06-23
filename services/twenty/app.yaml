@@ -1,183 +1,183 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: twenty
-    annotations:
-        kubero.dev/template.architecture: "[]"
-        kubero.dev/template.description: "Building a modern alternative to Salesforce, powered by the community."
-        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/twenty/icon.png
-        kubero.dev/template.installation: "All available environment variables are described here : https://twenty.com/developers/section/self-hosting/self-hosting-var"
-        kubero.dev/template.links: '["https://twenty.com/user-guide", "https://twenty.com/developers"]'
-        kubero.dev/template.screenshots: '[
-          "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/index-light.png",
-          "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/kanban-light.png",
-          "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/boards-light.png",
-          "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/roadmap-dark.png"]'
-        kubero.dev/template.source: "https://github.com/twentyhq/twenty"
-        kubero.dev/template.categories: '["productivity", "work" ]'
-        kubero.dev/template.title: "twenty"
-        kubero.dev/template.website: "https://twenty.com/"
-    labels:
-        manager: kubero
+  name: twenty
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Building a modern alternative to Salesforce,
+      powered by the community.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/twenty/icon.png
+    kubero.dev/template.installation: 'All available environment variables are described
+      here : https://twenty.com/developers/section/self-hosting/self-hosting-var'
+    kubero.dev/template.links: '["https://twenty.com/user-guide", "https://twenty.com/developers"]'
+    kubero.dev/template.screenshots: '[ "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/index-light.png",
+      "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/kanban-light.png",
+      "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/boards-light.png",
+      "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/roadmap-dark.png"]'
+    kubero.dev/template.source: https://github.com/twentyhq/twenty
+    kubero.dev/template.categories: '["productivity", "work" ]'
+    kubero.dev/template.title: twenty
+    kubero.dev/template.website: https://twenty.com/
+  labels:
+    manager: kubero
 spec:
-    name: twenty
-    deploymentstrategy: docker
-    envVars:
-        - name: FRONT_BASE_URL
-          value: twenty.localhost
-        - name: ENABLE_DB_MIGRATIONS
-          value: "true"
-        - name: CACHE_STORAGE_TYPE
-          value: redis
-        - name: REDIS_URL
-          value: redis://rfr-twenty-valkey-readwrite:6379
-        - name: API_RATE_LIMITING_TTL
-          value: "100"
-        - name: API_RATE_LIMITING_LIMIT
-          value: "100"
-        - name: APP_SECRET
-          value: base64:Mnl3bDdlYjY2bzBmcWMzanE3dDhiN3BxY2ZqZzh3bmM=
-        - name: POSTGRES_ADMIN_PASSWORD
-          value: twenty
-        - name: PG_DATABASE_URL
-          value: postgres://twenty:twenty@twenty-postgresql-rw:5432/twenty
-        - name: IS_SIGN_UP_DISABLED
-          value: "false"
-        - name: PASSWORD_RESET_TOKEN_EXPIRES_IN
-          value: 5m
-        - name: WORKSPACE_INACTIVE_DAYS_BEFORE_NOTIFICATION
-          value: "365"
-        - name: WORKSPACE_INACTIVE_DAYS_BEFORE_SOFT_DELETION
-          value: "380"
-        - name: WORKSPACE_INACTIVE_DAYS_BEFORE_DELETION
-          value: "400"
-        - name: STORAGE_TYPE
-          value: local
-        - name: MESSAGE_QUEUE_TYPE
-          value: pg-boss
-        - name: SIGN_IN_PREFILLED
-          value: "false"
-        - name: DEBUG_MODE
-          value: "false"
-        - name: TELEMETRY_ENABLED
-          value: "true"
-        - name: NODE_OPTIONS
-          value: --max-old-space-size=1536
-    extraVolumes:
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /app/docker-data/
-          name: twenty-data-volume
-          size: 1Gi
-    cronjobs: []
-    addons:
-        - displayName: PostgreSQL (CloudNativePG)
-          env: []
-          icon: /img/addons/pgsql.svg
-          id: kubero-operator
-          kind: Cluster
-          resourceDefinitions:
-              Cluster:
-                  apiVersion: postgresql.cnpg.io/v1
-                  kind: Cluster
-                  metadata:
-                      name: twenty-postgresql
-                  spec:
-                      instances: 1
-                      imageName: ghcr.io/cloudnative-pg/postgresql:16
-                      primaryUpdateStrategy: unsupervised
-                      storage:
-                          storageClass: fast
-                          size: 5Gi
-                      resources:
-                          requests:
-                              cpu: 100m
-                              memory: 256Mi
-                          limits:
-                              cpu: "1"
-                              memory: 1Gi
-                      bootstrap:
-                          initdb:
-                              database: twenty
-                              owner: twenty
-                              secret:
-                                  name: twenty-postgresql-app
-                              postInitApplicationSQL:
-                                  - GRANT ALL ON SCHEMA public TO twenty
-                                  - GRANT CREATE ON SCHEMA public TO twenty
-                                  - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO twenty
-                      enableSuperuserAccess: true
-                      superuserSecret:
-                          name: twenty-postgresql-superuser
-              superuserSecret:
-                  apiVersion: v1
-                  kind: Secret
-                  metadata:
-                      name: twenty-postgresql-superuser
-                  type: kubernetes.io/basic-auth
-                  stringData:
-                      username: postgres
-                      password: twenty
-              appUserSecret:
-                  apiVersion: v1
-                  kind: Secret
-                  metadata:
-                      name: twenty-postgresql-app
-                  type: kubernetes.io/basic-auth
-                  stringData:
-                      username: twenty
-                      password: twenty
-        - displayName: Valkey
-          env: []
-          icon: /img/addons/redis.svg
-          id: kubero-operator
-          kind: Valkey
-          resourceDefinitions:
-              Valkey:
-                  apiVersion: rds.valkey.buf.red/v1alpha1
-                  kind: Valkey
-                  metadata:
-                      name: twenty-valkey
-                  spec:
-                      version: "8.0"
-                      arch: replica
-                      replicas:
-                          shards: 1
-                          replicasOfShard: 1
-                      access:
-                          serviceType: ClusterIP
-                      storage:
-                          capacity: 1Gi
-                          storageClassName: fast
-                      resources:
-                          requests:
-                              cpu: 50m
-                              memory: 256Mi
-                          limits:
-                              cpu: 500m
-                              memory: 256Mi
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: "3000"
-        pullPolicy: Always
-        repository: twentycrm/twenty
-        tag: latest
-    # Default QA LimitRange caps web pods at 512Mi; Twenty OOMs during DB migrations.
-    resources:
-        requests:
-            cpu: 500m
-            memory: 1Gi
-        limits:
-            cpu: "1"
-            memory: 2Gi
-    healthcheck:
-        enabled: true
-        path: /
-        startupSeconds: 300
-        timeoutSeconds: 5
-        periodSeconds: 10
+  name: twenty
+  deploymentstrategy: docker
+  envVars:
+  - name: FRONT_BASE_URL
+    value: twenty.localhost
+  - name: ENABLE_DB_MIGRATIONS
+    value: 'true'
+  - name: CACHE_STORAGE_TYPE
+    value: redis
+  - name: REDIS_URL
+    value: redis://rfr-twenty-valkey-readwrite:6379
+  - name: API_RATE_LIMITING_TTL
+    value: '100'
+  - name: API_RATE_LIMITING_LIMIT
+    value: '100'
+  - name: APP_SECRET
+    value: base64:Mnl3bDdlYjY2bzBmcWMzanE3dDhiN3BxY2ZqZzh3bmM=
+  - name: POSTGRES_ADMIN_PASSWORD
+    value: twenty
+  - name: PG_DATABASE_URL
+    value: postgres://twenty:twenty@twenty-postgresql-rw:5432/twenty
+  - name: IS_SIGN_UP_DISABLED
+    value: 'false'
+  - name: PASSWORD_RESET_TOKEN_EXPIRES_IN
+    value: 5m
+  - name: WORKSPACE_INACTIVE_DAYS_BEFORE_NOTIFICATION
+    value: '365'
+  - name: WORKSPACE_INACTIVE_DAYS_BEFORE_SOFT_DELETION
+    value: '380'
+  - name: WORKSPACE_INACTIVE_DAYS_BEFORE_DELETION
+    value: '400'
+  - name: STORAGE_TYPE
+    value: local
+  - name: MESSAGE_QUEUE_TYPE
+    value: pg-boss
+  - name: SIGN_IN_PREFILLED
+    value: 'false'
+  - name: DEBUG_MODE
+    value: 'false'
+  - name: TELEMETRY_ENABLED
+    value: 'true'
+  - name: NODE_OPTIONS
+    value: --max-old-space-size=1536
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/docker-data/
+    name: twenty-data-volume
+    size: 1Gi
+    storageClass: slow
+  cronjobs: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: twenty-postgresql
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: twenty
+              owner: twenty
+              secret:
+                name: twenty-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO twenty
+              - GRANT CREATE ON SCHEMA public TO twenty
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO twenty
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: twenty-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: twenty-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: twenty
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: twenty-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: twenty
+          password: twenty
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: twenty-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: twentycrm/twenty
+    tag: latest
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10

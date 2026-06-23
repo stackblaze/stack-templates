@@ -4,15 +4,18 @@ metadata:
   name: hortusfox
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted collaborative plant management system for tracking, organizing and caring
-      for your indoor and outdoor plants.
+    kubero.dev/template.description: Self-hosted collaborative plant management system
+      for tracking, organizing and caring for your indoor and outdoor plants.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hortusfox/icon.png
-    kubero.dev/template.installation: 'Image: ghcr.io/danielbrendel/hortusfox-web (official). Uses MariaDB (the mariadb add-on,
-      host hortusfox-mysql). Rotate the MariaDB password (default ''hortusfox'') and set a strong APP_ADMIN_PASSWORD (default
-      placeholder) before exposing publicly; the first-run admin account is seeded from APP_ADMIN_EMAIL / APP_ADMIN_PASSWORD
-      on initial migration. DB_CHARSET must be utf8mb4. Persistent volumes hold backups (/var/www/html/public/backup) and app
-      logs (/var/www/html/app/logs). Do not mount empty PVCs over /var/www/html/public/img, /public/themes, or /app/migrations
-      — Kubero''s shared /tmp emptyDir hides the image seed copies the entrypoint expects. Add img/themes volumes only after
+    kubero.dev/template.installation: 'Image: ghcr.io/danielbrendel/hortusfox-web
+      (official). Uses MariaDB (the mariadb add-on, host hortusfox-mysql). Rotate
+      the MariaDB password (default ''hortusfox'') and set a strong APP_ADMIN_PASSWORD
+      (default placeholder) before exposing publicly; the first-run admin account
+      is seeded from APP_ADMIN_EMAIL / APP_ADMIN_PASSWORD on initial migration. DB_CHARSET
+      must be utf8mb4. Persistent volumes hold backups (/var/www/html/public/backup)
+      and app logs (/var/www/html/app/logs). Do not mount empty PVCs over /var/www/html/public/img,
+      /public/themes, or /app/migrations — Kubero''s shared /tmp emptyDir hides the
+      image seed copies the entrypoint expects. Add img/themes volumes only after
       first boot if you accept re-seeding defaults. Set APP_TIMEZONE to your timezone.'
     kubero.dev/template.links: '["https://github.com/danielbrendel/hortusfox-web/blob/master/README.md"]'
     kubero.dev/template.screenshots: '["https://www.hortusfox.com/img/screenshot.png"]'
@@ -101,18 +104,19 @@ spec:
     mountPath: /var/www/html/public/backup
     name: hortusfox-backup
     size: 2Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/app/logs
     name: hortusfox-logs
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
-  # entrypoint: timezone + MariaDB migrations exceed default ~90s startup probe
   healthcheck:
     enabled: true
     path: /

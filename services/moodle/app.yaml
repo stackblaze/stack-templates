@@ -4,21 +4,28 @@ metadata:
   name: moodle
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Moodle is the world's most popular open-source learning management system (LMS) for building
-      online courses, classrooms and e-learning.
+    kubero.dev/template.description: Moodle is the world's most popular open-source
+      learning management system (LMS) for building online courses, classrooms and
+      e-learning.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodle/icon.png
-    kubero.dev/template.installation: 'Moodle requires MySQL/MariaDB (the maintained container images target MariaDB, not
-      PostgreSQL), so this template ships the mariadb add-on. The image is elestio/moodle, an actively-rebuilt Verified Publisher
-      image tracking current Moodle releases (Bitnami''s moodle image moved behind a paywall in 2025 and is no longer freely
-      pullable). On first boot the container runs the Moodle installer against the database using the MOODLE_DATABASE_* env
-      vars and provisions the admin account from MOODLE_USERNAME/MOODLE_PASSWORD/MOODLE_EMAIL; MOODLE_HOST and MOODLE_REVERSEPROXY
-      are set so generated links resolve to the public HTTPS URL behind the ingress. After deploy, log in with the seeded
-      admin and ROTATE: the MOODLE_PASSWORD env value, the MariaDB add-on password, and configure real SMTP under Site administration
-      > Server > Email. Two persistent volumes are mounted: /bitnami/moodle holds the Moodle code plus config.php, and /bitnami/moodledata
-      holds uploaded course files, caches and sessions. For production raise the app pod size (Moodle/PHP needs >=1Gi) and
-      PHP memory_limit, and schedule the Moodle cron (admin/cli/cron.php) every minute. Optional companions: deploy the memcached
-      add-on and point Moodle''s MUC application cache at it for performance, and add an external Solr/Elasticsearch only
-      if you enable global search (neither is required for a base install).'
+    kubero.dev/template.installation: 'Moodle requires MySQL/MariaDB (the maintained
+      container images target MariaDB, not PostgreSQL), so this template ships the
+      mariadb add-on. The image is elestio/moodle, an actively-rebuilt Verified Publisher
+      image tracking current Moodle releases (Bitnami''s moodle image moved behind
+      a paywall in 2025 and is no longer freely pullable). On first boot the container
+      runs the Moodle installer against the database using the MOODLE_DATABASE_* env
+      vars and provisions the admin account from MOODLE_USERNAME/MOODLE_PASSWORD/MOODLE_EMAIL;
+      MOODLE_HOST and MOODLE_REVERSEPROXY are set so generated links resolve to the
+      public HTTPS URL behind the ingress. After deploy, log in with the seeded admin
+      and ROTATE: the MOODLE_PASSWORD env value, the MariaDB add-on password, and
+      configure real SMTP under Site administration > Server > Email. Two persistent
+      volumes are mounted: /bitnami/moodle holds the Moodle code plus config.php,
+      and /bitnami/moodledata holds uploaded course files, caches and sessions. For
+      production raise the app pod size (Moodle/PHP needs >=1Gi) and PHP memory_limit,
+      and schedule the Moodle cron (admin/cli/cron.php) every minute. Optional companions:
+      deploy the memcached add-on and point Moodle''s MUC application cache at it
+      for performance, and add an external Solr/Elasticsearch only if you enable global
+      search (neither is required for a base install).'
     kubero.dev/template.links: '["https://docs.moodle.org/en/Installation", "https://hub.docker.com/r/elestio/moodle"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/moodle/moodle
@@ -114,12 +121,14 @@ spec:
     mountPath: /bitnami/moodle
     name: moodle-app
     size: 5Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /bitnami/moodledata
     name: moodle-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

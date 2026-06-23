@@ -26,6 +26,7 @@ spec:
     mountPath: /datastore
     name: changedetection-volume
     size: 1Gi
+    storageClass: shared
   image:
     containerPort: '5000'
     repository: dgtlmoon/changedetection.io

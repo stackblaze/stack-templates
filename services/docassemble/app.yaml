@@ -4,23 +4,30 @@ metadata:
   name: docassemble
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source expert system for guided interviews and document assembly, widely used to
-      build legal-aid and law-firm self-help applications.
+    kubero.dev/template.description: Open-source expert system for guided interviews
+      and document assembly, widely used to build legal-aid and law-firm self-help
+      applications.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docassemble/icon.png
-    kubero.dev/template.installation: 'Docassemble ships as a single all-in-one image (jhpyle/docassemble) whose roles are
-      selected with the CONTAINERROLE env var. This template runs the web role and externalises the SQL database and Redis
-      to the bundled add-ons. ROTATE the Postgres password and SECRETKEY (openssl rand -base64 32) before production. The
-      container listens on internal port 80; set BEHINDHTTPSLOADBALANCER=true because Kubero''s ingress terminates TLS, and
-      DAHOSTNAME is auto-set from {{KUBERO_APP_HOST}}. On first boot the schema is created automatically; the bootstrap admin
-      is admin@admin.com / password (set/rotate via the configuration). Persistent application data (uploaded packages, generated
-      files, certs, config.yml) lives under /usr/share/docassemble on the volume. COMPANION SERVICES: for a production multi-server
-      install deploy additional replicas of the SAME jhpyle/docassemble image with different CONTAINERROLE values that share
-      the same Postgres, Redis and /usr/share/docassemble volume: CONTAINERROLE=celery (background task / document-assembly
-      worker), CONTAINERROLE=cron (scheduled tasks), and optionally CONTAINERROLE=log (centralised logging) and CONTAINERROLE=mail.
-      RabbitMQ is only needed for the SQL/Redis-replicated HA topology (set RABBITMQ=pyamqp://...) and can be added later;
-      a single-node web+celery setup does not require it. A background OCR/translation ML container is not required for basic
-      operation. To externalise file storage to S3/Azure instead of the volume, set the S3 or AZURE config keys in the docassemble
-      configuration (not an operator add-on).'
+    kubero.dev/template.installation: 'Docassemble ships as a single all-in-one image
+      (jhpyle/docassemble) whose roles are selected with the CONTAINERROLE env var.
+      This template runs the web role and externalises the SQL database and Redis
+      to the bundled add-ons. ROTATE the Postgres password and SECRETKEY (openssl
+      rand -base64 32) before production. The container listens on internal port 80;
+      set BEHINDHTTPSLOADBALANCER=true because Kubero''s ingress terminates TLS, and
+      DAHOSTNAME is auto-set from {{KUBERO_APP_HOST}}. On first boot the schema is
+      created automatically; the bootstrap admin is admin@admin.com / password (set/rotate
+      via the configuration). Persistent application data (uploaded packages, generated
+      files, certs, config.yml) lives under /usr/share/docassemble on the volume.
+      COMPANION SERVICES: for a production multi-server install deploy additional
+      replicas of the SAME jhpyle/docassemble image with different CONTAINERROLE values
+      that share the same Postgres, Redis and /usr/share/docassemble volume: CONTAINERROLE=celery
+      (background task / document-assembly worker), CONTAINERROLE=cron (scheduled
+      tasks), and optionally CONTAINERROLE=log (centralised logging) and CONTAINERROLE=mail.
+      RabbitMQ is only needed for the SQL/Redis-replicated HA topology (set RABBITMQ=pyamqp://...)
+      and can be added later; a single-node web+celery setup does not require it.
+      A background OCR/translation ML container is not required for basic operation.
+      To externalise file storage to S3/Azure instead of the volume, set the S3 or
+      AZURE config keys in the docassemble configuration (not an operator add-on).'
     kubero.dev/template.links: '["https://docassemble.org/docs/docker.html", "https://docassemble.org/docs/scalability.html"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/jhpyle/docassemble
@@ -65,9 +72,9 @@ spec:
               secret:
                 name: docassemble-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO docassemble
-                - GRANT CREATE ON SCHEMA public TO docassemble
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO docassemble
+              - GRANT ALL ON SCHEMA public TO docassemble
+              - GRANT CREATE ON SCHEMA public TO docassemble
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO docassemble
           enableSuperuserAccess: true
           superuserSecret:
             name: docassemble-postgresql-superuser
@@ -154,6 +161,7 @@ spec:
     mountPath: /usr/share/docassemble/backup
     name: docassemble-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -167,6 +175,9 @@ spec:
     command:
     - bash
     - -c
-    - |
-      mkdir -p /usr/share/docassemble/log /usr/share/docassemble/config /usr/share/docassemble/files /usr/share/docassemble/backup /usr/share/docassemble/certs
+    - 'mkdir -p /usr/share/docassemble/log /usr/share/docassemble/config /usr/share/docassemble/files
+      /usr/share/docassemble/backup /usr/share/docassemble/certs
+
       exec /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
+
+      '

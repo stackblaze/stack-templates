@@ -4,24 +4,31 @@ metadata:
   name: pixelfed
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Free, federated (ActivityPub) photo-sharing platform - a self-hosted, ethical alternative
-      to Instagram for the Fediverse.
+    kubero.dev/template.description: Free, federated (ActivityPub) photo-sharing platform
+      - a self-hosted, ethical alternative to Instagram for the Fediverse.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pixelfed/icon.png
-    kubero.dev/template.installation: 'This template runs the PRIMARY Pixelfed web/php-fpm container only. The zknt/pixelfed
-      image serves over HTTP on port 80 and ships a php-fpm + nginx supervisord bundle. REQUIRED first-run steps: 1) Generate
-      an APP_KEY with ''php artisan key:generate'' (or ''openssl rand -base64 32'') and set it as ''base64:...'' - rotate
-      the placeholder before going live. 2) After the DB is up, exec into the pod and run ''php artisan migrate --force''
-      and ''php artisan storage:link'', then ''php artisan import:cities'' and ''php artisan instance:actor'' to seed the
-      federation actor. 3) Create the first admin with ''php artisan user:create'' (or register then ''php artisan user:admin
-      <id>''). COMPANION SERVICES to deploy separately for a full instance (same zknt/pixelfed image, different command):
-      a HORIZON QUEUE WORKER (''php artisan horizon'') is MANDATORY for federation, media optimization, and notifications
-      - deploy it as a second app pointing at the same MariaDB + Valkey; an optional SCHEDULER/cron loop (''php artisan schedule:work'')
-      for digests and cleanup. Pixelfed stores uploads/avatars under /var/www/storage (mounted here) - the worker pod must
-      share or replicate this path (use RWX storage) so federated media is reachable. Object storage: for production at scale
-      point FILESYSTEM_DRIVER + AWS_* / S3 vars at an external S3 bucket (e.g. the RustFS add-on) instead of the local volume;
-      omit it here for a single-node start. Rotate the MariaDB password, Valkey is password-less in-cluster. Set ADMIN_DOMAIN
-      / APP_DOMAIN to your real host before federating - it is baked into ActivityPub actor URLs and cannot be changed cleanly
-      later.'
+    kubero.dev/template.installation: 'This template runs the PRIMARY Pixelfed web/php-fpm
+      container only. The zknt/pixelfed image serves over HTTP on port 80 and ships
+      a php-fpm + nginx supervisord bundle. REQUIRED first-run steps: 1) Generate
+      an APP_KEY with ''php artisan key:generate'' (or ''openssl rand -base64 32'')
+      and set it as ''base64:...'' - rotate the placeholder before going live. 2)
+      After the DB is up, exec into the pod and run ''php artisan migrate --force''
+      and ''php artisan storage:link'', then ''php artisan import:cities'' and ''php
+      artisan instance:actor'' to seed the federation actor. 3) Create the first admin
+      with ''php artisan user:create'' (or register then ''php artisan user:admin
+      <id>''). COMPANION SERVICES to deploy separately for a full instance (same zknt/pixelfed
+      image, different command): a HORIZON QUEUE WORKER (''php artisan horizon'')
+      is MANDATORY for federation, media optimization, and notifications - deploy
+      it as a second app pointing at the same MariaDB + Valkey; an optional SCHEDULER/cron
+      loop (''php artisan schedule:work'') for digests and cleanup. Pixelfed stores
+      uploads/avatars under /var/www/storage (mounted here) - the worker pod must
+      share or replicate this path (use RWX storage) so federated media is reachable.
+      Object storage: for production at scale point FILESYSTEM_DRIVER + AWS_* / S3
+      vars at an external S3 bucket (e.g. the RustFS add-on) instead of the local
+      volume; omit it here for a single-node start. Rotate the MariaDB password, Valkey
+      is password-less in-cluster. Set ADMIN_DOMAIN / APP_DOMAIN to your real host
+      before federating - it is baked into ActivityPub actor URLs and cannot be changed
+      cleanly later.'
     kubero.dev/template.links: '["https://docs.pixelfed.org/running-pixelfed/", "https://github.com/pixelfed/pixelfed/blob/dev/docker-compose.yml"]'
     kubero.dev/template.screenshots: '["https://pixelfed.org/img/screenshots/timeline.png"]'
     kubero.dev/template.source: https://github.com/pixelfed/pixelfed
@@ -193,6 +200,7 @@ spec:
     mountPath: /var/www/storage
     name: pixelfed-storage
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true

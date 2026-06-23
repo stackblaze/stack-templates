@@ -4,10 +4,11 @@ metadata:
   name: glpi
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: IT service management and asset tracking — helpdesk, inventory, and CMDB in one platform.
+    kubero.dev/template.description: IT service management and asset tracking — helpdesk,
+      inventory, and CMDB in one platform.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/glpi/icon.png
-    kubero.dev/template.installation: GLPI auto-installs when all GLPI_DB_* variables are set. Default login admin/glpi —
-      change immediately.
+    kubero.dev/template.installation: GLPI auto-installs when all GLPI_DB_* variables
+      are set. Default login admin/glpi — change immediately.
     kubero.dev/template.links: '["https://help.glpi-project.org/"]'
     kubero.dev/template.screenshots: '["https://glpi-project.org/images/glpi.png"]'
     kubero.dev/template.source: https://github.com/glpi-project/glpi
@@ -89,6 +90,7 @@ spec:
     mountPath: /var/glpi
     name: glpi-data
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

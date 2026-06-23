@@ -4,10 +4,11 @@ metadata:
   name: jellyfin
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Free software media system that puts you in control of managing and streaming your movies,
-      TV, and music.
+    kubero.dev/template.description: Free software media system that puts you in control
+      of managing and streaming your movies, TV, and music.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jellyfin/icon.png
-    kubero.dev/template.installation: Mount media under /media or add libraries pointing to your storage after first login.
+    kubero.dev/template.installation: Mount media under /media or add libraries pointing
+      to your storage after first login.
     kubero.dev/template.links: '["https://jellyfin.org/docs/"]'
     kubero.dev/template.screenshots: '["https://jellyfin.org/images/screenshots/home.png"]'
     kubero.dev/template.source: https://github.com/jellyfin/jellyfin
@@ -34,12 +35,14 @@ spec:
     mountPath: /config
     name: jellyfin-data
     size: 4Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /media
     name: jellyfin-media
     size: 10Gi
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true

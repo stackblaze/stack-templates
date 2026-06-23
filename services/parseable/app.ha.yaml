@@ -4,20 +4,24 @@ metadata:
   name: parseable
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Rust-based, S3-native log analytics and observability platform with a built-in web console;
-      a lightweight Elasticsearch/Splunk alternative.
+    kubero.dev/template.description: Rust-based, S3-native log analytics and observability
+      platform with a built-in web console; a lightweight Elasticsearch/Splunk alternative.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/parseable/icon.png
-    kubero.dev/template.installation: 'This template runs the official parseable/parseable image in single-node LOCAL-STORE
-      mode via the custom command ''parseable local-store'', serving the HTTP API and web console on port 8000. DATASTORE:
-      in local-store mode Parseable persists all ingested log data and metadata on disk (P_FS_DIR=/parseable/data) plus an
-      in-flight staging area (P_STAGING_DIR=/parseable/staging), so NO external database add-on is provisioned - everything
-      lives on the mounted volumes. For that reason these persistent volumes MUST be retained across redeploys or ingested
-      data is lost; grow them to match your retention. BEFORE FIRST RUN you MUST rotate P_USERNAME and P_PASSWORD - these
-      create the initial admin login (the defaults admin/admin are insecure); log in at the root URL with those credentials.
-      PRODUCTION SCALE-OUT (NOT configured here): for durable, horizontally-scalable storage Parseable instead writes to S3-compatible
-      object storage - run ''parseable s3-store'' and set P_S3_URL, P_S3_ACCESS_KEY, P_S3_SECRET_KEY, P_S3_REGION and P_S3_BUCKET
-      to point at an external S3 bucket; this template uses local disk for simplicity. Send logs over HTTP to /api/v1/ingest
-      with your credentials.'
+    kubero.dev/template.installation: 'This template runs the official parseable/parseable
+      image in single-node LOCAL-STORE mode via the custom command ''parseable local-store'',
+      serving the HTTP API and web console on port 8000. DATASTORE: in local-store
+      mode Parseable persists all ingested log data and metadata on disk (P_FS_DIR=/parseable/data)
+      plus an in-flight staging area (P_STAGING_DIR=/parseable/staging), so NO external
+      database add-on is provisioned - everything lives on the mounted volumes. For
+      that reason these persistent volumes MUST be retained across redeploys or ingested
+      data is lost; grow them to match your retention. BEFORE FIRST RUN you MUST rotate
+      P_USERNAME and P_PASSWORD - these create the initial admin login (the defaults
+      admin/admin are insecure); log in at the root URL with those credentials. PRODUCTION
+      SCALE-OUT (NOT configured here): for durable, horizontally-scalable storage
+      Parseable instead writes to S3-compatible object storage - run ''parseable s3-store''
+      and set P_S3_URL, P_S3_ACCESS_KEY, P_S3_SECRET_KEY, P_S3_REGION and P_S3_BUCKET
+      to point at an external S3 bucket; this template uses local disk for simplicity.
+      Send logs over HTTP to /api/v1/ingest with your credentials.'
     kubero.dev/template.links: '["https://www.parseable.com/docs/quickstart", "https://www.parseable.com/docs/server/environment-variables"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/parseablehq/parseable
@@ -48,12 +52,14 @@ spec:
     mountPath: /parseable/data
     name: parseable-data
     size: 5Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /parseable/staging
     name: parseable-staging
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

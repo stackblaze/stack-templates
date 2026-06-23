@@ -4,29 +4,39 @@ metadata:
   name: mediacms
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Modern, fully featured open-source video and media content management system for building
-      self-hosted media portals and streaming sites.
+    kubero.dev/template.description: Modern, fully featured open-source video and
+      media content management system for building self-hosted media portals and streaming
+      sites.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mediacms/icon.png
-    kubero.dev/template.installation: 'This template runs the PRIMARY MediaCMS application container ONLY (mediacms/mediacms).
-      MediaCMS is a Django + Celery MULTI-CONTAINER stack and is NOT complete with this pod alone. By default this pod is
-      configured as the WEB front end (ENABLE_UWSGI=yes, ENABLE_NGINX=yes serving HTTP on port 80), with migrations and Celery
-      DISABLED so they can run as dedicated apps. REQUIRED before/at first boot: 1) Run database migrations ONCE - deploy
-      a one-shot companion app from the SAME image mediacms/mediacms with env ENABLE_UWSGI=no, ENABLE_NGINX=no, ENABLE_CELERY_BEAT=no,
-      ENABLE_CELERY_SHORT=no, ENABLE_CELERY_LONG=no, ENABLE_MIGRATIONS=yes, ADMIN_USER=admin, ADMIN_EMAIL=admin@localhost
-      and ADMIN_PASSWORD set to a strong value (this also creates the first superuser). Alternatively set ENABLE_MIGRATIONS=yes
-      on THIS web pod for the very first deploy, then set it back to no. 2) Rotate the Postgres password (template default
-      is the slug ''mediacms'') and set a real ADMIN_PASSWORD. Valkey/Redis is password-less in-cluster. MANDATORY COMPANION
-      SERVICES to deploy as SEPARATE apps from the SAME image mediacms/mediacms, sharing the SAME Postgres + Valkey + the
-      /home/mediacms/mediacms/media_files volume (use RWX storage so uploads/transcodes are visible to all): (a) Celery WORKER
-      for short tasks - env ENABLE_UWSGI=no, ENABLE_NGINX=no, ENABLE_CELERY_SHORT=yes, ENABLE_CELERY_LONG=yes, ENABLE_CELERY_BEAT=no,
-      ENABLE_MIGRATIONS=no (handles thumbnailing, encoding/transcoding and notifications - REQUIRED or uploaded videos never
-      finish processing); (b) Celery BEAT scheduler - env ENABLE_CELERY_BEAT=yes with all other ENABLE_* = no (periodic cleanup/maintenance
-      jobs). All companion pods need the identical POSTGRES_* and REDIS_LOCATION env vars as this web pod. Route public ingress
-      to THIS web pod (it runs the bundled nginx). Set FRONTEND_HOST to your public https URL so absolute media/asset links
-      resolve correctly. Heavy video transcoding is CPU/RAM intensive - size the worker pod accordingly. For production at
-      scale media_files can be offloaded to S3 (e.g. the RustFS add-on) via Django storages, but the default uses the local
-      volume.'
-    kubero.dev/template.links: '["https://github.com/mediacms-io/mediacms/blob/main/docs/admins_docs.md", "https://github.com/mediacms-io/mediacms/blob/main/docs/Installation.md"]'
+    kubero.dev/template.installation: 'This template runs the PRIMARY MediaCMS application
+      container ONLY (mediacms/mediacms). MediaCMS is a Django + Celery MULTI-CONTAINER
+      stack and is NOT complete with this pod alone. By default this pod is configured
+      as the WEB front end (ENABLE_UWSGI=yes, ENABLE_NGINX=yes serving HTTP on port
+      80), with migrations and Celery DISABLED so they can run as dedicated apps.
+      REQUIRED before/at first boot: 1) Run database migrations ONCE - deploy a one-shot
+      companion app from the SAME image mediacms/mediacms with env ENABLE_UWSGI=no,
+      ENABLE_NGINX=no, ENABLE_CELERY_BEAT=no, ENABLE_CELERY_SHORT=no, ENABLE_CELERY_LONG=no,
+      ENABLE_MIGRATIONS=yes, ADMIN_USER=admin, ADMIN_EMAIL=admin@localhost and ADMIN_PASSWORD
+      set to a strong value (this also creates the first superuser). Alternatively
+      set ENABLE_MIGRATIONS=yes on THIS web pod for the very first deploy, then set
+      it back to no. 2) Rotate the Postgres password (template default is the slug
+      ''mediacms'') and set a real ADMIN_PASSWORD. Valkey/Redis is password-less in-cluster.
+      MANDATORY COMPANION SERVICES to deploy as SEPARATE apps from the SAME image
+      mediacms/mediacms, sharing the SAME Postgres + Valkey + the /home/mediacms/mediacms/media_files
+      volume (use RWX storage so uploads/transcodes are visible to all): (a) Celery
+      WORKER for short tasks - env ENABLE_UWSGI=no, ENABLE_NGINX=no, ENABLE_CELERY_SHORT=yes,
+      ENABLE_CELERY_LONG=yes, ENABLE_CELERY_BEAT=no, ENABLE_MIGRATIONS=no (handles
+      thumbnailing, encoding/transcoding and notifications - REQUIRED or uploaded
+      videos never finish processing); (b) Celery BEAT scheduler - env ENABLE_CELERY_BEAT=yes
+      with all other ENABLE_* = no (periodic cleanup/maintenance jobs). All companion
+      pods need the identical POSTGRES_* and REDIS_LOCATION env vars as this web pod.
+      Route public ingress to THIS web pod (it runs the bundled nginx). Set FRONTEND_HOST
+      to your public https URL so absolute media/asset links resolve correctly. Heavy
+      video transcoding is CPU/RAM intensive - size the worker pod accordingly. For
+      production at scale media_files can be offloaded to S3 (e.g. the RustFS add-on)
+      via Django storages, but the default uses the local volume.'
+    kubero.dev/template.links: '["https://github.com/mediacms-io/mediacms/blob/main/docs/admins_docs.md",
+      "https://github.com/mediacms-io/mediacms/blob/main/docs/Installation.md"]'
     kubero.dev/template.screenshots: '["https://mediacms.io/static/images/mediacms.png"]'
     kubero.dev/template.source: https://github.com/mediacms-io/mediacms
     kubero.dev/template.categories: '["media", "cms", "social"]'
@@ -161,6 +171,7 @@ spec:
     mountPath: /home/mediacms/mediacms/media_files
     name: mediacms-media
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

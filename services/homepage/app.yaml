@@ -3,11 +3,12 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: A highly customizable homepage (or startpage / application
-      dashboard) with Docker and service API integrations.
+    kubero.dev/template.description: A highly customizable homepage (or startpage
+      / application dashboard) with Docker and service API integrations.
     kubero.dev/template.icon: https://raw.githubusercontent.com/gethomepage/homepage/dev/public/homepage.png
-    kubero.dev/template.installation: Config YAML files are created under /app/config on first
-      visit. Set HOMEPAGE_ALLOWED_HOSTS to your public hostname if you change the default.
+    kubero.dev/template.installation: Config YAML files are created under /app/config
+      on first visit. Set HOMEPAGE_ALLOWED_HOSTS to your public hostname if you change
+      the default.
     kubero.dev/template.links: '["https://gethomepage.dev/"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/gethomepage/homepage/dev/docs/public/images/homepage.png"]'
     kubero.dev/template.source: https://github.com/gethomepage/homepage
@@ -31,6 +32,7 @@ spec:
     mountPath: /app/config
     name: homepage-config
     size: 100Mi
+    storageClass: slow
   healthcheck:
     enabled: true
     path: /

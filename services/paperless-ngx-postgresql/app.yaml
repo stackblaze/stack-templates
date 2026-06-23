@@ -1,187 +1,190 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: paperless-ngx
-    annotations:
-        kubero.dev/template.architecture: "[]"
-        kubero.dev/template.description: "A community-supported supercharged version of paperless: scan, index and archive all your physical documents"
-        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/paperless-ngx-postgresql/icon.png
-        kubero.dev/template.installation: "run `python3 manage.py createsuperuser` from within the container to create an admin user"
-        kubero.dev/template.links: '["https://docs.paperless-ngx.com/setup/#docker"]'
-        kubero.dev/template.screenshots: '["https://docs.paperless-ngx.com/assets/screenshots/dashboard.png", "https://docs.paperless-ngx.com/assets/screenshots/documents-largecards.png"]'
-        kubero.dev/template.source: "https://github.com/paperless-ngx/paperless-ngx"
-        kubero.dev/template.categories: '["productivity", "work", "utilities"]'
-        kubero.dev/template.title: "Paperless-NGX PostgreSQL"
-        kubero.dev/template.website: "https://docs.paperless-ngx.com/"
-    labels:
-        manager: kubero
+  name: paperless-ngx
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'A community-supported supercharged version of
+      paperless: scan, index and archive all your physical documents'
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/paperless-ngx-postgresql/icon.png
+    kubero.dev/template.installation: run `python3 manage.py createsuperuser` from
+      within the container to create an admin user
+    kubero.dev/template.links: '["https://docs.paperless-ngx.com/setup/#docker"]'
+    kubero.dev/template.screenshots: '["https://docs.paperless-ngx.com/assets/screenshots/dashboard.png",
+      "https://docs.paperless-ngx.com/assets/screenshots/documents-largecards.png"]'
+    kubero.dev/template.source: https://github.com/paperless-ngx/paperless-ngx
+    kubero.dev/template.categories: '["productivity", "work", "utilities"]'
+    kubero.dev/template.title: Paperless-NGX PostgreSQL
+    kubero.dev/template.website: https://docs.paperless-ngx.com/
+  labels:
+    manager: kubero
 spec:
-    name: paperless-ngx
-    deploymentstrategy: docker
-    envVars:
-        - name: PAPERLESS_SECRET_KEY
-          value: 70zcjuy9cy9NcIrj++eK2FR0E/Kdb3d3VZhRw8UmDSg=
-        - name: PAPERLESS_REDIS
-          value: redis://rfr-paperless-ngx-valkey-readwrite:6379
-        - name: PAPERLESS_URL
-          value: '{{KUBERO_APP_URL}}'
-        - name: PAPERLESS_DBHOST
-          value: paperless-pg-rw
-        - name: PAPERLESS_DBNAME
-          value: paperless
-        - name: PAPERLESS_DBPORT
-          value: "5432"
-        - name: PAPERLESS_DBUSER
-          value: paperless
-        - name: PAPERLESS_DBPASS
-          value: paperless
-        - name: PAPERLESS_ADMIN_USER
-          value: administrator
-        - name: PAPERLESS_ADMIN_MAIL
-          value: admin@example.com
-        - name: PAPERLESS_ADMIN_PASSWORD
-          value: administrator
-        - name: PAPERLESS_WEBSERVER_WORKERS
-          value: "1"
-        - name: PAPERLESS_TASK_WORKERS
-          value: "1"
-        - name: PAPERLESS_ENABLE_NLTK
-          value: "false"
-    extraVolumes:
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /usr/src/paperless/export
-          name: paperless-export-volume
-          size: 1Gi
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /usr/src/paperless/consume
-          name: paperless-consume-volume
-          size: 1Gi
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /usr/src/paperless/media
-          name: paperless-media-volume
-          size: 1Gi
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /usr/src/paperless/data
-          name: paperless-data-volume
-          size: 1Gi
-    cronjobs: []
-    addons:
-        - displayName: Valkey
-          env: []
-          icon: /img/addons/redis.svg
-          id: kubero-operator
-          kind: Valkey
-          resourceDefinitions:
-              Valkey:
-                  apiVersion: rds.valkey.buf.red/v1alpha1
-                  kind: Valkey
-                  metadata:
-                      name: paperless-ngx-valkey
-                  spec:
-                      version: "8.0"
-                      arch: replica
-                      replicas:
-                          shards: 1
-                          replicasOfShard: 1
-                      access:
-                          serviceType: ClusterIP
-                      storage:
-                          capacity: 1Gi
-                          storageClassName: fast
-                      resources:
-                          requests:
-                              cpu: 50m
-                              memory: 256Mi
-                          limits:
-                              cpu: 500m
-                              memory: 256Mi
-        - displayName: PostgreSQL (CloudNativePG)
-          env: []
-          icon: /img/addons/pgsql.svg
-          id: kubero-operator
-          kind: Cluster
-          resourceDefinitions:
-              Cluster:
-                  apiVersion: postgresql.cnpg.io/v1
-                  kind: Cluster
-                  metadata:
-                      name: paperless-pg
-                  spec:
-                      instances: 1
-                      imageName: ghcr.io/cloudnative-pg/postgresql:16
-                      primaryUpdateStrategy: unsupervised
-                      storage:
-                          storageClass: fast
-                          size: 5Gi
-                      resources:
-                          requests:
-                              cpu: 100m
-                              memory: 256Mi
-                          limits:
-                              cpu: "1"
-                              memory: 1Gi
-                      bootstrap:
-                          initdb:
-                              database: paperless
-                              owner: paperless
-                              secret:
-                                  name: paperless-pg-app
-                              postInitApplicationSQL:
-                                  - GRANT ALL ON SCHEMA public TO paperless
-                                  - GRANT CREATE ON SCHEMA public TO paperless
-                                  - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO paperless
-                      enableSuperuserAccess: true
-                      superuserSecret:
-                          name: paperless-pg-superuser
-              superuserSecret:
-                  apiVersion: v1
-                  kind: Secret
-                  metadata:
-                      name: paperless-pg-superuser
-                  type: kubernetes.io/basic-auth
-                  stringData:
-                      username: postgres
-                      password: paperless
-              appUserSecret:
-                  apiVersion: v1
-                  kind: Secret
-                  metadata:
-                      name: paperless-pg-app
-                  type: kubernetes.io/basic-auth
-                  stringData:
-                      username: paperless
-                      password: paperless
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    resources:
-        requests:
-            cpu: 500m
-            memory: 1Gi
-        limits:
-            cpu: "2"
-            memory: 4Gi
-    healthcheck:
-        enabled: true
-        path: /
-        startupSeconds: 900
-        timeoutSeconds: 5
-        periodSeconds: 10
-    image:
-        containerPort: "8000"
-        pullPolicy: Always
-        repository: ghcr.io/paperless-ngx/paperless-ngx
-        tag: latest
+  name: paperless-ngx
+  deploymentstrategy: docker
+  envVars:
+  - name: PAPERLESS_SECRET_KEY
+    value: 70zcjuy9cy9NcIrj++eK2FR0E/Kdb3d3VZhRw8UmDSg=
+  - name: PAPERLESS_REDIS
+    value: redis://rfr-paperless-ngx-valkey-readwrite:6379
+  - name: PAPERLESS_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: PAPERLESS_DBHOST
+    value: paperless-pg-rw
+  - name: PAPERLESS_DBNAME
+    value: paperless
+  - name: PAPERLESS_DBPORT
+    value: '5432'
+  - name: PAPERLESS_DBUSER
+    value: paperless
+  - name: PAPERLESS_DBPASS
+    value: paperless
+  - name: PAPERLESS_ADMIN_USER
+    value: administrator
+  - name: PAPERLESS_ADMIN_MAIL
+    value: admin@example.com
+  - name: PAPERLESS_ADMIN_PASSWORD
+    value: administrator
+  - name: PAPERLESS_WEBSERVER_WORKERS
+    value: '1'
+  - name: PAPERLESS_TASK_WORKERS
+    value: '1'
+  - name: PAPERLESS_ENABLE_NLTK
+    value: 'false'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /usr/src/paperless/export
+    name: paperless-export-volume
+    size: 1Gi
+    storageClass: slow
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /usr/src/paperless/consume
+    name: paperless-consume-volume
+    size: 1Gi
+    storageClass: slow
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /usr/src/paperless/media
+    name: paperless-media-volume
+    size: 1Gi
+    storageClass: slow
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /usr/src/paperless/data
+    name: paperless-data-volume
+    size: 1Gi
+    storageClass: slow
+  cronjobs: []
+  addons:
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: paperless-ngx-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: paperless-pg
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: paperless
+              owner: paperless
+              secret:
+                name: paperless-pg-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO paperless
+              - GRANT CREATE ON SCHEMA public TO paperless
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO paperless
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: paperless-pg-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: paperless-pg-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: paperless
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: paperless-pg-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: paperless
+          password: paperless
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '2'
+      memory: 4Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: ghcr.io/paperless-ngx/paperless-ngx
+    tag: latest

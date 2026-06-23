@@ -4,23 +4,30 @@ metadata:
   name: bigcapital
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source double-entry accounting and financial reporting platform, a self-hosted alternative
-      to QuickBooks, Xero and Wave.
+    kubero.dev/template.description: Open-source double-entry accounting and financial
+      reporting platform, a self-hosted alternative to QuickBooks, Xero and Wave.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bigcapital/icon.png
-    kubero.dev/template.installation: 'Multi-container stack. This template runs the PRIMARY backend API only: bigcapitalhq/server
-      (listens on :3000). It is NOT usable on its own — you MUST also deploy these companion services and route them behind
-      a reverse proxy (Envoy/Nginx): (1) FRONTEND/webapp: bigcapitalhq/webapp:latest (the SPA UI); (2) GATEWAY/proxy: envoyproxy/envoy:v1.30-latest
-      fronting / -> webapp and /api -> server, terminating TLS on 80/443; (3) PDF rendering: gotenberg/gotenberg:7 (point
-      GOTENBERG_URL at it, e.g. http://gotenberg:9000); (4) DB MIGRATION: a one-shot run of the same bigcapitalhq/server image
-      with the migration command to provision the system + tenant schemas before first boot. The server multi-tenants: SYSTEM_DB_NAME
-      is the control DB and each org gets its own DB prefixed by TENANT_DB_NAME_PERFIX. Add-ons wired: MariaDB (bigcapital-mysql:3306,
-      app uses MySQL—not Postgres) and Valkey/Redis (rfr-bigcapital-valkey-readwrite:6379, no password) used for both cache
-      and the BullMQ job queue. BEFORE exposing publicly ROTATE: JWT_SECRET (openssl rand -hex 32) and the MariaDB password
-      (default ''bigcapital''). Set BASE_URL to your public URL (pre-filled with {{KUBERO_APP_URL}}). After the stack is up,
-      browse to the gateway URL and create the first account (no default account exists); set SIGNUP_DISABLED=true afterward
-      to lock down registration. Optional integrations (Plaid bank sync, Stripe/Lemon Squeezy billing, S3 attachments, SMTP
-      mail) are configured via additional env vars.'
-    kubero.dev/template.links: '["https://docs.bigcapital.app/deployment/docker", "https://github.com/bigcapitalhq/bigcapital/blob/develop/docker-compose.prod.yml"]'
+    kubero.dev/template.installation: 'Multi-container stack. This template runs the
+      PRIMARY backend API only: bigcapitalhq/server (listens on :3000). It is NOT
+      usable on its own — you MUST also deploy these companion services and route
+      them behind a reverse proxy (Envoy/Nginx): (1) FRONTEND/webapp: bigcapitalhq/webapp:latest
+      (the SPA UI); (2) GATEWAY/proxy: envoyproxy/envoy:v1.30-latest fronting / ->
+      webapp and /api -> server, terminating TLS on 80/443; (3) PDF rendering: gotenberg/gotenberg:7
+      (point GOTENBERG_URL at it, e.g. http://gotenberg:9000); (4) DB MIGRATION: a
+      one-shot run of the same bigcapitalhq/server image with the migration command
+      to provision the system + tenant schemas before first boot. The server multi-tenants:
+      SYSTEM_DB_NAME is the control DB and each org gets its own DB prefixed by TENANT_DB_NAME_PERFIX.
+      Add-ons wired: MariaDB (bigcapital-mysql:3306, app uses MySQL—not Postgres)
+      and Valkey/Redis (rfr-bigcapital-valkey-readwrite:6379, no password) used for
+      both cache and the BullMQ job queue. BEFORE exposing publicly ROTATE: JWT_SECRET
+      (openssl rand -hex 32) and the MariaDB password (default ''bigcapital''). Set
+      BASE_URL to your public URL (pre-filled with {{KUBERO_APP_URL}}). After the
+      stack is up, browse to the gateway URL and create the first account (no default
+      account exists); set SIGNUP_DISABLED=true afterward to lock down registration.
+      Optional integrations (Plaid bank sync, Stripe/Lemon Squeezy billing, S3 attachments,
+      SMTP mail) are configured via additional env vars.'
+    kubero.dev/template.links: '["https://docs.bigcapital.app/deployment/docker",
+      "https://github.com/bigcapitalhq/bigcapital/blob/develop/docker-compose.prod.yml"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/bigcapitalhq/bigcapital/develop/static/bigcapital-screenshot.png"]'
     kubero.dev/template.source: https://github.com/bigcapitalhq/bigcapital
     kubero.dev/template.categories: '["finance", "erp", "work"]'
@@ -171,6 +178,7 @@ spec:
     mountPath: /data
     name: bigcapital-data
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -190,4 +198,5 @@ spec:
     command:
     - sh
     - -c
-    - cd packages/server && node dist/cli.js system:migrate:latest && node dist/cli.js tenants:migrate:latest && exec node dist/main.js
+    - cd packages/server && node dist/cli.js system:migrate:latest && node dist/cli.js
+      tenants:migrate:latest && exec node dist/main.js

@@ -4,18 +4,23 @@ metadata:
   name: searxng
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Privacy-respecting, hackable open-source metasearch engine that aggregates results from
-      70+ search services without tracking or profiling users.
+    kubero.dev/template.description: Privacy-respecting, hackable open-source metasearch
+      engine that aggregates results from 70+ search services without tracking or
+      profiling users.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/icon.png
-    kubero.dev/template.installation: 'SearXNG is a stateless metasearch engine: it stores no user search history and needs
-      no SQL database. It does use the bundled Valkey (Redis-compatible) add-on for the optional limiter/bot-detection and
-      caching, wired in via the SEARXNG_REDIS_URL env var (passwordless in-cluster). IMPORTANT: rotate SEARXNG_SECRET to a
-      unique random value before going live (e.g. `openssl rand -hex 32`); the placeholder here must not be used in production.
-      SEARXNG_BASE_URL is auto-filled with this app''s public URL so generated links and OpenSearch descriptions are correct.
-      Mount /etc/searxng to persist settings.yml (engines, theme, limiter, UI), which the image generates on first start;
-      edit it there to enable/disable search engines, turn on the limiter (limiter.toml), or restrict instance access. No
-      SMTP, S3, or external Elasticsearch is required.'
-    kubero.dev/template.links: '["https://docs.searxng.org/admin/installation-docker.html", "https://docs.searxng.org/admin/settings/index.html"]'
+    kubero.dev/template.installation: 'SearXNG is a stateless metasearch engine: it
+      stores no user search history and needs no SQL database. It does use the bundled
+      Valkey (Redis-compatible) add-on for the optional limiter/bot-detection and
+      caching, wired in via the SEARXNG_REDIS_URL env var (passwordless in-cluster).
+      IMPORTANT: rotate SEARXNG_SECRET to a unique random value before going live
+      (e.g. `openssl rand -hex 32`); the placeholder here must not be used in production.
+      SEARXNG_BASE_URL is auto-filled with this app''s public URL so generated links
+      and OpenSearch descriptions are correct. Mount /etc/searxng to persist settings.yml
+      (engines, theme, limiter, UI), which the image generates on first start; edit
+      it there to enable/disable search engines, turn on the limiter (limiter.toml),
+      or restrict instance access. No SMTP, S3, or external Elasticsearch is required.'
+    kubero.dev/template.links: '["https://docs.searxng.org/admin/installation-docker.html",
+      "https://docs.searxng.org/admin/settings/index.html"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/searxng/searxng
     kubero.dev/template.categories: '["utilities", "productivity", "security"]'
@@ -79,6 +84,7 @@ spec:
     mountPath: /etc/searxng
     name: searxng-config
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

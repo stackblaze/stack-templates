@@ -6,7 +6,8 @@ metadata:
     kubero.dev/template.description: LimeSurvey is the simple, quick and anonymous
       online survey tool that's bursting with juicy insights.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/limesurvey/icon.png
-    kubero.dev/template.installation: Auto-installs on first boot when LIMESURVEY_DB_* and admin env vars are set. Default login admin/root — change immediately.
+    kubero.dev/template.installation: Auto-installs on first boot when LIMESURVEY_DB_*
+      and admin env vars are set. Default login admin/root — change immediately.
     kubero.dev/template.links: '"https://manual.limesurvey.org/LimeSurvey_Manual"'
     kubero.dev/template.screenshots: '["https://manual.limesurvey.org/images/1/15/Surveys-alternative_button.png","https://manual.limesurvey.org/images/5/50/Newsurveyscreen.png"]'
     kubero.dev/template.source: https://github.com/LimeSurvey/LimeSurvey
@@ -45,7 +46,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
       rootSecret:
         apiVersion: v1
@@ -81,18 +82,21 @@ spec:
     mountPath: /var/www/html/upload
     name: limesurvey-upload
     size: 2Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/plugins
     name: limesurvey-plugins
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/application/config
     name: limesurvey-config
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '80'
     pullPolicy: Always

@@ -4,7 +4,9 @@ metadata:
   name: azzimut
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Azimutt is a full-stack database exploration tool. It allows you to explore your database, run queries, and visualize the results.
+    kubero.dev/template.description: Azimutt is a full-stack database exploration
+      tool. It allows you to explore your database, run queries, and visualize the
+      results.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/89384563
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
@@ -103,6 +105,7 @@ spec:
     mountPath: /app/bin/uploads
     name: azimutt-uploads
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -129,9 +132,5 @@ spec:
     command:
     - sh
     - -c
-    - |
-      for i in $(seq 1 90); do
-        if /app/bin/migrate; then break; fi
-        sleep 5
-      done
-      exec /app/bin/server
+    - "for i in $(seq 1 90); do\n  if /app/bin/migrate; then break; fi\n  sleep 5\n\
+      done\nexec /app/bin/server\n"

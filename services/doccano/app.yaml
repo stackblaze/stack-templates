@@ -1,66 +1,63 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: doccano
-    annotations:
-        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
-        kubero.dev/template.description: "Open source annotation tool for machine learning practitioners."
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/58067660"
-        kubero.dev/template.installation: ""
-        kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: "[]"
-        kubero.dev/template.source: "https://github.com/doccano/doccano"
-        kubero.dev/template.categories: '["ai"]'
-        kubero.dev/template.title: "Doccano"
-        kubero.dev/template.website: "https://doccano.github.io/doccano/"
-    labels:
-        manager: kubero
+  name: doccano
+  annotations:
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+    kubero.dev/template.description: Open source annotation tool for machine learning
+      practitioners.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/58067660
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/doccano/doccano
+    kubero.dev/template.categories: '["ai"]'
+    kubero.dev/template.title: Doccano
+    kubero.dev/template.website: https://doccano.github.io/doccano/
+  labels:
+    manager: kubero
 spec:
-    name: doccano
-    deploymentstrategy: docker
-    envVars:
-        - name: ADMIN_USERNAME
-          value: admin
-        - name: ADMIN_EMAIL
-          value: admin@example.com
-        - name: ADMIN_PASSWORD
-          value: random16
-        - name: SECRET_KEY
-          value: 7b3f9c2e1a8d4f60b5e2c9a17d4e8f3c6b0a9d2e5f81c47a3b6d9e0f2a5c8b1d4
-        - name: DATABASE_URL
-          value: sqlite:////data/doccano.db
-        - name: DEBUG
-          value: "False"
-    extraVolumes:
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /data
-          name: doccano-data-volume
-          size: 1Gi
-    cronjobs: []
-    addons: []
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: "8000"
-        pullPolicy: Always
-        repository: doccano/doccano
-        # The image's USER is "doccano"; a freshly provisioned PVC at /data is
-        # root-owned, so run as root to let the app create the sqlite database.
-        run:
-            securityContext:
-                runAsNonRoot: false
-                runAsUser: 0
-        tag: latest
-    # run.sh executes migrations + superuser creation before gunicorn binds,
-    # which can exceed the default startup probe window.
-    healthcheck:
-        enabled: true
-        path: /
-        startupSeconds: 300
-        timeoutSeconds: 5
-        periodSeconds: 10
+  name: doccano
+  deploymentstrategy: docker
+  envVars:
+  - name: ADMIN_USERNAME
+    value: admin
+  - name: ADMIN_EMAIL
+    value: admin@example.com
+  - name: ADMIN_PASSWORD
+    value: random16
+  - name: SECRET_KEY
+    value: 7b3f9c2e1a8d4f60b5e2c9a17d4e8f3c6b0a9d2e5f81c47a3b6d9e0f2a5c8b1d4
+  - name: DATABASE_URL
+    value: sqlite:////data/doccano.db
+  - name: DEBUG
+    value: 'False'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /data
+    name: doccano-data-volume
+    size: 1Gi
+    storageClass: slow
+  cronjobs: []
+  addons: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: doccano/doccano
+    run:
+      securityContext:
+        runAsNonRoot: false
+        runAsUser: 0
+    tag: latest
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10

@@ -1,104 +1,104 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: wekan
-    annotations:
-        kubero.dev/template.architecture: '["linux/amd64"]'
-        kubero.dev/template.description: "The Open Source kanban board"
-        kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wekan/icon.png
-        kubero.dev/template.installation: "Requires at least 2Gi memory. Pin to v8.74 (DocumentDB lacks change streams). Uses polling reactivity and retryWrites=false."
-        kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: '["https://wekan.github.io/wekan-dark-mode.png"]'
-        kubero.dev/template.source: "https://github.com/wekan/wekan"
-        kubero.dev/template.categories: '["work", "development"]'
-        kubero.dev/template.title: "Wekan"
-        kubero.dev/template.website: "https://wekan.github.io/"
-    labels:
-        manager: kubero
+  name: wekan
+  annotations:
+    kubero.dev/template.architecture: '["linux/amd64"]'
+    kubero.dev/template.description: The Open Source kanban board
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wekan/icon.png
+    kubero.dev/template.installation: Requires at least 2Gi memory. Pin to v8.74 (DocumentDB
+      lacks change streams). Uses polling reactivity and retryWrites=false.
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://wekan.github.io/wekan-dark-mode.png"]'
+    kubero.dev/template.source: https://github.com/wekan/wekan
+    kubero.dev/template.categories: '["work", "development"]'
+    kubero.dev/template.title: Wekan
+    kubero.dev/template.website: https://wekan.github.io/
+  labels:
+    manager: kubero
 spec:
-    name: wekan
-    deploymentstrategy: docker
-    envVars:
-        - name: WRITABLE_PATH
-          value: /data
-        - name: MONGO_URL
-          value: mongodb://mongoadmin:changeme@documentdb-service-wekan-documentdb:10260/wekan?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false
-        - name: ROOT_URL
-          value: '{{KUBERO_APP_URL}}'
-        - name: WITH_API
-          value: "true"
-        - name: RICHER_CARD_COMMENT_EDITOR
-          value: "false"
-        - name: CARD_OPENED_WEBHOOK_ENABLED
-          value: "false"
-        - name: BIGEVENTS_PATTERN
-          value: NONE
-        - name: BROWSER_POLICY_ENABLED
-          value: "true"
-        - name: PORT
-          value: "8080"
-        - name: METEOR_REACTIVITY_ORDER
-          value: polling
-    extraVolumes:
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: WRITABLE_PATH
-          name: wekan-volume
-          size: 1Gi
-    cronjobs: []
-    addons:
-        - displayName: Document DB
-          env: []
-          icon: /img/addons/mongo.svg
-          id: kubero-operator
-          kind: DocumentDB
-          resourceDefinitions:
-              DocumentDB:
-                  apiVersion: documentdb.io/preview
-                  kind: DocumentDB
-                  metadata:
-                      name: wekan-documentdb
-                  spec:
-                      nodeCount: 1
-                      instancesPerNode: 1
-                      documentDbCredentialSecret: documentdb-credentials
-                      resource:
-                          storage:
-                              pvcSize: 1Gi
-                              storageClass: default
-                      exposeViaService:
-                          serviceType: ClusterIP
-              credentialSecret:
-                  apiVersion: v1
-                  kind: Secret
-                  metadata:
-                      name: documentdb-credentials
-                  type: Opaque
-                  stringData:
-                      username: mongoadmin
-                      password: changeme
-    # Default QA LimitRange caps web pods at 512Mi; Wekan OOMs during Meteor boot.
-    resources:
-        requests:
-            cpu: 500m
-            memory: 1Gi
-        limits:
-            cpu: '1'
-            memory: 2Gi
-    healthcheck:
-        enabled: true
-        path: /
-        startupSeconds: 600
-        timeoutSeconds: 5
-        periodSeconds: 10
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: 8080
-        pullPolicy: Always
-        repository: ghcr.io/wekan/wekan
-        tag: v8.74
+  name: wekan
+  deploymentstrategy: docker
+  envVars:
+  - name: WRITABLE_PATH
+    value: /data
+  - name: MONGO_URL
+    value: mongodb://mongoadmin:changeme@documentdb-service-wekan-documentdb:10260/wekan?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false
+  - name: ROOT_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: WITH_API
+    value: 'true'
+  - name: RICHER_CARD_COMMENT_EDITOR
+    value: 'false'
+  - name: CARD_OPENED_WEBHOOK_ENABLED
+    value: 'false'
+  - name: BIGEVENTS_PATTERN
+    value: NONE
+  - name: BROWSER_POLICY_ENABLED
+    value: 'true'
+  - name: PORT
+    value: '8080'
+  - name: METEOR_REACTIVITY_ORDER
+    value: polling
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: WRITABLE_PATH
+    name: wekan-volume
+    size: 1Gi
+    storageClass: slow
+  cronjobs: []
+  addons:
+  - displayName: Document DB
+    env: []
+    icon: /img/addons/mongo.svg
+    id: kubero-operator
+    kind: DocumentDB
+    resourceDefinitions:
+      DocumentDB:
+        apiVersion: documentdb.io/preview
+        kind: DocumentDB
+        metadata:
+          name: wekan-documentdb
+        spec:
+          nodeCount: 1
+          instancesPerNode: 1
+          documentDbCredentialSecret: documentdb-credentials
+          resource:
+            storage:
+              pvcSize: 1Gi
+              storageClass: default
+          exposeViaService:
+            serviceType: ClusterIP
+      credentialSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: documentdb-credentials
+        type: Opaque
+        stringData:
+          username: mongoadmin
+          password: changeme
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: 8080
+    pullPolicy: Always
+    repository: ghcr.io/wekan/wekan
+    tag: v8.74

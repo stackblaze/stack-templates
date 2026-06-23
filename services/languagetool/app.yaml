@@ -32,9 +32,9 @@ spec:
     mountPath: /ngrams
     name: languagetool-ngrams
     size: 1Gi
+    storageClass: slow
   healthcheck:
     enabled: true
-    # API-only image: / and /healthcheck return 400 without query params.
     path: /v2/languages
     startupSeconds: 180
     timeoutSeconds: 5

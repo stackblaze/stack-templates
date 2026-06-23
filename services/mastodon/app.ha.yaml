@@ -4,26 +4,35 @@ metadata:
   name: mastodon
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Free, open-source decentralized social network server based on ActivityPub - self-hosted
-      microblogging for the Fediverse.
+    kubero.dev/template.description: Free, open-source decentralized social network
+      server based on ActivityPub - self-hosted microblogging for the Fediverse.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mastodon/icon.png
-    kubero.dev/template.installation: 'This template runs the PRIMARY Mastodon web (Puma/Rails) container from ghcr.io/mastodon/mastodon,
-      HTTP on port 3000. Mastodon is a MULTI-CONTAINER stack: this single template covers ONLY the web server, so you MUST
-      deploy these companion services separately for a working instance: 1) SIDEKIQ WORKER - same image ghcr.io/mastodon/mastodon:v4.4.18
-      with command [''bundle'',''exec'',''sidekiq''] and the SAME env vars as this web container; this runs ALL background
-      queues (federation push/pull, mailers, media processing, scheduled tasks) and is MANDATORY - without it nothing federates.
-      2) STREAMING SERVER - image ghcr.io/mastodon/mastodon-streaming:v4.4.18 listening on port 4000 (the real-time WebSocket/timeline
-      API); route /api/v1/streaming to it. Both companions share the same Postgres + Redis add-ons created here. REQUIRED
-      BEFORE FIRST BOOT (rotate every placeholder): generate the cryptographic secrets - run ''docker run --rm ghcr.io/mastodon/mastodon:v4.4.18
-      bundle exec rake secret'' to produce SECRET_KEY_BASE and OTP_SECRET; run ''bundle exec rake mastodon:webpush:generate_vapid_key''
-      for VAPID_PRIVATE_KEY/VAPID_PUBLIC_KEY; and run ''bundle exec rails db:encryption:init'' for the three ACTIVE_RECORD_ENCRYPTION_*
-      keys. Set LOCAL_DOMAIN to your real public host BEFORE federating - it is baked into ActivityPub actor URLs and cannot
-      be changed after going live. FIRST-RUN SETUP: exec into the web pod and run ''RAILS_ENV=production bundle exec rake
-      db:setup'' (creates schema + seeds), then create an owner account with ''bin/tootctl accounts create <user> --email
-      <email> --confirmed --role Owner''. EMAIL: set SMTP_* env vars (not preset here) so confirmation/notification mail works.
-      OPTIONAL EXTERNALS (omitted from addons, wire up later): full-text search needs Elasticsearch/OpenSearch (set ES_ENABLED=true
-      + ES_HOST/ES_PORT and run ''tootctl search deploy''); media at scale should use an S3-compatible bucket (e.g. the RustFS
-      add-on) via S3_ENABLED=true + S3_BUCKET/AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY instead of the local volume.'
+    kubero.dev/template.installation: 'This template runs the PRIMARY Mastodon web
+      (Puma/Rails) container from ghcr.io/mastodon/mastodon, HTTP on port 3000. Mastodon
+      is a MULTI-CONTAINER stack: this single template covers ONLY the web server,
+      so you MUST deploy these companion services separately for a working instance:
+      1) SIDEKIQ WORKER - same image ghcr.io/mastodon/mastodon:v4.4.18 with command
+      [''bundle'',''exec'',''sidekiq''] and the SAME env vars as this web container;
+      this runs ALL background queues (federation push/pull, mailers, media processing,
+      scheduled tasks) and is MANDATORY - without it nothing federates. 2) STREAMING
+      SERVER - image ghcr.io/mastodon/mastodon-streaming:v4.4.18 listening on port
+      4000 (the real-time WebSocket/timeline API); route /api/v1/streaming to it.
+      Both companions share the same Postgres + Redis add-ons created here. REQUIRED
+      BEFORE FIRST BOOT (rotate every placeholder): generate the cryptographic secrets
+      - run ''docker run --rm ghcr.io/mastodon/mastodon:v4.4.18 bundle exec rake secret''
+      to produce SECRET_KEY_BASE and OTP_SECRET; run ''bundle exec rake mastodon:webpush:generate_vapid_key''
+      for VAPID_PRIVATE_KEY/VAPID_PUBLIC_KEY; and run ''bundle exec rails db:encryption:init''
+      for the three ACTIVE_RECORD_ENCRYPTION_* keys. Set LOCAL_DOMAIN to your real
+      public host BEFORE federating - it is baked into ActivityPub actor URLs and
+      cannot be changed after going live. FIRST-RUN SETUP: exec into the web pod and
+      run ''RAILS_ENV=production bundle exec rake db:setup'' (creates schema + seeds),
+      then create an owner account with ''bin/tootctl accounts create <user> --email
+      <email> --confirmed --role Owner''. EMAIL: set SMTP_* env vars (not preset here)
+      so confirmation/notification mail works. OPTIONAL EXTERNALS (omitted from addons,
+      wire up later): full-text search needs Elasticsearch/OpenSearch (set ES_ENABLED=true
+      + ES_HOST/ES_PORT and run ''tootctl search deploy''); media at scale should
+      use an S3-compatible bucket (e.g. the RustFS add-on) via S3_ENABLED=true + S3_BUCKET/AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY
+      instead of the local volume.'
     kubero.dev/template.links: '["https://docs.joinmastodon.org/admin/install/", "https://docs.joinmastodon.org/admin/config/"]'
     kubero.dev/template.screenshots: '["https://joinmastodon.org/_astro/web.D5n5lJ8H.png"]'
     kubero.dev/template.source: https://github.com/mastodon/mastodon
@@ -66,9 +75,9 @@ spec:
               database: mastodon
               owner: mastodon
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO mastodon
-                - GRANT CREATE ON SCHEMA public TO mastodon
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO mastodon
+              - GRANT ALL ON SCHEMA public TO mastodon
+              - GRANT CREATE ON SCHEMA public TO mastodon
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO mastodon
               secret:
                 name: mastodon-postgresql-app
           enableSuperuserAccess: true
@@ -172,6 +181,7 @@ spec:
     mountPath: /mastodon/public/system
     name: mastodon-system
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -198,6 +208,8 @@ spec:
     command:
     - sh
     - -c
-    - |
-      bundle exec rake db:migrate:setup
+    - 'bundle exec rake db:migrate:setup
+
       exec bundle exec puma -C config/puma.rb
+
+      '

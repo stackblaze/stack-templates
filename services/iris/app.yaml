@@ -4,21 +4,26 @@ metadata:
   name: iris
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source collaborative incident response platform for DFIR analysts to share investigation
-      evidence, tasks, and timelines.
+    kubero.dev/template.description: Open-source collaborative incident response platform
+      for DFIR analysts to share investigation evidence, tasks, and timelines.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/iris/icon.png
-    kubero.dev/template.installation: 'DFIR-IRIS is a multi-container stack; this template runs the primary web/app server
-      (ghcr.io/dfir-iris/iriswebapp_app) only. You MUST deploy these companion services to make it functional: (1) a worker
-      from the SAME ghcr.io/dfir-iris/iriswebapp_app image with env IRIS_WORKER=1 (it runs the Celery jobs handler and shares
-      this app''s env, the postgres add-on, and the rabbitmq add-on broker). Upstream also ships (2) ghcr.io/dfir-iris/iriswebapp_db
-      (a pre-tuned Postgres image) and (3) ghcr.io/dfir-iris/iriswebapp_nginx (a reverse proxy that terminates TLS on 443
-      and proxies to the app on 8000). Here the Kubero ingress terminates HTTP and the postgres add-on replaces the db image,
-      so neither companion image is required; deploy iriswebapp_nginx only if you need its static-asset routing. Pin all companion
-      images to the SAME tag as this app (v2.4.20). IMPORTANT: rotate IRIS_SECRET_KEY and IRIS_SECURITY_PASSWORD_SALT (each
-      ''openssl rand -hex 32'') and the postgres/rabbitmq passwords before production. The app auto-creates the schema and
-      an initial ''administrator'' user on first boot; the generated admin password is printed in the app pod logs (grep for
-      ''WARNING :: post_init :: create_safe_admin''). User-uploaded case evidence is stored in the database, but server-side
-      datastore files live on the mounted /home/iris/downloads volume.'
+    kubero.dev/template.installation: 'DFIR-IRIS is a multi-container stack; this
+      template runs the primary web/app server (ghcr.io/dfir-iris/iriswebapp_app)
+      only. You MUST deploy these companion services to make it functional: (1) a
+      worker from the SAME ghcr.io/dfir-iris/iriswebapp_app image with env IRIS_WORKER=1
+      (it runs the Celery jobs handler and shares this app''s env, the postgres add-on,
+      and the rabbitmq add-on broker). Upstream also ships (2) ghcr.io/dfir-iris/iriswebapp_db
+      (a pre-tuned Postgres image) and (3) ghcr.io/dfir-iris/iriswebapp_nginx (a reverse
+      proxy that terminates TLS on 443 and proxies to the app on 8000). Here the Kubero
+      ingress terminates HTTP and the postgres add-on replaces the db image, so neither
+      companion image is required; deploy iriswebapp_nginx only if you need its static-asset
+      routing. Pin all companion images to the SAME tag as this app (v2.4.20). IMPORTANT:
+      rotate IRIS_SECRET_KEY and IRIS_SECURITY_PASSWORD_SALT (each ''openssl rand
+      -hex 32'') and the postgres/rabbitmq passwords before production. The app auto-creates
+      the schema and an initial ''administrator'' user on first boot; the generated
+      admin password is printed in the app pod logs (grep for ''WARNING :: post_init
+      :: create_safe_admin''). User-uploaded case evidence is stored in the database,
+      but server-side datastore files live on the mounted /home/iris/downloads volume.'
     kubero.dev/template.links: '["https://docs.dfir-iris.org", "https://github.com/dfir-iris/iris-web/wiki"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/dfir-iris/iris-web
@@ -63,12 +68,12 @@ spec:
               secret:
                 name: iris-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO iris
-                - GRANT CREATE ON SCHEMA public TO iris
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO iris
+              - GRANT ALL ON SCHEMA public TO iris
+              - GRANT CREATE ON SCHEMA public TO iris
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO iris
               postInitSQL:
-                - CREATE DATABASE iris_tasks OWNER iris
-                - ALTER ROLE iris CREATEDB
+              - CREATE DATABASE iris_tasks OWNER iris
+              - ALTER ROLE iris CREATEDB
           enableSuperuserAccess: true
           superuserSecret:
             name: iris-postgresql-superuser
@@ -146,6 +151,7 @@ spec:
     mountPath: /home/iris/downloads
     name: iris-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

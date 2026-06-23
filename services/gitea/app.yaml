@@ -27,6 +27,7 @@ spec:
     mountPath: /data
     name: gitea-data
     size: 10Gi
+    storageClass: slow
   image:
     containerPort: '3000'
     repository: gitea/gitea

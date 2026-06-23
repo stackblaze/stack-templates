@@ -4,18 +4,23 @@ metadata:
   name: grist
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source modern relational spreadsheet that combines the flexibility of a spreadsheet
-      with the robustness of a database.
+    kubero.dev/template.description: Open-source modern relational spreadsheet that
+      combines the flexibility of a spreadsheet with the robustness of a database.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/grist/icon.png
-    kubero.dev/template.installation: Grist stores each document as a SQLite .grist file on disk under /persist/docs, so the
-      persistent volume is mandatory and holds all your user data. The bundled PostgreSQL add-on is used only for the Grist
-      'home' database (orgs, workspaces, users, sharing/ACL metadata) via the TYPEORM_* variables; rotate the Postgres password.
-      Rotate GRIST_SESSION_SECRET to a fresh random value (openssl rand -hex 32) before going live, as it signs session cookies.
-      APP_HOME_URL is wired to the public URL token; keep it correct or document sharing links and the API will break. By
-      default this image runs with anonymous/no-login access (GRIST_DEFAULT_EMAIL is set as the initial admin) which is fine
-      for a trusted single-tenant install; to require login configure an external auth provider (GRIST_FORCE_LOGIN plus SAML/OIDC
-      env vars) or front it with an authenticating proxy. Sandboxing uses gVisor by default and falls back gracefully; no
-      extra service required. No external object store is needed for a single-node deployment.
+    kubero.dev/template.installation: Grist stores each document as a SQLite .grist
+      file on disk under /persist/docs, so the persistent volume is mandatory and
+      holds all your user data. The bundled PostgreSQL add-on is used only for the
+      Grist 'home' database (orgs, workspaces, users, sharing/ACL metadata) via the
+      TYPEORM_* variables; rotate the Postgres password. Rotate GRIST_SESSION_SECRET
+      to a fresh random value (openssl rand -hex 32) before going live, as it signs
+      session cookies. APP_HOME_URL is wired to the public URL token; keep it correct
+      or document sharing links and the API will break. By default this image runs
+      with anonymous/no-login access (GRIST_DEFAULT_EMAIL is set as the initial admin)
+      which is fine for a trusted single-tenant install; to require login configure
+      an external auth provider (GRIST_FORCE_LOGIN plus SAML/OIDC env vars) or front
+      it with an authenticating proxy. Sandboxing uses gVisor by default and falls
+      back gracefully; no extra service required. No external object store is needed
+      for a single-node deployment.
     kubero.dev/template.links: '["https://support.getgrist.com/self-managed/", "https://github.com/gristlabs/grist-core#environment-variables"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/gristlabs/grist-core
@@ -112,6 +117,7 @@ spec:
     mountPath: /persist
     name: grist-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true

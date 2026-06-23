@@ -4,17 +4,21 @@ metadata:
   name: minthcm
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source, AI-native Human Capital Management (HCM) platform for HR processes, built
-      on the SuiteCRM core with full data ownership.
+    kubero.dev/template.description: Open-source, AI-native Human Capital Management
+      (HCM) platform for HR processes, built on the SuiteCRM core with full data ownership.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/minthcm/icon.png
-    kubero.dev/template.installation: MintHCM requires a companion Elasticsearch 7.10+ service for search/indexing (not an
-      operator add-on here) - deploy one and point ELASTICSEARCH_HOST/PORT at it, or the app boots but search features stay
-      disabled. The bundled MariaDB add-on holds all relational data; rotate the default db password (currently the slug 'minthcm')
-      after first deploy. On first run the entrypoint installs the schema using MINT_USER/MINT_PASS (admin/minthcm) and MINT_URL
-      ({{KUBERO_APP_URL}}) - log in and change the admin password immediately. Set INSTALL_DEMO_DATA=yes only for evaluation.
-      First boot clones the app and runs MintCLI install (several minutes). Persistent state lives under /var/www/html (.initialized
-      marker) and /var/spool/cron/crontabs (scheduled jobs).
-    kubero.dev/template.links: '["https://minthcm.org/support/deploy-minthcm-on-docker/", "https://github.com/minthcm/minthcm"]'
+    kubero.dev/template.installation: MintHCM requires a companion Elasticsearch 7.10+
+      service for search/indexing (not an operator add-on here) - deploy one and point
+      ELASTICSEARCH_HOST/PORT at it, or the app boots but search features stay disabled.
+      The bundled MariaDB add-on holds all relational data; rotate the default db
+      password (currently the slug 'minthcm') after first deploy. On first run the
+      entrypoint installs the schema using MINT_USER/MINT_PASS (admin/minthcm) and
+      MINT_URL ({{KUBERO_APP_URL}}) - log in and change the admin password immediately.
+      Set INSTALL_DEMO_DATA=yes only for evaluation. First boot clones the app and
+      runs MintCLI install (several minutes). Persistent state lives under /var/www/html
+      (.initialized marker) and /var/spool/cron/crontabs (scheduled jobs).
+    kubero.dev/template.links: '["https://minthcm.org/support/deploy-minthcm-on-docker/",
+      "https://github.com/minthcm/minthcm"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/minthcm/minthcm
     kubero.dev/template.categories: '["crm", "work", "productivity"]'
@@ -117,12 +121,14 @@ spec:
     mountPath: /var/www/html
     name: minthcm-data
     size: 5Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/spool/cron/crontabs
     name: minthcm-cron
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   resources:
     requests:
@@ -146,7 +152,6 @@ spec:
     pullPolicy: Always
     repository: minthcm/minthcm
     tag: latest
-    # Image CMD ends with `exec bash`, which exits immediately without a TTY in Kubernetes.
     command:
     - bash
     - -c

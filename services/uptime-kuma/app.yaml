@@ -25,6 +25,7 @@ spec:
     mountPath: /app/data
     name: uptime-kuma-data
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '3001'
     repository: louislam/uptime-kuma

@@ -8,8 +8,8 @@ metadata:
       and CI/CD.
     kubero.dev/template.icon: https://codeberg.org/forgejo/Forgejo/raw/branch/forgejo/public/assets/img/logo.svg
     kubero.dev/template.installation: First boot initializes SQLite under /data and
-      creates app.ini automatically. Set FORGEJO__server__ROOT_URL to your public URL
-      before first deploy if not using Kubero ingress substitution.
+      creates app.ini automatically. Set FORGEJO__server__ROOT_URL to your public
+      URL before first deploy if not using Kubero ingress substitution.
     kubero.dev/template.links: '["https://forgejo.org/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://codeberg.org/forgejo/Forgejo
@@ -35,6 +35,7 @@ spec:
     mountPath: /data
     name: forgejo-data
     size: 10Gi
+    storageClass: slow
   image:
     containerPort: '3000'
     pullPolicy: Always

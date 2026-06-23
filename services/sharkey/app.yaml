@@ -4,28 +4,39 @@ metadata:
   name: sharkey
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Feature-rich, ActivityPub-federated microblogging server - a Misskey fork for the Fediverse
-      with post editing and the Mastodon API.
+    kubero.dev/template.description: Feature-rich, ActivityPub-federated microblogging
+      server - a Misskey fork for the Fediverse with post editing and the Mastodon
+      API.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sharkey/icon.png
-    kubero.dev/template.installation: 'This template runs the PRIMARY Sharkey Node.js web/server container only (official
-      image joinsharkey/sharkey, listens on HTTP port 3000). CONFIG: Sharkey (like its Misskey parent) is configured PRIMARILY
-      via .config/default.yml, not env vars alone, so BEFORE first boot you MUST drop a default.yml into the mounted /sharkey/.config
-      volume - set ''url'' to your public https URL (it is baked into ActivityPub actor URLs and cannot be changed cleanly
-      later; {{KUBERO_APP_URL}} is provided below for reference), and set db.host=sharkey-postgresql-rw / db.port=5432 / db.db=sharkey
-      / db.user=sharkey / db.pass=sharkey and redis.host=rfr-sharkey-valkey-readwrite / redis.port=6379. The env vars below
-      (POSTGRES_*/DATABASE_*/REDIS_*) mirror those values for the parts Sharkey reads from the environment; keep them in sync
-      with default.yml. FIRST-RUN: the official image runs DB migrations automatically on start (pnpm migrate); once the pod
-      is healthy open the site, create the first account (it becomes the instance admin), then configure the instance in the
-      admin control panel. ROTATE the Postgres password (default ''sharkey'') in BOTH the postgres add-on and default.yml
-      to match. ADD-ONS PROVISIONED: PostgreSQL (primary datastore) and Valkey/Redis (queue + cache, password-less in-cluster).
-      COMPANION SERVICES: Sharkey''s background job queue (federation delivery/inbox, media processing, notifications) runs
-      IN-PROCESS in this same image by default, so NO separate worker container is required for a single-node start; for scale
-      you can run additional replicas of joinsharkey/sharkey with MK_ONLY_SERVER / MK_ONLY_QUEUE (clusterLimits in default.yml)
-      pointing at the same Postgres + Valkey. EXTERNAL SERVICES not provisioned here: object storage (S3-compatible, e.g.
-      the RustFS add-on) is strongly recommended for media at scale - configure under ''objectStorage'' in default.yml instead
-      of relying on the local /sharkey/files volume; SMTP for email verification; and an OPTIONAL MeiliSearch backend (image
-      getmeili/meilisearch) for full-text post search, configured under ''meilisearch'' in default.yml.'
-    kubero.dev/template.links: '["https://activitypub.software/TransFem-org/Sharkey/-/blob/develop/docs/install.md", "https://docs.joinsharkey.org/"]'
+    kubero.dev/template.installation: 'This template runs the PRIMARY Sharkey Node.js
+      web/server container only (official image joinsharkey/sharkey, listens on HTTP
+      port 3000). CONFIG: Sharkey (like its Misskey parent) is configured PRIMARILY
+      via .config/default.yml, not env vars alone, so BEFORE first boot you MUST drop
+      a default.yml into the mounted /sharkey/.config volume - set ''url'' to your
+      public https URL (it is baked into ActivityPub actor URLs and cannot be changed
+      cleanly later; {{KUBERO_APP_URL}} is provided below for reference), and set
+      db.host=sharkey-postgresql-rw / db.port=5432 / db.db=sharkey / db.user=sharkey
+      / db.pass=sharkey and redis.host=rfr-sharkey-valkey-readwrite / redis.port=6379.
+      The env vars below (POSTGRES_*/DATABASE_*/REDIS_*) mirror those values for the
+      parts Sharkey reads from the environment; keep them in sync with default.yml.
+      FIRST-RUN: the official image runs DB migrations automatically on start (pnpm
+      migrate); once the pod is healthy open the site, create the first account (it
+      becomes the instance admin), then configure the instance in the admin control
+      panel. ROTATE the Postgres password (default ''sharkey'') in BOTH the postgres
+      add-on and default.yml to match. ADD-ONS PROVISIONED: PostgreSQL (primary datastore)
+      and Valkey/Redis (queue + cache, password-less in-cluster). COMPANION SERVICES:
+      Sharkey''s background job queue (federation delivery/inbox, media processing,
+      notifications) runs IN-PROCESS in this same image by default, so NO separate
+      worker container is required for a single-node start; for scale you can run
+      additional replicas of joinsharkey/sharkey with MK_ONLY_SERVER / MK_ONLY_QUEUE
+      (clusterLimits in default.yml) pointing at the same Postgres + Valkey. EXTERNAL
+      SERVICES not provisioned here: object storage (S3-compatible, e.g. the RustFS
+      add-on) is strongly recommended for media at scale - configure under ''objectStorage''
+      in default.yml instead of relying on the local /sharkey/files volume; SMTP for
+      email verification; and an OPTIONAL MeiliSearch backend (image getmeili/meilisearch)
+      for full-text post search, configured under ''meilisearch'' in default.yml.'
+    kubero.dev/template.links: '["https://activitypub.software/TransFem-org/Sharkey/-/blob/develop/docs/install.md",
+      "https://docs.joinsharkey.org/"]'
     kubero.dev/template.screenshots: '["https://joinsharkey.org/img/screenshots/timeline.png"]'
     kubero.dev/template.source: https://activitypub.software/TransFem-org/Sharkey
     kubero.dev/template.categories: '["social", "communication", "media"]'
@@ -67,9 +78,9 @@ spec:
               database: sharkey
               owner: sharkey
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO sharkey
-                - GRANT CREATE ON SCHEMA public TO sharkey
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO sharkey
+              - GRANT ALL ON SCHEMA public TO sharkey
+              - GRANT CREATE ON SCHEMA public TO sharkey
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO sharkey
               secret:
                 name: sharkey-postgresql-app
           enableSuperuserAccess: true
@@ -158,12 +169,14 @@ spec:
     mountPath: /sharkey/.config
     name: sharkey-config
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /sharkey/files
     name: sharkey-files
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -183,29 +196,10 @@ spec:
     command:
     - sh
     - -c
-    - |
-      grep -q 'kubero-seed' /sharkey/.config/default.yml 2>/dev/null || cat > /sharkey/.config/default.yml <<EOF
-      # kubero-seed
-      url: ${SHARKEY_URL}
-      port: 3000
-      db:
-        host: ${DATABASE_HOST}
-        port: ${DATABASE_PORT}
-        db: ${DATABASE_DB}
-        user: ${DATABASE_USER}
-        pass: ${DATABASE_PASSWORD}
-      dbReplications: false
-      redis:
-        host: ${REDIS_HOST}
-        port: ${REDIS_PORT}
-      fulltextSearch:
-        provider: sqlLike
-      id: 'aidx'
-      proxyBypassHosts:
-        - api.deepl.com
-        - api-free.deepl.com
-        - www.recaptcha.net
-        - hcaptcha.com
-        - challenges.cloudflare.com
-      EOF
-      exec pnpm run migrateandstart
+    - "grep -q 'kubero-seed' /sharkey/.config/default.yml 2>/dev/null || cat > /sharkey/.config/default.yml\
+      \ <<EOF\n# kubero-seed\nurl: ${SHARKEY_URL}\nport: 3000\ndb:\n  host: ${DATABASE_HOST}\n\
+      \  port: ${DATABASE_PORT}\n  db: ${DATABASE_DB}\n  user: ${DATABASE_USER}\n\
+      \  pass: ${DATABASE_PASSWORD}\ndbReplications: false\nredis:\n  host: ${REDIS_HOST}\n\
+      \  port: ${REDIS_PORT}\nfulltextSearch:\n  provider: sqlLike\nid: 'aidx'\nproxyBypassHosts:\n\
+      \  - api.deepl.com\n  - api-free.deepl.com\n  - www.recaptcha.net\n  - hcaptcha.com\n\
+      \  - challenges.cloudflare.com\nEOF\nexec pnpm run migrateandstart\n"

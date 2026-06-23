@@ -4,26 +4,34 @@ metadata:
   name: dremio
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open lakehouse platform with a SQL query engine and self-service semantic layer over
-      data lakes, databases, and object storage.
+    kubero.dev/template.description: Open lakehouse platform with a SQL query engine
+      and self-service semantic layer over data lakes, databases, and object storage.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dremio/icon.png
-    kubero.dev/template.installation: 'This template deploys a SINGLE-NODE Dremio Community Edition (dremio-oss) running coordinator
-      + executor in one pod, which is the supported way to self-host/evaluate the OSS engine. Dremio OSS is self-contained:
-      it stores its metadata KV store (RocksDB), uploads, and accelerator/cache files on LOCAL DISK under /opt/dremio/data,
-      so NO database add-on is provisioned -- a persistent volume is mounted there instead and MUST remain persistent or you
-      lose all sources, spaces, and reflections. FIRST RUN: open the web UI on port 9047, the very first form creates the
-      admin account and password -- set a strong password there (nothing to rotate in this template). PORTS: 9047 = HTTP web
-      UI / REST API (the containerPort published here); the engine also listens on 31010 (Dremio ODBC/native client + coordinator-executor
-      RPC), 32010 (Apache Arrow Flight, used by Python/JDBC Arrow clients), and 45678 (inter-node coordination) -- expose
-      those via additional Services if external clients/BI tools need them. SCALING: to run a real distributed cluster you
-      deploy SEPARATE COMPANION apps from the SAME image `dremio/dremio-oss` configured as dedicated roles -- (1) a coordinator-only
-      node (DREMIO_JAVA_SERVER_EXTRA_OPTS with services.coordinator.enabled=true, services.executor.enabled=false), (2) one
-      or more executor-only nodes (services.coordinator.enabled=false, services.executor.enabled=true) that register back
-      to the coordinator over 31010/45678, and (3) an external distributed store (S3/HDFS) for the dist path instead of the
-      local PVC; these companions are NOT created here. NOTE: Dremio OSS uses external object stores (S3/ADLS/GCS/HDFS) and
-      JDBC sources for actual data -- those are configured at runtime in the UI, not as add-ons. Bump the app pod size (Dremio
-      is a JVM and needs several GiB of heap) before loading real workloads.'
-    kubero.dev/template.links: '["https://docs.dremio.com/current/get-started/docker-quickstart/", "https://docs.dremio.com/software/deployment/dremio-config/"]'
+    kubero.dev/template.installation: 'This template deploys a SINGLE-NODE Dremio
+      Community Edition (dremio-oss) running coordinator + executor in one pod, which
+      is the supported way to self-host/evaluate the OSS engine. Dremio OSS is self-contained:
+      it stores its metadata KV store (RocksDB), uploads, and accelerator/cache files
+      on LOCAL DISK under /opt/dremio/data, so NO database add-on is provisioned --
+      a persistent volume is mounted there instead and MUST remain persistent or you
+      lose all sources, spaces, and reflections. FIRST RUN: open the web UI on port
+      9047, the very first form creates the admin account and password -- set a strong
+      password there (nothing to rotate in this template). PORTS: 9047 = HTTP web
+      UI / REST API (the containerPort published here); the engine also listens on
+      31010 (Dremio ODBC/native client + coordinator-executor RPC), 32010 (Apache
+      Arrow Flight, used by Python/JDBC Arrow clients), and 45678 (inter-node coordination)
+      -- expose those via additional Services if external clients/BI tools need them.
+      SCALING: to run a real distributed cluster you deploy SEPARATE COMPANION apps
+      from the SAME image `dremio/dremio-oss` configured as dedicated roles -- (1)
+      a coordinator-only node (DREMIO_JAVA_SERVER_EXTRA_OPTS with services.coordinator.enabled=true,
+      services.executor.enabled=false), (2) one or more executor-only nodes (services.coordinator.enabled=false,
+      services.executor.enabled=true) that register back to the coordinator over 31010/45678,
+      and (3) an external distributed store (S3/HDFS) for the dist path instead of
+      the local PVC; these companions are NOT created here. NOTE: Dremio OSS uses
+      external object stores (S3/ADLS/GCS/HDFS) and JDBC sources for actual data --
+      those are configured at runtime in the UI, not as add-ons. Bump the app pod
+      size (Dremio is a JVM and needs several GiB of heap) before loading real workloads.'
+    kubero.dev/template.links: '["https://docs.dremio.com/current/get-started/docker-quickstart/",
+      "https://docs.dremio.com/software/deployment/dremio-config/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/dremio/dremio-oss
     kubero.dev/template.categories: '["data", "development", "ai"]'
@@ -49,8 +57,8 @@ spec:
     mountPath: /opt/dremio/data
     name: dremio-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
-  # Default QA LimitRange caps web pods at 512Mi; Dremio OOMs during JVM boot.
   resources:
     requests:
       cpu: 500m

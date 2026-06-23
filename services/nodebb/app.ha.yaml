@@ -4,9 +4,11 @@ metadata:
   name: nodebb
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Next-generation forum software — powerful, mobile-ready, and fully customizable.
+    kubero.dev/template.description: Next-generation forum software — powerful, mobile-ready,
+      and fully customizable.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nodebb/icon.png
-    kubero.dev/template.installation: First boot runs automated install via NODEBB_* env vars (takes several minutes). Change admin password after login.
+    kubero.dev/template.installation: First boot runs automated install via NODEBB_*
+      env vars (takes several minutes). Change admin password after login.
     kubero.dev/template.links: '["https://docs.nodebb.org/"]'
     kubero.dev/template.screenshots: '["https://nodebb.org/assets/images/nodebb-screenshot.png"]'
     kubero.dev/template.source: https://github.com/NodeBB/NodeBB
@@ -51,9 +53,9 @@ spec:
               secret:
                 name: nodebb-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO nodebb
-                - GRANT CREATE ON SCHEMA public TO nodebb
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nodebb
+              - GRANT ALL ON SCHEMA public TO nodebb
+              - GRANT CREATE ON SCHEMA public TO nodebb
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nodebb
           enableSuperuserAccess: true
           superuserSecret:
             name: nodebb-postgresql-superuser
@@ -105,18 +107,21 @@ spec:
     mountPath: /usr/src/app/build
     name: nodebb-build
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /usr/src/app/public/uploads
     name: nodebb-uploads
     size: 2Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/config
     name: nodebb-config
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

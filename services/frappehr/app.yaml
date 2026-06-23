@@ -4,25 +4,34 @@ metadata:
   name: frappehr
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source HR and payroll suite (employees, leave, attendance, expenses, payroll) built
-      on the Frappe framework and ERPNext.
+    kubero.dev/template.description: Open-source HR and payroll suite (employees,
+      leave, attendance, expenses, payroll) built on the Frappe framework and ERPNext.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/frappehr/icon.png
-    kubero.dev/template.installation: 'Frappe HR (HRMS) is a MULTI-CONTAINER Frappe stack and has NO standalone official image:
-      it is installed as an app on top of the frappe/erpnext base image (HRMS depends on ERPNext). This template deploys the
-      PRIMARY backend (gunicorn) image frappe/erpnext, which serves the Frappe HTTP API/app on port 8000. To run a complete,
-      production-ready install you MUST deploy these companion services from the SAME frappe/erpnext image (only the command
-      differs) plus the nginx frontend, and run one-time site creation: (1) frontend - image frappe/erpnext, command ''nginx-entrypoint.sh'',
-      env BACKEND=<this-app>:8000, SOCKETIO=<websocket>:9000, FRAPPE_SITE_NAME_HEADER, UPSTREAM_REAL_IP_ADDRESS - this is
-      the public web server (port 8080). (2) websocket - image frappe/erpnext, command ''node /home/frappe/frappe-bench/apps/frappe/socketio.js''
-      (port 9000, real-time). (3) queue-short - command ''bench worker --queue short,default''. (4) queue-long - command ''bench
-      worker --queue long,default,short''. (5) scheduler - command ''bench schedule''. (6) configurator (run-once init) -
-      command writes common_site_config.json from DB_HOST/DB_PORT/REDIS_CACHE/REDIS_QUEUE/SOCKETIO_PORT then exits. (7) create-site
-      (run-once Job) - ''bench new-site'' with --db-type mariadb, --mariadb-root-password, --admin-password, then ''bench
-      --site <site> install-app erpnext && bench --site <site> install-app hrms'', then ''bench use <site>''. The hrms app
-      is what turns this into Frappe HR. All services share the /home/frappe/frappe-bench/sites volume (the extraVolume below).
-      FIRST RUN: rotate the MariaDB password (default ''frappehr''), set a strong Administrator password during create-site,
-      then log in at the app URL as user ''Administrator'' and open the HR workspace. Frappe officially supports MariaDB (first-class)
-      and PostgreSQL; this template uses the MariaDB add-on as the canonical/recommended database.'
+    kubero.dev/template.installation: 'Frappe HR (HRMS) is a MULTI-CONTAINER Frappe
+      stack and has NO standalone official image: it is installed as an app on top
+      of the frappe/erpnext base image (HRMS depends on ERPNext). This template deploys
+      the PRIMARY backend (gunicorn) image frappe/erpnext, which serves the Frappe
+      HTTP API/app on port 8000. To run a complete, production-ready install you MUST
+      deploy these companion services from the SAME frappe/erpnext image (only the
+      command differs) plus the nginx frontend, and run one-time site creation: (1)
+      frontend - image frappe/erpnext, command ''nginx-entrypoint.sh'', env BACKEND=<this-app>:8000,
+      SOCKETIO=<websocket>:9000, FRAPPE_SITE_NAME_HEADER, UPSTREAM_REAL_IP_ADDRESS
+      - this is the public web server (port 8080). (2) websocket - image frappe/erpnext,
+      command ''node /home/frappe/frappe-bench/apps/frappe/socketio.js'' (port 9000,
+      real-time). (3) queue-short - command ''bench worker --queue short,default''.
+      (4) queue-long - command ''bench worker --queue long,default,short''. (5) scheduler
+      - command ''bench schedule''. (6) configurator (run-once init) - command writes
+      common_site_config.json from DB_HOST/DB_PORT/REDIS_CACHE/REDIS_QUEUE/SOCKETIO_PORT
+      then exits. (7) create-site (run-once Job) - ''bench new-site'' with --db-type
+      mariadb, --mariadb-root-password, --admin-password, then ''bench --site <site>
+      install-app erpnext && bench --site <site> install-app hrms'', then ''bench
+      use <site>''. The hrms app is what turns this into Frappe HR. All services share
+      the /home/frappe/frappe-bench/sites volume (the extraVolume below). FIRST RUN:
+      rotate the MariaDB password (default ''frappehr''), set a strong Administrator
+      password during create-site, then log in at the app URL as user ''Administrator''
+      and open the HR workspace. Frappe officially supports MariaDB (first-class)
+      and PostgreSQL; this template uses the MariaDB add-on as the canonical/recommended
+      database.'
     kubero.dev/template.links: '["https://docs.frappe.io/hr", "https://github.com/frappe/frappe_docker"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/frappe/hrms
@@ -147,6 +156,7 @@ spec:
     mountPath: /home/frappe/frappe-bench/sites
     name: frappehr-sites
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   resources:
     requests:
@@ -173,56 +183,28 @@ spec:
     command:
     - bash
     - -c
-    - |
-      set -e
-      cd /home/frappe/frappe-bench
-      ASSETS_PATH="/home/frappe/frappe-bench/sites/assets"
-      BAKED_PATH="/home/frappe/frappe-bench/assets"
-      echo "Linking fresh assets to volume..."
-      rm -rf "$ASSETS_PATH"
-      mkdir -p "$(dirname "$ASSETS_PATH")"
-      ln -s "$BAKED_PATH" "$ASSETS_PATH"
-      ls -1 apps > sites/apps.txt
-      [ -f sites/common_site_config.json ] || echo '{}' > sites/common_site_config.json
-      bench set-config -g db_host "$DB_HOST"
-      bench set-config -gp db_port "$DB_PORT"
-      bench set-config -g redis_cache "$REDIS_CACHE"
-      bench set-config -g redis_queue "$REDIS_QUEUE"
-      bench set-config -g redis_socketio "$REDIS_SOCKETIO"
-      bench set-config -gp socketio_port "$SOCKETIO_PORT"
-      SITE="${FRAPPE_SITE_NAME_HEADER:-frontend}"
-      if [ ! -d "sites/$SITE" ]; then
-        wait-for-it -t 120 "$DB_HOST:$DB_PORT"
-        REDIS_HOST="${REDIS_CACHE#redis://}"
-        REDIS_HOST="${REDIS_HOST%%/*}"
-        wait-for-it -t 120 "$REDIS_HOST"
-        bench new-site "$SITE" \
-          --mariadb-user-host-login-scope=% \
-          --db-root-password="$MARIADB_ROOT_PASSWORD" \
-          --admin-password=admin \
-          --install-app erpnext \
-          --set-default
-      fi
-      export BACKEND=127.0.0.1:8000
-      export SOCKETIO=127.0.0.1:9000
-      export UPSTREAM_REAL_IP_ADDRESS=127.0.0.1
-      export UPSTREAM_REAL_IP_HEADER=X-Forwarded-For
-      export UPSTREAM_REAL_IP_RECURSIVE=off
-      export FRAPPE_SITE_NAME_HEADER="$SITE"
-      GUNICORN_THREADS=${GUNICORN_THREADS:-4}
-      GUNICORN_WORKERS=${GUNICORN_WORKERS:-2}
-      GUNICORN_TIMEOUT=${GUNICORN_TIMEOUT:-120}
-      echo "Booting Gunicorn with $GUNICORN_WORKERS workers and $GUNICORN_THREADS threads..."
-      /home/frappe/frappe-bench/env/bin/gunicorn \
-        --chdir=/home/frappe/frappe-bench/sites \
-        --bind=127.0.0.1:8000 \
-        --threads="$GUNICORN_THREADS" \
-        --workers="$GUNICORN_WORKERS" \
-        --worker-class=gthread \
-        --worker-tmp-dir=/dev/shm \
-        --timeout="$GUNICORN_TIMEOUT" \
-        --preload \
-        frappe.app:application &
-      node /home/frappe/frappe-bench/apps/frappe/socketio.js &
-      wait-for-it -t 120 127.0.0.1:8000
-      exec /usr/local/bin/nginx-entrypoint.sh
+    - "set -e\ncd /home/frappe/frappe-bench\nASSETS_PATH=\"/home/frappe/frappe-bench/sites/assets\"\
+      \nBAKED_PATH=\"/home/frappe/frappe-bench/assets\"\necho \"Linking fresh assets\
+      \ to volume...\"\nrm -rf \"$ASSETS_PATH\"\nmkdir -p \"$(dirname \"$ASSETS_PATH\"\
+      )\"\nln -s \"$BAKED_PATH\" \"$ASSETS_PATH\"\nls -1 apps > sites/apps.txt\n[\
+      \ -f sites/common_site_config.json ] || echo '{}' > sites/common_site_config.json\n\
+      bench set-config -g db_host \"$DB_HOST\"\nbench set-config -gp db_port \"$DB_PORT\"\
+      \nbench set-config -g redis_cache \"$REDIS_CACHE\"\nbench set-config -g redis_queue\
+      \ \"$REDIS_QUEUE\"\nbench set-config -g redis_socketio \"$REDIS_SOCKETIO\"\n\
+      bench set-config -gp socketio_port \"$SOCKETIO_PORT\"\nSITE=\"${FRAPPE_SITE_NAME_HEADER:-frontend}\"\
+      \nif [ ! -d \"sites/$SITE\" ]; then\n  wait-for-it -t 120 \"$DB_HOST:$DB_PORT\"\
+      \n  REDIS_HOST=\"${REDIS_CACHE#redis://}\"\n  REDIS_HOST=\"${REDIS_HOST%%/*}\"\
+      \n  wait-for-it -t 120 \"$REDIS_HOST\"\n  bench new-site \"$SITE\" \\\n    --mariadb-user-host-login-scope=%\
+      \ \\\n    --db-root-password=\"$MARIADB_ROOT_PASSWORD\" \\\n    --admin-password=admin\
+      \ \\\n    --install-app erpnext \\\n    --set-default\nfi\nexport BACKEND=127.0.0.1:8000\n\
+      export SOCKETIO=127.0.0.1:9000\nexport UPSTREAM_REAL_IP_ADDRESS=127.0.0.1\n\
+      export UPSTREAM_REAL_IP_HEADER=X-Forwarded-For\nexport UPSTREAM_REAL_IP_RECURSIVE=off\n\
+      export FRAPPE_SITE_NAME_HEADER=\"$SITE\"\nGUNICORN_THREADS=${GUNICORN_THREADS:-4}\n\
+      GUNICORN_WORKERS=${GUNICORN_WORKERS:-2}\nGUNICORN_TIMEOUT=${GUNICORN_TIMEOUT:-120}\n\
+      echo \"Booting Gunicorn with $GUNICORN_WORKERS workers and $GUNICORN_THREADS\
+      \ threads...\"\n/home/frappe/frappe-bench/env/bin/gunicorn \\\n  --chdir=/home/frappe/frappe-bench/sites\
+      \ \\\n  --bind=127.0.0.1:8000 \\\n  --threads=\"$GUNICORN_THREADS\" \\\n  --workers=\"\
+      $GUNICORN_WORKERS\" \\\n  --worker-class=gthread \\\n  --worker-tmp-dir=/dev/shm\
+      \ \\\n  --timeout=\"$GUNICORN_TIMEOUT\" \\\n  --preload \\\n  frappe.app:application\
+      \ &\nnode /home/frappe/frappe-bench/apps/frappe/socketio.js &\nwait-for-it -t\
+      \ 120 127.0.0.1:8000\nexec /usr/local/bin/nginx-entrypoint.sh\n"

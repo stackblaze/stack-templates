@@ -4,20 +4,25 @@ metadata:
   name: odoo
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: 'Open-source suite of business apps: CRM, e-commerce, accounting, inventory, project
-      management, HR and more.'
+    kubero.dev/template.description: 'Open-source suite of business apps: CRM, e-commerce,
+      accounting, inventory, project management, HR and more.'
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/odoo/icon.png
-    kubero.dev/template.installation: 'Odoo requires PostgreSQL ONLY (it does not support MySQL); the postgresql add-on is
-      wired in via HOST/USER/PASSWORD/PORT. On first run the role ''odoo'' must be able to CREATE DATABASE so the web installer
-      can provision the Odoo database; the bundled add-on role has this. Rotate the add-on password and the ''admin'' master
-      password (set ODOO_RC or use the Database Manager) after install, and lock down /web/database/manager. The /var/lib/odoo
-      volume holds the filestore (attachments, uploads, sessions) and must be persistent. Custom modules go in /mnt/extra-addons.
-      COMPANION SERVICES (deploy as separate apps from the same odoo:18.0 image, sharing the same PostgreSQL add-on and filestore
-      volume): (1) a long-polling/gevent worker for live chat, discuss and websockets, started with command ''odoo gevent''
-      (or ''odoo --workers=N'' in multi-worker mode listening on the gevent port 8072); (2) optionally a dedicated cron/scheduler
-      worker (odoo --max-cron-threads=N). In a single-replica deployment the embedded cron and HTTP worker handle scheduling,
-      so the standalone web template alone is functional for evaluation. For production multi-worker mode put a reverse proxy
-      in front (proxy_mode=True) so X-Forwarded-* is honored.'
+    kubero.dev/template.installation: 'Odoo requires PostgreSQL ONLY (it does not
+      support MySQL); the postgresql add-on is wired in via HOST/USER/PASSWORD/PORT.
+      On first run the role ''odoo'' must be able to CREATE DATABASE so the web installer
+      can provision the Odoo database; the bundled add-on role has this. Rotate the
+      add-on password and the ''admin'' master password (set ODOO_RC or use the Database
+      Manager) after install, and lock down /web/database/manager. The /var/lib/odoo
+      volume holds the filestore (attachments, uploads, sessions) and must be persistent.
+      Custom modules go in /mnt/extra-addons. COMPANION SERVICES (deploy as separate
+      apps from the same odoo:18.0 image, sharing the same PostgreSQL add-on and filestore
+      volume): (1) a long-polling/gevent worker for live chat, discuss and websockets,
+      started with command ''odoo gevent'' (or ''odoo --workers=N'' in multi-worker
+      mode listening on the gevent port 8072); (2) optionally a dedicated cron/scheduler
+      worker (odoo --max-cron-threads=N). In a single-replica deployment the embedded
+      cron and HTTP worker handle scheduling, so the standalone web template alone
+      is functional for evaluation. For production multi-worker mode put a reverse
+      proxy in front (proxy_mode=True) so X-Forwarded-* is honored.'
     kubero.dev/template.links: '["https://www.odoo.com/documentation", "https://github.com/odoo/docker"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/odoo/odoo
@@ -62,11 +67,11 @@ spec:
               secret:
                 name: odoo-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO odoo
-                - GRANT CREATE ON SCHEMA public TO odoo
-                - ALTER ROLE odoo CREATEDB
+              - GRANT ALL ON SCHEMA public TO odoo
+              - GRANT CREATE ON SCHEMA public TO odoo
+              - ALTER ROLE odoo CREATEDB
               postInitSQL:
-                - ALTER ROLE odoo CREATEDB
+              - ALTER ROLE odoo CREATEDB
           enableSuperuserAccess: true
           superuserSecret:
             name: odoo-postgresql-superuser
@@ -104,6 +109,7 @@ spec:
     mountPath: /var/lib/odoo
     name: odoo-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true
@@ -123,10 +129,10 @@ spec:
     command:
     - bash
     - -c
-    - |
-      export PGPASSWORD="$PASSWORD"
-      wait-for-psql.py --db_host="$HOST" --db_port="$PORT" --db_user="$USER" --db_password="$PASSWORD" --timeout=120
-      if ! psql -h "$HOST" -p "$PORT" -U "$USER" -d odoo -tc "SELECT 1 FROM information_schema.tables WHERE table_name='ir_module_module'" 2>/dev/null | grep -q 1; then
-        odoo -d odoo -i base --stop-after-init --without-demo=all --db_host="$HOST" --db_port="$PORT" --db_user="$USER" --db_password="$PASSWORD"
-      fi
-      exec /entrypoint.sh odoo
+    - "export PGPASSWORD=\"$PASSWORD\"\nwait-for-psql.py --db_host=\"$HOST\" --db_port=\"\
+      $PORT\" --db_user=\"$USER\" --db_password=\"$PASSWORD\" --timeout=120\nif !\
+      \ psql -h \"$HOST\" -p \"$PORT\" -U \"$USER\" -d odoo -tc \"SELECT 1 FROM information_schema.tables\
+      \ WHERE table_name='ir_module_module'\" 2>/dev/null | grep -q 1; then\n  odoo\
+      \ -d odoo -i base --stop-after-init --without-demo=all --db_host=\"$HOST\" --db_port=\"\
+      $PORT\" --db_user=\"$USER\" --db_password=\"$PASSWORD\"\nfi\nexec /entrypoint.sh\
+      \ odoo\n"

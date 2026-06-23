@@ -1,66 +1,67 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: libtranslate
-    annotations:
-        kubero.dev/template.architecture: "[]"
-        kubero.dev/template.description: "Free and Open Source Machine Translation API. Self-hosted, offline capable and easy to setup."
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/77352747"
-        kubero.dev/template.installation: ""
-        kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: '["https://elest.io/images/softwares/185/screenshot2.png"]'
-        kubero.dev/template.source: "https://github.com/LibreTranslate/LibreTranslate"
-        kubero.dev/template.categories: '[ "translation", "language"]'
-        kubero.dev/template.title: "LibreTranslate"
-        kubero.dev/template.website: "https://libretranslate.com"
-    labels:
-        manager: kubero
+  name: libtranslate
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Free and Open Source Machine Translation API.
+      Self-hosted, offline capable and easy to setup.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/77352747
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://elest.io/images/softwares/185/screenshot2.png"]'
+    kubero.dev/template.source: https://github.com/LibreTranslate/LibreTranslate
+    kubero.dev/template.categories: '[ "translation", "language"]'
+    kubero.dev/template.title: LibreTranslate
+    kubero.dev/template.website: https://libretranslate.com
+  labels:
+    manager: kubero
 spec:
-    name: libtranslate
-    deploymentstrategy: docker
-    envVars:
-        - name: LT_UPDATE_MODELS
-          value: "true"
-        - name: LT_LOAD_ONLY
-          value: en,es
-        - name: LT_SSL
-          value: "false"
-    extraVolumes:
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /app/db
-          name: libtranslate-db-volume
-          size: 1Gi
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /home/libretranslate/.local/share/argos-translate
-          name: libtranslate-lang-models
-          size: 2Gi
-    cronjobs: []
-    addons: []
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    resources:
-        requests:
-            cpu: 250m
-            memory: 512Mi
-        limits:
-            cpu: "1"
-            memory: 2Gi
-    healthcheck:
-        enabled: true
-        path: /
-        startupSeconds: 900
-        timeoutSeconds: 5
-        periodSeconds: 10
-    image:
-        containerPort: "5000"
-        pullPolicy: Always
-        repository: libretranslate/libretranslate
-        tag: latest
+  name: libtranslate
+  deploymentstrategy: docker
+  envVars:
+  - name: LT_UPDATE_MODELS
+    value: 'true'
+  - name: LT_LOAD_ONLY
+    value: en,es
+  - name: LT_SSL
+    value: 'false'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/db
+    name: libtranslate-db-volume
+    size: 1Gi
+    storageClass: slow
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /home/libretranslate/.local/share/argos-translate
+    name: libtranslate-lang-models
+    size: 2Gi
+    storageClass: slow
+  cronjobs: []
+  addons: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '5000'
+    pullPolicy: Always
+    repository: libretranslate/libretranslate
+    tag: latest

@@ -4,9 +4,16 @@ metadata:
   name: seafile
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: High-performance self-hosted file sync and share — encrypted libraries, version history, team collaboration, and Office online editing.
+    kubero.dev/template.description: High-performance self-hosted file sync and share
+      — encrypted libraries, version history, team collaboration, and Office online
+      editing.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seafile/icon.png
-    kubero.dev/template.installation: 'Change SEAFILE_ADMIN_EMAIL and SEAFILE_ADMIN_PASSWORD. SEAFILE_SERVER_HOSTNAME must be just the hostname (no https://, e.g. seafile.example.com). DB_ROOT_PASSWD must match the MariaDB root password from the add-on (default: seafile). On first start, Seafile auto-creates its databases (seafile, seahub, ccnet). The seafile-data volume holds all uploaded files. SEAFILE_SERVER_LETSENCRYPT=false because TLS is handled by the kubero ingress.'
+    kubero.dev/template.installation: 'Change SEAFILE_ADMIN_EMAIL and SEAFILE_ADMIN_PASSWORD.
+      SEAFILE_SERVER_HOSTNAME must be just the hostname (no https://, e.g. seafile.example.com).
+      DB_ROOT_PASSWD must match the MariaDB root password from the add-on (default:
+      seafile). On first start, Seafile auto-creates its databases (seafile, seahub,
+      ccnet). The seafile-data volume holds all uploaded files. SEAFILE_SERVER_LETSENCRYPT=false
+      because TLS is handled by the kubero ingress.'
     kubero.dev/template.links: '["https://manual.seafile.com/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/haiwen/seafile
@@ -90,6 +97,7 @@ spec:
     mountPath: /shared
     name: seafile-data
     size: 50Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

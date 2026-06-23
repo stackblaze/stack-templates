@@ -4,18 +4,23 @@ metadata:
   name: onlyoffice
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted online office suite (Document Server) for collaborative real-time editing
-      of documents, spreadsheets and presentations.
+    kubero.dev/template.description: Self-hosted online office suite (Document Server)
+      for collaborative real-time editing of documents, spreadsheets and presentations.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/onlyoffice/icon.png
-    kubero.dev/template.installation: 'Uses the official onlyoffice/documentserver image on internal port 80. Deploy the bundled
-      PostgreSQL, RabbitMQ and Valkey (Redis) add-ons; DB_HOST points at ''onlyoffice-postgresql-rw'', AMQP_URI at the RabbitMQ
-      service and REDIS_SERVER_HOST at ''rfr-onlyoffice-valkey-readwrite''. IMPORTANT: JWT signing is enabled by default (JWT_ENABLED=true)
-      and the editor will refuse documents from clients that do not sign requests with JWT_SECRET, so the host application
-      (Nextcloud, your custom integration, etc.) must be configured with the same secret. Replace the JWT_SECRET placeholder
-      (openssl rand -hex 32) and rotate the Postgres/RabbitMQ add-on passwords after install. The DB schema is auto-created
-      on first boot against the empty ''onlyoffice'' database. Persistent state (cache, fonts, logs, document cache) lives
-      under /var/lib/onlyoffice. The Document Server has no admin UI of its own; reach the welcome/healthcheck page at the
-      app URL, then point an editor host at it. For very large deployments raise the app pod size.'
+    kubero.dev/template.installation: 'Uses the official onlyoffice/documentserver
+      image on internal port 80. Deploy the bundled PostgreSQL, RabbitMQ and Valkey
+      (Redis) add-ons; DB_HOST points at ''onlyoffice-postgresql-rw'', AMQP_URI at
+      the RabbitMQ service and REDIS_SERVER_HOST at ''rfr-onlyoffice-valkey-readwrite''.
+      IMPORTANT: JWT signing is enabled by default (JWT_ENABLED=true) and the editor
+      will refuse documents from clients that do not sign requests with JWT_SECRET,
+      so the host application (Nextcloud, your custom integration, etc.) must be configured
+      with the same secret. Replace the JWT_SECRET placeholder (openssl rand -hex
+      32) and rotate the Postgres/RabbitMQ add-on passwords after install. The DB
+      schema is auto-created on first boot against the empty ''onlyoffice'' database.
+      Persistent state (cache, fonts, logs, document cache) lives under /var/lib/onlyoffice.
+      The Document Server has no admin UI of its own; reach the welcome/healthcheck
+      page at the app URL, then point an editor host at it. For very large deployments
+      raise the app pod size.'
     kubero.dev/template.links: '["https://helpcenter.onlyoffice.com/docs/installation/docs-community-install-docker.aspx",
       "https://api.onlyoffice.com/docs/docs-api/get-started/"]'
     kubero.dev/template.screenshots: '[]'
@@ -104,9 +109,11 @@ spec:
             limits:
               memory: 1Gi
           rabbitmq:
-            additionalConfig: |
-              default_user = onlyoffice
+            additionalConfig: 'default_user = onlyoffice
+
               default_pass = onlyoffice
+
+              '
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -170,6 +177,7 @@ spec:
     mountPath: /var/lib/onlyoffice
     name: onlyoffice-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

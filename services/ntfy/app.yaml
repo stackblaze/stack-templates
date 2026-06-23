@@ -28,6 +28,7 @@ spec:
     mountPath: /var/cache/ntfy
     name: ntfy-cache-volume
     size: 500Mi
+    storageClass: slow
   image:
     command:
     - ntfy

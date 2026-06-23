@@ -4,20 +4,26 @@ metadata:
   name: openobserve
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Rust-based, petabyte-scale observability platform for logs, metrics, traces and real
-      user monitoring; a lightweight Elasticsearch/Datadog alternative.
+    kubero.dev/template.description: Rust-based, petabyte-scale observability platform
+      for logs, metrics, traces and real user monitoring; a lightweight Elasticsearch/Datadog
+      alternative.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openobserve/icon.png
-    kubero.dev/template.installation: 'This template runs the official single-node (local mode) image openobserve/openobserve
-      on HTTP port 5080. DATASTORE: in local mode OpenObserve stores its metadata in an embedded SQLite DB and its ingested
-      log/metric/trace data on local disk, so NO external database add-on is provisioned - everything lives on the mounted
-      /data volume (ZO_DATA_DIR). For that reason the persistent volume MUST be retained across redeploys or all ingested
-      data is lost; grow the volume to match your retention. BEFORE FIRST RUN you MUST rotate ZO_ROOT_USER_EMAIL and ZO_ROOT_USER_PASSWORD
-      - these create the initial admin account on first boot (password must be 8-128 chars with upper, lower, digit and special
-      char). Log in at the root URL with those credentials to get your ingestion token. SCALE-OUT (NOT configured here): for
-      HA/cluster mode OpenObserve instead needs an external PostgreSQL or MySQL metastore (ZO_META_STORE=postgres) plus S3-compatible
-      object storage (ZO_LOCAL_MODE=false, ZO_LOCAL_MODE_STORAGE=s3 with ZO_S3_* settings) and the multi-role router/querier/ingester/compactor
-      topology - point those at the postgres add-on and an external S3 bucket if you outgrow a single node. Telemetry is disabled
-      via ZO_TELEMETRY=false.'
+    kubero.dev/template.installation: 'This template runs the official single-node
+      (local mode) image openobserve/openobserve on HTTP port 5080. DATASTORE: in
+      local mode OpenObserve stores its metadata in an embedded SQLite DB and its
+      ingested log/metric/trace data on local disk, so NO external database add-on
+      is provisioned - everything lives on the mounted /data volume (ZO_DATA_DIR).
+      For that reason the persistent volume MUST be retained across redeploys or all
+      ingested data is lost; grow the volume to match your retention. BEFORE FIRST
+      RUN you MUST rotate ZO_ROOT_USER_EMAIL and ZO_ROOT_USER_PASSWORD - these create
+      the initial admin account on first boot (password must be 8-128 chars with upper,
+      lower, digit and special char). Log in at the root URL with those credentials
+      to get your ingestion token. SCALE-OUT (NOT configured here): for HA/cluster
+      mode OpenObserve instead needs an external PostgreSQL or MySQL metastore (ZO_META_STORE=postgres)
+      plus S3-compatible object storage (ZO_LOCAL_MODE=false, ZO_LOCAL_MODE_STORAGE=s3
+      with ZO_S3_* settings) and the multi-role router/querier/ingester/compactor
+      topology - point those at the postgres add-on and an external S3 bucket if you
+      outgrow a single node. Telemetry is disabled via ZO_TELEMETRY=false.'
     kubero.dev/template.links: '["https://openobserve.ai/docs/quickstart/", "https://openobserve.ai/docs/environment-variables/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/openobserve/openobserve
@@ -56,6 +62,7 @@ spec:
     mountPath: /data
     name: openobserve-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

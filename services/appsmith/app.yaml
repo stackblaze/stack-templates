@@ -26,6 +26,7 @@ spec:
     mountPath: /appsmith-stacks
     name: appsmith-volume
     size: 1Gi
+    storageClass: shared
   image:
     containerPort: '80'
     repository: appsmith/appsmith-ce

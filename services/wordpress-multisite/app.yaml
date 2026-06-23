@@ -4,17 +4,21 @@ metadata:
   name: wordpress-multisite
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: The world's most popular open-source CMS, preconfigured for Multisite to run a network
-      of sites from a single WordPress install.
+    kubero.dev/template.description: The world's most popular open-source CMS, preconfigured
+      for Multisite to run a network of sites from a single WordPress install.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress-multisite/icon.png
-    kubero.dev/template.installation: 'WordPress requires MySQL/MariaDB (it does not support PostgreSQL), so this template
-      ships the mariadb add-on. Multisite is enabled at the WordPress config layer via WORDPRESS_CONFIG_EXTRA (WP_ALLOW_MULTISITE=true).
-      After the first-run install wizard completes, go to Tools > Network Setup in wp-admin to create the network, then add
-      the printed wp-config.php / .htaccess rules. Subdomain multisite needs a wildcard DNS record (*.{{KUBERO_APP_HOST}})
+    kubero.dev/template.installation: 'WordPress requires MySQL/MariaDB (it does not
+      support PostgreSQL), so this template ships the mariadb add-on. Multisite is
+      enabled at the WordPress config layer via WORDPRESS_CONFIG_EXTRA (WP_ALLOW_MULTISITE=true).
+      After the first-run install wizard completes, go to Tools > Network Setup in
+      wp-admin to create the network, then add the printed wp-config.php / .htaccess
+      rules. Subdomain multisite needs a wildcard DNS record (*.{{KUBERO_APP_HOST}})
       and matching ingress/TLS; subdirectory multisite needs none. Rotate WORDPRESS_AUTH_KEY/SECURE_AUTH_KEY/LOGGED_IN_KEY/NONCE_KEY
-      and the four matching salts (openssl rand -base64 64) plus the MariaDB password before going to production. Persistent
-      data (wp-content: uploads, plugins, themes, languages) lives on the mounted volume at /var/www/html/wp-content.'
-    kubero.dev/template.links: '["https://developer.wordpress.org/advanced-administration/multisite/create-network/", "https://hub.docker.com/_/wordpress"]'
+      and the four matching salts (openssl rand -base64 64) plus the MariaDB password
+      before going to production. Persistent data (wp-content: uploads, plugins, themes,
+      languages) lives on the mounted volume at /var/www/html/wp-content.'
+    kubero.dev/template.links: '["https://developer.wordpress.org/advanced-administration/multisite/create-network/",
+      "https://hub.docker.com/_/wordpress"]'
     kubero.dev/template.screenshots: '["https://s.w.org/images/home/swag-collection-2024.jpg"]'
     kubero.dev/template.source: https://github.com/WordPress/WordPress
     kubero.dev/template.categories: '["cms", "media", "e-commerce"]'
@@ -87,7 +91,8 @@ spec:
   - name: WORDPRESS_TABLE_PREFIX
     value: wp_
   - name: WORDPRESS_CONFIG_EXTRA
-    value: define('WP_ALLOW_MULTISITE', true); define('WP_HOME', '{{KUBERO_APP_URL}}'); define('WP_SITEURL', '{{KUBERO_APP_URL}}');
+    value: define('WP_ALLOW_MULTISITE', true); define('WP_HOME', '{{KUBERO_APP_URL}}');
+      define('WP_SITEURL', '{{KUBERO_APP_URL}}');
   - name: WORDPRESS_AUTH_KEY
     value: replace-with-openssl-rand-base64-64
   - name: WORDPRESS_SECURE_AUTH_KEY
@@ -111,6 +116,7 @@ spec:
     mountPath: /var/www/html/wp-content
     name: wordpress-multisite-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

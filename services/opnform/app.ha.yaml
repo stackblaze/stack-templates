@@ -4,23 +4,31 @@ metadata:
   name: opnform
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Beautiful open-source form builder to create and share forms, surveys and quizzes with
-      no code, a self-hosted alternative to Typeform and Google Forms.
+    kubero.dev/template.description: Beautiful open-source form builder to create
+      and share forms, surveys and quizzes with no code, a self-hosted alternative
+      to Typeform and Google Forms.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/opnform/icon.png
-    kubero.dev/template.installation: 'Multi-container Laravel (PHP/API) + Nuxt (Vue/client) stack. THIS template deploys
-      the PRIMARY API/server image jhumanj/opnform-api:latest (Laravel + nginx + php-fpm on port 80), which serves the REST
-      API and runs DB migrations on boot. Rotate APP_KEY (base64:$(openssl rand -base64 32)), JWT_SECRET (openssl rand -hex
-      32), and the Postgres password (default ''opnform'') before exposing publicly. Companion services to deploy separately,
-      ALL from the SAME jhumanj/opnform-api:latest image, sharing this template''s env: (1) api-worker -- override command
-      to run the queue worker `php artisan queue:work`; (2) api-scheduler -- run the cron scheduler `php artisan schedule:work`.
-      Also deploy the FRONTEND as a separate app from jhumanj/opnform-client:latest (Nuxt SSR, listens on port 3000) with
-      NUXT_PUBLIC_API_BASE pointing at this api''s /api URL. The reference compose puts an nginx ingress in front that routes
-      / to the client and /api,/forms,/storage to this api; replicate that routing at the Kubero ingress (path-based) or front
-      both with a small nginx. Postgres (DB_CONNECTION=pgsql) and Valkey/Redis add-ons are bundled here. Set FRONTEND_URL
-      to the public client URL after deploying it. Local file uploads/avatars/exports persist on the /usr/share/nginx/html/storage/app
-      volume; for production object storage set FILESYSTEM_DISK=s3 and add S3-compatible storage env (no S3 add-on is provisioned
-      by this template). Configure SMTP (MAIL_* env) for outbound email after install.'
-    kubero.dev/template.links: '["https://github.com/JhumanJ/OpnForm/blob/main/docs/deployment/quickstart.md", "https://docs.opnform.com"]'
+    kubero.dev/template.installation: 'Multi-container Laravel (PHP/API) + Nuxt (Vue/client)
+      stack. THIS template deploys the PRIMARY API/server image jhumanj/opnform-api:latest
+      (Laravel + nginx + php-fpm on port 80), which serves the REST API and runs DB
+      migrations on boot. Rotate APP_KEY (base64:$(openssl rand -base64 32)), JWT_SECRET
+      (openssl rand -hex 32), and the Postgres password (default ''opnform'') before
+      exposing publicly. Companion services to deploy separately, ALL from the SAME
+      jhumanj/opnform-api:latest image, sharing this template''s env: (1) api-worker
+      -- override command to run the queue worker `php artisan queue:work`; (2) api-scheduler
+      -- run the cron scheduler `php artisan schedule:work`. Also deploy the FRONTEND
+      as a separate app from jhumanj/opnform-client:latest (Nuxt SSR, listens on port
+      3000) with NUXT_PUBLIC_API_BASE pointing at this api''s /api URL. The reference
+      compose puts an nginx ingress in front that routes / to the client and /api,/forms,/storage
+      to this api; replicate that routing at the Kubero ingress (path-based) or front
+      both with a small nginx. Postgres (DB_CONNECTION=pgsql) and Valkey/Redis add-ons
+      are bundled here. Set FRONTEND_URL to the public client URL after deploying
+      it. Local file uploads/avatars/exports persist on the /usr/share/nginx/html/storage/app
+      volume; for production object storage set FILESYSTEM_DISK=s3 and add S3-compatible
+      storage env (no S3 add-on is provisioned by this template). Configure SMTP (MAIL_*
+      env) for outbound email after install.'
+    kubero.dev/template.links: '["https://github.com/JhumanJ/OpnForm/blob/main/docs/deployment/quickstart.md",
+      "https://docs.opnform.com"]'
     kubero.dev/template.screenshots: '["https://opnform.com/img/social-preview.jpg"]'
     kubero.dev/template.source: https://github.com/JhumanJ/OpnForm
     kubero.dev/template.categories: '["productivity", "work", "collaboration"]'
@@ -62,9 +70,9 @@ spec:
               database: opnform
               owner: opnform
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO opnform
-                - GRANT CREATE ON SCHEMA public TO opnform
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO opnform
+              - GRANT ALL ON SCHEMA public TO opnform
+              - GRANT CREATE ON SCHEMA public TO opnform
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO opnform
               secret:
                 name: opnform-postgresql-app
           enableSuperuserAccess: true
@@ -172,6 +180,7 @@ spec:
     mountPath: /usr/share/nginx/html/storage/app
     name: opnform-storage
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -187,38 +196,20 @@ spec:
     containerPort: '80'
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/opnform-api
-    tag: '1.13.2'
+    tag: 1.13.2
     command:
     - sh
     - -c
-    - |
-      apk add --no-cache nginx netcat-openbsd
-      cat > /etc/nginx/http.d/default.conf <<'EOF'
-      server {
-        listen 80 default_server;
-        server_name _;
-        root /usr/share/nginx/html/public;
-        client_max_body_size 64m;
-        index index.php;
-        location / {
-          try_files $uri $uri/ /index.php?$query_string;
-        }
-        location = /health {
-          return 200 'ok';
-          add_header Content-Type text/plain;
-        }
-        location ~ \.php$ {
-          fastcgi_pass 127.0.0.1:9000;
-          fastcgi_index index.php;
-          include fastcgi_params;
-          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        }
-      }
-      EOF
-      while ! nc -z "${REDIS_HOST}" 6379 2>/dev/null; do sleep 2; done
-      /usr/local/bin/opnform-entrypoint php-fpm &
-      while ! nc -z 127.0.0.1 9000 2>/dev/null; do sleep 2; done
-      nginx -g 'daemon off;'
+    - "apk add --no-cache nginx netcat-openbsd\ncat > /etc/nginx/http.d/default.conf\
+      \ <<'EOF'\nserver {\n  listen 80 default_server;\n  server_name _;\n  root /usr/share/nginx/html/public;\n\
+      \  client_max_body_size 64m;\n  index index.php;\n  location / {\n    try_files\
+      \ $uri $uri/ /index.php?$query_string;\n  }\n  location = /health {\n    return\
+      \ 200 'ok';\n    add_header Content-Type text/plain;\n  }\n  location ~ \\.php$\
+      \ {\n    fastcgi_pass 127.0.0.1:9000;\n    fastcgi_index index.php;\n    include\
+      \ fastcgi_params;\n    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\n\
+      \  }\n}\nEOF\nwhile ! nc -z \"${REDIS_HOST}\" 6379 2>/dev/null; do sleep 2;\
+      \ done\n/usr/local/bin/opnform-entrypoint php-fpm &\nwhile ! nc -z 127.0.0.1\
+      \ 9000 2>/dev/null; do sleep 2; done\nnginx -g 'daemon off;'\n"
     run:
       securityContext:
         runAsNonRoot: false

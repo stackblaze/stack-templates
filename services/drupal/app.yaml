@@ -4,15 +4,18 @@ metadata:
   name: drupal
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Drupal is an open-source content management framework for building websites, intranets
-      and digital experiences.
+    kubero.dev/template.description: Drupal is an open-source content management framework
+      for building websites, intranets and digital experiences.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/drupal/icon.png
-    kubero.dev/template.installation: The official drupal image installs interactively via the web setup wizard on first run;
-      complete the wizard at the app URL. On the database step choose PostgreSQL and enter host '{{KUBERO_APP_NAME}}-postgresql-rw',
-      port 5432, database/user/password 'drupal' (rotate the postgres add-on credentials and the wizard admin password after
-      setup). Drupal writes settings.php and uploaded files under /var/www/html/sites, which is persisted by the drupal-sites
-      volume. For production, increase PHP memory_limit and the app pod size for large sites. No external object store or
-      search engine is required for a base install (add Solr/Search API later if needed).
+    kubero.dev/template.installation: The official drupal image installs interactively
+      via the web setup wizard on first run; complete the wizard at the app URL. On
+      the database step choose PostgreSQL and enter host '{{KUBERO_APP_NAME}}-postgresql-rw',
+      port 5432, database/user/password 'drupal' (rotate the postgres add-on credentials
+      and the wizard admin password after setup). Drupal writes settings.php and uploaded
+      files under /var/www/html/sites, which is persisted by the drupal-sites volume.
+      For production, increase PHP memory_limit and the app pod size for large sites.
+      No external object store or search engine is required for a base install (add
+      Solr/Search API later if needed).
     kubero.dev/template.links: '["https://www.drupal.org/docs/getting-started", "https://github.com/docker-library/docs/blob/master/drupal/README.md"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/drupal/drupal
@@ -99,6 +102,7 @@ spec:
     mountPath: /var/www/html/sites
     name: drupal-sites
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

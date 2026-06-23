@@ -4,14 +4,17 @@ metadata:
   name: snipe-it
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Free, open-source IT asset and license management system for tracking hardware, software
-      licenses, accessories, and consumables.
+    kubero.dev/template.description: Free, open-source IT asset and license management
+      system for tracking hardware, software licenses, accessories, and consumables.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/snipe-it/icon.png
-    kubero.dev/template.installation: 'Snipe-IT is a Laravel app backed by MariaDB/MySQL (it does NOT support Postgres). It
-      requires a 32-char APP_KEY: rotate APP_KEY to a value generated with ''php artisan key:generate --show'' (or ''openssl
-      rand -base64 32'' formatted as base64:...) before going live, and rotate the MariaDB password. Valkey is wired for cache/session/queue
-      drivers. On first run the app auto-runs migrations; then open the URL and complete the web-based pre-flight setup wizard
-      to create the admin user. Mail (MAIL_*) is optional but needed for notifications.'
+    kubero.dev/template.installation: 'Snipe-IT is a Laravel app backed by MariaDB/MySQL
+      (it does NOT support Postgres). It requires a 32-char APP_KEY: rotate APP_KEY
+      to a value generated with ''php artisan key:generate --show'' (or ''openssl
+      rand -base64 32'' formatted as base64:...) before going live, and rotate the
+      MariaDB password. Valkey is wired for cache/session/queue drivers. On first
+      run the app auto-runs migrations; then open the URL and complete the web-based
+      pre-flight setup wizard to create the admin user. Mail (MAIL_*) is optional
+      but needed for notifications.'
     kubero.dev/template.links: '["https://snipe-it.readme.io/docs", "https://snipe-it.readme.io/docs/docker"]'
     kubero.dev/template.screenshots: '["https://snipeitapp.com/img/screenshots/dashboard.png"]'
     kubero.dev/template.source: https://github.com/snipe/snipe-it
@@ -146,6 +149,7 @@ spec:
     mountPath: /var/lib/snipeit
     name: snipe-it-data
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

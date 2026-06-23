@@ -4,11 +4,11 @@ metadata:
   name: netbox
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: NetBox is the leading open-source DCIM and IP address management platform for network
-      infrastructure.
+    kubero.dev/template.description: NetBox is the leading open-source DCIM and IP
+      address management platform for network infrastructure.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/netbox/icon.png
-    kubero.dev/template.installation: Rotate SECRET_KEY and DB passwords before production. Deploy a netbox-worker using the
-      same image with `rqworker` for background jobs.
+    kubero.dev/template.installation: Rotate SECRET_KEY and DB passwords before production.
+      Deploy a netbox-worker using the same image with `rqworker` for background jobs.
     kubero.dev/template.links: '["https://docs.netbox.dev/"]'
     kubero.dev/template.screenshots: '["https://netbox.dev/static/netbox_logo.svg"]'
     kubero.dev/template.source: https://github.com/netbox-community/netbox
@@ -53,9 +53,9 @@ spec:
               secret:
                 name: netbox-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO netbox
-                - GRANT CREATE ON SCHEMA public TO netbox
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO netbox
+              - GRANT ALL ON SCHEMA public TO netbox
+              - GRANT CREATE ON SCHEMA public TO netbox
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO netbox
           enableSuperuserAccess: true
           superuserSecret:
             name: netbox-postgresql-superuser
@@ -148,6 +148,7 @@ spec:
     mountPath: /opt/netbox/netbox/media
     name: netbox-media
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

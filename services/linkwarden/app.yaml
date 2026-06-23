@@ -4,10 +4,12 @@ metadata:
   name: linkwarden
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted collaborative bookmark manager to collect and organize links.
+    kubero.dev/template.description: Self-hosted collaborative bookmark manager to
+      collect and organize links.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/linkwarden/icon.png
-    kubero.dev/template.installation: Set NEXTAUTH_SECRET with `openssl rand -base64 32`. For full-text search, deploy
-      meilisearch in the same pipeline phase and set MEILI_HOST plus MEILI_MASTER_KEY.
+    kubero.dev/template.installation: Set NEXTAUTH_SECRET with `openssl rand -base64
+      32`. For full-text search, deploy meilisearch in the same pipeline phase and
+      set MEILI_HOST plus MEILI_MASTER_KEY.
     kubero.dev/template.links: '["https://docs.linkwarden.app/"]'
     kubero.dev/template.screenshots: '["https://linkwarden.app/_next/image?url=%2Fthumbnail.png&w=1920&q=75"]'
     kubero.dev/template.source: https://github.com/linkwarden/linkwarden
@@ -52,9 +54,9 @@ spec:
               secret:
                 name: linkwarden-db-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO linkwarden
-                - GRANT CREATE ON SCHEMA public TO linkwarden
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO linkwarden
+              - GRANT ALL ON SCHEMA public TO linkwarden
+              - GRANT CREATE ON SCHEMA public TO linkwarden
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO linkwarden
           enableSuperuserAccess: true
           superuserSecret:
             name: linkwarden-db-superuser
@@ -90,6 +92,7 @@ spec:
     mountPath: /data/data
     name: linkwarden-data
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

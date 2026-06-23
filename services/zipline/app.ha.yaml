@@ -1,113 +1,114 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: zipline
-    annotations:
-        kubero.dev/template.architecture: "[]"
-        kubero.dev/template.description: "A ShareX/file upload server that is easy to use, packed with features, and with an easy setup!"
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/1396645"
-        kubero.dev/template.installation: ""
-        kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: "[]"
-        kubero.dev/template.source: "https://github.com/diced/zipline"
-        kubero.dev/template.categories: '["utilities", "work"]'
-        kubero.dev/template.title: "Zipline"
-        kubero.dev/template.website: "https://zipline.diced.sh/"
-    labels:
-        manager: kubero
+  name: zipline
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: A ShareX/file upload server that is easy to use,
+      packed with features, and with an easy setup!
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1396645
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/diced/zipline
+    kubero.dev/template.categories: '["utilities", "work"]'
+    kubero.dev/template.title: Zipline
+    kubero.dev/template.website: https://zipline.diced.sh/
+  labels:
+    manager: kubero
 spec:
-    name: zipline
-    deploymentstrategy: docker
-    envVars:
-        - name: CORE_RETURN_HTTPS
-          value: "false"
-        - name: CORE_SECRET
-          value: JYcxmGH3YI34I5CDQU6y5hD4ys9usyPvtjnCXF6
-        - name: CORE_HOST
-          value: 0.0.0.0
-        - name: CORE_PORT
-          value: "3000"
-        - name: DATABASE_URL
-          value: postgres://zipline:zipline@zipline-postgresql-rw:5432/zipline
-    extraVolumes:
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /zipline/uploads
-          name: zipline-uploads-volume
-          size: 1Gi
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /zipline/public
-          name: zipline-public-volume
-          size: 1Gi
-    cronjobs: []
-    addons:
-        - displayName: PostgreSQL (CloudNativePG)
-          env: []
-          icon: /img/addons/pgsql.svg
-          id: kubero-operator
-          kind: Cluster
-          resourceDefinitions:
-              Cluster:
-                  apiVersion: postgresql.cnpg.io/v1
-                  kind: Cluster
-                  metadata:
-                      name: zipline-postgresql
-                  spec:
-                      instances: 3
-                      imageName: ghcr.io/cloudnative-pg/postgresql:16
-                      primaryUpdateStrategy: unsupervised
-                      storage:
-                          storageClass: fast
-                          size: 5Gi
-                      resources:
-                          requests:
-                              cpu: 100m
-                              memory: 256Mi
-                          limits:
-                              cpu: "1"
-                              memory: 1Gi
-                      bootstrap:
-                          initdb:
-                              database: zipline
-                              owner: zipline
-                              secret:
-                                  name: zipline-postgresql-app
-                              postInitApplicationSQL:
-                                  - GRANT ALL ON SCHEMA public TO zipline
-                                  - GRANT CREATE ON SCHEMA public TO zipline
-                                  - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zipline
-                      enableSuperuserAccess: true
-                      superuserSecret:
-                          name: zipline-postgresql-superuser
-              superuserSecret:
-                  apiVersion: v1
-                  kind: Secret
-                  metadata:
-                      name: zipline-postgresql-superuser
-                  type: kubernetes.io/basic-auth
-                  stringData:
-                      username: postgres
-                      password: zipline
-              appUserSecret:
-                  apiVersion: v1
-                  kind: Secret
-                  metadata:
-                      name: zipline-postgresql-app
-                  type: kubernetes.io/basic-auth
-                  stringData:
-                      username: zipline
-                      password: zipline
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: "3000"
-        pullPolicy: Always
-        repository: ghcr.io/diced/zipline
-        tag: latest
+  name: zipline
+  deploymentstrategy: docker
+  envVars:
+  - name: CORE_RETURN_HTTPS
+    value: 'false'
+  - name: CORE_SECRET
+    value: JYcxmGH3YI34I5CDQU6y5hD4ys9usyPvtjnCXF6
+  - name: CORE_HOST
+    value: 0.0.0.0
+  - name: CORE_PORT
+    value: '3000'
+  - name: DATABASE_URL
+    value: postgres://zipline:zipline@zipline-postgresql-rw:5432/zipline
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /zipline/uploads
+    name: zipline-uploads-volume
+    size: 1Gi
+    storageClass: slow
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /zipline/public
+    name: zipline-public-volume
+    size: 1Gi
+    storageClass: slow
+  cronjobs: []
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: zipline-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: zipline
+              owner: zipline
+              secret:
+                name: zipline-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO zipline
+              - GRANT CREATE ON SCHEMA public TO zipline
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zipline
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: zipline-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: zipline-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: zipline
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: zipline-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: zipline
+          password: zipline
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: ghcr.io/diced/zipline
+    tag: latest

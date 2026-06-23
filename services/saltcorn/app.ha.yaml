@@ -4,16 +4,19 @@ metadata:
   name: saltcorn
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Free and open-source no-code application builder for creating database-backed web apps
-      without writing code.
+    kubero.dev/template.description: Free and open-source no-code application builder
+      for creating database-backed web apps without writing code.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/saltcorn/icon.png
-    kubero.dev/template.installation: 'Image: saltcorn/saltcorn (official). Saltcorn requires PostgreSQL; it connects via
-      the discrete PG* vars pointing at the bundled postgres add-on (host saltcorn-postgresql-rw). Rotate SALTCORN_SESSION_SECRET
-      (any long random string, e.g. `openssl rand -hex 32`) and the Postgres password (default ''saltcorn'') before exposing
-      publicly. On first run Saltcorn auto-initializes the schema, then presents a setup wizard to create the admin user and
-      site name - complete this immediately. User-installed plugins, uploaded files and config persist on the /saltcorn volume.
-      Multi-tenant mode is off by default (SALTCORN_MULTI_TENANT=false).'
-    kubero.dev/template.links: '["https://wiki.saltcorn.com/view/ShowPage/deploy-with-docker", "https://wiki.saltcorn.com/"]'
+    kubero.dev/template.installation: 'Image: saltcorn/saltcorn (official). Saltcorn
+      requires PostgreSQL; it connects via the discrete PG* vars pointing at the bundled
+      postgres add-on (host saltcorn-postgresql-rw). Rotate SALTCORN_SESSION_SECRET
+      (any long random string, e.g. `openssl rand -hex 32`) and the Postgres password
+      (default ''saltcorn'') before exposing publicly. On first run Saltcorn auto-initializes
+      the schema, then presents a setup wizard to create the admin user and site name
+      - complete this immediately. User-installed plugins, uploaded files and config
+      persist on the /saltcorn volume. Multi-tenant mode is off by default (SALTCORN_MULTI_TENANT=false).'
+    kubero.dev/template.links: '["https://wiki.saltcorn.com/view/ShowPage/deploy-with-docker",
+      "https://wiki.saltcorn.com/"]'
     kubero.dev/template.screenshots: '["https://saltcorn.com/files/serve/176"]'
     kubero.dev/template.source: https://github.com/saltcorn/saltcorn
     kubero.dev/template.categories: '["development", "productivity", "data"]'
@@ -105,6 +108,7 @@ spec:
     mountPath: /saltcorn
     name: saltcorn-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

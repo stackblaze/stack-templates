@@ -4,24 +4,32 @@ metadata:
   name: zammad
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source web-based help desk and customer support / ticketing system with email, chat,
-      social and a knowledge base.
+    kubero.dev/template.description: Open-source web-based help desk and customer
+      support / ticketing system with email, chat, social and a knowledge base.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zammad/icon.png
-    kubero.dev/template.installation: 'Zammad is a MULTI-CONTAINER stack. All Zammad roles share ONE image (ghcr.io/zammad/zammad)
-      and differ only by their entrypoint command. This template runs the PRIMARY web tier, command ''zammad-nginx'' (HTTP
-      on port 8080). To make Zammad fully functional you MUST also deploy these companion services from the SAME ghcr.io/zammad/zammad
-      image with these commands, all sharing the same env vars and the zammad-storage (/opt/zammad/storage) volume: ''zammad-init''
-      (run-once DB migrate/seed; must finish before the others come up), ''zammad-railsserver'' (Rails app/API, internal :3000
-      that nginx proxies to), ''zammad-websocket'' (websocket/ActionCable), ''zammad-scheduler'' (background jobs / delayed
-      jobs). An optional ''zammad-backup'' container handles dumps. Bundled add-ons here cover the datastores: postgres (primary
-      DB), memcached (Rails cache), and valkey (Redis-compatible, used for the websocket session store and job queue). Full-text
-      search needs Elasticsearch, which is NOT one of the available operator add-ons and is omitted: deploy an Elasticsearch
-      instance separately (image elasticsearch:9, single-node, xpack.security.enabled=false, vm.max_map_count=262144) and
-      set ELASTICSEARCH_ENABLED=true / ELASTICSEARCH_HOST / ELASTICSEARCH_PORT to enable search; Zammad boots and works without
-      it (search disabled). Rotate POSTGRES_PASS (default ''zammad'') before exposing publicly. Set ZAMMAD_FQDN to your real
-      hostname. On first load the web UI runs the getting-started wizard to create the first admin/organization; configure
-      inbound/outbound email channels there afterwards.'
-    kubero.dev/template.links: '["https://docs.zammad.org/en/latest/install/docker-compose.html", "https://admin-docs.zammad.org"]'
+    kubero.dev/template.installation: 'Zammad is a MULTI-CONTAINER stack. All Zammad
+      roles share ONE image (ghcr.io/zammad/zammad) and differ only by their entrypoint
+      command. This template runs the PRIMARY web tier, command ''zammad-nginx'' (HTTP
+      on port 8080). To make Zammad fully functional you MUST also deploy these companion
+      services from the SAME ghcr.io/zammad/zammad image with these commands, all
+      sharing the same env vars and the zammad-storage (/opt/zammad/storage) volume:
+      ''zammad-init'' (run-once DB migrate/seed; must finish before the others come
+      up), ''zammad-railsserver'' (Rails app/API, internal :3000 that nginx proxies
+      to), ''zammad-websocket'' (websocket/ActionCable), ''zammad-scheduler'' (background
+      jobs / delayed jobs). An optional ''zammad-backup'' container handles dumps.
+      Bundled add-ons here cover the datastores: postgres (primary DB), memcached
+      (Rails cache), and valkey (Redis-compatible, used for the websocket session
+      store and job queue). Full-text search needs Elasticsearch, which is NOT one
+      of the available operator add-ons and is omitted: deploy an Elasticsearch instance
+      separately (image elasticsearch:9, single-node, xpack.security.enabled=false,
+      vm.max_map_count=262144) and set ELASTICSEARCH_ENABLED=true / ELASTICSEARCH_HOST
+      / ELASTICSEARCH_PORT to enable search; Zammad boots and works without it (search
+      disabled). Rotate POSTGRES_PASS (default ''zammad'') before exposing publicly.
+      Set ZAMMAD_FQDN to your real hostname. On first load the web UI runs the getting-started
+      wizard to create the first admin/organization; configure inbound/outbound email
+      channels there afterwards.'
+    kubero.dev/template.links: '["https://docs.zammad.org/en/latest/install/docker-compose.html",
+      "https://admin-docs.zammad.org"]'
     kubero.dev/template.screenshots: '["https://zammad.com/assets/images/product/screenshots/ticket-zoom.png"]'
     kubero.dev/template.source: https://github.com/zammad/zammad
     kubero.dev/template.categories: '["helpdesk", "communication", "crm"]'
@@ -65,9 +73,9 @@ spec:
               secret:
                 name: zammad-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO zammad
-                - GRANT CREATE ON SCHEMA public TO zammad
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zammad
+              - GRANT ALL ON SCHEMA public TO zammad
+              - GRANT CREATE ON SCHEMA public TO zammad
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zammad
           enableSuperuserAccess: true
           superuserSecret:
             name: zammad-postgresql-superuser
@@ -160,6 +168,7 @@ spec:
     mountPath: /opt/zammad/storage
     name: zammad-storage
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   resources:
     requests:
@@ -186,21 +195,38 @@ spec:
     command:
     - /bin/bash
     - -ec
-    - |
-      EP=/opt/zammad/bin/docker-entrypoint
+    - 'EP=/opt/zammad/bin/docker-entrypoint
+
       REDIS_HOST="${REDIS_URL#redis://}"
+
       REDIS_HOST="${REDIS_HOST%%/*}"
+
       REDIS_HOST="${REDIS_HOST%%:*}"
+
       REDIS_PORT="${REDIS_URL##*:}"
+
       REDIS_PORT="${REDIS_PORT%%/*}"
-      until pg_isready -q -h "${POSTGRESQL_HOST}" -p "${POSTGRESQL_PORT}"; do sleep 2; done
-      until (echo >/dev/tcp/"${REDIS_HOST}"/"${REDIS_PORT}") 2>/dev/null; do sleep 2; done
+
+      until pg_isready -q -h "${POSTGRESQL_HOST}" -p "${POSTGRESQL_PORT}"; do sleep
+      2; done
+
+      until (echo >/dev/tcp/"${REDIS_HOST}"/"${REDIS_PORT}") 2>/dev/null; do sleep
+      2; done
+
       "${EP}" zammad-init
+
       "${EP}" zammad-railsserver &
+
       "${EP}" zammad-websocket &
+
       "${EP}" zammad-scheduler &
-      until (echo >/dev/tcp/127.0.0.1/"${ZAMMAD_RAILSSERVER_PORT:-3000}") 2>/dev/null; do sleep 2; done
+
+      until (echo >/dev/tcp/127.0.0.1/"${ZAMMAD_RAILSSERVER_PORT:-3000}") 2>/dev/null;
+      do sleep 2; done
+
       exec "${EP}" zammad-nginx
+
+      '
     run:
       securityContext:
         runAsNonRoot: false

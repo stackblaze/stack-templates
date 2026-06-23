@@ -4,9 +4,14 @@ metadata:
   name: actual-budget
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Local-first personal finance app with envelope budgeting, bank sync, and end-to-end encryption. Self-hosted YNAB alternative.
+    kubero.dev/template.description: Local-first personal finance app with envelope
+      budgeting, bank sync, and end-to-end encryption. Self-hosted YNAB alternative.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/actual-budget/icon.png
-    kubero.dev/template.installation: Actual Budget stores budgets as SQLite files in the /data volume. On first visit, create a password for the server. Each budget file can be synced across devices. Bank sync requires a GoCardless or SimpleFIN subscription (optional — manual entry also works). All data is end-to-end encrypted client-side. No external database needed.
+    kubero.dev/template.installation: Actual Budget stores budgets as SQLite files
+      in the /data volume. On first visit, create a password for the server. Each
+      budget file can be synced across devices. Bank sync requires a GoCardless or
+      SimpleFIN subscription (optional — manual entry also works). All data is end-to-end
+      encrypted client-side. No external database needed.
     kubero.dev/template.links: '["https://actualbudget.org/docs/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/actualbudget/actual
@@ -29,6 +34,7 @@ spec:
     mountPath: /data
     name: actual-data
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

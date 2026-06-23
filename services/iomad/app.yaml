@@ -4,19 +4,25 @@ metadata:
   name: iomad
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: IOMAD is a multi-tenant Moodle distribution that turns Moodle into a SaaS e-learning
-      platform for managing multiple companies, departments and clients.
+    kubero.dev/template.description: IOMAD is a multi-tenant Moodle distribution that
+      turns Moodle into a SaaS e-learning platform for managing multiple companies,
+      departments and clients.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/iomad/icon.png
-    kubero.dev/template.installation: 'IOMAD is a Moodle distribution and requires MySQL/MariaDB (Moodle does not support
-      PostgreSQL in these images), so this template ships the mariadb add-on. The actively-maintained dedicated image is elestio/iomad
-      (rebuilt against current IOMAD releases). On first boot the container runs the Moodle/IOMAD installer against the database
-      using the MYSQL_* env vars and provisions the admin account from ADMIN_EMAIL/ADMIN_PASSWORD; set MOODLE_URL/SSL_PROXY
-      are supplied so links resolve to the public HTTPS URL. After deploy, log in with the seeded admin and ROTATE: the ADMIN_PASSWORD
-      env value, the MariaDB add-on password, and configure real SMTP under Site administration > Server > Email. Two persistent
-      volumes are mounted: /var/www/html holds the IOMAD/Moodle code plus config.php, and /var/www/moodledata holds uploaded
-      course files, caches and sessions. For production raise the app pod size (Moodle/PHP needs >=1Gi) and PHP memory_limit,
-      and run Moodle cron. No external object store or search engine is required for a base install (add an external Elasticsearch/Solr
-      later only if you enable global search).'
+    kubero.dev/template.installation: 'IOMAD is a Moodle distribution and requires
+      MySQL/MariaDB (Moodle does not support PostgreSQL in these images), so this
+      template ships the mariadb add-on. The actively-maintained dedicated image is
+      elestio/iomad (rebuilt against current IOMAD releases). On first boot the container
+      runs the Moodle/IOMAD installer against the database using the MYSQL_* env vars
+      and provisions the admin account from ADMIN_EMAIL/ADMIN_PASSWORD; set MOODLE_URL/SSL_PROXY
+      are supplied so links resolve to the public HTTPS URL. After deploy, log in
+      with the seeded admin and ROTATE: the ADMIN_PASSWORD env value, the MariaDB
+      add-on password, and configure real SMTP under Site administration > Server
+      > Email. Two persistent volumes are mounted: /var/www/html holds the IOMAD/Moodle
+      code plus config.php, and /var/www/moodledata holds uploaded course files, caches
+      and sessions. For production raise the app pod size (Moodle/PHP needs >=1Gi)
+      and PHP memory_limit, and run Moodle cron. No external object store or search
+      engine is required for a base install (add an external Elasticsearch/Solr later
+      only if you enable global search).'
     kubero.dev/template.links: '["https://www.iomad.org/documentation/", "https://hub.docker.com/r/elestio/iomad"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/iomad/iomad
@@ -106,12 +112,14 @@ spec:
     mountPath: /var/www/html
     name: iomad-html
     size: 5Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/moodledata
     name: iomad-moodledata
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

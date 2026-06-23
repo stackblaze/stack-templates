@@ -4,20 +4,25 @@ metadata:
   name: mautic
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source marketing automation platform for email campaigns, lead management, landing
-      pages, and multichannel customer journeys.
+    kubero.dev/template.description: Open-source marketing automation platform for
+      email campaigns, lead management, landing pages, and multichannel customer journeys.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mautic/icon.png
-    kubero.dev/template.installation: 'Mautic only supports MySQL/MariaDB (no Postgres). This template deploys the primary
-      mautic_web container; on first run open the URL and complete the web installer, or rely on the auto-install env vars
-      (set DOCKER_MAUTIC_LOAD_TEST_DATA=false). IMPORTANT: rotate the mariadb password and the MAUTIC_DB_PASSWORD env to match
-      before going to production. For full functionality deploy two companion containers from the SAME image mautic/mautic:5-apache,
-      changing only DOCKER_MAUTIC_ROLE: (1) a worker container with DOCKER_MAUTIC_ROLE=mautic_worker (consumes the Symfony
-      Messenger queues for email sending/processing), and (2) a cron container with DOCKER_MAUTIC_ROLE=mautic_cron (runs scheduled
-      segment/campaign/email cron jobs). All three containers must share the same MAUTIC_DB_* settings and the same persistent
-      volumes (/var/www/html/config, /var/www/html/var/logs, /var/www/html/docroot/media). Do not mount the entire /var/www/html
-      directory or the app code is hidden. Redis/Valkey can optionally back the Messenger transport and cache for higher throughput but
-      is not required.'
-    kubero.dev/template.links: '["https://docs.mautic.org/en/setup/how-to-install-mautic/docker-installation", "https://github.com/mautic/docker-mautic"]'
+    kubero.dev/template.installation: 'Mautic only supports MySQL/MariaDB (no Postgres).
+      This template deploys the primary mautic_web container; on first run open the
+      URL and complete the web installer, or rely on the auto-install env vars (set
+      DOCKER_MAUTIC_LOAD_TEST_DATA=false). IMPORTANT: rotate the mariadb password
+      and the MAUTIC_DB_PASSWORD env to match before going to production. For full
+      functionality deploy two companion containers from the SAME image mautic/mautic:5-apache,
+      changing only DOCKER_MAUTIC_ROLE: (1) a worker container with DOCKER_MAUTIC_ROLE=mautic_worker
+      (consumes the Symfony Messenger queues for email sending/processing), and (2)
+      a cron container with DOCKER_MAUTIC_ROLE=mautic_cron (runs scheduled segment/campaign/email
+      cron jobs). All three containers must share the same MAUTIC_DB_* settings and
+      the same persistent volumes (/var/www/html/config, /var/www/html/var/logs, /var/www/html/docroot/media).
+      Do not mount the entire /var/www/html directory or the app code is hidden. Redis/Valkey
+      can optionally back the Messenger transport and cache for higher throughput
+      but is not required.'
+    kubero.dev/template.links: '["https://docs.mautic.org/en/setup/how-to-install-mautic/docker-installation",
+      "https://github.com/mautic/docker-mautic"]'
     kubero.dev/template.screenshots: '["https://www.mautic.org/wp-content/uploads/2021/02/dashboard.png"]'
     kubero.dev/template.source: https://github.com/mautic/mautic
     kubero.dev/template.categories: '["crm", "automation", "communication"]'
@@ -106,18 +111,21 @@ spec:
     mountPath: /var/www/html/config
     name: mautic-config
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/var/logs
     name: mautic-logs
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/docroot/media
     name: mautic-media
     size: 3Gi
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true

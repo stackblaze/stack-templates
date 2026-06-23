@@ -4,12 +4,13 @@ metadata:
   name: zulip
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Powerful open-source team chat organized into topic-based threads — an alternative to
-      Slack.
+    kubero.dev/template.description: Powerful open-source team chat organized into
+      topic-based threads — an alternative to Slack.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zulip/icon.png
-    kubero.dev/template.installation: Set SETTING_EXTERNAL_HOST and SECRETS_secret_key before first boot. Initial startup
-      can take 5–10 minutes while Zulip configures all services. Requires
-      `kubero-operator/operators/install.sh` (RabbitMQ Cluster operator).
+    kubero.dev/template.installation: Set SETTING_EXTERNAL_HOST and SECRETS_secret_key
+      before first boot. Initial startup can take 5–10 minutes while Zulip configures
+      all services. Requires `kubero-operator/operators/install.sh` (RabbitMQ Cluster
+      operator).
     kubero.dev/template.links: '["https://zulip.readthedocs.io/projects/docker/"]'
     kubero.dev/template.screenshots: '["https://zulip.com/static/images/landing-page/zulip-hero.png"]'
     kubero.dev/template.source: https://github.com/zulip/zulip
@@ -54,9 +55,9 @@ spec:
               secret:
                 name: zulip-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO zulip
-                - GRANT CREATE ON SCHEMA public TO zulip
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zulip
+              - GRANT ALL ON SCHEMA public TO zulip
+              - GRANT CREATE ON SCHEMA public TO zulip
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zulip
           enableSuperuserAccess: true
           superuserSecret:
             name: zulip-postgresql-superuser
@@ -133,9 +134,11 @@ spec:
             limits:
               memory: 1Gi
           rabbitmq:
-            additionalConfig: |
-              default_user = zulip
+            additionalConfig: 'default_user = zulip
+
               default_pass = zulip
+
+              '
   - displayName: Memcached
     env: []
     icon: /img/addons/memcached.svg
@@ -150,7 +153,7 @@ spec:
         spec:
           memcached:
             image:
-              tag: "1.6.39"
+              tag: 1.6.39
             replicaCount: 3
             config:
               memoryLimit: 64
@@ -162,7 +165,7 @@ spec:
   - name: SETTING_EXTERNAL_HOST
     value: '{{KUBERO_APP_HOST}}'
   - name: SETTING_ALLOWED_HOSTS
-    value: "['*']"
+    value: '[''*'']'
   - name: SETTING_ROOT_DOMAIN_LANDING_PAGE
     value: 'True'
   - name: LOADBALANCER_IPS
@@ -214,6 +217,7 @@ spec:
     mountPath: /data
     name: zulip-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

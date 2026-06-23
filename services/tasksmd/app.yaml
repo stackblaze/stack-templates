@@ -34,12 +34,14 @@ spec:
     mountPath: /tasks
     name: tasksmd-tasks
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /config
     name: tasksmd-config
     size: 1Gi
+    storageClass: slow
   healthcheck:
     enabled: true
     path: /

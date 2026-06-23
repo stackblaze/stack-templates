@@ -4,21 +4,28 @@ metadata:
   name: authelia
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source authentication and authorization server providing SSO and multi-factor auth
-      as a companion to reverse proxies via a login portal.
+    kubero.dev/template.description: Open-source authentication and authorization
+      server providing SSO and multi-factor auth as a companion to reverse proxies
+      via a login portal.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/authelia/icon.png
-    kubero.dev/template.installation: Authelia is an SSO / 2FA portal that protects other apps via your reverse proxy (forward-auth
-      / OpenID Connect); it is not a destination app on its own. It needs a YAML config file that environment variables cannot
-      fully replace - access control rules, the authentication backend (file or LDAP), the session cookie domain, and the
-      SMTP/notifier must be defined in /config/configuration.yml. A persistent volume is mounted at /config to hold that file
-      plus the bundled file-based users database (users_database.yml); seed both on first boot (exec into the pod or pre-populate
-      the volume) or Authelia will exit at startup. Production state is stored in the postgres add-on (set AUTHELIA_STORAGE_POSTGRES_*
-      - rotate the password) and session data in the valkey add-on (Redis-compatible, no password). ROTATE the three secret
-      env values (AUTHELIA_SESSION_SECRET, AUTHELIA_STORAGE_ENCRYPTION_KEY, AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET)
-      with 'openssl rand -hex 32' before going live. Email-based flows (password reset, second-factor registration) require
-      an SMTP server configured under notifier in the config file. Authelia listens on HTTP port 9091; TLS is terminated at
+    kubero.dev/template.installation: Authelia is an SSO / 2FA portal that protects
+      other apps via your reverse proxy (forward-auth / OpenID Connect); it is not
+      a destination app on its own. It needs a YAML config file that environment variables
+      cannot fully replace - access control rules, the authentication backend (file
+      or LDAP), the session cookie domain, and the SMTP/notifier must be defined in
+      /config/configuration.yml. A persistent volume is mounted at /config to hold
+      that file plus the bundled file-based users database (users_database.yml); seed
+      both on first boot (exec into the pod or pre-populate the volume) or Authelia
+      will exit at startup. Production state is stored in the postgres add-on (set
+      AUTHELIA_STORAGE_POSTGRES_* - rotate the password) and session data in the valkey
+      add-on (Redis-compatible, no password). ROTATE the three secret env values (AUTHELIA_SESSION_SECRET,
+      AUTHELIA_STORAGE_ENCRYPTION_KEY, AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET)
+      with 'openssl rand -hex 32' before going live. Email-based flows (password reset,
+      second-factor registration) require an SMTP server configured under notifier
+      in the config file. Authelia listens on HTTP port 9091; TLS is terminated at
       the Kubero ingress.
-    kubero.dev/template.links: '["https://www.authelia.com/configuration/prologue/introduction/", "https://www.authelia.com/integration/prologue/get-started/"]'
+    kubero.dev/template.links: '["https://www.authelia.com/configuration/prologue/introduction/",
+      "https://www.authelia.com/integration/prologue/get-started/"]'
     kubero.dev/template.screenshots: '["https://www.authelia.com/images/1FA.png"]'
     kubero.dev/template.source: https://github.com/authelia/authelia
     kubero.dev/template.categories: '["security", "identity", "utilities"]'
@@ -62,9 +69,9 @@ spec:
               secret:
                 name: authelia-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO authelia
-                - GRANT CREATE ON SCHEMA public TO authelia
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO authelia
+              - GRANT ALL ON SCHEMA public TO authelia
+              - GRANT CREATE ON SCHEMA public TO authelia
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO authelia
           enableSuperuserAccess: true
           superuserSecret:
             name: authelia-postgresql-superuser
@@ -148,6 +155,7 @@ spec:
     mountPath: /config
     name: authelia-config
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true
@@ -167,41 +175,15 @@ spec:
     command:
     - sh
     - -c
-    - |
-      grep -q 'kubero-seed' /config/configuration.yml 2>/dev/null || { cat > /config/configuration.yml <<EOF
-      # kubero-seed
-      authentication_backend:
-        file:
-          path: /config/users_database.yml
-      access_control:
-        default_policy: one_factor
-      session:
-        cookies:
-          - domain: '${AUTHELIA_COOKIE_DOMAIN}'
-            authelia_url: '${AUTHELIA_PUBLIC_URL}'
-      notifier:
-        filesystem:
-          filename: /config/notifications.txt
-      EOF
-      cat > /config/users_database.yml <<'EOF'
-      # kubero-seed
-      users:
-        authelia:
-          disabled: false
-          displayname: Authelia User
-          password: "$argon2id$v=19$m=65536,t=3,p=4$BpLnfgDsc2WD8F2q$o/v/I2Yc7fKqK3P9H2Kj9m1A4fG4K8K2"
-          email: authelia@example.com
-          groups: []
-      EOF
-      }
-      grep -q 'authelia:' /config/users_database.yml 2>/dev/null || cat > /config/users_database.yml <<'EOF'
-      # kubero-seed
-      users:
-        authelia:
-          disabled: false
-          displayname: Authelia User
-          password: "$argon2id$v=19$m=65536,t=3,p=4$BpLnfgDsc2WD8F2q$o/v/I2Yc7fKqK3P9H2Kj9m1A4fG4K8K2"
-          email: authelia@example.com
-          groups: []
-      EOF
-      exec authelia
+    - "grep -q 'kubero-seed' /config/configuration.yml 2>/dev/null || { cat > /config/configuration.yml\
+      \ <<EOF\n# kubero-seed\nauthentication_backend:\n  file:\n    path: /config/users_database.yml\n\
+      access_control:\n  default_policy: one_factor\nsession:\n  cookies:\n    - domain:\
+      \ '${AUTHELIA_COOKIE_DOMAIN}'\n      authelia_url: '${AUTHELIA_PUBLIC_URL}'\n\
+      notifier:\n  filesystem:\n    filename: /config/notifications.txt\nEOF\ncat\
+      \ > /config/users_database.yml <<'EOF'\n# kubero-seed\nusers:\n  authelia:\n\
+      \    disabled: false\n    displayname: Authelia User\n    password: \"$argon2id$v=19$m=65536,t=3,p=4$BpLnfgDsc2WD8F2q$o/v/I2Yc7fKqK3P9H2Kj9m1A4fG4K8K2\"\
+      \n    email: authelia@example.com\n    groups: []\nEOF\n}\ngrep -q 'authelia:'\
+      \ /config/users_database.yml 2>/dev/null || cat > /config/users_database.yml\
+      \ <<'EOF'\n# kubero-seed\nusers:\n  authelia:\n    disabled: false\n    displayname:\
+      \ Authelia User\n    password: \"$argon2id$v=19$m=65536,t=3,p=4$BpLnfgDsc2WD8F2q$o/v/I2Yc7fKqK3P9H2Kj9m1A4fG4K8K2\"\
+      \n    email: authelia@example.com\n    groups: []\nEOF\nexec authelia\n"

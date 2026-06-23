@@ -4,16 +4,20 @@ metadata:
   name: freescout
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Free self-hosted help desk and shared inbox, a privacy-friendly open-source alternative
-      to Zendesk and Help Scout.
+    kubero.dev/template.description: Free self-hosted help desk and shared inbox,
+      a privacy-friendly open-source alternative to Zendesk and Help Scout.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freescout/icon.png
-    kubero.dev/template.installation: 'Image: nfrastack/freescout (community-maintained, formerly tiredofit). Rotate APP_KEY
-      (base64 of 32 random bytes: `base64:$(openssl rand -base64 32)`), the Postgres password (default ''freescout''), and
-      ADMIN_PASS before exposing publicly. First run auto-installs and seeds the admin user from ADMIN_EMAIL / ADMIN_PASS;
-      change the admin password after first login. DB_TYPE=pgsql points FreeScout at the bundled postgres add-on (host freescout-postgresql-rw).
-      For inbound/outbound email, configure SMTP/IMAP in the FreeScout settings UI (or via mail env vars) after install. Persistent
-      /data volume holds uploads, installed modules, cache and config.'
-    kubero.dev/template.links: '["https://github.com/freescout-help-desk/freescout/wiki/Installation-Guide", "https://github.com/nfrastack/docker-freescout"]'
+    kubero.dev/template.installation: 'Image: nfrastack/freescout (community-maintained,
+      formerly tiredofit). Rotate APP_KEY (base64 of 32 random bytes: `base64:$(openssl
+      rand -base64 32)`), the Postgres password (default ''freescout''), and ADMIN_PASS
+      before exposing publicly. First run auto-installs and seeds the admin user from
+      ADMIN_EMAIL / ADMIN_PASS; change the admin password after first login. DB_TYPE=pgsql
+      points FreeScout at the bundled postgres add-on (host freescout-postgresql-rw).
+      For inbound/outbound email, configure SMTP/IMAP in the FreeScout settings UI
+      (or via mail env vars) after install. Persistent /data volume holds uploads,
+      installed modules, cache and config.'
+    kubero.dev/template.links: '["https://github.com/freescout-help-desk/freescout/wiki/Installation-Guide",
+      "https://github.com/nfrastack/docker-freescout"]'
     kubero.dev/template.screenshots: '["https://freescout.net/wp-content/uploads/2018/12/screenshot-conversation.png"]'
     kubero.dev/template.source: https://github.com/freescout-help-desk/freescout
     kubero.dev/template.categories: '["helpdesk", "communication", "collaboration"]'
@@ -57,9 +61,9 @@ spec:
               secret:
                 name: freescout-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO freescout
-                - GRANT CREATE ON SCHEMA public TO freescout
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO freescout
+              - GRANT ALL ON SCHEMA public TO freescout
+              - GRANT CREATE ON SCHEMA public TO freescout
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO freescout
           enableSuperuserAccess: true
           superuserSecret:
             name: freescout-postgresql-superuser
@@ -117,7 +121,7 @@ spec:
   - name: NGINX_ENABLE_EXPLOIT_PROTECTION
     value: 'FALSE'
   - name: NGINX_SERVER_NAME
-    value: '_'
+    value: _
   - name: NGINX_ENABLE_DENY_HIDDEN_FILES
     value: 'FALSE'
   extraVolumes:
@@ -127,6 +131,7 @@ spec:
     mountPath: /data
     name: freescout-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

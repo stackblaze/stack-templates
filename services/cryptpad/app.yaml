@@ -4,10 +4,12 @@ metadata:
   name: cryptpad
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Collaborative office suite — end-to-end encrypted docs, sheets, and kanban boards.
+    kubero.dev/template.description: Collaborative office suite — end-to-end encrypted
+      docs, sheets, and kanban boards.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cryptpad/icon.png
-    kubero.dev/template.installation: Set CPAD_MAIN_DOMAIN and CPAD_SANDBOX_DOMAIN to two distinct HTTPS origins. First boot
-      runs npm build and may take several minutes.
+    kubero.dev/template.installation: Set CPAD_MAIN_DOMAIN and CPAD_SANDBOX_DOMAIN
+      to two distinct HTTPS origins. First boot runs npm build and may take several
+      minutes.
     kubero.dev/template.links: '["https://docs.cryptpad.org/"]'
     kubero.dev/template.screenshots: '["https://cryptpad.org/customize/logo/banner.png"]'
     kubero.dev/template.source: https://github.com/cryptpad/cryptpad
@@ -34,24 +36,28 @@ spec:
     mountPath: /cryptpad/blob
     name: cryptpad-blob
     size: 2Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /cryptpad/block
     name: cryptpad-block
     size: 2Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /cryptpad/data
     name: cryptpad-data
     size: 2Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /cryptpad/datastore
     name: cryptpad-files
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

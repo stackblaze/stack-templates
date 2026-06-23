@@ -4,17 +4,22 @@ metadata:
   name: totaljs-flow
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source visual flow-based programming editor for building real-time data-processing
-      and integration pipelines with drag-and-drop components.
+    kubero.dev/template.description: Open-source visual flow-based programming editor
+      for building real-time data-processing and integration pipelines with drag-and-drop
+      components.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/totaljs-flow/icon.png
-    kubero.dev/template.installation: 'Image: totalplatform/flow (official Total.js platform image). Total.js Flow is fully
-      file-based - it needs NO external database; all flow designs, custom components, uploaded files and config persist on
-      the /www/flow volume, so back that up. The app listens on port 8000. The editor is unauthenticated by default: set FLOW_TOKEN
-      to a long random value (e.g. `openssl rand -hex 32`) to require a token, and place it behind the ingress TLS/auth as
-      appropriate before exposing publicly - rotate FLOW_TOKEN from the placeholder. FLOW_NAME just labels the instance. On
-      first run the empty flow workspace loads at the root URL; create or import flows from the designer. If you later need
-      a message queue or datastore, deploy it separately and reference it from inside your flows (Flow has its own component
-      nodes for Postgres, MongoDB, Redis, MQTT, etc.).'
+    kubero.dev/template.installation: 'Image: totalplatform/flow (official Total.js
+      platform image). Total.js Flow is fully file-based - it needs NO external database;
+      all flow designs, custom components, uploaded files and config persist on the
+      /www/flow volume, so back that up. The app listens on port 8000. The editor
+      is unauthenticated by default: set FLOW_TOKEN to a long random value (e.g. `openssl
+      rand -hex 32`) to require a token, and place it behind the ingress TLS/auth
+      as appropriate before exposing publicly - rotate FLOW_TOKEN from the placeholder.
+      FLOW_NAME just labels the instance. On first run the empty flow workspace loads
+      at the root URL; create or import flows from the designer. If you later need
+      a message queue or datastore, deploy it separately and reference it from inside
+      your flows (Flow has its own component nodes for Postgres, MongoDB, Redis, MQTT,
+      etc.).'
     kubero.dev/template.links: '["https://docs.totaljs.com/flow10/", "https://github.com/totaljs/flow"]'
     kubero.dev/template.screenshots: '["https://www.totaljs.com/download/flow-preview.png"]'
     kubero.dev/template.source: https://github.com/totaljs/flow
@@ -41,6 +46,7 @@ spec:
     mountPath: /www/flow
     name: totaljs-flow-data
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

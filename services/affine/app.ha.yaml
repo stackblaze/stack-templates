@@ -41,7 +41,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
           bootstrap:
             initdb:
@@ -82,7 +82,7 @@ spec:
         metadata:
           name: affine-valkey
         spec:
-          version: "8.0"
+          version: '8.0'
           arch: failover
           replicas:
             shards: 1
@@ -120,15 +120,15 @@ spec:
   - name: TELEMETRY_ENABLE
     value: 'false'
   - name: REDIS_SERVER_PASSWORD
-    value: ""
+    value: ''
   extraVolumes:
-  - accessMode: ReadWriteOnce
-    accessModes:
+  - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /root/.affine
     name: affine-volume
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '3010'
     pullPolicy: Always

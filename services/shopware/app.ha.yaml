@@ -4,21 +4,27 @@ metadata:
   name: shopware
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source headless commerce platform for building online stores, marketplaces, and
-      B2B/D2C experiences with Symfony and Vue.
+    kubero.dev/template.description: Open-source headless commerce platform for building
+      online stores, marketplaces, and B2B/D2C experiences with Symfony and Vue.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/shopware/icon.png
-    kubero.dev/template.installation: 'Image: dockware/play (the de-facto managed Shopware 6 Docker image; runs Apache + PHP-FPM
-      on port 80). Shopware REQUIRES MySQL 8 / MariaDB 10.11+ (NOT Postgres) - the mariadb add-on is wired in. Valkey (Redis-compatible)
-      is wired in for sessions and app cache. First-run: the image ships a pre-installed demo shop using its bundled MySQL;
-      for production point DATABASE_URL at the external mariadb add-on (set INSTALL=1 / run `bin/console system:install` on
-      first boot to migrate the schema onto it), then create an admin via `bin/console user:create`. Default admin login of
-      the bundled demo is admin / shopware - ROTATE immediately. Rotate APP_SECRET and INSTANCE_ID_HASH (placeholders below)
-      with `openssl rand -hex 32` and the mariadb/db passwords. COMPANION SERVICES (deploy as separate apps sharing the same
-      DATABASE_URL/Redis): a message-consumer worker (`bin/console messenger:consume async,low_priority`, same dockware/play
-      image, run as a long-lived command), a scheduled-task worker (`bin/console scheduled-task:run`), and a cron/cache-warmer.
-      SEARCH: Shopware scales poorly past ~50k products on MySQL search - deploy OpenSearch 2.x separately (NOT an available
-      operator add-on; run it standalone) and set OPENSEARCH_URL + SHOPWARE_ES_ENABLED=1 + SHOPWARE_ES_INDEXING_ENABLED=1.
-      Optionally front the storefront with Varnish/HTTP cache for production.'
+    kubero.dev/template.installation: 'Image: dockware/play (the de-facto managed
+      Shopware 6 Docker image; runs Apache + PHP-FPM on port 80). Shopware REQUIRES
+      MySQL 8 / MariaDB 10.11+ (NOT Postgres) - the mariadb add-on is wired in. Valkey
+      (Redis-compatible) is wired in for sessions and app cache. First-run: the image
+      ships a pre-installed demo shop using its bundled MySQL; for production point
+      DATABASE_URL at the external mariadb add-on (set INSTALL=1 / run `bin/console
+      system:install` on first boot to migrate the schema onto it), then create an
+      admin via `bin/console user:create`. Default admin login of the bundled demo
+      is admin / shopware - ROTATE immediately. Rotate APP_SECRET and INSTANCE_ID_HASH
+      (placeholders below) with `openssl rand -hex 32` and the mariadb/db passwords.
+      COMPANION SERVICES (deploy as separate apps sharing the same DATABASE_URL/Redis):
+      a message-consumer worker (`bin/console messenger:consume async,low_priority`,
+      same dockware/play image, run as a long-lived command), a scheduled-task worker
+      (`bin/console scheduled-task:run`), and a cron/cache-warmer. SEARCH: Shopware
+      scales poorly past ~50k products on MySQL search - deploy OpenSearch 2.x separately
+      (NOT an available operator add-on; run it standalone) and set OPENSEARCH_URL
+      + SHOPWARE_ES_ENABLED=1 + SHOPWARE_ES_INDEXING_ENABLED=1. Optionally front the
+      storefront with Varnish/HTTP cache for production.'
     kubero.dev/template.links: '["https://developer.shopware.com/docs/", "https://docs.dockware.io"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/shopware/shopware
@@ -148,12 +154,14 @@ spec:
     mountPath: /var/www/html/files
     name: shopware-files
     size: 2Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/public/media
     name: shopware-media
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   resources:
     requests:
@@ -162,7 +170,6 @@ spec:
     limits:
       cpu: '2'
       memory: 2Gi
-  # dockware/play boots bundled MySQL + Apache; exceeds default ~90s startup probe and 512Mi limit
   healthcheck:
     enabled: true
     path: /

@@ -4,10 +4,12 @@ metadata:
   name: discourse
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source community discussion platform — modern forum software.
+    kubero.dev/template.description: Open-source community discussion platform — modern
+      forum software.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/icon.png
-    kubero.dev/template.installation: Set DISCOURSE_HOST to your public hostname (without protocol) before first boot. Default
-      admin password is configured via DISCOURSE_PASSWORD — change it after install.
+    kubero.dev/template.installation: Set DISCOURSE_HOST to your public hostname (without
+      protocol) before first boot. Default admin password is configured via DISCOURSE_PASSWORD
+      — change it after install.
     kubero.dev/template.links: '["https://meta.discourse.org/"]'
     kubero.dev/template.screenshots: '["https://www.discourse.org/a/images/discourse-screen.jpg"]'
     kubero.dev/template.source: https://github.com/discourse/discourse
@@ -52,9 +54,9 @@ spec:
               secret:
                 name: discourse-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO bn_discourse
-                - GRANT CREATE ON SCHEMA public TO bn_discourse
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO bn_discourse
+              - GRANT ALL ON SCHEMA public TO bn_discourse
+              - GRANT CREATE ON SCHEMA public TO bn_discourse
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO bn_discourse
           enableSuperuserAccess: true
           superuserSecret:
             name: discourse-postgresql-superuser
@@ -145,6 +147,7 @@ spec:
     mountPath: /bitnami/discourse
     name: discourse-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

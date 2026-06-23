@@ -4,18 +4,24 @@ metadata:
   name: hop
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source data orchestration and integration platform (ETL) for designing and running
-      visual data pipelines and workflows in the browser.
+    kubero.dev/template.description: Open-source data orchestration and integration
+      platform (ETL) for designing and running visual data pipelines and workflows
+      in the browser.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hop/icon.png
-    kubero.dev/template.installation: Deploys the official apache/hop-web image, with the visual designer reachable at the
-      /ui path on the app URL. Apache Hop stores its projects, environments, and metadata as files, so no database add-on
-      is provisioned; the persistent /config volume holds your project and config directory and must be kept. Mount or import
-      your Hop project under /config and set HOP_PROJECT_FOLDER / HOP_PROJECT_NAME / HOP_ENVIRONMENT_NAME to auto-load it
-      on startup (leave them empty to start with the default 'samples' project). Database, file, and message-queue connections
-      used by your pipelines (Postgres, MySQL, Kafka, S3, etc.) are configured inside Hop per pipeline and are not part of
-      this template. For production, run with a sized app pod (the JVM needs more than the default 512Mi) and add authentication
-      in front of Hop Web, which ships without built-in login.
-    kubero.dev/template.links: '["https://hop.apache.org/manual/latest/hop-gui/hop-web.html", "https://hop.apache.org/tech-manual/latest/docker-container.html"]'
+    kubero.dev/template.installation: Deploys the official apache/hop-web image, with
+      the visual designer reachable at the /ui path on the app URL. Apache Hop stores
+      its projects, environments, and metadata as files, so no database add-on is
+      provisioned; the persistent /config volume holds your project and config directory
+      and must be kept. Mount or import your Hop project under /config and set HOP_PROJECT_FOLDER
+      / HOP_PROJECT_NAME / HOP_ENVIRONMENT_NAME to auto-load it on startup (leave
+      them empty to start with the default 'samples' project). Database, file, and
+      message-queue connections used by your pipelines (Postgres, MySQL, Kafka, S3,
+      etc.) are configured inside Hop per pipeline and are not part of this template.
+      For production, run with a sized app pod (the JVM needs more than the default
+      512Mi) and add authentication in front of Hop Web, which ships without built-in
+      login.
+    kubero.dev/template.links: '["https://hop.apache.org/manual/latest/hop-gui/hop-web.html",
+      "https://hop.apache.org/tech-manual/latest/docker-container.html"]'
     kubero.dev/template.screenshots: '["https://hop.apache.org/img/hop-gui.png"]'
     kubero.dev/template.source: https://github.com/apache/hop
     kubero.dev/template.categories: '["data", "automation", "development"]'
@@ -45,8 +51,8 @@ spec:
     mountPath: /config
     name: hop-config
     size: 2Gi
+    storageClass: slow
   cronjobs: []
-  # Default QA LimitRange caps web pods at 512Mi; Hop Web (Tomcat/JVM) OOMs during boot.
   resources:
     requests:
       cpu: 500m
@@ -69,34 +75,21 @@ spec:
     pullPolicy: Always
     repository: apache/hop-web
     tag: latest
-    # Kubero mounts emptyDir on /tmp, hiding the image entrypoint script /tmp/run-web.sh.
     command:
     - bash
     - -c
-    - |
-      set -Euo pipefail
-      if [ -n "${HOP_PROJECT_FOLDER}" ] && [ -n "${HOP_PROJECT_NAME}" ] && [ -d "${HOP_PROJECT_FOLDER}" ]; then
-        if ! "${DEPLOYMENT_PATH}/hop-conf.sh" -pl | grep -q -E "^  ${HOP_PROJECT_NAME} :"; then
-          "${DEPLOYMENT_PATH}/hop-conf.sh" \
-            --project="${HOP_PROJECT_NAME}" \
-            --project-create \
-            --project-home="${HOP_PROJECT_FOLDER}" \
-            --project-config-file="${HOP_PROJECT_CONFIG_FILE_NAME}"
-        fi
-        if [ -n "${HOP_ENVIRONMENT_CONFIG_FILE_NAME_PATHS}" ] && [ -n "${HOP_ENVIRONMENT_NAME}" ]; then
-          if ! "${DEPLOYMENT_PATH}/hop-conf.sh" -el | grep -q -E -x "^  ${HOP_ENVIRONMENT_NAME}"; then
-            "${DEPLOYMENT_PATH}/hop-conf.sh" \
-              --environment="${HOP_ENVIRONMENT_NAME}" \
-              --environment-create \
-              --environment-project="${HOP_PROJECT_NAME}" \
-              --environment-purpose="Apache Hop docker container" \
-              --environment-config-files="${HOP_ENVIRONMENT_CONFIG_FILE_NAME_PATHS}"
-          fi
-        fi
-      fi
-      [ -f /config/tomcat-users.xml ] && cp /config/tomcat-users.xml /usr/local/tomcat/conf/
-      [ -f /config/web.xml ] && cp /config/web.xml /usr/local/tomcat/webapps/ROOT/WEB-INF/
-      catalina.sh run &
-      pid="$!"
-      trap "catalina.sh stop" SIGINT SIGTERM
-      wait "$pid"
+    - "set -Euo pipefail\nif [ -n \"${HOP_PROJECT_FOLDER}\" ] && [ -n \"${HOP_PROJECT_NAME}\"\
+      \ ] && [ -d \"${HOP_PROJECT_FOLDER}\" ]; then\n  if ! \"${DEPLOYMENT_PATH}/hop-conf.sh\"\
+      \ -pl | grep -q -E \"^  ${HOP_PROJECT_NAME} :\"; then\n    \"${DEPLOYMENT_PATH}/hop-conf.sh\"\
+      \ \\\n      --project=\"${HOP_PROJECT_NAME}\" \\\n      --project-create \\\n\
+      \      --project-home=\"${HOP_PROJECT_FOLDER}\" \\\n      --project-config-file=\"\
+      ${HOP_PROJECT_CONFIG_FILE_NAME}\"\n  fi\n  if [ -n \"${HOP_ENVIRONMENT_CONFIG_FILE_NAME_PATHS}\"\
+      \ ] && [ -n \"${HOP_ENVIRONMENT_NAME}\" ]; then\n    if ! \"${DEPLOYMENT_PATH}/hop-conf.sh\"\
+      \ -el | grep -q -E -x \"^  ${HOP_ENVIRONMENT_NAME}\"; then\n      \"${DEPLOYMENT_PATH}/hop-conf.sh\"\
+      \ \\\n        --environment=\"${HOP_ENVIRONMENT_NAME}\" \\\n        --environment-create\
+      \ \\\n        --environment-project=\"${HOP_PROJECT_NAME}\" \\\n        --environment-purpose=\"\
+      Apache Hop docker container\" \\\n        --environment-config-files=\"${HOP_ENVIRONMENT_CONFIG_FILE_NAME_PATHS}\"\
+      \n    fi\n  fi\nfi\n[ -f /config/tomcat-users.xml ] && cp /config/tomcat-users.xml\
+      \ /usr/local/tomcat/conf/\n[ -f /config/web.xml ] && cp /config/web.xml /usr/local/tomcat/webapps/ROOT/WEB-INF/\n\
+      catalina.sh run &\npid=\"$!\"\ntrap \"catalina.sh stop\" SIGINT SIGTERM\nwait\
+      \ \"$pid\"\n"

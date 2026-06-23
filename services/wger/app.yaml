@@ -4,17 +4,21 @@ metadata:
   name: wger
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted FLOSS fitness and workout manager that lets you track workouts, nutrition,
-      body weight, and exercises.
+    kubero.dev/template.description: Self-hosted FLOSS fitness and workout manager
+      that lets you track workouts, nutrition, body weight, and exercises.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wger/icon.png
-    kubero.dev/template.installation: 'Single-container Django app served via gunicorn on port 8000. Rotate SECRET_KEY and
-      SIGNING_KEY (each a unique 50-char random string; they MUST differ) and the postgres password before going to production.
-      Companion services deployed as add-ons: PostgreSQL (primary DB) and a Valkey (Redis-protocol) instance used for both
-      the Django cache and the Celery broker/backend. Migrations run automatically on boot (DJANGO_PERFORM_MIGRATIONS=True).
-      On first run an admin user ''admin'' (password ''adminadmin'') is created via DJANGO_DB_BOOTSTRAP_USER defaults; change
-      it immediately. Set CSRF_TRUSTED_ORIGINS / SITE_URL to your real https URL (templated below). Uploaded media and static
-      files persist on the mounted volume. Note: the periodic exercise/ingredient sync tasks run via Celery against the Valkey
-      add-on; no separate worker pod is templated, so heavy background sync may be limited.'
+    kubero.dev/template.installation: 'Single-container Django app served via gunicorn
+      on port 8000. Rotate SECRET_KEY and SIGNING_KEY (each a unique 50-char random
+      string; they MUST differ) and the postgres password before going to production.
+      Companion services deployed as add-ons: PostgreSQL (primary DB) and a Valkey
+      (Redis-protocol) instance used for both the Django cache and the Celery broker/backend.
+      Migrations run automatically on boot (DJANGO_PERFORM_MIGRATIONS=True). On first
+      run an admin user ''admin'' (password ''adminadmin'') is created via DJANGO_DB_BOOTSTRAP_USER
+      defaults; change it immediately. Set CSRF_TRUSTED_ORIGINS / SITE_URL to your
+      real https URL (templated below). Uploaded media and static files persist on
+      the mounted volume. Note: the periodic exercise/ingredient sync tasks run via
+      Celery against the Valkey add-on; no separate worker pod is templated, so heavy
+      background sync may be limited.'
     kubero.dev/template.links: '["https://wger.readthedocs.io/en/latest/production/docker.html"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/wger-project/wger
@@ -180,12 +184,14 @@ spec:
     mountPath: /home/wger/media
     name: wger-media
     size: 5Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /home/wger/static
     name: wger-static
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true
@@ -205,18 +211,11 @@ spec:
     command:
     - /bin/bash
     - -ec
-    - |
-      until python3 -c "import psycopg; psycopg.connect(host='${DJANGO_DB_HOST}', port=int('${DJANGO_DB_PORT}'), user='${DJANGO_DB_USER}', password='${DJANGO_DB_PASSWORD}', dbname='${DJANGO_DB_DATABASE}')"; do
-        echo 'Waiting for PostgreSQL...'
-        sleep 3
-      done
-      REDIS_HOST="${DJANGO_CACHE_LOCATION#redis://}"
-      REDIS_HOST="${REDIS_HOST%%/*}"
-      REDIS_HOST="${REDIS_HOST%%:*}"
-      REDIS_PORT="${DJANGO_CACHE_LOCATION##*:}"
-      REDIS_PORT="${REDIS_PORT%%/*}"
-      until (echo >/dev/tcp/"${REDIS_HOST}"/"${REDIS_PORT}") 2>/dev/null; do
-        echo 'Waiting for Valkey...'
-        sleep 2
-      done
-      exec /home/wger/entrypoint.sh
+    - "until python3 -c \"import psycopg; psycopg.connect(host='${DJANGO_DB_HOST}',\
+      \ port=int('${DJANGO_DB_PORT}'), user='${DJANGO_DB_USER}', password='${DJANGO_DB_PASSWORD}',\
+      \ dbname='${DJANGO_DB_DATABASE}')\"; do\n  echo 'Waiting for PostgreSQL...'\n\
+      \  sleep 3\ndone\nREDIS_HOST=\"${DJANGO_CACHE_LOCATION#redis://}\"\nREDIS_HOST=\"\
+      ${REDIS_HOST%%/*}\"\nREDIS_HOST=\"${REDIS_HOST%%:*}\"\nREDIS_PORT=\"${DJANGO_CACHE_LOCATION##*:}\"\
+      \nREDIS_PORT=\"${REDIS_PORT%%/*}\"\nuntil (echo >/dev/tcp/\"${REDIS_HOST}\"\
+      /\"${REDIS_PORT}\") 2>/dev/null; do\n  echo 'Waiting for Valkey...'\n  sleep\
+      \ 2\ndone\nexec /home/wger/entrypoint.sh\n"

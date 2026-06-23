@@ -4,18 +4,23 @@ metadata:
   name: owncloud
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: ownCloud is a self-hosted file sync and share platform for storing, accessing and collaborating
-      on your files across devices.
+    kubero.dev/template.description: ownCloud is a self-hosted file sync and share
+      platform for storing, accessing and collaborating on your files across devices.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/owncloud/icon.png
-    kubero.dev/template.installation: The official owncloud/server image initializes itself on first boot using the OWNCLOUD_ADMIN_*
-      and OWNCLOUD_DB_* environment variables, so no manual setup wizard is needed. It is built and tested against MariaDB/MySQL
-      plus Redis (provided here by the mariadb and valkey add-ons). Rotate the mariadb add-on credentials and the OWNCLOUD_ADMIN_PASSWORD
-      ('owncloud' default) after first login. OWNCLOUD_TRUSTED_DOMAINS / OWNCLOUD_DOMAIN are wired to the app host so the
-      instance accepts requests at its public URL; add any extra domains there. The valkey add-on is password-less, so OWNCLOUD_REDIS_HOST
-      points at rfr-owncloud-valkey-readwrite with no password set. User files, config and the SQLite-free data dir live under
-      /mnt/data (persisted by the owncloud-data volume). For large instances raise the app pod size and PHP memory limit.
-      An external object/S3 store is optional and not required for a base install.
-    kubero.dev/template.links: '["https://doc.owncloud.com/server/latest/admin_manual/installation/docker/", "https://doc.owncloud.com/server/latest/admin_manual/"]'
+    kubero.dev/template.installation: The official owncloud/server image initializes
+      itself on first boot using the OWNCLOUD_ADMIN_* and OWNCLOUD_DB_* environment
+      variables, so no manual setup wizard is needed. It is built and tested against
+      MariaDB/MySQL plus Redis (provided here by the mariadb and valkey add-ons).
+      Rotate the mariadb add-on credentials and the OWNCLOUD_ADMIN_PASSWORD ('owncloud'
+      default) after first login. OWNCLOUD_TRUSTED_DOMAINS / OWNCLOUD_DOMAIN are wired
+      to the app host so the instance accepts requests at its public URL; add any
+      extra domains there. The valkey add-on is password-less, so OWNCLOUD_REDIS_HOST
+      points at rfr-owncloud-valkey-readwrite with no password set. User files, config
+      and the SQLite-free data dir live under /mnt/data (persisted by the owncloud-data
+      volume). For large instances raise the app pod size and PHP memory limit. An
+      external object/S3 store is optional and not required for a base install.
+    kubero.dev/template.links: '["https://doc.owncloud.com/server/latest/admin_manual/installation/docker/",
+      "https://doc.owncloud.com/server/latest/admin_manual/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/owncloud/core
     kubero.dev/template.categories: '["storage", "productivity", "collaboration"]'
@@ -144,6 +149,7 @@ spec:
     mountPath: /mnt/data
     name: owncloud-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -159,4 +165,4 @@ spec:
     containerPort: '8080'
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/owncloud-server
-    tag: '10.16.3'
+    tag: 10.16.3

@@ -44,20 +44,20 @@ spec:
   - name: PGID
     value: '1000'
   extraVolumes:
-  - accessMode: ReadWriteOnce
-    accessModes:
+  - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /app/sqlite
     name: lychee-db-volume
     size: 1Gi
-  - accessMode: ReadWriteOnce
-    accessModes:
+    storageClass: slow
+  - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /app/public/uploads
     name: lychee-upload-volume
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '8000'
     pullPolicy: Always
@@ -66,10 +66,10 @@ spec:
     command:
     - sh
     - -c
-    - mkdir -p /app/sqlite /app/public/uploads && touch /app/sqlite/lychee.sqlite && chown
-      -R 1000:1000 /app/sqlite /app/public/uploads && chmod 0775 /app/sqlite /app/public/uploads
-      && chmod 0664 /app/sqlite/lychee.sqlite && exec /usr/local/bin/entrypoint.sh php artisan
-      octane:start --server=frankenphp --host=0.0.0.0 --port=8000
+    - mkdir -p /app/sqlite /app/public/uploads && touch /app/sqlite/lychee.sqlite
+      && chown -R 1000:1000 /app/sqlite /app/public/uploads && chmod 0775 /app/sqlite
+      /app/public/uploads && chmod 0664 /app/sqlite/lychee.sqlite && exec /usr/local/bin/entrypoint.sh
+      php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8000
     run:
       securityContext:
         runAsNonRoot: false

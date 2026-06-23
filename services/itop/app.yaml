@@ -4,16 +4,20 @@ metadata:
   name: itop
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: 'Combodo iTop: open-source ITSM and CMDB platform for incident, problem, change, service
-      management and a configuration database.'
+    kubero.dev/template.description: 'Combodo iTop: open-source ITSM and CMDB platform
+      for incident, problem, change, service management and a configuration database.'
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/itop/icon.png
-    kubero.dev/template.installation: iTop is a PHP app that requires MySQL/MariaDB (it does NOT support Postgres); a 'mariadb'
-      add-on is provisioned. The vbkunin/itop image is the de-facto community image (no official Combodo image exists); the
-      '-base' tag is Apache+PHP only, without a bundled DB, so it uses the external MariaDB add-on. The database connection
-      is NOT set via env vars - on first run open the URL and complete the web setup wizard, entering DB host 'itop-mysql'
-      port 3306, user 'itop', password 'itop', db 'itop' (rotate this password from its default before going live). The wizard
-      also creates the admin account. The MYSQL_PASS env only seeds the bundled MySQL of the non-base image and is unused
-      here. Persist /var/www/html/data and the generated /var/www/html/conf so config and attachments survive restarts.
+    kubero.dev/template.installation: iTop is a PHP app that requires MySQL/MariaDB
+      (it does NOT support Postgres); a 'mariadb' add-on is provisioned. The vbkunin/itop
+      image is the de-facto community image (no official Combodo image exists); the
+      '-base' tag is Apache+PHP only, without a bundled DB, so it uses the external
+      MariaDB add-on. The database connection is NOT set via env vars - on first run
+      open the URL and complete the web setup wizard, entering DB host 'itop-mysql'
+      port 3306, user 'itop', password 'itop', db 'itop' (rotate this password from
+      its default before going live). The wizard also creates the admin account. The
+      MYSQL_PASS env only seeds the bundled MySQL of the non-base image and is unused
+      here. Persist /var/www/html/data and the generated /var/www/html/conf so config
+      and attachments survive restarts.
     kubero.dev/template.links: '["https://www.itophub.io/wiki/page", "https://github.com/vbkunin/itop-docker"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/Combodo/iTop
@@ -89,12 +93,14 @@ spec:
     mountPath: /var/www/html/data
     name: itop-data
     size: 3Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/conf
     name: itop-conf
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

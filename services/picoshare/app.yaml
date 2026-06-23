@@ -4,15 +4,17 @@ metadata:
   name: picoshare
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Minimalist self-hosted file-sharing service for generating shareable download links to
-      files of any size.
+    kubero.dev/template.description: Minimalist self-hosted file-sharing service for
+      generating shareable download links to files of any size.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/picoshare/icon.png
-    kubero.dev/template.installation: 'PicoShare stores everything in a single SQLite database under /data (no external datastore
-      add-on needed). REQUIRED: set PS_SHARED_SECRET to a strong random value before exposing publicly (it is the admin/upload
-      passphrase) and rotate the default. Optional: enable Litestream streaming backups by setting LITESTREAM_BUCKET / LITESTREAM_ENDPOINT
-      / LITESTREAM_ACCESS_KEY_ID / LITESTREAM_SECRET_ACCESS_KEY (requires an external S3-compatible bucket; omitted from addons
-      since Kubero add-ons do not cover S3). The persistent volume at /data must be retained across upgrades or all uploads
-      and links are lost.'
+    kubero.dev/template.installation: 'PicoShare stores everything in a single SQLite
+      database under /data (no external datastore add-on needed). REQUIRED: set PS_SHARED_SECRET
+      to a strong random value before exposing publicly (it is the admin/upload passphrase)
+      and rotate the default. Optional: enable Litestream streaming backups by setting
+      LITESTREAM_BUCKET / LITESTREAM_ENDPOINT / LITESTREAM_ACCESS_KEY_ID / LITESTREAM_SECRET_ACCESS_KEY
+      (requires an external S3-compatible bucket; omitted from addons since Kubero
+      add-ons do not cover S3). The persistent volume at /data must be retained across
+      upgrades or all uploads and links are lost.'
     kubero.dev/template.links: '["https://github.com/mtlynch/picoshare/blob/master/README.md"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/mtlynch/picoshare/master/docs/demo.gif"]'
     kubero.dev/template.source: https://github.com/mtlynch/picoshare
@@ -37,6 +39,7 @@ spec:
     mountPath: /data
     name: picoshare-data
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

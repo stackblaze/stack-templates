@@ -22,13 +22,13 @@ spec:
   deploymentstrategy: docker
   envVars: []
   extraVolumes:
-  - accessMode: ReadWriteOnce
-    accessModes:
+  - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /downloads
     name: downloads-volume
     size: 10Gi
+    storageClass: slow
   image:
     containerPort: '8081'
     pullPolicy: Always

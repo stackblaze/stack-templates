@@ -41,7 +41,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
           bootstrap:
             initdb:
@@ -90,13 +90,13 @@ spec:
   - name: BW_INSTALLATION_KEY
     value: XXXXXXXXXXXXXXXXXXXX
   extraVolumes:
-  - accessMode: ReadWriteOnce
-    accessModes:
+  - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /etc/bitwarden
     name: bitwarden
     size: 1Gi
+    storageClass: slow
   healthcheck:
     enabled: true
     path: /
@@ -114,7 +114,7 @@ spec:
       cpu: 100m
       memory: 512Mi
     limits:
-      cpu: "1"
+      cpu: '1'
       memory: 1Gi
   web:
     replicaCount: 1

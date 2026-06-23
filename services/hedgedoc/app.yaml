@@ -4,9 +4,11 @@ metadata:
   name: hedgedoc
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Collaborative markdown editor for real-time notes, docs, and knowledge sharing.
+    kubero.dev/template.description: Collaborative markdown editor for real-time notes,
+      docs, and knowledge sharing.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hedgedoc/icon.png
-    kubero.dev/template.installation: Set CMD_DOMAIN to your public hostname and CMD_SESSION_SECRET to a random string.
+    kubero.dev/template.installation: Set CMD_DOMAIN to your public hostname and CMD_SESSION_SECRET
+      to a random string.
     kubero.dev/template.links: '["https://docs.hedgedoc.org/"]'
     kubero.dev/template.screenshots: '["https://hedgedoc.org/img/screenshot.png"]'
     kubero.dev/template.source: https://github.com/hedgedoc/hedgedoc
@@ -89,6 +91,7 @@ spec:
     mountPath: /hedgedoc/public/uploads
     name: hedgedoc-uploads
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

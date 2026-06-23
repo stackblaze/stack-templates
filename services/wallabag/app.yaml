@@ -3,9 +3,11 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
-    kubero.dev/template.description: Self-hostable read-it-later app for saving and classifying web pages to read later.
+    kubero.dev/template.description: Self-hostable read-it-later app for saving and
+      classifying web pages to read later.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4573139?s=200&v=4
-    kubero.dev/template.installation: Default login is wallabag:wallabag — change the password after first login.
+    kubero.dev/template.installation: Default login is wallabag:wallabag — change
+      the password after first login.
     kubero.dev/template.links: '["https://doc.wallabag.org/"]'
     kubero.dev/template.screenshots: '["https://www.wallabag.org/images/logo-wallabag.svg"]'
     kubero.dev/template.source: https://github.com/wallabag/wallabag
@@ -37,12 +39,14 @@ spec:
     mountPath: /var/www/wallabag/data
     name: wallabag-data
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/wallabag/web/assets/images
     name: wallabag-images
     size: 1Gi
+    storageClass: slow
   healthcheck:
     enabled: true
     path: /

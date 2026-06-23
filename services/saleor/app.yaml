@@ -4,21 +4,27 @@ metadata:
   name: saleor
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: GraphQL-first, headless open-source e-commerce platform for building scalable storefronts,
-      marketplaces and digital commerce.
+    kubero.dev/template.description: GraphQL-first, headless open-source e-commerce
+      platform for building scalable storefronts, marketplaces and digital commerce.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/saleor/icon.png
-    kubero.dev/template.installation: 'Saleor is a multi-container stack. This template deploys the PRIMARY GraphQL API/server
-      image (ghcr.io/saleor/saleor). After first boot, exec into the pod and run migrations + create an admin: `python manage.py
-      migrate` then `python manage.py createsuperuser` (or set the pre-baked superuser via env). You MUST also deploy these
-      companion services, all using the SAME ghcr.io/saleor/saleor image with the same DATABASE_URL/REDIS_URL/SECRET_KEY env:
-      (1) Celery WORKER -> command `celery --app saleor.celeryconf:app worker --loglevel=info`; (2) Celery BEAT SCHEDULER
-      -> command `celery --app saleor.celeryconf:app beat --scheduler saleor.schedulers.schedulers.DatabaseScheduler`. The
-      admin DASHBOARD is a separate static SPA image `ghcr.io/saleor/saleor-dashboard` (nginx, port 80) pointed at this API''s
-      /graphql/ endpoint. Add-ons: a Postgres add-on (Saleor recommends PostgreSQL) and a Valkey/Redis add-on (used as Celery
-      broker + cache) are provisioned. Rotate the default Postgres password and the SECRET_KEY (replace the placeholder with
-      `openssl rand -hex 32`). Set ALLOWED_HOSTS/ALLOWED_GRAPHQL_ORIGINS to your real host. For media/static uploads Saleor
-      recommends external S3-compatible object storage in production; this template mounts a local volume at /app/media for
-      default local file storage. A full-text search backend is optional and not included.'
+    kubero.dev/template.installation: 'Saleor is a multi-container stack. This template
+      deploys the PRIMARY GraphQL API/server image (ghcr.io/saleor/saleor). After
+      first boot, exec into the pod and run migrations + create an admin: `python
+      manage.py migrate` then `python manage.py createsuperuser` (or set the pre-baked
+      superuser via env). You MUST also deploy these companion services, all using
+      the SAME ghcr.io/saleor/saleor image with the same DATABASE_URL/REDIS_URL/SECRET_KEY
+      env: (1) Celery WORKER -> command `celery --app saleor.celeryconf:app worker
+      --loglevel=info`; (2) Celery BEAT SCHEDULER -> command `celery --app saleor.celeryconf:app
+      beat --scheduler saleor.schedulers.schedulers.DatabaseScheduler`. The admin
+      DASHBOARD is a separate static SPA image `ghcr.io/saleor/saleor-dashboard` (nginx,
+      port 80) pointed at this API''s /graphql/ endpoint. Add-ons: a Postgres add-on
+      (Saleor recommends PostgreSQL) and a Valkey/Redis add-on (used as Celery broker
+      + cache) are provisioned. Rotate the default Postgres password and the SECRET_KEY
+      (replace the placeholder with `openssl rand -hex 32`). Set ALLOWED_HOSTS/ALLOWED_GRAPHQL_ORIGINS
+      to your real host. For media/static uploads Saleor recommends external S3-compatible
+      object storage in production; this template mounts a local volume at /app/media
+      for default local file storage. A full-text search backend is optional and not
+      included.'
     kubero.dev/template.links: '["https://docs.saleor.io/setup/docker-compose", "https://docs.saleor.io/setup/configuration"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/saleor/saleor
@@ -124,34 +130,59 @@ spec:
   - name: SECRET_KEY
     value: replace-with-openssl-rand-hex-32
   - name: RSA_PRIVATE_KEY
-    value: |-
-      -----BEGIN RSA PRIVATE KEY-----
+    value: '-----BEGIN RSA PRIVATE KEY-----
+
       MIIEogIBAAKCAQEAl9NuwaW3RRlTOcsimwvpxHNeHvdCzs5vgR17qEiqarKcsSDI
+
       E8nqDEVMZoHco1/qEXdZuGqbaQJa4IotAlvBwUtdGVAI5pkLprwXAMKmsAiDXePe
+
       17WVxbOEJoCxZ+/PqwcTR5WBGddvwSk6bwWlXBGMZ0MTvfEnZC+9FbXfu3ruHbx1
+
       3j4t9Ov8gXswWAuJ7O3zS5r+3f7fMc92Cpr1JB/zTTI/z+fvoP6ODXThN8cziEhj
+
       sLTvWTHIB9LPBCeoAhWMf9ru7HHTpN+RhhVXQcBE4+XSgelm2PVPqBv9XHMaYWFc
+
       tXr9iU+kQg/GE9N9id5kasW/R7+tT5RWzfZaqwIDAQABAoIBABHnxIsf8RI8H12U
+
       gFtKt2IMvQ/n10AuhmXyxS+eikKVF/enxxDWYjzaO11neU7nM+KlcbZXFEb5GSCc
+
       CxzZF2ulaLBgiPwxFneufQQA8MmX524+PnywFJ7BQheMW9/HH3WrGvH5RsV2a96a
+
       7yJCxzKpeyZ+eaiP9TZSjvktftpMQZp90wxJJcfI557Y+/kgEb7rrzphTxPnKmF8
+
       M1nUsq4Nhv4GAyFf5LUWmwdp0l4dC/4UGzIyssJoGqd9TIxrQRwP/oI7VjGRg61/
+
       7oi4uexZ/gw+aqE1xNqxdV9ilfDmcb3PdgCE9dcj6b/vmlx/tg65FV1ZBh7hACUE
+
       s1PKIgkCgYEAzHw5zNwhI/DFl/3a+/ExetLECF/5lXcEq2BJKjM6bsnZFEVQeu6j
+
       E5pXRG9fG8QHgb6YSR1f4ziccXbXsRV/0MwBlDnFK5uuniZfvC9CkkwQ7lLC897W
+
       vHp+QtnWSnvPZzsSn0K0i9HX0qLVkph4uvY3+Qxz/2klqsizljxGTVcCgYEAvhMS
+
       U1nhWeAoInoiBAo9wrCn6Kp+r0hdU8J3y1OurQOn6s3RojA7JupbXjgCCa+FMo/j
+
       ANRjKKRQaMOG0wUE/tCOPMM5nrgDdR79CI6ojPKj9s2q+OHK9EgyWlEBls6burFp
+
       zpK0vsFQPd6k8YhWAVQeDZ5uQITFTK+49hP5dM0CgYBjLiGuzlo4n3CHXvZW2s6f
+
       /xhb44kfyKF4KfRyxnQiBj8HCPOXHKX2PRb0t3wO8I6fjH06gUff4rZmhjjpyD69
+
       XCWr6jVLCHCyfnRSxy1n3gMcRQIP3NaUhmk1LYk1iUW4kTtgCa+eXYJrxNUIDHIK
+
       ZKATaMneaPZ/Fmech9GlcwKBgHzuhCkM9rXgRAEFTb5iDN4exv6Csen8InufYqXe
+
       Rv2pXYFT7uov0XFusMdpAM3k9CObt5UgBFz+Q2vYuJGSxwnFgvglSYYtZPhieeZZ
+
       /idGhMb/v9T+dCvEGHSMsgKxomI/olAI1Yxb+6Xu5XNsLTuKUoaZD9aQbi5NgcEc
+
       t+YxAoGAMWEF5Y+uIR7SriCd+1CQ6wtNpfFAD9Hqidel3LSg3Rbr5Ksg0cjoZONy
+
       G/ialJAb9dd2m2MwrcnPG0HlMUSIPViC3wU1kIzjqa/eCJsxCf/6bk+PxghcCnY1
+
       iz1Ns/lecYIA8EUVf22jlJwUq9H/8XuIGbOw8COIfM4kTtYt44Q=
-      -----END RSA PRIVATE KEY-----
+
+      -----END RSA PRIVATE KEY-----'
   - name: DEBUG
     value: 'False'
   - name: ALLOWED_HOSTS
@@ -179,6 +210,7 @@ spec:
     mountPath: /app/media
     name: saleor-media
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true
@@ -198,4 +230,5 @@ spec:
     command:
     - sh
     - -c
-    - python manage.py migrate --noinput && gunicorn --bind :8000 --workers 4 --worker-class saleor.asgi.gunicorn_worker.UvicornWorker saleor.asgi:application
+    - python manage.py migrate --noinput && gunicorn --bind :8000 --workers 4 --worker-class
+      saleor.asgi.gunicorn_worker.UvicornWorker saleor.asgi:application

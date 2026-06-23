@@ -4,10 +4,11 @@ metadata:
   name: humhub
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Flexible open-source social network kit for private communities and team collaboration.
+    kubero.dev/template.description: Flexible open-source social network kit for private
+      communities and team collaboration.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/humhub/icon.png
-    kubero.dev/template.installation: Set HUMHUB_HOST to your public hostname. Set HUMHUB_ADMIN_PASSWORD before first boot
-      for auto-install.
+    kubero.dev/template.installation: Set HUMHUB_HOST to your public hostname. Set
+      HUMHUB_ADMIN_PASSWORD before first boot for auto-install.
     kubero.dev/template.links: '["https://docs.humhub.org/"]'
     kubero.dev/template.screenshots: '["https://www.humhub.com/static/img/humhub-logo.png"]'
     kubero.dev/template.source: https://github.com/humhub/humhub
@@ -99,12 +100,14 @@ spec:
     mountPath: /var/www/localhost/htdocs/protected/config
     name: humhub-config
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/localhost/htdocs/uploads
     name: humhub-uploads
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

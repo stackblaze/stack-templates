@@ -4,9 +4,15 @@ metadata:
   name: strapi
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Most popular open-source headless CMS — REST and GraphQL APIs, role-based access, media library, and a customisable admin panel.
+    kubero.dev/template.description: Most popular open-source headless CMS — REST
+      and GraphQL APIs, role-based access, media library, and a customisable admin
+      panel.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/icon.png
-    kubero.dev/template.installation: 'Change JWT_SECRET, ADMIN_JWT_SECRET, APP_KEYS, API_TOKEN_SALT, and TRANSFER_TOKEN_SALT to unique random values. Access the Admin Panel at /admin and create the first admin user. Define Content-Types in the Content-Type Builder, then query them via REST at /api/<collection> or GraphQL at /graphql. Media uploads go to the strapi-uploads volume.'
+    kubero.dev/template.installation: Change JWT_SECRET, ADMIN_JWT_SECRET, APP_KEYS,
+      API_TOKEN_SALT, and TRANSFER_TOKEN_SALT to unique random values. Access the
+      Admin Panel at /admin and create the first admin user. Define Content-Types
+      in the Content-Type Builder, then query them via REST at /api/<collection> or
+      GraphQL at /graphql. Media uploads go to the strapi-uploads volume.
     kubero.dev/template.links: '["https://docs.strapi.io/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/strapi/strapi
@@ -51,9 +57,9 @@ spec:
               secret:
                 name: strapi-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO strapi
-                - GRANT CREATE ON SCHEMA public TO strapi
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO strapi
+              - GRANT ALL ON SCHEMA public TO strapi
+              - GRANT CREATE ON SCHEMA public TO strapi
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO strapi
           enableSuperuserAccess: true
           superuserSecret:
             name: strapi-postgresql-superuser
@@ -111,6 +117,7 @@ spec:
     mountPath: /opt/app/public/uploads
     name: strapi-uploads
     size: 10Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -133,4 +140,4 @@ spec:
     containerPort: '1337'
     pullPolicy: Always
     repository: kubekanvas/strapi
-    tag: '5.30.2'
+    tag: 5.30.2

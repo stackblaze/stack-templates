@@ -4,18 +4,22 @@ metadata:
   name: trudesk
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source helpdesk and ticketing system with email piping, knowledge base, live notifications,
-      and per-team agent workflows.
+    kubero.dev/template.description: Open-source helpdesk and ticketing system with
+      email piping, knowledge base, live notifications, and per-team agent workflows.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/trudesk/icon.png
-    kubero.dev/template.installation: Trudesk is a Node.js helpdesk that stores all data in MongoDB; the documentdb add-on
-      below provides the MongoDB-compatible backend. The TD_MONGODB_* vars point at the in-cluster documentdb service (host
-      documentdb-service-trudesk-documentdb, port 10260) using SCRAM-SHA-256 over TLS, user 'mongoadmin'. Because the endpoint
-      uses a self-signed cert, TD_MONGODB_AUTHENTICATION_DATABASE is set to admin and the connection allows invalid TLS certs.
-      Rotate the documentdb password from the default 'trudesk' before exposing publicly. On first load open {{KUBERO_APP_URL}}/install
-      to run the web setup wizard, which creates the database schema and your super-admin account. Trudesk runs its own internal
-      Redis for caching/sessions inside the container, so no external Redis add-on is needed. Configure inbound (IMAP mailbox)
-      and outbound (SMTP) email in the admin panel after install to enable ticket creation from email. Uploads and generated
-      assets are persisted on the mounted volume.
+    kubero.dev/template.installation: Trudesk is a Node.js helpdesk that stores all
+      data in MongoDB; the documentdb add-on below provides the MongoDB-compatible
+      backend. The TD_MONGODB_* vars point at the in-cluster documentdb service (host
+      documentdb-service-trudesk-documentdb, port 10260) using SCRAM-SHA-256 over
+      TLS, user 'mongoadmin'. Because the endpoint uses a self-signed cert, TD_MONGODB_AUTHENTICATION_DATABASE
+      is set to admin and the connection allows invalid TLS certs. Rotate the documentdb
+      password from the default 'trudesk' before exposing publicly. On first load
+      open {{KUBERO_APP_URL}}/install to run the web setup wizard, which creates the
+      database schema and your super-admin account. Trudesk runs its own internal
+      Redis for caching/sessions inside the container, so no external Redis add-on
+      is needed. Configure inbound (IMAP mailbox) and outbound (SMTP) email in the
+      admin panel after install to enable ticket creation from email. Uploads and
+      generated assets are persisted on the mounted volume.
     kubero.dev/template.links: '["https://docs.trudesk.io", "https://github.com/polonel/trudesk/blob/master/docker-compose.yml"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/polonel/trudesk
@@ -74,6 +78,7 @@ spec:
     mountPath: /usr/src/trudesk/public/uploads
     name: trudesk-data
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true

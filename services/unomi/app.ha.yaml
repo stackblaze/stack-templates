@@ -4,17 +4,23 @@ metadata:
   name: unomi
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source Java/OSGi Customer Data Platform that manages profiles, segments and events
-      with a privacy-first context server and standards-based API.
+    kubero.dev/template.description: Open-source Java/OSGi Customer Data Platform
+      that manages profiles, segments and events with a privacy-first context server
+      and standards-based API.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/unomi/icon.png
-    kubero.dev/template.installation: Apache Unomi 3.x requires Elasticsearch 9.x for all profile/event/segment storage. This template
-      provisions a single-node Elasticsearch 9.1.3 companion (`elasticsearch` Service on :9200) automatically; for production
-      HA you may point UNOMI_ELASTICSEARCH_ADDRESSES at an external cluster instead. Unomi's Karaf runtime state lives on the
-      persistent volume at /opt/apache-unomi/data. The HTTP context-server and REST API listen on 8181 (TLS :9443 and Karaf SSH
-      :8102 are also exposed but need separate routing). Rotate UNOMI_THIRDPARTY_PROVIDER1_KEY and UNOMI_ROOT_PASSWORD from
-      the placeholders before production; tighten UNOMI_THIRDPARTY_PROVIDER1_IPADDRESSES from 0.0.0.0/0. Manage profiles and
-      rules via the REST API / Karaf console — there is no bundled web admin UI.
-    kubero.dev/template.links: '["https://unomi.apache.org/manual/latest/index.html", "https://github.com/apache/unomi/tree/master/docker"]'
+    kubero.dev/template.installation: Apache Unomi 3.x requires Elasticsearch 9.x
+      for all profile/event/segment storage. This template provisions a single-node
+      Elasticsearch 9.1.3 companion (`elasticsearch` Service on :9200) automatically;
+      for production HA you may point UNOMI_ELASTICSEARCH_ADDRESSES at an external
+      cluster instead. Unomi's Karaf runtime state lives on the persistent volume
+      at /opt/apache-unomi/data. The HTTP context-server and REST API listen on 8181
+      (TLS :9443 and Karaf SSH :8102 are also exposed but need separate routing).
+      Rotate UNOMI_THIRDPARTY_PROVIDER1_KEY and UNOMI_ROOT_PASSWORD from the placeholders
+      before production; tighten UNOMI_THIRDPARTY_PROVIDER1_IPADDRESSES from 0.0.0.0/0.
+      Manage profiles and rules via the REST API / Karaf console — there is no bundled
+      web admin UI.
+    kubero.dev/template.links: '["https://unomi.apache.org/manual/latest/index.html",
+      "https://github.com/apache/unomi/tree/master/docker"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/apache/unomi
     kubero.dev/template.categories: '["data", "crm", "automation"]'
@@ -181,6 +187,7 @@ spec:
     mountPath: /opt/apache-unomi/data
     name: unomi-data
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   resources:
     requests:
@@ -207,4 +214,5 @@ spec:
     command:
     - bash
     - -c
-    - sed -i '/org.ops4j.pax.web.config.file/d' /opt/apache-unomi/etc/org.ops4j.pax.web.cfg && exec ./entrypoint.sh
+    - sed -i '/org.ops4j.pax.web.config.file/d' /opt/apache-unomi/etc/org.ops4j.pax.web.cfg
+      && exec ./entrypoint.sh

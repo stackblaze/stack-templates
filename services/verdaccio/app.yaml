@@ -4,9 +4,17 @@ metadata:
   name: verdaccio
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Lightweight private npm/yarn/pnpm registry — proxy public packages and publish private ones with simple auth and no external database.
+    kubero.dev/template.description: Lightweight private npm/yarn/pnpm registry —
+      proxy public packages and publish private ones with simple auth and no external
+      database.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/icon.png
-    kubero.dev/template.installation: 'Configure your npm client: npm set registry {{KUBERO_APP_URL}}. Add users with npm adduser --registry {{KUBERO_APP_URL}}. Publish packages with npm publish --registry {{KUBERO_APP_URL}}. By default Verdaccio proxies missing packages from npmjs.org. To customize auth, package access rules, or proxy uplinks, add an extraVolume mounting a populated config.yaml at /verdaccio/conf/config.yaml (subPath mount) so the image default config is not replaced.'
+    kubero.dev/template.installation: 'Configure your npm client: npm set registry
+      {{KUBERO_APP_URL}}. Add users with npm adduser --registry {{KUBERO_APP_URL}}.
+      Publish packages with npm publish --registry {{KUBERO_APP_URL}}. By default
+      Verdaccio proxies missing packages from npmjs.org. To customize auth, package
+      access rules, or proxy uplinks, add an extraVolume mounting a populated config.yaml
+      at /verdaccio/conf/config.yaml (subPath mount) so the image default config is
+      not replaced.'
     kubero.dev/template.links: '["https://verdaccio.org/docs/installation/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/verdaccio/verdaccio
@@ -31,6 +39,7 @@ spec:
     mountPath: /verdaccio/storage
     name: verdaccio-storage
     size: 10Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

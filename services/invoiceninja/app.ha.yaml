@@ -4,19 +4,24 @@ metadata:
   name: invoiceninja
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source invoicing, billing, payments and expense-tracking platform for freelancers
-      and businesses.
+    kubero.dev/template.description: Open-source invoicing, billing, payments and
+      expense-tracking platform for freelancers and businesses.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/invoiceninja/icon.png
-    kubero.dev/template.installation: 'Invoice Ninja v5 is a Laravel (PHP) app backed by MySQL/MariaDB (it does NOT officially
-      support Postgres); Valkey is wired for cache and queue. BEFORE first boot ROTATE: APP_KEY (must be a 32-char value;
-      generate with `openssl rand -base64 32` and set APP_KEY=base64:<value>) and the MariaDB password (default ''invoiceninja'').
-      APP_URL is pre-filled with {{KUBERO_APP_URL}} and must match the public URL. On first boot the entrypoint runs DB migrations
-      and seeds the admin user from IN_USER_EMAIL / IN_PASSWORD (rotate IN_PASSWORD) - then log in at the app URL and change
-      the password. PDF generation uses the bundled snappdf (headless Chromium) so no companion service is required; set PDF_GENERATOR=snappdf.
-      REQUIRE_HTTPS=false is set because TLS is terminated at the ingress. The official image is PHP-FPM only (port 9000); this
-      template installs nginx at boot to serve HTTP on :80. Uploads, logos and generated PDF invoices persist under /var/www/app/storage
-      on the mounted volume. SMTP for mail and optional S3 for storage are configured later
-      via env vars or the Settings UI.'
+    kubero.dev/template.installation: 'Invoice Ninja v5 is a Laravel (PHP) app backed
+      by MySQL/MariaDB (it does NOT officially support Postgres); Valkey is wired
+      for cache and queue. BEFORE first boot ROTATE: APP_KEY (must be a 32-char value;
+      generate with `openssl rand -base64 32` and set APP_KEY=base64:<value>) and
+      the MariaDB password (default ''invoiceninja''). APP_URL is pre-filled with
+      {{KUBERO_APP_URL}} and must match the public URL. On first boot the entrypoint
+      runs DB migrations and seeds the admin user from IN_USER_EMAIL / IN_PASSWORD
+      (rotate IN_PASSWORD) - then log in at the app URL and change the password. PDF
+      generation uses the bundled snappdf (headless Chromium) so no companion service
+      is required; set PDF_GENERATOR=snappdf. REQUIRE_HTTPS=false is set because TLS
+      is terminated at the ingress. The official image is PHP-FPM only (port 9000);
+      this template installs nginx at boot to serve HTTP on :80. Uploads, logos and
+      generated PDF invoices persist under /var/www/app/storage on the mounted volume.
+      SMTP for mail and optional S3 for storage are configured later via env vars
+      or the Settings UI.'
     kubero.dev/template.links: '["https://invoiceninja.github.io/", "https://github.com/invoiceninja/dockerfiles"]'
     kubero.dev/template.screenshots: '["https://www.invoiceninja.com/wp-content/uploads/2021/01/dashboard.png"]'
     kubero.dev/template.source: https://github.com/invoiceninja/invoiceninja
@@ -164,12 +169,12 @@ spec:
     mountPath: /var/www/app/storage
     name: invoiceninja-data
     size: 3Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
-  # Laravel migrations + DB seeding exceed the default ~90s startup probe.
   healthcheck:
     enabled: true
     path: /
@@ -184,39 +189,20 @@ spec:
     command:
     - sh
     - -c
-    - |
-      apk add --no-cache nginx netcat-openbsd
-      cat > /etc/nginx/http.d/default.conf <<'EOF'
-      server {
-        listen 80 default_server;
-        server_name _;
-        server_tokens off;
-        client_max_body_size 100M;
-        root /var/www/app/public/;
-        index index.php;
-        location / {
-          try_files $uri $uri/ /index.php?$query_string;
-        }
-        location = /favicon.ico { access_log off; log_not_found off; }
-        location = /robots.txt  { access_log off; log_not_found off; }
-        location ~* /storage/.*\.php$ { return 503; }
-        location ~ \.php$ {
-          fastcgi_pass 127.0.0.1:9000;
-          fastcgi_index index.php;
-          include fastcgi_params;
-          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-          fastcgi_intercept_errors off;
-          fastcgi_buffer_size 16k;
-          fastcgi_buffers 4 16k;
-        }
-      }
-      EOF
-      while ! nc -z "${DB_HOST}" 3306 2>/dev/null; do sleep 2; done
-      while ! nc -z "${REDIS_HOST}" 6379 2>/dev/null; do sleep 2; done
-      /usr/local/bin/docker-entrypoint supervisord &
-      while ! nc -z 127.0.0.1 9000 2>/dev/null; do sleep 2; done
-      nginx
-      wait
+    - "apk add --no-cache nginx netcat-openbsd\ncat > /etc/nginx/http.d/default.conf\
+      \ <<'EOF'\nserver {\n  listen 80 default_server;\n  server_name _;\n  server_tokens\
+      \ off;\n  client_max_body_size 100M;\n  root /var/www/app/public/;\n  index\
+      \ index.php;\n  location / {\n    try_files $uri $uri/ /index.php?$query_string;\n\
+      \  }\n  location = /favicon.ico { access_log off; log_not_found off; }\n  location\
+      \ = /robots.txt  { access_log off; log_not_found off; }\n  location ~* /storage/.*\\\
+      .php$ { return 503; }\n  location ~ \\.php$ {\n    fastcgi_pass 127.0.0.1:9000;\n\
+      \    fastcgi_index index.php;\n    include fastcgi_params;\n    fastcgi_param\
+      \ SCRIPT_FILENAME $document_root$fastcgi_script_name;\n    fastcgi_intercept_errors\
+      \ off;\n    fastcgi_buffer_size 16k;\n    fastcgi_buffers 4 16k;\n  }\n}\nEOF\n\
+      while ! nc -z \"${DB_HOST}\" 3306 2>/dev/null; do sleep 2; done\nwhile ! nc\
+      \ -z \"${REDIS_HOST}\" 6379 2>/dev/null; do sleep 2; done\n/usr/local/bin/docker-entrypoint\
+      \ supervisord &\nwhile ! nc -z 127.0.0.1 9000 2>/dev/null; do sleep 2; done\n\
+      nginx\nwait\n"
     run:
       securityContext:
         runAsNonRoot: false

@@ -4,17 +4,22 @@ metadata:
   name: prestashop
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source e-commerce platform for building and managing online stores, with a built-in
-      admin back office and a marketplace of modules and themes.
+    kubero.dev/template.description: Open-source e-commerce platform for building
+      and managing online stores, with a built-in admin back office and a marketplace
+      of modules and themes.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/prestashop/icon.png
-    kubero.dev/template.installation: 'PrestaShop requires MySQL/MariaDB (it does not support PostgreSQL). This template provisions
-      the prestashop-mysql add-on (db/user/password all ''prestashop'' - ROTATE before production). PS_INSTALL_AUTO=1 runs
-      the installer automatically on first boot using ADMIN_MAIL/ADMIN_PASSWD - change ADMIN_PASSWD (default ''prestashop''
-      here) and ADMIN_MAIL immediately, then delete or rename the /admin folder after install as PrestaShop requires. PS_DOMAIN
-      is set to the app host so install URLs resolve; if you later change the domain, update Shop URL under Shop Parameters
-      > Traffic & SEO. Optional: set PS_ENABLE_SSL=1 once TLS is fronting the app. The GHCR image includes a Kubero-aware
-      entrypoint (Kubero mounts emptyDir on /tmp, which hides the stock /tmp/docker_run.sh). Do not mount an empty PVC over
-      /var/www/html; add img/upload/var volumes after first install if you need persistence.'
+    kubero.dev/template.installation: 'PrestaShop requires MySQL/MariaDB (it does
+      not support PostgreSQL). This template provisions the prestashop-mysql add-on
+      (db/user/password all ''prestashop'' - ROTATE before production). PS_INSTALL_AUTO=1
+      runs the installer automatically on first boot using ADMIN_MAIL/ADMIN_PASSWD
+      - change ADMIN_PASSWD (default ''prestashop'' here) and ADMIN_MAIL immediately,
+      then delete or rename the /admin folder after install as PrestaShop requires.
+      PS_DOMAIN is set to the app host so install URLs resolve; if you later change
+      the domain, update Shop URL under Shop Parameters > Traffic & SEO. Optional:
+      set PS_ENABLE_SSL=1 once TLS is fronting the app. The GHCR image includes a
+      Kubero-aware entrypoint (Kubero mounts emptyDir on /tmp, which hides the stock
+      /tmp/docker_run.sh). Do not mount an empty PVC over /var/www/html; add img/upload/var
+      volumes after first install if you need persistence.'
     kubero.dev/template.links: '["https://devdocs.prestashop-project.org/", "https://github.com/PrestaShop/docker"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/PrestaShop/PrestaShop
@@ -120,6 +125,7 @@ spec:
     mountPath: /var/www/html
     name: prestashop-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

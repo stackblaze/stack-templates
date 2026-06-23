@@ -4,10 +4,11 @@ metadata:
   name: vikunja
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: The open-source to-do app — organize tasks, projects, and teams on all platforms.
+    kubero.dev/template.description: The open-source to-do app — organize tasks, projects,
+      and teams on all platforms.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vikunja/icon.png
-    kubero.dev/template.installation: Set VIKUNJA_SERVICE_PUBLICURL and rotate VIKUNJA_SERVICE_JWTSECRET before production
-      use.
+    kubero.dev/template.installation: Set VIKUNJA_SERVICE_PUBLICURL and rotate VIKUNJA_SERVICE_JWTSECRET
+      before production use.
     kubero.dev/template.links: '["https://vikunja.io/docs/"]'
     kubero.dev/template.screenshots: '["https://vikunja.io/images/screenshot.png"]'
     kubero.dev/template.source: https://github.com/go-vikunja/vikunja
@@ -96,6 +97,7 @@ spec:
     mountPath: /app/vikunja/files
     name: vikunja-files
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

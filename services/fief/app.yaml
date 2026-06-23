@@ -53,13 +53,13 @@ spec:
   - name: FORWARDED_ALLOW_IPS
     value: '*'
   extraVolumes:
-  - accessMode: ReadWriteOnce
-    accessModes:
+  - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /data/db
     name: fief-db-volume
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '8000'
     pullPolicy: Always

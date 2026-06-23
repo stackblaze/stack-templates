@@ -4,10 +4,12 @@ metadata:
   name: chatwoot
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source customer engagement platform — an alternative to Intercom and Zendesk.
+    kubero.dev/template.description: Open-source customer engagement platform — an
+      alternative to Intercom and Zendesk.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/icon.png
-    kubero.dev/template.installation: Background jobs run inline in this minimal template. For production throughput, deploy
-      a dedicated Sidekiq worker using the same image and env with `bundle exec sidekiq -C config/sidekiq.yml`.
+    kubero.dev/template.installation: Background jobs run inline in this minimal template.
+      For production throughput, deploy a dedicated Sidekiq worker using the same
+      image and env with `bundle exec sidekiq -C config/sidekiq.yml`.
     kubero.dev/template.links: '["https://www.chatwoot.com/docs/"]'
     kubero.dev/template.screenshots: '["https://www.chatwoot.com/images/chatwoot-dashboard.png"]'
     kubero.dev/template.source: https://github.com/chatwoot/chatwoot
@@ -52,12 +54,12 @@ spec:
               secret:
                 name: chatwoot-db-app
               postInitApplicationSQL:
-                - CREATE EXTENSION IF NOT EXISTS vector
-                - CREATE EXTENSION IF NOT EXISTS pgcrypto
-                - CREATE EXTENSION IF NOT EXISTS pg_trgm
-                - GRANT ALL ON SCHEMA public TO chatwoot
-                - GRANT CREATE ON SCHEMA public TO chatwoot
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO chatwoot
+              - CREATE EXTENSION IF NOT EXISTS vector
+              - CREATE EXTENSION IF NOT EXISTS pgcrypto
+              - CREATE EXTENSION IF NOT EXISTS pg_trgm
+              - GRANT ALL ON SCHEMA public TO chatwoot
+              - GRANT CREATE ON SCHEMA public TO chatwoot
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO chatwoot
           enableSuperuserAccess: true
           superuserSecret:
             name: chatwoot-db-superuser
@@ -142,6 +144,7 @@ spec:
     mountPath: /app/storage
     name: chatwoot-storage
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -168,7 +171,12 @@ spec:
     command:
     - sh
     - -c
-    - |
-      sed -i 's/enable_extension "pg_stat_statements"/# enable_extension "pg_stat_statements"/' /app/db/schema.rb /app/db/migrate/20230426130150_init_schema.rb 2>/dev/null || true
+    - 'sed -i ''s/enable_extension "pg_stat_statements"/# enable_extension "pg_stat_statements"/''
+      /app/db/schema.rb /app/db/migrate/20230426130150_init_schema.rb 2>/dev/null
+      || true
+
       docker/entrypoints/rails.sh bundle exec rails db:chatwoot_prepare
+
       exec docker/entrypoints/rails.sh bundle exec rails s -p 3000 -b 0.0.0.0
+
+      '

@@ -4,9 +4,14 @@ metadata:
   name: nocobase
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source no-code/low-code platform for building CRMs, ERPs, and internal tools with a plugin-based extensible architecture.
+    kubero.dev/template.description: Open-source no-code/low-code platform for building
+      CRMs, ERPs, and internal tools with a plugin-based extensible architecture.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocobase/icon.png
-    kubero.dev/template.installation: 'Change APP_KEY to a random string. On first load, NocoBase auto-migrates the database and shows the setup wizard. Default admin: admin@nocobase.com / admin123 (change immediately). Use the plugin manager to install additional plugins. Supports building custom data models, forms, workflows, and dashboards without code.'
+    kubero.dev/template.installation: 'Change APP_KEY to a random string. On first
+      load, NocoBase auto-migrates the database and shows the setup wizard. Default
+      admin: admin@nocobase.com / admin123 (change immediately). Use the plugin manager
+      to install additional plugins. Supports building custom data models, forms,
+      workflows, and dashboards without code.'
     kubero.dev/template.links: '["https://docs.nocobase.com/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/nocobase/nocobase
@@ -51,9 +56,9 @@ spec:
               secret:
                 name: nocobase-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO nocobase
-                - GRANT CREATE ON SCHEMA public TO nocobase
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nocobase
+              - GRANT ALL ON SCHEMA public TO nocobase
+              - GRANT CREATE ON SCHEMA public TO nocobase
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nocobase
           enableSuperuserAccess: true
           superuserSecret:
             name: nocobase-postgresql-superuser
@@ -99,6 +104,7 @@ spec:
     mountPath: /app/nocobase/storage
     name: nocobase-storage
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

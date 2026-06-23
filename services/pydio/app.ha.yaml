@@ -4,17 +4,20 @@ metadata:
   name: pydio
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: 'Self-hosted document sharing and collaboration platform: a file-sync, sharing and content-management
-      server for organizations.'
+    kubero.dev/template.description: 'Self-hosted document sharing and collaboration
+      platform: a file-sync, sharing and content-management server for organizations.'
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pydio/icon.png
-    kubero.dev/template.installation: Pydio Cells requires a MySQL/MariaDB database (provided here by the mariadb add-on).
-      Rotate the default DB password ('pydio') and the random CELLS_ENABLE_METRICS/secret placeholders before going to production.
-      On first run Cells auto-installs against the database when CELLS_INSTALL_YAML is unset and the DB env vars are present;
-      otherwise open the app URL and complete the web installer using DB host pydio-mysql:3306, db/user/pass = pydio. Set
-      CELLS_SITE_EXTERNAL to the app URL (handled via {{KUBERO_APP_URL}}). TLS is terminated at the ingress, so the container
-      runs plain HTTP (CELLS_SITE_NO_TLS=1). Cells stores config, logs and uploaded files under /var/cells (persistent volume).
-      For large-scale search/object storage Cells embeds MinIO and a Bleve index by default; no external Elasticsearch/S3
-      is required for a single-node deployment.
+    kubero.dev/template.installation: Pydio Cells requires a MySQL/MariaDB database
+      (provided here by the mariadb add-on). Rotate the default DB password ('pydio')
+      and the random CELLS_ENABLE_METRICS/secret placeholders before going to production.
+      On first run Cells auto-installs against the database when CELLS_INSTALL_YAML
+      is unset and the DB env vars are present; otherwise open the app URL and complete
+      the web installer using DB host pydio-mysql:3306, db/user/pass = pydio. Set
+      CELLS_SITE_EXTERNAL to the app URL (handled via {{KUBERO_APP_URL}}). TLS is
+      terminated at the ingress, so the container runs plain HTTP (CELLS_SITE_NO_TLS=1).
+      Cells stores config, logs and uploaded files under /var/cells (persistent volume).
+      For large-scale search/object storage Cells embeds MinIO and a Bleve index by
+      default; no external Elasticsearch/S3 is required for a single-node deployment.
     kubero.dev/template.links: '["https://docs.pydio.com/latest/admin-guide/quick-start/cells-installation/docker/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/pydio/cells
@@ -110,6 +113,7 @@ spec:
     mountPath: /var/cells
     name: pydio-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

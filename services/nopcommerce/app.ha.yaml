@@ -4,14 +4,19 @@ metadata:
   name: nopcommerce
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source ASP.NET Core e-commerce platform and shopping cart for building online stores.
+    kubero.dev/template.description: Open-source ASP.NET Core e-commerce platform
+      and shopping cart for building online stores.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nopcommerce/icon.png
-    kubero.dev/template.installation: 'First run launches the nopCommerce install wizard at the app URL: pick the PostgreSQL
-      provider and enter the connection details below (host nopcommerce-postgresql-rw, port 5432, db/user/pass = nopcommerce).
-      The wizard creates the admin user you specify and writes config to /app/App_Data (persisted via the data volume). Rotate
-      the default postgres password after install. nopCommerce can run without the DB add-on against SQL Server/MySQL too,
-      but this template ships PostgreSQL. Optional: front with a CDN/object storage for media at scale; not required to boot.'
-    kubero.dev/template.links: '["https://docs.nopcommerce.com/en/getting-started/index.html", "https://docs.nopcommerce.com/en/developer/tutorials/docker.html"]'
+    kubero.dev/template.installation: 'First run launches the nopCommerce install
+      wizard at the app URL: pick the PostgreSQL provider and enter the connection
+      details below (host nopcommerce-postgresql-rw, port 5432, db/user/pass = nopcommerce).
+      The wizard creates the admin user you specify and writes config to /app/App_Data
+      (persisted via the data volume). Rotate the default postgres password after
+      install. nopCommerce can run without the DB add-on against SQL Server/MySQL
+      too, but this template ships PostgreSQL. Optional: front with a CDN/object storage
+      for media at scale; not required to boot.'
+    kubero.dev/template.links: '["https://docs.nopcommerce.com/en/getting-started/index.html",
+      "https://docs.nopcommerce.com/en/developer/tutorials/docker.html"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/nopSolutions/nopCommerce
     kubero.dev/template.categories: '["e-commerce", "cms", "work"]'
@@ -53,9 +58,9 @@ spec:
               database: nopcommerce
               owner: nopcommerce
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO nopcommerce
-                - GRANT CREATE ON SCHEMA public TO nopcommerce
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nopcommerce
+              - GRANT ALL ON SCHEMA public TO nopcommerce
+              - GRANT CREATE ON SCHEMA public TO nopcommerce
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nopcommerce
               secret:
                 name: nopcommerce-postgresql-app
           enableSuperuserAccess: true
@@ -95,6 +100,7 @@ spec:
     mountPath: /app/App_Data
     name: nopcommerce-data
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -110,20 +116,12 @@ spec:
     containerPort: '80'
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/nopcommerce
-    tag: '4.90.4'
+    tag: 4.90.4
     command:
     - sh
     - -c
-    - |
-      mkdir -p /app/App_Data
-      cat > /app/App_Data/appsettings.json <<'EOF'
-      {
-        "HostingConfig": {
-          "UseProxy": true,
-          "ForwardedProtoHeaderName": "X-Forwarded-Proto",
-          "ForwardedForHeaderName": "X-Forwarded-For",
-          "KnownNetworks": "10.0.0.0/8,172.16.0.0/12"
-        }
-      }
-      EOF
-      exec dotnet Nop.Web.dll
+    - "mkdir -p /app/App_Data\ncat > /app/App_Data/appsettings.json <<'EOF'\n{\n \
+      \ \"HostingConfig\": {\n    \"UseProxy\": true,\n    \"ForwardedProtoHeaderName\"\
+      : \"X-Forwarded-Proto\",\n    \"ForwardedForHeaderName\": \"X-Forwarded-For\"\
+      ,\n    \"KnownNetworks\": \"10.0.0.0/8,172.16.0.0/12\"\n  }\n}\nEOF\nexec dotnet\
+      \ Nop.Web.dll\n"

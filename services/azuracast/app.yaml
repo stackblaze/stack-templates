@@ -4,23 +4,32 @@ metadata:
   name: azuracast
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted, all-in-one web radio management suite for running internet radio stations,
-      with streaming, automation, and live DJ support.
+    kubero.dev/template.description: Self-hosted, all-in-one web radio management
+      suite for running internet radio stations, with streaming, automation, and live
+      DJ support.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/azuracast/icon.png
-    kubero.dev/template.installation: 'AzuraCast is a multi-container stack; this template runs the PRIMARY web/application
-      image (ghcr.io/azuracast/azuracast) which bundles nginx, PHP-FPM and the supervisord-managed background workers (scheduler,
-      message queue, sync tasks) inside the single image, plus the Liquidsoap/Icecast/SHOUTcast streaming processes. External
-      datastores are wired via add-ons: a MariaDB add-on (AzuraCast supports ONLY MySQL/MariaDB, not Postgres) and a Valkey
-      add-on used as the Redis cache (REDIS_HOST points at the Valkey service; Valkey is Redis-protocol compatible and password-less
-      here). Setting MYSQL_HOST to a non-localhost value automatically disables the image''s bundled internal MariaDB; ENABLE_REDIS=true
-      + REDIS_HOST disables the bundled Redis. Rotate MARIADB_PASSWORD / MYSQL_PASSWORD and the MariaDB add-on password before
-      going live. The container''s HTTP port is 80 (also exposes 443 for TLS and dynamic broadcast ports 8000-8999 for station
-      streams, which must be exposed separately via a NodePort/LoadBalancer for listeners to connect). On first run, browse
-      to the app URL and complete the web setup wizard to create the super-admin account and your first station. Station media,
-      station media and recordings persist on the mounted /var/azuracast/stations volume (do not mount the entire /var/azuracast
-      root — that hides image-shipped config); for production-scale media libraries consider increasing
-      the volume size or using S3-backed station storage (configured per-station in the AzuraCast UI).'
-    kubero.dev/template.links: '["https://docs.azuracast.com/en/getting-started/installation/docker", "https://www.azuracast.com/docs/administration/docker/"]'
+    kubero.dev/template.installation: 'AzuraCast is a multi-container stack; this
+      template runs the PRIMARY web/application image (ghcr.io/azuracast/azuracast)
+      which bundles nginx, PHP-FPM and the supervisord-managed background workers
+      (scheduler, message queue, sync tasks) inside the single image, plus the Liquidsoap/Icecast/SHOUTcast
+      streaming processes. External datastores are wired via add-ons: a MariaDB add-on
+      (AzuraCast supports ONLY MySQL/MariaDB, not Postgres) and a Valkey add-on used
+      as the Redis cache (REDIS_HOST points at the Valkey service; Valkey is Redis-protocol
+      compatible and password-less here). Setting MYSQL_HOST to a non-localhost value
+      automatically disables the image''s bundled internal MariaDB; ENABLE_REDIS=true
+      + REDIS_HOST disables the bundled Redis. Rotate MARIADB_PASSWORD / MYSQL_PASSWORD
+      and the MariaDB add-on password before going live. The container''s HTTP port
+      is 80 (also exposes 443 for TLS and dynamic broadcast ports 8000-8999 for station
+      streams, which must be exposed separately via a NodePort/LoadBalancer for listeners
+      to connect). On first run, browse to the app URL and complete the web setup
+      wizard to create the super-admin account and your first station. Station media,
+      station media and recordings persist on the mounted /var/azuracast/stations
+      volume (do not mount the entire /var/azuracast root — that hides image-shipped
+      config); for production-scale media libraries consider increasing the volume
+      size or using S3-backed station storage (configured per-station in the AzuraCast
+      UI).'
+    kubero.dev/template.links: '["https://docs.azuracast.com/en/getting-started/installation/docker",
+      "https://www.azuracast.com/docs/administration/docker/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/AzuraCast/AzuraCast
     kubero.dev/template.categories: '["media", "automation", "utilities"]'
@@ -156,6 +165,7 @@ spec:
     mountPath: /var/azuracast/stations
     name: azuracast-stations
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true

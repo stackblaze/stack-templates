@@ -4,10 +4,11 @@ metadata:
   name: easyappointments
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source appointment scheduler for service providers — booking pages, calendars, and
-      notifications.
+    kubero.dev/template.description: Open-source appointment scheduler for service
+      providers — booking pages, calendars, and notifications.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/easyappointments/icon.png
-    kubero.dev/template.installation: Set BASE_URL to your public URL before first visit. Complete admin setup on first login.
+    kubero.dev/template.installation: Set BASE_URL to your public URL before first
+      visit. Complete admin setup on first login.
     kubero.dev/template.links: '["https://easyappointments.org/documentation/"]'
     kubero.dev/template.screenshots: '["https://easyappointments.org/img/logo.png"]'
     kubero.dev/template.source: https://github.com/alextselegidis/easyappointments
@@ -89,6 +90,7 @@ spec:
     mountPath: /var/www/html/storage
     name: easyappointments-storage
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

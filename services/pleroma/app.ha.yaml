@@ -4,29 +4,40 @@ metadata:
   name: pleroma
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Lightweight, federated (ActivityPub) social networking server - a self-hosted, resource-friendly
-      microblogging alternative for the Fediverse.
+    kubero.dev/template.description: Lightweight, federated (ActivityPub) social networking
+      server - a self-hosted, resource-friendly microblogging alternative for the
+      Fediverse.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pleroma/icon.png
-    kubero.dev/template.installation: 'This template runs the PRIMARY Pleroma server container (the BEAM/Elixir OTP release
-      on git.pleroma.social/pleroma/pleroma:stable, HTTP on port 4000). Pleroma is single-process: the web endpoint AND the
-      Oban background job queues (federation delivery, scheduled tasks, media processing) all run inside this one container,
-      so NO separate worker/scheduler companion is needed. Pleroma uses PostgreSQL ONLY - it does NOT use Redis/Valkey. REQUIRED
-      before first boot: 1) Rotate SECRET_KEY_BASE - generate with ''openssl rand -base64 64'' (or ''mix phx.gen.secret'')
-      and set it; the placeholder MUST be replaced. 2) The Postgres add-on database needs the citext, pg_trgm and uuid-ossp
-      extensions - exec into the pleroma pod and run the DB migrations, then enable them: connect to the db and run ''CREATE
-      EXTENSION IF NOT EXISTS citext; CREATE EXTENSION IF NOT EXISTS pg_trgm; CREATE EXTENSION IF NOT EXISTS "uuid-ossp";''
-      (the official entrypoint runs ''./bin/pleroma_ctl migrate'' on start). 3) Create the first admin AFTER migrations: exec
-      in and run ''./bin/pleroma_ctl user new <nickname> <email> --admin''. CONFIG: this image is driven by an Elixir config
-      file at PLEROMA_CONFIG_PATH (/etc/pleroma/config.exs); the official docker entrypoint generates it from the DOMAIN /
-      INSTANCE_NAME / ADMIN_EMAIL / NOTIFY_EMAIL / DB_* / SECRET_KEY_BASE env vars set here on first run - mount the /etc/pleroma
-      volume so the generated config persists. DOMAIN is baked into ActivityPub actor URLs and cannot be changed cleanly after
-      federating, so set it to your real host before going live. COMPANION SERVICES: none are mandatory in-cluster (Kubero
-      ingress provides the TLS reverse proxy that a bare-metal install would need from nginx, and handles the optional MediaProxy
-      caching). For a production frontend you may later swap the bundled Pleroma-FE for Soapbox/Mangane by uploading it to
-      the /var/lib/pleroma/static volume. For object storage at scale, point Pleroma''s Uploaders.S3 config (AWS_* / S3 settings
-      in config.exs) at an external S3 bucket (e.g. the RustFS add-on) instead of the local uploads volume; omit it here for
+    kubero.dev/template.installation: 'This template runs the PRIMARY Pleroma server
+      container (the BEAM/Elixir OTP release on git.pleroma.social/pleroma/pleroma:stable,
+      HTTP on port 4000). Pleroma is single-process: the web endpoint AND the Oban
+      background job queues (federation delivery, scheduled tasks, media processing)
+      all run inside this one container, so NO separate worker/scheduler companion
+      is needed. Pleroma uses PostgreSQL ONLY - it does NOT use Redis/Valkey. REQUIRED
+      before first boot: 1) Rotate SECRET_KEY_BASE - generate with ''openssl rand
+      -base64 64'' (or ''mix phx.gen.secret'') and set it; the placeholder MUST be
+      replaced. 2) The Postgres add-on database needs the citext, pg_trgm and uuid-ossp
+      extensions - exec into the pleroma pod and run the DB migrations, then enable
+      them: connect to the db and run ''CREATE EXTENSION IF NOT EXISTS citext; CREATE
+      EXTENSION IF NOT EXISTS pg_trgm; CREATE EXTENSION IF NOT EXISTS "uuid-ossp";''
+      (the official entrypoint runs ''./bin/pleroma_ctl migrate'' on start). 3) Create
+      the first admin AFTER migrations: exec in and run ''./bin/pleroma_ctl user new
+      <nickname> <email> --admin''. CONFIG: this image is driven by an Elixir config
+      file at PLEROMA_CONFIG_PATH (/etc/pleroma/config.exs); the official docker entrypoint
+      generates it from the DOMAIN / INSTANCE_NAME / ADMIN_EMAIL / NOTIFY_EMAIL /
+      DB_* / SECRET_KEY_BASE env vars set here on first run - mount the /etc/pleroma
+      volume so the generated config persists. DOMAIN is baked into ActivityPub actor
+      URLs and cannot be changed cleanly after federating, so set it to your real
+      host before going live. COMPANION SERVICES: none are mandatory in-cluster (Kubero
+      ingress provides the TLS reverse proxy that a bare-metal install would need
+      from nginx, and handles the optional MediaProxy caching). For a production frontend
+      you may later swap the bundled Pleroma-FE for Soapbox/Mangane by uploading it
+      to the /var/lib/pleroma/static volume. For object storage at scale, point Pleroma''s
+      Uploaders.S3 config (AWS_* / S3 settings in config.exs) at an external S3 bucket
+      (e.g. the RustFS add-on) instead of the local uploads volume; omit it here for
       a single-node start.'
-    kubero.dev/template.links: '["https://docs.pleroma.social/backend/installation/docker_en/", "https://docs.pleroma.social/backend/configuration/cheatsheet/"]'
+    kubero.dev/template.links: '["https://docs.pleroma.social/backend/installation/docker_en/",
+      "https://docs.pleroma.social/backend/configuration/cheatsheet/"]'
     kubero.dev/template.screenshots: '["https://pleroma.social/images/screenshot.png"]'
     kubero.dev/template.source: https://git.pleroma.social/pleroma/pleroma
     kubero.dev/template.categories: '["social", "communication", "media"]'
@@ -70,12 +81,12 @@ spec:
               secret:
                 name: pleroma-postgresql-app
               postInitApplicationSQL:
-                - CREATE EXTENSION IF NOT EXISTS citext
-                - CREATE EXTENSION IF NOT EXISTS pg_trgm
-                - CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
-                - GRANT ALL ON SCHEMA public TO pleroma
-                - GRANT CREATE ON SCHEMA public TO pleroma
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO pleroma
+              - CREATE EXTENSION IF NOT EXISTS citext
+              - CREATE EXTENSION IF NOT EXISTS pg_trgm
+              - CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
+              - GRANT ALL ON SCHEMA public TO pleroma
+              - GRANT CREATE ON SCHEMA public TO pleroma
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO pleroma
           enableSuperuserAccess: true
           superuserSecret:
             name: pleroma-postgresql-superuser
@@ -125,12 +136,14 @@ spec:
     mountPath: /var/lib/pleroma/uploads
     name: pleroma-uploads
     size: 5Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/lib/pleroma/static
     name: pleroma-static
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

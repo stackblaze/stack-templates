@@ -24,20 +24,20 @@ spec:
   - name: PLUGIN_INSTALLER
     value: 'true'
   extraVolumes:
-  - accessMode: ReadWriteOnce
-    accessModes:
+  - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/app/data
     name: kanboard-data-volume
     size: 1Gi
-  - accessMode: ReadWriteOnce
-    accessModes:
+    storageClass: slow
+  - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/app/plugins
     name: kanboard-plugins-volume
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '80'
     pullPolicy: Always

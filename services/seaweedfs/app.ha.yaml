@@ -4,15 +4,18 @@ metadata:
   name: seaweedfs
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Fast distributed storage system for blobs, objects, files and a data lake, with an S3-compatible
-      API and a filer web UI.
+    kubero.dev/template.description: Fast distributed storage system for blobs, objects,
+      files and a data lake, with an S3-compatible API and a filer web UI.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seaweedfs/icon.png
-    kubero.dev/template.installation: Runs as an all-in-one node via the `server` command (master + volume + filer), with
-      the S3 gateway enabled. The filer web UI is on container port 8888; the S3-compatible API is on port 8333 and the master
-      UI on 9333 (expose internally as needed). All metadata and data persist under /data (default leveldb filer store) so
-      no external database add-on is required. For production scale, split master/volume/filer into separate deployments and
-      point the filer at an external metadata store. There is no built-in auth on the filer UI by default; place it behind
-      the ingress/auth layer and configure S3 access keys before exposing the S3 endpoint.
+    kubero.dev/template.installation: Runs as an all-in-one node via the `server`
+      command (master + volume + filer), with the S3 gateway enabled. The filer web
+      UI is on container port 8888; the S3-compatible API is on port 8333 and the
+      master UI on 9333 (expose internally as needed). All metadata and data persist
+      under /data (default leveldb filer store) so no external database add-on is
+      required. For production scale, split master/volume/filer into separate deployments
+      and point the filer at an external metadata store. There is no built-in auth
+      on the filer UI by default; place it behind the ingress/auth layer and configure
+      S3 access keys before exposing the S3 endpoint.
     kubero.dev/template.links: '["https://github.com/seaweedfs/seaweedfs/wiki", "https://github.com/seaweedfs/seaweedfs/wiki/Amazon-S3-API"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/seaweedfs/seaweedfs
@@ -35,6 +38,7 @@ spec:
     mountPath: /data
     name: seaweedfs-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

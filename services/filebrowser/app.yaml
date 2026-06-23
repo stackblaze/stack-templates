@@ -3,9 +3,11 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Web file manager — browse, upload, and share files from the browser.
+    kubero.dev/template.description: Web file manager — browse, upload, and share
+      files from the browser.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/35781395?v=4
-    kubero.dev/template.installation: 'Default login: admin/admin. Database and config persist under /database and /config volumes.'
+    kubero.dev/template.installation: 'Default login: admin/admin. Database and config
+      persist under /database and /config volumes.'
     kubero.dev/template.links: '["https://filebrowser.org/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/filebrowser/filebrowser
@@ -27,18 +29,21 @@ spec:
     mountPath: /srv
     name: filebrowser-srv
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /database
     name: filebrowser-database
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /config
     name: filebrowser-config
     size: 100Mi
+    storageClass: slow
   image:
     containerPort: '80'
     pullPolicy: Always

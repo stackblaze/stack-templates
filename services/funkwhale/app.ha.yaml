@@ -4,30 +4,41 @@ metadata:
   name: funkwhale
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Free, federated (ActivityPub) music server and sharing platform - a self-hosted alternative
-      to streaming services for the Fediverse.
+    kubero.dev/template.description: Free, federated (ActivityPub) music server and
+      sharing platform - a self-hosted alternative to streaming services for the Fediverse.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/funkwhale/icon.png
-    kubero.dev/template.installation: 'This template runs the PRIMARY Funkwhale API server container ONLY (funkwhale/api -
-      a Django/gunicorn app listening on HTTP port 5000 via FUNKWHALE_API_IP/FUNKWHALE_API_PORT). Funkwhale is a MULTI-CONTAINER
-      stack and is NOT complete with this pod alone. REQUIRED before first boot: 1) Rotate DJANGO_SECRET_KEY - generate with
-      ''openssl rand -base64 45'' (or ''openssl rand -hex 32'') and set it; the placeholder MUST be replaced. 2) After the
-      Postgres add-on is up, exec into the api pod and run ''python manage.py migrate'' (then ''python manage.py collectstatic
-      --noinput''). 3) Create the first admin with ''python manage.py createsuperuser'' (or ''python manage.py fw users create
-      --superuser''). MANDATORY COMPANION SERVICES to deploy as SEPARATE apps (same FUNKWHALE_VERSION, sharing the SAME Postgres
-      + Valkey + media volume): (a) funkwhale/api with command [''celery'',''-A'',''funkwhale_api.taskapp'',''worker'',''-l'',''INFO'']
-      - the CELERY WORKER that handles federation delivery, audio import/transcoding, and async tasks (MANDATORY); (b) funkwhale/api
-      with command [''celery'',''-A'',''funkwhale_api.taskapp'',''beat'',''-l'',''INFO''] - the CELERY BEAT SCHEDULER for
-      periodic federation/cleanup jobs; (c) funkwhale/front - the NGINX FRONTEND/REVERSE-PROXY image (port 80) that serves
-      the Vue.js SPA, static/media files, and proxies /api to this api pod. Point the funkwhale/front container''s FUNKWHALE_API_HOST/FUNKWHALE_API_PORT
-      at this api Service, mount the SAME /srv/funkwhale/data/media (RWX) volume, and route public ingress to funkwhale/front
-      (NOT directly to the api pod). The worker/beat/front pods must share this api pod''s media volume - use RWX storage
-      so imported/federated audio is reachable by all. OPTIONAL: a Typesense container (image typesense/typesense) enables
-      full-text search - set TYPESENSE_API_KEY + TYPESENSE_HOST and run ''python manage.py search build''; omit for a basic
-      start. OBJECT STORAGE: for production at scale set AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / AWS_STORAGE_BUCKET_NAME
-      / AWS_S3_ENDPOINT_URL at an external S3 bucket (e.g. the RustFS add-on) instead of the local media volume. Rotate the
-      Postgres password; Valkey is password-less in-cluster. FUNKWHALE_HOSTNAME is baked into ActivityPub actor URLs and cannot
-      be changed cleanly after federating, so set it to your real host before going live.'
-    kubero.dev/template.links: '["https://docs.funkwhale.audio/administrator/installation/docker.html", "https://docs.funkwhale.audio/administrator/configuration/env.html"]'
+    kubero.dev/template.installation: 'This template runs the PRIMARY Funkwhale API
+      server container ONLY (funkwhale/api - a Django/gunicorn app listening on HTTP
+      port 5000 via FUNKWHALE_API_IP/FUNKWHALE_API_PORT). Funkwhale is a MULTI-CONTAINER
+      stack and is NOT complete with this pod alone. REQUIRED before first boot: 1)
+      Rotate DJANGO_SECRET_KEY - generate with ''openssl rand -base64 45'' (or ''openssl
+      rand -hex 32'') and set it; the placeholder MUST be replaced. 2) After the Postgres
+      add-on is up, exec into the api pod and run ''python manage.py migrate'' (then
+      ''python manage.py collectstatic --noinput''). 3) Create the first admin with
+      ''python manage.py createsuperuser'' (or ''python manage.py fw users create
+      --superuser''). MANDATORY COMPANION SERVICES to deploy as SEPARATE apps (same
+      FUNKWHALE_VERSION, sharing the SAME Postgres + Valkey + media volume): (a) funkwhale/api
+      with command [''celery'',''-A'',''funkwhale_api.taskapp'',''worker'',''-l'',''INFO'']
+      - the CELERY WORKER that handles federation delivery, audio import/transcoding,
+      and async tasks (MANDATORY); (b) funkwhale/api with command [''celery'',''-A'',''funkwhale_api.taskapp'',''beat'',''-l'',''INFO'']
+      - the CELERY BEAT SCHEDULER for periodic federation/cleanup jobs; (c) funkwhale/front
+      - the NGINX FRONTEND/REVERSE-PROXY image (port 80) that serves the Vue.js SPA,
+      static/media files, and proxies /api to this api pod. Point the funkwhale/front
+      container''s FUNKWHALE_API_HOST/FUNKWHALE_API_PORT at this api Service, mount
+      the SAME /srv/funkwhale/data/media (RWX) volume, and route public ingress to
+      funkwhale/front (NOT directly to the api pod). The worker/beat/front pods must
+      share this api pod''s media volume - use RWX storage so imported/federated audio
+      is reachable by all. OPTIONAL: a Typesense container (image typesense/typesense)
+      enables full-text search - set TYPESENSE_API_KEY + TYPESENSE_HOST and run ''python
+      manage.py search build''; omit for a basic start. OBJECT STORAGE: for production
+      at scale set AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / AWS_STORAGE_BUCKET_NAME
+      / AWS_S3_ENDPOINT_URL at an external S3 bucket (e.g. the RustFS add-on) instead
+      of the local media volume. Rotate the Postgres password; Valkey is password-less
+      in-cluster. FUNKWHALE_HOSTNAME is baked into ActivityPub actor URLs and cannot
+      be changed cleanly after federating, so set it to your real host before going
+      live.'
+    kubero.dev/template.links: '["https://docs.funkwhale.audio/administrator/installation/docker.html",
+      "https://docs.funkwhale.audio/administrator/configuration/env.html"]'
     kubero.dev/template.screenshots: '["https://funkwhale.audio/img/screenshots/queue.png"]'
     kubero.dev/template.source: https://dev.funkwhale.audio/funkwhale/funkwhale
     kubero.dev/template.categories: '["media", "social", "communication"]'
@@ -181,18 +192,21 @@ spec:
     mountPath: /srv/funkwhale/data/media
     name: funkwhale-media
     size: 5Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /srv/funkwhale/data/music
     name: funkwhale-music
     size: 5Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /srv/funkwhale/data/static
     name: funkwhale-static
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

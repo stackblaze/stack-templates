@@ -4,19 +4,25 @@ metadata:
   name: neko-rooms
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted room management system for n.eko virtual browsers, a rabb.it alternative
-      for collaborative co-browsing and watch-together sessions.
+    kubero.dev/template.description: Self-hosted room management system for n.eko
+      virtual browsers, a rabb.it alternative for collaborative co-browsing and watch-together
+      sessions.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/neko-rooms/icon.png
-    kubero.dev/template.installation: 'Neko Rooms spins up and tears down n.eko (virtual browser) containers on demand and
-      exposes a management UI for them. It keeps no SQL database: room metadata and persistent room storage live on disk,
-      so the bundled volume is mounted at /data (set NEKO_ROOMS_STORAGE_INTERNAL/EXTERNAL there) and no add-on is required.
-      IMPORTANT runtime caveat: neko-rooms is built around the Docker host model and orchestrates SIBLING containers via the
-      Docker socket (/var/run/docker.sock) plus a WebRTC UDP port range (NEKO_ROOMS_EPR, default 59000-59049) and NAT1TO1
-      host IP. A vanilla Kubernetes pod has no Docker socket and cannot bind that wide UDP range, so to actually launch rooms
-      this must run with access to a Docker/containerd daemon (e.g. a node-level Docker socket mount or a DinD sidecar) and
-      the EPR range exposed on the node - plan node/host wiring before relying on it. Set NEKO_ROOMS_INSTANCE_URL/NAT1TO1
-      to your real public host. There is no built-in user database; protect the admin UI with NEKO_ROOMS_HTTP_AUTH or front
-      it with an auth proxy and rotate any auth secret you set. No SMTP, S3 or external search engine is needed.'
+    kubero.dev/template.installation: 'Neko Rooms spins up and tears down n.eko (virtual
+      browser) containers on demand and exposes a management UI for them. It keeps
+      no SQL database: room metadata and persistent room storage live on disk, so
+      the bundled volume is mounted at /data (set NEKO_ROOMS_STORAGE_INTERNAL/EXTERNAL
+      there) and no add-on is required. IMPORTANT runtime caveat: neko-rooms is built
+      around the Docker host model and orchestrates SIBLING containers via the Docker
+      socket (/var/run/docker.sock) plus a WebRTC UDP port range (NEKO_ROOMS_EPR,
+      default 59000-59049) and NAT1TO1 host IP. A vanilla Kubernetes pod has no Docker
+      socket and cannot bind that wide UDP range, so to actually launch rooms this
+      must run with access to a Docker/containerd daemon (e.g. a node-level Docker
+      socket mount or a DinD sidecar) and the EPR range exposed on the node - plan
+      node/host wiring before relying on it. Set NEKO_ROOMS_INSTANCE_URL/NAT1TO1 to
+      your real public host. There is no built-in user database; protect the admin
+      UI with NEKO_ROOMS_HTTP_AUTH or front it with an auth proxy and rotate any auth
+      secret you set. No SMTP, S3 or external search engine is needed.'
     kubero.dev/template.links: '["https://github.com/m1k1o/neko-rooms#readme", "https://neko.m1k1o.net"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/m1k1o/neko-rooms
@@ -59,6 +65,7 @@ spec:
     mountPath: /data
     name: neko-rooms-data
     size: 5Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1

@@ -48,7 +48,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
       rootSecret:
         apiVersion: v1
@@ -90,6 +90,7 @@ spec:
     mountPath: /photoview/images
     name: photoview-images
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '8080'
     repository: viktorstrate/photoview

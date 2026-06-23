@@ -4,21 +4,28 @@ metadata:
   name: misskey
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Decentralized, ActivityPub-federated microblogging platform with reactions, Drive file
-      storage and a customizable UI.
+    kubero.dev/template.description: Decentralized, ActivityPub-federated microblogging
+      platform with reactions, Drive file storage and a customizable UI.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/misskey/icon.png
-    kubero.dev/template.installation: 'Misskey is configured PRIMARILY via a YAML file (.config/default.yml), not env vars
-      alone, so before first boot you MUST supply that config (mounted at /misskey/.config) pointing db.host=misskey-postgresql-rw
-      / db.port=5432 / db.db=misskey and redis.host=rfr-misskey-valkey-readwrite / redis.port=6379, and set url to your public
-      https URL. The env vars below mirror those values and cover the parts Misskey reads from the environment; rotate POSTGRES_PASSWORD
-      and the db password in default.yml to match. After the web container is up, run the DB migrations (it runs `pnpm migrate`
-      on start in the official image). COMPANION SERVICES: the single misskey/misskey image runs web + the federation/inbox/deliver/queue
-      workers in one process by default, so no extra worker container is strictly required for small instances; for scale
-      you can run additional misskey/misskey replicas with MK_ONLY_QUEUE/MK_ONLY_SERVER style splits. OPTIONAL: for full-text
-      post search Misskey can use Elasticsearch/OpenSearch or Meilisearch (image getmeili/meilisearch) configured in default.yml
-      under meilisearch/elasticsearch - not provisioned here; and for object storage of Drive uploads it can use any S3-compatible
-      bucket (configured under objectStorage in default.yml) instead of the local volume.'
-    kubero.dev/template.links: '["https://misskey-hub.net/en/docs/for-admin/install/guides/docker/", "https://misskey-hub.net/en/docs/"]'
+    kubero.dev/template.installation: 'Misskey is configured PRIMARILY via a YAML
+      file (.config/default.yml), not env vars alone, so before first boot you MUST
+      supply that config (mounted at /misskey/.config) pointing db.host=misskey-postgresql-rw
+      / db.port=5432 / db.db=misskey and redis.host=rfr-misskey-valkey-readwrite /
+      redis.port=6379, and set url to your public https URL. The env vars below mirror
+      those values and cover the parts Misskey reads from the environment; rotate
+      POSTGRES_PASSWORD and the db password in default.yml to match. After the web
+      container is up, run the DB migrations (it runs `pnpm migrate` on start in the
+      official image). COMPANION SERVICES: the single misskey/misskey image runs web
+      + the federation/inbox/deliver/queue workers in one process by default, so no
+      extra worker container is strictly required for small instances; for scale you
+      can run additional misskey/misskey replicas with MK_ONLY_QUEUE/MK_ONLY_SERVER
+      style splits. OPTIONAL: for full-text post search Misskey can use Elasticsearch/OpenSearch
+      or Meilisearch (image getmeili/meilisearch) configured in default.yml under
+      meilisearch/elasticsearch - not provisioned here; and for object storage of
+      Drive uploads it can use any S3-compatible bucket (configured under objectStorage
+      in default.yml) instead of the local volume.'
+    kubero.dev/template.links: '["https://misskey-hub.net/en/docs/for-admin/install/guides/docker/",
+      "https://misskey-hub.net/en/docs/"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/misskey-dev/misskey/develop/title.svg"]'
     kubero.dev/template.source: https://github.com/misskey-dev/misskey
     kubero.dev/template.categories: '["social", "communication", "media"]'
@@ -60,9 +67,9 @@ spec:
               database: misskey
               owner: misskey
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO misskey
-                - GRANT CREATE ON SCHEMA public TO misskey
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO misskey
+              - GRANT ALL ON SCHEMA public TO misskey
+              - GRANT CREATE ON SCHEMA public TO misskey
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO misskey
               secret:
                 name: misskey-postgresql-app
           enableSuperuserAccess: true
@@ -154,12 +161,14 @@ spec:
     mountPath: /misskey/files
     name: misskey-files
     size: 5Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /misskey/.config
     name: misskey-config
     size: 1Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -179,29 +188,10 @@ spec:
     command:
     - sh
     - -c
-    - |
-      grep -q 'kubero-seed' /misskey/.config/default.yml 2>/dev/null || cat > /misskey/.config/default.yml <<EOF
-      # kubero-seed
-      url: ${MISSKEY_URL}
-      port: 3000
-      db:
-        host: ${DATABASE_HOST}
-        port: ${DATABASE_PORT}
-        db: ${DATABASE_DB}
-        user: ${DATABASE_USER}
-        pass: ${DATABASE_PASSWORD}
-      dbReplications: false
-      redis:
-        host: ${REDIS_HOST}
-        port: ${REDIS_PORT}
-      fulltextSearch:
-        provider: sqlLike
-      id: 'aidx'
-      proxyBypassHosts:
-        - api.deepl.com
-        - api-free.deepl.com
-        - www.recaptcha.net
-        - hcaptcha.com
-        - challenges.cloudflare.com
-      EOF
-      exec pnpm run migrateandstart
+    - "grep -q 'kubero-seed' /misskey/.config/default.yml 2>/dev/null || cat > /misskey/.config/default.yml\
+      \ <<EOF\n# kubero-seed\nurl: ${MISSKEY_URL}\nport: 3000\ndb:\n  host: ${DATABASE_HOST}\n\
+      \  port: ${DATABASE_PORT}\n  db: ${DATABASE_DB}\n  user: ${DATABASE_USER}\n\
+      \  pass: ${DATABASE_PASSWORD}\ndbReplications: false\nredis:\n  host: ${REDIS_HOST}\n\
+      \  port: ${REDIS_PORT}\nfulltextSearch:\n  provider: sqlLike\nid: 'aidx'\nproxyBypassHosts:\n\
+      \  - api.deepl.com\n  - api-free.deepl.com\n  - www.recaptcha.net\n  - hcaptcha.com\n\
+      \  - challenges.cloudflare.com\nEOF\nexec pnpm run migrateandstart\n"

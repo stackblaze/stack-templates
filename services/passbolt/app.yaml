@@ -46,7 +46,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
       rootSecret:
         apiVersion: v1
@@ -95,11 +95,13 @@ spec:
     mountPath: /etc/passbolt/gpg
     name: passbolt-gpg-volume
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     mountPath: /etc/passbolt/jwt
     name: passbolt-jwt-volume
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '80'
     command:
@@ -120,7 +122,7 @@ spec:
       cpu: 100m
       memory: 512Mi
     limits:
-      cpu: "1"
+      cpu: '1'
       memory: 1Gi
   web:
     replicaCount: 1

@@ -28,6 +28,7 @@ spec:
     mountPath: /usr/app/data/
     name: nocodb-data-volume
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '8080'
     repository: nocodb/nocodb
@@ -35,7 +36,6 @@ spec:
       securityContext:
         readOnlyRootFilesystem: false
     tag: latest
-  # Default QA LimitRange caps web pods at 512Mi; NocoDB OOMs during boot.
   resources:
     requests:
       cpu: 500m

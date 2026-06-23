@@ -3,9 +3,11 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted bookmark manager that is minimal, fast, and easy to set up.
+    kubero.dev/template.description: Self-hosted bookmark manager that is minimal,
+      fast, and easy to set up.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/34423368?s=200&v=4
-    kubero.dev/template.installation: Set LD_SUPERUSER_NAME and LD_SUPERUSER_PASSWORD before first deploy to create the admin user.
+    kubero.dev/template.installation: Set LD_SUPERUSER_NAME and LD_SUPERUSER_PASSWORD
+      before first deploy to create the admin user.
     kubero.dev/template.links: '["https://linkding.link/"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/sissbruecker/linkding/master/assets/page-overview-dark.png"]'
     kubero.dev/template.source: https://github.com/sissbruecker/linkding
@@ -39,6 +41,7 @@ spec:
     mountPath: /etc/linkding/data
     name: linkding-data
     size: 1Gi
+    storageClass: slow
   image:
     containerPort: '9090'
     pullPolicy: Always

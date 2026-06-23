@@ -26,6 +26,7 @@ spec:
     mountPath: /opt/traggo/data
     name: traggo-data
     size: 1Gi
+    storageClass: shared
   image:
     containerPort: '3030'
     repository: traggo/server

@@ -3,11 +3,11 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
-    kubero.dev/template.description: Kavita is a fast, feature-rich cross-platform reading
-      server for manga, comics, and books with OPDS support.
+    kubero.dev/template.description: Kavita is a fast, feature-rich cross-platform
+      reading server for manga, comics, and books with OPDS support.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/75163075?s=200&v=4
-    kubero.dev/template.installation: Complete the setup wizard on first login to create
-      your admin account.
+    kubero.dev/template.installation: Complete the setup wizard on first login to
+      create your admin account.
     kubero.dev/template.links: '["https://wiki.kavitareader.com/"]'
     kubero.dev/template.screenshots: '["https://www.kavitareader.com/img/hero.png"]'
     kubero.dev/template.source: https://github.com/Kareadita/Kavita
@@ -31,12 +31,14 @@ spec:
     mountPath: /kavita/config
     name: kavita-config
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /data
     name: kavita-library
     size: 1Gi
+    storageClass: slow
   healthcheck:
     enabled: true
     path: /
@@ -48,10 +50,10 @@ spec:
     command:
     - sh
     - -c
-    - mkdir -p /kavita/config /data && if [ ! -f /kavita/config/appsettings.json ]; then printf
-      '%s\n' '{"TokenKey":"super secret unguessable key that is longer because we require
-      it","Port":5000,"IpAddresses":"","BaseUrl":"/","Cache":75}' > /kavita/config/appsettings.json;
-      fi && exec /entrypoint.sh
+    - mkdir -p /kavita/config /data && if [ ! -f /kavita/config/appsettings.json ];
+      then printf '%s\n' '{"TokenKey":"super secret unguessable key that is longer
+      because we require it","Port":5000,"IpAddresses":"","BaseUrl":"/","Cache":75}'
+      > /kavita/config/appsettings.json; fi && exec /entrypoint.sh
     pullPolicy: Always
     repository: ghcr.io/kareadita/kavita
     run:

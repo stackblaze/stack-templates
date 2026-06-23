@@ -28,18 +28,21 @@ spec:
     mountPath: /home/node/chibisafe/database
     name: chibisafe-db-volume
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /home/node/chibisafe/uploads
     name: chibisafe-uploads-volume
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /home/node/chibisafe/logs
     name: chibisafe-logs-volume
     size: 1Gi
+    storageClass: slow
   healthcheck:
     enabled: true
     path: /
@@ -60,7 +63,7 @@ spec:
       cpu: 250m
       memory: 512Mi
     limits:
-      cpu: "1"
+      cpu: '1'
       memory: 1Gi
   web:
     replicaCount: 1

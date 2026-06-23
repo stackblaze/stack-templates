@@ -4,9 +4,12 @@ metadata:
   name: tandoor
   annotations:
     kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
-    kubero.dev/template.description: Self-hosted Django recipe manager for organizing recipes, meal plans, and shopping lists.
+    kubero.dev/template.description: Self-hosted Django recipe manager for organizing
+      recipes, meal plans, and shopping lists.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/67073608?s=200&v=4
-    kubero.dev/template.installation: Set SECRET_KEY to a random 50+ character string. First boot runs migrations and collectstatic (may take several minutes). Gunicorn serves HTTP on port 8080 with whitenoise for static files.
+    kubero.dev/template.installation: Set SECRET_KEY to a random 50+ character string.
+      First boot runs migrations and collectstatic (may take several minutes). Gunicorn
+      serves HTTP on port 8080 with whitenoise for static files.
     kubero.dev/template.links: '["https://docs.tandoor.dev/"]'
     kubero.dev/template.screenshots: '["https://docs.tandoor.dev/assets/img/logo.png"]'
     kubero.dev/template.source: https://github.com/TandoorRecipes/recipes
@@ -51,9 +54,9 @@ spec:
               secret:
                 name: tandoor-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO tandoor
-                - GRANT CREATE ON SCHEMA public TO tandoor
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO tandoor
+              - GRANT ALL ON SCHEMA public TO tandoor
+              - GRANT CREATE ON SCHEMA public TO tandoor
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO tandoor
           enableSuperuserAccess: true
           superuserSecret:
             name: tandoor-postgresql-superuser
@@ -107,12 +110,14 @@ spec:
     mountPath: /opt/recipes/staticfiles
     name: tandoor-static
     size: 1Gi
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/recipes/mediafiles
     name: tandoor-media
     size: 2Gi
+    storageClass: slow
   cronjobs: []
   resources:
     requests:
@@ -139,4 +144,11 @@ spec:
     command:
     - sh
     - -c
-    - cd /opt/recipes && . venv/bin/activate && until pg_isready --host="$POSTGRES_HOST" --port="$POSTGRES_PORT" --user="$POSTGRES_USER" -q; do sleep 5; done && python manage.py migrate --noinput && (test -f /opt/recipes/staticfiles/.collectstatic_done || (python manage.py collectstatic --noinput && touch /opt/recipes/staticfiles/.collectstatic_done)) && chmod -R 755 /opt/recipes/mediafiles && exec gunicorn --bind 0.0.0.0:8080 --workers ${GUNICORN_WORKERS:-1} --threads ${GUNICORN_THREADS:-2} --timeout ${GUNICORN_TIMEOUT:-30} --access-logfile - --error-logfile - --log-level ${GUNICORN_LOG_LEVEL:-info} recipes.wsgi
+    - cd /opt/recipes && . venv/bin/activate && until pg_isready --host="$POSTGRES_HOST"
+      --port="$POSTGRES_PORT" --user="$POSTGRES_USER" -q; do sleep 5; done && python
+      manage.py migrate --noinput && (test -f /opt/recipes/staticfiles/.collectstatic_done
+      || (python manage.py collectstatic --noinput && touch /opt/recipes/staticfiles/.collectstatic_done))
+      && chmod -R 755 /opt/recipes/mediafiles && exec gunicorn --bind 0.0.0.0:8080
+      --workers ${GUNICORN_WORKERS:-1} --threads ${GUNICORN_THREADS:-2} --timeout
+      ${GUNICORN_TIMEOUT:-30} --access-logfile - --error-logfile - --log-level ${GUNICORN_LOG_LEVEL:-info}
+      recipes.wsgi

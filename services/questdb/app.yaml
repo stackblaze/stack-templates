@@ -4,9 +4,14 @@ metadata:
   name: questdb
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: High-performance time-series database with SQL — optimised for IoT, financial, and observability data with a built-in web console.
+    kubero.dev/template.description: High-performance time-series database with SQL
+      — optimised for IoT, financial, and observability data with a built-in web console.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/questdb/icon.png
-    kubero.dev/template.installation: 'QuestDB exposes a web console at port 9000 (also accessible via {{KUBERO_APP_URL}}). Query with SQL in the web console or via the REST API at /exec?query=. The PostgreSQL wire protocol runs on port 8812 (not exposed externally). Ingest data via InfluxDB line protocol (TCP 9009) or REST. Partitioned by day/month/year for optimal time-series performance.'
+    kubero.dev/template.installation: QuestDB exposes a web console at port 9000 (also
+      accessible via {{KUBERO_APP_URL}}). Query with SQL in the web console or via
+      the REST API at /exec?query=. The PostgreSQL wire protocol runs on port 8812
+      (not exposed externally). Ingest data via InfluxDB line protocol (TCP 9009)
+      or REST. Partitioned by day/month/year for optimal time-series performance.
     kubero.dev/template.links: '["https://questdb.io/docs/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/questdb/questdb
@@ -31,6 +36,7 @@ spec:
     mountPath: /var/lib/questdb
     name: questdb-data
     size: 20Gi
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
