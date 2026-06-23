@@ -8,8 +8,8 @@ metadata:
       recipes, meal plans, and shopping lists.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/67073608?s=200&v=4
     kubero.dev/template.installation: Set SECRET_KEY to a random 50+ character string.
-      First boot runs migrations and collectstatic (may take several minutes). Gunicorn
-      serves HTTP on port 8080 with whitenoise for static files.
+      Tandoor 2 bundles nginx on port 80; first boot runs migrations and collectstatic
+      (a few minutes). Complete setup at /setup/ on first visit.
     kubero.dev/template.links: '["https://docs.tandoor.dev/"]'
     kubero.dev/template.screenshots: '["https://docs.tandoor.dev/assets/img/logo.png"]'
     kubero.dev/template.source: https://github.com/TandoorRecipes/recipes
@@ -97,8 +97,8 @@ spec:
     value: '*'
   - name: TZ
     value: Etc/UTC
-  - name: GUNICORN_MEDIA
-    value: '1'
+  - name: TANDOOR_PORT
+    value: '80'
   - name: GUNICORN_WORKERS
     value: '1'
   - name: GUNICORN_THREADS
@@ -129,7 +129,7 @@ spec:
   healthcheck:
     enabled: true
     path: /
-    startupSeconds: 600
+    startupSeconds: 300
     timeoutSeconds: 5
     periodSeconds: 10
   web:
@@ -137,18 +137,7 @@ spec:
   worker:
     replicaCount: 0
   image:
-    containerPort: '8080'
+    containerPort: '80'
     pullPolicy: Always
     repository: vabene1111/recipes
     tag: latest
-    command:
-    - sh
-    - -c
-    - cd /opt/recipes && . venv/bin/activate && until pg_isready --host="$POSTGRES_HOST"
-      --port="$POSTGRES_PORT" --user="$POSTGRES_USER" -q; do sleep 5; done && python
-      manage.py migrate --noinput && (test -f /opt/recipes/staticfiles/.collectstatic_done
-      || (python manage.py collectstatic --noinput && touch /opt/recipes/staticfiles/.collectstatic_done))
-      && chmod -R 755 /opt/recipes/mediafiles && exec gunicorn --bind 0.0.0.0:8080
-      --workers ${GUNICORN_WORKERS:-1} --threads ${GUNICORN_THREADS:-2} --timeout
-      ${GUNICORN_TIMEOUT:-30} --access-logfile - --error-logfile - --log-level ${GUNICORN_LOG_LEVEL:-info}
-      recipes.wsgi
