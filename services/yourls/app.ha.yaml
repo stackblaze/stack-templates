@@ -100,12 +100,12 @@ spec:
     value: replace-with-openssl-rand-hex-32
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/user
     name: yourls-data
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true
@@ -114,7 +114,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -122,3 +122,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/yourls/yourls
     tag: 1.10-apache
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

@@ -111,3 +111,6 @@ spec:
     pullPolicy: Always
     repository: vbkunin/itop
     tag: latest-base
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

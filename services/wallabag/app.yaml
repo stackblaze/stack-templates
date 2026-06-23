@@ -95,12 +95,12 @@ spec:
     value: wallabag
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/wallabag/web/assets/images
     name: wallabag-images
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   healthcheck:
     enabled: true
     path: /
@@ -112,6 +112,9 @@ spec:
     pullPolicy: Always
     repository: wallabag/wallabag
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: wallabag
   web:
     replicaCount: 1

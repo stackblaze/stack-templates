@@ -31,19 +31,19 @@ spec:
     value: Etc/UTC
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /config
     name: calibre-web-config
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /books
     name: calibre-web-books
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   healthcheck:
     enabled: true
     path: /
@@ -55,6 +55,9 @@ spec:
     pullPolicy: Always
     repository: lscr.io/linuxserver/calibre-web
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: calibre-web
   web:
     replicaCount: 1

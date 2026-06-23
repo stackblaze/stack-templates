@@ -118,3 +118,6 @@ spec:
     pullPolicy: Always
     repository: public.ecr.aws/zinclabs/openobserve
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

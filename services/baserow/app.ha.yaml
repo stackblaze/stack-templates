@@ -1,0 +1,166 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: baserow
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source no-code database and Airtable alternative
+      — build relational databases, forms, and automations with a spreadsheet-like
+      UI.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/icon.png
+    kubero.dev/template.installation: Change SECRET_KEY to a random string. The all-in-one
+      image bundles the API, web frontend, and background workers. On first visit,
+      register an admin account. Add a persistent volume at /baserow/data for uploads
+      and Caddy state. For larger deployments, switch to the distributed architecture
+      (separate backend/frontend/worker images).
+    kubero.dev/template.links: '["https://baserow.io/docs/index"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://gitlab.com/bramw/baserow
+    kubero.dev/template.categories: '["data", "productivity", "work"]'
+    kubero.dev/template.title: Baserow
+    kubero.dev/template.website: https://baserow.io
+  labels:
+    manager: kubero
+spec:
+  name: baserow
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: baserow-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: baserow
+              owner: baserow
+              secret:
+                name: baserow-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO baserow
+              - GRANT CREATE ON SCHEMA public TO baserow
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO baserow
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: baserow-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: baserow-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: baserow
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: baserow-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: baserow
+          password: baserow
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: baserow-cache
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: DATABASE_HOST
+    value: baserow-postgresql-rw
+  - name: DATABASE_PORT
+    value: 5432
+  - name: DATABASE_NAME
+    value: baserow
+  - name: DATABASE_USER
+    value: baserow
+  - name: DATABASE_PASSWORD
+    value: baserow
+  - name: REDIS_URL
+    value: redis://rfr-baserow-cache-readwrite:6379/0
+  - name: BASEROW_PUBLIC_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: SECRET_KEY
+    value: change-me-to-random-string
+  - name: DISABLE_VOLUME_CHECK
+    value: '1'
+  - name: BASEROW_CELERY_BEAT_STARTUP_DELAY
+    value: '300'
+  - name: BASEROW_TRIGGER_SYNC_TEMPLATES_AFTER_MIGRATION
+    value: 'false'
+  - name: WEB_FRONTEND_PORT
+    value: '3000'
+  - name: PORT
+    value: '3000'
+  cronjobs: []
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: '2'
+      memory: 4Gi
+  healthcheck:
+    enabled: true
+    path: /api/_health/
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: baserow/baserow
+    tag: 2.2.2
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  extraVolumes: []

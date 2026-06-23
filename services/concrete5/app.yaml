@@ -39,3 +39,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/concrete5-community/docker5
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

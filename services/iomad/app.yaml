@@ -114,12 +114,12 @@ spec:
     size: 5Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/moodledata
     name: iomad-moodledata
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -130,3 +130,6 @@ spec:
     pullPolicy: Always
     repository: elestio/iomad
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -108,6 +108,9 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/bitwarden/lite
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: bitwarden
   resources:
     requests:

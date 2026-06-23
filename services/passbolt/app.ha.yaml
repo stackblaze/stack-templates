@@ -93,17 +93,17 @@ spec:
     periodSeconds: 10
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     mountPath: /etc/passbolt/gpg
     name: passbolt-gpg-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     mountPath: /etc/passbolt/jwt
     name: passbolt-jwt-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   image:
     containerPort: '80'
     command:
@@ -117,6 +117,7 @@ spec:
       securityContext:
         runAsNonRoot: false
         runAsUser: 0
+        readOnlyRootFilesystem: false
     tag: latest-ce
   name: passbolt
   resources:
@@ -127,6 +128,6 @@ spec:
       cpu: '1'
       memory: 1Gi
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0

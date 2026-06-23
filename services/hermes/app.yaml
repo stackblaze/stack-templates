@@ -140,3 +140,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/hermes
     tag: main
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

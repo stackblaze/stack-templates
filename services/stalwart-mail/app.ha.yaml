@@ -1,0 +1,73 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: stalwart-mail
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: All-in-one mail server with SMTP, IMAP, JMAP,
+      and ManageSieve — modern Rust implementation with built-in anti-spam, DKIM,
+      and web admin.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stalwart-mail/icon.png
+    kubero.dev/template.installation: 'Stalwart stores mail data in /var/lib/stalwart
+      and config in /etc/stalwart (both persisted). The web admin UI is at port 8080
+      (the kubero app URL). IMPORTANT: SMTP (25), SMTPS (465/587), IMAP (143/993),
+      and ManageSieve (4190) ports are NOT exposed via the default HTTP ingress —
+      you need a TCP/LoadBalancer service for mail ports. Access the admin panel first,
+      set the admin password, then configure domains and DNS records. Use with an
+      external SMTP relay or expose mail ports via a LoadBalancer.'
+    kubero.dev/template.links: '["https://stalw.art/docs/get-started/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/stalwartlabs/stalwart
+    kubero.dev/template.categories: '["email", "communication", "utilities"]'
+    kubero.dev/template.title: Stalwart Mail
+    kubero.dev/template.website: https://stalw.art
+  labels:
+    manager: kubero
+spec:
+  name: stalwart-mail
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: TZ
+    value: UTC
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /var/lib/stalwart
+    name: stalwart-data
+    size: 20Gi
+    storageClass: shared
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /etc/stalwart
+    name: stalwart-config
+    size: 1Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: '2'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /healthz/live
+    startupSeconds: 120
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: ghcr.io/stalwartlabs/stalwart
+    tag: v0.16
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

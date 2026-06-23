@@ -48,12 +48,12 @@ spec:
     value: http://claper.localhost
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /app/uploads
     name: claper-volume
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   addons:
   - displayName: PostgreSQL (CloudNativePG)
@@ -117,3 +117,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/claperco/claper
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

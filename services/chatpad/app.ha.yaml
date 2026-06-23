@@ -1,0 +1,53 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: chatpad
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Chatpad sets itself apart with a broader vision
+      - to become the ultimate interface for ChatGPT users.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/deiucanta/chatpad/refs/heads/main/src/assets/favicon.png
+    kubero.dev/template.installation: Static ChatGPT web UI — add your OpenAI API
+      key in the app settings after opening the URL. No server-side storage is required.
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/deiucanta/chatpad/main/banner.png"]'
+    kubero.dev/template.source: https://github.com/deiucanta/chatpad
+    kubero.dev/template.categories: '["ai"]'
+    kubero.dev/template.title: Chatpad
+    kubero.dev/template.website: https://chatpad.ai
+  labels:
+    manager: kubero
+spec:
+  name: chatpad
+  deploymentstrategy: docker
+  envVars:
+  - name: PORT
+    value: '80'
+  extraVolumes: []
+  cronjobs: []
+  addons: []
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 60
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: ghcr.io/deiucanta/chatpad
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

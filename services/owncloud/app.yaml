@@ -139,12 +139,12 @@ spec:
     value: '6379'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /mnt/data
     name: owncloud-data
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -161,3 +161,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/owncloud-server
     tag: 10.16.3
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -1,0 +1,104 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Wiki.js is a modern, lightweight and powerful
+      wiki app built on Node.js, Git and Markdown.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wikijs/icon.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.source: https://github.com/Requarks/wiki
+    kubero.dev/template.categories: '["documentation", "work", "collaboration", "utilities"]'
+    kubero.dev/template.title: Wiki.js
+    kubero.dev/template.website: https://js.wiki/
+  name: wikijs
+spec:
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: wikijs-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: wikijs
+              owner: wikijs
+              secret:
+                name: wikijs-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO wikijs
+              - GRANT CREATE ON SCHEMA public TO wikijs
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO wikijs
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: wikijs-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: wikijs-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: wikijs
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: wikijs-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: wikijs
+          password: wikijs
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: DB_TYPE
+    value: postgres
+  - name: DB_HOST
+    value: wikijs-postgresql-rw
+  - name: DB_PORT
+    value: '5432'
+  - name: DB_NAME
+    value: wikijs
+  - name: DB_USER
+    value: wikijs
+  - name: DB_PASS
+    value: wikijs
+  - name: DB_SSL
+    value: 'false'
+  extraVolumes: []
+  image:
+    containerPort: '3000'
+    repository: ghcr.io/requarks/wiki
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  name: wikijs
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

@@ -1,0 +1,146 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: strapi
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Most popular open-source headless CMS — REST
+      and GraphQL APIs, role-based access, media library, and a customisable admin
+      panel.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/icon.png
+    kubero.dev/template.installation: Change JWT_SECRET, ADMIN_JWT_SECRET, APP_KEYS,
+      API_TOKEN_SALT, and TRANSFER_TOKEN_SALT to unique random values. Access the
+      Admin Panel at /admin and create the first admin user. Define Content-Types
+      in the Content-Type Builder, then query them via REST at /api/<collection> or
+      GraphQL at /graphql. Media uploads go to the strapi-uploads volume.
+    kubero.dev/template.links: '["https://docs.strapi.io/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/strapi/strapi
+    kubero.dev/template.categories: '["cms", "development", "data"]'
+    kubero.dev/template.title: Strapi
+    kubero.dev/template.website: https://strapi.io
+  labels:
+    manager: kubero
+spec:
+  name: strapi
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: strapi-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: strapi
+              owner: strapi
+              secret:
+                name: strapi-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO strapi
+              - GRANT CREATE ON SCHEMA public TO strapi
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO strapi
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: strapi-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: strapi-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: strapi
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: strapi-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: strapi
+          password: strapi
+  envVars:
+  - name: DATABASE_CLIENT
+    value: postgres
+  - name: DATABASE_HOST
+    value: strapi-postgresql-rw
+  - name: DATABASE_PORT
+    value: 5432
+  - name: DATABASE_NAME
+    value: strapi
+  - name: DATABASE_USERNAME
+    value: strapi
+  - name: DATABASE_PASSWORD
+    value: strapi
+  - name: DATABASE_SSL
+    value: 'false'
+  - name: ENCRYPTION_KEY
+    value: change-me-encryption-key
+  - name: JWT_SECRET
+    value: change-me-jwt-secret
+  - name: ADMIN_JWT_SECRET
+    value: change-me-admin-jwt-secret
+  - name: APP_KEYS
+    value: key1,key2,key3,key4
+  - name: API_TOKEN_SALT
+    value: change-me-token-salt
+  - name: TRANSFER_TOKEN_SALT
+    value: change-me-transfer-salt
+  - name: NODE_ENV
+    value: production
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /opt/app/public/uploads
+    name: strapi-uploads
+    size: 10Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /_health
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '1337'
+    pullPolicy: Always
+    repository: kubekanvas/strapi
+    tag: 5.30.2
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

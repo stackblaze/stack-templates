@@ -57,3 +57,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/totaljs-flow
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

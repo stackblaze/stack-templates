@@ -68,3 +68,6 @@ spec:
     pullPolicy: Always
     repository: cryptpad/cryptpad
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

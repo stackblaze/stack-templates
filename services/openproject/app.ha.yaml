@@ -100,7 +100,7 @@ spec:
     storageClass: shared
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   resources:
@@ -121,3 +121,6 @@ spec:
     pullPolicy: Always
     repository: openproject/openproject
     tag: 16-slim
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

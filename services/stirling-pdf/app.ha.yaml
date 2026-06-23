@@ -1,0 +1,55 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+    kubero.dev/template.description: Stirling PDF is a hosted web application that
+      allows you to perform various operations on PDF files, such as splitting and
+      adding images.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/icon.png
+    kubero.dev/template.installation: First boot may take several minutes while Java
+      starts and optional assets download. Config and OCR data persist under /configs
+      and /usr/share/tessdata when volumes are attached.
+    kubero.dev/template.links: '["https://docs.stirlingpdf.com/"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/Frooodle/Stirling-PDF/main/images/stirling-home.png"]'
+    kubero.dev/template.source: https://github.com/Frooodle/Stirling-PDF
+    kubero.dev/template.categories: '["productivity", "utilities", "work"]'
+    kubero.dev/template.title: Stirling PDF
+    kubero.dev/template.website: https://docs.stirlingpdf.com/
+  labels:
+    manager: kubero
+  name: stirling-pdf
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: TZ
+    value: Etc/UTC
+  extraVolumes: []
+  healthcheck:
+    enabled: true
+    path: /actuator/health
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: stirlingtools/stirling-pdf
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  name: stirling-pdf
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

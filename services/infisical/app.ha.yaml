@@ -4,10 +4,11 @@ metadata:
   name: infisical
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source secrets management and internal PKI platform for developers and teams.
+    kubero.dev/template.description: Open-source secrets management and internal PKI
+      platform for developers and teams.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/icon.png
-    kubero.dev/template.installation: Generate ENCRYPTION_KEY with `openssl rand -hex 16` and AUTH_SECRET with `openssl rand
-      -base64 32` before production use.
+    kubero.dev/template.installation: Generate ENCRYPTION_KEY with `openssl rand -hex
+      16` and AUTH_SECRET with `openssl rand -base64 32` before production use.
     kubero.dev/template.links: '["https://infisical.com/docs/"]'
     kubero.dev/template.screenshots: '["https://infisical.com/images/og-image.png"]'
     kubero.dev/template.source: https://github.com/Infisical/infisical
@@ -52,9 +53,9 @@ spec:
               secret:
                 name: infisical-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO infisical
-                - GRANT CREATE ON SCHEMA public TO infisical
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO infisical
+              - GRANT ALL ON SCHEMA public TO infisical
+              - GRANT CREATE ON SCHEMA public TO infisical
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO infisical
           enableSuperuserAccess: true
           superuserSecret:
             name: infisical-postgresql-superuser
@@ -126,7 +127,7 @@ spec:
   extraVolumes: []
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -134,7 +135,9 @@ spec:
     pullPolicy: Always
     repository: infisical/infisical
     tag: latest
-  # Default QA LimitRange caps web pods at 512Mi; Infisical OOMs during DB migrations.
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
   resources:
     requests:
       cpu: 500m

@@ -68,3 +68,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stalwartlabs/stalwart
     tag: v0.16
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

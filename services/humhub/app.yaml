@@ -102,12 +102,12 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/localhost/htdocs/uploads
     name: humhub-uploads
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -124,3 +124,6 @@ spec:
     pullPolicy: Always
     repository: mriedmann/humhub
     tag: stable
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

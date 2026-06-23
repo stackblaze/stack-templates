@@ -206,3 +206,6 @@ spec:
       \ \\\n  --timeout=\"$GUNICORN_TIMEOUT\" \\\n  --preload \\\n  frappe.app:application\
       \ &\nnode /home/frappe/frappe-bench/apps/frappe/socketio.js &\nwait-for-it -t\
       \ 120 127.0.0.1:8000\nexec /usr/local/bin/nginx-entrypoint.sh\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

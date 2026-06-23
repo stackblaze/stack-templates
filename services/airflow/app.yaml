@@ -4,13 +4,15 @@ metadata:
   name: airflow
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Apache Airflow is an open-source platform to programmatically author, schedule, and monitor workflows (ETL, ML pipelines, data orchestration).
+    kubero.dev/template.description: Apache Airflow is an open-source platform to
+      programmatically author, schedule, and monitor workflows (ETL, ML pipelines,
+      data orchestration).
     kubero.dev/template.icon: https://airflow.apache.org/images/airflow-logo-padded.svg
-    kubero.dev/template.installation: >-
-      Single-node `standalone` mode (scheduler + webserver). Change AIRFLOW_ADMIN_PASSWORD and
-      AIRFLOW__CORE__FERNET_KEY before production. First boot runs DB migrations automatically.
-      Web UI on port 8080 at {{KUBERO_APP_URL}} — default login admin / (your AIRFLOW_ADMIN_PASSWORD).
-      Metadata DB is the bundled PostgreSQL (CloudNativePG) addon.
+    kubero.dev/template.installation: Single-node `standalone` mode (scheduler + webserver).
+      Change AIRFLOW_ADMIN_PASSWORD and AIRFLOW__CORE__FERNET_KEY before production.
+      First boot runs DB migrations automatically. Web UI on port 8080 at {{KUBERO_APP_URL}}
+      — default login admin / (your AIRFLOW_ADMIN_PASSWORD). Metadata DB is the bundled
+      PostgreSQL (CloudNativePG) addon.
     kubero.dev/template.links: '["https://airflow.apache.org/docs/"]'
     kubero.dev/template.screenshots: '["https://airflow.apache.org/docs/apache-airflow/stable/_images/ui-dark.png"]'
     kubero.dev/template.source: https://github.com/apache/airflow
@@ -123,3 +125,6 @@ spec:
     command:
     - airflow
     - standalone
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

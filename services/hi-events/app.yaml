@@ -219,3 +219,6 @@ spec:
     pullPolicy: Always
     repository: daveearley/hi.events-all-in-one
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

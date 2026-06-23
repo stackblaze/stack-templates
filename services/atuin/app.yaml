@@ -119,3 +119,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/atuinsh/atuin
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

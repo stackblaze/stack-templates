@@ -66,12 +66,12 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /usr/src/paperless/media
     name: paperless-media-volume
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
@@ -188,3 +188,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/paperless-ngx/paperless-ngx
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

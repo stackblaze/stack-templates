@@ -1,0 +1,71 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: pgadmin
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: The most popular open-source administration and
+      management platform for PostgreSQL databases, with a full-featured web UI.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pgadmin/icon.png
+    kubero.dev/template.installation: Change PGADMIN_DEFAULT_EMAIL and PGADMIN_DEFAULT_PASSWORD.
+      Log in with those credentials. Add your PostgreSQL servers via Object > Register
+      > Server, entering the cluster host (e.g. myapp-postgresql-rw) and credentials.
+      Connection details are saved in the pgadmin-data volume. For security, restrict
+      ingress access to authorised users only.
+    kubero.dev/template.links: '["https://www.pgadmin.org/docs/"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/pgadmin-org/pgadmin4
+    kubero.dev/template.categories: '["database", "development", "utilities"]'
+    kubero.dev/template.title: pgAdmin 4
+    kubero.dev/template.website: https://www.pgadmin.org
+  labels:
+    manager: kubero
+spec:
+  name: pgadmin
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: PGADMIN_DEFAULT_EMAIL
+    value: admin@example.com
+  - name: PGADMIN_DEFAULT_PASSWORD
+    value: change-me
+  - name: PGADMIN_LISTEN_PORT
+    value: 80
+  - name: PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION
+    value: true
+  - name: PGADMIN_CONFIG_LOGIN_BANNER
+    value: '''Authorised users only'''
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /var/lib/pgadmin
+    name: pgadmin-data
+    size: 1Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /misc/ping
+    startupSeconds: 120
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: ghcr.io/stackblaze/stack-templates/pgadmin4
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

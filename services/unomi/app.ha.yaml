@@ -67,7 +67,7 @@ spec:
         metadata:
           name: unomi-es
         spec:
-          replicas: 1
+          replicas: 3
           strategy:
             type: Recreate
           selector:
@@ -182,12 +182,12 @@ spec:
     value: -Dunomi.autoStart=true
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/apache-unomi/data
     name: unomi-data
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   resources:
     requests:
@@ -216,3 +216,6 @@ spec:
     - -c
     - sed -i '/org.ops4j.pax.web.config.file/d' /opt/apache-unomi/etc/org.ops4j.pax.web.cfg
       && exec ./entrypoint.sh
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

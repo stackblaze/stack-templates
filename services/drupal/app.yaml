@@ -113,3 +113,6 @@ spec:
     pullPolicy: Always
     repository: drupal
     tag: 10-apache
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

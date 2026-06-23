@@ -23,17 +23,20 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /downloads
     name: downloads-volume
     size: 10Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '8081'
     pullPolicy: Always
     repository: ghcr.io/alexta69/metube
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: metube
   web:
     replicaCount: 1

@@ -118,12 +118,12 @@ spec:
     value: en-US
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/storage
     name: akaunting-data
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -140,3 +140,6 @@ spec:
     pullPolicy: Always
     repository: akaunting/akaunting
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

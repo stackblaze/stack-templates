@@ -150,12 +150,12 @@ spec:
     value: '{{KUBERO_APP_HOST}}'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /config
     name: authelia-config
     size: 1Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true
@@ -164,7 +164,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -187,3 +187,6 @@ spec:
       \ <<'EOF'\n# kubero-seed\nusers:\n  authelia:\n    disabled: false\n    displayname:\
       \ Authelia User\n    password: \"$argon2id$v=19$m=65536,t=3,p=4$BpLnfgDsc2WD8F2q$o/v/I2Yc7fKqK3P9H2Kj9m1A4fG4K8K2\"\
       \n    email: authelia@example.com\n    groups: []\nEOF\nexec authelia\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

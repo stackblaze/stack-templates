@@ -84,6 +84,9 @@ spec:
     containerPort: '3001'
     repository: louislam/uptime-kuma
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: uptime-kuma
   web:
     replicaCount: 1

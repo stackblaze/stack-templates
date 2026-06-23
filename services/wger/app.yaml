@@ -179,19 +179,19 @@ spec:
     value: 'False'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /home/wger/media
     name: wger-media
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /home/wger/static
     name: wger-static
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true
@@ -219,3 +219,6 @@ spec:
       \nREDIS_PORT=\"${REDIS_PORT%%/*}\"\nuntil (echo >/dev/tcp/\"${REDIS_HOST}\"\
       /\"${REDIS_PORT}\") 2>/dev/null; do\n  echo 'Waiting for Valkey...'\n  sleep\
       \ 2\ndone\nexec /home/wger/entrypoint.sh\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -44,3 +44,6 @@ spec:
     pullPolicy: Always
     repository: syncthing/syncthing
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

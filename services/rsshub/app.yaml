@@ -27,6 +27,9 @@ spec:
     pullPolicy: Always
     repository: diygod/rsshub
     tag: chromium-bundled
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: rsshub
   web:
     replicaCount: 1

@@ -128,3 +128,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/danielbrendel/hortusfox-web
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

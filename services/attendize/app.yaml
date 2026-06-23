@@ -161,12 +161,12 @@ spec:
     value: Attendize
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/public/uploads
     name: attendize-uploads
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -183,3 +183,6 @@ spec:
     pullPolicy: Always
     repository: elestio/attendize-web
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

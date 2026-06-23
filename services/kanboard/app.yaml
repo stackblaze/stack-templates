@@ -95,6 +95,9 @@ spec:
     pullPolicy: Always
     repository: kanboard/kanboard
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: kanboard
   web:
     replicaCount: 1

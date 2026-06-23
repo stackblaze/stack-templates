@@ -152,3 +152,6 @@ spec:
     pullPolicy: Always
     repository: docker.getoutline.com/outlinewiki/outline
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

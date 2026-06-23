@@ -139,12 +139,12 @@ spec:
     value: local
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /app/storage
     name: chatwoot-storage
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -180,3 +180,6 @@ spec:
       exec docker/entrypoints/rails.sh bundle exec rails s -p 3000 -b 0.0.0.0
 
       '
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

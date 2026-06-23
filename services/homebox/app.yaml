@@ -91,16 +91,19 @@ spec:
     value: disable
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /data
     name: homebox-data
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '7745'
     repository: ghcr.io/hay-kot/homebox
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: homebox
   web:
     replicaCount: 1

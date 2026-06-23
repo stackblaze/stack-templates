@@ -65,3 +65,6 @@ spec:
     pullPolicy: Always
     repository: libretranslate/libretranslate
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

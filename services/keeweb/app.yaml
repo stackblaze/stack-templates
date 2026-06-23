@@ -4,18 +4,23 @@ metadata:
   name: keeweb
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Free, cross-platform web password manager compatible with KeePass; opens and edits .kdbx
-      files entirely in the browser.
+    kubero.dev/template.description: Free, cross-platform web password manager compatible
+      with KeePass; opens and edits .kdbx files entirely in the browser.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keeweb/icon.png
-    kubero.dev/template.installation: 'KeeWeb is a stateless, fully client-side password manager: the nginx container only
-      serves static HTML/JS, and all cryptography (KeePass .kdbx parsing, AES/Argon2 key derivation) happens in the browser,
-      so the server never sees your master password or plaintext. Because of this there is no database add-on and no server-side
-      persistent volume - users open and save their .kdbx files from their own device or from an external storage provider
-      they connect at runtime (WebDAV, Dropbox, Google Drive, OneDrive, or generic file download/upload). To enable a storage
-      provider you register an OAuth/app credential with that provider and configure it client-side; nothing needs to be seeded
-      on the server. The official image defaults to redirecting HTTP to in-container HTTPS; this template serves static files
-      on port 80 only because Kubero ingress terminates TLS. No SMTP, S3 or search engine is required. To self-host your own .kdbx
-      over WebDAV, deploy a separate WebDAV server and point KeeWeb at its URL from the UI.'
+    kubero.dev/template.installation: 'KeeWeb is a stateless, fully client-side password
+      manager: the nginx container only serves static HTML/JS, and all cryptography
+      (KeePass .kdbx parsing, AES/Argon2 key derivation) happens in the browser, so
+      the server never sees your master password or plaintext. Because of this there
+      is no database add-on and no server-side persistent volume - users open and
+      save their .kdbx files from their own device or from an external storage provider
+      they connect at runtime (WebDAV, Dropbox, Google Drive, OneDrive, or generic
+      file download/upload). To enable a storage provider you register an OAuth/app
+      credential with that provider and configure it client-side; nothing needs to
+      be seeded on the server. The official image defaults to redirecting HTTP to
+      in-container HTTPS; this template serves static files on port 80 only because
+      Kubero ingress terminates TLS. No SMTP, S3 or search engine is required. To
+      self-host your own .kdbx over WebDAV, deploy a separate WebDAV server and point
+      KeeWeb at its URL from the UI.'
     kubero.dev/template.links: '["https://keeweb.info/", "https://github.com/keeweb/keeweb#readme"]'
     kubero.dev/template.screenshots: '["https://app.keeweb.info/img/screenshots/screenshot.png"]'
     kubero.dev/template.source: https://github.com/keeweb/keeweb
@@ -43,22 +48,11 @@ spec:
     command:
     - sh
     - -c
-    - |
-      cat > /etc/nginx/conf.d/keeweb.conf <<'EOF'
-      server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
-        root /keeweb;
-        index index.html;
-        server_name _;
-        server_tokens off;
-        add_header X-Content-Type-Options nosniff;
-        location / {
-          try_files $uri $uri/ =404;
-        }
-        location ~ /\. {
-          deny all;
-        }
-      }
-      EOF
-      exec /opt/entrypoint.sh nginx
+    - "cat > /etc/nginx/conf.d/keeweb.conf <<'EOF'\nserver {\n  listen 80 default_server;\n\
+      \  listen [::]:80 default_server;\n  root /keeweb;\n  index index.html;\n  server_name\
+      \ _;\n  server_tokens off;\n  add_header X-Content-Type-Options nosniff;\n \
+      \ location / {\n    try_files $uri $uri/ =404;\n  }\n  location ~ /\\. {\n \
+      \   deny all;\n  }\n}\nEOF\nexec /opt/entrypoint.sh nginx\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

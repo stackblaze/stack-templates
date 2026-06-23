@@ -30,12 +30,12 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /home/node/chibisafe/uploads
     name: chibisafe-uploads-volume
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
@@ -55,7 +55,7 @@ spec:
     repository: chibisafe/chibisafe
     run:
       securityContext:
-        readOnlyRootFilesystem: false
+        readOnlyRootFilesystem: true
     tag: latest
   name: chibisafe
   resources:

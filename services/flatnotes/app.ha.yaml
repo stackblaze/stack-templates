@@ -47,15 +47,15 @@ spec:
     value: /data
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: flatnotes-data
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -63,3 +63,6 @@ spec:
     pullPolicy: Always
     repository: dullage/flatnotes
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

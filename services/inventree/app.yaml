@@ -184,3 +184,6 @@ spec:
     pullPolicy: Always
     repository: inventree/inventree
     tag: stable
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

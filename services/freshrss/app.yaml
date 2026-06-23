@@ -96,3 +96,6 @@ spec:
     pullPolicy: Always
     repository: freshrss/freshrss
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

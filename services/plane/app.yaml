@@ -4,10 +4,12 @@ metadata:
   name: plane
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source project management platform — modern alternative to Jira and Linear.
+    kubero.dev/template.description: Open-source project management platform — modern
+      alternative to Jira and Linear.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/icon.png
-    kubero.dev/template.installation: This template deploys the Plane API backend with PostgreSQL and Valkey. Plane CE also
-      requires web, worker, beat, and proxy containers — use the official Plane Helm chart for a full stack, or deploy makeplane/plane-frontend
+    kubero.dev/template.installation: This template deploys the Plane API backend
+      with PostgreSQL and Valkey. Plane CE also requires web, worker, beat, and proxy
+      containers — use the official Plane Helm chart for a full stack, or deploy makeplane/plane-frontend
       and makeplane/plane-proxy companions pointed at this API service.
     kubero.dev/template.links: '["https://developers.plane.so/"]'
     kubero.dev/template.screenshots: '["https://plane.so/og-image.png"]'
@@ -53,9 +55,9 @@ spec:
               secret:
                 name: plane-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO plane
-                - GRANT CREATE ON SCHEMA public TO plane
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO plane
+              - GRANT ALL ON SCHEMA public TO plane
+              - GRANT CREATE ON SCHEMA public TO plane
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO plane
           enableSuperuserAccess: true
           superuserSecret:
             name: plane-postgresql-superuser
@@ -199,3 +201,6 @@ spec:
     - sh
     - -c
     - ./bin/docker-entrypoint-migrator.sh && ./bin/docker-entrypoint-api.sh
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

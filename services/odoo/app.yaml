@@ -136,3 +136,6 @@ spec:
       \ -d odoo -i base --stop-after-init --without-demo=all --db_host=\"$HOST\" --db_port=\"\
       $PORT\" --db_user=\"$USER\" --db_password=\"$PASSWORD\"\nfi\nexec /entrypoint.sh\
       \ odoo\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

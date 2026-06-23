@@ -134,3 +134,6 @@ spec:
     pullPolicy: Always
     repository: gristlabs/grist-oss
     tag: stable
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

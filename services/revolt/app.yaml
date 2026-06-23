@@ -181,3 +181,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stoatchat/api
     tag: v0.13.6
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -4,10 +4,12 @@ metadata:
   name: superset
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Modern data exploration and visualization platform — enterprise-ready business intelligence.
+    kubero.dev/template.description: Modern data exploration and visualization platform
+      — enterprise-ready business intelligence.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/superset/icon.png
-    kubero.dev/template.installation: First boot runs migrations and init automatically (several minutes). Change SUPERSET_SECRET_KEY
-      and ADMIN_PASSWORD before production use.
+    kubero.dev/template.installation: First boot runs migrations and init automatically
+      (several minutes). Change SUPERSET_SECRET_KEY and ADMIN_PASSWORD before production
+      use.
     kubero.dev/template.links: '["https://superset.apache.org/docs/intro"]'
     kubero.dev/template.screenshots: '["https://superset.apache.org/img/superset-logo-horiz.svg"]'
     kubero.dev/template.source: https://github.com/apache/superset
@@ -52,9 +54,9 @@ spec:
               secret:
                 name: superset-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO superset
-                - GRANT CREATE ON SCHEMA public TO superset
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO superset
+              - GRANT ALL ON SCHEMA public TO superset
+              - GRANT CREATE ON SCHEMA public TO superset
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO superset
           enableSuperuserAccess: true
           superuserSecret:
             name: superset-postgresql-superuser
@@ -142,7 +144,7 @@ spec:
   extraVolumes: []
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   resources:
@@ -166,8 +168,12 @@ spec:
       securityContext:
         runAsNonRoot: false
         runAsUser: 0
+        readOnlyRootFilesystem: false
     tag: latest
     command:
     - sh
     - -c
-    - /app/docker/docker-bootstrap.sh && superset db upgrade && (superset fab create-admin --username admin --email admin@superset.com --password "$ADMIN_PASSWORD" --firstname Superset --lastname Admin || true) && superset init && exec /app/docker/docker-bootstrap.sh app-gunicorn
+    - /app/docker/docker-bootstrap.sh && superset db upgrade && (superset fab create-admin
+      --username admin --email admin@superset.com --password "$ADMIN_PASSWORD" --firstname
+      Superset --lastname Admin || true) && superset init && exec /app/docker/docker-bootstrap.sh
+      app-gunicorn

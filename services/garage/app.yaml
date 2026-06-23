@@ -57,12 +57,12 @@ spec:
     size: 2Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/lib/garage/data
     name: garage-data
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -73,3 +73,6 @@ spec:
     pullPolicy: Always
     repository: dxflrs/garage
     tag: v2.3.0
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

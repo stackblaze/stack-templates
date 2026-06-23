@@ -156,3 +156,6 @@ spec:
       \ then\n  printf '%s\\n' 'derp:' '  urls:' '    - https://controlplane.tailscale.com/derpmap/default'\
       \ >> /var/lib/headscale/config.yaml\nfi\nexec /ko-app/headscale -c /var/lib/headscale/config.yaml\
       \ serve\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

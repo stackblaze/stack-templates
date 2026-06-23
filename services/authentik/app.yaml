@@ -126,12 +126,12 @@ spec:
     value: false
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /media
     name: authentik-media
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
@@ -167,3 +167,6 @@ spec:
     - --
     - ak
     - server
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

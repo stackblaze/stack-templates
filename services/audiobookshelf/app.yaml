@@ -41,19 +41,19 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /audiobooks
     name: audiobookshelf-audiobooks
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /podcasts
     name: audiobookshelf-podcasts
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   healthcheck:
     enabled: true
     path: /
@@ -65,6 +65,9 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/advplyr/audiobookshelf
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: audiobookshelf
   web:
     replicaCount: 1

@@ -39,3 +39,6 @@ spec:
     pullPolicy: Always
     repository: lscr.io/linuxserver/grav
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

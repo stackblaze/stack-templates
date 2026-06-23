@@ -173,12 +173,12 @@ spec:
     value: qaMastodonEncDerivationSalt01
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /mastodon/public/system
     name: mastodon-system
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -210,3 +210,6 @@ spec:
       exec bundle exec puma -C config/puma.rb
 
       '
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

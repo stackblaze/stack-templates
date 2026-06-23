@@ -83,6 +83,9 @@ spec:
     containerPort: '5230'
     repository: neosmemo/memos
     tag: stable
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: memos
   web:
     replicaCount: 1

@@ -27,6 +27,9 @@ spec:
     pullPolicy: Always
     repository: machines/filestash
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: filestash
   web:
     replicaCount: 1

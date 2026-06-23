@@ -57,3 +57,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/muchobien/pocketbase
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

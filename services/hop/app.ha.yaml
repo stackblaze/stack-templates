@@ -46,12 +46,12 @@ spec:
     value: /config/audit
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /config
     name: hop-config
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   resources:
     requests:
@@ -67,7 +67,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -93,3 +93,6 @@ spec:
       \ /usr/local/tomcat/conf/\n[ -f /config/web.xml ] && cp /config/web.xml /usr/local/tomcat/webapps/ROOT/WEB-INF/\n\
       catalina.sh run &\npid=\"$!\"\ntrap \"catalina.sh stop\" SIGINT SIGTERM\nwait\
       \ \"$pid\"\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

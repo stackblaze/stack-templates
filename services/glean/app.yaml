@@ -172,3 +172,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/leslieleung/glean-backend
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

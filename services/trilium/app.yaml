@@ -21,16 +21,19 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /home/node/trilium-data
     name: trilium-data
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '8080'
     repository: zadam/trilium
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: trilium
   web:
     replicaCount: 1

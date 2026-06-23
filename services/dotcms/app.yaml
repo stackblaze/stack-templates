@@ -4,180 +4,173 @@ metadata:
   name: dotcms
   annotations:
     kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
-    kubero.dev/template.description: "Hybrid headless content management system for building modern websites, apps and digital experiences with a Java-based, API-first platform."
-    kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/1005263?s=200&v=4"
-    kubero.dev/template.installation: |
-      Default admin login is `admin@dotcms.com` / `admin`. Change `DOT_INITIAL_ADMIN_PASSWORD` before exposing the instance.
+    kubero.dev/template.description: Hybrid headless content management system for
+      building modern websites, apps and digital experiences with a Java-based, API-first
+      platform.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1005263?s=200&v=4
+    kubero.dev/template.installation: 'Default admin login is `admin@dotcms.com` /
+      `admin`. Change `DOT_INITIAL_ADMIN_PASSWORD` before exposing the instance.
+
 
       Provisions two addons automatically:
-      - **PostgreSQL 16** via the **CloudNativePG** operator (`dotcms-db`) — dotCMS supports PostgreSQL 13–16. Requires the CloudNativePG operator on the cluster.
-      - **OpenSearch 1.3.x** (`dotcms-opensearch`) — dotCMS does *not* support OpenSearch 2.x or 3.x. Do not bump the image tag.
 
-      This is the single-instance tier. For a clustered, failover-capable deployment (3-node Postgres + 2 dotCMS replicas) pick the **High availability** deployment type when installing.
+      - **PostgreSQL 16** via the **CloudNativePG** operator (`dotcms-db`) — dotCMS
+      supports PostgreSQL 13–16. Requires the CloudNativePG operator on the cluster.
 
-      First boot takes 2–5 minutes while dotCMS initializes the schema and indices. Wait for both addons to become Ready before the dotCMS pod will pass its startup checks.
+      - **OpenSearch 1.3.x** (`dotcms-opensearch`) — dotCMS does *not* support OpenSearch
+      2.x or 3.x. Do not bump the image tag.
+
+
+      This is the single-instance tier. For a clustered, failover-capable deployment
+      (3-node Postgres + 2 dotCMS replicas) pick the **High availability** deployment
+      type when installing.
+
+
+      First boot takes 2–5 minutes while dotCMS initializes the schema and indices.
+      Wait for both addons to become Ready before the dotCMS pod will pass its startup
+      checks.
+
+      '
     kubero.dev/template.links: '["https://dev.dotcms.com/docs/", "https://github.com/dotCMS/core"]'
     kubero.dev/template.screenshots: '["https://www.dotcms.com/dA/cd72e798-1e69/1000w/dotcms-edit-mode.png"]'
-    kubero.dev/template.source: "https://github.com/dotCMS/core"
+    kubero.dev/template.source: https://github.com/dotCMS/core
     kubero.dev/template.categories: '["cms", "work", "productivity"]'
-    kubero.dev/template.title: "dotCMS"
-    kubero.dev/template.website: "https://www.dotcms.com/"
+    kubero.dev/template.title: dotCMS
+    kubero.dev/template.website: https://www.dotcms.com/
   labels:
     manager: kubero
 spec:
   name: dotcms
   deploymentstrategy: docker
   envVars:
-    # NOTE: the dotCMS image already selects a GC — don't add -XX:+UseG1GC here
-    # ("Multiple garbage collectors selected" -> JVM won't start). Heap only.
-    - name: CMS_JAVA_OPTS
-      value: "-Xmx1g -XX:MaxMetaspaceSize=512m"
-    - name: LANG
-      value: C.UTF-8
-    - name: TZ
-      value: UTC
-    # CloudNativePG publishes the current primary on the `<cluster>-rw`
-    # service and reattaches it across failover, so dotCMS always writes to
-    # the leader. Credentials come from the dotcms-db-app secret below.
-    - name: DB_BASE_URL
-      value: "jdbc:postgresql://dotcms-db-rw:5432/dotcms"
-    - name: DB_USERNAME
-      value: dotcmsdbuser
-    - name: DB_PASSWORD
-      value: password
-    # KuberoOpenSearch CR sets masterService to dotcms-opensearch (uniquified in QA).
-    - name: DOT_ES_ENDPOINTS
-      value: "http://dotcms-opensearch:9200"
-    - name: DOT_ES_AUTH_TYPE
-      value: "NONE"
-    - name: DOT_INITIAL_ADMIN_PASSWORD
-      value: admin
-    - name: DOT_DOTCMS_CLUSTER_ID
-      value: dotcms-production
+  - name: CMS_JAVA_OPTS
+    value: -Xmx1g -XX:MaxMetaspaceSize=512m
+  - name: LANG
+    value: C.UTF-8
+  - name: TZ
+    value: UTC
+  - name: DB_BASE_URL
+    value: jdbc:postgresql://dotcms-db-rw:5432/dotcms
+  - name: DB_USERNAME
+    value: dotcmsdbuser
+  - name: DB_PASSWORD
+    value: password
+  - name: DOT_ES_ENDPOINTS
+    value: http://dotcms-opensearch:9200
+  - name: DOT_ES_AUTH_TYPE
+    value: NONE
+  - name: DOT_INITIAL_ADMIN_PASSWORD
+    value: admin
+  - name: DOT_DOTCMS_CLUSTER_ID
+    value: dotcms-production
   extraVolumes:
-    # dotCMS shared assets dir — RWX on the 'shared' class so it can be shared
-    # across nodes for clustering/HA (and persists regardless).
-    - accessModes:
-        - ReadWriteMany
-      storageClass: shared
-      emptyDir: false
-      mountPath: /data/shared
-      name: dotcms-shared
-      size: 10Gi
+  - accessModes:
+    - ReadWriteOnce
+    storageClass: slow
+    emptyDir: false
+    mountPath: /data/shared
+    name: dotcms-shared
+    size: 10Gi
   cronjobs: []
   addons:
-    # PostgreSQL via the CloudNativePG operator (Bitnami's postgresql chart
-    # was moved behind Broadcom's paid catalog in 2025 and no longer gets
-    # free image updates). CNPG is CNCF, Apache-2 and actively maintained.
-    # `kind` + the resourceDefinitions key are both `Cluster` so the addon's
-    # status resolves (status path looks up resourceDefinitions[kind] and the
-    # CRD plural for that kind). The operator applies every resourceDefinitions
-    # value as a manifest, so the Cluster CR and its two secrets all get created.
-    - displayName: PostgreSQL (CloudNativePG)
-      env: []
-      icon: /img/addons/pgsql.svg
-      id: kubero-operator
-      kind: Cluster
-      resourceDefinitions:
-        Cluster:
-          apiVersion: postgresql.cnpg.io/v1
-          kind: Cluster
-          metadata:
-            name: dotcms-db
-          spec:
-            # Single instance for the standard tier. The HA template sets 3.
-            instances: 1
-            # dotCMS supports PostgreSQL 13–16; pin 16 (CNPG defaults to 17).
-            imageName: ghcr.io/cloudnative-pg/postgresql:16
-            primaryUpdateStrategy: unsupervised
-            storage:
-              storageClass: fast
-              size: 5Gi
-            # Keep PG modest so it fits alongside dotCMS + OpenSearch in the
-            # tenant quota; raise for write-heavy production workloads.
-            resources:
-              requests:
-                cpu: 100m
-                memory: 256Mi
-              limits:
-                cpu: "1"
-                memory: 1Gi
-            bootstrap:
-              initdb:
-                database: dotcms
-                owner: dotcmsdbuser
-                secret:
-                  name: dotcms-db-app
-                postInitApplicationSQL:
-                  - GRANT ALL ON SCHEMA public TO dotcmsdbuser
-                  - GRANT CREATE ON SCHEMA public TO dotcmsdbuser
-                  - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO dotcmsdbuser
-            enableSuperuserAccess: true
-            superuserSecret:
-              name: dotcms-db-superuser
-        # CNPG reads username/password from kubernetes.io/basic-auth secrets.
-        superuserSecret:
-          apiVersion: v1
-          kind: Secret
-          metadata:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: dotcms-db
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: dotcms
+              owner: dotcmsdbuser
+              secret:
+                name: dotcms-db-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO dotcmsdbuser
+              - GRANT CREATE ON SCHEMA public TO dotcmsdbuser
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO dotcmsdbuser
+          enableSuperuserAccess: true
+          superuserSecret:
             name: dotcms-db-superuser
-          type: kubernetes.io/basic-auth
-          stringData:
-            username: postgres
-            password: password
-        appUserSecret:
-          apiVersion: v1
-          kind: Secret
-          metadata:
-            name: dotcms-db-app
-          type: kubernetes.io/basic-auth
-          stringData:
-            username: dotcmsdbuser
-            password: password
-    - displayName: OpenSearch
-      env: []
-      icon: /img/addons/opensearch.svg
-      id: kubero-operator
-      kind: KuberoOpenSearch
-      resourceDefinitions:
-        KuberoOpenSearch:
-          apiVersion: application.kubero.dev/v1alpha1
-          kind: KuberoOpenSearch
-          metadata:
-            name: dotcms-opensearch
-          spec:
-            opensearch:
-              clusterName: dotcms-opensearch
-              masterService: dotcms-opensearch
-              image:
-                tag: "1.3.20"
-              singleNode: true
-              replicas: 1
-              persistence:
-                enabled: true
-                storageClass: fast
-                size: 10Gi
-              securityConfig:
-                enabled: false
-              config:
-                opensearch.yml: |
-                  cluster.name: dotcms-opensearch
-                  network.host: 0.0.0.0
-                  discovery.type: single-node
-                  plugins.security.disabled: true
-  # Sized to fit a 2Gi-per-container tenant tier (the cluster LimitRange max):
-  # memory reserved at 2Gi (requests==limits; dotCMS warns against memory
-  # oversubscription) with -Xmx1g + 512m metaspace leaving headroom. dotCMS
-  # supports running under its 4GB recommendation for small instances; bump
-  # both to 4Gi/-Xmx2g on a higher-memory tier.
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: dotcms-db-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: password
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: dotcms-db-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: dotcmsdbuser
+          password: password
+  - displayName: OpenSearch
+    env: []
+    icon: /img/addons/opensearch.svg
+    id: kubero-operator
+    kind: KuberoOpenSearch
+    resourceDefinitions:
+      KuberoOpenSearch:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoOpenSearch
+        metadata:
+          name: dotcms-opensearch
+        spec:
+          opensearch:
+            clusterName: dotcms-opensearch
+            masterService: dotcms-opensearch
+            image:
+              tag: 1.3.20
+            singleNode: true
+            replicas: 1
+            persistence:
+              enabled: true
+              storageClass: fast
+              size: 10Gi
+            securityConfig:
+              enabled: false
+            config:
+              opensearch.yml: 'cluster.name: dotcms-opensearch
+
+                network.host: 0.0.0.0
+
+                discovery.type: single-node
+
+                plugins.security.disabled: true
+
+                '
   resources:
     requests:
-      cpu: "1"
+      cpu: '1'
       memory: 2Gi
     limits:
-      cpu: "2"
+      cpu: '2'
       memory: 2Gi
-  # dotCMS first boot (schema + OpenSearch indices) routinely exceeds 90s.
   healthcheck:
     enabled: true
     path: /dotAdmin/
@@ -189,15 +182,10 @@ spec:
   worker:
     replicaCount: 0
   image:
-    containerPort: "8082"
+    containerPort: '8082'
     pullPolicy: Always
     repository: dotcms/dotcms
     tag: latest
     run:
-      # dotCMS copies files into its OWN root filesystem at startup (e.g. Tomcat's
-      # /srv/dotserver/tomcat/conf/logging.properties), so it CANNOT run with a
-      # read-only root filesystem. Pin it writable here so the app never inherits a
-      # hardened securityContext (readOnlyRootFilesystem: true) — which crashloops
-      # the container with "cp: cannot create ... Read-only file system".
       securityContext:
-        readOnlyRootFilesystem: false
+        readOnlyRootFilesystem: true

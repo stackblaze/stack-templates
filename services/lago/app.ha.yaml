@@ -4,23 +4,30 @@ metadata:
   name: lago
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source metering and usage-based billing platform for invoicing, subscriptions, and
-      pay-as-you-go pricing.
+    kubero.dev/template.description: Open-source metering and usage-based billing
+      platform for invoicing, subscriptions, and pay-as-you-go pricing.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lago/icon.png
-    kubero.dev/template.installation: 'Lago is a multi-service Rails stack. This template runs the PRIMARY API server (getlago/api)
-      on port 3000, wired to the Postgres and Valkey (Redis) add-ons provisioned here. You MUST deploy the companion services
-      separately, all sharing the SAME database, Redis, and the env keys below: (1) Worker - image getlago/api with command
-      ''./scripts/start.worker.sh'' (Sidekiq background jobs, required for billing/invoicing to function); (2) Clock - image
-      getlago/api with command ''./scripts/start.clock.sh'' (recurring/scheduled jobs); (3) Frontend - image getlago/front
-      on port 80, set its API_URL to this app''s public URL and APP_ENV=production; (4) PDF generator - image getlago/lago-gotenberg:7.8.2
-      on port 3000, point LAGO_PDF_URL at it (default http://lago-pdf:3000). Lago''s Postgres needs the partman + uuid-ossp
-      extensions; if the provisioned Postgres lacks them, swap in getlago/postgres-partman:15-alpine. ROTATE before exposing:
-      SECRET_KEY_BASE, LAGO_ENCRYPTION_PRIMARY_KEY, LAGO_ENCRYPTION_DETERMINISTIC_KEY, LAGO_ENCRYPTION_KEY_DERIVATION_SALT
-      (each via ''openssl rand -hex 32''), LAGO_RSA_PRIVATE_KEY (a real PEM via ''openssl genrsa 2048 | base64''), and the
-      Postgres add-on password. First run: the API container runs DB migrations on boot via LAGO_CREATE_ORG; create your first
-      organization/user through the frontend signup. Object storage (S3) for invoice PDFs is optional and not provisioned
-      - configure LAGO_USE_AWS_S3 + bucket env vars if needed.'
-    kubero.dev/template.links: '["https://getlago.com/docs/guide/lago-self-hosted/docker", "https://getlago.com/docs/api-reference/intro"]'
+    kubero.dev/template.installation: 'Lago is a multi-service Rails stack. This template
+      runs the PRIMARY API server (getlago/api) on port 3000, wired to the Postgres
+      and Valkey (Redis) add-ons provisioned here. You MUST deploy the companion services
+      separately, all sharing the SAME database, Redis, and the env keys below: (1)
+      Worker - image getlago/api with command ''./scripts/start.worker.sh'' (Sidekiq
+      background jobs, required for billing/invoicing to function); (2) Clock - image
+      getlago/api with command ''./scripts/start.clock.sh'' (recurring/scheduled jobs);
+      (3) Frontend - image getlago/front on port 80, set its API_URL to this app''s
+      public URL and APP_ENV=production; (4) PDF generator - image getlago/lago-gotenberg:7.8.2
+      on port 3000, point LAGO_PDF_URL at it (default http://lago-pdf:3000). Lago''s
+      Postgres needs the partman + uuid-ossp extensions; if the provisioned Postgres
+      lacks them, swap in getlago/postgres-partman:15-alpine. ROTATE before exposing:
+      SECRET_KEY_BASE, LAGO_ENCRYPTION_PRIMARY_KEY, LAGO_ENCRYPTION_DETERMINISTIC_KEY,
+      LAGO_ENCRYPTION_KEY_DERIVATION_SALT (each via ''openssl rand -hex 32''), LAGO_RSA_PRIVATE_KEY
+      (a real PEM via ''openssl genrsa 2048 | base64''), and the Postgres add-on password.
+      First run: the API container runs DB migrations on boot via LAGO_CREATE_ORG;
+      create your first organization/user through the frontend signup. Object storage
+      (S3) for invoice PDFs is optional and not provisioned - configure LAGO_USE_AWS_S3
+      + bucket env vars if needed.'
+    kubero.dev/template.links: '["https://getlago.com/docs/guide/lago-self-hosted/docker",
+      "https://getlago.com/docs/api-reference/intro"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/getlago/lago
     kubero.dev/template.categories: '["finance", "e-commerce", "development"]'
@@ -64,10 +71,10 @@ spec:
               secret:
                 name: lago-postgresql-app
               postInitApplicationSQL:
-                - CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
-                - GRANT ALL ON SCHEMA public TO lago
-                - GRANT CREATE ON SCHEMA public TO lago
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO lago
+              - CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
+              - GRANT ALL ON SCHEMA public TO lago
+              - GRANT CREATE ON SCHEMA public TO lago
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO lago
           enableSuperuserAccess: true
           superuserSecret:
             name: lago-postgresql-superuser
@@ -183,7 +190,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -191,3 +198,6 @@ spec:
     pullPolicy: Always
     repository: getlago/api
     tag: v1.48.1
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

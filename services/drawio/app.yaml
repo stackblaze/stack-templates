@@ -4,18 +4,22 @@ metadata:
   name: drawio
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted draw.io (diagrams.net), a client-side editor for flowcharts, UML, ER, network
-      and other diagrams.
+    kubero.dev/template.description: Self-hosted draw.io (diagrams.net), a client-side
+      editor for flowcharts, UML, ER, network and other diagrams.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/drawio/icon.png
-    kubero.dev/template.installation: 'draw.io is a stateless, client-side diagram editor served by Tomcat. Diagrams are never
-      stored on the server: they live in the browser, on the user''s local disk, or in an external storage provider the user
-      connects (Google Drive, OneDrive, GitHub, GitLab, Dropbox), so no database add-on and no persistent volume are required.
-      To enable those external storage integrations you must register OAuth apps with each provider and pass their client
-      IDs via the DRAWIO_GOOGLE_CLIENT_ID / DRAWIO_GITHUB_CLIENT_ID / DRAWIO_GITLAB_CLIENT_ID / DRAWIO_ONEDRIVE_CLIENT_ID
-      env vars (left blank by default). PUBLIC_DNS / DRAWIO_BASE_URL are pre-set to the app URL so generated share/embed links
-      are correct; update them if you change the hostname. For PNG/SVG/PDF server-side export, deploy the optional jgraph/export-server
-      companion container and point DRAWIO_EXPORT_URL at its in-cluster service name (export then works client-side without
-      it). No SMTP, S3 or search engine is needed.'
+    kubero.dev/template.installation: 'draw.io is a stateless, client-side diagram
+      editor served by Tomcat. Diagrams are never stored on the server: they live
+      in the browser, on the user''s local disk, or in an external storage provider
+      the user connects (Google Drive, OneDrive, GitHub, GitLab, Dropbox), so no database
+      add-on and no persistent volume are required. To enable those external storage
+      integrations you must register OAuth apps with each provider and pass their
+      client IDs via the DRAWIO_GOOGLE_CLIENT_ID / DRAWIO_GITHUB_CLIENT_ID / DRAWIO_GITLAB_CLIENT_ID
+      / DRAWIO_ONEDRIVE_CLIENT_ID env vars (left blank by default). PUBLIC_DNS / DRAWIO_BASE_URL
+      are pre-set to the app URL so generated share/embed links are correct; update
+      them if you change the hostname. For PNG/SVG/PDF server-side export, deploy
+      the optional jgraph/export-server companion container and point DRAWIO_EXPORT_URL
+      at its in-cluster service name (export then works client-side without it). No
+      SMTP, S3 or search engine is needed.'
     kubero.dev/template.links: '["https://www.drawio.com/doc/", "https://github.com/jgraph/docker-drawio#readme"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/jgraph/docker-drawio
@@ -64,3 +68,6 @@ spec:
     pullPolicy: Always
     repository: jgraph/drawio
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

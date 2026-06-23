@@ -158,3 +158,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/teableio/teable
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -4,17 +4,23 @@ metadata:
   name: unibee
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source, gateway-agnostic subscription billing and invoicing platform for SaaS businesses.
+    kubero.dev/template.description: Open-source, gateway-agnostic subscription billing
+      and invoicing platform for SaaS businesses.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/unibee/icon.png
-    kubero.dev/template.installation: 'Primary web/API container only (unibee/api). DATABASE_LINK uses a MySQL DSN, so this
-      template wires the mariadb add-on (UniBee speaks MySQL, not postgres). The valkey add-on has no password, so REDIS_PASSWORD
-      is left empty. UniBee is a multi-container stack: also deploy the companion services as separate Kubero apps and route
-      them behind one ingress (UniBee normally fronts them with nginx): admin merchant portal = unibee/admin-portal:v1.9.0
-      (port 80), user portal = unibee/user-portal:v1.9.0 (port 80), and the licensing service = unibee/license-api:v1.0.2-premium
-      (port 80). Set UNIBEE_API_URL and the portal URLs to your public host once routing is set up; replace UNIBEE_LICENSE
-      with your key (blank works in stand-alone MODE for the open-source edition). Rotate the mariadb password from the slug
-      default. First run: open the admin portal and create the first merchant/admin account.'
-    kubero.dev/template.links: '["https://github.com/UniBee-Billing/unibee/blob/main/README.md", "https://unibee.dev/"]'
+    kubero.dev/template.installation: 'Primary web/API container only (unibee/api).
+      DATABASE_LINK uses a MySQL DSN, so this template wires the mariadb add-on (UniBee
+      speaks MySQL, not postgres). The valkey add-on has no password, so REDIS_PASSWORD
+      is left empty. UniBee is a multi-container stack: also deploy the companion
+      services as separate Kubero apps and route them behind one ingress (UniBee normally
+      fronts them with nginx): admin merchant portal = unibee/admin-portal:v1.9.0
+      (port 80), user portal = unibee/user-portal:v1.9.0 (port 80), and the licensing
+      service = unibee/license-api:v1.0.2-premium (port 80). Set UNIBEE_API_URL and
+      the portal URLs to your public host once routing is set up; replace UNIBEE_LICENSE
+      with your key (blank works in stand-alone MODE for the open-source edition).
+      Rotate the mariadb password from the slug default. First run: open the admin
+      portal and create the first merchant/admin account.'
+    kubero.dev/template.links: '["https://github.com/UniBee-Billing/unibee/blob/main/README.md",
+      "https://unibee.dev/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/UniBee-Billing/unibee
     kubero.dev/template.categories: '["finance", "e-commerce", "work"]'
@@ -137,7 +143,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -148,12 +154,12 @@ spec:
     command:
     - sh
     - -c
-    - |
-      set -e
-      apk add --no-cache mysql-client netcat-openbsd >/dev/null
-      while ! nc -z "${DB_HOST}" 3306 2>/dev/null; do sleep 2; done
-      if ! mysql -h"${DB_HOST}" -uunibee -punibee unibee -N -e "SHOW TABLES LIKE 'merchant';" 2>/dev/null | grep -q merchant; then
-        curl -fsSL "https://raw.githubusercontent.com/UniBee-Billing/unibee/v1.9.0/mysql/structure.sql" \
-          | mysql -h"${DB_HOST}" -uunibee -punibee unibee
-      fi
-      cd /app && exec ./main
+    - "set -e\napk add --no-cache mysql-client netcat-openbsd >/dev/null\nwhile !\
+      \ nc -z \"${DB_HOST}\" 3306 2>/dev/null; do sleep 2; done\nif ! mysql -h\"${DB_HOST}\"\
+      \ -uunibee -punibee unibee -N -e \"SHOW TABLES LIKE 'merchant';\" 2>/dev/null\
+      \ | grep -q merchant; then\n  curl -fsSL \"https://raw.githubusercontent.com/UniBee-Billing/unibee/v1.9.0/mysql/structure.sql\"\
+      \ \\\n    | mysql -h\"${DB_HOST}\" -uunibee -punibee unibee\nfi\ncd /app &&\
+      \ exec ./main\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

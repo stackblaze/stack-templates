@@ -195,3 +195,6 @@ spec:
     - -c
     - cd packages/server && node dist/cli.js system:migrate:latest && node dist/cli.js
       tenants:migrate:latest && exec node dist/main.js
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

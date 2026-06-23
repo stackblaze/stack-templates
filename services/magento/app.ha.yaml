@@ -144,12 +144,12 @@ spec:
     value: magento-elasticsearch
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html
     name: magento-data
     size: 5Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   resources:
     requests:
@@ -165,7 +165,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -198,3 +198,4 @@ spec:
       securityContext:
         runAsNonRoot: false
         runAsUser: 0
+        readOnlyRootFilesystem: false

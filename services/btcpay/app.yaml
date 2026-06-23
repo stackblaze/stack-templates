@@ -146,3 +146,6 @@ spec:
     pullPolicy: Always
     repository: btcpayserver/btcpayserver
     tag: 2.3.9
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

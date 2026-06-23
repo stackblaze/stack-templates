@@ -166,12 +166,12 @@ spec:
     value: UTC
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /home/mediacms/mediacms/media_files
     name: mediacms-media
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -182,3 +182,6 @@ spec:
     pullPolicy: Always
     repository: mediacms/mediacms
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

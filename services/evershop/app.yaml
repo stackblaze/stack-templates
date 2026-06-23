@@ -42,7 +42,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
           bootstrap:
             initdb:
@@ -51,9 +51,9 @@ spec:
               secret:
                 name: evershop-db-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO evershop
-                - GRANT CREATE ON SCHEMA public TO evershop
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO evershop
+              - GRANT ALL ON SCHEMA public TO evershop
+              - GRANT CREATE ON SCHEMA public TO evershop
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO evershop
           enableSuperuserAccess: true
           superuserSecret:
             name: evershop-db-superuser
@@ -126,17 +126,14 @@ spec:
     command:
     - sh
     - -c
-    - |
-      for i in $(seq 1 60); do
-        node -e "const {Pool}=require('pg'); const p=new Pool({host:process.env.DB_HOST,port:process.env.DB_PORT,user:process.env.DB_USER,password:process.env.DB_PASSWORD,database:process.env.DB_NAME}); p.query('SELECT 1').then(()=>process.exit(0)).catch(()=>process.exit(1))" && break
-        sleep 5
-      done
-      npm run start &
-      for i in $(seq 1 120); do
-        wget -q -O /dev/null http://127.0.0.1:3000/api/graphql && break
-        sleep 5
-      done
-      npm run user:create -- --email "$ADMIN_EMAIL" --password "$ADMIN_PASSWORD" --name "$ADMIN_NAME" || true
-      npm run seed -- --all || true
-      wait
+    - "for i in $(seq 1 60); do\n  node -e \"const {Pool}=require('pg'); const p=new\
+      \ Pool({host:process.env.DB_HOST,port:process.env.DB_PORT,user:process.env.DB_USER,password:process.env.DB_PASSWORD,database:process.env.DB_NAME});\
+      \ p.query('SELECT 1').then(()=>process.exit(0)).catch(()=>process.exit(1))\"\
+      \ && break\n  sleep 5\ndone\nnpm run start &\nfor i in $(seq 1 120); do\n  wget\
+      \ -q -O /dev/null http://127.0.0.1:3000/api/graphql && break\n  sleep 5\ndone\n\
+      npm run user:create -- --email \"$ADMIN_EMAIL\" --password \"$ADMIN_PASSWORD\"\
+      \ --name \"$ADMIN_NAME\" || true\nnpm run seed -- --all || true\nwait\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: evershop

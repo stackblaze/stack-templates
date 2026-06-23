@@ -89,6 +89,9 @@ spec:
     containerPort: '8080'
     repository: danielszabo99/microbin
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: microbin
   web:
     replicaCount: 1

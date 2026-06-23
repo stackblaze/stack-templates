@@ -45,12 +45,12 @@ spec:
     value: http://localhost:3000
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /upload
     name: postiz-upload-volume
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
@@ -154,6 +154,9 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/gitroomhq/postiz-app
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   resources:
     requests:
       cpu: 500m

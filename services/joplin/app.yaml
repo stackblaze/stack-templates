@@ -109,12 +109,12 @@ spec:
     value: joplin
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /home/joplin/storage
     name: joplin-storage
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: false
@@ -127,3 +127,6 @@ spec:
     pullPolicy: Always
     repository: joplin/server
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

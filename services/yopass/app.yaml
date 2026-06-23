@@ -4,14 +4,18 @@ metadata:
   name: yopass
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted web service for securely sharing one-time secrets, passwords and files with
-      client-side encryption and automatic expiry.
+    kubero.dev/template.description: Self-hosted web service for securely sharing
+      one-time secrets, passwords and files with client-side encryption and automatic
+      expiry.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/yopass/icon.png
-    kubero.dev/template.installation: Yopass stores encrypted secrets ephemerally in Valkey (deployed as the bundled add-on);
-      secrets auto-expire by TTL so no persistent volume is required. The server connects via REDIS at redis://rfr-yopass-valkey-readwrite:6379/0.
-      Secrets are encrypted in the browser before upload, so the server never sees plaintext. Set the public URL via the BASE_URL
-      env (already wired to {{KUBERO_APP_URL}}) so generated share links are correct. For production behind the Kubero ingress,
-      optionally set TRUSTED_PROXIES to the ingress CIDR. No database credentials to rotate.
+    kubero.dev/template.installation: Yopass stores encrypted secrets ephemerally
+      in Valkey (deployed as the bundled add-on); secrets auto-expire by TTL so no
+      persistent volume is required. The server connects via REDIS at redis://rfr-yopass-valkey-readwrite:6379/0.
+      Secrets are encrypted in the browser before upload, so the server never sees
+      plaintext. Set the public URL via the BASE_URL env (already wired to {{KUBERO_APP_URL}})
+      so generated share links are correct. For production behind the Kubero ingress,
+      optionally set TRUSTED_PROXIES to the ingress CIDR. No database credentials
+      to rotate.
     kubero.dev/template.links: '["https://github.com/jhaals/yopass#yopass", "https://hub.docker.com/r/jhaals/yopass"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/jhaals/yopass
@@ -77,3 +81,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/yopass
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -111,19 +111,19 @@ spec:
     value: '2'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /photoprism/originals
     name: photoprism-originals
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /photoprism/storage
     name: photoprism-storage
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -134,3 +134,6 @@ spec:
     pullPolicy: Always
     repository: photoprism/photoprism
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

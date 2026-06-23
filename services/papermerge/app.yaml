@@ -138,12 +138,12 @@ spec:
     value: eng
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /db/media
     name: papermerge-data
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -154,3 +154,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/papermerge
     tag: 3.5.3
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

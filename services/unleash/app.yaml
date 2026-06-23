@@ -39,7 +39,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
           bootstrap:
             initdb:
@@ -86,6 +86,9 @@ spec:
     containerPort: '4242'
     repository: unleashorg/unleash-server
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: unleash
   web:
     replicaCount: 1

@@ -88,6 +88,9 @@ spec:
     containerPort: '6157'
     repository: ghcr.io/thomiceli/opengist
     tag: '1'
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: opengist
   web:
     replicaCount: 1

@@ -168,6 +168,9 @@ spec:
     pullPolicy: Always
     repository: twentycrm/twenty
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   resources:
     requests:
       cpu: 500m

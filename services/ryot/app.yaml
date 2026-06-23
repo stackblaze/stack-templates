@@ -41,7 +41,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
           bootstrap:
             initdb:
@@ -50,9 +50,9 @@ spec:
               secret:
                 name: ryot-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO ryot
-                - GRANT CREATE ON SCHEMA public TO ryot
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ryot
+              - GRANT ALL ON SCHEMA public TO ryot
+              - GRANT CREATE ON SCHEMA public TO ryot
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ryot
           enableSuperuserAccess: true
           superuserSecret:
             name: ryot-postgresql-superuser
@@ -97,6 +97,9 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/ignisda/ryot
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: ryot
   web:
     replicaCount: 1

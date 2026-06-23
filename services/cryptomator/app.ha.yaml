@@ -4,13 +4,15 @@ metadata:
   name: cryptomator
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted key management and access control server for sharing Cryptomator-encrypted
-      vaults across teams.
+    kubero.dev/template.description: Self-hosted key management and access control
+      server for sharing Cryptomator-encrypted vaults across teams.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cryptomator/icon.png
-    kubero.dev/template.installation: 'Bundled PostgreSQL (CloudNativePG) and Cryptomator Keycloak (ghcr.io/cryptomator/keycloak)
-      with a seed realm for smoke-test boot. Rotate default cryptomator/cryptomator credentials and HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET
-      before exposing publicly. External /kc ingress routing to Keycloak may require an additional reverse-proxy path rule beyond
-      the Hub web ingress. Use cryptomator.org/hub/self-hosted Setup Wizard output to customize realm/clients for production.'
+    kubero.dev/template.installation: Bundled PostgreSQL (CloudNativePG) and Cryptomator
+      Keycloak (ghcr.io/cryptomator/keycloak) with a seed realm for smoke-test boot.
+      Rotate default cryptomator/cryptomator credentials and HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET
+      before exposing publicly. External /kc ingress routing to Keycloak may require
+      an additional reverse-proxy path rule beyond the Hub web ingress. Use cryptomator.org/hub/self-hosted
+      Setup Wizard output to customize realm/clients for production.
     kubero.dev/template.links: '["https://docs.cryptomator.org/hub/", "https://docs.cryptomator.org/hub/deployment/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/cryptomator/hub
@@ -55,10 +57,10 @@ spec:
               secret:
                 name: cryptomator-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO cryptomator
-                - GRANT CREATE ON SCHEMA public TO cryptomator
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO cryptomator
-                - CREATE DATABASE keycloak OWNER cryptomator
+              - GRANT ALL ON SCHEMA public TO cryptomator
+              - GRANT CREATE ON SCHEMA public TO cryptomator
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO cryptomator
+              - CREATE DATABASE keycloak OWNER cryptomator
           enableSuperuserAccess: true
           superuserSecret:
             name: cryptomator-postgresql-superuser
@@ -106,85 +108,43 @@ spec:
         stringData:
           kc_admin_password: cryptomator
           kc_db_password: cryptomator
-          realm.json: |
-            {
-              "realm": "cryptomator",
-              "displayName": "Cryptomator Hub",
-              "loginTheme": "cryptomator",
-              "enabled": true,
-              "sslRequired": "external",
-              "defaultRole": { "name": "user", "description": "User" },
-              "roles": {
-                "realm": [
-                  { "name": "user", "description": "User", "composite": false },
-                  { "name": "create-vaults", "description": "Can create vaults", "composite": false },
-                  {
-                    "name": "admin",
-                    "description": "Administrator",
-                    "composite": true,
-                    "composites": {
-                      "realm": ["user", "create-vaults"],
-                      "client": { "realm-management": ["realm-admin"] }
-                    }
-                  }
-                ]
-              },
-              "users": [
-                {
-                  "username": "admin",
-                  "enabled": true,
-                  "credentials": [{ "type": "password", "value": "cryptomator", "temporary": true }],
-                  "requiredActions": ["UPDATE_PASSWORD"],
-                  "realmRoles": ["admin"]
-                },
-                {
-                  "username": "system",
-                  "email": "system@localhost",
-                  "enabled": true,
-                  "serviceAccountClientId": "cryptomatorhub-system",
-                  "clientRoles": {
-                    "realm-management": ["realm-admin", "view-system"]
-                  }
-                }
-              ],
-              "scopeMappings": [{ "client": "cryptomatorhub", "roles": ["user", "admin"] }],
-              "clients": [
-                {
-                  "clientId": "cryptomatorhub",
-                  "serviceAccountsEnabled": false,
-                  "publicClient": true,
-                  "name": "Cryptomator Hub",
-                  "enabled": true,
-                  "redirectUris": ["*"],
-                  "webOrigins": ["+"],
-                  "bearerOnly": false,
-                  "frontchannelLogout": false,
-                  "protocol": "openid-connect",
-                  "attributes": { "pkce.code.challenge.method": "S256" }
-                },
-                {
-                  "clientId": "cryptomator",
-                  "serviceAccountsEnabled": false,
-                  "publicClient": true,
-                  "name": "Cryptomator App",
-                  "enabled": true,
-                  "redirectUris": ["*"],
-                  "webOrigins": ["+"],
-                  "protocol": "openid-connect",
-                  "attributes": { "pkce.code.challenge.method": "S256" }
-                },
-                {
-                  "clientId": "cryptomatorhub-system",
-                  "serviceAccountsEnabled": true,
-                  "publicClient": false,
-                  "name": "Cryptomator Hub System",
-                  "enabled": true,
-                  "clientAuthenticatorType": "client-secret",
-                  "secret": "cryptomator",
-                  "standardFlowEnabled": false
-                }
-              ]
-            }
+          realm.json: "{\n  \"realm\": \"cryptomator\",\n  \"displayName\": \"Cryptomator\
+            \ Hub\",\n  \"loginTheme\": \"cryptomator\",\n  \"enabled\": true,\n \
+            \ \"sslRequired\": \"external\",\n  \"defaultRole\": { \"name\": \"user\"\
+            , \"description\": \"User\" },\n  \"roles\": {\n    \"realm\": [\n   \
+            \   { \"name\": \"user\", \"description\": \"User\", \"composite\": false\
+            \ },\n      { \"name\": \"create-vaults\", \"description\": \"Can create\
+            \ vaults\", \"composite\": false },\n      {\n        \"name\": \"admin\"\
+            ,\n        \"description\": \"Administrator\",\n        \"composite\"\
+            : true,\n        \"composites\": {\n          \"realm\": [\"user\", \"\
+            create-vaults\"],\n          \"client\": { \"realm-management\": [\"realm-admin\"\
+            ] }\n        }\n      }\n    ]\n  },\n  \"users\": [\n    {\n      \"\
+            username\": \"admin\",\n      \"enabled\": true,\n      \"credentials\"\
+            : [{ \"type\": \"password\", \"value\": \"cryptomator\", \"temporary\"\
+            : true }],\n      \"requiredActions\": [\"UPDATE_PASSWORD\"],\n      \"\
+            realmRoles\": [\"admin\"]\n    },\n    {\n      \"username\": \"system\"\
+            ,\n      \"email\": \"system@localhost\",\n      \"enabled\": true,\n\
+            \      \"serviceAccountClientId\": \"cryptomatorhub-system\",\n      \"\
+            clientRoles\": {\n        \"realm-management\": [\"realm-admin\", \"view-system\"\
+            ]\n      }\n    }\n  ],\n  \"scopeMappings\": [{ \"client\": \"cryptomatorhub\"\
+            , \"roles\": [\"user\", \"admin\"] }],\n  \"clients\": [\n    {\n    \
+            \  \"clientId\": \"cryptomatorhub\",\n      \"serviceAccountsEnabled\"\
+            : false,\n      \"publicClient\": true,\n      \"name\": \"Cryptomator\
+            \ Hub\",\n      \"enabled\": true,\n      \"redirectUris\": [\"*\"],\n\
+            \      \"webOrigins\": [\"+\"],\n      \"bearerOnly\": false,\n      \"\
+            frontchannelLogout\": false,\n      \"protocol\": \"openid-connect\",\n\
+            \      \"attributes\": { \"pkce.code.challenge.method\": \"S256\" }\n\
+            \    },\n    {\n      \"clientId\": \"cryptomator\",\n      \"serviceAccountsEnabled\"\
+            : false,\n      \"publicClient\": true,\n      \"name\": \"Cryptomator\
+            \ App\",\n      \"enabled\": true,\n      \"redirectUris\": [\"*\"],\n\
+            \      \"webOrigins\": [\"+\"],\n      \"protocol\": \"openid-connect\"\
+            ,\n      \"attributes\": { \"pkce.code.challenge.method\": \"S256\" }\n\
+            \    },\n    {\n      \"clientId\": \"cryptomatorhub-system\",\n     \
+            \ \"serviceAccountsEnabled\": true,\n      \"publicClient\": false,\n\
+            \      \"name\": \"Cryptomator Hub System\",\n      \"enabled\": true,\n\
+            \      \"clientAuthenticatorType\": \"client-secret\",\n      \"secret\"\
+            : \"cryptomator\",\n      \"standardFlowEnabled\": false\n    }\n  ]\n\
+            }\n"
       keycloakService:
         apiVersion: v1
         kind: Service
@@ -207,7 +167,7 @@ spec:
         metadata:
           name: cryptomator-idp
         spec:
-          replicas: 1
+          replicas: 3
           strategy:
             type: Recreate
           selector:
@@ -333,7 +293,7 @@ spec:
   extraVolumes: []
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   resources:
@@ -354,3 +314,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/cryptomator/hub
     tag: stable
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

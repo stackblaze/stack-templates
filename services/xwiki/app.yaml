@@ -131,3 +131,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/xwiki
     tag: stable-postgres-tomcat
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

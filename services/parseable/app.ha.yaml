@@ -47,22 +47,22 @@ spec:
     value: /parseable/staging
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /parseable/data
     name: parseable-data
     size: 5Gi
-    storageClass: slow
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /parseable/staging
     name: parseable-staging
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -73,3 +73,6 @@ spec:
     command:
     - parseable
     - local-store
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

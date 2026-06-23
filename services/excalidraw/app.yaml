@@ -25,7 +25,7 @@ spec:
     repository: excalidraw/excalidraw
     run:
       securityContext:
-        readOnlyRootFilesystem: false
+        readOnlyRootFilesystem: true
     tag: latest
   name: excalidraw
   web:

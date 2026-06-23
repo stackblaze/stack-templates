@@ -127,3 +127,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/anythingllm
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

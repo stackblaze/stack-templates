@@ -163,12 +163,12 @@ spec:
     value: Etc/UTC
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/zammad/storage
     name: zammad-storage
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   resources:
     requests:
@@ -231,3 +231,4 @@ spec:
       securityContext:
         runAsNonRoot: false
         runAsUser: 0
+        readOnlyRootFilesystem: true

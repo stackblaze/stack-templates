@@ -171,12 +171,12 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /sharkey/files
     name: sharkey-files
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -203,3 +203,6 @@ spec:
       \  port: ${REDIS_PORT}\nfulltextSearch:\n  provider: sqlLike\nid: 'aidx'\nproxyBypassHosts:\n\
       \  - api.deepl.com\n  - api-free.deepl.com\n  - www.recaptcha.net\n  - hcaptcha.com\n\
       \  - challenges.cloudflare.com\nEOF\nexec pnpm run migrateandstart\n"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

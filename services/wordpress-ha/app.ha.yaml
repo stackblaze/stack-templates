@@ -1,0 +1,98 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: WordPress is a free and open-source content management
+      system written in hypertext preprocessor language.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/276006?s=280
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://wordpress.org/documentation/files/2021/07/test-widgets_v2-1-1024x643.jpeg","https://user-images.githubusercontent.com/12400734/168248949-f19a1a73-2c02-4eab-84d1-faaff57dbd07.png","https://wordpress.org/documentation/files/2021/06/menu-add-items-1024x557.png"]'
+    kubero.dev/template.source: https://github.com/WordPress/WordPress
+    kubero.dev/template.categories: '["cms"]'
+    kubero.dev/template.title: WordPress (HA)
+    kubero.dev/template.website: https://wordpress.org
+  name: wordpress-ha
+spec:
+  addons:
+  - displayName: MariaDB
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: MariaDB
+    resourceDefinitions:
+      MariaDB:
+        apiVersion: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-mariadb'
+        spec:
+          rootPasswordSecretKeyRef:
+            name: '{{KUBERO_APP_NAME}}-mariadb-root'
+            key: password
+          database: wordpress
+          username: wordpress
+          passwordSecretKeyRef:
+            name: '{{KUBERO_APP_NAME}}-mariadb-app'
+            key: password
+          storage:
+            size: 5Gi
+            storageClassName: fast
+          galera:
+            enabled: true
+          replicas: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+      rootSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-mariadb-root'
+        type: Opaque
+        stringData:
+          password: wordpress
+      appSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-mariadb-app'
+        type: Opaque
+        stringData:
+          password: wordpress
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: WORDPRESS_DB_HOST
+    value: '{{KUBERO_APP_NAME}}-mariadb'
+  - name: WORDPRESS_DB_USER
+    value: wordpress
+  - name: WORDPRESS_DB_PASSWORD
+    value: wordpress
+  - name: WORDPRESS_DB_NAME
+    value: wordpress
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    storageClass: shared
+    emptyDir: false
+    mountPath: /var/www/html
+    name: '{{KUBERO_APP_NAME}}-data'
+    size: 1Gi
+  image:
+    containerPort: '80'
+    repository: wordpress
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  name: wordpress-ha
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

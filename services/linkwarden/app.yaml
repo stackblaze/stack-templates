@@ -116,3 +116,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/linkwarden/linkwarden
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

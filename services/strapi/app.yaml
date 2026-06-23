@@ -112,12 +112,12 @@ spec:
     value: production
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/app/public/uploads
     name: strapi-uploads
     size: 10Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -141,3 +141,6 @@ spec:
     pullPolicy: Always
     repository: kubekanvas/strapi
     tag: 5.30.2
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

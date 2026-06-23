@@ -107,6 +107,9 @@ spec:
     pullPolicy: Always
     repository: flowiseai/flowise
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   resources:
     requests:
       cpu: 250m

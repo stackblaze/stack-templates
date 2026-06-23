@@ -4,23 +4,31 @@ metadata:
   name: temporal
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Durable execution platform that runs reliable, fault-tolerant workflows and activities
-      as code at scale.
+    kubero.dev/template.description: Durable execution platform that runs reliable,
+      fault-tolerant workflows and activities as code at scale.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/temporal/icon.png
-    kubero.dev/template.installation: 'This template deploys the PRIMARY Temporal server using the all-in-one `temporalio/auto-setup`
-      image. On first boot auto-setup creates the database schema and starts all four server roles (frontend, history, matching,
-      internal worker) in a single pod. PORTS: the server speaks gRPC on 7233 (the address SDK clients/workers connect to)
-      and exposes an HTTP API on 7243 (the containerPort published here). Add-on: a Postgres add-on backs both the default
-      and visibility keyspaces (DBNAME=temporal, VISIBILITY_DBNAME=temporal_visibility, auto-created by auto-setup). NOTE:
-      auto-setup is the convenience bundle for self-hosting; Temporal recommends the separate `temporalio/server` + `temporalio/admin-tools`
-      images with externally-managed schema for large production deployments, and advanced/large visibility setups can additionally
-      use Elasticsearch or OpenSearch (set ENABLE_ES=true + ES_SEEDS) which is NOT provisioned here. COMPANION SERVICES to
-      deploy as their own Kubero apps: (1) WEB UI -> image `temporalio/ui:latest` (listens on HTTP 8080), set TEMPORAL_ADDRESS=temporal-<pod/service>:7233
-      and TEMPORAL_CORS_ORIGINS={{KUBERO_APP_URL}}; this is the human-facing dashboard. (2) ADMIN/CLI -> image `temporalio/admin-tools:latest`
-      for running `tctl`/`temporal` operator commands and manual schema upgrades. (3) Your own WORKERS are separate apps built
-      from your code with the Temporal SDK, pointed at this server''s 7233 gRPC endpoint. ROTATE the default Postgres password
-      before going live. Set TEMPORAL_ADDRESS/namespaces via tctl after boot; a `default` namespace is auto-registered.'
-    kubero.dev/template.links: '["https://docs.temporal.io/self-hosted-guide/deployment", "https://docs.temporal.io/self-hosted-guide/setup"]'
+    kubero.dev/template.installation: 'This template deploys the PRIMARY Temporal
+      server using the all-in-one `temporalio/auto-setup` image. On first boot auto-setup
+      creates the database schema and starts all four server roles (frontend, history,
+      matching, internal worker) in a single pod. PORTS: the server speaks gRPC on
+      7233 (the address SDK clients/workers connect to) and exposes an HTTP API on
+      7243 (the containerPort published here). Add-on: a Postgres add-on backs both
+      the default and visibility keyspaces (DBNAME=temporal, VISIBILITY_DBNAME=temporal_visibility,
+      auto-created by auto-setup). NOTE: auto-setup is the convenience bundle for
+      self-hosting; Temporal recommends the separate `temporalio/server` + `temporalio/admin-tools`
+      images with externally-managed schema for large production deployments, and
+      advanced/large visibility setups can additionally use Elasticsearch or OpenSearch
+      (set ENABLE_ES=true + ES_SEEDS) which is NOT provisioned here. COMPANION SERVICES
+      to deploy as their own Kubero apps: (1) WEB UI -> image `temporalio/ui:latest`
+      (listens on HTTP 8080), set TEMPORAL_ADDRESS=temporal-<pod/service>:7233 and
+      TEMPORAL_CORS_ORIGINS={{KUBERO_APP_URL}}; this is the human-facing dashboard.
+      (2) ADMIN/CLI -> image `temporalio/admin-tools:latest` for running `tctl`/`temporal`
+      operator commands and manual schema upgrades. (3) Your own WORKERS are separate
+      apps built from your code with the Temporal SDK, pointed at this server''s 7233
+      gRPC endpoint. ROTATE the default Postgres password before going live. Set TEMPORAL_ADDRESS/namespaces
+      via tctl after boot; a `default` namespace is auto-registered.'
+    kubero.dev/template.links: '["https://docs.temporal.io/self-hosted-guide/deployment",
+      "https://docs.temporal.io/self-hosted-guide/setup"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/temporalio/temporal
     kubero.dev/template.categories: '["development", "automation", "data"]'
@@ -131,7 +139,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -139,3 +147,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/temporal-auto-setup
     tag: '1.29'
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

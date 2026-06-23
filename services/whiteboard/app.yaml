@@ -26,6 +26,9 @@ spec:
     pullPolicy: Always
     repository: rofl256/whiteboard
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: whiteboard
   web:
     replicaCount: 1

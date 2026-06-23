@@ -58,3 +58,6 @@ spec:
     pullPolicy: Always
     repository: actualbudget/actual-server
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

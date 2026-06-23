@@ -4,9 +4,14 @@ metadata:
   name: adminer
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Lightweight single-file database manager for MySQL, PostgreSQL, SQLite, MongoDB, and more — simpler alternative to phpMyAdmin.
+    kubero.dev/template.description: Lightweight single-file database manager for
+      MySQL, PostgreSQL, SQLite, MongoDB, and more — simpler alternative to phpMyAdmin.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/adminer/icon.png
-    kubero.dev/template.installation: Adminer has no credentials of its own — it proxies your database credentials. Enter the hostname, username, and password of any database server accessible from within the cluster (e.g. a CNPG Postgres at myapp-postgresql-rw, port 5432). Supports PostgreSQL, MySQL/MariaDB, SQLite, and more. For security, restrict ingress access to internal users only.
+    kubero.dev/template.installation: Adminer has no credentials of its own — it proxies
+      your database credentials. Enter the hostname, username, and password of any
+      database server accessible from within the cluster (e.g. a CNPG Postgres at
+      myapp-postgresql-rw, port 5432). Supports PostgreSQL, MySQL/MariaDB, SQLite,
+      and more. For security, restrict ingress access to internal users only.
     kubero.dev/template.links: '["https://www.adminer.org/"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/vrana/adminer
@@ -21,7 +26,7 @@ spec:
   addons: []
   envVars:
   - name: ADMINER_DEFAULT_SERVER
-    value: 
+    value: null
   - name: ADMINER_DESIGN
     value: pepa-linha
   extraVolumes: []
@@ -35,7 +40,7 @@ spec:
       cpu: 50m
       memory: 64Mi
     limits:
-      cpu: '500m'
+      cpu: 500m
       memory: 256Mi
   healthcheck:
     enabled: true
@@ -48,3 +53,6 @@ spec:
     pullPolicy: Always
     repository: adminer
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

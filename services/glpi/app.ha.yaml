@@ -85,15 +85,15 @@ spec:
     value: glpi
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/glpi
     name: glpi-data
     size: 2Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -101,3 +101,6 @@ spec:
     pullPolicy: Always
     repository: glpi/glpi
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

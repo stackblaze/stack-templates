@@ -136,7 +136,7 @@ spec:
     storageClass: shared
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -144,3 +144,6 @@ spec:
     pullPolicy: Always
     repository: rajnandan1/kener
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

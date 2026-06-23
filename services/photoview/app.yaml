@@ -85,16 +85,19 @@ spec:
     value: /tmp
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /photoview/images
     name: photoview-images
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '8080'
     repository: viktorstrate/photoview
     tag: '2'
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: photoview
   web:
     replicaCount: 1

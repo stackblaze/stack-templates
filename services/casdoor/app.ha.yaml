@@ -45,7 +45,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
       rootSecret:
         apiVersion: v1
@@ -71,8 +71,11 @@ spec:
     containerPort: '8000'
     repository: casbin/casdoor
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
   name: casdoor
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0

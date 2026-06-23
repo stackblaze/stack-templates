@@ -123,3 +123,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/phpbb
     tag: 3.3.15
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

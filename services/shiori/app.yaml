@@ -82,12 +82,12 @@ spec:
     value: change-me-to-a-random-string
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /srv/shiori
     name: shiori-data
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '8080'
     repository: ghcr.io/go-shiori/shiori
@@ -96,6 +96,9 @@ spec:
     - sh
     - -c
     - shiori migrate && exec shiori serve
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: shiori
   web:
     replicaCount: 1

@@ -4,20 +4,24 @@ metadata:
   name: redash
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source data visualization and dashboarding tool to query, explore, and share insights
-      from 30+ SQL/NoSQL/API data sources.
+    kubero.dev/template.description: Open-source data visualization and dashboarding
+      tool to query, explore, and share insights from 30+ SQL/NoSQL/API data sources.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/redash/icon.png
-    kubero.dev/template.installation: 'Redash is a multi-process stack: every service runs the SAME redash/redash image with
-      a different command. This template runs the primary web server (command `server`, port 5000). You MUST ALSO deploy these
-      companion deployments from the identical redash/redash:10.1.0.b50633 image, same env vars, to make it functional: a Celery
-      WORKER (`celery worker --app=redash.worker --queue=queries,celery`) for running queries, a SCHEDULER (`celery worker
-      --app=redash.worker --beat --queue=periodic,emails,schemas`) for refreshes and alerts, and a one-time INIT/migration
-      job (`create_db`) that must run ONCE before first boot to create the schema. Bundled add-ons Postgres and Redis (provided
-      by the Valkey add-on) are provisioned here. ROTATE before exposing: REDASH_COOKIE_SECRET and REDASH_SECRET_KEY (each
-      `openssl rand -hex 32`; SECRET_KEY must be 32+ chars and must NOT change after data exists or saved credentials become
-      undecryptable), plus the Postgres add-on password. Set REDASH_HOST to your public URL. After the create_db job completes
-      and the server is up, open the app and the first registration becomes the admin. Optional: outbound email needs REDASH_MAIL_*
-      SMTP env vars (not provisioned).'
+    kubero.dev/template.installation: 'Redash is a multi-process stack: every service
+      runs the SAME redash/redash image with a different command. This template runs
+      the primary web server (command `server`, port 5000). You MUST ALSO deploy these
+      companion deployments from the identical redash/redash:10.1.0.b50633 image,
+      same env vars, to make it functional: a Celery WORKER (`celery worker --app=redash.worker
+      --queue=queries,celery`) for running queries, a SCHEDULER (`celery worker --app=redash.worker
+      --beat --queue=periodic,emails,schemas`) for refreshes and alerts, and a one-time
+      INIT/migration job (`create_db`) that must run ONCE before first boot to create
+      the schema. Bundled add-ons Postgres and Redis (provided by the Valkey add-on)
+      are provisioned here. ROTATE before exposing: REDASH_COOKIE_SECRET and REDASH_SECRET_KEY
+      (each `openssl rand -hex 32`; SECRET_KEY must be 32+ chars and must NOT change
+      after data exists or saved credentials become undecryptable), plus the Postgres
+      add-on password. Set REDASH_HOST to your public URL. After the create_db job
+      completes and the server is up, open the app and the first registration becomes
+      the admin. Optional: outbound email needs REDASH_MAIL_* SMTP env vars (not provisioned).'
     kubero.dev/template.links: '["https://redash.io/help/open-source/setup", "https://github.com/getredash/setup"]'
     kubero.dev/template.screenshots: '["https://redash.io/assets/images/elements/redash-mobile.png"]'
     kubero.dev/template.source: https://github.com/getredash/redash
@@ -155,3 +159,6 @@ spec:
     - /bin/sh
     - -c
     - /app/bin/docker-entrypoint create_db && exec /app/bin/docker-entrypoint server
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

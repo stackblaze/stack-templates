@@ -120,3 +120,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/yourls/yourls
     tag: 1.10-apache
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

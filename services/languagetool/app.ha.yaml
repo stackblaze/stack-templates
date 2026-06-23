@@ -1,0 +1,60 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: LanguageTool is an Open Source proofreading software
+      for English, Spanish, French, German, Portuguese, Polish, Dutch, and more than
+      20 other languages.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/languagetool/icon.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '["https://github.com/Erikvl87/docker-languagetool/blob/master/docker-compose.yml"]'
+    kubero.dev/template.screenshots: '["https://languagetool.org/videos/gmail_de_en.mp4"]'
+    kubero.dev/template.source: https://github.com/languagetool-org/languagetool
+    kubero.dev/template.categories: '["development", "utilities"]'
+    kubero.dev/template.title: LanguageTool
+    kubero.dev/template.website: https://languagetool.org/
+  name: languagetool
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: langtool_languageModel
+    value: /ngrams
+  - name: Java_Xms
+    value: 512m
+  - name: Java_Xmx
+    value: 1g
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    mountPath: /ngrams
+    name: languagetool-ngrams
+    size: 1Gi
+    storageClass: shared
+  healthcheck:
+    enabled: true
+    path: /v2/languages
+    startupSeconds: 180
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8010'
+    repository: erikvl87/languagetool
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  name: languagetool
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

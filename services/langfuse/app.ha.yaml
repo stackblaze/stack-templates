@@ -1,0 +1,335 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: langfuse
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source LLM observability platform — traces,
+      evals, prompt management, datasets, and cost analytics for AI applications.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langfuse/icon.png
+    kubero.dev/template.installation: 'Langfuse v3 is a multi-service stack. This
+      template runs the PRIMARY web/API container (ghcr.io/langfuse/langfuse:3, port
+      3000). Bundled add-ons provision Postgres (transactional data), ClickHouse (trace/observation
+      store), Valkey (Redis-compatible queue/cache), plus an in-cluster MinIO deployment
+      (ephemeral S3 for event uploads). For production durability swap MinIO for the
+      RustFS add-on or external S3. For full ingestion throughput you should ALSO
+      deploy a companion WORKER from image ghcr.io/langfuse/langfuse-worker:3 (port
+      3030) sharing the same env vars below. ROTATE before production: NEXTAUTH_SECRET,
+      SALT, ENCRYPTION_KEY (64-char hex via openssl rand -hex 32), Postgres/ClickHouse/MinIO
+      credentials, and LANGFUSE_INIT_* seed values. Instrument your app with the Langfuse
+      SDK and set LANGFUSE_HOST={{KUBERO_APP_URL}}.'
+    kubero.dev/template.links: '["https://langfuse.com/docs", "https://langfuse.com/self-hosting"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/langfuse/langfuse
+    kubero.dev/template.categories: '["ai", "monitoring", "development"]'
+    kubero.dev/template.title: Langfuse
+    kubero.dev/template.website: https://langfuse.com
+  labels:
+    manager: kubero
+spec:
+  name: langfuse
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: langfuse-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: langfuse
+              owner: langfuse
+              secret:
+                name: langfuse-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO langfuse
+              - GRANT CREATE ON SCHEMA public TO langfuse
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO langfuse
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: langfuse-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: langfuse-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: langfuse
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: langfuse-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: langfuse
+          password: langfuse
+      minioService:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: langfuse-minio
+        spec:
+          type: ClusterIP
+          selector:
+            app: langfuse-minio
+          ports:
+          - name: s3
+            port: 9000
+            targetPort: 9000
+      minioDeployment:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: langfuse-minio
+        spec:
+          replicas: 3
+          strategy:
+            type: Recreate
+          selector:
+            matchLabels:
+              app: langfuse-minio
+          template:
+            metadata:
+              labels:
+                app: langfuse-minio
+            spec:
+              containers:
+              - name: minio
+                image: cgr.dev/chainguard/minio:latest
+                imagePullPolicy: Always
+                command:
+                - sh
+                - -c
+                - mkdir -p /data/langfuse && minio server --address :9000 --console-address
+                  :9001 /data
+                env:
+                - name: MINIO_ROOT_USER
+                  value: langfuseadmin
+                - name: MINIO_ROOT_PASSWORD
+                  value: changeme
+                ports:
+                - name: s3
+                  containerPort: 9000
+                volumeMounts:
+                - name: minio-data
+                  mountPath: /data
+                resources:
+                  requests:
+                    cpu: 50m
+                    memory: 128Mi
+                  limits:
+                    cpu: 500m
+                    memory: 512Mi
+              volumes:
+              - name: minio-data
+                emptyDir: {}
+  - displayName: ClickHouse
+    env: []
+    icon: /img/addons/clickhouse.svg
+    id: clickhouse-operator
+    kind: ClickHouseInstallation
+    resourceDefinitions:
+      ClickHouseInstallation:
+        apiVersion: clickhouse.altinity.com/v1
+        kind: ClickHouseInstallation
+        metadata:
+          name: langfuse-clickhouse
+        spec:
+          configuration:
+            users:
+              admin/password: langfuse
+              admin/networks/ip:
+              - 0.0.0.0/0
+            clusters:
+            - name: analytics
+              layout:
+                shardsCount: 1
+                replicasCount: 1
+              templates:
+                podTemplate: clickhouse-pod-template
+          defaults:
+            templates:
+              dataVolumeClaimTemplate: data-volume-template
+              logVolumeClaimTemplate: log-volume-template
+              podTemplate: clickhouse-pod-template
+          templates:
+            podTemplates:
+            - name: clickhouse-pod-template
+              spec:
+                containers:
+                - name: clickhouse
+                  image: ghcr.io/stackblaze/stack-templates/clickhouse-server:24.8.7.41
+            volumeClaimTemplates:
+            - name: data-volume-template
+              spec:
+                accessModes:
+                - ReadWriteOnce
+                storageClassName: fast
+                resources:
+                  requests:
+                    storage: 2Gi
+            - name: log-volume-template
+              spec:
+                accessModes:
+                - ReadWriteOnce
+                storageClassName: fast
+                resources:
+                  requests:
+                    storage: 512Mi
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: langfuse-valkey
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: PGHOST
+    value: langfuse-postgresql-rw
+  - name: CHHOST
+    value: clickhouse-langfuse-clickhouse
+  - name: S3HOST
+    value: langfuse-minio
+  - name: DATABASE_URL
+    value: postgresql://langfuse:langfuse@langfuse-postgresql-rw:5432/langfuse
+  - name: NEXTAUTH_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: NEXTAUTH_SECRET
+    value: change-me-to-random-32char-string
+  - name: SALT
+    value: change-me-to-random-string
+  - name: ENCRYPTION_KEY
+    value: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+  - name: CLICKHOUSE_MIGRATION_URL
+    value: clickhouse://clickhouse-langfuse-clickhouse:9000
+  - name: CLICKHOUSE_URL
+    value: http://clickhouse-langfuse-clickhouse:8123
+  - name: CLICKHOUSE_USER
+    value: admin
+  - name: CLICKHOUSE_PASSWORD
+    value: langfuse
+  - name: CLICKHOUSE_CLUSTER_ENABLED
+    value: 'false'
+  - name: REDIS_HOST
+    value: rfr-langfuse-valkey-readwrite
+  - name: REDIS_PORT
+    value: '6379'
+  - name: LANGFUSE_S3_EVENT_UPLOAD_BUCKET
+    value: langfuse
+  - name: LANGFUSE_S3_EVENT_UPLOAD_REGION
+    value: us-east-1
+  - name: LANGFUSE_S3_EVENT_UPLOAD_ACCESS_KEY_ID
+    value: langfuseadmin
+  - name: LANGFUSE_S3_EVENT_UPLOAD_SECRET_ACCESS_KEY
+    value: changeme
+  - name: LANGFUSE_S3_EVENT_UPLOAD_ENDPOINT
+    value: http://langfuse-minio:9000
+  - name: LANGFUSE_S3_EVENT_UPLOAD_FORCE_PATH_STYLE
+    value: 'true'
+  - name: LANGFUSE_S3_MEDIA_UPLOAD_BUCKET
+    value: langfuse
+  - name: LANGFUSE_S3_MEDIA_UPLOAD_REGION
+    value: us-east-1
+  - name: LANGFUSE_S3_MEDIA_UPLOAD_ACCESS_KEY_ID
+    value: langfuseadmin
+  - name: LANGFUSE_S3_MEDIA_UPLOAD_SECRET_ACCESS_KEY
+    value: changeme
+  - name: LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT
+    value: http://langfuse-minio:9000
+  - name: LANGFUSE_S3_MEDIA_UPLOAD_FORCE_PATH_STYLE
+    value: 'true'
+  - name: LANGFUSE_INIT_ORG_ID
+    value: my-org
+  - name: LANGFUSE_INIT_ORG_NAME
+    value: My Org
+  - name: LANGFUSE_INIT_PROJECT_ID
+    value: my-project
+  - name: LANGFUSE_INIT_PROJECT_NAME
+    value: My Project
+  - name: LANGFUSE_INIT_USER_EMAIL
+    value: admin@example.com
+  - name: LANGFUSE_INIT_USER_NAME
+    value: Admin
+  - name: LANGFUSE_INIT_USER_PASSWORD
+    value: change-me
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /api/public/health
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: ghcr.io/langfuse/langfuse
+    tag: '3'
+    command:
+    - sh
+    - -c
+    - 'node -e "const net=require(''net'');const wait=(h,p)=>new Promise(r=>{const
+      go=()=>{const s=net.connect(p,h,()=>{s.end();r();});s.on(''error'',()=>setTimeout(go,2000));};go();});Promise.all([wait(process.env.PGHOST,5432),wait(process.env.CHHOST,8123),wait(process.env.REDIS_HOST,+process.env.REDIS_PORT),wait(process.env.S3HOST,9000)]).then(()=>process.exit(0));"
+      && dumb-init -- ./web/entrypoint.sh sh -c ''node ./web/server.js --keepAliveTimeout
+      110000''
+
+      '
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

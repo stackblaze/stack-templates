@@ -209,7 +209,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -217,3 +217,6 @@ spec:
     pullPolicy: Always
     repository: quay.io/zknt/pixelfed
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

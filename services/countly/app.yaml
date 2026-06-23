@@ -74,12 +74,12 @@ spec:
     value: mongodb://mongoadmin:countly@documentdb-service-countly-documentdb:10260/countly?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/countly/frontend/express/public/appimages
     name: countly-appimages
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   resources:
     requests:
@@ -103,3 +103,6 @@ spec:
     pullPolicy: Always
     repository: countly/countly-server
     tag: 23.11.22
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

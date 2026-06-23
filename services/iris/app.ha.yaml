@@ -146,15 +146,15 @@ spec:
     value: INFO
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /home/iris/downloads
     name: iris-data
     size: 5Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   healthcheck:
@@ -169,3 +169,6 @@ spec:
     command:
     - ./iris-entrypoint.sh
     - app
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

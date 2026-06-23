@@ -29,12 +29,12 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: "{{KUBERO_APP_NAME}}-mysql"
+          name: '{{KUBERO_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: "{{KUBERO_APP_NAME}}-mysql-root"
+            name: '{{KUBERO_APP_NAME}}-mysql-root'
             key: password
           database: leantime
           storage:
@@ -48,13 +48,13 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
       rootSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: "{{KUBERO_APP_NAME}}-mysql-root"
+          name: '{{KUBERO_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: leantime
@@ -62,7 +62,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: LEAN_DB_HOST
-    value: "{{KUBERO_APP_NAME}}-mysql"
+    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: LEAN_DB_USER
     value: root
   - name: LEAN_DB_PASSWORD
@@ -72,7 +72,7 @@ spec:
   - name: LEAN_EMAIL_RETURN
     value: changeme@local.local
   - name: LEAN_APP_URL
-    value: "{{KUBERO_APP_URL}}"
+    value: '{{KUBERO_APP_URL}}'
   - name: LEAN_SESSION_PASSWORD
     value: leantime
   extraVolumes: []
@@ -80,10 +80,13 @@ spec:
     containerPort: '8080'
     repository: leantime/leantime
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
   name: leantime
   serviceAccount:
     annotations: {}
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0

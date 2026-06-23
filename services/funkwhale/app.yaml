@@ -184,26 +184,26 @@ spec:
     value: noreply@example.com
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /srv/funkwhale/data/media
     name: funkwhale-media
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /srv/funkwhale/data/music
     name: funkwhale-music
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /srv/funkwhale/data/static
     name: funkwhale-static
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -220,3 +220,6 @@ spec:
     pullPolicy: Always
     repository: funkwhale/api
     tag: '1.4'
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

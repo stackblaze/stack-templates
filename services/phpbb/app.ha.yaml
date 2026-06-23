@@ -109,15 +109,15 @@ spec:
     value: 'false'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /bitnami/phpbb
     name: phpbb-data
     size: 3Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -125,3 +125,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/phpbb
     tag: 3.3.15
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

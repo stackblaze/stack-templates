@@ -4,16 +4,19 @@ metadata:
   name: documize
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source modern document and knowledge management platform combining wiki, docs and
-      structured templates for teams.
+    kubero.dev/template.description: Open-source modern document and knowledge management
+      platform combining wiki, docs and structured templates for teams.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documize/icon.png
-    kubero.dev/template.installation: 'Documize ships as a single Linux binary (no official Docker image). This template uses
-      debian:bookworm-slim and downloads the Community+ release from downloads.documize.com on first start (same approach
-      as the upstream docker-compose.yaml). Deploy with the bundled PostgreSQL add-on; DOCUMIZEDB and DOCUMIZEDBTYPE=postgresql
-      point Documize at the ''documize-postgresql-rw'' service (rotate the Postgres add-on password and update DOCUMIZEDB
-      after install). DOCUMIZELOCATION is set to ''selfhost''. IMPORTANT: replace DOCUMIZESALT with a unique random string
-      (e.g. openssl rand -hex 16) before production. All documents and uploads live in Postgres, so no app volume is required.
-      On first boot open the app URL to run the setup wizard and create the initial admin account.'
+    kubero.dev/template.installation: 'Documize ships as a single Linux binary (no
+      official Docker image). This template uses debian:bookworm-slim and downloads
+      the Community+ release from downloads.documize.com on first start (same approach
+      as the upstream docker-compose.yaml). Deploy with the bundled PostgreSQL add-on;
+      DOCUMIZEDB and DOCUMIZEDBTYPE=postgresql point Documize at the ''documize-postgresql-rw''
+      service (rotate the Postgres add-on password and update DOCUMIZEDB after install).
+      DOCUMIZELOCATION is set to ''selfhost''. IMPORTANT: replace DOCUMIZESALT with
+      a unique random string (e.g. openssl rand -hex 16) before production. All documents
+      and uploads live in Postgres, so no app volume is required. On first boot open
+      the app URL to run the setup wizard and create the initial admin account.'
     kubero.dev/template.links: '["https://docs.documize.com/", "https://github.com/documize/community/blob/master/docker-compose.yaml"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/documize/community
@@ -58,9 +61,9 @@ spec:
               secret:
                 name: documize-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO documize
-                - GRANT CREATE ON SCHEMA public TO documize
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO documize
+              - GRANT ALL ON SCHEMA public TO documize
+              - GRANT CREATE ON SCHEMA public TO documize
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO documize
           enableSuperuserAccess: true
           superuserSecret:
             name: documize-postgresql-superuser
@@ -86,7 +89,8 @@ spec:
   - name: DOCUMIZEPORT
     value: '5001'
   - name: DOCUMIZEDB
-    value: host=documize-postgresql-rw port=5432 dbname=documize user=documize password=documize sslmode=disable
+    value: host=documize-postgresql-rw port=5432 dbname=documize user=documize password=documize
+      sslmode=disable
   - name: DOCUMIZEDBTYPE
     value: postgresql
   - name: DOCUMIZESALT
@@ -96,7 +100,7 @@ spec:
   extraVolumes: []
   cronjobs: []
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   healthcheck:
@@ -113,14 +117,22 @@ spec:
     command:
     - /bin/bash
     - -ec
-    - |
-      apt-get -qq update && apt-get -qq install -y wget ca-certificates
+    - 'apt-get -qq update && apt-get -qq install -y wget ca-certificates
+
       DB_HOST="${DOCUMIZEDB#*host=}"; DB_HOST="${DB_HOST%% *}"
+
       until (echo >/dev/tcp/"${DB_HOST}"/5432) 2>/dev/null; do sleep 2; done
-      wget -q https://downloads.documize.com/documize-community-plus-linux-amd64 -O /tmp/documize
+
+      wget -q https://downloads.documize.com/documize-community-plus-linux-amd64 -O
+      /tmp/documize
+
       chmod +x /tmp/documize
+
       exec /tmp/documize
+
+      '
     run:
       securityContext:
         runAsNonRoot: false
         runAsUser: 0
+        readOnlyRootFilesystem: false

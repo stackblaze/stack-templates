@@ -99,6 +99,9 @@ spec:
       port=5432 user=focalboard password=focalboard dbname=focalboard sslmode=disable\",\"postgres_dbconfig\":\"dbname=focalboard
       sslmode=disable\",\"useSSL\":false,\"webpath\":\"./pack\",\"filespath\":\"./data/files\",\"telemetry\":false,\"session_expire_time\":2592000,\"session_refresh_time\":18000,\"localOnly\":false,\"enableLocalMode\":true,\"localModeSocketLocation\":\"/var/tmp/focalboard_local.socket\",\"enablePublicSharedBoards\":false}"
       > /opt/focalboard/config.json && exec /opt/focalboard/bin/focalboard-server
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: focalboard
   web:
     replicaCount: 1

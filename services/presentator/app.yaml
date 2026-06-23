@@ -38,3 +38,6 @@ spec:
     pullPolicy: Always
     repository: ganigeorgiev/presentator
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

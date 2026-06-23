@@ -131,19 +131,19 @@ spec:
     value: postgresql://pleroma:pleroma@pleroma-postgresql-rw:5432/pleroma
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/lib/pleroma/uploads
     name: pleroma-uploads
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/lib/pleroma/static
     name: pleroma-static
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -154,3 +154,6 @@ spec:
     pullPolicy: Always
     repository: git.pleroma.social/pleroma/pleroma
     tag: stable
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

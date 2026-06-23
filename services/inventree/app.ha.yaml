@@ -165,12 +165,12 @@ spec:
     value: 'True'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /home/inventree/data
     name: inventree-data
     size: 5Gi
-    storageClass: slow
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true
@@ -179,7 +179,7 @@ spec:
     timeoutSeconds: 5
     periodSeconds: 10
   web:
-    replicaCount: 1
+    replicaCount: 2
   worker:
     replicaCount: 0
   image:
@@ -187,3 +187,6 @@ spec:
     pullPolicy: Always
     repository: inventree/inventree
     tag: stable
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

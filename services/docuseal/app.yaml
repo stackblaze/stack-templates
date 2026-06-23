@@ -24,12 +24,12 @@ spec:
     value: postgresql://docuseal:docuseal@docuseal-postgresql-rw:5432/docuseal
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /data
     name: docuseal-data
     size: 2Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   addons:
   - displayName: PostgreSQL (CloudNativePG)
@@ -97,3 +97,6 @@ spec:
     pullPolicy: Always
     repository: docuseal/docuseal
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

@@ -116,6 +116,9 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/fief-dev/fief
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: fief
   web:
     replicaCount: 1

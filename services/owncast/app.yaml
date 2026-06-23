@@ -30,12 +30,12 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /app/data
     name: owncast-data
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -46,3 +46,6 @@ spec:
     pullPolicy: Always
     repository: owncast/owncast
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

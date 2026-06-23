@@ -156,12 +156,12 @@ spec:
     value: /opt/data/assets
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/data/assets
     name: penpot-assets
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -172,3 +172,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stack-templates/penpot-frontend
     tag: '2.16'
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

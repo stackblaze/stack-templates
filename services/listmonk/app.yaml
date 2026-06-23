@@ -101,12 +101,12 @@ spec:
     value: 0.0.0.0:9000
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /listmonk/uploads
     name: listmonk-uploads
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -135,3 +135,6 @@ spec:
     - -c
     - ./listmonk --install --idempotent --yes --config '' && ./listmonk --upgrade
       --yes --config '' && exec ./listmonk --config ''
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

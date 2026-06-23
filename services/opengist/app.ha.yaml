@@ -1,0 +1,98 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted pastebin powered by Git, open-source
+      alternative to Github Gist.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/thomiceli/opengist/master/public/opengist.svg
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: 'null'
+    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.source: https://github.com/thomiceli/opengist
+    kubero.dev/template.categories: '["productivity", "utilities"]'
+    kubero.dev/template.title: opengist
+    kubero.dev/template.website: https://github.com/thomiceli/opengist
+  name: opengist
+spec:
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: opengist-postgresql
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: opengist
+              owner: opengist
+              secret:
+                name: opengist-postgresql-app
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO opengist
+              - GRANT CREATE ON SCHEMA public TO opengist
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO opengist
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: opengist-postgresql-superuser
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: opengist-postgresql-superuser
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: opengist
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: opengist-postgresql-app
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: opengist
+          password: opengist
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: OG_DB_URI
+    value: postgres://opengist:opengist@opengist-postgresql-rw:5432/opengist?sslmode=disable
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    mountPath: /root/.opengist
+    name: opengist-volume
+    size: 1Gi
+    storageClass: shared
+  image:
+    containerPort: '6157'
+    repository: ghcr.io/thomiceli/opengist
+    tag: '1'
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  name: opengist
+  web:
+    replicaCount: 2
+  worker:
+    replicaCount: 0

@@ -26,17 +26,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: "{{KUBERO_APP_NAME}}-mariadb"
+          name: '{{KUBERO_APP_NAME}}-mariadb'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: "{{KUBERO_APP_NAME}}-mariadb-root"
+            name: '{{KUBERO_APP_NAME}}-mariadb-root'
             key: password
           database: wordpress
           username: wordpress
           passwordSecretKeyRef:
-            name: "{{KUBERO_APP_NAME}}-mariadb-app"
+            name: '{{KUBERO_APP_NAME}}-mariadb-app'
             key: password
           storage:
             size: 5Gi
@@ -47,13 +47,13 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
       rootSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: "{{KUBERO_APP_NAME}}-mariadb-root"
+          name: '{{KUBERO_APP_NAME}}-mariadb-root'
         type: Opaque
         stringData:
           password: wordpress
@@ -61,64 +61,57 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: "{{KUBERO_APP_NAME}}-mariadb-app"
+          name: '{{KUBERO_APP_NAME}}-mariadb-app'
         type: Opaque
         stringData:
           password: wordpress
   cronjobs: []
   deploymentstrategy: docker
-  # Official WordPress image env vars (WORDPRESS_DB_*), not the bitnami
-  # WORDPRESS_DATABASE_* names.
   envVars:
   - name: WORDPRESS_DB_HOST
-    value: "{{KUBERO_APP_NAME}}-mariadb"
+    value: '{{KUBERO_APP_NAME}}-mariadb'
   - name: WORDPRESS_DB_USER
     value: wordpress
   - name: WORDPRESS_DB_PASSWORD
     value: wordpress
   - name: WORDPRESS_DB_NAME
     value: wordpress
-  # Pin site URL to the incoming Host header so redeploys that get a new
-  # ingress hostname don't 500 when wp_options still points at the old domain.
   - name: WORDPRESS_CONFIG_EXTRA
-    value: "define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST']); define('WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST']);"
-  # Auth cookie keys + salts — PINNED so every web replica signs login cookies
-  # identically. Without these, each pod generates its own random salts in its
-  # (un-shared) wp-config.php, so a cookie issued by one replica is rejected by
-  # the next and you can never stay logged in behind >1 replica. Generated once
-  # per deploy by the server's {{KUBERO_GEN_ALNUM}} token, then persisted.
+    value: define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST']); define('WP_SITEURL',
+      'https://' . $_SERVER['HTTP_HOST']);
   - name: WORDPRESS_AUTH_KEY
-    value: "{{KUBERO_GEN_ALNUM:64}}"
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_SECURE_AUTH_KEY
-    value: "{{KUBERO_GEN_ALNUM:64}}"
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_LOGGED_IN_KEY
-    value: "{{KUBERO_GEN_ALNUM:64}}"
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_NONCE_KEY
-    value: "{{KUBERO_GEN_ALNUM:64}}"
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_AUTH_SALT
-    value: "{{KUBERO_GEN_ALNUM:64}}"
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_SECURE_AUTH_SALT
-    value: "{{KUBERO_GEN_ALNUM:64}}"
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_LOGGED_IN_SALT
-    value: "{{KUBERO_GEN_ALNUM:64}}"
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_NONCE_SALT
-    value: "{{KUBERO_GEN_ALNUM:64}}"
-  # Shared content (wp-content: themes/plugins/uploads) on the RWX class so
-  # multiple web replicas can run for HA.
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
-    storageClass: shared
+    - ReadWriteOnce
+    storageClass: slow
     emptyDir: false
     mountPath: /var/www/html/wp-content
-    name: "{{KUBERO_APP_NAME}}-data"
+    name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
   image:
     containerPort: '80'
     repository: wordpress
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: wordpress
   web:
-    replicaCount: 2
+    replicaCount: 1
   worker:
     replicaCount: 0

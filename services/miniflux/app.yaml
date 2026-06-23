@@ -3,9 +3,11 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Miniflux is a minimalist and opinionated RSS reader written in Go.
+    kubero.dev/template.description: Miniflux is a minimalist and opinionated RSS
+      reader written in Go.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/9411421?s=200&v=4
-    kubero.dev/template.installation: RUN_MIGRATIONS and CREATE_ADMIN run on first boot. Change ADMIN_PASSWORD after login.
+    kubero.dev/template.installation: RUN_MIGRATIONS and CREATE_ADMIN run on first
+      boot. Change ADMIN_PASSWORD after login.
     kubero.dev/template.links: '["https://miniflux.app/docs/"]'
     kubero.dev/template.screenshots: '["https://miniflux.app/images/screenshot.png"]'
     kubero.dev/template.source: https://github.com/miniflux/v2
@@ -40,7 +42,7 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
+              cpu: '1'
               memory: 1Gi
           bootstrap:
             initdb:
@@ -49,9 +51,9 @@ spec:
               secret:
                 name: miniflux-postgres-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO miniflux
-                - GRANT CREATE ON SCHEMA public TO miniflux
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO miniflux
+              - GRANT ALL ON SCHEMA public TO miniflux
+              - GRANT CREATE ON SCHEMA public TO miniflux
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO miniflux
           enableSuperuserAccess: true
           superuserSecret:
             name: miniflux-postgres-superuser
@@ -92,6 +94,9 @@ spec:
     pullPolicy: Always
     repository: miniflux/miniflux
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: miniflux
   web:
     replicaCount: 1

@@ -32,19 +32,19 @@ spec:
     value: postgres://zipline:zipline@zipline-postgresql-rw:5432/zipline
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /zipline/uploads
     name: zipline-uploads-volume
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /zipline/public
     name: zipline-public-volume
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   addons:
   - displayName: PostgreSQL (CloudNativePG)
@@ -112,3 +112,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/diced/zipline
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

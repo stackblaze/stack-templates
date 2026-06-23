@@ -120,12 +120,12 @@ spec:
     size: 1Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/docroot/media
     name: mautic-media
     size: 3Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   healthcheck:
     enabled: true
@@ -146,3 +146,6 @@ spec:
     - sh
     - -c
     - sleep 45 && exec /entrypoint.sh apache2-foreground
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

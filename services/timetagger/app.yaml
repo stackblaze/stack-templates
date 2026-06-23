@@ -27,16 +27,19 @@ spec:
     value: test:$$2a$$08$$0CD1NFiIbancwWsu3se1v.RNR/b7YeZd71yg3cZ/3whGlyU6Iny5i
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /data/_timetagger
     name: timetagger-data
     size: 1Gi
-    storageClass: shared
+    storageClass: slow
   image:
     containerPort: '8080'
     repository: ghcr.io/almarklein/timetagger
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
   name: timetagger
   web:
     replicaCount: 1

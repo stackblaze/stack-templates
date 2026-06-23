@@ -4,9 +4,15 @@ metadata:
   name: baserow
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source no-code database and Airtable alternative — build relational databases, forms, and automations with a spreadsheet-like UI.
+    kubero.dev/template.description: Open-source no-code database and Airtable alternative
+      — build relational databases, forms, and automations with a spreadsheet-like
+      UI.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/icon.png
-    kubero.dev/template.installation: Change SECRET_KEY to a random string. The all-in-one image bundles the API, web frontend, and background workers. On first visit, register an admin account. Add a persistent volume at /baserow/data for uploads and Caddy state. For larger deployments, switch to the distributed architecture (separate backend/frontend/worker images).
+    kubero.dev/template.installation: Change SECRET_KEY to a random string. The all-in-one
+      image bundles the API, web frontend, and background workers. On first visit,
+      register an admin account. Add a persistent volume at /baserow/data for uploads
+      and Caddy state. For larger deployments, switch to the distributed architecture
+      (separate backend/frontend/worker images).
     kubero.dev/template.links: '["https://baserow.io/docs/index"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://gitlab.com/bramw/baserow
@@ -51,9 +57,9 @@ spec:
               secret:
                 name: baserow-postgresql-app
               postInitApplicationSQL:
-                - GRANT ALL ON SCHEMA public TO baserow
-                - GRANT CREATE ON SCHEMA public TO baserow
-                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO baserow
+              - GRANT ALL ON SCHEMA public TO baserow
+              - GRANT CREATE ON SCHEMA public TO baserow
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO baserow
           enableSuperuserAccess: true
           superuserSecret:
             name: baserow-postgresql-superuser
@@ -154,3 +160,7 @@ spec:
     pullPolicy: Always
     repository: baserow/baserow
     tag: 2.2.2
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
+  extraVolumes: []

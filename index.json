@@ -16,7 +16,9 @@
         "https://raw.githubusercontent.com/metabase/metabase/master/docs/images/metabase-product-screenshot.svg"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 47265,
       "forks": 6449,
       "watchers": 47265,
@@ -91,6 +93,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/app.ha.yaml"
         }
       ]
     },
@@ -456,7 +463,9 @@
         "https://camo.githubusercontent.com/9674a2b1b7d094b060fd79e6df7dca10b86a484ce6015b2668cff768dfc786ee/68747470733a2f2f757074696d652e6b756d612e7065742f696d672f6461726b2e6a7067"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "MariaDB"
+      ],
       "stars": 86543,
       "forks": 7815,
       "watchers": 86543,
@@ -599,7 +608,9 @@
       ],
       "screenshots": [],
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 35456,
       "forks": 4760,
       "watchers": 35456,
@@ -723,6 +734,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/airflow/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/airflow/app.ha.yaml"
         }
       ]
     },
@@ -744,7 +760,9 @@
         "https://camo.githubusercontent.com/186c2a4c286dcb5e6c419ae11c062721ba73eafcc40e518f237adcc9985385db/68747470733a2f2f646c2e67697465612e696f2f73637265656e73686f74732f757365725f70726f66696c652e706e67"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 55569,
       "forks": 6680,
       "watchers": 55569,
@@ -791,7 +809,9 @@
       "links": [
         "https://forgejo.org/"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 4932,
       "forks": 847,
       "watchers": 4932,
@@ -844,7 +864,9 @@
         "https://user-images.githubusercontent.com/35857179/194844903-c1e47f40-e782-4f5d-8dce-6449cc70b181.png"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 63004,
       "forks": 4766,
       "watchers": 63004,
@@ -990,7 +1012,9 @@
         "https://www.docuseal.com/packs/static/images/resources/quick-start-1-216aeed1da1db5b3e718.jpg"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 16314,
       "forks": 1481,
       "watchers": 16314,
@@ -1088,7 +1112,8 @@
         "https://github.com/lukevella/rallly-selfhosted"
       ],
       "addons": [
-        "Cluster"
+        "Cluster",
+        "Tenant"
       ],
       "stars": 5078,
       "forks": 511,
@@ -1397,6 +1422,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sterlingpdf/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sterlingpdf/app.ha.yaml"
         }
       ]
     },
@@ -1797,7 +1827,7 @@
       ],
       "links": [],
       "addons": [
-        "Cluster"
+        "MariaDB"
       ],
       "stars": 5081,
       "forks": 3853,
@@ -1991,8 +2021,8 @@
       ],
       "links": [],
       "addons": [
-        "Valkey",
-        "Cluster"
+        "Cluster",
+        "Valkey"
       ],
       "stars": 38447,
       "forks": 3278,
@@ -2089,8 +2119,8 @@
         "https://docs.paperless-ngx.com/setup/#docker"
       ],
       "addons": [
-        "Valkey",
-        "Cluster"
+        "Cluster",
+        "Valkey"
       ],
       "stars": 40537,
       "forks": 2679,
@@ -2135,7 +2165,9 @@
       ],
       "screenshots": null,
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 6081,
       "forks": 405,
       "watchers": 6081,
@@ -2230,7 +2262,9 @@
         "https://github.com/gotify/server/raw/master/ui.png"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 14980,
       "forks": 812,
       "watchers": 14980,
@@ -2510,7 +2544,9 @@
       ],
       "screenshots": null,
       "links": null,
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 3125,
       "forks": 170,
       "watchers": 3125,
@@ -2753,7 +2789,9 @@
         "https://usememos.com/demo.webp"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 59492,
       "forks": 4336,
       "watchers": 59492,
@@ -2847,7 +2885,9 @@
       ],
       "screenshots": [],
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 52731,
       "forks": 24316,
       "watchers": 52731,
@@ -3460,7 +3500,9 @@
         "https://user-images.githubusercontent.com/858858/100485897-18c21400-3102-11eb-9c72-ea0b1b46ef2e.png"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "MariaDB"
+      ],
       "stars": 3933,
       "forks": 288,
       "watchers": 3933,
@@ -3601,7 +3643,9 @@
         "https://lycheeorg.github.io/assets/3.BzY-5hAj.jpg"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "MariaDB"
+      ],
       "stars": 4157,
       "forks": 366,
       "watchers": 4157,
@@ -3647,7 +3691,9 @@
         "https://docs.authorizer.dev/images/authorizer-arch.png"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 1958,
       "forks": 206,
       "watchers": 1958,
@@ -3741,7 +3787,9 @@
       ],
       "screenshots": null,
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 60104,
       "forks": 2781,
       "watchers": 60104,
@@ -3880,7 +3928,9 @@
       ],
       "screenshots": null,
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 28306,
       "forks": 3213,
       "watchers": 28306,
@@ -3972,7 +4022,9 @@
         "https://user-images.githubusercontent.com/71191962/169860380-856634fb-4f41-47cb-ba54-6a9e7b3b9c81.gif"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 7161,
       "forks": 301,
       "watchers": 7161,
@@ -4258,7 +4310,9 @@
         "https://kanboard.org/assets/img/board.png"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "MariaDB"
+      ],
       "stars": 9577,
       "forks": 1952,
       "watchers": 9577,
@@ -4544,7 +4598,9 @@
       ],
       "screenshots": [],
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 10642,
       "forks": 1832,
       "watchers": 10642,
@@ -4638,7 +4694,9 @@
       ],
       "screenshots": [],
       "links": [],
-      "addons": [],
+      "addons": [
+        "DocumentDB"
+      ],
       "stars": 2571,
       "forks": 320,
       "watchers": 2571,
@@ -4927,7 +4985,9 @@
         "https://raw.githubusercontent.com/go-shiori/shiori/master/docs/screenshots/04-options.png"
       ],
       "links": [],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 11448,
       "forks": 615,
       "watchers": 11448,
@@ -4975,7 +5035,9 @@
       "links": [
         "https://shlink.io/documentation/"
       ],
-      "addons": [],
+      "addons": [
+        "MariaDB"
+      ],
       "stars": 4800,
       "forks": 380,
       "watchers": 4800,
@@ -5069,7 +5131,9 @@
         "https://www.fief.dev/illustrations/signin.png"
       ],
       "links": "https://docs.fief.dev",
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 725,
       "forks": 66,
       "watchers": 725,
@@ -5491,6 +5555,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatpad/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatpad/app.ha.yaml"
         }
       ]
     },
@@ -5670,7 +5739,8 @@
       ],
       "addons": [
         "Cluster",
-        "Valkey"
+        "Valkey",
+        "Tenant"
       ],
       "stars": 47000,
       "forks": 4700,
@@ -5824,7 +5894,9 @@
       "links": [
         "https://linkding.link/"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 10000,
       "forks": 500,
       "watchers": 10000,
@@ -6015,7 +6087,9 @@
       "links": [
         "https://www.focalboard.com/"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 26237,
       "forks": 2546,
       "watchers": 26237,
@@ -6520,7 +6594,9 @@
       "links": [
         "https://doc.wallabag.org/"
       ],
-      "addons": [],
+      "addons": [
+        "MariaDB"
+      ],
       "stars": 13000,
       "forks": 1300,
       "watchers": 13000,
@@ -7032,8 +7108,8 @@
       "addons": [
         "Cluster",
         "Valkey",
-        "RabbitmqCluster",
-        "Memcached"
+        "KuberoAddonMemcached",
+        "RabbitmqCluster"
       ],
       "stars": 22000,
       "forks": 2200,
@@ -8390,7 +8466,9 @@
       "links": [
         "https://erugo.app/docs/getting-started/quickstart/"
       ],
-      "addons": [],
+      "addons": [
+        "MariaDB"
+      ],
       "stars": 1500,
       "forks": 150,
       "watchers": 1500,
@@ -9649,7 +9727,8 @@
         "https://kener.ing/docs/deployment"
       ],
       "addons": [
-        "Cluster"
+        "Cluster",
+        "Valkey"
       ],
       "stars": 5000,
       "forks": 500,
@@ -9851,7 +9930,8 @@
         "https://docs.lightdash.com/self-host/customize-deployment/environment-variables"
       ],
       "addons": [
-        "Cluster"
+        "Cluster",
+        "Tenant"
       ],
       "stars": 4700,
       "forks": 470,
@@ -9951,7 +10031,7 @@
       ],
       "addons": [
         "MariaDB",
-        "Valkey"
+        "KuberoOpenSearch"
       ],
       "stars": 11700,
       "forks": 1170,
@@ -10613,8 +10693,8 @@
       ],
       "addons": [
         "Cluster",
-        "RabbitmqCluster",
-        "Valkey"
+        "Valkey",
+        "RabbitmqCluster"
       ],
       "stars": 1500,
       "forks": 150,
@@ -10663,7 +10743,9 @@
         "https://openobserve.ai/docs/quickstart/",
         "https://openobserve.ai/docs/environment-variables/"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 16000,
       "forks": 1600,
       "watchers": 16000,
@@ -11477,8 +11559,8 @@
       ],
       "addons": [
         "Cluster",
-        "ClickHouseInstallation",
-        "Valkey"
+        "Valkey",
+        "ClickHouseInstallation"
       ],
       "stars": 24000,
       "forks": 2400,
@@ -12441,7 +12523,8 @@
       ],
       "addons": [
         "MariaDB",
-        "Valkey"
+        "Valkey",
+        "KuberoOpenSearch"
       ],
       "stars": 700,
       "forks": 70,
@@ -12641,7 +12724,9 @@
         "https://unomi.apache.org/manual/latest/index.html",
         "https://github.com/apache/unomi/tree/master/docker"
       ],
-      "addons": [],
+      "addons": [
+        "Valkey"
+      ],
       "stars": 600,
       "forks": 60,
       "watchers": 600,
@@ -12942,7 +13027,7 @@
         "https://hub.docker.com/r/jhaals/yopass"
       ],
       "addons": [
-        "KuberoAddonMemcached"
+        "Valkey"
       ],
       "stars": 2800,
       "forks": 280,
@@ -13047,7 +13132,6 @@
       ],
       "addons": [
         "Cluster",
-        "KuberoAddonMemcached",
         "Valkey"
       ],
       "stars": 4600,
@@ -13119,6 +13203,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/app.ha.yaml"
         }
       ]
     },
@@ -13138,7 +13227,9 @@
       "links": [
         "https://docs.openwebui.com/"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 136000,
       "forks": 0,
       "watchers": 136000,
@@ -13160,6 +13251,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/open-webui/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/open-webui/app.ha.yaml"
         }
       ]
     },
@@ -13180,7 +13276,9 @@
       "links": [
         "https://docs.litellm.ai/"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 24000,
       "forks": 0,
       "watchers": 24000,
@@ -13202,6 +13300,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/app.ha.yaml"
         }
       ]
     },
@@ -13222,7 +13325,11 @@
       "links": [
         "https://langfuse.com/docs"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster",
+        "Valkey",
+        "ClickHouseInstallation"
+      ],
       "stars": 13000,
       "forks": 0,
       "watchers": 13000,
@@ -13244,6 +13351,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langfuse/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langfuse/app.ha.yaml"
         }
       ]
     },
@@ -13285,6 +13397,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/localai/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/localai/app.ha.yaml"
         }
       ]
     },
@@ -13305,7 +13422,9 @@
       "links": [
         "https://docs.anythingllm.com/"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 42000,
       "forks": 0,
       "watchers": 42000,
@@ -13327,6 +13446,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/app.ha.yaml"
         }
       ]
     },
@@ -13347,7 +13471,10 @@
       "links": [
         "https://docs.goauthentik.io/"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster",
+        "Valkey"
+      ],
       "stars": 16000,
       "forks": 0,
       "watchers": 16000,
@@ -13369,6 +13496,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/authentik/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/authentik/app.ha.yaml"
         }
       ]
     },
@@ -13389,7 +13521,9 @@
       "links": [
         "https://www.keycloak.org/documentation"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 24000,
       "forks": 0,
       "watchers": 24000,
@@ -13411,6 +13545,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/app.ha.yaml"
         }
       ]
     },
@@ -13431,7 +13570,9 @@
       "links": [
         "https://zitadel.com/docs"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 9000,
       "forks": 0,
       "watchers": 9000,
@@ -13453,6 +13594,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zitadel/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zitadel/app.ha.yaml"
         }
       ]
     },
@@ -13473,7 +13619,10 @@
       "links": [
         "https://baserow.io/docs/index"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster",
+        "Valkey"
+      ],
       "stars": 12000,
       "forks": 0,
       "watchers": 12000,
@@ -13495,6 +13644,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/app.ha.yaml"
         }
       ]
     },
@@ -13515,7 +13669,10 @@
       "links": [
         "https://help.teable.io/"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster",
+        "Valkey"
+      ],
       "stars": 19000,
       "forks": 0,
       "watchers": 19000,
@@ -13537,6 +13694,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/teable/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/teable/app.ha.yaml"
         }
       ]
     },
@@ -13557,7 +13719,9 @@
       "links": [
         "https://docs.nocobase.com/"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 16000,
       "forks": 0,
       "watchers": 16000,
@@ -13579,6 +13743,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocobase/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocobase/app.ha.yaml"
         }
       ]
     },
@@ -13621,6 +13790,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pocketbase/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pocketbase/app.ha.yaml"
         }
       ]
     },
@@ -13641,7 +13815,9 @@
       "links": [
         "https://docs.strapi.io/"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 65000,
       "forks": 0,
       "watchers": 65000,
@@ -13663,6 +13839,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/app.ha.yaml"
         }
       ]
     },
@@ -13705,6 +13886,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/clickhouse/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/clickhouse/app.ha.yaml"
         }
       ]
     },
@@ -13747,6 +13933,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/questdb/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/questdb/app.ha.yaml"
         }
       ]
     },
@@ -13789,6 +13980,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/timescaledb/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/timescaledb/app.ha.yaml"
         }
       ]
     },
@@ -13831,6 +14027,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/adminer/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/adminer/app.ha.yaml"
         }
       ]
     },
@@ -13873,6 +14074,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pgadmin/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pgadmin/app.ha.yaml"
         }
       ]
     },
@@ -13893,7 +14099,9 @@
       "links": [
         "https://headscale.net/running-headscale-container/"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 24000,
       "forks": 0,
       "watchers": 24000,
@@ -13915,6 +14123,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/headscale/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/headscale/app.ha.yaml"
         }
       ]
     },
@@ -13935,7 +14148,9 @@
       "links": [
         "https://listmonk.app/docs/"
       ],
-      "addons": [],
+      "addons": [
+        "Cluster"
+      ],
       "stars": 16000,
       "forks": 0,
       "watchers": 16000,
@@ -13957,6 +14172,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/app.ha.yaml"
         }
       ]
     },
@@ -13999,6 +14219,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stalwart-mail/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stalwart-mail/app.ha.yaml"
         }
       ]
     },
@@ -14041,6 +14266,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/actual-budget/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/actual-budget/app.ha.yaml"
         }
       ]
     },
@@ -14062,7 +14292,10 @@
         "https://docs.firefly-iii.org/",
         "https://hub.docker.com/r/fireflyiii/core"
       ],
-      "addons": [],
+      "addons": [
+        "MariaDB",
+        "Valkey"
+      ],
       "stars": 16000,
       "forks": 0,
       "watchers": 16000,
@@ -14084,6 +14317,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefly-iii/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefly-iii/app.ha.yaml"
         }
       ]
     },
@@ -14126,6 +14364,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/app.ha.yaml"
         }
       ]
     },
@@ -14146,7 +14389,9 @@
       "links": [
         "https://manual.seafile.com/"
       ],
-      "addons": [],
+      "addons": [
+        "MariaDB"
+      ],
       "stars": 13000,
       "forks": 0,
       "watchers": 13000,
@@ -14168,6 +14413,11 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seafile/app.yaml"
+        },
+        {
+          "id": "ha",
+          "label": "High availability",
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seafile/app.ha.yaml"
         }
       ]
     },

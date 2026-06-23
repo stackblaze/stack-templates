@@ -123,12 +123,12 @@ spec:
     size: 5Gi
     storageClass: slow
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /bitnami/moodledata
     name: moodle-data
     size: 5Gi
-    storageClass: shared
+    storageClass: slow
   cronjobs: []
   web:
     replicaCount: 1
@@ -139,3 +139,6 @@ spec:
     pullPolicy: Always
     repository: elestio/moodle
     tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true

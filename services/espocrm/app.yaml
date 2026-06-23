@@ -157,3 +157,6 @@ spec:
     pullPolicy: Always
     repository: espocrm/espocrm
     tag: apache
+    run:
+      securityContext:
+        readOnlyRootFilesystem: true
