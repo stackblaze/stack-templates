@@ -14580,7 +14580,9 @@
         "devops"
       ],
       "screenshots": [
-        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/screenshot.png"
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/screenshot.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/screenshot-package-detail.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/screenshot-auth-client-detail.png"
       ],
       "links": [
         "https://verdaccio.org/docs/installation/"
