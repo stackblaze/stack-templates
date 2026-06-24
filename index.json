@@ -67,7 +67,11 @@
         "productivity"
       ],
       "screenshots": [
-        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/screenshot.jpg"
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/screenshot-search.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/screenshot-meal-plan.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/screenshot-recipe-detail.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/screenshot-shopping-list.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/screenshot-pantry.png"
       ],
       "links": [
         "https://docs.tandoor.dev/"
