@@ -52,7 +52,7 @@
       "name": "tandoor",
       "description": "Self-hosted Django recipe manager for organizing recipes, meal plans, and shopping lists.",
       "source": "https://github.com/TandoorRecipes/recipes",
-      "icon": "https://avatars.githubusercontent.com/u/67073608?s=200&v=4",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/icon.svg",
       "website": "https://tandoor.dev/",
       "installation": "Set SECRET_KEY to a random 50+ character string. First boot runs migrations and collectstatic (may take several minutes).",
       "architecture": [

@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
     kubero.dev/template.description: Self-hosted Django recipe manager for organizing
       recipes, meal plans, and shopping lists.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/67073608?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/icon.svg
     kubero.dev/template.installation: Set SECRET_KEY to a random 50+ character string.
       Tandoor 2 bundles nginx on port 80; first boot runs migrations and collectstatic
       (a few minutes). Complete setup at /setup/ on first visit.
