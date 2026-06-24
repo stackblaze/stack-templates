@@ -14,7 +14,7 @@
       ],
       "screenshots": [
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase/screenshot-dashboard-ecommerce-insights.png",
-        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase/screenshot-question-orders-by-age-group.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase/screenshot-question-product-category.png",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase/screenshot-metric-revenue-by-state.png",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase/screenshot-getting-started.png"
       ],
