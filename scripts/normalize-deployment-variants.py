@@ -5,7 +5,7 @@ Normalize every template to the Standard / HA variant contract:
   app.yaml (Standard)
     - web.replicaCount: 1
     - extraVolumes (non-emptyDir): ReadWriteOnce + storageClass slow
-    - image.run.securityContext.readOnlyRootFilesystem: true
+    - image.run.securityContext.readOnlyRootFilesystem: false
     - DB addons: single instance (CNPG instances=1, MariaDB replicas=1, galera off)
 
   app.ha.yaml (High availability)
@@ -116,7 +116,7 @@ def apply_variant(doc: dict, variant: str) -> dict:
     normalize_web_replicas(spec, variant)
     normalize_volumes(spec, variant)
     normalize_addons(spec, variant)
-    ensure_image_run_ro(out, variant == "standard")
+    ensure_image_run_ro(out, False)
     return out
 
 

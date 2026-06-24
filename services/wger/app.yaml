@@ -221,4 +221,4 @@ spec:
       \ 2\ndone\nexec /home/wger/entrypoint.sh\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

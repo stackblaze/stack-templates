@@ -103,7 +103,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: homarr
   web:
     replicaCount: 1

@@ -55,4 +55,4 @@ spec:
     tag: core-latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

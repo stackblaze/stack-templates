@@ -118,7 +118,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: fief
   web:
     replicaCount: 1

@@ -159,4 +159,4 @@ spec:
     tag: apache
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

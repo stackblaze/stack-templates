@@ -203,4 +203,4 @@ spec:
       && cd /tmp && exec /local/bin/router -f /tmp/docker_compose.toml
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

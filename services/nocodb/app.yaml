@@ -95,7 +95,7 @@ spec:
     repository: nocodb/nocodb
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
     tag: latest
   resources:
     requests:

@@ -29,7 +29,7 @@ spec:
     tag: chromium-bundled
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: rsshub
   web:
     replicaCount: 1

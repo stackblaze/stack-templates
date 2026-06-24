@@ -55,4 +55,4 @@ spec:
       \   deny all;\n  }\n}\nEOF\nexec /opt/entrypoint.sh nginx\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

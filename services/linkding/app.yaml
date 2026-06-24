@@ -110,7 +110,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: linkding
   web:
     replicaCount: 1

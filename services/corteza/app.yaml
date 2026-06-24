@@ -95,7 +95,7 @@ spec:
     tag: '2023.3'
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   ingress:
     annotations:
       nginx.ingress.kubernetes.io/cors-allow-headers: '*'

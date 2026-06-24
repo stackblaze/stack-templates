@@ -111,4 +111,4 @@ spec:
       securityContext:
         runAsNonRoot: false
         runAsUser: 0
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

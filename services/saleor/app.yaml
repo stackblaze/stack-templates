@@ -234,4 +234,4 @@ spec:
       saleor.asgi.gunicorn_worker.UvicornWorker saleor.asgi:application
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

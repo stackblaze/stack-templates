@@ -110,7 +110,7 @@ spec:
     repository: codeberg.org/forgejo/forgejo
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
     tag: '11'
   name: forgejo
   web:

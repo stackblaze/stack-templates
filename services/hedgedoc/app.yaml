@@ -104,4 +104,4 @@ spec:
     tag: 1.10.8
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

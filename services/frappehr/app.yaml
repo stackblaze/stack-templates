@@ -210,4 +210,4 @@ spec:
       \ 120 127.0.0.1:8000\nexec /usr/local/bin/nginx-entrypoint.sh\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

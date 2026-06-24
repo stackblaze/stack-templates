@@ -99,7 +99,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: ryot
   web:
     replicaCount: 1

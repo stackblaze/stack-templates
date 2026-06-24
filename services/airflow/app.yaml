@@ -127,4 +127,4 @@ spec:
     - standalone
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

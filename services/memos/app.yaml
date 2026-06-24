@@ -85,7 +85,7 @@ spec:
     tag: stable
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: memos
   web:
     replicaCount: 1

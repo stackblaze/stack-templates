@@ -89,7 +89,7 @@ spec:
     repository: etherpad/etherpad
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
     tag: latest
   name: etherpad
   web:

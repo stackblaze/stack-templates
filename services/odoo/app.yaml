@@ -138,4 +138,4 @@ spec:
       \ odoo\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

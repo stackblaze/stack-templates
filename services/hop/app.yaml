@@ -95,4 +95,4 @@ spec:
       \ \"$pid\"\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

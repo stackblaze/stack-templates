@@ -130,4 +130,4 @@ spec:
     tag: '11'
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

@@ -198,4 +198,4 @@ spec:
     - web
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

@@ -55,7 +55,7 @@ spec:
     repository: chibisafe/chibisafe
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
     tag: latest
   name: chibisafe
   resources:

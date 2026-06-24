@@ -129,4 +129,4 @@ spec:
     tag: main
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

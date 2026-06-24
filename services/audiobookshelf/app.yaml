@@ -67,7 +67,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: audiobookshelf
   web:
     replicaCount: 1

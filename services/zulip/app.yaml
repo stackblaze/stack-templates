@@ -240,4 +240,4 @@ spec:
     tag: 11.6-0
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

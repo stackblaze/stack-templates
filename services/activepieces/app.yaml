@@ -155,7 +155,7 @@ spec:
         capabilities:
           add: []
           drop: []
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
         runAsGroup: 0
         runAsNonRoot: false
         runAsUser: 0

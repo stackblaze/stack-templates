@@ -90,7 +90,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: wordpress-ha
   web:
     replicaCount: 1

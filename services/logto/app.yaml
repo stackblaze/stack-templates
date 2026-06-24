@@ -120,4 +120,4 @@ spec:
       \ && break\n  sleep 5\ndone\nnpm run cli db seed -- --swe && npm start\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

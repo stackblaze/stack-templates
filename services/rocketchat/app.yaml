@@ -75,7 +75,7 @@ spec:
     tag: 5.4.10
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   resources:
     requests:
       cpu: 500m

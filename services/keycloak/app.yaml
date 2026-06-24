@@ -133,4 +133,4 @@ spec:
     - start-dev
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

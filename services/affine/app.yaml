@@ -142,7 +142,7 @@ spec:
     - node ./scripts/self-host-predeploy.js && node ./dist/main.js
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   healthcheck:
     enabled: true
     path: /

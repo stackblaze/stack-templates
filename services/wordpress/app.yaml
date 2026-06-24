@@ -109,7 +109,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: wordpress
   web:
     replicaCount: 1

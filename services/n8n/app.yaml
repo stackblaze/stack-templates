@@ -97,7 +97,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: n8n
   web:
     replicaCount: 1

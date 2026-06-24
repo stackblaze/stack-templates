@@ -140,7 +140,7 @@ spec:
     tag: '4'
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   resources:
     requests:
       cpu: 500m

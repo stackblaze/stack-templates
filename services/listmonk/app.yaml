@@ -137,4 +137,4 @@ spec:
       --yes --config '' && exec ./listmonk --config ''
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

@@ -28,7 +28,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: whiteboard
   web:
     replicaCount: 1

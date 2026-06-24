@@ -40,7 +40,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: serge
   web:
     replicaCount: 1

@@ -121,4 +121,4 @@ spec:
     tag: main-latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

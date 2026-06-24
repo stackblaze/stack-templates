@@ -58,7 +58,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: navidrome
   web:
     replicaCount: 1

@@ -162,5 +162,5 @@ spec:
     tag: 2.2.2
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   extraVolumes: []

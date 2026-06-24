@@ -71,7 +71,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: casdoor
   web:
     replicaCount: 1

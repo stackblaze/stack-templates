@@ -94,7 +94,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: ghost
   web:
     replicaCount: 1

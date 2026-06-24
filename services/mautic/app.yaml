@@ -148,4 +148,4 @@ spec:
     - sleep 45 && exec /entrypoint.sh apache2-foreground
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

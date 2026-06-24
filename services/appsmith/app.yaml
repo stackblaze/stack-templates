@@ -32,7 +32,7 @@ spec:
     repository: appsmith/appsmith-ce
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
     tag: latest
   name: appsmith
   web:

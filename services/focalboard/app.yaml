@@ -101,7 +101,7 @@ spec:
       > /opt/focalboard/config.json && exec /opt/focalboard/bin/focalboard-server
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: focalboard
   web:
     replicaCount: 1

@@ -133,5 +133,5 @@ spec:
     tag: php7.4
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   extraVolumes: []

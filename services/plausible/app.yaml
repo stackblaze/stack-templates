@@ -165,4 +165,4 @@ spec:
       \ db createdb && /entrypoint.sh db migrate && /entrypoint.sh run\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

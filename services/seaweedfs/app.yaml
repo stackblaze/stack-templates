@@ -58,4 +58,4 @@ spec:
     - -master.volumeSizeLimitMB=1024
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

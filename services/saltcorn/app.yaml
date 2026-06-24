@@ -138,4 +138,4 @@ spec:
     - -a
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

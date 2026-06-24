@@ -218,4 +218,4 @@ spec:
       && exec ./entrypoint.sh
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

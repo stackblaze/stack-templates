@@ -97,4 +97,4 @@ spec:
     tag: '1'
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

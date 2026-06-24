@@ -88,7 +88,7 @@ spec:
     tag: postgresql-latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: umami
   web:
     replicaCount: 1

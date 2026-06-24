@@ -201,4 +201,4 @@ spec:
     tag: production-bullseye
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

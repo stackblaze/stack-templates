@@ -162,4 +162,4 @@ spec:
     tag: v8.6.2
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

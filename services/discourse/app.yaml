@@ -173,4 +173,4 @@ spec:
     tag: 3-debian-12
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

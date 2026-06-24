@@ -90,7 +90,7 @@ spec:
     tag: '1'
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: opengist
   web:
     replicaCount: 1

@@ -198,4 +198,4 @@ spec:
       tenants:migrate:latest && exec node dist/main.js
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

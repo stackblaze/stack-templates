@@ -171,4 +171,4 @@ spec:
     - app
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

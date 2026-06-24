@@ -96,7 +96,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: miniflux
   web:
     replicaCount: 1

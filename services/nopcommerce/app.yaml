@@ -127,4 +127,4 @@ spec:
       \ Nop.Web.dll\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

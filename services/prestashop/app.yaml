@@ -142,4 +142,4 @@ spec:
     tag: 8-apache
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

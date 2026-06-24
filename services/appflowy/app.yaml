@@ -229,4 +229,4 @@ spec:
       \ >/dev/null\nexec appflowy_cloud\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

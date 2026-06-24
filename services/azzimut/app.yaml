@@ -136,4 +136,4 @@ spec:
       done\nexec /app/bin/server\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

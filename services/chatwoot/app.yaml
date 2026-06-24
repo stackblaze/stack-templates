@@ -182,4 +182,4 @@ spec:
       '
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

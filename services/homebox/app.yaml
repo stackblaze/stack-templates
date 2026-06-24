@@ -103,7 +103,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: homebox
   web:
     replicaCount: 1

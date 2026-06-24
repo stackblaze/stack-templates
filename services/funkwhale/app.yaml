@@ -222,4 +222,4 @@ spec:
     tag: '1.4'
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

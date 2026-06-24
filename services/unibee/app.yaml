@@ -157,4 +157,4 @@ spec:
       \ exec ./main\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

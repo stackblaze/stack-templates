@@ -204,4 +204,4 @@ spec:
     - ./bin/docker-entrypoint-migrator.sh && ./bin/docker-entrypoint-api.sh
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

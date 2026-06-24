@@ -75,4 +75,4 @@ spec:
     - local-store
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

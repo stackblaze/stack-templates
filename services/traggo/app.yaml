@@ -33,7 +33,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: traggo
   web:
     replicaCount: 1

@@ -205,4 +205,4 @@ spec:
       \  - challenges.cloudflare.com\nEOF\nexec pnpm run migrateandstart\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

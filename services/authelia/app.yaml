@@ -186,4 +186,4 @@ spec:
       \n    email: authelia@example.com\n    groups: []\nEOF\nexec authelia\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

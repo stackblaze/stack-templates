@@ -67,4 +67,4 @@ spec:
     tag: latest-pg16
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

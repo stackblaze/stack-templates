@@ -135,5 +135,5 @@ spec:
       \ --name \"$ADMIN_NAME\" || true\nnpm run seed -- --all || true\nwait\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: evershop

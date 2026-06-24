@@ -96,7 +96,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: wikijs
   web:
     replicaCount: 1

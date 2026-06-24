@@ -50,7 +50,7 @@ spec:
     repository: filebrowser/filebrowser
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
     tag: latest
   name: filebrowser
   web:

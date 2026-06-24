@@ -169,4 +169,4 @@ spec:
     - server
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

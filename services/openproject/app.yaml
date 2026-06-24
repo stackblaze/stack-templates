@@ -123,4 +123,4 @@ spec:
     tag: 16-slim
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false

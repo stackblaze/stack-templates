@@ -98,7 +98,7 @@ spec:
     - shiori migrate && exec shiori serve
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: shiori
   web:
     replicaCount: 1

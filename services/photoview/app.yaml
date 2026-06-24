@@ -97,7 +97,7 @@ spec:
     tag: '2'
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: photoview
   web:
     replicaCount: 1

@@ -95,7 +95,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: joomla
   web:
     replicaCount: 1

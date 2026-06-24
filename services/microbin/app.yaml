@@ -91,7 +91,7 @@ spec:
     tag: latest
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: microbin
   web:
     replicaCount: 1

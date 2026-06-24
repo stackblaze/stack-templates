@@ -117,6 +117,6 @@ spec:
     repository: calcom.docker.scarf.sh/calcom/cal.com
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
     tag: latest
   name: calcom

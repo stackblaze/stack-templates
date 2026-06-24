@@ -111,7 +111,7 @@ spec:
       done\n"
     run:
       securityContext:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
   name: authorizer
   resources:
     requests:
