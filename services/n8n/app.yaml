@@ -26,7 +26,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: n8n-postgres
+          name: '{{KUBERO_APP_NAME}}-postgres'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -46,7 +46,7 @@ spec:
               database: n8n
               owner: n8n
               secret:
-                name: n8n-postgres-app
+                name: '{{KUBERO_APP_NAME}}-postgres-app'
               postInitApplicationSQL:
               - CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
               - GRANT ALL ON SCHEMA public TO n8n
@@ -54,12 +54,12 @@ spec:
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO n8n
           enableSuperuserAccess: true
           superuserSecret:
-            name: n8n-postgres-superuser
+            name: '{{KUBERO_APP_NAME}}-postgres-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: n8n-postgres-superuser
+          name: '{{KUBERO_APP_NAME}}-postgres-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -68,7 +68,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: n8n-postgres-app
+          name: '{{KUBERO_APP_NAME}}-postgres-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: n8n
@@ -79,7 +79,7 @@ spec:
   - name: DB_TYPE
     value: postgresdb
   - name: DB_POSTGRESDB_HOST
-    value: n8n-postgres-rw
+    value: '{{KUBERO_APP_NAME}}-postgres-rw'
   - name: DB_POSTGRESDB_PORT
     value: '5432'
   - name: DB_POSTGRESDB_USER
