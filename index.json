@@ -14573,7 +14573,7 @@
         "devops"
       ],
       "screenshots": [
-        "https://cdn.verdaccio.dev/readme/banner-uk.svg"
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/screenshot.png"
       ],
       "links": [
         "https://verdaccio.org/docs/installation/"
