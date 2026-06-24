@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.installation: First boot can take several minutes while Metabase
       initializes its application database.
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '[ "https://raw.githubusercontent.com/metabase/metabase/master/docs/images/metabase-product-screenshot.svg"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase/screenshot-dashboard-ecommerce-insights.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase/screenshot-question-orders-by-age-group.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase/screenshot-question-orders-by-quarter.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase/screenshot-getting-started.png"]'
     kubero.dev/template.source: https://github.com/metabase/metabase
     kubero.dev/template.categories: '[ "data", "work" ]'
     kubero.dev/template.title: Metabase
