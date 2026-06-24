@@ -34,7 +34,7 @@ metadata:
       \ change its password."
     kubero.dev/template.links: '["https://github.com/eneo-ai/eneo/blob/main/docs/INSTALLATION.md",
       "https://github.com/eneo-ai/eneo/blob/main/docs/DEPLOYMENT.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://eneo.ai/public/og-image.png"]'
     kubero.dev/template.source: https://github.com/eneo-ai/eneo
     kubero.dev/template.categories: '["ai", "productivity", "collaboration"]'
     kubero.dev/template.title: Eneo

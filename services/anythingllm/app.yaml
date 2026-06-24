@@ -14,7 +14,7 @@ metadata:
       documents to workspaces for RAG. PostgreSQL is provisioned via the bundled add-on;
       file storage persists in the volume.
     kubero.dev/template.links: '["https://docs.anythingllm.com/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://framerusercontent.com/images/KeWFVMJLQ2ELKB9kQFScp7c.png"]'
     kubero.dev/template.source: https://github.com/Mintplex-Labs/anything-llm
     kubero.dev/template.categories: '["ai", "utilities", "documentation"]'
     kubero.dev/template.title: AnythingLLM

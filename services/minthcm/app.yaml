@@ -19,7 +19,7 @@ metadata:
       (.initialized marker) and /var/spool/cron/crontabs (scheduled jobs).
     kubero.dev/template.links: '["https://minthcm.org/support/deploy-minthcm-on-docker/",
       "https://github.com/minthcm/minthcm"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://minthcm.org/wp-content/uploads/2023/11/5.jpg"]'
     kubero.dev/template.source: https://github.com/minthcm/minthcm
     kubero.dev/template.categories: '["crm", "work", "productivity"]'
     kubero.dev/template.title: MintHCM

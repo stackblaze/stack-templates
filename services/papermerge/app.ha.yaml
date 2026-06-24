@@ -27,7 +27,7 @@ metadata:
       and set PAPERMERGE__S3__BUCKET_NAME.'
     kubero.dev/template.links: '["https://docs.papermerge.io/3.5/setup/docker-compose/",
       "https://docs.papermerge.io/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/ciur/papermerge/master/artwork/papermerge3-3.png"]'
     kubero.dev/template.source: https://github.com/ciur/papermerge
     kubero.dev/template.categories: '["documentation", "productivity", "storage"]'
     kubero.dev/template.title: Papermerge

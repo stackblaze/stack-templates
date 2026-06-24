@@ -14,7 +14,7 @@ metadata:
       in the Content-Type Builder, then query them via REST at /api/<collection> or
       GraphQL at /graphql. Media uploads go to the strapi-uploads volume.
     kubero.dev/template.links: '["https://docs.strapi.io/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://delicate-dawn-ac25646e6d.media.strapiapp.com/HP_meta_b32f546a40.png"]'
     kubero.dev/template.source: https://github.com/strapi/strapi
     kubero.dev/template.categories: '["cms", "development", "data"]'
     kubero.dev/template.title: Strapi

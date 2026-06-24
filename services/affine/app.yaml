@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.installation: First boot runs database migrations via self-host-predeploy.js;
       startup can take several minutes.
     kubero.dev/template.links: '["https://docs.affine.pro/docs/hello-bonjour-aloha-%E4%BD%A0%E5%A5%BD"]'
-    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.screenshots: '["https://affine.pro/og.jpeg"]'
     kubero.dev/template.source: https://github.com/toeverything/AFFiNE
     kubero.dev/template.categories: '["utilities", "work"]'
     kubero.dev/template.title: AFFiNE

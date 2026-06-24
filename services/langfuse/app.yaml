@@ -19,7 +19,7 @@ metadata:
       credentials, and LANGFUSE_INIT_* seed values. Instrument your app with the Langfuse
       SDK and set LANGFUSE_HOST={{KUBERO_APP_URL}}.'
     kubero.dev/template.links: '["https://langfuse.com/docs", "https://langfuse.com/self-hosting"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://langfuse.com/api/og?title=Langfuse+%E2%80%93+Open+Source+AI+Engineering+Platform&amp;description=Traces%2C+evals%2C+prompt+management+and+metrics+to+debug+and+improve+your+LLM+application."]'
     kubero.dev/template.source: https://github.com/langfuse/langfuse
     kubero.dev/template.categories: '["ai", "monitoring", "development"]'
     kubero.dev/template.title: Langfuse

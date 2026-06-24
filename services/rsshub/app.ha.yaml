@@ -8,7 +8,7 @@ metadata:
     kubero.dev/template.icon: https://raw.githubusercontent.com/DIYgod/RSSHub/master/lib/assets/logo.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.screenshots: '["https://github.com/user-attachments/assets/68c66528-8c79-4a8a-8e43-ade7d936ab80"]'
     kubero.dev/template.source: https://github.com/DIYgod/RSSHub
     kubero.dev/template.categories: '["utilities"]'
     kubero.dev/template.title: RSSHub

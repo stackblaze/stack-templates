@@ -16,7 +16,7 @@ metadata:
       at /verdaccio/conf/config.yaml (subPath mount) so the image default config is
       not replaced.'
     kubero.dev/template.links: '["https://verdaccio.org/docs/installation/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://cdn.verdaccio.dev/readme/banner-uk.svg"]'
     kubero.dev/template.source: https://github.com/verdaccio/verdaccio
     kubero.dev/template.categories: '["development", "utilities", "devops"]'
     kubero.dev/template.title: Verdaccio

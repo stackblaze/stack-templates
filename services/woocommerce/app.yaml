@@ -21,7 +21,7 @@ metadata:
       volume at /var/www/html. For email (order receipts) configure an SMTP plugin;
       for payments add a gateway plugin (Stripe/PayPal).'
     kubero.dev/template.links: '["https://woocommerce.com/documentation/", "https://hub.docker.com/_/wordpress"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://woocommerce.com/wp-content/uploads/2025/02/woo-take-control-of-your-success.jpg"]'
     kubero.dev/template.source: https://github.com/woocommerce/woocommerce
     kubero.dev/template.categories: '["e-commerce", "cms", "work"]'
     kubero.dev/template.title: WooCommerce

@@ -14,7 +14,7 @@ metadata:
       speed. Increase the volume before pulling large models (7B ~4GB, 70B ~40GB).
       Pair with Open WebUI for a browser chat interface.'
     kubero.dev/template.links: '["https://github.com/ollama/ollama", "https://ollama.com/library"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://ollama.com/public/og.png"]'
     kubero.dev/template.source: https://github.com/ollama/ollama
     kubero.dev/template.categories: '["ai", "utilities", "development"]'
     kubero.dev/template.title: Ollama

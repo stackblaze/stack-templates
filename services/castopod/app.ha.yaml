@@ -24,7 +24,7 @@ metadata:
       \ admin panel after install. ActivityPub federation works out of the box once\
       \ CP_BASEURL is reachable over HTTPS."
     kubero.dev/template.links: '["https://docs.castopod.org/", "https://docs.castopod.org/main/en/getting-started/docker/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://castopod.org/assets/images/open-graph.jpg"]'
     kubero.dev/template.source: https://github.com/ad-aures/castopod
     kubero.dev/template.categories: '["media", "social", "communication"]'
     kubero.dev/template.title: Castopod

@@ -23,7 +23,7 @@ metadata:
       from EMQX, and optional auth/data integrations (PostgreSQL, MySQL, Redis, Kafka,
       MongoDB, etc.) are configured later in the dashboard, not at boot.'
     kubero.dev/template.links: '["https://docs.emqx.com/en/emqx/latest/", "https://github.com/emqx/emqx/blob/master/deploy/docker/README.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.emqx.com/images/logo_512.png"]'
     kubero.dev/template.source: https://github.com/emqx/emqx
     kubero.dev/template.categories: '["data", "automation", "utilities"]'
     kubero.dev/template.title: EMQX

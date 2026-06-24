@@ -20,7 +20,7 @@ metadata:
       Slack, Google and Twilio integrations can be configured later from the Settings
       page.'
     kubero.dev/template.links: '["https://docs.chiefonboarding.com/", "https://github.com/chiefonboarding/ChiefOnboarding/blob/master/docs/deployment/docker.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.herokucdn.com/deploy/button.svg"]'
     kubero.dev/template.source: https://github.com/chiefonboarding/ChiefOnboarding
     kubero.dev/template.categories: '["work", "productivity", "automation"]'
     kubero.dev/template.title: ChiefOnboarding

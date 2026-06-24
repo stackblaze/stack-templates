@@ -26,7 +26,7 @@ metadata:
       for default local file storage. A full-text search backend is optional and not
       included.'
     kubero.dev/template.links: '["https://docs.saleor.io/setup/docker-compose", "https://docs.saleor.io/setup/configuration"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://saleor-dl6efe86d-saleorcommerce.vercel.app/opengraph-image.png"]'
     kubero.dev/template.source: https://github.com/saleor/saleor
     kubero.dev/template.categories: '["e-commerce", "development", "data"]'
     kubero.dev/template.title: Saleor

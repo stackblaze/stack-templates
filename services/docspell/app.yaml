@@ -24,7 +24,7 @@ metadata:
       for inbound mail/scanner ingest (docspell-consumedir, IMAP poller) are described
       in the docs and reuse the same Postgres.'
     kubero.dev/template.links: '["https://docspell.org/docs/install/docker/", "https://docspell.org/docs/configure/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://docspell.org/img/poster.png"]'
     kubero.dev/template.source: https://github.com/eikek/docspell
     kubero.dev/template.categories: '["documentation", "productivity", "storage"]'
     kubero.dev/template.title: Docspell

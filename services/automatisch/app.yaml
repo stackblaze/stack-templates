@@ -22,7 +22,7 @@ metadata:
       OAuth redirect URIs and webhook URLs resolve correctly.'
     kubero.dev/template.links: '["https://automatisch.io/docs/guide/installation",
       "https://automatisch.io/docs"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/2501931/191562539-e42f6c34-03c7-4dc4-bcf9-7f9473a9c64f.png"]'
     kubero.dev/template.source: https://github.com/automatisch/automatisch
     kubero.dev/template.categories: '["automation", "productivity", "work"]'
     kubero.dev/template.title: Automatisch

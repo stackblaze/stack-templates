@@ -12,7 +12,7 @@ metadata:
       to enable the admin interface. A list of all available environment variables
       can be found here : https://docs.logto.io/docs/references/core/configuration/'
     kubero.dev/template.links: '["https://docs.logto.io/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://logto.io/assets/social-CH_XwNBP.jpg"]'
     kubero.dev/template.source: https://github.com/logto-io/logto
     kubero.dev/template.categories: '["identity", "access", "management"]'
     kubero.dev/template.title: logto

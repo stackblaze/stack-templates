@@ -11,7 +11,7 @@ metadata:
       Git data lives under /data. Set FORGEJO__server__ROOT_URL to your public URL
       before first deploy if not using Kubero ingress substitution.
     kubero.dev/template.links: '["https://forgejo.org/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://forgejo.org/_astro/og-preview.Uy75QWb0_6Lpd2.webp"]'
     kubero.dev/template.source: https://codeberg.org/forgejo/Forgejo
     kubero.dev/template.categories: '["work","development","collaboration"]'
     kubero.dev/template.title: Forgejo

@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kimai/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.kimai.org/images/screenshots/screenshot-dashboard.webp"]'
     kubero.dev/template.source: https://github.com/kimai/kimai
     kubero.dev/template.categories: '["work", "productivity"]'
     kubero.dev/template.title: Kimai

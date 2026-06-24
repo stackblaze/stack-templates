@@ -17,7 +17,7 @@ metadata:
       password immediately after install. Persisted volumes hold config (/var/www/html/config)
       and custom files/uploads (/var/www/html/custom).'
     kubero.dev/template.links: '["https://www.mantisbt.org/documentation.php", "https://github.com/mantisbt/mantisbt/blob/master/docbook/Admin_Guide/en-US/Installation.xml"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/mantisbt/mantisbt/master/doc/modern_view_issues.png"]'
     kubero.dev/template.source: https://github.com/mantisbt/mantisbt
     kubero.dev/template.categories: '["development", "productivity", "helpdesk"]'
     kubero.dev/template.title: MantisBT

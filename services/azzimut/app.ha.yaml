@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/89384563
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://azimutt.app/images/og/azimutt-2a331c4663dc7c6a94d0c47af0fbf7fe.jpg?vsn=d"]'
     kubero.dev/template.source: https://github.com/azimuttapp/azimutt
     kubero.dev/template.categories: '["data", "debug", "development"]'
     kubero.dev/template.title: Azimutt

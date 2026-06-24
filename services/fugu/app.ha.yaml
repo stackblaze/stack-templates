@@ -15,7 +15,7 @@ metadata:
       The template disables in-app SSL redirect so Kubernetes HTTP probes work behind
       ingress TLS. App listens on port 3000.
     kubero.dev/template.links: '["https://github.com/shafy/fugu/blob/main/SELFHOSTING.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://fugu.lol/images/fugu_screenshot_main.jpg"]'
     kubero.dev/template.source: https://github.com/shafy/fugu
     kubero.dev/template.categories: '["data", "monitoring", "productivity"]'
     kubero.dev/template.title: Fugu

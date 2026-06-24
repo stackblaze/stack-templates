@@ -20,7 +20,7 @@ metadata:
       data is fetched from external providers (Yahoo Finance by default); configure
       additional DATA_SOURCE provider API keys via env if you need them.'
     kubero.dev/template.links: '["https://github.com/ghostfolio/ghostfolio/blob/main/README.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://ghostfol.io/assets/cover.png"]'
     kubero.dev/template.source: https://github.com/ghostfolio/ghostfolio
     kubero.dev/template.categories: '["finance", "productivity", "data"]'
     kubero.dev/template.title: Ghostfolio

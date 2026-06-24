@@ -15,7 +15,7 @@ metadata:
       available. Use the /v1 endpoints with any OpenAI client library — just point
       the base URL at {{KUBERO_APP_URL}}/v1.'
     kubero.dev/template.links: '["https://localai.io/basics/getting_started/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/mudler/LocalAI/master/docs/static/images/diagrams/composable-core.png"]'
     kubero.dev/template.source: https://github.com/mudler/LocalAI
     kubero.dev/template.categories: '["ai", "utilities"]'
     kubero.dev/template.title: LocalAI

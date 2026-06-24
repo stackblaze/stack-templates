@@ -13,7 +13,7 @@ metadata:
       on first boot if one is not provided. The container expects exclusive control
       of the mounted storage directory.
     kubero.dev/template.links: '["https://erugo.app/docs/getting-started/quickstart/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://erugo.app/erugo.png"]'
     kubero.dev/template.source: https://github.com/ErugoOSS/Erugo
     kubero.dev/template.categories: '["storage", "collaboration", "utilities"]'
     kubero.dev/template.title: Erugo

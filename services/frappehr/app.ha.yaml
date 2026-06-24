@@ -33,7 +33,7 @@ metadata:
       and PostgreSQL; this template uses the MariaDB add-on as the canonical/recommended
       database.'
     kubero.dev/template.links: '["https://docs.frappe.io/hr", "https://github.com/frappe/frappe_docker"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/frappe/hrms/master/.github/hrms-hero.png"]'
     kubero.dev/template.source: https://github.com/frappe/hrms
     kubero.dev/template.categories: '["work", "erp", "productivity"]'
     kubero.dev/template.title: Frappe HR

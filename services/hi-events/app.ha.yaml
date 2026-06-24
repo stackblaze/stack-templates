@@ -32,7 +32,7 @@ metadata:
       volume.'
     kubero.dev/template.links: '["https://hi.events/docs/getting-started/deploying",
       "https://hi.events/docs/configuration/environment-variables"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://hi.events/open-graph-cover.jpg"]'
     kubero.dev/template.source: https://github.com/HiEventsDev/hi.events
     kubero.dev/template.categories: '["e-commerce", "productivity", "work"]'
     kubero.dev/template.title: Hi.Events

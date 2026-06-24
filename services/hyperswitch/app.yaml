@@ -34,7 +34,7 @@ metadata:
       here.'
     kubero.dev/template.links: '["https://docs.hyperswitch.io/hyperswitch-open-source/overview",
       "https://docs.hyperswitch.io/hyperswitch-open-source/account-setup"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://hyperswitch.io/hyperswitch-homepage.webp"]'
     kubero.dev/template.source: https://github.com/juspay/hyperswitch
     kubero.dev/template.categories: '["finance", "e-commerce", "development"]'
     kubero.dev/template.title: Hyperswitch

@@ -11,7 +11,7 @@ metadata:
       DOLI_URL_ROOT are set. Default login admin/admin — change immediately. First
       boot may take several minutes while MariaDB initializes.
     kubero.dev/template.links: '["https://wiki.dolibarr.org/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.dolibarr.org/medias/dolibarr_screenshot1_1920x1080.jpg"]'
     kubero.dev/template.source: https://github.com/Dolibarr/dolibarr
     kubero.dev/template.categories: '["work", "productivity", "utilities"]'
     kubero.dev/template.title: Dolibarr

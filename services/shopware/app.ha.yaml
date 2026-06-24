@@ -26,7 +26,7 @@ metadata:
       + SHOPWARE_ES_ENABLED=1 + SHOPWARE_ES_INDEXING_ENABLED=1. Optionally front the
       storefront with Varnish/HTTP cache for production.'
     kubero.dev/template.links: '["https://developer.shopware.com/docs/", "https://docs.dockware.io"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://images.ctfassets.net/nqzs8zsepqpi/7f1d5mBYgcP8rCOWho4vO6/32f04a0b3bb687d2df562966d5099138/og_image.png"]'
     kubero.dev/template.source: https://github.com/shopware/shopware
     kubero.dev/template.categories: '["e-commerce", "cms", "crm"]'
     kubero.dev/template.title: Shopware

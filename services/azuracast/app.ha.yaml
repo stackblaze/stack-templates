@@ -30,7 +30,7 @@ metadata:
       \ storage (configured per-station in the AzuraCast UI)."
     kubero.dev/template.links: '["https://docs.azuracast.com/en/getting-started/installation/docker",
       "https://www.azuracast.com/docs/administration/docker/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.azuracast.com/img/ScreenshotTour.gif"]'
     kubero.dev/template.source: https://github.com/AzuraCast/AzuraCast
     kubero.dev/template.categories: '["media", "automation", "utilities"]'
     kubero.dev/template.title: AzuraCast

@@ -30,7 +30,7 @@ metadata:
       Convex can use S3-compatible object storage via the AWS_* / S3_STORAGE_*_BUCKET
       env vars (not configured here).'
     kubero.dev/template.links: '["https://docs.convex.dev/self-hosting", "https://github.com/get-convex/convex-backend/blob/main/self-hosted/README.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.convex.dev/api/og?title=The%20backend%20building%20blocks%20for%20your%20agents"]'
     kubero.dev/template.source: https://github.com/get-convex/convex-backend
     kubero.dev/template.categories: '["development", "data", "automation"]'
     kubero.dev/template.title: Convex

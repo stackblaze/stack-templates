@@ -20,7 +20,7 @@ metadata:
       email requires a Mailgun or SMTP provider config. Neither S3 nor SMTP is provisioned
       here.
     kubero.dev/template.links: '["https://docs.papercups.io", "https://github.com/papercups-io/papercups/blob/master/docs/SelfHosting.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.herokucdn.com/deploy/button.svg"]'
     kubero.dev/template.source: https://github.com/papercups-io/papercups
     kubero.dev/template.categories: '["communication", "helpdesk", "crm"]'
     kubero.dev/template.title: Papercups

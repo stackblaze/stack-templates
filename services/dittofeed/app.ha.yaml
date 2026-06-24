@@ -24,7 +24,7 @@ metadata:
       must be the full http://host:8123 URL.'
     kubero.dev/template.links: '["https://docs.dittofeed.com/deployment/self-hosted",
       "https://docs.dittofeed.com/deployment/self-hosted/docker-compose"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://cdn.prod.website-files.com/664393f5bd2b0c6d4fdf5437/6848bc711eb36a4a566f65ad_3a1fb1ad611c0dcb0e506b3169e0e47f_og-dittofeed-homepage.png"]'
     kubero.dev/template.source: https://github.com/dittofeed/dittofeed
     kubero.dev/template.categories: '["communication", "automation", "crm"]'
     kubero.dev/template.title: Dittofeed

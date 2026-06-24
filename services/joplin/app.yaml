@@ -23,7 +23,7 @@ metadata:
       \ sync target. No external object store, search engine or SMTP is required for\
       \ a base install (configure MAILER_* env vars later if you want email invitations)."
     kubero.dev/template.links: '["https://joplinapp.org/help/install/sync", "https://github.com/laurent22/joplin/blob/dev/packages/server/README.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://joplinapp.org/images/SubNotebooks.png"]'
     kubero.dev/template.source: https://github.com/laurent22/joplin
     kubero.dev/template.categories: '["productivity", "documentation", "collaboration"]'
     kubero.dev/template.title: Joplin Server

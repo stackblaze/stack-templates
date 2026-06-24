@@ -8,7 +8,7 @@ metadata:
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/60938164?v=4
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/ignisda/ryot/main/apps/website/public/cta-image.png"]'
     kubero.dev/template.source: https://github.com/ignisda/ryot
     kubero.dev/template.categories: '["productivity"]'
     kubero.dev/template.title: Ryot

@@ -18,7 +18,7 @@ metadata:
       clears all outstanding notes. No SMTP, S3 or external search engine is needed.
     kubero.dev/template.links: '["https://github.com/cupcakearmy/cryptgeon#readme",
       "https://cryptgeon.org"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/cupcakearmy/cryptgeon/main/design/Screens.png"]'
     kubero.dev/template.source: https://github.com/cupcakearmy/cryptgeon
     kubero.dev/template.categories: '["security", "utilities", "productivity"]'
     kubero.dev/template.title: Cryptgeon

@@ -23,7 +23,7 @@ metadata:
       \ after install. For outbound email configure SMTP from the EspoCRM admin UI."
     kubero.dev/template.links: '["https://docs.espocrm.com/administration/docker/installation/",
       "https://hub.docker.com/r/espocrm/espocrm"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["http://www.espocrm.com/images/free-crm-social.jpg"]'
     kubero.dev/template.source: https://github.com/espocrm/espocrm
     kubero.dev/template.categories: '["crm", "work", "productivity"]'
     kubero.dev/template.title: EspoCRM

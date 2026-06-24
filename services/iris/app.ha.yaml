@@ -25,7 +25,7 @@ metadata:
       :: create_safe_admin''). User-uploaded case evidence is stored in the database,
       but server-side datastore files live on the mounted /home/iris/downloads volume.'
     kubero.dev/template.links: '["https://docs.dfir-iris.org", "https://github.com/dfir-iris/iris-web/wiki"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/dfir-iris/iris-web/master/img/timeline_speed.gif"]'
     kubero.dev/template.source: https://github.com/dfir-iris/iris-web
     kubero.dev/template.categories: '["security", "collaboration", "productivity"]'
     kubero.dev/template.title: DFIR-IRIS

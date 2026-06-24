@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/52242352
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/schlagmichdoch/PairDrop/master/docs/pairdrop_screenshot_mobile.gif"]'
     kubero.dev/template.source: https://github.com/schlagmichdoch/PairDrop
     kubero.dev/template.categories: '["productivity", "work"]'
     kubero.dev/template.title: PairDrop

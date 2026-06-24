@@ -20,7 +20,7 @@ metadata:
       Celery against the Valkey add-on; no separate worker pod is templated, so heavy
       background sync may be limited.'
     kubero.dev/template.links: '["https://wger.readthedocs.io/en/latest/production/docker.html"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://hosted.weblate.org/widgets/wger/-/multi-blue.svg"]'
     kubero.dev/template.source: https://github.com/wger-project/wger
     kubero.dev/template.categories: '["productivity", "utilities", "data"]'
     kubero.dev/template.title: Wger

@@ -16,7 +16,7 @@ metadata:
       \ for its App Key/API Key. The appimages volume keeps uploaded app icons/avatars."
     kubero.dev/template.links: '["https://support.countly.com/hc/en-us/articles/360037814511-Setting-Up-Countly-with-Docker",
       "https://support.countly.com/hc/en-us/articles/360036862332-Installing-the-Countly-Server"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://cdn.prod.website-files.com/61c1b7c3e2f3805325be4594/668ce80fb93226b6ad88d718_d587926ef3277bc26935a28e68750dcb_Meta%20Tag-Countly.com.jpg"]'
     kubero.dev/template.source: https://github.com/Countly/countly-server
     kubero.dev/template.categories: '["data", "monitoring", "productivity"]'
     kubero.dev/template.title: Countly

@@ -20,7 +20,7 @@ metadata:
       Outbound email (TR_MAIL_*) and any S3 export targets are NOT provisioned here
       and must be configured separately if needed.'
     kubero.dev/template.links: '["https://docs.traduora.co/docs/configuration", "https://docs.traduora.co/docs/getting-started/self-hosting"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/ever-co/ever-traduora/master/docs-website/static/img/traduora-preview.png"]'
     kubero.dev/template.source: https://github.com/ever-co/ever-traduora
     kubero.dev/template.categories: '["development", "productivity", "collaboration"]'
     kubero.dev/template.title: Traduora

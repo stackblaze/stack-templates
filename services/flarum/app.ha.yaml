@@ -18,7 +18,7 @@ metadata:
       logs) lives under /flarum/app and is kept by the flarum-data volume; for production
       raise the PHP memory limit and pod size if you install many extensions.
     kubero.dev/template.links: '["https://docs.flarum.org/", "https://github.com/mondediefr/docker-flarum/blob/master/README.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://flarum.org/assets/img/flarum-banner.png"]'
     kubero.dev/template.source: https://github.com/flarum/flarum
     kubero.dev/template.categories: '["communication", "collaboration", "social"]'
     kubero.dev/template.title: Flarum

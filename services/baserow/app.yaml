@@ -14,7 +14,7 @@ metadata:
       and Caddy state. For larger deployments, switch to the distributed architecture
       (separate backend/frontend/worker images).
     kubero.dev/template.links: '["https://baserow.io/docs/index"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://baserow.io/img/baserow_open_graph.png"]'
     kubero.dev/template.source: https://gitlab.com/bramw/baserow
     kubero.dev/template.categories: '["data", "productivity", "work"]'
     kubero.dev/template.title: Baserow

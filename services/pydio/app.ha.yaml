@@ -19,7 +19,7 @@ metadata:
       For large-scale search/object storage Cells embeds MinIO and a Bleve index by
       default; no external Elasticsearch/S3 is required for a single-node deployment.
     kubero.dev/template.links: '["https://docs.pydio.com/latest/admin-guide/quick-start/cells-installation/docker/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://godoc.org/github.com/pydio/cells/v4?status.svg"]'
     kubero.dev/template.source: https://github.com/pydio/cells
     kubero.dev/template.categories: '["storage", "collaboration", "productivity"]'
     kubero.dev/template.title: Pydio Cells

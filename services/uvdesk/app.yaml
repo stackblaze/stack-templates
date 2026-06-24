@@ -18,7 +18,7 @@ metadata:
       No official Docker image is published by the project; this uses the actively
       maintained community image dietermartens/uvdesk.'
     kubero.dev/template.links: '["https://docs.uvdesk.com", "https://github.com/uvdesk/community-skeleton/wiki/Dockerize-helpdesk-project"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.uvdesk.com/wp-content/uploads/2017/06/default-banner-400x250-1.png"]'
     kubero.dev/template.source: https://github.com/uvdesk/community-skeleton
     kubero.dev/template.categories: '["helpdesk", "work", "collaboration"]'
     kubero.dev/template.title: UVdesk

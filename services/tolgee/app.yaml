@@ -11,7 +11,7 @@ metadata:
       available.The JWT secret is a long string of random characters. Please generate
       a new one for your installation.
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://framerusercontent.com/assets/od4noC0fhYjE0sFtp3pHTfh6A2U.png"]'
     kubero.dev/template.source: https://github.com/tolgee/tolgee-platform
     kubero.dev/template.categories: '["work","development","collaboration"]'
     kubero.dev/template.title: Tolgee

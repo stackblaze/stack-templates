@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.installation: First boot runs Laravel migrations and may take
       several minutes. Register your account on the setup screen.
     kubero.dev/template.links: '["https://github.com/monicahq/monica"]'
-    kubero.dev/template.screenshots: '["https://beta.monicahq.com/img/dashboard/dashboard.png"]'
+    kubero.dev/template.screenshots: '["https://www.monicahq.com/img/social/site/facebook.png"]'
     kubero.dev/template.source: https://github.com/monicahq/monica
     kubero.dev/template.categories: '["productivity", "utilities"]'
     kubero.dev/template.title: Monica

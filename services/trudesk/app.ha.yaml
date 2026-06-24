@@ -21,7 +21,7 @@ metadata:
       admin panel after install to enable ticket creation from email. Uploads and
       generated assets are persisted on the mounted volume.
     kubero.dev/template.links: '["https://docs.trudesk.io", "https://github.com/polonel/trudesk/blob/master/docker-compose.yml"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://trudesk.io/images/hero-td-right.png"]'
     kubero.dev/template.source: https://github.com/polonel/trudesk
     kubero.dev/template.categories: '["helpdesk", "work", "collaboration"]'
     kubero.dev/template.title: Trudesk

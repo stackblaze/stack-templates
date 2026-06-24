@@ -51,7 +51,7 @@ metadata:
       \ is officially Docker-Compose-based and unsupported for high scale; PostHog\
       \ Cloud is the recommended path for large workloads."
     kubero.dev/template.links: '["https://posthog.com/docs/self-host", "https://posthog.com/docs/self-host/configure/environment-variables"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://posthog.com/images/og/default.png"]'
     kubero.dev/template.source: https://github.com/PostHog/posthog
     kubero.dev/template.categories: '["data", "monitoring", "productivity"]'
     kubero.dev/template.title: PostHog

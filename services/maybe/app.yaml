@@ -16,7 +16,7 @@ metadata:
       If serving over plain HTTP behind the ingress''s own TLS, RAILS_FORCE_SSL/RAILS_ASSUME_SSL
       are left false; enable them if terminating TLS at the app.'
     kubero.dev/template.links: '["https://github.com/maybe-finance/maybe/blob/main/docs/hosting/docker.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://github.com/user-attachments/assets/5ed08763-a9ee-42b2-a436-e05038fcf573"]'
     kubero.dev/template.source: https://github.com/maybe-finance/maybe
     kubero.dev/template.categories: '["finance", "productivity", "data"]'
     kubero.dev/template.title: Maybe

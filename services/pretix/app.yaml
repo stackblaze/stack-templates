@@ -29,7 +29,7 @@ metadata:
       Docs: https://docs.pretix.eu/self-hosting/installation/docker_smallscale/'
     kubero.dev/template.links: '["https://docs.pretix.eu/self-hosting/installation/docker_smallscale/",
       "https://docs.pretix.eu/self-hosting/installation/config/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://static.pretix.cloud/static/pretixeu/img/opengraph.74fa3c379c1d.png"]'
     kubero.dev/template.source: https://github.com/pretix/pretix
     kubero.dev/template.categories: '["e-commerce", "finance", "work"]'
     kubero.dev/template.title: Pretix

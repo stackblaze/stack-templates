@@ -23,7 +23,7 @@ metadata:
       raise the app pod size.'
     kubero.dev/template.links: '["https://helpcenter.onlyoffice.com/docs/installation/docs-community-install-docker.aspx",
       "https://api.onlyoffice.com/docs/docs-api/get-started/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://download.onlyoffice.com/assets/fb/fb_icon_325x325.jpg"]'
     kubero.dev/template.source: https://github.com/ONLYOFFICE/Docker-DocumentServer
     kubero.dev/template.categories: '["productivity", "collaboration", "documentation"]'
     kubero.dev/template.title: OnlyOffice

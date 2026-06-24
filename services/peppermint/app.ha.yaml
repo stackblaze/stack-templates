@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.installation: Default user is 'admin@admin.com' with password
       '1234'.
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://api.star-history.com/svg?repos=Peppermint-Lab/peppermint&type=Date"]'
     kubero.dev/template.source: https://github.com/Peppermint-Lab/peppermint
     kubero.dev/template.categories: '["helpdesk", "work"]'
     kubero.dev/template.title: Peppermint

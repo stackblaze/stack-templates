@@ -12,7 +12,7 @@ metadata:
       add-on; ingest data persists under /data. Set ZO_ROOT_USER_EMAIL and ZO_ROOT_USER_PASSWORD
       before first login.
     kubero.dev/template.links: '["https://openobserve.ai/docs/quickstart/", "https://openobserve.ai/docs/environment-variables/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://openobserve.ai/o2-seo-image.png"]'
     kubero.dev/template.source: https://github.com/openobserve/openobserve
     kubero.dev/template.categories: '["monitoring", "data", "utilities"]'
     kubero.dev/template.title: OpenObserve

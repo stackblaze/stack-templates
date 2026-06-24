@@ -24,7 +24,7 @@ metadata:
       engine is required for a base install (add an external Elasticsearch/Solr later
       only if you enable global search).'
     kubero.dev/template.links: '["https://www.iomad.org/documentation/", "https://hub.docker.com/r/elestio/iomad"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.iomad.org/wp-content/uploads/2026/06/IOMAD-Pride-500-space-logo.jpg"]'
     kubero.dev/template.source: https://github.com/iomad/iomad
     kubero.dev/template.categories: '["productivity", "collaboration", "work"]'
     kubero.dev/template.title: IOMAD

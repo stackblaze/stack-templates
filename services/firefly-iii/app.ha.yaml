@@ -14,7 +14,7 @@ metadata:
       \ accounts, and categories. For automatic bank import, deploy the separate Firefly\
       \ III Data Importer container. File uploads go to the firefly-iii-uploads volume."
     kubero.dev/template.links: '["https://docs.firefly-iii.org/", "https://hub.docker.com/r/fireflyiii/core"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.firefly-iii.org/assets/logo/wall.png"]'
     kubero.dev/template.source: https://github.com/firefly-iii/firefly-iii
     kubero.dev/template.categories: '["finance", "productivity", "utilities"]'
     kubero.dev/template.title: Firefly III

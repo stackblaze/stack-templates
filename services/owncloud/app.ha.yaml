@@ -21,7 +21,7 @@ metadata:
       external object/S3 store is optional and not required for a base install.
     kubero.dev/template.links: '["https://doc.owncloud.com/server/latest/admin_manual/installation/docker/",
       "https://doc.owncloud.com/server/latest/admin_manual/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://owncloud.com/wp-content/uploads/2020/08/ownCloud-Trademark.png"]'
     kubero.dev/template.source: https://github.com/owncloud/core
     kubero.dev/template.categories: '["storage", "productivity", "collaboration"]'
     kubero.dev/template.title: ownCloud

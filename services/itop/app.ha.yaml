@@ -19,7 +19,7 @@ metadata:
       here. Persist /var/www/html/data and the generated /var/www/html/conf so config
       and attachments survive restarts.
     kubero.dev/template.links: '["https://www.itophub.io/wiki/page", "https://github.com/vbkunin/itop-docker"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://combodo.com/wp-content/uploads/2025/10/RIC-2025-EN-2.svg"]'
     kubero.dev/template.source: https://github.com/Combodo/iTop
     kubero.dev/template.categories: '["helpdesk", "work", "productivity"]'
     kubero.dev/template.title: iTop

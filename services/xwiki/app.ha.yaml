@@ -22,7 +22,7 @@ metadata:
       release, switch to an 'lts-postgres-tomcat' tag for long-term-support builds.
     kubero.dev/template.links: '["https://www.xwiki.org/xwiki/bin/view/Documentation/AdminGuide/Installation/InstallationDocker/",
       "https://github.com/xwiki-contrib/docker-xwiki/blob/master/README.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.xwiki.org/xwiki/bin/download/Main/Media/logo-xwikiorange-centered-200x200px.png"]'
     kubero.dev/template.source: https://github.com/xwiki/xwiki-platform
     kubero.dev/template.categories: '["documentation", "collaboration", "productivity"]'
     kubero.dev/template.title: XWiki

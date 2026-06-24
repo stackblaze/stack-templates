@@ -28,7 +28,7 @@ metadata:
       + bucket env vars if needed.'
     kubero.dev/template.links: '["https://getlago.com/docs/guide/lago-self-hosted/docker",
       "https://getlago.com/docs/api-reference/intro"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://getlago.com/og/og-home.png"]'
     kubero.dev/template.source: https://github.com/getlago/lago
     kubero.dev/template.categories: '["finance", "e-commerce", "development"]'
     kubero.dev/template.title: Lago

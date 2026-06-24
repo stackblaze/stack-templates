@@ -13,7 +13,7 @@ metadata:
       myapp-postgresql-rw, port 5432). Supports PostgreSQL, MySQL/MariaDB, SQLite,
       and more. For security, restrict ingress access to internal users only.
     kubero.dev/template.links: '["https://www.adminer.org/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.adminer.org/static/screenshots/table.png"]'
     kubero.dev/template.source: https://github.com/vrana/adminer
     kubero.dev/template.categories: '["database", "development", "utilities"]'
     kubero.dev/template.title: Adminer

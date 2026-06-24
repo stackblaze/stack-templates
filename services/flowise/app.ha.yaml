@@ -8,7 +8,7 @@ metadata:
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/128289781?s=200&v=4
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://remarkable-smakager-ddb2b7.netlify.app/opengraph-image.png?9ccfc0cd89ea0cda"]'
     kubero.dev/template.source: https://github.com/FlowiseAI/Flowise
     kubero.dev/template.categories: '[ "ai" ]'
     kubero.dev/template.title: Flowise

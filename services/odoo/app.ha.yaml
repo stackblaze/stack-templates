@@ -24,7 +24,7 @@ metadata:
       is functional for evaluation. For production multi-worker mode put a reverse
       proxy in front (proxy_mode=True) so X-Forwarded-* is honored.'
     kubero.dev/template.links: '["https://www.odoo.com/documentation", "https://github.com/odoo/docker"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.odoo.com/web/image/54404732-3d9bec26/SPI_homepage.png"]'
     kubero.dev/template.source: https://github.com/odoo/odoo
     kubero.dev/template.categories: '["erp", "crm", "e-commerce"]'
     kubero.dev/template.title: Odoo

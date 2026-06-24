@@ -35,7 +35,7 @@ metadata:
       and needs extra kernel/audio access; omit for a basic deployment.'
     kubero.dev/template.links: '["https://jitsi.github.io/handbook/docs/devops-guide/devops-guide-docker",
       "https://github.com/jitsi/docker-jitsi-meet#readme"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://jitsi.org/wp-content/uploads/2020/04/Jitsi_opengraph.jpg"]'
     kubero.dev/template.source: https://github.com/jitsi/docker-jitsi-meet
     kubero.dev/template.categories: '["communication", "collaboration", "media"]'
     kubero.dev/template.title: Jitsi Meet

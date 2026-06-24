@@ -17,7 +17,7 @@ metadata:
       No external object store or search engine is required for a base install (add
       Solr/Search API later if needed).
     kubero.dev/template.links: '["https://www.drupal.org/docs/getting-started", "https://github.com/docker-library/docs/blob/master/drupal/README.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://new.drupal.org/themes/contrib/bluecheese/images/drupal_meta_image.png"]'
     kubero.dev/template.source: https://github.com/drupal/drupal
     kubero.dev/template.categories: '["cms", "development", "documentation"]'
     kubero.dev/template.title: Drupal

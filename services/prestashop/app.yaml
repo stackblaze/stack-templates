@@ -21,7 +21,7 @@ metadata:
       /tmp/docker_run.sh). Do not mount an empty PVC over /var/www/html; add img/upload/var
       volumes after first install if you need persistence.'
     kubero.dev/template.links: '["https://devdocs.prestashop-project.org/", "https://github.com/PrestaShop/docker"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://github.com/user-attachments/assets/e6342778-e528-4ae7-acf2-f0d097a1e932"]'
     kubero.dev/template.source: https://github.com/PrestaShop/PrestaShop
     kubero.dev/template.categories: '["e-commerce", "cms", "work"]'
     kubero.dev/template.title: PrestaShop

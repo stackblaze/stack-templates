@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/15967950
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://framerusercontent.com/images/wDMzR3oV9R51pVCPoOz6PGTRs54.png"]'
     kubero.dev/template.source: https://github.com/directus/directus
     kubero.dev/template.categories: '["database", "cms", "api"]'
     kubero.dev/template.title: Directus

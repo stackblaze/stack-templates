@@ -24,7 +24,7 @@ metadata:
       on first boot (admin@tracardi.com) - change it immediately. AUTOLOAD_BRIDGE/DEMO
       data and the default credentials are for evaluation only.'
     kubero.dev/template.links: '["https://docs.tracardi.com", "https://github.com/Tracardi/tracardi-api"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/16271564/148845983-7c9e85c1-465f-44ed-b1e9-7112908d2e83.png"]'
     kubero.dev/template.source: https://github.com/Tracardi/tracardi
     kubero.dev/template.categories: '["data", "crm", "automation"]'
     kubero.dev/template.title: Tracardi

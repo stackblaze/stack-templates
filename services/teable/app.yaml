@@ -14,7 +14,7 @@ metadata:
       \ table you can query. The storage volume holds file attachments. Register on\
       \ first visit to create the admin workspace."
     kubero.dev/template.links: '["https://help.teable.io/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://teable.ai/assets/images/og-image.png"]'
     kubero.dev/template.source: https://github.com/teableio/teable
     kubero.dev/template.categories: '["data", "productivity", "work"]'
     kubero.dev/template.title: Teable

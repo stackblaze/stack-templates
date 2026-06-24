@@ -29,7 +29,7 @@ metadata:
       via tctl after boot; a `default` namespace is auto-registered.'
     kubero.dev/template.links: '["https://docs.temporal.io/self-hosted-guide/deployment",
       "https://docs.temporal.io/self-hosted-guide/setup"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://temporal.io/images/open-graph/shiny.png"]'
     kubero.dev/template.source: https://github.com/temporalio/temporal
     kubero.dev/template.categories: '["development", "automation", "data"]'
     kubero.dev/template.title: Temporal

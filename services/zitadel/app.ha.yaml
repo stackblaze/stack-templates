@@ -14,7 +14,7 @@ metadata:
       \ auto-migrates the database and prints the initial admin credentials to the\
       \ container log \u2014 retrieve them with kubectl logs."
     kubero.dev/template.links: '["https://zitadel.com/docs"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/zitadel/zitadel/main/apps/docs/public/img/logos/zitadel-logo-dark@2x.png#gh-light-mode-only"]'
     kubero.dev/template.source: https://github.com/zitadel/zitadel
     kubero.dev/template.categories: '["security", "development", "work"]'
     kubero.dev/template.title: Zitadel

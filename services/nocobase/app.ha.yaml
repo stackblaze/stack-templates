@@ -13,7 +13,7 @@ metadata:
       to install additional plugins. Supports building custom data models, forms,
       workflows, and dashboards without code.'
     kubero.dev/template.links: '["https://docs.nocobase.com/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://static-docs.nocobase.com/20260513-og-github-v3.jpg"]'
     kubero.dev/template.source: https://github.com/nocobase/nocobase
     kubero.dev/template.categories: '["data", "development", "productivity"]'
     kubero.dev/template.title: NocoBase

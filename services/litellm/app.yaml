@@ -15,7 +15,7 @@ metadata:
       and keys. Connect any OpenAI SDK client to {{KUBERO_APP_URL}}/v1 with Authorization:
       Bearer sk-change-me.'
     kubero.dev/template.links: '["https://docs.litellm.ai/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://framerusercontent.com/images/DbFHR1t71NpmaSxIqej1LKWzD4.png"]'
     kubero.dev/template.source: https://github.com/BerriAI/litellm
     kubero.dev/template.categories: '["ai", "development", "utilities"]'
     kubero.dev/template.title: LiteLLM

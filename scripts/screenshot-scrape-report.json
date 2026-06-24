@@ -1,0 +1,1871 @@
+{
+  "applied": true,
+  "total_missing": 144,
+  "found": [
+    {
+      "slug": "tolgee",
+      "url": "https://framerusercontent.com/assets/od4noC0fhYjE0sFtp3pHTfh6A2U.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "directus",
+      "url": "https://framerusercontent.com/images/wDMzR3oV9R51pVCPoOz6PGTRs54.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "forgejo",
+      "url": "https://forgejo.org/_astro/og-preview.Uy75QWb0_6Lpd2.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "dolibarr",
+      "url": "https://www.dolibarr.org/medias/dolibarr_screenshot1_1920x1080.jpg",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "filebrowser",
+      "url": "https://raw.githubusercontent.com/filebrowser/filebrowser/master/branding/banner.png",
+      "method": "github",
+      "flags": [
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "logto",
+      "url": "https://logto.io/assets/social-CH_XwNBP.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "documenso",
+      "url": "https://framerusercontent.com/images/x66EcGbzu3IQEriNXuRmOBonGyo.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "rsshub",
+      "url": "https://github.com/user-attachments/assets/68c66528-8c79-4a8a-8e43-ade7d936ab80",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "affine",
+      "url": "https://affine.pro/og.jpeg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "ryot",
+      "url": "https://raw.githubusercontent.com/ignisda/ryot/main/apps/website/public/cta-image.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "homebox",
+      "url": "https://raw.githubusercontent.com/sysadminsmedia/homebox/main/.github/screenshots/1.png",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "calibre-web",
+      "url": "https://github.com/janeczku/calibre-web/wiki/images/main_screen.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "zipline",
+      "url": "https://zipline.diced.sh/img/og-banner.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "guitos",
+      "url": "https://raw.githubusercontent.com/rare-magma/guitos/main/docs/images/horizontal.png",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "flowise",
+      "url": "https://remarkable-smakager-ddb2b7.netlify.app/opengraph-image.png?9ccfc0cd89ea0cda",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "kimai",
+      "url": "https://www.kimai.org/images/screenshots/screenshot-dashboard.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "vaultwarden",
+      "url": "https://raw.githubusercontent.com/dani-garcia/vaultwarden/main/resources/vaultwarden-logo-auto.svg",
+      "method": "github",
+      "flags": [
+        "logo_like",
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "monica",
+      "url": "https://www.monicahq.com/img/social/site/facebook.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "wikijs",
+      "url": "https://js.wiki/legacy/logo_browserstack.png",
+      "method": "github",
+      "flags": [
+        "logo_like",
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "azzimut",
+      "url": "https://azimutt.app/images/og/azimutt-2a331c4663dc7c6a94d0c47af0fbf7fe.jpg?vsn=d",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "convertx",
+      "url": "https://repository-images.githubusercontent.com/783343310/5c97fe6b-0ba3-4d51-b04c-704d93920842",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "pairdrop",
+      "url": "https://raw.githubusercontent.com/schlagmichdoch/PairDrop/master/docs/pairdrop_screenshot_mobile.gif",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "doccano",
+      "url": "https://raw.githubusercontent.com/doccano/doccano/master/docs/images/demo/demo.gif",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "textbee",
+      "url": "https://ik.imagekit.io/vernu/textbee/textbee.dev-landingpage-screenshot.png?updatedAt=1749102564772",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "raneto",
+      "url": "https://app.fossa.com/api/projects/custom%2B44615%2Fgithub.com%2Fryanlelek%2FRaneto.svg?type=shield&issueType=license",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "peppermint",
+      "url": "https://api.star-history.com/svg?repos=Peppermint-Lab/peppermint&type=Date",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "focalboard",
+      "url": "https://raw.githubusercontent.com/mattermost/focalboard/main/website/site/static/img/hero.jpg",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "attendize",
+      "url": "https://www.attendize.com/images/screenshots/screen1.PNG",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "automatisch",
+      "url": "https://user-images.githubusercontent.com/2501931/191562539-e42f6c34-03c7-4dc4-bcf9-7f9473a9c64f.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "azuracast",
+      "url": "https://www.azuracast.com/img/ScreenshotTour.gif",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "castopod",
+      "url": "https://castopod.org/assets/images/open-graph.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "chiefonboarding",
+      "url": "https://www.herokucdn.com/deploy/button.svg",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "civicrm",
+      "url": "https://raw.githubusercontent.com/civicrm/civicrm-core/master/i/logo_lg.png",
+      "method": "github",
+      "flags": [
+        "logo_like",
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "convex",
+      "url": "https://www.convex.dev/api/og?title=The%20backend%20building%20blocks%20for%20your%20agents",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "countly",
+      "url": "https://cdn.prod.website-files.com/61c1b7c3e2f3805325be4594/668ce80fb93226b6ad88d718_d587926ef3277bc26935a28e68750dcb_Meta%20Tag-Countly.com.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "cryptgeon",
+      "url": "https://raw.githubusercontent.com/cupcakearmy/cryptgeon/main/design/Screens.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "dittofeed",
+      "url": "https://cdn.prod.website-files.com/664393f5bd2b0c6d4fdf5437/6848bc711eb36a4a566f65ad_3a1fb1ad611c0dcb0e506b3169e0e47f_og-dittofeed-homepage.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "docassemble",
+      "url": "http://docassemble.org/img/docassemble-logo.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "docspell",
+      "url": "https://docspell.org/img/poster.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "documize",
+      "url": "https://github.com/documize/community/blob/master/screenshot.png?raw=true",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "dremio",
+      "url": "https://www.dremio.com/wp-content/uploads/2025/12/Preview-1200x628px.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "drupal",
+      "url": "https://new.drupal.org/themes/contrib/bluecheese/images/drupal_meta_image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "element",
+      "url": "https://static.element.io/images/open-graph-large.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "emqx",
+      "url": "https://www.emqx.com/images/logo_512.png",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "eneo",
+      "url": "https://eneo.ai/public/og-image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "erpnext",
+      "url": "https://frappe.io/files/ERPNexte2a3b6.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "erugo",
+      "url": "https://erugo.app/erugo.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "espocrm",
+      "url": "http://www.espocrm.com/images/free-crm-social.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "flarum",
+      "url": "https://flarum.org/assets/img/flarum-banner.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "flatnotes",
+      "url": "https://www.pikapods.com/static/run-button-34.svg",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "frappehr",
+      "url": "https://raw.githubusercontent.com/frappe/hrms/master/.github/hrms-hero.png",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "fugu",
+      "url": "https://fugu.lol/images/fugu_screenshot_main.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "ghostfolio",
+      "url": "https://ghostfol.io/assets/cover.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "glean",
+      "url": "https://raw.githubusercontent.com/LeslieLeung/glean/main/asset/Screenshot.png",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "grist",
+      "url": "https://www.getgrist.com/wp-content/uploads/2026/04/thumbnail.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "hi-events",
+      "url": "https://hi.events/open-graph-cover.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "hyperswitch",
+      "url": "https://hyperswitch.io/hyperswitch-homepage.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "iomad",
+      "url": "https://www.iomad.org/wp-content/uploads/2026/06/IOMAD-Pride-500-space-logo.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "iris",
+      "url": "https://raw.githubusercontent.com/dfir-iris/iris-web/master/img/timeline_speed.gif",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "itop",
+      "url": "https://combodo.com/wp-content/uploads/2025/10/RIC-2025-EN-2.svg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "jitsi",
+      "url": "https://jitsi.org/wp-content/uploads/2020/04/Jitsi_opengraph.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "joplin",
+      "url": "https://joplinapp.org/images/SubNotebooks.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "kener",
+      "url": "https://kener.ing/./assets/images/ThOlgH0Z9ZuqyoEf.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "lago",
+      "url": "https://getlago.com/og/og-home.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "magento",
+      "url": "https://raw.githubusercontent.com/wiki/magento/magento2/images/maintainers.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "mantisbt",
+      "url": "https://raw.githubusercontent.com/mantisbt/mantisbt/master/doc/modern_view_issues.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "maybe",
+      "url": "https://github.com/user-attachments/assets/5ed08763-a9ee-42b2-a436-e05038fcf573",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "minthcm",
+      "url": "https://minthcm.org/wp-content/uploads/2023/11/5.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "moodle",
+      "url": "https://moodle.org/theme/moodleorg/pix/moodle_logo_tm.png",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "nopcommerce",
+      "url": "https://www.nopcommerce.com/images/github/public-demo.png#v1",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "odoo",
+      "url": "https://www.odoo.com/web/image/54404732-3d9bec26/SPI_homepage.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "onlyoffice",
+      "url": "https://download.onlyoffice.com/assets/fb/fb_icon_325x325.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "openobserve",
+      "url": "https://openobserve.ai/o2-seo-image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "owncloud",
+      "url": "https://owncloud.com/wp-content/uploads/2020/08/ownCloud-Trademark.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "papercups",
+      "url": "https://www.herokucdn.com/deploy/button.svg",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "papermerge",
+      "url": "https://raw.githubusercontent.com/ciur/papermerge/master/artwork/papermerge3-3.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "parseable",
+      "url": "https://www.parseable.com/og.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "penpot",
+      "url": "https://site-assets.plasmic.app/bd5cdab7f749bba987c8de1f2cbdff60.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "posthog",
+      "url": "https://posthog.com/images/og/default.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "prestashop",
+      "url": "https://github.com/user-attachments/assets/e6342778-e528-4ae7-acf2-f0d097a1e932",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "pretix",
+      "url": "https://static.pretix.cloud/static/pretixeu/img/opengraph.74fa3c379c1d.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "pydio",
+      "url": "https://godoc.org/github.com/pydio/cells/v4?status.svg",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "rustdesk",
+      "url": "https://rustdesk.com/_astro/default.BnGe5sEj_Mm9fb.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "saleor",
+      "url": "https://saleor-dl6efe86d-saleorcommerce.vercel.app/opengraph-image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "seaweedfs",
+      "url": "https://godoc.org/github.com/seaweedfs/seaweedfs/weed?status.svg",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "shopware",
+      "url": "https://images.ctfassets.net/nqzs8zsepqpi/7f1d5mBYgcP8rCOWho4vO6/32f04a0b3bb687d2df562966d5099138/og_image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "temporal",
+      "url": "https://temporal.io/images/open-graph/shiny.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "tracardi",
+      "url": "https://user-images.githubusercontent.com/16271564/148845983-7c9e85c1-465f-44ed-b1e9-7112908d2e83.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "traduora",
+      "url": "https://raw.githubusercontent.com/ever-co/ever-traduora/master/docs-website/static/img/traduora-preview.png",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "trudesk",
+      "url": "https://trudesk.io/images/hero-td-right.png",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "unomi",
+      "url": "https://unomi.apache.org/assets/images/apache-unomi-380x85.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "uvdesk",
+      "url": "https://www.uvdesk.com/wp-content/uploads/2017/06/default-banner-400x250-1.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "wger",
+      "url": "https://hosted.weblate.org/widgets/wger/-/multi-blue.svg",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "woocommerce",
+      "url": "https://woocommerce.com/wp-content/uploads/2025/02/woo-take-control-of-your-success.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "xwiki",
+      "url": "https://www.xwiki.org/xwiki/bin/download/Main/Media/logo-xwikiorange-centered-200x200px.png",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "ollama",
+      "url": "https://ollama.com/public/og.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "open-webui",
+      "url": "https://openwebui.com/og-image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "litellm",
+      "url": "https://framerusercontent.com/images/DbFHR1t71NpmaSxIqej1LKWzD4.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "langfuse",
+      "url": "https://langfuse.com/api/og?title=Langfuse+%E2%80%93+Open+Source+AI+Engineering+Platform&amp;description=Traces%2C+evals%2C+prompt+management+and+metrics+to+debug+and+improve+your+LLM+application.",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "localai",
+      "url": "https://raw.githubusercontent.com/mudler/LocalAI/master/docs/static/images/diagrams/composable-core.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "anythingllm",
+      "url": "https://framerusercontent.com/images/KeWFVMJLQ2ELKB9kQFScp7c.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "authentik",
+      "url": "https://docs.goauthentik.io/img/screen_apps_light.jpg",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "keycloak",
+      "url": "https://www.keycloak.org/preview/index.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "zitadel",
+      "url": "https://raw.githubusercontent.com/zitadel/zitadel/main/apps/docs/public/img/logos/zitadel-logo-dark@2x.png#gh-light-mode-only",
+      "method": "github",
+      "flags": [
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "baserow",
+      "url": "https://baserow.io/img/baserow_open_graph.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "teable",
+      "url": "https://teable.ai/assets/images/og-image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "nocobase",
+      "url": "https://static-docs.nocobase.com/20260513-og-github-v3.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "pocketbase",
+      "url": "https://pocketbase.io/images/og.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "strapi",
+      "url": "https://delicate-dawn-ac25646e6d.media.strapiapp.com/HP_meta_b32f546a40.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "clickhouse",
+      "url": "https://github.com/ClickHouse/clickhouse-docs/assets/9611008/b001dc7b-5a45-4dcd-9275-e03beb7f9177",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "questdb",
+      "url": "https://questdb.com/images/og.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "timescaledb",
+      "url": "https://www.tigerdata.com/images/social.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "adminer",
+      "url": "https://www.adminer.org/static/screenshots/table.png",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "headscale",
+      "url": "https://raw.githubusercontent.com/juanfont/headscale/main/docs/assets/logo/headscale3_header_stacked_left.png",
+      "method": "github",
+      "flags": [
+        "logo_like",
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "listmonk",
+      "url": "https://listmonk.app/static/images/thumbnail.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "actual-budget",
+      "url": "https://actualbudget.org/img/og.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "firefly-iii",
+      "url": "https://www.firefly-iii.org/assets/logo/wall.png",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "verdaccio",
+      "url": "https://cdn.verdaccio.dev/readme/banner-uk.svg",
+      "method": "github",
+      "flags": []
+    },
+    {
+      "slug": "payload",
+      "url": "https://payloadcms.com/images/og-image.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "wagtail",
+      "url": "https://media.wagtail.org/images/image_8.min-1200x630.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    }
+  ],
+  "missed": [
+    {
+      "slug": "grav",
+      "website": "https://getgrav.org/",
+      "source": "https://github.com/getgrav/grav"
+    },
+    {
+      "slug": "silverbullet",
+      "website": "https://silverbullet.md/",
+      "source": "https://github.com/silverbulletmd/silverbullet"
+    },
+    {
+      "slug": "opengist",
+      "website": "https://github.com/thomiceli/opengist",
+      "source": "https://github.com/thomiceli/opengist"
+    },
+    {
+      "slug": "dokuwiki",
+      "website": "https://www.dokuwiki.org/",
+      "source": "https://github.com/dokuwiki/dokuwiki"
+    },
+    {
+      "slug": "concrete5",
+      "website": "https://www.concretecms.org/",
+      "source": "https://github.com/concretecms/concretecms"
+    },
+    {
+      "slug": "akaunting",
+      "website": "https://akaunting.com",
+      "source": "https://github.com/akaunting/akaunting"
+    },
+    {
+      "slug": "cryptomator",
+      "website": "https://cryptomator.org/hub/",
+      "source": "https://github.com/cryptomator/hub"
+    },
+    {
+      "slug": "drawio",
+      "website": "https://www.drawio.com",
+      "source": "https://github.com/jgraph/docker-drawio"
+    },
+    {
+      "slug": "garage",
+      "website": "https://garagehq.deuxfleurs.fr",
+      "source": "https://github.com/deuxfleurs-org/garage"
+    },
+    {
+      "slug": "hermes",
+      "website": "https://github.com/hashicorp-forge/hermes",
+      "source": "https://github.com/hashicorp-forge/hermes"
+    },
+    {
+      "slug": "kroki",
+      "website": "https://kroki.io",
+      "source": "https://github.com/yuzutech/kroki"
+    },
+    {
+      "slug": "lightldap",
+      "website": "https://github.com/lldap/lldap",
+      "source": "https://github.com/lldap/lldap"
+    },
+    {
+      "slug": "neko-rooms",
+      "website": "https://github.com/m1k1o/neko-rooms",
+      "source": "https://github.com/m1k1o/neko-rooms"
+    },
+    {
+      "slug": "photon",
+      "website": "https://photon.komoot.io",
+      "source": "https://github.com/komoot/photon"
+    },
+    {
+      "slug": "phpbb",
+      "website": "https://www.phpbb.com/",
+      "source": "https://github.com/phpbb/phpbb"
+    },
+    {
+      "slug": "rustfs",
+      "website": "https://rustfs.com",
+      "source": "https://github.com/rustfs/rustfs"
+    },
+    {
+      "slug": "searxng",
+      "website": "https://docs.searxng.org",
+      "source": "https://github.com/searxng/searxng"
+    },
+    {
+      "slug": "suitecrm",
+      "website": "https://suitecrm.com",
+      "source": "https://github.com/salesagility/SuiteCRM"
+    },
+    {
+      "slug": "taiga",
+      "website": "https://www.taiga.io",
+      "source": "https://github.com/taigaio/taiga-back"
+    },
+    {
+      "slug": "unibee",
+      "website": "https://unibee.dev/",
+      "source": "https://github.com/UniBee-Billing/unibee"
+    },
+    {
+      "slug": "yopass",
+      "website": "https://yopass.se",
+      "source": "https://github.com/jhaals/yopass"
+    },
+    {
+      "slug": "pgadmin",
+      "website": "https://www.pgadmin.org",
+      "source": "https://github.com/pgadmin-org/pgadmin4"
+    },
+    {
+      "slug": "stalwart-mail",
+      "website": "https://stalw.art",
+      "source": "https://github.com/stalwartlabs/mail-server"
+    },
+    {
+      "slug": "seafile",
+      "website": "https://www.seafile.com",
+      "source": "https://github.com/haiwen/seafile"
+    }
+  ],
+  "questionable": [
+    {
+      "slug": "tolgee",
+      "url": "https://framerusercontent.com/assets/od4noC0fhYjE0sFtp3pHTfh6A2U.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "directus",
+      "url": "https://framerusercontent.com/images/wDMzR3oV9R51pVCPoOz6PGTRs54.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "forgejo",
+      "url": "https://forgejo.org/_astro/og-preview.Uy75QWb0_6Lpd2.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "filebrowser",
+      "url": "https://raw.githubusercontent.com/filebrowser/filebrowser/master/branding/banner.png",
+      "method": "github",
+      "flags": [
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "logto",
+      "url": "https://logto.io/assets/social-CH_XwNBP.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "documenso",
+      "url": "https://framerusercontent.com/images/x66EcGbzu3IQEriNXuRmOBonGyo.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "rsshub",
+      "url": "https://github.com/user-attachments/assets/68c66528-8c79-4a8a-8e43-ade7d936ab80",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "affine",
+      "url": "https://affine.pro/og.jpeg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "ryot",
+      "url": "https://raw.githubusercontent.com/ignisda/ryot/main/apps/website/public/cta-image.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "calibre-web",
+      "url": "https://github.com/janeczku/calibre-web/wiki/images/main_screen.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "zipline",
+      "url": "https://zipline.diced.sh/img/og-banner.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "flowise",
+      "url": "https://remarkable-smakager-ddb2b7.netlify.app/opengraph-image.png?9ccfc0cd89ea0cda",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "kimai",
+      "url": "https://www.kimai.org/images/screenshots/screenshot-dashboard.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "vaultwarden",
+      "url": "https://raw.githubusercontent.com/dani-garcia/vaultwarden/main/resources/vaultwarden-logo-auto.svg",
+      "method": "github",
+      "flags": [
+        "logo_like",
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "monica",
+      "url": "https://www.monicahq.com/img/social/site/facebook.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "wikijs",
+      "url": "https://js.wiki/legacy/logo_browserstack.png",
+      "method": "github",
+      "flags": [
+        "logo_like",
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "azzimut",
+      "url": "https://azimutt.app/images/og/azimutt-2a331c4663dc7c6a94d0c47af0fbf7fe.jpg?vsn=d",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "convertx",
+      "url": "https://repository-images.githubusercontent.com/783343310/5c97fe6b-0ba3-4d51-b04c-704d93920842",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "raneto",
+      "url": "https://app.fossa.com/api/projects/custom%2B44615%2Fgithub.com%2Fryanlelek%2FRaneto.svg?type=shield&issueType=license",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "peppermint",
+      "url": "https://api.star-history.com/svg?repos=Peppermint-Lab/peppermint&type=Date",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "automatisch",
+      "url": "https://user-images.githubusercontent.com/2501931/191562539-e42f6c34-03c7-4dc4-bcf9-7f9473a9c64f.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "castopod",
+      "url": "https://castopod.org/assets/images/open-graph.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "civicrm",
+      "url": "https://raw.githubusercontent.com/civicrm/civicrm-core/master/i/logo_lg.png",
+      "method": "github",
+      "flags": [
+        "logo_like",
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "convex",
+      "url": "https://www.convex.dev/api/og?title=The%20backend%20building%20blocks%20for%20your%20agents",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "countly",
+      "url": "https://cdn.prod.website-files.com/61c1b7c3e2f3805325be4594/668ce80fb93226b6ad88d718_d587926ef3277bc26935a28e68750dcb_Meta%20Tag-Countly.com.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "cryptgeon",
+      "url": "https://raw.githubusercontent.com/cupcakearmy/cryptgeon/main/design/Screens.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "dittofeed",
+      "url": "https://cdn.prod.website-files.com/664393f5bd2b0c6d4fdf5437/6848bc711eb36a4a566f65ad_3a1fb1ad611c0dcb0e506b3169e0e47f_og-dittofeed-homepage.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "docassemble",
+      "url": "http://docassemble.org/img/docassemble-logo.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "docspell",
+      "url": "https://docspell.org/img/poster.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "dremio",
+      "url": "https://www.dremio.com/wp-content/uploads/2025/12/Preview-1200x628px.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "drupal",
+      "url": "https://new.drupal.org/themes/contrib/bluecheese/images/drupal_meta_image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "element",
+      "url": "https://static.element.io/images/open-graph-large.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "emqx",
+      "url": "https://www.emqx.com/images/logo_512.png",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "eneo",
+      "url": "https://eneo.ai/public/og-image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "erpnext",
+      "url": "https://frappe.io/files/ERPNexte2a3b6.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "erugo",
+      "url": "https://erugo.app/erugo.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "espocrm",
+      "url": "http://www.espocrm.com/images/free-crm-social.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "flarum",
+      "url": "https://flarum.org/assets/img/flarum-banner.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "flatnotes",
+      "url": "https://www.pikapods.com/static/run-button-34.svg",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "fugu",
+      "url": "https://fugu.lol/images/fugu_screenshot_main.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "ghostfolio",
+      "url": "https://ghostfol.io/assets/cover.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "grist",
+      "url": "https://www.getgrist.com/wp-content/uploads/2026/04/thumbnail.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "hi-events",
+      "url": "https://hi.events/open-graph-cover.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "hyperswitch",
+      "url": "https://hyperswitch.io/hyperswitch-homepage.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "iomad",
+      "url": "https://www.iomad.org/wp-content/uploads/2026/06/IOMAD-Pride-500-space-logo.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "itop",
+      "url": "https://combodo.com/wp-content/uploads/2025/10/RIC-2025-EN-2.svg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "jitsi",
+      "url": "https://jitsi.org/wp-content/uploads/2020/04/Jitsi_opengraph.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "joplin",
+      "url": "https://joplinapp.org/images/SubNotebooks.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "kener",
+      "url": "https://kener.ing/./assets/images/ThOlgH0Z9ZuqyoEf.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "lago",
+      "url": "https://getlago.com/og/og-home.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "magento",
+      "url": "https://raw.githubusercontent.com/wiki/magento/magento2/images/maintainers.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "mantisbt",
+      "url": "https://raw.githubusercontent.com/mantisbt/mantisbt/master/doc/modern_view_issues.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "maybe",
+      "url": "https://github.com/user-attachments/assets/5ed08763-a9ee-42b2-a436-e05038fcf573",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "minthcm",
+      "url": "https://minthcm.org/wp-content/uploads/2023/11/5.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "moodle",
+      "url": "https://moodle.org/theme/moodleorg/pix/moodle_logo_tm.png",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "odoo",
+      "url": "https://www.odoo.com/web/image/54404732-3d9bec26/SPI_homepage.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "onlyoffice",
+      "url": "https://download.onlyoffice.com/assets/fb/fb_icon_325x325.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "openobserve",
+      "url": "https://openobserve.ai/o2-seo-image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "owncloud",
+      "url": "https://owncloud.com/wp-content/uploads/2020/08/ownCloud-Trademark.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "papermerge",
+      "url": "https://raw.githubusercontent.com/ciur/papermerge/master/artwork/papermerge3-3.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "parseable",
+      "url": "https://www.parseable.com/og.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "penpot",
+      "url": "https://site-assets.plasmic.app/bd5cdab7f749bba987c8de1f2cbdff60.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "posthog",
+      "url": "https://posthog.com/images/og/default.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "prestashop",
+      "url": "https://github.com/user-attachments/assets/e6342778-e528-4ae7-acf2-f0d097a1e932",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "pretix",
+      "url": "https://static.pretix.cloud/static/pretixeu/img/opengraph.74fa3c379c1d.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "pydio",
+      "url": "https://godoc.org/github.com/pydio/cells/v4?status.svg",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "rustdesk",
+      "url": "https://rustdesk.com/_astro/default.BnGe5sEj_Mm9fb.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "saleor",
+      "url": "https://saleor-dl6efe86d-saleorcommerce.vercel.app/opengraph-image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "seaweedfs",
+      "url": "https://godoc.org/github.com/seaweedfs/seaweedfs/weed?status.svg",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "shopware",
+      "url": "https://images.ctfassets.net/nqzs8zsepqpi/7f1d5mBYgcP8rCOWho4vO6/32f04a0b3bb687d2df562966d5099138/og_image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "temporal",
+      "url": "https://temporal.io/images/open-graph/shiny.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "tracardi",
+      "url": "https://user-images.githubusercontent.com/16271564/148845983-7c9e85c1-465f-44ed-b1e9-7112908d2e83.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "unomi",
+      "url": "https://unomi.apache.org/assets/images/apache-unomi-380x85.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "uvdesk",
+      "url": "https://www.uvdesk.com/wp-content/uploads/2017/06/default-banner-400x250-1.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "wger",
+      "url": "https://hosted.weblate.org/widgets/wger/-/multi-blue.svg",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "woocommerce",
+      "url": "https://woocommerce.com/wp-content/uploads/2025/02/woo-take-control-of-your-success.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "xwiki",
+      "url": "https://www.xwiki.org/xwiki/bin/download/Main/Media/logo-xwikiorange-centered-200x200px.png",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "ollama",
+      "url": "https://ollama.com/public/og.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "open-webui",
+      "url": "https://openwebui.com/og-image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "litellm",
+      "url": "https://framerusercontent.com/images/DbFHR1t71NpmaSxIqej1LKWzD4.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "langfuse",
+      "url": "https://langfuse.com/api/og?title=Langfuse+%E2%80%93+Open+Source+AI+Engineering+Platform&amp;description=Traces%2C+evals%2C+prompt+management+and+metrics+to+debug+and+improve+your+LLM+application.",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "localai",
+      "url": "https://raw.githubusercontent.com/mudler/LocalAI/master/docs/static/images/diagrams/composable-core.png",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "anythingllm",
+      "url": "https://framerusercontent.com/images/KeWFVMJLQ2ELKB9kQFScp7c.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "keycloak",
+      "url": "https://www.keycloak.org/preview/index.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "zitadel",
+      "url": "https://raw.githubusercontent.com/zitadel/zitadel/main/apps/docs/public/img/logos/zitadel-logo-dark@2x.png#gh-light-mode-only",
+      "method": "github",
+      "flags": [
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "baserow",
+      "url": "https://baserow.io/img/baserow_open_graph.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "teable",
+      "url": "https://teable.ai/assets/images/og-image.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "nocobase",
+      "url": "https://static-docs.nocobase.com/20260513-og-github-v3.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "pocketbase",
+      "url": "https://pocketbase.io/images/og.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "strapi",
+      "url": "https://delicate-dawn-ac25646e6d.media.strapiapp.com/HP_meta_b32f546a40.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "clickhouse",
+      "url": "https://github.com/ClickHouse/clickhouse-docs/assets/9611008/b001dc7b-5a45-4dcd-9275-e03beb7f9177",
+      "method": "github",
+      "flags": [
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "questdb",
+      "url": "https://questdb.com/images/og.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "timescaledb",
+      "url": "https://www.tigerdata.com/images/social.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "headscale",
+      "url": "https://raw.githubusercontent.com/juanfont/headscale/main/docs/assets/logo/headscale3_header_stacked_left.png",
+      "method": "github",
+      "flags": [
+        "logo_like",
+        "readme_unverified"
+      ]
+    },
+    {
+      "slug": "listmonk",
+      "url": "https://listmonk.app/static/images/thumbnail.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "actual-budget",
+      "url": "https://actualbudget.org/img/og.webp",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "firefly-iii",
+      "url": "https://www.firefly-iii.org/assets/logo/wall.png",
+      "method": "og",
+      "flags": [
+        "og_banner",
+        "logo_like"
+      ]
+    },
+    {
+      "slug": "payload",
+      "url": "https://payloadcms.com/images/og-image.jpg",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    },
+    {
+      "slug": "wagtail",
+      "url": "https://media.wagtail.org/images/image_8.min-1200x630.png",
+      "method": "og",
+      "flags": [
+        "og_banner"
+      ]
+    }
+  ],
+  "invalid_after_discovery": [],
+  "stats": {
+    "og": 73,
+    "github": 47,
+    "miss": 24,
+    "invalid": 0
+  },
+  "yaml_patched": 236,
+  "index_patched": 120
+}

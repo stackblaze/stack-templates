@@ -18,7 +18,7 @@ metadata:
       and uploads live in Postgres, so no app volume is required. On first boot open
       the app URL to run the setup wizard and create the initial admin account.'
     kubero.dev/template.links: '["https://docs.documize.com/", "https://github.com/documize/community/blob/master/docker-compose.yaml"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://github.com/documize/community/blob/master/screenshot.png?raw=true"]'
     kubero.dev/template.source: https://github.com/documize/community
     kubero.dev/template.categories: '["documentation", "collaboration", "productivity"]'
     kubero.dev/template.title: Documize

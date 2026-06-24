@@ -20,7 +20,7 @@ metadata:
       \ and customize site.json from the UI. No SMTP, S3 or external search engine\
       \ is required."
     kubero.dev/template.links: '["https://kener.ing/docs/", "https://kener.ing/docs/deployment"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://kener.ing/./assets/images/ThOlgH0Z9ZuqyoEf.jpg"]'
     kubero.dev/template.source: https://github.com/rajnandan1/kener
     kubero.dev/template.categories: '["monitoring", "utilities", "productivity"]'
     kubero.dev/template.title: Kener

@@ -19,7 +19,7 @@ metadata:
       \ admin UI after install."
     kubero.dev/template.links: '["https://docs.civicrm.org/installation/en/latest/standalone/",
       "https://github.com/civicrm/civicrm-docker/blob/main/README.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/civicrm/civicrm-core/master/i/logo_lg.png"]'
     kubero.dev/template.source: https://github.com/civicrm/civicrm-core
     kubero.dev/template.categories: '["crm", "productivity", "work"]'
     kubero.dev/template.title: CiviCRM

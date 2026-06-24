@@ -21,7 +21,7 @@ metadata:
       \ no bundled web admin UI."
     kubero.dev/template.links: '["https://unomi.apache.org/manual/latest/index.html",
       "https://github.com/apache/unomi/tree/master/docker"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://unomi.apache.org/assets/images/apache-unomi-380x85.png"]'
     kubero.dev/template.source: https://github.com/apache/unomi
     kubero.dev/template.categories: '["data", "crm", "automation"]'
     kubero.dev/template.title: Apache Unomi

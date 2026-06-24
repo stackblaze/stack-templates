@@ -14,7 +14,7 @@ metadata:
       add-on persists users, chats, and settings. RAG document storage uses the open-webui-data
       volume.
     kubero.dev/template.links: '["https://docs.openwebui.com/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://openwebui.com/og-image.png"]'
     kubero.dev/template.source: https://github.com/open-webui/open-webui
     kubero.dev/template.categories: '["ai", "utilities"]'
     kubero.dev/template.title: Open WebUI

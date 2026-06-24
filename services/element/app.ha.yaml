@@ -16,7 +16,7 @@ metadata:
       to your Synapse URL. No add-ons or volumes are required for Element Web itself.
     kubero.dev/template.links: '["https://github.com/element-hq/element-web/blob/develop/docs/config.md",
       "https://github.com/element-hq/element-web/blob/develop/docs/install.md"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://static.element.io/images/open-graph-large.png"]'
     kubero.dev/template.source: https://github.com/element-hq/element-web
     kubero.dev/template.categories: '["communication", "collaboration", "social"]'
     kubero.dev/template.title: Element Web

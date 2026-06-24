@@ -23,7 +23,7 @@ metadata:
       them with any external Markdown editor. No SMTP, object store or external search
       engine is needed.'
     kubero.dev/template.links: '["https://github.com/dullage/flatnotes#readme", "https://flatnotes.io"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.pikapods.com/static/run-button-34.svg"]'
     kubero.dev/template.source: https://github.com/dullage/flatnotes
     kubero.dev/template.categories: '["productivity", "documentation", "utilities"]'
     kubero.dev/template.title: Flatnotes

@@ -14,7 +14,7 @@ metadata:
       \ 'time'). TimescaleDB adds time-series superpowers to standard Postgres \u2014\
       \ all standard psql tools and ORMs work unchanged."
     kubero.dev/template.links: '["https://docs.timescale.com/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.tigerdata.com/images/social.png"]'
     kubero.dev/template.source: https://github.com/timescale/timescaledb
     kubero.dev/template.categories: '["database", "analytics", "data"]'
     kubero.dev/template.title: TimescaleDB

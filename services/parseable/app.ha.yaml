@@ -23,7 +23,7 @@ metadata:
       to point at an external S3 bucket; this template uses local disk for simplicity.
       Send logs over HTTP to /api/v1/ingest with your credentials.'
     kubero.dev/template.links: '["https://www.parseable.com/docs/quickstart", "https://www.parseable.com/docs/server/environment-variables"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.parseable.com/og.png"]'
     kubero.dev/template.source: https://github.com/parseablehq/parseable
     kubero.dev/template.categories: '["monitoring", "data", "utilities"]'
     kubero.dev/template.title: Parseable

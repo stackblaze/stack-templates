@@ -10,7 +10,7 @@ metadata:
       \ the password after first login. Mount your Calibre library at /books (must\
       \ contain metadata.db)."
     kubero.dev/template.links: '["https://github.com/janeczku/calibre-web/wiki"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://github.com/janeczku/calibre-web/wiki/images/main_screen.png"]'
     kubero.dev/template.source: https://github.com/janeczku/calibre-web
     kubero.dev/template.categories: '["media", "utilities"]'
     kubero.dev/template.title: Calibre-Web

@@ -15,7 +15,7 @@ metadata:
       \ is slow (10\u201315 min) and memory-heavy; the web pod requests 2Gi RAM."
     kubero.dev/template.links: '["https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/overview.html",
       "https://hub.docker.com/r/shinsenter/magento"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/wiki/magento/magento2/images/maintainers.png"]'
     kubero.dev/template.source: https://github.com/magento/magento2
     kubero.dev/template.categories: '["e-commerce", "cms", "work"]'
     kubero.dev/template.title: Magento

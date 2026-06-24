@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.installation: Configure NEXT_PRIVATE_SMTP_* for production
       email delivery.
     kubero.dev/template.links: '["https://docs.documenso.com/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://framerusercontent.com/images/x66EcGbzu3IQEriNXuRmOBonGyo.png"]'
     kubero.dev/template.source: https://github.com/documenso/documenso
     kubero.dev/template.categories: '["security", "work", "productivity"]'
     kubero.dev/template.title: Documenso

@@ -15,7 +15,7 @@ metadata:
       --user <name> --reusable, then use it with the Tailscale client: tailscale up
       --login-server={{KUBERO_APP_URL}}.'
     kubero.dev/template.links: '["https://headscale.net/running-headscale-container/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/juanfont/headscale/main/docs/assets/logo/headscale3_header_stacked_left.png"]'
     kubero.dev/template.source: https://github.com/juanfont/headscale
     kubero.dev/template.categories: '["networking", "security", "utilities"]'
     kubero.dev/template.title: Headscale

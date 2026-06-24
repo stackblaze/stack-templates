@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/18604702
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://repository-images.githubusercontent.com/783343310/5c97fe6b-0ba3-4d51-b04c-704d93920842"]'
     kubero.dev/template.source: https://github.com/C4illin/ConvertX
     kubero.dev/template.categories: '["media", "utilities"]'
     kubero.dev/template.title: ConvertX

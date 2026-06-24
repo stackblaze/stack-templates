@@ -22,7 +22,7 @@ metadata:
       back gracefully; no extra service required. No external object store is needed
       for a single-node deployment.
     kubero.dev/template.links: '["https://support.getgrist.com/self-managed/", "https://github.com/gristlabs/grist-core#environment-variables"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.getgrist.com/wp-content/uploads/2026/04/thumbnail.png"]'
     kubero.dev/template.source: https://github.com/gristlabs/grist-core
     kubero.dev/template.categories: '["productivity", "data", "collaboration"]'
     kubero.dev/template.title: Grist

@@ -32,7 +32,7 @@ metadata:
       size (Dremio is a JVM and needs several GiB of heap) before loading real workloads.'
     kubero.dev/template.links: '["https://docs.dremio.com/current/get-started/docker-quickstart/",
       "https://docs.dremio.com/software/deployment/dremio-config/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.dremio.com/wp-content/uploads/2025/12/Preview-1200x628px.webp"]'
     kubero.dev/template.source: https://github.com/dremio/dremio-oss
     kubero.dev/template.categories: '["data", "development", "ai"]'
     kubero.dev/template.title: Dremio

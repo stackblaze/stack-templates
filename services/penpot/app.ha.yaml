@@ -34,7 +34,7 @@ metadata:
       set via PENPOT_ASSETS_STORAGE_BACKEND=assets-s3, which is NOT provisioned here).'
     kubero.dev/template.links: '["https://help.penpot.app/technical-guide/getting-started/",
       "https://help.penpot.app/technical-guide/configuration/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://site-assets.plasmic.app/bd5cdab7f749bba987c8de1f2cbdff60.webp"]'
     kubero.dev/template.source: https://github.com/penpot/penpot
     kubero.dev/template.categories: '["development", "collaboration", "productivity"]'
     kubero.dev/template.title: Penpot

@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1396645
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://zipline.diced.sh/img/og-banner.png"]'
     kubero.dev/template.source: https://github.com/diced/zipline
     kubero.dev/template.categories: '["utilities", "work"]'
     kubero.dev/template.title: Zipline

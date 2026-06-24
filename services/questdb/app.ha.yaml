@@ -14,7 +14,7 @@ metadata:
       (not exposed externally). Ingest data via InfluxDB line protocol (TCP 9009)
       or REST. Partitioned by day/month/year for optimal time-series performance.
     kubero.dev/template.links: '["https://questdb.io/docs/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://questdb.com/images/og.png"]'
     kubero.dev/template.source: https://github.com/questdb/questdb
     kubero.dev/template.categories: '["database", "analytics", "data"]'
     kubero.dev/template.title: QuestDB

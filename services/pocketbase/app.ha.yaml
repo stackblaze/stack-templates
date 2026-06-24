@@ -15,7 +15,7 @@ metadata:
       \ SDK or REST API to build your frontend. All data is stored in the pocketbase-data\
       \ volume."
     kubero.dev/template.links: '["https://pocketbase.io/docs/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://pocketbase.io/images/og.png"]'
     kubero.dev/template.source: https://github.com/pocketbase/pocketbase
     kubero.dev/template.categories: '["development", "utilities", "data"]'
     kubero.dev/template.title: PocketBase

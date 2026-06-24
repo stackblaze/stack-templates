@@ -21,7 +21,7 @@ metadata:
       to create the first admin/organiser account. Uses MariaDB (the app is MySQL-only,
       not Postgres-compatible) and Valkey/Redis for queue + cache.'
     kubero.dev/template.links: '["https://github.com/Attendize/Attendize/blob/master/docker-compose.yml"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://www.attendize.com/images/screenshots/screen1.PNG"]'
     kubero.dev/template.source: https://github.com/Attendize/Attendize
     kubero.dev/template.categories: '["e-commerce", "productivity", "work"]'
     kubero.dev/template.title: Attendize

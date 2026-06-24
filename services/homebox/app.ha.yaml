@@ -8,7 +8,7 @@ metadata:
     kubero.dev/template.icon: https://homebox.software/lilbox.svg
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/sysadminsmedia/homebox/main/.github/screenshots/1.png"]'
     kubero.dev/template.source: https://github.com/sysadminsmedia/homebox
     kubero.dev/template.categories: '["documentation", "work"]'
     kubero.dev/template.title: Homebox

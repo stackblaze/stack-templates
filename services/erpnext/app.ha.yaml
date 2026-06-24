@@ -31,7 +31,7 @@ metadata:
       and PostgreSQL; this template uses the MariaDB add-on as the canonical/recommended
       database.'
     kubero.dev/template.links: '["https://docs.frappe.io/erpnext", "https://github.com/frappe/frappe_docker"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://frappe.io/files/ERPNexte2a3b6.png"]'
     kubero.dev/template.source: https://github.com/frappe/erpnext
     kubero.dev/template.categories: '["erp", "finance", "crm"]'
     kubero.dev/template.title: ERPNext

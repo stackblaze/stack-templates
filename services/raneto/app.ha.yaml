@@ -11,7 +11,7 @@ metadata:
       of the displayed pages. You will need sometheing like a git repository to manage
       the content in the mounted volume.
     kubero.dev/template.links: '["https://docs.raneto.com/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://app.fossa.com/api/projects/custom%2B44615%2Fgithub.com%2Fryanlelek%2FRaneto.svg?type=shield&issueType=license"]'
     kubero.dev/template.source: https://github.com/ryanlelek/Raneto
     kubero.dev/template.categories: '["knowledgebase", "cms"]'
     kubero.dev/template.title: Raneto

@@ -18,7 +18,7 @@ metadata:
       ENCRYPTED_ONLY=1 rejects unencrypted clients. Persist /data to keep the key
       pair and the SQLite db_v2.sqlite3 across restarts.
     kubero.dev/template.links: '["https://rustdesk.com/docs/en/self-host/rustdesk-server-oss/docker/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://rustdesk.com/_astro/default.BnGe5sEj_Mm9fb.webp"]'
     kubero.dev/template.source: https://github.com/rustdesk/rustdesk-server
     kubero.dev/template.categories: '["utilities", "security", "work"]'
     kubero.dev/template.title: RustDesk Server

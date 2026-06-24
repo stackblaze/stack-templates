@@ -23,7 +23,7 @@ metadata:
       applies DB migrations on boot. Note: upstream still labels this project as in-development
       / not production-ready.'
     kubero.dev/template.links: '["https://github.com/LeslieLeung/glean#readme"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/LeslieLeung/glean/main/asset/Screenshot.png"]'
     kubero.dev/template.source: https://github.com/LeslieLeung/glean
     kubero.dev/template.categories: '["productivity", "ai", "utilities"]'
     kubero.dev/template.title: Glean

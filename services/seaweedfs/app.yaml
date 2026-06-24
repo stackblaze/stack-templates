@@ -17,7 +17,7 @@ metadata:
       on the filer UI by default; place it behind the ingress/auth layer and configure
       S3 access keys before exposing the S3 endpoint.
     kubero.dev/template.links: '["https://github.com/seaweedfs/seaweedfs/wiki", "https://github.com/seaweedfs/seaweedfs/wiki/Amazon-S3-API"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://godoc.org/github.com/seaweedfs/seaweedfs/weed?status.svg"]'
     kubero.dev/template.source: https://github.com/seaweedfs/seaweedfs
     kubero.dev/template.categories: '["storage", "data", "development"]'
     kubero.dev/template.title: SeaweedFS

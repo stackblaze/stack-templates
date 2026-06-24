@@ -13,7 +13,7 @@ metadata:
       \ Import subscribers via CSV or the API. Listmonk is extremely efficient \u2014\
       \ a single instance can send millions of emails per hour with a good SMTP provider."
     kubero.dev/template.links: '["https://listmonk.app/docs/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://listmonk.app/static/images/thumbnail.webp"]'
     kubero.dev/template.source: https://github.com/knadh/listmonk
     kubero.dev/template.categories: '["email", "marketing", "communication"]'
     kubero.dev/template.title: Listmonk

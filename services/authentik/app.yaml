@@ -13,7 +13,7 @@ metadata:
       \ The worker (background tasks) is bundled in this image when run as 'server'\
       \ \u2014 for production workloads deploy a second instance with command 'worker'."
     kubero.dev/template.links: '["https://docs.goauthentik.io/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://docs.goauthentik.io/img/screen_apps_light.jpg"]'
     kubero.dev/template.source: https://github.com/goauthentik/authentik
     kubero.dev/template.categories: '["security", "development", "utilities"]'
     kubero.dev/template.title: Authentik

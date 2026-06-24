@@ -15,7 +15,7 @@ metadata:
       \ or the JDBC/ODBC drivers via HTTP. Note: ClickHouse is also available as an\
       \ operator-managed add-on for higher availability."
     kubero.dev/template.links: '["https://clickhouse.com/docs/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://github.com/ClickHouse/clickhouse-docs/assets/9611008/b001dc7b-5a45-4dcd-9275-e03beb7f9177"]'
     kubero.dev/template.source: https://github.com/ClickHouse/ClickHouse
     kubero.dev/template.categories: '["database", "analytics", "data"]'
     kubero.dev/template.title: ClickHouse
