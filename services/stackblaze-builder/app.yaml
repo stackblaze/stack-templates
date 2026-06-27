@@ -91,7 +91,6 @@ spec:
     pullPolicy: Always
     repository: ghcr.io/stackblaze/stackblaze-builder
     tag: latest
-  name: stackblaze-builder
   resources:
     limits:
       cpu: '2'
