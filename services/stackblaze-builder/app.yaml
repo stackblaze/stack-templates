@@ -1,0 +1,105 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: stackblaze-builder
+  annotations:
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+    kubero.dev/template.description: Stackblaze Builder workspace — browser VS Code (code-server) with a bundled self-hosted Supabase add-on for auth, Postgres, and APIs. Use with the Stackblaze Builder agent or edit manually, then ship via GitHub PR and deploy.
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/vscode.png
+    kubero.dev/template.installation: 'Heavy template — provisions KuberoSupabase (Postgres + Auth + Kong + Studio). First boot can take several minutes while Supabase and CNPG come up. Open the app URL for code-server; Supabase Studio gets a separate auto-minted host when CDN DNS is configured. In-cluster API URL for apps you build is http://supabase-supabase-kong:8000 — VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are pre-set for Vite starters. Rotate Supabase JWT keys and dashboard password before production (see add-on portal). Workspace files live on the PVC at /home/coder/project. Not for multi-tenant production Supabase — one stack per app namespace.'
+    kubero.dev/template.links: '["https://github.com/stackblaze/stack-templates/tree/main/services/stackblaze-builder", "https://supabase.com/docs/guides/self-hosting"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/stackblaze/stack-templates
+    kubero.dev/template.categories: '["development", "ai", "work"]'
+    kubero.dev/template.title: Stackblaze Builder
+    kubero.dev/template.website: https://stackblaze.cloud
+    stackblaze.dev/template.builder: 'true'
+  labels:
+    manager: kubero
+spec:
+  name: stackblaze-builder
+  deploymentstrategy: docker
+  addons:
+  - displayName: Supabase
+    env: []
+    icon: /img/addons/supabase.svg
+    id: kubero-operator
+    kind: KuberoSupabase
+    resourceDefinitions:
+      KuberoSupabase:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoSupabase
+        metadata:
+          name: supabase
+        spec:
+          postgresql:
+            instances: 1
+            image: supabase/postgres:15.8.1.085
+            storageSize: 8Gi
+            storageClass: fast
+          supabase:
+            deployment:
+              analytics:
+                enabled: false
+              vector:
+                enabled: false
+            secret:
+              dashboard:
+                username: supabase
+                password: this_password_is_insecure_and_should_be_updated
+              jwt:
+                anonKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE
+                serviceKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q
+            userFunctions:
+              hello: |
+                Deno.serve((req) =>
+                  new Response(
+                    JSON.stringify({ message: "Hello from Supabase Edge Functions", method: req.method }),
+                    { headers: { "Content-Type": "application/json" } },
+                  )
+                )
+  cronjobs: []
+  envVars:
+  - name: DEFAULT_WORKSPACE
+    value: /home/coder/project
+  # In-cluster Supabase Kong gateway (addon instance name `supabase`).
+  - name: SUPABASE_URL
+    value: http://supabase-supabase-kong:8000
+  - name: VITE_SUPABASE_URL
+    value: http://supabase-supabase-kong:8000
+  - name: SUPABASE_ANON_KEY
+    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE
+  - name: VITE_SUPABASE_ANON_KEY
+    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE
+  - name: STACKBLAZE_BUILDER
+    value: '1'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /home/coder/project
+    name: '{{KUBERO_APP_NAME}}-workspace'
+    size: 10Gi
+  healthcheck:
+    enabled: true
+    path: /
+    periodSeconds: 15
+    startupSeconds: 180
+    timeoutSeconds: 5
+  image:
+    containerPort: '8080'
+    pullPolicy: Always
+    repository: ghcr.io/stackblaze/stackblaze-builder
+    tag: latest
+  name: stackblaze-builder
+  resources:
+    limits:
+      cpu: '2'
+      memory: 2Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
