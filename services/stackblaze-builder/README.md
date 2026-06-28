@@ -1,10 +1,10 @@
 # Stackblaze Builder (catalog template)
 
-Single Kubero app combining:
+A clean browser-IDE workspace — **no database by default**:
 
 - **Web:** code-server + Node/pnpm/git (`Dockerfile` → `ghcr.io/stackblaze/stackblaze-builder`)
-- **Add-on:** `KuberoSupabase` (self-hosted Supabase stack)
 - **Volume:** `/home/coder/project` (10Gi) for the app being built
+- **Database/Auth/APIs (optional):** attach the **Supabase** add-on after deploy. It provisions a self-hosted Supabase stack **plus a first-class CloudNativePG add-on** for the database, and injects the connection env into this app.
 
 ## Build & publish image
 
@@ -17,11 +17,11 @@ Until the image is published, temporarily set `spec.image.repository` to `ghcr.i
 
 ## Catalog index
 
-After adding this service, append an entry to `index.json` (or run your catalog sync workflow) with `"dirname": "stackblaze-builder"` and `"addons": ["KuberoSupabase"]`.
+After adding this service, append an entry to `index.json` (or run your catalog sync workflow) with `"dirname": "stackblaze-builder"` and `"addons": []` (Supabase is opt-in via the add-on picker, not bundled).
 
 ## Kubero tier
 
-Register in `kubero/server/src/templates/template-tiers.ts` as tier **4** (Very heavy) due to Supabase + CNPG footprint.
+Registered in `kubero/server/src/templates/template-tiers.ts` as tier **4**. The base workspace is just code-server + a PVC (lighter), but it stays tier 4 because attaching the Supabase add-on pulls in the Supabase + CNPG footprint.
 
 ## Stackblaze Builder product
 

@@ -4,10 +4,10 @@ metadata:
   name: stackblaze-builder
   annotations:
     kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
-    kubero.dev/template.description: Stackblaze Builder workspace — browser VS Code (code-server) with a bundled self-hosted Supabase add-on for auth, Postgres, and APIs. Use with the Stackblaze Builder agent or edit manually, then ship via GitHub PR and deploy.
+    kubero.dev/template.description: Stackblaze Builder workspace — browser VS Code (code-server) on a persistent project volume. A clean dev environment; add a database, auth and APIs anytime by attaching the Supabase add-on. Use with the Stackblaze Builder agent or edit manually, then ship via GitHub PR and deploy.
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/vscode.png
-    kubero.dev/template.installation: 'Heavy template — provisions KuberoSupabase (Postgres + Auth + Kong + Studio). First boot can take several minutes while Supabase and CNPG come up. Open the app URL for code-server; Supabase Studio gets a separate auto-minted host when CDN DNS is configured. In-cluster API URL for apps you build is http://supabase-supabase-kong:8000 — VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are pre-set for Vite starters. Rotate Supabase JWT keys and dashboard password before production (see add-on portal). Workspace files live on the PVC at /home/coder/project. Not for multi-tenant production Supabase — one stack per app namespace.'
-    kubero.dev/template.links: '["https://github.com/stackblaze/stack-templates/tree/main/services/stackblaze-builder", "https://supabase.com/docs/guides/self-hosting"]'
+    kubero.dev/template.installation: 'Browser VS Code (code-server) on a persistent PVC at /home/coder/project — open the app URL for the IDE. This is a clean workspace with no database. Need Postgres + Auth + APIs? Attach the Supabase add-on (it provisions a CloudNativePG database too) and the connection env is injected for you.'
+    kubero.dev/template.links: '["https://github.com/stackblaze/stack-templates/tree/main/services/stackblaze-builder"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/stackblaze/stack-templates
     kubero.dev/template.categories: '["development", "ai", "work"]'
@@ -19,119 +19,11 @@ metadata:
 spec:
   name: stackblaze-builder
   deploymentstrategy: docker
-  addons:
-  # The database is a first-class CloudNativePG add-on (so it shows in the add-ons
-  # list and is managed like any other Postgres add-on). It runs the
-  # supabase/postgres image so every Supabase extension is present. The Supabase
-  # add-on below attaches to it in EXTERNAL mode. The cluster name "supabase-db"
-  # and the Supabase secretRef are app-prefixed identically by the server, so
-  # CNPG's auto-generated "<app>-supabase-db-superuser" secret is exactly what
-  # Supabase reads. One Supabase per namespace (kubero gives each app its own ns).
-  - displayName: PostgreSQL (CloudNativePG)
-    env: []
-    icon: /img/addons/pgsql.svg
-    id: kubero-operator
-    kind: Cluster
-    resourceDefinitions:
-      Cluster:
-        apiVersion: postgresql.cnpg.io/v1
-        kind: Cluster
-        metadata:
-          name: supabase-db
-        spec:
-          instances: 1
-          # supabase/postgres ships all Supabase extensions; its postgres user runs
-          # at uid/gid 101/102 (CNPG defaults to 26 -> initdb aborts without this).
-          imageName: supabase/postgres:15.8.1.085
-          postgresUID: 101
-          postgresGID: 102
-          primaryUpdateStrategy: unsupervised
-          # Let CNPG own the superuser secret ("<cluster>-superuser"). A
-          # user-provided superuserSecret is NOT reliably pushed onto the postgres
-          # role by CNPG, so Supabase could not authenticate over TCP (verified).
-          enableSuperuserAccess: true
-          inheritedMetadata:
-            annotations:
-              prometheus.io/scrape: "true"
-              prometheus.io/port: "9187"
-              prometheus.io/path: /metrics
-          postgresql:
-            parameters:
-              # Realtime uses logical decoding.
-              wal_level: logical
-            # pgsodium MUST NOT be preloaded (needs a getkey file the supabase image
-            # injects but CNPG does not -> boot FATAL). The Supabase init scripts
-            # still CREATE extensions where available.
-            shared_preload_libraries:
-            - pg_stat_statements
-          bootstrap:
-            initdb:
-              # Distinct app role/db so the bootstrap owner is NOT `postgres`; if it
-              # were, the app-secret password would collide with the superuser and
-              # CNPG could not manage the superuser password (verified).
-              database: app
-              owner: app
-          storage:
-            size: 8Gi
-            storageClass: fast
-  - displayName: Supabase
-    env: []
-    icon: /img/addons/supabase.svg
-    id: kubero-operator
-    kind: KuberoSupabase
-    resourceDefinitions:
-      KuberoSupabase:
-        apiVersion: application.kubero.dev/v1alpha1
-        kind: KuberoSupabase
-        metadata:
-          name: supabase
-        spec:
-          postgresql:
-            # EXTERNAL mode: do not render Supabase's own CNPG cluster — attach to
-            # the CloudNativePG add-on above. clusterName must match that cluster so
-            # "<clusterName>-superuser" (read via supabase.secret.db.secretRef below)
-            # resolves to it; both are app-prefixed identically by the server.
-            enabled: false
-            clusterName: supabase-db
-          supabase:
-            deployment:
-              analytics:
-                enabled: false
-              vector:
-                enabled: false
-            secret:
-              # Attach to the CloudNativePG add-on's auto-generated superuser secret.
-              # Prefixed with the app name by the server to match the renamed cluster
-              # ("<app>-supabase-db" -> "<app>-supabase-db-superuser").
-              db:
-                secretRef: supabase-db-superuser
-              dashboard:
-                username: supabase
-                password: this_password_is_insecure_and_should_be_updated
-              jwt:
-                anonKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE
-                serviceKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q
-            userFunctions:
-              hello: |
-                Deno.serve((req) =>
-                  new Response(
-                    JSON.stringify({ message: "Hello from Supabase Edge Functions", method: req.method }),
-                    { headers: { "Content-Type": "application/json" } },
-                  )
-                )
+  addons: []
   cronjobs: []
   envVars:
   - name: DEFAULT_WORKSPACE
     value: /home/coder/project
-  # In-cluster Supabase Kong gateway (addon instance name `supabase`).
-  - name: SUPABASE_URL
-    value: http://supabase-supabase-kong:8000
-  - name: VITE_SUPABASE_URL
-    value: http://supabase-supabase-kong:8000
-  - name: SUPABASE_ANON_KEY
-    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE
-  - name: VITE_SUPABASE_ANON_KEY
-    value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE
   - name: STACKBLAZE_BUILDER
     value: '1'
   extraVolumes:
