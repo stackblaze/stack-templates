@@ -1,0 +1,28 @@
+# Stackblaze Workspace (catalog template)
+
+A clean browser-IDE workspace — **no database by default**:
+
+- **Web:** code-server + Node/pnpm/git (`Dockerfile` → `ghcr.io/stackblaze/stackblaze-workspace`)
+- **Volume:** `/home/coder/project` (10Gi) for the app being built
+- **Database/Auth/APIs (optional):** attach the **Supabase** add-on after deploy. It provisions a self-hosted Supabase stack **plus a first-class CloudNativePG add-on** for the database, and injects the connection env into this app.
+
+## Build & publish image
+
+```bash
+docker build -t ghcr.io/stackblaze/stackblaze-workspace:latest .
+docker push ghcr.io/stackblaze/stackblaze-workspace:latest
+```
+
+Until the image is published, temporarily set `spec.image.repository` to `ghcr.io/coder/code-server` and tag `4.104.3` for smoke tests.
+
+## Catalog index
+
+After adding this service, append an entry to `index.json` (or run your catalog sync workflow) with `"dirname": "stackblaze-workspace"` and `"addons": []` (Supabase is opt-in via the add-on picker, not bundled).
+
+## Kubero tier
+
+Registered in `kubero/server/src/templates/template-tiers.ts` as tier **4**. The base workspace is just code-server + a PVC (lighter), but it stays tier 4 because attaching the Supabase add-on pulls in the Supabase + CNPG footprint.
+
+## Stackblaze Workspace product
+
+Deploy via `deploy_template` with template id `stackblaze-workspace`, or let `WorkspaceService` create this app in the `_stackblaze-workspace` pipeline. The workspace is a **persistent Kubero app** — PVC keeps `/home/coder/project` until the user deletes the app. See `docs/builder/APP-LIFECYCLE.md`.

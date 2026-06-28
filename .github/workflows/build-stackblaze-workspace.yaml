@@ -1,12 +1,12 @@
-name: Build Stackblaze Builder image
+name: Build Stackblaze Workspace image
 
 on:
   workflow_dispatch:
   push:
-    branches: [main, ci/build-stackblaze-builder]
+    branches: [main, ci/build-stackblaze-workspace]
     paths:
-      - 'services/stackblaze-builder/**'
-      - '.github/workflows/build-stackblaze-builder.yaml'
+      - 'services/stackblaze-workspace/**'
+      - '.github/workflows/build-stackblaze-workspace.yaml'
 
 permissions:
   contents: read
@@ -31,9 +31,9 @@ jobs:
       - name: Build and push workspace image
         uses: docker/build-push-action@v6
         with:
-          context: services/stackblaze-builder
-          file: services/stackblaze-builder/Dockerfile
+          context: services/stackblaze-workspace
+          file: services/stackblaze-workspace/Dockerfile
           push: true
           tags: |
-            ghcr.io/stackblaze/stackblaze-builder:latest
-            ghcr.io/stackblaze/stackblaze-builder:${{ github.sha }}
+            ghcr.io/stackblaze/stackblaze-workspace:latest
+            ghcr.io/stackblaze/stackblaze-workspace:${{ github.sha }}
