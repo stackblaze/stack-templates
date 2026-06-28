@@ -103,8 +103,16 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    # psono (daphne) serves no route at "/" (404) — the REST API is under
+    # /server. /server/info/ is a public, no-auth endpoint that returns 200.
+    path: /server/info/
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
-    containerPort: '80'
+    containerPort: 8000
     pullPolicy: Always
     repository: psono/psono-combo
     tag: latest
