@@ -1,5 +1,5 @@
-# Stackblaze Builder workspace — code-server + Node toolchain for in-browser dev.
-# Published as ghcr.io/stackblaze/stackblaze-builder (build in CI from this directory).
+# Stackblaze Workspace workspace — code-server + Node toolchain for in-browser dev.
+# Published as ghcr.io/stackblaze/stackblaze-workspace (build in CI from this directory).
 FROM ghcr.io/coder/code-server:4.104.3
 
 USER root

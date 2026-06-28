@@ -1,23 +1,23 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-  name: stackblaze-builder
+  name: stackblaze-workspace
   annotations:
     kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
-    kubero.dev/template.description: Stackblaze Builder workspace — browser VS Code (code-server) on a persistent project volume. A clean dev environment; add a database, auth and APIs anytime by attaching the Supabase add-on. Use with the Stackblaze Builder agent or edit manually, then ship via GitHub PR and deploy.
+    kubero.dev/template.description: Stackblaze Workspace — browser VS Code (code-server) on a persistent project volume. A clean dev environment; add a database, auth and APIs anytime by attaching the Supabase add-on. Use with the Stackblaze Workspace agent or edit manually, then ship via GitHub PR and deploy.
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/vscode.png
     kubero.dev/template.installation: 'Browser VS Code (code-server) on a persistent PVC at /home/coder/project — open the app URL for the IDE. This is a clean workspace with no database. Need Postgres + Auth + APIs? Attach the Supabase add-on (it provisions a CloudNativePG database too) and the connection env is injected for you.'
-    kubero.dev/template.links: '["https://github.com/stackblaze/stack-templates/tree/main/services/stackblaze-builder"]'
+    kubero.dev/template.links: '["https://github.com/stackblaze/stack-templates/tree/main/services/stackblaze-workspace"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/stackblaze/stack-templates
     kubero.dev/template.categories: '["development", "ai", "work"]'
-    kubero.dev/template.title: Stackblaze Builder
+    kubero.dev/template.title: Stackblaze Workspace
     kubero.dev/template.website: https://stackblaze.cloud
-    stackblaze.dev/template.builder: 'true'
+    stackblaze.dev/template.workspace: 'true'
   labels:
     manager: kubero
 spec:
-  name: stackblaze-builder
+  name: stackblaze-workspace
   deploymentstrategy: docker
   addons: []
   cronjobs: []
@@ -42,7 +42,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: ghcr.io/stackblaze/stackblaze-builder
+    repository: ghcr.io/stackblaze/stackblaze-workspace
     tag: latest
   resources:
     limits:

@@ -5623,8 +5623,8 @@
       ]
     },
     {
-      "name": "stackblaze-builder",
-      "description": "Stackblaze Builder workspace — browser VS Code with a persistent project volume. A clean dev environment; add a database, auth and APIs anytime via the Supabase add-on.",
+      "name": "stackblaze-workspace",
+      "description": "Stackblaze Workspace — browser VS Code with a persistent project volume. A clean dev environment; add a database, auth and APIs anytime via the Supabase add-on.",
       "source": "https://github.com/stackblaze/stack-templates",
       "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/vscode.png",
       "website": "https://stackblaze.cloud",
@@ -5640,7 +5640,7 @@
       ],
       "screenshots": [],
       "links": [
-        "https://github.com/stackblaze/stack-templates/tree/main/services/stackblaze-builder"
+        "https://github.com/stackblaze/stack-templates/tree/main/services/stackblaze-workspace"
       ],
       "addons": [],
       "stars": 0,
