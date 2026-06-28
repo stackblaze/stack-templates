@@ -20,6 +20,60 @@ spec:
   name: stackblaze-builder
   deploymentstrategy: docker
   addons:
+  # The database is a first-class CloudNativePG add-on (so it shows in the add-ons
+  # list and is managed like any other Postgres add-on). It runs the
+  # supabase/postgres image so every Supabase extension is present. The Supabase
+  # add-on below attaches to it in EXTERNAL mode. The cluster name "supabase-db"
+  # and the Supabase secretRef are app-prefixed identically by the server, so
+  # CNPG's auto-generated "<app>-supabase-db-superuser" secret is exactly what
+  # Supabase reads. One Supabase per namespace (kubero gives each app its own ns).
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: supabase-db
+        spec:
+          instances: 1
+          # supabase/postgres ships all Supabase extensions; its postgres user runs
+          # at uid/gid 101/102 (CNPG defaults to 26 -> initdb aborts without this).
+          imageName: supabase/postgres:15.8.1.085
+          postgresUID: 101
+          postgresGID: 102
+          primaryUpdateStrategy: unsupervised
+          # Let CNPG own the superuser secret ("<cluster>-superuser"). A
+          # user-provided superuserSecret is NOT reliably pushed onto the postgres
+          # role by CNPG, so Supabase could not authenticate over TCP (verified).
+          enableSuperuserAccess: true
+          inheritedMetadata:
+            annotations:
+              prometheus.io/scrape: "true"
+              prometheus.io/port: "9187"
+              prometheus.io/path: /metrics
+          postgresql:
+            parameters:
+              # Realtime uses logical decoding.
+              wal_level: logical
+            # pgsodium MUST NOT be preloaded (needs a getkey file the supabase image
+            # injects but CNPG does not -> boot FATAL). The Supabase init scripts
+            # still CREATE extensions where available.
+            shared_preload_libraries:
+            - pg_stat_statements
+          bootstrap:
+            initdb:
+              # Distinct app role/db so the bootstrap owner is NOT `postgres`; if it
+              # were, the app-secret password would collide with the superuser and
+              # CNPG could not manage the superuser password (verified).
+              database: app
+              owner: app
+          storage:
+            size: 8Gi
+            storageClass: fast
   - displayName: Supabase
     env: []
     icon: /img/addons/supabase.svg
@@ -33,10 +87,12 @@ spec:
           name: supabase
         spec:
           postgresql:
-            instances: 1
-            image: supabase/postgres:15.8.1.085
-            storageSize: 8Gi
-            storageClass: fast
+            # EXTERNAL mode: do not render Supabase's own CNPG cluster — attach to
+            # the CloudNativePG add-on above. clusterName must match that cluster so
+            # "<clusterName>-superuser" (read via supabase.secret.db.secretRef below)
+            # resolves to it; both are app-prefixed identically by the server.
+            enabled: false
+            clusterName: supabase-db
           supabase:
             deployment:
               analytics:
@@ -44,6 +100,11 @@ spec:
               vector:
                 enabled: false
             secret:
+              # Attach to the CloudNativePG add-on's auto-generated superuser secret.
+              # Prefixed with the app name by the server to match the renamed cluster
+              # ("<app>-supabase-db" -> "<app>-supabase-db-superuser").
+              db:
+                secretRef: supabase-db-superuser
               dashboard:
                 username: supabase
                 password: this_password_is_insecure_and_should_be_updated
