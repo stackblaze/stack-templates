@@ -5624,16 +5624,25 @@
     },
     {
       "name": "stackblaze-builder",
-      "description": "Stackblaze Builder workspace — browser VS Code with bundled self-hosted Supabase for building custom apps.",
+      "description": "Stackblaze Builder workspace — browser VS Code with a persistent project volume. A clean dev environment; add a database, auth and APIs anytime via the Supabase add-on.",
       "source": "https://github.com/stackblaze/stack-templates",
       "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/vscode.png",
       "website": "https://stackblaze.cloud",
-      "installation": "Heavy template — KuberoSupabase add-on plus code-server. First boot several minutes. See services/stackblaze-builder/README.md.",
-      "architecture": ["linux/amd64", "linux/arm64"],
-      "categories": ["development", "ai", "work"],
+      "installation": "Browser VS Code (code-server) on a persistent PVC at /home/coder/project. Open the app URL for the IDE. Need Postgres + Auth + APIs? Attach the Supabase add-on (it provisions a CloudNativePG database too).",
+      "architecture": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "categories": [
+        "development",
+        "ai",
+        "work"
+      ],
       "screenshots": [],
-      "links": ["https://github.com/stackblaze/stack-templates/tree/main/services/stackblaze-builder"],
-      "addons": ["KuberoSupabase"],
+      "links": [
+        "https://github.com/stackblaze/stack-templates/tree/main/services/stackblaze-builder"
+      ],
+      "addons": [],
       "stars": 0,
       "forks": 0,
       "watchers": 0,
