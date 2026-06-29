@@ -16,6 +16,10 @@ metadata:
     kubero.dev/template.categories: '["work","development","collaboration"]'
     kubero.dev/template.title: Forgejo
     kubero.dev/template.website: https://forgejo.org/
+    # Git SSH needs a raw-TCP LoadBalancer port (see spec.additionalPorts),
+    # which the shared-tier ResourceQuota blocks (services.loadbalancers: 0).
+    # Restrict this template to dedicated clusters where that port is available.
+    kubero.dev/template.requiresDedicated: 'true'
   name: forgejo
 spec:
   addons:
@@ -96,6 +100,27 @@ spec:
     value: forgejo
   - name: FORGEJO__database__PASSWD
     value: forgejo
+  # Built-in SSH server (in-process, runs as the git user — no root sshd).
+  # Listens on SSH_LISTEN_PORT inside the pod; SSH_PORT/SSH_DOMAIN are what
+  # Forgejo advertises in the ssh:// clone URL. Reached off-cluster through the
+  # additionalPorts external Service below.
+  - name: FORGEJO__server__START_SSH_SERVER
+    value: 'true'
+  - name: FORGEJO__server__SSH_LISTEN_PORT
+    value: '2222'
+  - name: FORGEJO__server__SSH_PORT
+    value: '2222'
+  - name: FORGEJO__server__SSH_DOMAIN
+    value: '{{KUBERO_APP_HOST}}'
+  # Git SSH endpoint. Ingress is HTTP-only, so SSH needs its own L4 port: this
+  # adds a containerPort + ClusterIP port and (expose) an external Service on
+  # 2222. NOTE: externalPort 2222 is bound cluster-wide — only one app per
+  # cluster can use it until kubero-server allocates a unique port per app.
+  additionalPorts:
+  - name: ssh
+    port: 2222
+    expose: true
+    externalPort: 2222
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
