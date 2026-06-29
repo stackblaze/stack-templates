@@ -620,7 +620,8 @@
       ],
       "links": [],
       "addons": [
-        "Cluster"
+        "Cluster",
+        "Valkey"
       ],
       "stars": 35456,
       "forks": 4760,
