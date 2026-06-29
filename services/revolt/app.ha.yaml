@@ -8,7 +8,11 @@ metadata:
       a real-time chat platform with servers, channels, DMs, voice and file sharing
       (now branded Stoat).'
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/revolt/icon.png
-    kubero.dev/template.installation: 'This template runs ONLY the PRIMARY Revolt
+    kubero.dev/template.installation: 'PLATFORM NOTE: Revolt requires real MongoDB
+      features (capped collections, collation indexes) that Stackblaze DocumentDB
+      and FerretDB do not fully provide — this template is marked unsupported until
+      native MongoDB is available; API-only deploy may still fail at DB init. This
+      template runs ONLY the PRIMARY Revolt
       backend API (the Rust ''delta'' monolith, image ghcr.io/stoatchat/api, HTTP
       port 8000). Revolt (recently rebranded ''Stoat'') is a MULTI-CONTAINER microservice
       stack; the API alone is not a usable deployment - you MUST deploy the companion
@@ -18,10 +22,11 @@ metadata:
       there or mount it at the root); the env vars below override the database/redis/rabbit
       connection URLs that Revolt.toml otherwise carries. In Revolt.toml set hosts.app
       to your public https URL ({{KUBERO_APP_URL}}), generate the auth/file/voice
-      secrets, and configure the S3/MinIO file backend. ROTATE: the documentdb mongoadmin
+      secrets, and configure the S3/MinIO file backend. ROTATE: the FerretDB postgresql.auth
       password, and ALL secrets in Revolt.toml (api keys, auth pepper, file-server
       token, vapid/push keys, livekit keys) - the defaults are placeholders. ADD-ONS
-      PROVISIONED HERE: documentdb (MongoDB-compatible - Revolt''s primary datastore),
+      PROVISIONED HERE: ferretdb (MongoDB-wire-compatible - Revolt''s primary datastore;
+      prefer external real MongoDB if available),
       valkey (Redis/KeyDB-compatible cache + pub/sub), and rabbitmq (push-notification
       + cross-service message queue). EXTERNAL SERVICE NOT PROVISIONED: Revolt requires
       an S3-compatible object store for ALL uploaded files/avatars/attachments (upstream
@@ -49,36 +54,33 @@ spec:
   name: revolt
   deploymentstrategy: docker
   addons:
-  - displayName: Document DB
+  - displayName: FerretDB
     env: []
-    icon: /img/addons/mongo.svg
+    icon: /img/addons/ferretdb.svg
     id: kubero-operator
-    kind: DocumentDB
+    kind: KuberoFerretDB
     resourceDefinitions:
-      DocumentDB:
-        apiVersion: documentdb.io/preview
-        kind: DocumentDB
+      KuberoFerretDB:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoFerretDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-documentdb'
+          name: '{{KUBERO_APP_NAME}}-ferretdb'
         spec:
-          nodeCount: 3
-          instancesPerNode: 1
-          documentDbCredentialSecret: documentdb-credentials
-          resource:
-            storage:
-              pvcSize: 1Gi
+          ferretdb:
+            image:
+              tag: '2.7.0'
+            replicaCount: 2
+          postgresql:
+            image:
+              tag: '17-0.107.0-ferretdb-2.7.0'
+            auth:
+              username: ferretdb
+              password: changeme
+              database: postgres
+            persistence:
+              enabled: true
+              size: 1Gi
               storageClass: fast
-          exposeViaService:
-            serviceType: ClusterIP
-      credentialSecret:
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: documentdb-credentials
-        type: Opaque
-        stringData:
-          username: mongoadmin
-          password: revolt
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -121,7 +123,7 @@ spec:
         apiVersion: rabbitmq.com/v1beta1
         kind: RabbitmqCluster
         metadata:
-          name: revolt-rabbitmq
+          name: '{{KUBERO_APP_NAME}}-rabbitmq'
         spec:
           replicas: 3
           persistence:
@@ -141,11 +143,11 @@ spec:
               '
   envVars:
   - name: REVOLT__DATABASE__MONGODB
-    value: mongodb://mongoadmin:revolt@documentdb-service-{{KUBERO_APP_NAME}}-documentdb:10260/?authSource=admin&directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&retryWrites=false
+    value: mongodb://ferretdb:changeme@{{KUBERO_APP_NAME}}-{{KUBERO_APP_NAME}}-ferretdb-kuberoferretdb:27017/revolt
   - name: REVOLT__DATABASE__REDIS
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/
+    value: redis://rfr-{{KUBERO_APP_NAME}}-{{KUBERO_APP_NAME}}-valkey-0:6379/
   - name: REVOLT__RABBIT__HOST
-    value: revolt-rabbitmq
+    value: '{{KUBERO_APP_NAME}}-rabbitmq'
   - name: REVOLT__RABBIT__PORT
     value: '5672'
   - name: REVOLT__RABBIT__USERNAME
