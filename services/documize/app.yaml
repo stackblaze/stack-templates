@@ -11,8 +11,9 @@ metadata:
       official Docker image). This template uses debian:bookworm-slim and downloads
       the Community+ release from downloads.documize.com on first start (same approach
       as the upstream docker-compose.yaml). Deploy with the bundled PostgreSQL add-on;
-      DOCUMIZEDB and DOCUMIZEDBTYPE=postgresql point Documize at the ''documize-postgresql-rw''
-      service (rotate the Postgres add-on password and update DOCUMIZEDB after install).
+      DOCUMIZEDB and DOCUMIZEDBTYPE=postgresql point Documize at the PostgreSQL
+      add-on read-write service (rotate the Postgres add-on password and update DOCUMIZEDB
+      after install).
       DOCUMIZELOCATION is set to ''selfhost''. IMPORTANT: replace DOCUMIZESALT with
       a unique random string (e.g. openssl rand -hex 16) before production. All documents
       and uploads live in Postgres, so no app volume is required. On first boot open
@@ -89,8 +90,8 @@ spec:
   - name: DOCUMIZEPORT
     value: '5001'
   - name: DOCUMIZEDB
-    value: host=documize-postgresql-rw port=5432 dbname=documize user=documize password=documize
-      sslmode=disable
+    value: host={{KUBERO_APP_NAME}}-postgresql-rw port=5432 dbname=documize user=documize
+      password=documize sslmode=disable
   - name: DOCUMIZEDBTYPE
     value: postgresql
   - name: DOCUMIZESALT
