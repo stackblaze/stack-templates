@@ -790,6 +790,7 @@
       "license": "MIT License",
       "spdx_id": "MIT",
       "dirname": "gitea",
+      "requiresDedicated": true,
       "deploymentTypes": [
         {
           "id": "standard",
@@ -841,6 +842,7 @@
       "license": "Other",
       "spdx_id": "NOASSERTION",
       "dirname": "forgejo",
+      "requiresDedicated": true,
       "deploymentTypes": [
         {
           "id": "standard",
