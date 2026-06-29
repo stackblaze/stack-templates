@@ -8,7 +8,9 @@ metadata:
       your DB into a headless CMS, admin panels, or apps with a custom UI, instant
       APIs, auth & more.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/15967950
-    kubero.dev/template.installation: ''
+    kubero.dev/template.installation: Set ADMIN_EMAIL and ADMIN_PASSWORD before first
+      login. Rotate SECRET to a random value for production. Valkey is used for API
+      caching (and multi-instance sync in HA). Connects at rfr-<app>-valkey-0:6379.
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://framerusercontent.com/images/wDMzR3oV9R51pVCPoOz6PGTRs54.png"]'
     kubero.dev/template.source: https://github.com/directus/directus
@@ -39,6 +41,14 @@ spec:
     value: directus
   - name: DB_PASSWORD
     value: directus
+  - name: CACHE_ENABLED
+    value: 'true'
+  - name: CACHE_AUTO_PURGE
+    value: 'true'
+  - name: CACHE_STORE
+    value: redis
+  - name: REDIS
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-0:6379
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -119,6 +129,35 @@ spec:
         stringData:
           username: directus
           password: directus
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-valkey'
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
   web:
     replicaCount: 1
   worker:
