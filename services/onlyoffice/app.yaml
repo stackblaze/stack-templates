@@ -4,27 +4,25 @@ metadata:
   name: onlyoffice
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted online office suite (Document Server)
-      for collaborative real-time editing of documents, spreadsheets and presentations.
+    kubero.dev/template.description: OnlyOffice document collaboration on Nextcloud —
+      self-hosted file sync & sharing with users and an admin portal, plus real-time
+      editing of documents, spreadsheets and presentations via a pre-wired OnlyOffice
+      Docs connector.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/onlyoffice/icon.png
-    kubero.dev/template.installation: 'Uses the official onlyoffice/documentserver
-      image on internal port 80. Deploy the bundled PostgreSQL, RabbitMQ and Valkey
-      (Redis) add-ons; DB_HOST points at ''onlyoffice-postgresql-rw'', AMQP_URI at
-      the RabbitMQ service and REDIS_SERVER_HOST at ''rfr-onlyoffice-valkey-readwrite''.
-      IMPORTANT: JWT signing is enabled by default (JWT_ENABLED=true) and the editor
-      will refuse documents from clients that do not sign requests with JWT_SECRET,
-      so the host application (Nextcloud, your custom integration, etc.) must be configured
-      with the same secret. Replace the JWT_SECRET placeholder (openssl rand -hex
-      32) and rotate the Postgres/RabbitMQ add-on passwords after install. The DB
-      schema is auto-created on first boot against the empty ''onlyoffice'' database.
-      Persistent state (cache, fonts, logs, document cache) lives under /var/lib/onlyoffice.
-      The Document Server has no admin UI of its own; reach the welcome/healthcheck
-      page at the app URL, then point an editor host at it. For very large deployments
-      raise the app pod size.'
-    kubero.dev/template.links: '["https://helpcenter.onlyoffice.com/docs/installation/docs-community-install-docker.aspx",
-      "https://api.onlyoffice.com/docs/docs-api/get-started/"]'
+    kubero.dev/template.installation: 'Deploys the stackblaze/nextcloud-onlyoffice image
+      (Nextcloud with the ONLYOFFICE connector baked in + a self-configuring startup
+      hook) on internal port 80, with the bundled PostgreSQL (CloudNativePG) and Valkey
+      (Redis) add-ons. On first boot the hook auto-installs and configures the connector
+      from DOCUMENT_SERVER_URL + ONLYOFFICE_JWT_SECRET — no manual setup. IMPORTANT:
+      this app needs a running OnlyOffice Document Server to edit documents. Point
+      DOCUMENT_SERVER_URL at one (the default is the shared platform Docs) and set
+      ONLYOFFICE_JWT_SECRET to that Docs'' JWT_SECRET (they must match; rotate both
+      from the placeholder with `openssl rand -hex 32`). The admin account is
+      NEXTCLOUD_ADMIN_USER / NEXTCLOUD_ADMIN_PASSWORD (change the password). Nextcloud
+      data, config and state live under /var/www/html.'
+    kubero.dev/template.links: '["https://docs.nextcloud.com/", "https://api.onlyoffice.com/docs/docs-api/get-started/"]'
     kubero.dev/template.screenshots: '["https://download.onlyoffice.com/assets/fb/fb_icon_325x325.jpg"]'
-    kubero.dev/template.source: https://github.com/ONLYOFFICE/Docker-DocumentServer
+    kubero.dev/template.source: https://github.com/stackblaze/nextcloud-onlyoffice
     kubero.dev/template.categories: '["productivity", "collaboration", "documentation"]'
     kubero.dev/template.title: OnlyOffice
     kubero.dev/template.website: https://www.onlyoffice.com/
@@ -61,8 +59,8 @@ spec:
               memory: 1Gi
           bootstrap:
             initdb:
-              database: onlyoffice
-              owner: onlyoffice
+              database: nextcloud
+              owner: nextcloud
               secret:
                 name: '{{KUBERO_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
@@ -76,7 +74,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: onlyoffice
+          password: nextcloud
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -84,36 +82,8 @@ spec:
           name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
-          username: onlyoffice
-          password: onlyoffice
-  - displayName: RabbitMQ
-    env: []
-    icon: /img/addons/rabbitmq.svg
-    id: kubero-operator
-    kind: RabbitmqCluster
-    resourceDefinitions:
-      RabbitmqCluster:
-        apiVersion: rabbitmq.com/v1beta1
-        kind: RabbitmqCluster
-        metadata:
-          name: onlyoffice-rabbitmq
-        spec:
-          replicas: 1
-          persistence:
-            storageClassName: fast
-            storage: 1Gi
-          resources:
-            requests:
-              cpu: 100m
-              memory: 512Mi
-            limits:
-              memory: 1Gi
-          rabbitmq:
-            additionalConfig: 'default_user = onlyoffice
-
-              default_pass = onlyoffice
-
-              '
+          username: nextcloud
+          password: nextcloud
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -144,37 +114,45 @@ spec:
               cpu: 500m
               memory: 256Mi
   envVars:
-  - name: DB_TYPE
-    value: postgres
-  - name: DB_HOST
+  # --- Database (CloudNativePG) ---
+  - name: POSTGRES_HOST
     value: '{{KUBERO_APP_NAME}}-postgresql-rw'
-  - name: DB_PORT
+  - name: POSTGRES_PORT
     value: '5432'
-  - name: DB_NAME
-    value: onlyoffice
-  - name: DB_USER
-    value: onlyoffice
-  - name: DB_PWD
-    value: onlyoffice
-  - name: AMQP_TYPE
-    value: rabbitmq
-  - name: AMQP_URI
-    value: amqp://onlyoffice:onlyoffice@onlyoffice-rabbitmq:5672
-  - name: REDIS_SERVER_HOST
+  - name: POSTGRES_DB
+    value: nextcloud
+  - name: POSTGRES_USER
+    value: nextcloud
+  - name: POSTGRES_PASSWORD
+    value: nextcloud
+  # --- Cache (Valkey/Redis) ---
+  - name: REDIS_HOST
     value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
-  - name: REDIS_SERVER_PORT
+  - name: REDIS_PORT
     value: '6379'
-  - name: JWT_ENABLED
-    value: 'true'
-  - name: JWT_SECRET
+  # --- Nextcloud admin + access ---
+  - name: NEXTCLOUD_ADMIN_USER
+    value: admin
+  - name: NEXTCLOUD_ADMIN_PASSWORD
+    value: changeme-admin
+  - name: NEXTCLOUD_TRUSTED_DOMAINS
+    value: '{{KUBERO_APP_HOST}}'
+  - name: NEXTCLOUD_PUBLIC_URL
+    value: 'https://{{KUBERO_APP_HOST}}'
+  - name: OVERWRITEPROTOCOL
+    value: https
+  # --- OnlyOffice connector (auto-configured by the image's startup hook) ---
+  # DOCUMENT_SERVER_URL must point at a running OnlyOffice Document Server and
+  # ONLYOFFICE_JWT_SECRET must equal that Docs server's JWT_SECRET.
+  - name: DOCUMENT_SERVER_URL
+    value: 'https://onlyoffice-d290.stackblaze.app/'
+  - name: ONLYOFFICE_JWT_SECRET
     value: replace-with-openssl-rand-hex-32
-  - name: JWT_HEADER
-    value: Authorization
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /var/lib/onlyoffice
+    mountPath: /var/www/html
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
     storageClass: slow
@@ -185,21 +163,21 @@ spec:
     replicaCount: 0
   resources:
     requests:
-      cpu: 500m
-      memory: 2Gi
+      cpu: 100m
+      memory: 512Mi
     limits:
-      cpu: '2'
-      memory: 4Gi
+      cpu: '1'
+      memory: 1Gi
   healthcheck:
     enabled: true
-    path: /healthcheck
-    startupSeconds: 600
+    path: /status.php
+    startupSeconds: 300
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: onlyoffice/documentserver
+    repository: ghcr.io/stackblaze/nextcloud-onlyoffice
     tag: latest
     run:
       securityContext:

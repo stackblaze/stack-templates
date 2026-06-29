@@ -10869,7 +10869,7 @@
     },
     {
       "name": "onlyoffice",
-      "description": "Self-hosted online office suite (Document Server) for collaborative real-time editing of documents, spreadsheets and presentations.",
+      "description": "OnlyOffice document collaboration on Nextcloud: file sync and sharing with users and an admin portal, plus real-time editing of documents, spreadsheets and presentations via a pre-wired OnlyOffice connector.",
       "source": "https://github.com/ONLYOFFICE/Docker-DocumentServer",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/onlyoffice/icon.png",
       "website": "https://www.onlyoffice.com/",
