@@ -10873,7 +10873,7 @@
       "source": "https://github.com/ONLYOFFICE/Docker-DocumentServer",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/onlyoffice/icon.png",
       "website": "https://www.onlyoffice.com/",
-      "installation": "Uses the official onlyoffice/documentserver image on internal port 80. Deploy the bundled PostgreSQL, RabbitMQ and Valkey (Redis) add-ons; DB_HOST points at 'onlyoffice-postgresql-rw', AMQP_URI at the RabbitMQ service and REDIS_SERVER_HOST at 'rfr-onlyoffice-valkey-readwrite'. IMPORTANT: JWT signing is enabled by default (JWT_ENABLED=true) and the editor will refuse documents from clients that do not sign requests with JWT_SECRET, so the host application (Nextcloud, your custom integration, etc.) must be configured with the same secret. Replace the JWT_SECRET placeholder (openssl rand -hex 32) and rotate the Postgres/RabbitMQ add-on passwords after install. The DB schema is auto-created on first boot against the empty 'onlyoffice' database. Persistent state (cache, fonts, logs, document cache) lives under /var/lib/onlyoffice. The Document Server has no admin UI of its own; reach the welcome/healthcheck page at the app URL, then point an editor host at it. For very large deployments raise the app pod size.",
+      "installation": "Deploys the stackblaze/nextcloud-onlyoffice image (Nextcloud with the ONLYOFFICE connector, self-configured on first boot from DOCUMENT_SERVER_URL + ONLYOFFICE_JWT_SECRET) plus PostgreSQL and Valkey add-ons. Point DOCUMENT_SERVER_URL at an OnlyOffice Docs server and set ONLYOFFICE_JWT_SECRET to its JWT_SECRET (they must match). Admin = NEXTCLOUD_ADMIN_USER / NEXTCLOUD_ADMIN_PASSWORD (change it). Data lives under /var/www/html.",
       "architecture": [],
       "categories": [
         "productivity",
@@ -10889,8 +10889,7 @@
       ],
       "addons": [
         "Cluster",
-        "Valkey",
-        "RabbitmqCluster"
+        "Valkey"
       ],
       "stars": 1500,
       "forks": 150,
@@ -10913,11 +10912,55 @@
           "label": "Standard",
           "default": true,
           "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/onlyoffice/app.yaml"
-        },
+        }
+      ]
+    },
+    {
+      "name": "onlyoffice-docs",
+      "description": "OnlyOffice Docs (Document Server) - the editor engine for real-time collaborative editing of documents, spreadsheets and presentations. A backend host apps (Nextcloud, custom integrations) connect to; it has no UI of its own.",
+      "source": "https://github.com/ONLYOFFICE/Docker-DocumentServer",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/onlyoffice/icon.png",
+      "website": "https://www.onlyoffice.com/",
+      "installation": "The official onlyoffice/documentserver image with bundled PostgreSQL, RabbitMQ and Valkey add-ons. JWT signing is ON by default - configure the host app with the same JWT_SECRET (replace the placeholder, openssl rand -hex 32). No admin UI; the app URL shows a welcome/healthcheck page. Use this for a dedicated Document Server (e.g. a backend for the OnlyOffice / Nextcloud template).",
+      "architecture": [],
+      "categories": [
+        "productivity",
+        "collaboration",
+        "documentation"
+      ],
+      "screenshots": [
+        "https://download.onlyoffice.com/assets/fb/fb_icon_325x325.jpg"
+      ],
+      "links": [
+        "https://helpcenter.onlyoffice.com/docs/installation/docs-community-install-docker.aspx",
+        "https://api.onlyoffice.com/docs/docs-api/get-started/"
+      ],
+      "addons": [
+        "Cluster",
+        "RabbitmqCluster",
+        "Valkey"
+      ],
+      "stars": 1500,
+      "forks": 150,
+      "watchers": 1500,
+      "issues": 0,
+      "last_updated": "2026-06-13T00:00:00Z",
+      "last_pushed": "2026-06-13T00:00:00Z",
+      "created_at": "2020-01-01T00:00:00Z",
+      "size": 0,
+      "language": "JavaScript",
+      "gitops": false,
+      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/onlyoffice-docs/app.yaml",
+      "status": "active",
+      "license": "GNU Affero General Public License v3.0",
+      "spdx_id": "AGPL-3.0",
+      "dirname": "onlyoffice-docs",
+      "deploymentTypes": [
         {
-          "id": "ha",
-          "label": "High availability",
-          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/onlyoffice/app.ha.yaml"
+          "id": "standard",
+          "label": "Standard",
+          "default": true,
+          "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/onlyoffice-docs/app.yaml"
         }
       ]
     },

@@ -1,0 +1,200 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: onlyoffice-docs
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: OnlyOffice Docs (Document Server) — the editor
+      engine for collaborative real-time editing of documents, spreadsheets and
+      presentations. A backend service that host apps (Nextcloud, your own
+      integration) connect to; it has no UI of its own.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/onlyoffice/icon.png
+    kubero.dev/template.installation: 'The official onlyoffice/documentserver image on
+      internal port 80, with bundled PostgreSQL (CloudNativePG), RabbitMQ and Valkey
+      (Redis) add-ons. JWT signing is ON by default — the host application (Nextcloud,
+      etc.) must be configured with the same JWT_SECRET, so replace the placeholder
+      (openssl rand -hex 32) and configure the host to match. The Document Server has
+      no admin UI; the app URL shows a welcome/healthcheck page. State lives under
+      /var/lib/onlyoffice. Use this when you need a dedicated Document Server (e.g. a
+      backend for the OnlyOffice/Nextcloud template).'
+    kubero.dev/template.links: '["https://helpcenter.onlyoffice.com/docs/installation/docs-community-install-docker.aspx", "https://api.onlyoffice.com/docs/docs-api/get-started/"]'
+    kubero.dev/template.screenshots: '["https://download.onlyoffice.com/assets/fb/fb_icon_325x325.jpg"]'
+    kubero.dev/template.source: https://github.com/ONLYOFFICE/Docker-DocumentServer
+    kubero.dev/template.categories: '["productivity", "collaboration", "documentation"]'
+    kubero.dev/template.title: OnlyOffice Docs
+    kubero.dev/template.website: https://www.onlyoffice.com/
+  labels:
+    manager: kubero
+spec:
+  name: onlyoffice-docs
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: ncdb
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: onlyoffice
+              owner: onlyoffice
+              secret:
+                name: 'ncdb-app'
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: 'ncdb-superuser'
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: 'ncdb-superuser'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: onlyoffice
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: 'ncdb-app'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: onlyoffice
+          password: onlyoffice
+  - displayName: RabbitMQ
+    env: []
+    icon: /img/addons/rabbitmq.svg
+    id: kubero-operator
+    kind: RabbitmqCluster
+    resourceDefinitions:
+      RabbitmqCluster:
+        apiVersion: rabbitmq.com/v1beta1
+        kind: RabbitmqCluster
+        metadata:
+          name: ncmq
+        spec:
+          replicas: 1
+          persistence:
+            storageClassName: fast
+            storage: 1Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+          rabbitmq:
+            additionalConfig: |
+              default_user = onlyoffice
+              default_pass = onlyoffice
+              disk_free_limit.absolute = 200MB
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: nccache
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: DB_TYPE
+    value: postgres
+  - name: DB_HOST
+    value: '{{KUBERO_APP_NAME}}-ncdb-rw'
+  - name: DB_PORT
+    value: '5432'
+  - name: DB_NAME
+    value: onlyoffice
+  - name: DB_USER
+    value: onlyoffice
+  - name: DB_PWD
+    value: onlyoffice
+  - name: AMQP_TYPE
+    value: rabbitmq
+  - name: AMQP_URI
+    value: 'amqp://onlyoffice:onlyoffice@{{KUBERO_APP_NAME}}-ncmq:5672'
+  - name: REDIS_SERVER_HOST
+    value: rfr-{{KUBERO_APP_NAME}}-nccache-readwrite
+  - name: REDIS_SERVER_PORT
+    value: '6379'
+  - name: JWT_ENABLED
+    value: 'true'
+  - name: JWT_SECRET
+    value: replace-with-openssl-rand-hex-32
+  - name: JWT_HEADER
+    value: Authorization
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/lib/onlyoffice
+    name: ncdata
+    size: 5Gi
+    storageClass: slow
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: '2'
+      memory: 4Gi
+  healthcheck:
+    enabled: true
+    path: /healthcheck
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: onlyoffice/documentserver
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
