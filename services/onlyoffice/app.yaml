@@ -42,7 +42,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: postgresql
+          name: ncdb
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -62,15 +62,15 @@ spec:
               database: nextcloud
               owner: nextcloud
               secret:
-                name: 'postgresql-app'
+                name: 'ncdb-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: 'postgresql-superuser'
+            name: 'ncdb-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: 'postgresql-superuser'
+          name: 'ncdb-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -79,7 +79,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: 'postgresql-app'
+          name: 'ncdb-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: nextcloud
@@ -94,7 +94,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: valkey
+          name: nccache
         spec:
           version: '8.0'
           arch: replica
@@ -116,7 +116,7 @@ spec:
   envVars:
   # --- Database (CloudNativePG) ---
   - name: POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '{{KUBERO_APP_NAME}}-ncdb-rw'
   - name: POSTGRES_PORT
     value: '5432'
   - name: POSTGRES_DB
@@ -127,7 +127,7 @@ spec:
     value: nextcloud
   # --- Cache (Valkey/Redis) ---
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: rfr-{{KUBERO_APP_NAME}}-nccache-readwrite
   - name: REDIS_PORT
     value: '6379'
   # --- Nextcloud admin + access ---
@@ -153,7 +153,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html
-    name: data
+    name: ncdata
     size: 5Gi
     storageClass: slow
   cronjobs: []
