@@ -1983,7 +1983,7 @@
       "source": "https://github.com/bitwarden/server",
       "icon": "https://avatars.githubusercontent.com/u/15990069?s=200&v=4",
       "website": "https://bitwarden.com/",
-      "installation": "",
+      "installation": "Register at https://bitwarden.com/host/ and set BW_INSTALLATION_ID and BW_INSTALLATION_KEY before first use. BW_DOMAIN is set from the app's public URL when the platform assigns ingress. Rotate the default postgres password (bitwarden) before production.",
       "architecture": [],
       "categories": [
         "security",
