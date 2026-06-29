@@ -42,7 +42,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: postgresql
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -62,15 +62,15 @@ spec:
               database: nextcloud
               owner: nextcloud
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: 'postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: 'postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: 'postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -79,7 +79,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: 'postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: nextcloud
@@ -94,7 +94,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: valkey
         spec:
           version: '8.0'
           arch: replica
@@ -153,7 +153,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: data
     size: 5Gi
     storageClass: slow
   cronjobs: []
