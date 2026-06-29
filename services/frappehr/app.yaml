@@ -189,6 +189,8 @@ spec:
       )\"\nln -s \"$BAKED_PATH\" \"$ASSETS_PATH\"\nls -1 apps > sites/apps.txt\n[\
       \ -f sites/common_site_config.json ] || echo '{}' > sites/common_site_config.json\n\
       bench set-config -g db_host \"$DB_HOST\"\nbench set-config -gp db_port \"$DB_PORT\"\
+      \nVALKEY_INSTANCE=\"${DB_HOST%-mysql}-valkey\"\nREDIS_URL=\"redis://rfr-${VALKEY_INSTANCE}-0:6379\"\
+      \nexport REDIS_CACHE=\"$REDIS_URL\"\nexport REDIS_QUEUE=\"$REDIS_URL\"\nexport REDIS_SOCKETIO=\"$REDIS_URL\"\
       \nbench set-config -g redis_cache \"$REDIS_CACHE\"\nbench set-config -g redis_queue\
       \ \"$REDIS_QUEUE\"\nbench set-config -g redis_socketio \"$REDIS_SOCKETIO\"\n\
       bench set-config -gp socketio_port \"$SOCKETIO_PORT\"\nSITE=\"${FRAPPE_SITE_NAME_HEADER:-frontend}\"\
