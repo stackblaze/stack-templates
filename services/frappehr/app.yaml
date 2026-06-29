@@ -134,11 +134,11 @@ spec:
   - name: MARIADB_ROOT_PASSWORD
     value: frappehr
   - name: REDIS_CACHE
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-0:6379
   - name: REDIS_QUEUE
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-0:6379
   - name: REDIS_SOCKETIO
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-0:6379
   - name: SOCKETIO_PORT
     value: '9000'
   - name: GUNICORN_WORKERS

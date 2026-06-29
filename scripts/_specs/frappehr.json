@@ -49,15 +49,15 @@
     },
     {
       "name": "REDIS_CACHE",
-      "value": "redis://rfr-frappehr-valkey-readwrite:6379"
+      "value": "redis://rfr-frappehr-valkey-0:6379"
     },
     {
       "name": "REDIS_QUEUE",
-      "value": "redis://rfr-frappehr-valkey-readwrite:6379"
+      "value": "redis://rfr-frappehr-valkey-0:6379"
     },
     {
       "name": "REDIS_SOCKETIO",
-      "value": "redis://rfr-frappehr-valkey-readwrite:6379"
+      "value": "redis://rfr-frappehr-valkey-0:6379"
     },
     {
       "name": "SOCKETIO_PORT",
