@@ -25,7 +25,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: FRONT_BASE_URL
-    value: twenty.localhost
+    value: '{{KUBERO_APP_URL}}'
   - name: ENABLE_DB_MIGRATIONS
     value: 'true'
   - name: CACHE_STORAGE_TYPE
@@ -170,7 +170,7 @@ spec:
     containerPort: '3000'
     pullPolicy: Always
     repository: twentycrm/twenty
-    tag: latest
+    tag: v2.16.1
     run:
       securityContext:
         readOnlyRootFilesystem: false
@@ -184,6 +184,6 @@ spec:
   healthcheck:
     enabled: true
     path: /
-    startupSeconds: 300
+    startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
