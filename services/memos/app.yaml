@@ -77,7 +77,7 @@ spec:
   - name: MEMOS_DRIVER
     value: postgres
   - name: MEMOS_DSN
-    value: postgresql://memos:memos@memos-postgresql-rw:5432/memos
+    value: postgresql://memos:memos@{{KUBERO_APP_NAME}}-postgresql-rw:5432/memos
   extraVolumes: []
   image:
     containerPort: '5230'

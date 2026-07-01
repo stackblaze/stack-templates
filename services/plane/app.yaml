@@ -119,11 +119,11 @@ spec:
         apiVersion: rustfs.com/v1alpha1
         kind: Tenant
         metadata:
-          name: plane-rustfs
+          name: '{{KUBERO_APP_NAME}}-rustfs'
         spec:
           image: rustfs/rustfs:latest
           credsSecret:
-            name: plane-rustfs-credentials
+            name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
           pools:
           - name: pool-0
             servers: 1
@@ -140,7 +140,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: plane-rustfs-credentials
+          name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
         type: Opaque
         stringData:
           accesskey: planeadmin
@@ -157,7 +157,7 @@ spec:
   - name: CELERY_BROKER_URL
     value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: CELERY_RESULT_BACKEND
-    value: redis://rfr-plane-valkey-readwrite:6379/0
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: SECRET_KEY
     value: '{{KUBERO_GEN_ALNUM:50}}'
   - name: USE_MINIO
@@ -167,7 +167,7 @@ spec:
   - name: AWS_SECRET_ACCESS_KEY
     value: changeme
   - name: AWS_S3_ENDPOINT_URL
-    value: http://plane-rustfs:9000
+    value: http://{{KUBERO_APP_NAME}}-rustfs:9000
   - name: AWS_S3_BUCKET_NAME
     value: uploads
   - name: AWS_REGION

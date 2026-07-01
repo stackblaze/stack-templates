@@ -133,7 +133,7 @@ spec:
   - name: CP_CACHE_HANDLER
     value: redis
   - name: CP_REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-0
+    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: CP_REDIS_PORT
     value: '6379'
   - name: CP_REDIS_PASSWORD

@@ -82,11 +82,11 @@ spec:
         apiVersion: rustfs.com/v1alpha1
         kind: Tenant
         metadata:
-          name: rallly-rustfs
+          name: '{{KUBERO_APP_NAME}}-rustfs'
         spec:
           image: rustfs/rustfs:latest
           credsSecret:
-            name: rallly-rustfs-credentials
+            name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
           pools:
           - name: pool-0
             servers: 1
@@ -103,7 +103,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: rallly-rustfs-credentials
+          name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
         type: Opaque
         stringData:
           accesskey: ralllyadmin
@@ -124,7 +124,7 @@ spec:
   - name: NOREPLY_EMAIL
     value: noreply@example.com
   - name: S3_ENDPOINT
-    value: http://rallly-rustfs:9000
+    value: http://{{KUBERO_APP_NAME}}-rustfs:9000
   - name: S3_BUCKET_NAME
     value: rallly
   - name: S3_REGION

@@ -1,0 +1,160 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: wagtail
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Wagtail is a popular open-source CMS built on Django — a refined editing experience,
+      rich page modelling, a powerful image library and full content control. This template runs the official Wagtail
+      "bakerydemo" sample site.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wagtail/icon.png
+    kubero.dev/template.installation: 'NOTE: this is the official Wagtail bakerydemo image — a demonstration site, not a
+      blank production install. High-availability variant: PostgreSQL runs 3 CloudNativePG instances and a Valkey (Redis) add-on
+      backs the cache via REDIS_URL. DJANGO_LOAD_INITIAL_DATA is "on" so the first boot loads sample content; it does NOT create
+      an admin user, so once the web pod is ready open a shell on it and run: python manage.py createsuperuser. The bakerydemo
+      data-load is not idempotent — set DJANGO_LOAD_INITIAL_DATA to off (or remove it) after the first boot so restarts do not
+      reload sample data over your edits. DATABASE_URL points at {{KUBERO_APP_NAME}}-postgresql-rw:5432 and migrations run automatically on
+      startup. Set DJANGO_SECRET_KEY to a unique random value and restrict DJANGO_ALLOWED_HOSTS to your domain before exposing
+      publicly. Media uploads persist on the mounted volume at /code/bakerydemo/media; for multi-replica web scaling switch this
+      volume to ReadWriteMany or configure S3 media storage.'
+    kubero.dev/template.links: '["https://docs.wagtail.org/", "https://github.com/wagtail/bakerydemo"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/wagtail/wagtail
+    kubero.dev/template.categories: '["cms", "development", "media"]'
+    kubero.dev/template.title: Wagtail
+    kubero.dev/template.website: https://wagtail.org
+  labels:
+    manager: kubero
+spec:
+  name: wagtail
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql'
+        spec:
+          instances: 3
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: fast
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: wagtail
+              owner: wagtail
+              secret:
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+              postInitApplicationSQL:
+                - GRANT ALL ON SCHEMA public TO wagtail
+                - GRANT CREATE ON SCHEMA public TO wagtail
+                - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO wagtail
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: wagtail
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: wagtail
+          password: wagtail
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-valkey'
+        spec:
+          version: "8.0"
+          arch: failover
+          replicas:
+            shards: 1
+            replicasOfShard: 2
+          sentinel:
+            replicas: 3
+            quorum: 2
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: DATABASE_URL
+    value: postgres://wagtail:wagtail@{{KUBERO_APP_NAME}}-postgresql-rw:5432/wagtail
+  - name: REDIS_URL
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+  - name: DJANGO_SECRET_KEY
+    value: change-me-django-secret-key
+  - name: DJANGO_ALLOWED_HOSTS
+    value: '*'
+  - name: DJANGO_LOAD_INITIAL_DATA
+    value: 'on'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /code/bakerydemo/media
+    name: wagtail-media
+    size: 10Gi
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: wagtail/bakerydemo
+    tag: latest
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10

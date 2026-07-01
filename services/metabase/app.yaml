@@ -31,7 +31,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: metabase-postgres
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -51,19 +51,19 @@ spec:
               database: metabase
               owner: metabase
               secret:
-                name: metabase-postgres-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO metabase
               - GRANT CREATE ON SCHEMA public TO metabase
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO metabase
           enableSuperuserAccess: true
           superuserSecret:
-            name: metabase-postgres-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: metabase-postgres-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -72,7 +72,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: metabase-postgres-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: metabase
@@ -89,7 +89,7 @@ spec:
   - name: MB_DB_PASS
     value: metabase
   - name: MB_DB_HOST
-    value: metabase-postgres-rw
+    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: JAVA_OPTS
     value: -Xmx1536m
   extraVolumes: []

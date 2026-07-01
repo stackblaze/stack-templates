@@ -121,7 +121,7 @@ spec:
         apiVersion: rabbitmq.com/v1beta1
         kind: RabbitmqCluster
         metadata:
-          name: zulip-rabbitmq
+          name: '{{KUBERO_APP_NAME}}-rabbitmq'
         spec:
           replicas: 3
           persistence:
@@ -149,7 +149,7 @@ spec:
         apiVersion: application.kubero.dev/v1alpha1
         kind: KuberoAddonMemcached
         metadata:
-          name: zulip-memcached
+          name: '{{KUBERO_APP_NAME}}-memcached'
         spec:
           memcached:
             image:
@@ -183,11 +183,11 @@ spec:
   - name: REMOTE_POSTGRES_SSLMODE
     value: prefer
   - name: SETTING_RABBITMQ_HOST
-    value: zulip-rabbitmq
+    value: '{{KUBERO_APP_NAME}}-rabbitmq'
   - name: SETTING_REDIS_HOST
     value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
   - name: SETTING_MEMCACHED_LOCATION
-    value: zulip-memcached:11211
+    value: '{{KUBERO_APP_NAME}}-memcached:11211'
   - name: DISABLE_HTTPS
     value: 'True'
   - name: SSL_CERTIFICATE_GENERATION

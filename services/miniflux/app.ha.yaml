@@ -29,7 +29,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: miniflux-postgres
+          name: '{{KUBERO_APP_NAME}}-postgresql'
         spec:
           instances: 3
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -49,19 +49,19 @@ spec:
               database: miniflux
               owner: miniflux
               secret:
-                name: miniflux-postgres-app
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO miniflux
               - GRANT CREATE ON SCHEMA public TO miniflux
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO miniflux
           enableSuperuserAccess: true
           superuserSecret:
-            name: miniflux-postgres-superuser
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: miniflux-postgres-superuser
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -70,7 +70,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: miniflux-postgres-app
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: miniflux
@@ -79,7 +79,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgres://miniflux:miniflux@miniflux-postgres-rw:5432/miniflux?sslmode=disable
+    value: postgres://miniflux:miniflux@{{KUBERO_APP_NAME}}-postgresql-rw:5432/miniflux?sslmode=disable
   - name: RUN_MIGRATIONS
     value: '1'
   - name: CREATE_ADMIN

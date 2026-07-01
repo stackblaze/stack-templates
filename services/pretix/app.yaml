@@ -139,9 +139,9 @@ spec:
   - name: PRETIX_REDIS_SESSIONS
     value: 'true'
   - name: PRETIX_CELERY_BROKER
-    value: redis://rfr-pretix-valkey-readwrite:6379/1
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/1
   - name: PRETIX_CELERY_BACKEND
-    value: redis://rfr-pretix-valkey-readwrite:6379/2
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/2
   - name: PRETIX_PRETIX_URL
     value: '{{KUBERO_APP_URL}}'
   - name: PRETIX_PRETIX_INSTANCE_NAME

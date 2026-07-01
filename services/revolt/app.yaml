@@ -140,9 +140,9 @@ spec:
               '
   envVars:
   - name: REVOLT__DATABASE__MONGODB
-    value: mongodb://ferretdb:changeme@{{KUBERO_APP_NAME}}-{{KUBERO_APP_NAME}}-ferretdb-kuberoferretdb:27017/revolt
+    value: mongodb://ferretdb:changeme@{{KUBERO_APP_NAME}}-ferretdb-kuberoferretdb:27017/revolt
   - name: REVOLT__DATABASE__REDIS
-    value: redis://rfr-{{KUBERO_APP_NAME}}-{{KUBERO_APP_NAME}}-valkey-0:6379/
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/
   - name: REVOLT__RABBIT__HOST
     value: '{{KUBERO_APP_NAME}}-rabbitmq'
   - name: REVOLT__RABBIT__PORT
