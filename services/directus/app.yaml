@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/15967950
     kubero.dev/template.installation: Set ADMIN_EMAIL and ADMIN_PASSWORD before first
       login. Rotate SECRET to a random value for production. Valkey is used for API
-      caching (and multi-instance sync in HA). Connects at rfr-<app>-valkey-0:6379.
+      caching (and multi-instance sync in HA). Connects at rfr-<app>-valkey-readwrite:6379.
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://framerusercontent.com/images/wDMzR3oV9R51pVCPoOz6PGTRs54.png"]'
     kubero.dev/template.source: https://github.com/directus/directus
@@ -48,7 +48,7 @@ spec:
   - name: CACHE_STORE
     value: redis
   - name: REDIS
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-0:6379
+    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -162,6 +162,12 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /admin
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '8055'
     pullPolicy: Always
