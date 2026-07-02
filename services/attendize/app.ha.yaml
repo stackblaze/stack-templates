@@ -7,19 +7,14 @@ metadata:
     kubero.dev/template.description: Open-source ticket selling and event management
       platform (Laravel) for organizing events and selling tickets online.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/attendize/icon.png
-    kubero.dev/template.installation: 'Attendize is a multi-container Laravel stack;
-      this template deploys ONLY the web/server image (elestio/attendize-web, listens
-      on container port 80). You MUST also run the companion queue/scheduler worker
-      from image elestio/attendize-worker (same env, same DB/Redis) to send emails,
-      generate ticket PDFs and process background jobs. SMTP is required for ticket
-      delivery: set MAIL_HOST/MAIL_PORT/MAIL_USERNAME/MAIL_PASSWORD to a real SMTP
-      relay (the upstream compose uses a maildev catch-all only for dev). ROTATE before
-      production: APP_KEY (run `php artisan key:generate` or set a 32-char base64
-      secret prefixed with base64:), and the mariadb add-on db/user/password. APP_URL
-      is wired to this app''s public URL. First run: the entrypoint runs migrations
-      automatically; then browse to {{KUBERO_APP_URL}}/install (or the signup page)
-      to create the first admin/organiser account. Uses MariaDB (the app is MySQL-only,
-      not Postgres-compatible) and Valkey/Redis for queue + cache.'
+    kubero.dev/template.installation: 'Attendize auto-configures on first boot — no
+      /install wizard. Log in at {{KUBERO_APP_URL}}/login with admin@example.com /
+      changeme (change immediately). Sample organiser and demo events are pre-loaded.
+      A queue worker runs in the background for PDF tickets and email jobs. SMTP is
+      still placeholder (smtp.example.com) — set MAIL_HOST/MAIL_PORT/MAIL_USERNAME/MAIL_PASSWORD
+      to a real relay for ticket delivery. ROTATE before production: APP_KEY, MariaDB
+      db/user/password (defaults attendize/attendize/attendize). Uses MariaDB (MySQL-only,
+      not Postgres) and Valkey/Redis for queue + cache.'
     kubero.dev/template.links: '["https://github.com/Attendize/Attendize/blob/master/docker-compose.yml"]'
     kubero.dev/template.screenshots: '["https://www.attendize.com/images/screenshots/screen1.PNG"]'
     kubero.dev/template.source: https://github.com/Attendize/Attendize
@@ -164,6 +159,12 @@ spec:
     value: tickets@example.com
   - name: MAIL_FROM_NAME
     value: Attendize
+  - name: ADMIN_EMAIL
+    value: admin@example.com
+  - name: ADMIN_PASSWORD
+    value: changeme
+  - name: ATTENDIZE_AUTO_SETUP
+    value: 'true'
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -176,10 +177,10 @@ spec:
   web:
     replicaCount: 2
   worker:
-    replicaCount: 0
+    replicaCount: 1
   healthcheck:
     enabled: true
-    path: /install
+    path: /login
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
@@ -188,6 +189,11 @@ spec:
     pullPolicy: Always
     repository: elestio/attendize-web
     tag: latest
+    command:
+    - /bin/bash
+    - -c
+    - "wget -q -O /tmp/kubero-entrypoint.sh \"https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/attendize/kubero-entrypoint.sh\"\
+      \nchmod +x /tmp/kubero-entrypoint.sh\nexec /tmp/kubero-entrypoint.sh\n"
     run:
       securityContext:
         readOnlyRootFilesystem: false
