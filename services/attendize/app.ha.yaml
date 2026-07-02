@@ -165,6 +165,8 @@ spec:
     value: changeme
   - name: ATTENDIZE_AUTO_SETUP
     value: 'true'
+  - name: SESSION_SECURE_COOKIE
+    value: 'true'
   extraVolumes:
   - accessModes:
     - ReadWriteMany
