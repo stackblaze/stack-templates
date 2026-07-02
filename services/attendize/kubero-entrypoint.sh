@@ -104,10 +104,6 @@ wait_for_db() {
 }
 
 needs_bootstrap() {
-  if [ ! -f "${APP_ROOT}/installed" ]; then
-    return 0
-  fi
-
   local user_count
   user_count="$(php -r "
     try {
@@ -123,7 +119,28 @@ needs_bootstrap() {
     }
   " 2>/dev/null || echo 0)"
 
-  [ "${user_count}" -eq 0 ]
+  # DB already has users — skip even when the ephemeral container lost
+  # the installed marker file from a prior pod.
+  if [ "${user_count}" -gt 0 ]; then
+    return 1
+  fi
+
+  if [ -f "${APP_ROOT}/installed" ]; then
+    return 1
+  fi
+
+  return 0
+}
+
+mark_installed() {
+  if [ -f "${APP_ROOT}/installed" ]; then
+    return 0
+  fi
+  if [ -f VERSION ]; then
+    cp VERSION "${APP_ROOT}/installed"
+  else
+    echo -n "2.8.0" > "${APP_ROOT}/installed"
+  fi
 }
 
 install_bootstrap_assets() {
@@ -145,6 +162,7 @@ run_bootstrap() {
   if ! needs_bootstrap; then
     log "Already installed, skipping bootstrap"
     install_bootstrap_assets
+    mark_installed
     php artisan config:clear >/dev/null 2>&1 || true
     return 0
   fi
@@ -162,11 +180,7 @@ run_bootstrap() {
   php bootstrap-admin.php
   php artisan db:seed --class=DemoSeeder --force
 
-  if [ -f VERSION ]; then
-    cp VERSION installed
-  else
-    echo -n "2.8.0" > installed
-  fi
+  mark_installed
 
   php artisan config:clear
   log "Bootstrap complete"
