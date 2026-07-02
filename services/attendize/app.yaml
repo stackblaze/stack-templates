@@ -177,7 +177,9 @@ spec:
     replicaCount: 1
   healthcheck:
     enabled: true
-    path: /login
+    # /login is rate-limited (429) and fails probes that hit it every second;
+    # / returns 302 once the app is serving and works for startup/readiness.
+    path: /
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
