@@ -95,13 +95,13 @@ spec:
     mountPath: /etc/passbolt/gpg
     name: passbolt-gpg-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     mountPath: /etc/passbolt/jwt
     name: passbolt-jwt-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   image:
     containerPort: '80'
     command:

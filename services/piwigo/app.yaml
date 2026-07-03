@@ -28,14 +28,14 @@ spec:
     mountPath: /config
     name: '{{KUBERO_APP_NAME}}-config-volume'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /gallery
     name: piwigo-gallery-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   addons:
   - displayName: MariaDB

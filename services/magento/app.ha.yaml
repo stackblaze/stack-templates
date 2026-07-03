@@ -102,7 +102,7 @@ spec:
             - data
             persistence:
               enabled: true
-              storageClass: fast
+              storageClass: smart
               size: 5Gi
             resources:
               requests:

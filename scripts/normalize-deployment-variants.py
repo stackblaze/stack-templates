@@ -4,7 +4,7 @@ Normalize every template to the Standard / HA variant contract:
 
   app.yaml (Standard)
     - web.replicaCount: 1
-    - extraVolumes (non-emptyDir): ReadWriteOnce + storageClass slow
+    - extraVolumes (non-emptyDir): ReadWriteOnce + storageClass lite
     - image.run.securityContext.readOnlyRootFilesystem: false
     - DB addons: single instance (CNPG instances=1, MariaDB replicas=1, galera off)
 

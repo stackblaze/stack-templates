@@ -37,14 +37,14 @@ spec:
     mountPath: /data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /music
     name: navidrome-music
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   healthcheck:
     enabled: true
     path: /

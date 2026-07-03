@@ -54,7 +54,7 @@ spec:
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
-    storageClass: slow
+    storageClass: lite
     emptyDir: false
     mountPath: /data/shared
     name: '{{KUBERO_APP_NAME}}-shared'
@@ -77,7 +77,7 @@ spec:
           imageName: ghcr.io/cloudnative-pg/postgresql:16
           primaryUpdateStrategy: unsupervised
           storage:
-            storageClass: fast
+            storageClass: smart
             size: 5Gi
           resources:
             requests:
@@ -138,7 +138,7 @@ spec:
             replicas: 1
             persistence:
               enabled: true
-              storageClass: fast
+              storageClass: smart
               size: 10Gi
             securityConfig:
               enabled: false

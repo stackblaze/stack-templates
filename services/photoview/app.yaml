@@ -90,7 +90,7 @@ spec:
     mountPath: /photoview/images
     name: photoview-images
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   image:
     containerPort: '8080'
     repository: viktorstrate/photoview

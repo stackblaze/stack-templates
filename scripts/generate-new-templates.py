@@ -30,7 +30,7 @@ def pg_addon(slug: str, db_size: str = "5Gi") -> str:
           imageName: ghcr.io/cloudnative-pg/postgresql:16
           primaryUpdateStrategy: unsupervised
           storage:
-            storageClass: fast
+            storageClass: smart
             size: {db_size}
           resources:
             requests:

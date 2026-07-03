@@ -37,7 +37,7 @@ spec:
           imageName: ghcr.io/cloudnative-pg/postgresql:16
           primaryUpdateStrategy: unsupervised
           storage:
-            storageClass: fast
+            storageClass: smart
             size: 5Gi
           resources:
             requests:
@@ -123,7 +123,7 @@ spec:
     mountPath: /data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 10Gi
-    storageClass: slow
+    storageClass: lite
   image:
     containerPort: '3000'
     repository: gitea/gitea

@@ -56,21 +56,21 @@ spec:
     mountPath: /directus/uploads
     name: '{{KUBERO_APP_NAME}}-uploads-volume'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /directus/extensions
     name: directus-extensions-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /directus/templates
     name: directus-templates-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   addons:
   - displayName: PostgreSQL (CloudNativePG)
@@ -89,7 +89,7 @@ spec:
           imageName: ghcr.io/cloudnative-pg/postgresql:16
           primaryUpdateStrategy: unsupervised
           storage:
-            storageClass: fast
+            storageClass: smart
             size: 5Gi
           resources:
             requests:

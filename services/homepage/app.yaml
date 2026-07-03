@@ -32,7 +32,7 @@ spec:
     mountPath: /app/config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 100Mi
-    storageClass: slow
+    storageClass: lite
   healthcheck:
     enabled: true
     path: /

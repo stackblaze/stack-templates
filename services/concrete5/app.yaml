@@ -27,7 +27,7 @@ spec:
     mountPath: /app/packages/package_handle
     name: concrete5-pkg-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   addons: []
   web:

@@ -107,7 +107,7 @@ spec:
     mountPath: /app/public/uploads
     name: lychee-upload-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   image:
     containerPort: '8000'
     pullPolicy: Always

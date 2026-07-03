@@ -28,21 +28,21 @@ spec:
     mountPath: /home/node/chibisafe/database
     name: '{{KUBERO_APP_NAME}}-db-volume'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /home/node/chibisafe/uploads
     name: '{{KUBERO_APP_NAME}}-uploads-volume'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /home/node/chibisafe/logs
     name: '{{KUBERO_APP_NAME}}-logs-volume'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   healthcheck:
     enabled: true
     path: /

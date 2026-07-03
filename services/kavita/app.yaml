@@ -31,14 +31,14 @@ spec:
     mountPath: /kavita/config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /data
     name: kavita-library
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   healthcheck:
     enabled: true
     path: /

@@ -99,14 +99,14 @@ spec:
     mountPath: /var/www/html/config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/custom
     name: mantisbt-custom
     size: 3Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   web:
     replicaCount: 1

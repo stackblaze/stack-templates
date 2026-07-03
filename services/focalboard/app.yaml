@@ -34,7 +34,7 @@ spec:
           imageName: ghcr.io/cloudnative-pg/postgresql:16
           primaryUpdateStrategy: unsupervised
           storage:
-            storageClass: fast
+            storageClass: smart
             size: 5Gi
           resources:
             requests:
@@ -86,7 +86,7 @@ spec:
     mountPath: /opt/focalboard/data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   image:
     containerPort: '8000'
     pullPolicy: Always

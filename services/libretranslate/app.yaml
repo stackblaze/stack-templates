@@ -33,14 +33,14 @@ spec:
     mountPath: /app/db
     name: '{{KUBERO_APP_NAME}}-db-volume'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /home/libretranslate/.local/share/argos-translate
     name: libtranslate-lang-models
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   addons: []
   web:

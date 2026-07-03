@@ -47,7 +47,7 @@ spec:
     mountPath: WRITABLE_PATH
     name: wekan-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   addons:
   - displayName: Document DB

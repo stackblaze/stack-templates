@@ -112,14 +112,14 @@ spec:
     mountPath: /var/www/html
     name: iomad-html
     size: 5Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/moodledata
     name: iomad-moodledata
     size: 5Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   web:
     replicaCount: 1

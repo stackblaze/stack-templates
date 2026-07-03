@@ -36,14 +36,14 @@ spec:
     mountPath: /config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /books
     name: calibre-web-books
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   healthcheck:
     enabled: true
     path: /

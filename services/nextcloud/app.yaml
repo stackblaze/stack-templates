@@ -86,7 +86,7 @@ spec:
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
-    storageClass: slow
+    storageClass: lite
     emptyDir: false
     mountPath: /var/www/html/data
     name: '{{KUBERO_APP_NAME}}-data'

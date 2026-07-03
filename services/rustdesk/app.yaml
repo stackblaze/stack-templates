@@ -43,7 +43,7 @@ spec:
     mountPath: /data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   healthcheck:
     enabled: false

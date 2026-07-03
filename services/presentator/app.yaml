@@ -26,7 +26,7 @@ spec:
     mountPath: /pr/pb_data
     name: presentator-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   addons: []
   web:

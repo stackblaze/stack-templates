@@ -100,7 +100,7 @@ spec:
     mountPath: /var/www/wallabag/web/assets/images
     name: wallabag-images
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   healthcheck:
     enabled: true
     path: /

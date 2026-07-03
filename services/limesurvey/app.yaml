@@ -82,21 +82,21 @@ spec:
     mountPath: /var/www/html/upload
     name: limesurvey-upload
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/plugins
     name: limesurvey-plugins
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/application/config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   image:
     containerPort: '80'
     pullPolicy: Always

@@ -39,14 +39,14 @@ spec:
     mountPath: /opt/kimai/var/data
     name: '{{KUBERO_APP_NAME}}-data-volume'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /opt/kimai/var/plugins
     name: kimai-plugins-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   addons:
   - displayName: MariaDB

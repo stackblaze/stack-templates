@@ -28,7 +28,7 @@ spec:
     mountPath: /var/cache/ntfy
     name: '{{KUBERO_APP_NAME}}-cache-volume'
     size: 500Mi
-    storageClass: slow
+    storageClass: lite
   image:
     command:
     - ntfy

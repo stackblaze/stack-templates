@@ -84,7 +84,7 @@ spec:
     mountPath: /app/microbin_data
     name: microbin-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   image:
     containerPort: '8080'
     repository: danielszabo99/microbin

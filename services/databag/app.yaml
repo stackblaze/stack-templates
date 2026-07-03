@@ -30,7 +30,7 @@ spec:
     mountPath: /var/lib/databag
     name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   image:
     containerPort: '7000'
     pullPolicy: Always

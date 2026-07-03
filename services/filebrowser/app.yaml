@@ -29,21 +29,21 @@ spec:
     mountPath: /srv
     name: filebrowser-srv
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /database
     name: '{{KUBERO_APP_NAME}}-database'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 100Mi
-    storageClass: slow
+    storageClass: lite
   image:
     containerPort: '80'
     pullPolicy: Always

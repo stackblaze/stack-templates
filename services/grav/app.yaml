@@ -27,7 +27,7 @@ spec:
     mountPath: /config
     name: grav-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   addons: []
   web:

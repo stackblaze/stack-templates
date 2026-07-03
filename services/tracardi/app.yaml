@@ -134,7 +134,7 @@ spec:
             replicas: 1
             persistence:
               enabled: true
-              storageClass: fast
+              storageClass: smart
               size: 5Gi
             securityConfig:
               enabled: false

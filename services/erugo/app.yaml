@@ -95,7 +95,7 @@ spec:
     mountPath: /var/www/html/storage
     name: '{{KUBERO_APP_NAME}}-storage'
     size: 5Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   web:
     replicaCount: 1

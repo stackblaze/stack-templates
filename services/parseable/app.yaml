@@ -52,14 +52,14 @@ spec:
     mountPath: /parseable/data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /parseable/staging
     name: parseable-staging
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   web:
     replicaCount: 1
