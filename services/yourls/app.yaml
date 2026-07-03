@@ -103,7 +103,7 @@ spec:
     mountPath: /var/www/html/user
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   healthcheck:
     enabled: true

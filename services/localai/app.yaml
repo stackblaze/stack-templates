@@ -42,7 +42,7 @@ spec:
     mountPath: /models
     name: localai-models
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   web:
     replicaCount: 1

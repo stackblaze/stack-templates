@@ -80,7 +80,7 @@ spec:
             persistence:
               enabled: true
               size: 1Gi
-              storageClass: fast
+              storageClass: smart
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -166,7 +166,7 @@ spec:
     mountPath: /config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   healthcheck:
     enabled: true

@@ -37,14 +37,14 @@ spec:
     mountPath: /var/lib/stalwart
     name: '{{KUBERO_APP_NAME}}-data'
     size: 20Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /etc/stalwart
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   web:
     replicaCount: 1

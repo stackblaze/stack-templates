@@ -32,7 +32,7 @@ spec:
     mountPath: /data/_timetagger
     name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   image:
     containerPort: '8080'
     repository: ghcr.io/almarklein/timetagger

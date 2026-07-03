@@ -111,21 +111,21 @@ spec:
     mountPath: /var/www/html/config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/var/logs
     name: '{{KUBERO_APP_NAME}}-logs'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/docroot/media
     name: '{{KUBERO_APP_NAME}}-media'
     size: 3Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   healthcheck:
     enabled: true

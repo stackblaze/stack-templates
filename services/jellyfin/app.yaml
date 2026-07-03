@@ -35,14 +35,14 @@ spec:
     mountPath: /config
     name: '{{KUBERO_APP_NAME}}-data'
     size: 4Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /media
     name: '{{KUBERO_APP_NAME}}-media'
     size: 10Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   healthcheck:
     enabled: true

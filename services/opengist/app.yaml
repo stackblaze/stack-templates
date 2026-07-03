@@ -32,7 +32,7 @@ spec:
           imageName: ghcr.io/cloudnative-pg/postgresql:16
           primaryUpdateStrategy: unsupervised
           storage:
-            storageClass: fast
+            storageClass: smart
             size: 5Gi
           resources:
             requests:
@@ -83,7 +83,7 @@ spec:
     mountPath: /root/.opengist
     name: opengist-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   image:
     containerPort: '6157'
     repository: ghcr.io/thomiceli/opengist

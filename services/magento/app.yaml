@@ -99,7 +99,7 @@ spec:
             replicas: 1
             persistence:
               enabled: true
-              storageClass: fast
+              storageClass: smart
               size: 5Gi
             securityConfig:
               enabled: false
@@ -141,7 +141,7 @@ spec:
     mountPath: /var/www/html
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   resources:
     requests:

@@ -154,7 +154,7 @@ spec:
     mountPath: /home/frappe/frappe-bench/sites
     name: erpnext-sites
     size: 5Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   resources:
     requests:

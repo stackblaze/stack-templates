@@ -32,7 +32,7 @@ spec:
     mountPath: /ngrams
     name: languagetool-ngrams
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   healthcheck:
     enabled: true
     path: /v2/languages

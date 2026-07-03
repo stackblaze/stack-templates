@@ -78,7 +78,7 @@ spec:
     mountPath: /usr/src/trudesk/public/uploads
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   healthcheck:
     enabled: true

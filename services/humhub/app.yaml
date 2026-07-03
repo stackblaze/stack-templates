@@ -100,14 +100,14 @@ spec:
     mountPath: /var/www/localhost/htdocs/protected/config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/localhost/htdocs/uploads
     name: '{{KUBERO_APP_NAME}}-uploads'
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   web:
     replicaCount: 1

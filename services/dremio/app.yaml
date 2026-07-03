@@ -57,7 +57,7 @@ spec:
     mountPath: /opt/dremio/data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   resources:
     requests:

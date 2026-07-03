@@ -43,7 +43,7 @@ spec:
     mountPath: /var/lib/postgresql/data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 20Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   healthcheck:
     enabled: false

@@ -81,7 +81,7 @@ spec:
           imageName: ghcr.io/cloudnative-pg/postgresql:16
           primaryUpdateStrategy: unsupervised
           storage:
-            storageClass: fast
+            storageClass: smart
             size: 5Gi
           resources:
             requests:
@@ -146,7 +146,7 @@ spec:
             - data
             persistence:
               enabled: true
-              storageClass: fast
+              storageClass: smart
               size: 10Gi
             resources:
               requests:

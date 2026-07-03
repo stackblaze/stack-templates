@@ -39,7 +39,7 @@ def pg_addon(name: str, db: str, user: str, password: str, instances: int) -> di
                     "instances": instances,
                     "imageName": "ghcr.io/cloudnative-pg/postgresql:16",
                     "primaryUpdateStrategy": "unsupervised",
-                    "storage": {"storageClass": "fast", "size": "5Gi"},
+                    "storage": {"storageClass": "smart", "size": "5Gi"},
                     "resources": {
                         "requests": {"cpu": "100m", "memory": "256Mi"},
                         "limits": {"cpu": "1", "memory": "1Gi"},

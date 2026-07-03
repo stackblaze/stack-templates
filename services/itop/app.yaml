@@ -93,14 +93,14 @@ spec:
     mountPath: /var/www/html/data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 3Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/conf
     name: itop-conf
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   web:
     replicaCount: 1

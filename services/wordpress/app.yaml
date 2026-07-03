@@ -98,7 +98,7 @@ spec:
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
-    storageClass: slow
+    storageClass: lite
     emptyDir: false
     mountPath: /var/www/html/wp-content
     name: '{{KUBERO_APP_NAME}}-data'

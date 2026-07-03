@@ -25,21 +25,21 @@ spec:
     mountPath: /var/www/html/.spaces
     name: cockpit-spaces
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/storage/data
     name: '{{KUBERO_APP_NAME}}-storage-data'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/storage/uploads
     name: '{{KUBERO_APP_NAME}}-storage-uploads'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   addons: []
   name: cockpit

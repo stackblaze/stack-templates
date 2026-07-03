@@ -89,7 +89,7 @@ spec:
     mountPath: /var/www/app/plugins
     name: kanboard-plugins-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   image:
     containerPort: '80'
     pullPolicy: Always

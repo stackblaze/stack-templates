@@ -156,7 +156,7 @@ spec:
     mountPath: /home/frappe/frappe-bench/sites
     name: frappehr-sites
     size: 5Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   resources:
     requests:

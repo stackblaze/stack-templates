@@ -39,7 +39,7 @@ spec:
     mountPath: /root/.ollama
     name: ollama-models
     size: 20Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   web:
     replicaCount: 1

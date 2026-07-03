@@ -119,14 +119,14 @@ spec:
     mountPath: /var/www/html
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/spool/cron/crontabs
     name: minthcm-cron
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   resources:
     requests:

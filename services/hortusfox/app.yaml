@@ -105,14 +105,14 @@ spec:
     mountPath: /var/www/html/public/backup
     name: hortusfox-backup
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /var/www/html/app/logs
     name: '{{KUBERO_APP_NAME}}-logs'
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   web:
     replicaCount: 1

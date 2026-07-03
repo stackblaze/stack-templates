@@ -41,7 +41,7 @@ spec:
     mountPath: /data
     name: arvicebox-volume
     size: 1Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   addons: []
   web:

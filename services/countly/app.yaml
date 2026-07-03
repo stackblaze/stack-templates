@@ -79,7 +79,7 @@ spec:
     mountPath: /opt/countly/frontend/express/public/appimages
     name: countly-appimages
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   resources:
     requests:

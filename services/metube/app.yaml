@@ -28,7 +28,7 @@ spec:
     mountPath: /downloads
     name: downloads-volume
     size: 10Gi
-    storageClass: slow
+    storageClass: lite
   image:
     containerPort: '8081'
     pullPolicy: Always

@@ -36,28 +36,28 @@ spec:
     mountPath: /cryptpad/blob
     name: cryptpad-blob
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /cryptpad/block
     name: cryptpad-block
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /cryptpad/data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /cryptpad/datastore
     name: '{{KUBERO_APP_NAME}}-files'
     size: 2Gi
-    storageClass: slow
+    storageClass: lite
   cronjobs: []
   web:
     replicaCount: 1
