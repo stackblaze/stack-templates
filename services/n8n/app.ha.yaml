@@ -6,7 +6,10 @@ metadata:
     kubero.dev/template.description: Free and source-available fair-code licensed
       workflow automation tool. Easily automate tasks across different services.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/45487711?s=200&v=4
-    kubero.dev/template.installation: ''
+    kubero.dev/template.installation: Open your app URL, complete the one-time owner setup,
+      then sign in. If you are redirected back to /setup after login, add the proxy
+      env vars below (already in the template) and restart the app. Do not re-register
+      the owner account.
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/n8n-screenshot-lead-capture.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/n8n-screenshot-daily-digest.png"]'
     kubero.dev/template.source: https://github.com/n8n-io/n8n
@@ -88,6 +91,14 @@ spec:
     value: '123456'
   - name: N8N_BASIC_AUTH_ACTIVE
     value: 'false'
+  - name: WEBHOOK_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: N8N_EDITOR_BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: N8N_PROTOCOL
+    value: https
+  - name: N8N_PROXY_HOPS
+    value: '1'
   - name: DB_POSTGRESDB_DATABASE
     value: n8n
   extraVolumes: []
