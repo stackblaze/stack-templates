@@ -177,7 +177,7 @@
         "utilities"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@PLACEHOLDER/services/n8n/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@9775a895e2c366dd2693016984cdd39baf26fad4/services/n8n/demo.mp4",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/dashboard.png"
       ],
       "links": [],
