@@ -7313,7 +7313,7 @@
         "work"
       ],
       "screenshots": [
-        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/attendize/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/attendize/demo.mp4",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/attendize/dashboard.png"
       ],
       "links": [
