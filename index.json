@@ -177,8 +177,8 @@
         "utilities"
       ],
       "screenshots": [
-        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/n8n-screenshot-lead-capture.png",
-        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/n8n-screenshot-daily-digest.png"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@PLACEHOLDER/services/n8n/demo.mp4",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/dashboard.png"
       ],
       "links": [],
       "addons": [
