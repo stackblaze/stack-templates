@@ -11,7 +11,10 @@
     "work"
   ],
   "installation": "Attendize is a multi-container Laravel stack; this template deploys ONLY the web/server image (elestio/attendize-web, listens on container port 80). You MUST also run the companion queue/scheduler worker from image elestio/attendize-worker (same env, same DB/Redis) to send emails, generate ticket PDFs and process background jobs. SMTP is required for ticket delivery: set MAIL_HOST/MAIL_PORT/MAIL_USERNAME/MAIL_PASSWORD to a real SMTP relay (the upstream compose uses a maildev catch-all only for dev). ROTATE before production: APP_KEY (run `php artisan key:generate` or set a 32-char base64 secret prefixed with base64:), and the mariadb add-on db/user/password. APP_URL is wired to this app's public URL. First run: the entrypoint runs migrations automatically; then browse to {{KUBERO_APP_URL}}/install (or the signup page) to create the first admin/organiser account. Uses MariaDB (the app is MySQL-only, not Postgres-compatible) and Valkey/Redis for queue + cache.",
-  "screenshots": [],
+  "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/attendize/demo.mp4",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/attendize/dashboard.png"
+  ],
   "links": [
     "https://github.com/Attendize/Attendize/blob/master/docker-compose.yml"
   ],
