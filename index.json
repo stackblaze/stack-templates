@@ -5374,7 +5374,7 @@
     },
     {
       "name": "mattermost",
-      "description": "Mattermost is an open-source, self-hosted collaboration platform for messaging, file sharing and ChatOps â€” an alternative to Slack.",
+      "description": "Mattermost is an open-source, self-hosted collaboration platform for messaging, file sharing and ChatOps — an alternative to Slack.",
       "source": "https://github.com/mattermost/mattermost",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/icon.png",
       "website": "https://mattermost.com/",
