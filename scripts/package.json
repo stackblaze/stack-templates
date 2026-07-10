@@ -1,0 +1,14 @@
+{
+  "name": "stack-templates-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Automation for Stackblaze template catalog (screenshots, QA, generation)",
+  "scripts": {
+    "capture": "node capture-app.mjs",
+    "capture:batch": "node capture-batch.mjs",
+    "capture:install": "playwright install chromium"
+  },
+  "dependencies": {
+    "playwright": "^1.52.0"
+  }
+}

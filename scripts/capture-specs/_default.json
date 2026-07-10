@@ -1,0 +1,13 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "waitAfterNavigationMs": 3000,
+  "pages": [
+    {
+      "name": "home",
+      "path": "/",
+      "waitMs": 4000,
+      "fullPage": false
+    }
+  ]
+}

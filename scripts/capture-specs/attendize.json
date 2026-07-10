@@ -1,0 +1,41 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      { "fill": { "input[name='email'], #email": "admin@example.com" } },
+      { "fill": { "input[name='password'], #password": "changeme" } },
+      { "click": "button[type='submit'], input[type='submit'], .btn-login" },
+      { "waitForNavigation": true }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    {
+      "name": "organiser-dashboard",
+      "path": "/organiser/1/dashboard",
+      "waitMs": 3500
+    },
+    {
+      "name": "event-dashboard",
+      "path": "/event/2/dashboard",
+      "waitMs": 3500
+    },
+    {
+      "name": "tickets",
+      "path": "/event/2/tickets",
+      "waitMs": 3000
+    },
+    {
+      "name": "orders",
+      "path": "/event/2/orders",
+      "waitMs": 3000
+    },
+    {
+      "name": "attendees",
+      "path": "/event/2/attendees",
+      "waitMs": 3000
+    }
+  ]
+}
