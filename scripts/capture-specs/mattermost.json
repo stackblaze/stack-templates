@@ -1,0 +1,49 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      { "click": "a.btn-tertiary:has-text('View in Browser')" },
+      { "waitForSelector": "input#input_loginId", "timeout": 30000 },
+      { "fill": { "input#input_loginId, input[name='loginId']": "admin" } },
+      { "fill": { "input#input_password-input, input[name='password-input']": "changeme" } },
+      { "click": "button[type='submit'], #saveSetting" },
+      { "waitForURL": "**/select_team**", "timeout": 60000 },
+      { "sleep": 1500 }
+    ],
+    "waitAfterMs": 3000
+  },
+  "pages": [
+    {
+      "name": "town-square",
+      "path": "/stackblaze-team/channels/town-square",
+      "waitFor": "#post-list, .post-list__dynamic",
+      "waitMs": 3000
+    },
+    {
+      "name": "engineering",
+      "path": "/stackblaze-team/channels/engineering",
+      "waitFor": "#post-list, .post-list__dynamic",
+      "waitMs": 2500
+    },
+    {
+      "name": "product-launch",
+      "path": "/stackblaze-team/channels/product-launch",
+      "waitFor": "#post-list, .post-list__dynamic",
+      "waitMs": 2500
+    },
+    {
+      "name": "releases",
+      "path": "/stackblaze-team/channels/releases",
+      "waitFor": "#post-list, .post-list__dynamic",
+      "waitMs": 2500
+    },
+    {
+      "name": "customer-success",
+      "path": "/stackblaze-team/channels/customer-success",
+      "waitFor": "#post-list, .post-list__dynamic",
+      "waitMs": 2500
+    }
+  ]
+}

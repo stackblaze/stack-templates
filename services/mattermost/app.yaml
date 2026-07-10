@@ -8,11 +8,14 @@ metadata:
       \ platform for messaging, file sharing and ChatOps \u2014 an alternative to\
       \ Slack."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/icon.png
-    kubero.dev/template.installation: Ships the MIT-licensed Team Edition. After the
-      first boot open the Site URL and create the initial admin account at /signup_user_complete.
-      Set MM_SERVICESETTINGS_SITEURL to your public URL before going live.
+    kubero.dev/template.installation: Ships the MIT-licensed Team Edition. Set MM_SERVICESETTINGS_SITEURL
+      to your public URL before going live. Without demo data, create the initial admin at
+      /signup_user_complete on first visit. Enable **Load demo data** at install (or set
+      STACKBLAZE_LOAD_DEMO_DATA=true) to auto-create admin/changeme, a demo team, channels,
+      and sample messages — rotate STACKBLAZE_DEMO_ADMIN_PASSWORD immediately on any public URL.
     kubero.dev/template.links: '["https://docs.mattermost.com/"]'
-    kubero.dev/template.screenshots: '["https://mattermost.com/wp-content/uploads/2022/02/hero-mattermost-overview.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/mattermost/demo.mp4",
+      "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/dashboard.png"]'
     kubero.dev/template.source: https://github.com/mattermost/mattermost
     kubero.dev/template.categories: '["communication", "work"]'
     kubero.dev/template.title: Mattermost
@@ -31,6 +34,16 @@ spec:
     value: postgres://mattermost:mattermost@{{KUBERO_APP_NAME}}-postgresql-rw:5432/mattermost?sslmode=disable&connect_timeout=10
   - name: TZ
     value: Etc/UTC
+  - name: STACKBLAZE_LOAD_DEMO_DATA
+    value: 'false'
+  - name: STACKBLAZE_DEMO_ADMIN_LOGIN
+    value: admin
+  - name: STACKBLAZE_DEMO_ADMIN_PASSWORD
+    value: changeme
+  - name: STACKBLAZE_DEMO_ADMIN_EMAIL
+    value: admin@localhost
+  - name: STACKBLAZE_DEMO_USER_PASSWORD
+    value: StackblazeDemo1!
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -102,6 +115,11 @@ spec:
     pullPolicy: Always
     repository: mattermost/mattermost-team-edition
     tag: latest
+    command:
+    - /bin/bash
+    - -c
+    - "wget -q -O /tmp/kubero-entrypoint.sh \"https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/kubero-entrypoint.sh\"\
+      \nchmod +x /tmp/kubero-entrypoint.sh\nexec /tmp/kubero-entrypoint.sh\n"
     run:
       securityContext:
         readOnlyRootFilesystem: false

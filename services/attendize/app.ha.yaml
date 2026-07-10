@@ -166,6 +166,8 @@ spec:
     value: changeme
   - name: ATTENDIZE_AUTO_SETUP
     value: 'true'
+  - name: STACKBLAZE_LOAD_DEMO_DATA
+    value: 'false'
   - name: SESSION_SECURE_COOKIE
     value: 'true'
   extraVolumes:

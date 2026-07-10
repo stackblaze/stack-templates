@@ -178,7 +178,12 @@ run_bootstrap() {
   php artisan migrate --force
   php artisan db:seed --force
   php bootstrap-admin.php
-  php artisan db:seed --class=DemoSeeder --force
+  if [ "${STACKBLAZE_LOAD_DEMO_DATA:-false}" = "true" ]; then
+    log "Seeding demo events and sample orders (STACKBLAZE_LOAD_DEMO_DATA=true)"
+    php artisan db:seed --class=DemoSeeder --force
+  else
+    log "Skipping DemoSeeder (enable STACKBLAZE_LOAD_DEMO_DATA for sample events)"
+  fi
 
   mark_installed
 

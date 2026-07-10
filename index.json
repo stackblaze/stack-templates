@@ -5388,7 +5388,8 @@
         "work"
       ],
       "screenshots": [
-        "https://mattermost.com/wp-content/uploads/2022/02/hero-mattermost-overview.png"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/mattermost/demo.mp4",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/dashboard.png"
       ],
       "links": [
         "https://docs.mattermost.com/"
@@ -5411,6 +5412,7 @@
       "license": "Other",
       "spdx_id": "NOASSERTION",
       "dirname": "mattermost",
+      "supportsDemoData": true,
       "deploymentTypes": [
         {
           "id": "standard",
@@ -7338,6 +7340,7 @@
       "license": "GNU Affero General Public License v3.0",
       "spdx_id": "AGPL-3.0",
       "dirname": "attendize",
+      "supportsDemoData": true,
       "deploymentTypes": [
         {
           "id": "standard",
