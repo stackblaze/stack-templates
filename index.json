@@ -5388,7 +5388,7 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/mattermost/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@8c97a17/services/mattermost/demo.mp4",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/dashboard.png"
       ],
       "links": [
@@ -7315,7 +7315,7 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f37e3ab/services/attendize/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@8c97a17/services/attendize/demo.mp4",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/attendize/dashboard.png"
       ],
       "links": [

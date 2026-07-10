@@ -16,7 +16,7 @@ metadata:
       db/user/password (defaults attendize/attendize/attendize). Uses MariaDB (MySQL-only,
       not Postgres) and Valkey/Redis for queue + cache.'
     kubero.dev/template.links: '["https://github.com/Attendize/Attendize/blob/master/docker-compose.yml"]'
-    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f37e3ab/services/attendize/demo.mp4",
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@8c97a17/services/attendize/demo.mp4",
       "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/attendize/dashboard.png"]'
     kubero.dev/template.source: https://github.com/Attendize/Attendize
     kubero.dev/template.categories: '["e-commerce", "productivity", "work"]'
