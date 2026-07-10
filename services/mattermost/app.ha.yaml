@@ -9,10 +9,8 @@ metadata:
       \ Slack."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/icon.png
     kubero.dev/template.installation: Ships the MIT-licensed Team Edition. Set MM_SERVICESETTINGS_SITEURL
-      to your public URL before going live. Without demo data, create the initial admin at
-      /signup_user_complete on first visit. Enable **Load demo data** at install (or set
-      STACKBLAZE_LOAD_DEMO_DATA=true) to auto-create admin/changeme, a demo team, channels,
-      and sample messages — rotate STACKBLAZE_DEMO_ADMIN_PASSWORD immediately on any public URL.
+      to your public URL before going live, then create the initial admin at
+      /signup_user_complete on first visit.
     kubero.dev/template.links: '["https://docs.mattermost.com/"]'
     kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@8c97a17/services/mattermost/demo.mp4",
       "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/dashboard.png"]'
@@ -34,16 +32,6 @@ spec:
     value: postgres://mattermost:mattermost@{{KUBERO_APP_NAME}}-postgresql-rw:5432/mattermost?sslmode=disable&connect_timeout=10
   - name: TZ
     value: Etc/UTC
-  - name: STACKBLAZE_LOAD_DEMO_DATA
-    value: 'false'
-  - name: STACKBLAZE_DEMO_ADMIN_LOGIN
-    value: admin
-  - name: STACKBLAZE_DEMO_ADMIN_PASSWORD
-    value: changeme
-  - name: STACKBLAZE_DEMO_ADMIN_EMAIL
-    value: admin@localhost
-  - name: STACKBLAZE_DEMO_USER_PASSWORD
-    value: StackblazeDemo1!
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -112,14 +100,12 @@ spec:
     replicaCount: 0
   image:
     containerPort: '8065'
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     repository: mattermost/mattermost-team-edition
-    tag: latest
-    command:
-    - /bin/bash
-    - -c
-    - "wget -q -O /tmp/kubero-entrypoint.sh \"https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/kubero-entrypoint.sh\"\
-      \nchmod +x /tmp/kubero-entrypoint.sh\nexec /tmp/kubero-entrypoint.sh\n"
+    # Pinned, NOT :latest — modern Mattermost images are shell-less; a floating
+    # tag pulled fresh on rebuild breaks command overrides. Default entrypoint +
+    # MM_* env only.
+    tag: '10.5'
     run:
       securityContext:
         readOnlyRootFilesystem: false
