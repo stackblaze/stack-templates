@@ -8,7 +8,7 @@ metadata:
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/excalidraw/demo.mp4", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/dashboard.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-board.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-architecture.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-dark.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-tools.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1ca4dbd/services/excalidraw/demo.mp4", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/dashboard.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-board.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-architecture.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-dark.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-tools.png"]'
     kubero.dev/template.source: https://github.com/excalidraw/excalidraw
     kubero.dev/template.categories: '["documentation", "work", "collaboration"]'
     kubero.dev/template.title: Excalidraw
