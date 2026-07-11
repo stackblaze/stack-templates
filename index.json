@@ -2928,7 +2928,7 @@
       "name": "flowise",
       "description": "Drag & drop UI to build your customized LLM flow",
       "source": "https://github.com/FlowiseAI/Flowise",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flowise/icon.png",
+      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/icon.png",
       "website": "https://flowiseai.com",
       "installation": "First visit opens /organization-setup \u2014 create the admin account (email + password). FLOWISE_USERNAME/PASSWORD env is legacy basic-auth only.",
       "architecture": [],
@@ -2936,10 +2936,10 @@
         "ai"
       ],
       "screenshots": [
-        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flowise/demo.mp4",
-        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flowise/dashboard.png",
-        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flowise/screenshot-agentic-rag.png",
-        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flowise/screenshot-sql-agent.png"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/dashboard.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/screenshot-agentic-rag.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/screenshot-sql-agent.png"
       ],
       "links": [],
       "addons": [
