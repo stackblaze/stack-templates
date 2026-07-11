@@ -8,7 +8,7 @@ metadata:
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/demo.mp4", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/dashboard.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-login.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-generator.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/screenshot-login.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/screenshot-generator.png"]'
     kubero.dev/template.source: https://github.com/dani-garcia/vaultwarden
     kubero.dev/template.categories: '["security", "utilities"]'
     kubero.dev/template.title: Vaultwarden
