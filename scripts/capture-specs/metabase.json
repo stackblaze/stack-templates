@@ -1,0 +1,20 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/auth/login",
+    "steps": [
+      { "fill": { "input[type=email], input[name=username]": "${METABASE_EMAIL}" } },
+      { "fill": { "input[type=password]": "${METABASE_PASSWORD}" } },
+      { "click": "button:has-text(\"Sign in\")" },
+      { "waitForNavigation": true },
+      { "click": "button:has-text(\"Start exploring\")" }
+    ],
+    "waitAfterMs": 2500
+  },
+  "pages": [
+    { "name": "home", "path": "/", "waitMs": 3000 },
+    { "name": "dashboard", "path": "/dashboard/1-e-commerce-insights", "waitMs": 6000 },
+    { "name": "question", "path": "/question/21-best-selling-products", "waitMs": 4000 }
+  ]
+}
