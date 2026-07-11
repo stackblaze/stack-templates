@@ -5,10 +5,10 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Drag & drop UI to build your customized LLM flow
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/128289781?s=200&v=4
-    kubero.dev/template.installation: ''
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flowise/icon.png
+    kubero.dev/template.installation: 'First visit opens /organization-setup — create the admin account (email + password).'
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://remarkable-smakager-ddb2b7.netlify.app/opengraph-image.png?9ccfc0cd89ea0cda"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flowise/demo.mp4", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flowise/dashboard.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flowise/screenshot-agentic-rag.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flowise/screenshot-sql-agent.png"]'
     kubero.dev/template.source: https://github.com/FlowiseAI/Flowise
     kubero.dev/template.categories: '[ "ai" ]'
     kubero.dev/template.title: Flowise

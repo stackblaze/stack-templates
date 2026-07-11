@@ -1,0 +1,20 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/signin",
+    "steps": [
+      { "fill": { "input[type=email]": "${FLOWISE_EMAIL}" } },
+      { "fill": { "input[type=password]": "${FLOWISE_PASSWORD}" } },
+      { "click": "button:has-text(\"Sign In\"), button:has-text(\"Login\")" },
+      { "waitForNavigation": true }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "chatflows", "path": "/chatflows", "waitMs": 2000 },
+    { "name": "marketplaces", "path": "/marketplaces", "waitMs": 2500 },
+    { "name": "assistants", "path": "/assistants", "waitMs": 2000 },
+    { "name": "agentflows", "path": "/agentflows", "waitMs": 2000 }
+  ]
+}
