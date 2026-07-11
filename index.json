@@ -460,7 +460,7 @@
       "name": "uptime-kuma",
       "description": "Self-hosted monitoring tool like \"Uptime Robot\".",
       "source": "https://github.com/louislam/uptime-kuma",
-      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/icon.png",
+      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/icon.png",
       "website": "https://uptime.kuma.pet",
       "installation": "",
       "architecture": [],
@@ -468,10 +468,10 @@
         "monitoring"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/demo.mp4",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/dashboard.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/screenshot-monitor-detail.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/screenshot-status-page.png"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/dashboard.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/screenshot-monitor-detail.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/screenshot-status-page.png"
       ],
       "links": [],
       "addons": [
