@@ -77,18 +77,12 @@ spec:
   envVars:
   - name: NODE_OPTIONS
     value: --max-old-space-size=1536
+  # NocoDB expects a connection URL in NC_DB (not "pg" + split host vars).
+  # Format: pg://host:port?u=user&p=password&d=database
   - name: NC_DB
-    value: pg
-  - name: NC_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
-  - name: NC_DB_PORT
-    value: '5432'
-  - name: NC_DB_USER
-    value: nocodb
-  - name: NC_DB_PASSWORD
-    value: nocodb
-  - name: NC_DB_DATABASE_NAME
-    value: nocodb
+    value: 'pg://{{KUBERO_APP_NAME}}-postgresql-rw:5432?u=nocodb&p=nocodb&d=nocodb'
+  - name: PORT
+    value: '8080'
   extraVolumes: []
   image:
     containerPort: '8080'
