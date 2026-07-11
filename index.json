@@ -5389,7 +5389,7 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/mattermost/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@ca0d40f/services/mattermost/demo.mp4",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/dashboard.png",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-town-square.png",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-engineering.png",
