@@ -1,0 +1,20 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/user/login",
+    "steps": [
+      { "fill": { "#user_name": "${GITEA_USERNAME}" } },
+      { "fill": { "#password": "${GITEA_PASSWORD}" } },
+      { "click": "form button[type=submit]" },
+      { "waitForNavigation": true }
+    ],
+    "waitAfterMs": 1500
+  },
+  "pages": [
+    { "name": "dashboard", "path": "/", "waitMs": 2000 },
+    { "name": "explore", "path": "/explore/repos", "waitMs": 2000 },
+    { "name": "repo", "path": "/${GITEA_USERNAME}/demo-app", "waitMs": 2500 },
+    { "name": "issues", "path": "/${GITEA_USERNAME}/demo-app/issues", "waitMs": 2000 }
+  ]
+}
