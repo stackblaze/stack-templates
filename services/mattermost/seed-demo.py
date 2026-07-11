@@ -227,6 +227,15 @@ def add_user_to_channel(admin: MMClient, channel_id: str, user_id: str) -> None:
             return
 
 
+def ensure_admin_on_team(admin: MMClient, team_id: str) -> None:
+    me = admin.request("GET", "/api/v4/users/me")
+    teams = admin.request("GET", f"/api/v4/users/{me['id']}/teams")
+    if teams:
+        return
+    print(f"  adding {me['username']} to team (signup/admin drift)")
+    add_team_member(admin, team_id, me["id"])
+
+
 def ensure_users(
     admin: MMClient,
     team_id: str,
@@ -532,6 +541,7 @@ def main() -> int:
     admin = bootstrap_admin(base, args.login, args.password, args.email)
     team = ensure_team(admin, args.team, args.team_display)
     team_id = team["id"]
+    ensure_admin_on_team(admin, team_id)
 
     if args.dry_run:
         print("Dry run — would seed users, channels, and posts")
@@ -563,6 +573,9 @@ def main() -> int:
             force=args.force,
         )
         print(f"  seeded #{ch_name}")
+
+    ensure_admin_on_team(admin, team_id)
+    dismiss_onboarding_ui(admin, user_ids)
 
     print("Done.")
     return 0
