@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """
 Mattermost demo seeder — team, users, channels, posts, threads.
-Runs on first boot when STACKBLAZE_LOAD_DEMO_DATA=true (see kubero-entrypoint.sh).
+
+One-off QA / screenshot tooling (Team Edition has no deploy-time seed hook yet).
+Run against a live URL or port-forwarded origin:
+
+  python3 seed-demo.py --url http://127.0.0.1:18065 --password changeme --force
 """
 
 from __future__ import annotations

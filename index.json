@@ -655,7 +655,7 @@
     },
     {
       "name": "activepieces",
-      "description": "Your friendliest open source all-in-one automation tool âœ¨ Workflow automation tool 100+ integration / Enterprise automation tool / Zapier Alternative",
+      "description": "Your friendliest open source all-in-one automation tool \u00e2\u0153\u00a8 Workflow automation tool 100+ integration / Enterprise automation tool / Zapier Alternative",
       "source": "https://github.com/activepieces/activepieces",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/activepieces/icon.png",
       "website": "https://www.activepieces.com/",
@@ -1067,7 +1067,7 @@
       "source": "https://github.com/Dolibarr/dolibarr",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dolibarr/icon.png",
       "website": "https://www.dolibarr.org/",
-      "installation": "Auto-installs on first boot when DOLI_DB_* and DOLI_URL_ROOT are set. Default login admin/admin — change immediately. First boot may take several minutes while MariaDB initializes.",
+      "installation": "Auto-installs on first boot when DOLI_DB_* and DOLI_URL_ROOT are set. Default login admin/admin \u2014 change immediately. First boot may take several minutes while MariaDB initializes.",
       "architecture": [],
       "categories": [
         "work",
@@ -1165,7 +1165,7 @@
     },
     {
       "name": "filebrowser",
-      "description": "Web file manager — browse, upload, and share files from the browser.",
+      "description": "Web file manager \u2014 browse, upload, and share files from the browser.",
       "source": "https://github.com/filebrowser/filebrowser",
       "icon": "https://avatars.githubusercontent.com/u/35781395?v=4",
       "website": "https://filebrowser.org/",
@@ -2381,7 +2381,7 @@
       "source": "https://github.com/janeczku/calibre-web",
       "icon": "https://avatars.githubusercontent.com/u/18373368?s=200&v=4",
       "website": "https://github.com/janeczku/calibre-web",
-      "installation": "Default login is admin/admin123 — change the password after first login. Mount your Calibre library at /books (must contain metadata.db).",
+      "installation": "Default login is admin/admin123 \u2014 change the password after first login. Mount your Calibre library at /books (must contain metadata.db).",
       "architecture": [
         "linux/amd64",
         "linux/arm64"
@@ -5323,7 +5323,7 @@
       "source": "https://github.com/dotCMS/core",
       "icon": "https://avatars.githubusercontent.com/u/1005263?s=200&v=4",
       "website": "https://www.dotcms.com/",
-      "installation": "Default admin login is `admin@dotcms.com` / `admin`. Change DOT_INITIAL_ADMIN_PASSWORD before exposing the instance.\n\nProvisions two addons automatically:\n- PostgreSQL 16 via the CloudNativePG operator (`dotcms-db`) â€” dotCMS supports PostgreSQL 13-16. Requires the CloudNativePG operator on the cluster.\n- OpenSearch 1.3.x (`dotcms-opensearch`) â€” dotCMS does not support OpenSearch 2.x or 3.x. Do not bump the image tag.\n\nThis is the single-instance tier. For a clustered, failover-capable deployment (3-node Postgres + 2 dotCMS replicas) use the dotCMS (HA) template.\n\nFirst boot takes 2-5 minutes while dotCMS initializes the schema and indices. Wait for both addons to become Ready before the dotCMS pod will pass its startup checks.",
+      "installation": "Default admin login is `admin@dotcms.com` / `admin`. Change DOT_INITIAL_ADMIN_PASSWORD before exposing the instance.\n\nProvisions two addons automatically:\n- PostgreSQL 16 via the CloudNativePG operator (`dotcms-db`) \u00e2\u20ac\u201d dotCMS supports PostgreSQL 13-16. Requires the CloudNativePG operator on the cluster.\n- OpenSearch 1.3.x (`dotcms-opensearch`) \u00e2\u20ac\u201d dotCMS does not support OpenSearch 2.x or 3.x. Do not bump the image tag.\n\nThis is the single-instance tier. For a clustered, failover-capable deployment (3-node Postgres + 2 dotCMS replicas) use the dotCMS (HA) template.\n\nFirst boot takes 2-5 minutes while dotCMS initializes the schema and indices. Wait for both addons to become Ready before the dotCMS pod will pass its startup checks.",
       "architecture": [
         "linux/amd64",
         "linux/arm64"
@@ -5375,7 +5375,7 @@
     },
     {
       "name": "mattermost",
-      "description": "Mattermost is an open-source, self-hosted collaboration platform for messaging, file sharing and ChatOps — an alternative to Slack.",
+      "description": "Mattermost is an open-source, self-hosted collaboration platform for messaging, file sharing and ChatOps \u2014 an alternative to Slack.",
       "source": "https://github.com/mattermost/mattermost",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/icon.png",
       "website": "https://mattermost.com/",
@@ -5389,7 +5389,7 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@dc873f9/services/mattermost/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/mattermost/demo.mp4",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/dashboard.png",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-town-square.png",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-engineering.png",
@@ -5418,7 +5418,7 @@
       "license": "Other",
       "spdx_id": "NOASSERTION",
       "dirname": "mattermost",
-      "supportsDemoData": true,
+      "supportsDemoData": false,
       "deploymentTypes": [
         {
           "id": "standard",
@@ -5594,7 +5594,7 @@
       "source": "https://github.com/deiucanta/chatpad",
       "icon": "https://raw.githubusercontent.com/deiucanta/chatpad/refs/heads/main/src/assets/favicon.png",
       "website": "https://chatpad.ai",
-      "installation": "Static ChatGPT web UI — add your OpenAI API key in the app settings after opening the URL.",
+      "installation": "Static ChatGPT web UI \u2014 add your OpenAI API key in the app settings after opening the URL.",
       "architecture": [],
       "categories": [
         "ai"
@@ -5635,7 +5635,7 @@
     },
     {
       "name": "stackblaze-workspace",
-      "description": "Stackblaze Workspace — browser VS Code with a persistent project volume. A clean dev environment; add a database, auth and APIs anytime via the Supabase add-on.",
+      "description": "Stackblaze Workspace \u2014 browser VS Code with a persistent project volume. A clean dev environment; add a database, auth and APIs anytime via the Supabase add-on.",
       "source": "https://github.com/stackblaze/stack-templates",
       "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/vscode.png",
       "website": "https://stackblaze.cloud",
@@ -5680,7 +5680,7 @@
     },
     {
       "name": "chatwoot",
-      "description": "Open-source customer engagement platform â€” an alternative to Intercom and Zendesk.",
+      "description": "Open-source customer engagement platform \u00e2\u20ac\u201d an alternative to Intercom and Zendesk.",
       "source": "https://github.com/chatwoot/chatwoot",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/icon.png",
       "website": "https://www.chatwoot.com/",
@@ -5732,7 +5732,7 @@
     },
     {
       "name": "typebot",
-      "description": "Open-source conversational form builder â€” a Typeform alternative you can self-host.",
+      "description": "Open-source conversational form builder \u00e2\u20ac\u201d a Typeform alternative you can self-host.",
       "source": "https://github.com/baptisteArno/typebot.io",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typebot/icon.png",
       "website": "https://typebot.io/",
@@ -5783,7 +5783,7 @@
     },
     {
       "name": "plausible",
-      "description": "Privacy-friendly alternative to Google Analytics â€” lightweight and open source.",
+      "description": "Privacy-friendly alternative to Google Analytics \u00e2\u20ac\u201d lightweight and open source.",
       "source": "https://github.com/plausible/analytics",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plausible/icon.png",
       "website": "https://plausible.io/",
@@ -5835,7 +5835,7 @@
     },
     {
       "name": "plane",
-      "description": "Open-source project management platform â€” modern alternative to Jira and Linear.",
+      "description": "Open-source project management platform \u00e2\u20ac\u201d modern alternative to Jira and Linear.",
       "source": "https://github.com/makeplane/plane",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/icon.png",
       "website": "https://plane.so/",
@@ -5888,7 +5888,7 @@
     },
     {
       "name": "discourse",
-      "description": "Open-source community discussion platform â€” modern forum software.",
+      "description": "Open-source community discussion platform \u00e2\u20ac\u201d modern forum software.",
       "source": "https://github.com/discourse/discourse",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/icon.png",
       "website": "https://www.discourse.org/",
@@ -6341,7 +6341,7 @@
     },
     {
       "name": "matomo",
-      "description": "Full-featured PHP analytics platform — privacy-focused alternative to Google Analytics.",
+      "description": "Full-featured PHP analytics platform \u2014 privacy-focused alternative to Google Analytics.",
       "source": "https://github.com/matomo-org/matomo",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/matomo/icon.png",
       "website": "https://matomo.org/",
@@ -6442,7 +6442,7 @@
     },
     {
       "name": "nodebb",
-      "description": "Next-generation forum software — powerful, mobile-ready, and fully customizable.",
+      "description": "Next-generation forum software \u2014 powerful, mobile-ready, and fully customizable.",
       "source": "https://github.com/NodeBB/NodeBB",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nodebb/icon.png",
       "website": "https://nodebb.org/",
@@ -6493,7 +6493,7 @@
     },
     {
       "name": "syncthing",
-      "description": "Continuous file synchronization — decentralized alternative to proprietary sync services.",
+      "description": "Continuous file synchronization \u2014 decentralized alternative to proprietary sync services.",
       "source": "https://github.com/syncthing/syncthing",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/syncthing/icon.png",
       "website": "https://syncthing.net/",
@@ -6592,7 +6592,7 @@
     },
     {
       "name": "freshrss",
-      "description": "Self-hosted RSS feed aggregator — lightweight and extensible.",
+      "description": "Self-hosted RSS feed aggregator \u2014 lightweight and extensible.",
       "source": "https://github.com/FreshRSS/FreshRSS",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freshrss/icon.png",
       "website": "https://freshrss.org/",
@@ -6696,7 +6696,7 @@
       "source": "https://github.com/wallabag/wallabag",
       "icon": "https://avatars.githubusercontent.com/u/4573139?s=200&v=4",
       "website": "https://www.wallabag.org/",
-      "installation": "Default login is wallabag:wallabag — change the password after first login.",
+      "installation": "Default login is wallabag:wallabag \u2014 change the password after first login.",
       "architecture": [
         "linux/amd64",
         "linux/arm64"
@@ -6745,7 +6745,7 @@
     },
     {
       "name": "vikunja",
-      "description": "The open-source to-do app — organize tasks, projects, and teams on all platforms.",
+      "description": "The open-source to-do app \u2014 organize tasks, projects, and teams on all platforms.",
       "source": "https://github.com/go-vikunja/vikunja",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vikunja/icon.png",
       "website": "https://vikunja.io/",
@@ -6848,7 +6848,7 @@
     },
     {
       "name": "superset",
-      "description": "Modern data exploration and visualization platform — enterprise-ready business intelligence.",
+      "description": "Modern data exploration and visualization platform \u2014 enterprise-ready business intelligence.",
       "source": "https://github.com/apache/superset",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/superset/icon.png",
       "website": "https://superset.apache.org/",
@@ -6900,7 +6900,7 @@
     },
     {
       "name": "appflowy",
-      "description": "Open-source Notion alternative — self-hosted workspace for notes, docs, and collaboration.",
+      "description": "Open-source Notion alternative \u2014 self-hosted workspace for notes, docs, and collaboration.",
       "source": "https://github.com/AppFlowy-IO/AppFlowy-Cloud",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/appflowy/icon.png",
       "website": "https://appflowy.io/",
@@ -6953,7 +6953,7 @@
     },
     {
       "name": "cryptpad",
-      "description": "Collaborative office suite — end-to-end encrypted docs, sheets, and kanban boards.",
+      "description": "Collaborative office suite \u2014 end-to-end encrypted docs, sheets, and kanban boards.",
       "source": "https://github.com/cryptpad/cryptpad",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cryptpad/icon.png",
       "website": "https://cryptpad.org/",
@@ -7002,11 +7002,11 @@
     },
     {
       "name": "glpi",
-      "description": "IT service management and asset tracking — helpdesk, inventory, and CMDB in one platform.",
+      "description": "IT service management and asset tracking \u2014 helpdesk, inventory, and CMDB in one platform.",
       "source": "https://github.com/glpi-project/glpi",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/glpi/icon.png",
       "website": "https://glpi-project.org/",
-      "installation": "GLPI auto-installs when all GLPI_DB_* variables are set. Default login admin/glpi — change immediately.",
+      "installation": "GLPI auto-installs when all GLPI_DB_* variables are set. Default login admin/glpi \u2014 change immediately.",
       "architecture": [],
       "categories": [
         "work",
@@ -7104,7 +7104,7 @@
     },
     {
       "name": "easyappointments",
-      "description": "Open-source appointment scheduler for service providers — booking pages, calendars, and notifications.",
+      "description": "Open-source appointment scheduler for service providers \u2014 booking pages, calendars, and notifications.",
       "source": "https://github.com/alextselegidis/easyappointments",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/easyappointments/icon.png",
       "website": "https://easyappointments.org/",
@@ -7155,7 +7155,7 @@
     },
     {
       "name": "password-pusher",
-      "description": "Securely share passwords and files with expiring links — open-source alternative to one-time secret services.",
+      "description": "Securely share passwords and files with expiring links \u2014 open-source alternative to one-time secret services.",
       "source": "https://github.com/pglombardo/PasswordPusher",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/password-pusher/icon.png",
       "website": "https://pwpush.com/",
@@ -7205,11 +7205,11 @@
     },
     {
       "name": "zulip",
-      "description": "Powerful open-source team chat organized into topic-based threads — an alternative to Slack.",
+      "description": "Powerful open-source team chat organized into topic-based threads \u2014 an alternative to Slack.",
       "source": "https://github.com/zulip/zulip",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zulip/icon.png",
       "website": "https://zulip.com/",
-      "installation": "Set SETTING_EXTERNAL_HOST and SECRETS_secret_key before first boot. Initial startup can take 5–10 minutes while Zulip configures all services.",
+      "installation": "Set SETTING_EXTERNAL_HOST and SECRETS_secret_key before first boot. Initial startup can take 5\u201310 minutes while Zulip configures all services.",
       "architecture": [],
       "categories": [
         "communication",
@@ -7263,7 +7263,7 @@
       "source": "https://github.com/akaunting/akaunting",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/akaunting/icon.png",
       "website": "https://akaunting.com",
-      "installation": "Akaunting is a Laravel app backed by MariaDB/MySQL (it does NOT support Postgres). On first boot the entrypoint installs the schema and seeds the admin user from ADMIN_EMAIL/ADMIN_PASSWORD, then the web installer is bypassed. Rotate the MariaDB password (default 'akaunting'), ADMIN_PASSWORD, and APP_KEY (must be a 32-char value; the placeholder is intentionally weak — regenerate with 'php artisan key:generate' or set base64:<openssl rand -base64 32>). After the DB add-on is healthy, log in at the app URL with ADMIN_EMAIL/ADMIN_PASSWORD and change the admin password immediately. Uploaded files, generated PDFs, and logos persist under /var/www/html/storage (mounted volume).",
+      "installation": "Akaunting is a Laravel app backed by MariaDB/MySQL (it does NOT support Postgres). On first boot the entrypoint installs the schema and seeds the admin user from ADMIN_EMAIL/ADMIN_PASSWORD, then the web installer is bypassed. Rotate the MariaDB password (default 'akaunting'), ADMIN_PASSWORD, and APP_KEY (must be a 32-char value; the placeholder is intentionally weak \u2014 regenerate with 'php artisan key:generate' or set base64:<openssl rand -base64 32>). After the DB add-on is healthy, log in at the app URL with ADMIN_EMAIL/ADMIN_PASSWORD and change the admin password immediately. Uploaded files, generated PDFs, and logos persist under /var/www/html/storage (mounted volume).",
       "architecture": [],
       "categories": [
         "finance",
@@ -7313,7 +7313,7 @@
       "source": "https://github.com/Attendize/Attendize",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/attendize/icon.png",
       "website": "https://www.attendize.com/",
-      "installation": "Attendize auto-configures on first boot — no /install wizard. Log in at {{KUBERO_APP_URL}}/login with admin@example.com / changeme (change immediately). Sample organiser and demo events are pre-loaded. A queue worker runs in the background for PDF tickets and email jobs. SMTP is still placeholder (smtp.example.com) — set MAIL_HOST/MAIL_PORT/MAIL_USERNAME/MAIL_PASSWORD to a real relay for ticket delivery. ROTATE before production: APP_KEY, MariaDB db/user/password (defaults attendize/attendize/attendize). Uses MariaDB (MySQL-only, not Postgres) and Valkey/Redis for queue + cache.",
+      "installation": "Attendize auto-configures on first boot \u2014 no /install wizard. Log in at {{KUBERO_APP_URL}}/login with admin@example.com / changeme (change immediately). Sample organiser and demo events are pre-loaded. A queue worker runs in the background for PDF tickets and email jobs. SMTP is still placeholder (smtp.example.com) \u2014 set MAIL_HOST/MAIL_PORT/MAIL_USERNAME/MAIL_PASSWORD to a real relay for ticket delivery. ROTATE before production: APP_KEY, MariaDB db/user/password (defaults attendize/attendize/attendize). Uses MariaDB (MySQL-only, not Postgres) and Valkey/Redis for queue + cache.",
       "architecture": [],
       "categories": [
         "e-commerce",
@@ -7526,7 +7526,7 @@
       "source": "https://github.com/bigcapitalhq/bigcapital",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bigcapital/icon.png",
       "website": "https://bigcapital.app",
-      "installation": "Multi-container stack. This template runs the PRIMARY backend API only: bigcapitalhq/server (listens on :3000). It is NOT usable on its own — you MUST also deploy these companion services and route them behind a reverse proxy (Envoy/Nginx): (1) FRONTEND/webapp: bigcapitalhq/webapp:latest (the SPA UI); (2) GATEWAY/proxy: envoyproxy/envoy:v1.30-latest fronting / -> webapp and /api -> server, terminating TLS on 80/443; (3) PDF rendering: gotenberg/gotenberg:7 (point GOTENBERG_URL at it, e.g. http://gotenberg:9000); (4) DB MIGRATION: a one-shot run of the same bigcapitalhq/server image with the migration command to provision the system + tenant schemas before first boot. The server multi-tenants: SYSTEM_DB_NAME is the control DB and each org gets its own DB prefixed by TENANT_DB_NAME_PERFIX. Add-ons wired: MariaDB (bigcapital-mysql:3306, app uses MySQL—not Postgres) and Valkey/Redis (rfr-bigcapital-valkey-readwrite:6379, no password) used for both cache and the BullMQ job queue. BEFORE exposing publicly ROTATE: JWT_SECRET (openssl rand -hex 32) and the MariaDB password (default 'bigcapital'). Set BASE_URL to your public URL (pre-filled with {{KUBERO_APP_URL}}). After the stack is up, browse to the gateway URL and create the first account (no default account exists); set SIGNUP_DISABLED=true afterward to lock down registration. Optional integrations (Plaid bank sync, Stripe/Lemon Squeezy billing, S3 attachments, SMTP mail) are configured via additional env vars.",
+      "installation": "Multi-container stack. This template runs the PRIMARY backend API only: bigcapitalhq/server (listens on :3000). It is NOT usable on its own \u2014 you MUST also deploy these companion services and route them behind a reverse proxy (Envoy/Nginx): (1) FRONTEND/webapp: bigcapitalhq/webapp:latest (the SPA UI); (2) GATEWAY/proxy: envoyproxy/envoy:v1.30-latest fronting / -> webapp and /api -> server, terminating TLS on 80/443; (3) PDF rendering: gotenberg/gotenberg:7 (point GOTENBERG_URL at it, e.g. http://gotenberg:9000); (4) DB MIGRATION: a one-shot run of the same bigcapitalhq/server image with the migration command to provision the system + tenant schemas before first boot. The server multi-tenants: SYSTEM_DB_NAME is the control DB and each org gets its own DB prefixed by TENANT_DB_NAME_PERFIX. Add-ons wired: MariaDB (bigcapital-mysql:3306, app uses MySQL\u2014not Postgres) and Valkey/Redis (rfr-bigcapital-valkey-readwrite:6379, no password) used for both cache and the BullMQ job queue. BEFORE exposing publicly ROTATE: JWT_SECRET (openssl rand -hex 32) and the MariaDB password (default 'bigcapital'). Set BASE_URL to your public URL (pre-filled with {{KUBERO_APP_URL}}). After the stack is up, browse to the gateway URL and create the first account (no default account exists); set SIGNUP_DISABLED=true afterward to lock down registration. Optional integrations (Plaid bank sync, Stripe/Lemon Squeezy billing, S3 attachments, SMTP mail) are configured via additional env vars.",
       "architecture": [],
       "categories": [
         "finance",
@@ -7631,7 +7631,7 @@
       "source": "https://github.com/ad-aures/castopod",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/castopod/icon.png",
       "website": "https://castopod.org",
-      "installation": "Castopod is a PHP/CodeIgniter app that needs a MySQL-compatible database (the MariaDB add-on here; Castopod does NOT support Postgres) and optionally Redis for caching, which is wired to the password-less Valkey add-on (CP_CACHE_HANDLER=redis + CP_REDIS_HOST). The public URL is injected via {{KUBERO_APP_URL}} into CP_BASEURL; this MUST match the real host or asset/feed URLs break. ROTATE before going live: CP_ANALYTICS_SALT (set to a fresh `openssl rand -hex 32` value — it salts analytics IP hashing and must not be the placeholder), and the MariaDB add-on credentials (db/user/password all default to 'castopod'). On first run, browse to the app URL to complete the web installer and create the super-admin (instance owner) account. Uploaded episode audio, cover art and the media library persist on the /app/public/media volume; raise its size for large podcast catalogs. Outbound email (SMTP) for notifications/invites must be configured in the admin panel after install. ActivityPub federation works out of the box once CP_BASEURL is reachable over HTTPS.",
+      "installation": "Castopod is a PHP/CodeIgniter app that needs a MySQL-compatible database (the MariaDB add-on here; Castopod does NOT support Postgres) and optionally Redis for caching, which is wired to the password-less Valkey add-on (CP_CACHE_HANDLER=redis + CP_REDIS_HOST). The public URL is injected via {{KUBERO_APP_URL}} into CP_BASEURL; this MUST match the real host or asset/feed URLs break. ROTATE before going live: CP_ANALYTICS_SALT (set to a fresh `openssl rand -hex 32` value \u2014 it salts analytics IP hashing and must not be the placeholder), and the MariaDB add-on credentials (db/user/password all default to 'castopod'). On first run, browse to the app URL to complete the web installer and create the super-admin (instance owner) account. Uploaded episode audio, cover art and the media library persist on the /app/public/media volume; raise its size for large podcast catalogs. Outbound email (SMTP) for notifications/invites must be configured in the admin panel after install. ActivityPub federation works out of the box once CP_BASEURL is reachable over HTTPS.",
       "architecture": [],
       "categories": [
         "media",
@@ -7736,7 +7736,7 @@
       "source": "https://github.com/civicrm/civicrm-core",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/civicrm/icon.png",
       "website": "https://civicrm.org",
-      "installation": "Runs CiviCRM Standalone (civicrm/civicrm). Requires a MariaDB/MySQL database (the bundled mariadb addon, default db/user/password 'civicrm' — rotate before production). On first run the install script provisions the admin account from CIVICRM_ADMIN_USER / CIVICRM_ADMIN_PASS — rotate the password and rotate the DB password too. CIVICRM_UF_BASEURL is wired to the app URL token. CiviCRM does NOT support PostgreSQL. Persistent paths public/, private/ and ext/ are mounted as volumes; back these up. For outbound email and SMS configure an external SMTP provider from the CiviCRM admin UI after install.",
+      "installation": "Runs CiviCRM Standalone (civicrm/civicrm). Requires a MariaDB/MySQL database (the bundled mariadb addon, default db/user/password 'civicrm' \u2014 rotate before production). On first run the install script provisions the admin account from CIVICRM_ADMIN_USER / CIVICRM_ADMIN_PASS \u2014 rotate the password and rotate the DB password too. CIVICRM_UF_BASEURL is wired to the app URL token. CiviCRM does NOT support PostgreSQL. Persistent paths public/, private/ and ext/ are mounted as volumes; back these up. For outbound email and SMS configure an external SMTP provider from the CiviCRM admin UI after install.",
       "architecture": [],
       "categories": [
         "crm",
@@ -8506,7 +8506,7 @@
       "source": "https://github.com/eneo-ai/eneo",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/eneo/icon.png",
       "website": "https://eneo.ai",
-      "installation": "PRIMARY container = the FastAPI backend (ghcr.io/eneo-ai/eneo-backend, listens on :8000, served behind a reverse proxy). This template deploys ONLY the backend API. To run the full stack you must also deploy these companion services as separate apps, all sharing this app's env (especially the POSTGRES_*, REDIS_*, JWT_SECRET, URL_SIGNING_KEY, ENCRYPTION_KEY values):\n  - Frontend (SvelteKit UI, the user-facing site on :3000): image ghcr.io/eneo-ai/eneo-frontend:latest. Point its API base at this backend.\n  - Worker (ARQ background tasks: web crawls, uploads, integrations): SAME image ghcr.io/eneo-ai/eneo-backend:latest with env RUN_AS_WORKER=true.\n  - DB init (one-shot migrations + default tenant/user; run ONCE then it exits): SAME backend image with command [\"python\",\"init_db.py\"]. Run this before the backend/worker the first time, or run `python init_db.py` in the backend container.\nDATASTORES: Postgres MUST have the pgvector extension (the upstream compose uses pgvector/pgvector:pg16) — Eneo stores embeddings in pgvector; confirm the operator-provisioned Postgres has the `vector` extension available/enabled. Redis is provided here by the Valkey add-on (used by ARQ for the job queue).\nSECRETS TO ROTATE before production: JWT_SECRET, URL_SIGNING_KEY, ENCRYPTION_KEY (generate each with `openssl rand -hex 32`), and the Postgres password. Also set PUBLIC_ORIGIN to your real https URL (pre-filled with this app's URL token).\nLLM PROVIDERS: Eneo brings its own models — set at least one of OPENAI_API_KEY / ANTHROPIC_API_KEY / GEMINI_API_KEY / AZURE_* / MISTRAL_API_KEY, or point VLLM_MODEL_URL at a self-hosted model. Optional: INFINITY_URL for embeddings, TAVILY_API_KEY for web search.\nFIRST RUN: after db-init, log in with the default admin user created by init_db.py and immediately change its password.",
+      "installation": "PRIMARY container = the FastAPI backend (ghcr.io/eneo-ai/eneo-backend, listens on :8000, served behind a reverse proxy). This template deploys ONLY the backend API. To run the full stack you must also deploy these companion services as separate apps, all sharing this app's env (especially the POSTGRES_*, REDIS_*, JWT_SECRET, URL_SIGNING_KEY, ENCRYPTION_KEY values):\n  - Frontend (SvelteKit UI, the user-facing site on :3000): image ghcr.io/eneo-ai/eneo-frontend:latest. Point its API base at this backend.\n  - Worker (ARQ background tasks: web crawls, uploads, integrations): SAME image ghcr.io/eneo-ai/eneo-backend:latest with env RUN_AS_WORKER=true.\n  - DB init (one-shot migrations + default tenant/user; run ONCE then it exits): SAME backend image with command [\"python\",\"init_db.py\"]. Run this before the backend/worker the first time, or run `python init_db.py` in the backend container.\nDATASTORES: Postgres MUST have the pgvector extension (the upstream compose uses pgvector/pgvector:pg16) \u2014 Eneo stores embeddings in pgvector; confirm the operator-provisioned Postgres has the `vector` extension available/enabled. Redis is provided here by the Valkey add-on (used by ARQ for the job queue).\nSECRETS TO ROTATE before production: JWT_SECRET, URL_SIGNING_KEY, ENCRYPTION_KEY (generate each with `openssl rand -hex 32`), and the Postgres password. Also set PUBLIC_ORIGIN to your real https URL (pre-filled with this app's URL token).\nLLM PROVIDERS: Eneo brings its own models \u2014 set at least one of OPENAI_API_KEY / ANTHROPIC_API_KEY / GEMINI_API_KEY / AZURE_* / MISTRAL_API_KEY, or point VLLM_MODEL_URL at a self-hosted model. Optional: INFINITY_URL for embeddings, TAVILY_API_KEY for web search.\nFIRST RUN: after db-init, log in with the default admin user created by init_db.py and immediately change its password.",
       "architecture": [],
       "categories": [
         "ai",
@@ -8663,7 +8663,7 @@
       "source": "https://github.com/espocrm/espocrm",
       "icon": "https://avatars.githubusercontent.com/u/8108711?s=200&v=4",
       "website": "https://www.espocrm.com",
-      "installation": "Runs the official EspoCRM image (espocrm/espocrm, apache variant). EspoCRM only supports MySQL/MariaDB (no PostgreSQL) — this template ships the bundled mariadb addon (default db/user/password 'espocrm', rotate before production and keep ESPOCRM_DATABASE_PASSWORD in sync). On first boot the admin account is provisioned from ESPOCRM_ADMIN_USERNAME / ESPOCRM_ADMIN_PASSWORD — rotate ESPOCRM_ADMIN_PASSWORD (placeholder value). ESPOCRM_SITE_URL is wired to the app URL token so generated links resolve. The valkey addon is wired as an optional Redis cache backend (Valkey is Redis-compatible and password-less here) via ESPOCRM_CONFIG_USE_CACHE / the Redis host/port vars; remove it if not wanted. Persistent app data (uploads, custom code, config, extensions) lives at /var/www/html — back this up. EspoCRM needs a scheduled cron job hitting cron.php every ~1 minute; run it via an external CronJob after install. For outbound email configure SMTP from the EspoCRM admin UI.",
+      "installation": "Runs the official EspoCRM image (espocrm/espocrm, apache variant). EspoCRM only supports MySQL/MariaDB (no PostgreSQL) \u2014 this template ships the bundled mariadb addon (default db/user/password 'espocrm', rotate before production and keep ESPOCRM_DATABASE_PASSWORD in sync). On first boot the admin account is provisioned from ESPOCRM_ADMIN_USERNAME / ESPOCRM_ADMIN_PASSWORD \u2014 rotate ESPOCRM_ADMIN_PASSWORD (placeholder value). ESPOCRM_SITE_URL is wired to the app URL token so generated links resolve. The valkey addon is wired as an optional Redis cache backend (Valkey is Redis-compatible and password-less here) via ESPOCRM_CONFIG_USE_CACHE / the Redis host/port vars; remove it if not wanted. Persistent app data (uploads, custom code, config, extensions) lives at /var/www/html \u2014 back this up. EspoCRM needs a scheduled cron job hitting cron.php every ~1 minute; run it via an external CronJob after install. For outbound email configure SMTP from the EspoCRM admin UI.",
       "architecture": [],
       "categories": [
         "crm",
@@ -9801,7 +9801,7 @@
       "source": "https://github.com/laurent22/joplin",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/joplin/icon.png",
       "website": "https://joplinapp.org",
-      "installation": "Deploy with the bundled PostgreSQL add-on; rotate the Postgres password (and after first login the admin password) from the template defaults before production. Joplin Server validates incoming requests against APP_BASE_URL, so it is set to the deployed public URL via {{KUBERO_APP_URL}} — if you change the hostname you must update this or clients get an 'invalid origin' error. The server listens on port 22300 (APP_PORT) and serves both the web admin UI and the sync API. Storage driver defaults to the database (DB_CLIENT=pg), so notes, attachments and blobs live in Postgres; the joplin-storage volume mounted at /home/joplin/storage is only used if you switch to the filesystem storage driver. On first run the database is migrated automatically; log in to the web UI with the default admin account admin@localhost / admin and change the password immediately, then point Joplin desktop/mobile clients at the URL using the 'Joplin Server' sync target. No external object store, search engine or SMTP is required for a base install (configure MAILER_* env vars later if you want email invitations).",
+      "installation": "Deploy with the bundled PostgreSQL add-on; rotate the Postgres password (and after first login the admin password) from the template defaults before production. Joplin Server validates incoming requests against APP_BASE_URL, so it is set to the deployed public URL via {{KUBERO_APP_URL}} \u2014 if you change the hostname you must update this or clients get an 'invalid origin' error. The server listens on port 22300 (APP_PORT) and serves both the web admin UI and the sync API. Storage driver defaults to the database (DB_CLIENT=pg), so notes, attachments and blobs live in Postgres; the joplin-storage volume mounted at /home/joplin/storage is only used if you switch to the filesystem storage driver. On first run the database is migrated automatically; log in to the web UI with the default admin account admin@localhost / admin and change the password immediately, then point Joplin desktop/mobile clients at the URL using the 'Joplin Server' sync target. No external object store, search engine or SMTP is required for a base install (configure MAILER_* env vars later if you want email invitations).",
       "architecture": [],
       "categories": [
         "productivity",
@@ -10108,7 +10108,7 @@
       "source": "https://github.com/lightdash/lightdash",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lightdash/icon.png",
       "website": "https://www.lightdash.com",
-      "installation": "This template runs the PRIMARY Lightdash web/api server (lightdash/lightdash, port 8080), which on boot also runs its own DB migrations against the bundled Postgres add-on. To be fully functional you MUST ALSO deploy a companion HEADLESS BROWSER deployment from image `ghcr.io/browserless/chromium:latest` (formerly browserless/chrome), exposing port 3000 on an in-cluster service named to match HEADLESS_BROWSER_HOST below; it renders charts/dashboards for scheduled deliveries, image downloads, and PDF exports. Lightdash also needs S3-COMPATIBLE OBJECT STORAGE for results/file caching and scheduled-delivery artifacts — point S3_ENDPOINT/S3_BUCKET/S3_REGION/S3_ACCESS_KEY/S3_SECRET_KEY at the RustFS S3 add-on or any S3 bucket (omitted from add-ons because it is not one of the supported operator datastores). ROTATE before exposing: LIGHTDASH_SECRET (`openssl rand -base64 32`; do NOT change it after data exists or saved warehouse credentials become undecryptable) and the Postgres add-on password (keep PGPASSWORD in sync). Set SITE_URL via the {{KUBERO_APP_URL}} token (already wired). The first user to register becomes the admin/owner. Optional outbound email needs the EMAIL_SMTP_* env vars (not provisioned).",
+      "installation": "This template runs the PRIMARY Lightdash web/api server (lightdash/lightdash, port 8080), which on boot also runs its own DB migrations against the bundled Postgres add-on. To be fully functional you MUST ALSO deploy a companion HEADLESS BROWSER deployment from image `ghcr.io/browserless/chromium:latest` (formerly browserless/chrome), exposing port 3000 on an in-cluster service named to match HEADLESS_BROWSER_HOST below; it renders charts/dashboards for scheduled deliveries, image downloads, and PDF exports. Lightdash also needs S3-COMPATIBLE OBJECT STORAGE for results/file caching and scheduled-delivery artifacts \u2014 point S3_ENDPOINT/S3_BUCKET/S3_REGION/S3_ACCESS_KEY/S3_SECRET_KEY at the RustFS S3 add-on or any S3 bucket (omitted from add-ons because it is not one of the supported operator datastores). ROTATE before exposing: LIGHTDASH_SECRET (`openssl rand -base64 32`; do NOT change it after data exists or saved warehouse credentials become undecryptable) and the Postgres add-on password (keep PGPASSWORD in sync). Set SITE_URL via the {{KUBERO_APP_URL}} token (already wired). The first user to register becomes the admin/owner. Optional outbound email needs the EMAIL_SMTP_* env vars (not provisioned).",
       "architecture": [],
       "categories": [
         "data",
@@ -12072,7 +12072,7 @@
       "source": "https://github.com/revoltchat/self-hosted",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/revolt/icon.png",
       "website": "https://revolt.chat",
-      "installation": "PLATFORM NOTE: Revolt requires real MongoDB features (capped collections, collation indexes) that Stackblaze DocumentDB and FerretDB do not fully provide — this template is marked unsupported until native MongoDB is available; API-only deploy may still fail at DB init. This template runs ONLY the PRIMARY Revolt backend API (the Rust 'delta' monolith, image ghcr.io/stoatchat/api, HTTP port 8000). Revolt (recently rebranded 'Stoat') is a MULTI-CONTAINER microservice stack; the API alone is not a usable deployment - you MUST deploy the companion services below pointing at the SAME datastores, and supply a shared Revolt.toml config file. CONFIG: Revolt is configured PRIMARILY via a Revolt.toml file bind-mounted at /Revolt.toml (mounted here at the persistent /config volume - drop your Revolt.toml there or mount it at the root); the env vars below override the database/redis/rabbit connection URLs that Revolt.toml otherwise carries. In Revolt.toml set hosts.app to your public https URL ({{KUBERO_APP_URL}}), generate the auth/file/voice secrets, and configure the S3/MinIO file backend. ROTATE: the FerretDB postgresql.auth password, and ALL secrets in Revolt.toml (api keys, auth pepper, file-server token, vapid/push keys, livekit keys) - the defaults are placeholders. ADD-ONS PROVISIONED HERE: ferretdb (MongoDB-wire-compatible - Revolt's primary datastore; prefer external real MongoDB if available), valkey (Redis/KeyDB-compatible cache + pub/sub), and rabbitmq (push-notification + cross-service message queue). EXTERNAL SERVICE NOT PROVISIONED: Revolt requires an S3-compatible object store for ALL uploaded files/avatars/attachments (upstream ships MinIO image minio/minio) - deploy the RustFS/MinIO S3 add-on and point autumn at it via Revolt.toml [files] s3 settings; the local /config volume does NOT hold attachments. COMPANION SERVICES to deploy (all ghcr.io/stoatchat, pin to the same tag e.g. v0.13.6, all share Revolt.toml + the same Mongo/Redis/Rabbit/S3): events (websocket gateway, ghcr.io/stoatchat/events), autumn (file server, ghcr.io/stoatchat/file-server), january (link/media proxy, ghcr.io/stoatchat/proxy), crond (scheduled tasks, ghcr.io/stoatchat/crond), pushd (push-notification worker / rabbit consumer, ghcr.io/stoatchat/pushd), web (frontend client, ghcr.io/stoatchat/for-web), and a reverse proxy (caddy) to route the public domain to web/api/events/autumn. Voice is optional via voice-ingress + livekit (ghcr.io/stoatchat/livekit-server). FIRST-RUN: bring up Mongo/Redis/Rabbit and S3, then the api + companion services; open the web client, create the first account, and configure the instance.",
+      "installation": "PLATFORM NOTE: Revolt requires real MongoDB features (capped collections, collation indexes) that Stackblaze DocumentDB and FerretDB do not fully provide \u2014 this template is marked unsupported until native MongoDB is available; API-only deploy may still fail at DB init. This template runs ONLY the PRIMARY Revolt backend API (the Rust 'delta' monolith, image ghcr.io/stoatchat/api, HTTP port 8000). Revolt (recently rebranded 'Stoat') is a MULTI-CONTAINER microservice stack; the API alone is not a usable deployment - you MUST deploy the companion services below pointing at the SAME datastores, and supply a shared Revolt.toml config file. CONFIG: Revolt is configured PRIMARILY via a Revolt.toml file bind-mounted at /Revolt.toml (mounted here at the persistent /config volume - drop your Revolt.toml there or mount it at the root); the env vars below override the database/redis/rabbit connection URLs that Revolt.toml otherwise carries. In Revolt.toml set hosts.app to your public https URL ({{KUBERO_APP_URL}}), generate the auth/file/voice secrets, and configure the S3/MinIO file backend. ROTATE: the FerretDB postgresql.auth password, and ALL secrets in Revolt.toml (api keys, auth pepper, file-server token, vapid/push keys, livekit keys) - the defaults are placeholders. ADD-ONS PROVISIONED HERE: ferretdb (MongoDB-wire-compatible - Revolt's primary datastore; prefer external real MongoDB if available), valkey (Redis/KeyDB-compatible cache + pub/sub), and rabbitmq (push-notification + cross-service message queue). EXTERNAL SERVICE NOT PROVISIONED: Revolt requires an S3-compatible object store for ALL uploaded files/avatars/attachments (upstream ships MinIO image minio/minio) - deploy the RustFS/MinIO S3 add-on and point autumn at it via Revolt.toml [files] s3 settings; the local /config volume does NOT hold attachments. COMPANION SERVICES to deploy (all ghcr.io/stoatchat, pin to the same tag e.g. v0.13.6, all share Revolt.toml + the same Mongo/Redis/Rabbit/S3): events (websocket gateway, ghcr.io/stoatchat/events), autumn (file server, ghcr.io/stoatchat/file-server), january (link/media proxy, ghcr.io/stoatchat/proxy), crond (scheduled tasks, ghcr.io/stoatchat/crond), pushd (push-notification worker / rabbit consumer, ghcr.io/stoatchat/pushd), web (frontend client, ghcr.io/stoatchat/for-web), and a reverse proxy (caddy) to route the public domain to web/api/events/autumn. Voice is optional via voice-ingress + livekit (ghcr.io/stoatchat/livekit-server). FIRST-RUN: bring up Mongo/Redis/Rabbit and S3, then the api + companion services; open the web client, create the first account, and configure the instance.",
       "architecture": [],
       "categories": [
         "communication",
@@ -12587,7 +12587,7 @@
       "source": "https://github.com/salesagility/SuiteCRM",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/suitecrm/icon.png",
       "website": "https://suitecrm.com",
-      "installation": "Runs the Bitnami SuiteCRM image (bitnami/suitecrm). SuiteCRM only supports MariaDB/MySQL (no PostgreSQL) — this template ships the bundled mariadb addon (default db/user/password 'suitecrm', rotate before production). On first boot the admin account is provisioned from SUITECRM_USERNAME / SUITECRM_PASSWORD / SUITECRM_EMAIL — rotate SUITECRM_PASSWORD (placeholder value) and the mariadb password to match SUITECRM_DATABASE_PASSWORD. The valkey addon is wired as the optional Redis cache/session store via SUITECRM_REDIS_HOST (Valkey is Redis-compatible and password-less here); remove it if not wanted. SUITECRM_HOST is set from the app URL token so generated links resolve. Persistent app data (uploads, custom modules, config) lives at /bitnami/suitecrm — back this up. For outbound email configure SMTP from the SuiteCRM admin UI after install. Scheduler/cron jobs should be run via an external CronJob hitting cron.php.",
+      "installation": "Runs the Bitnami SuiteCRM image (bitnami/suitecrm). SuiteCRM only supports MariaDB/MySQL (no PostgreSQL) \u2014 this template ships the bundled mariadb addon (default db/user/password 'suitecrm', rotate before production). On first boot the admin account is provisioned from SUITECRM_USERNAME / SUITECRM_PASSWORD / SUITECRM_EMAIL \u2014 rotate SUITECRM_PASSWORD (placeholder value) and the mariadb password to match SUITECRM_DATABASE_PASSWORD. The valkey addon is wired as the optional Redis cache/session store via SUITECRM_REDIS_HOST (Valkey is Redis-compatible and password-less here); remove it if not wanted. SUITECRM_HOST is set from the app URL token so generated links resolve. Persistent app data (uploads, custom modules, config) lives at /bitnami/suitecrm \u2014 back this up. For outbound email configure SMTP from the SuiteCRM admin UI after install. Scheduler/cron jobs should be run via an external CronJob hitting cron.php.",
       "architecture": [],
       "categories": [
         "crm",
@@ -13463,7 +13463,7 @@
     },
     {
       "name": "ollama",
-      "description": "Run large language models locally — Llama 3, Mistral, Gemma, Phi, and 100+ models via a simple OpenAI-compatible REST API.",
+      "description": "Run large language models locally \u2014 Llama 3, Mistral, Gemma, Phi, and 100+ models via a simple OpenAI-compatible REST API.",
       "source": "https://github.com/ollama/ollama",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/icon.png",
       "website": "https://ollama.com",
@@ -13513,7 +13513,7 @@
     },
     {
       "name": "open-webui",
-      "description": "ChatGPT-style web interface for Ollama and any OpenAI-compatible API — supports RAG, web search, image generation, and multi-model chat.",
+      "description": "ChatGPT-style web interface for Ollama and any OpenAI-compatible API \u2014 supports RAG, web search, image generation, and multi-model chat.",
       "source": "https://github.com/open-webui/open-webui",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/open-webui/icon.png",
       "website": "https://openwebui.com",
@@ -13563,7 +13563,7 @@
     },
     {
       "name": "litellm",
-      "description": "LLM proxy and gateway — unified OpenAI-compatible API for 100+ providers including OpenAI, Anthropic, Gemini, Ollama, and Bedrock with cost tracking and rate limiting.",
+      "description": "LLM proxy and gateway \u2014 unified OpenAI-compatible API for 100+ providers including OpenAI, Anthropic, Gemini, Ollama, and Bedrock with cost tracking and rate limiting.",
       "source": "https://github.com/BerriAI/litellm",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/icon.png",
       "website": "https://litellm.ai",
@@ -13614,7 +13614,7 @@
     },
     {
       "name": "langfuse",
-      "description": "Open-source LLM observability platform — traces, evals, prompt management, datasets, and cost analytics for AI applications.",
+      "description": "Open-source LLM observability platform \u2014 traces, evals, prompt management, datasets, and cost analytics for AI applications.",
       "source": "https://github.com/langfuse/langfuse",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langfuse/icon.png",
       "website": "https://langfuse.com",
@@ -13667,7 +13667,7 @@
     },
     {
       "name": "localai",
-      "description": "Self-hosted, OpenAI-compatible REST API for running LLMs, image generation, audio transcription, and embeddings locally — no GPU required.",
+      "description": "Self-hosted, OpenAI-compatible REST API for running LLMs, image generation, audio transcription, and embeddings locally \u2014 no GPU required.",
       "source": "https://github.com/mudler/LocalAI",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/localai/icon.png",
       "website": "https://localai.io",
@@ -13715,7 +13715,7 @@
     },
     {
       "name": "anythingllm",
-      "description": "All-in-one private AI workspace — RAG, multi-user chat, web browsing, custom agents, and 100+ LLM integrations with a clean browser UI.",
+      "description": "All-in-one private AI workspace \u2014 RAG, multi-user chat, web browsing, custom agents, and 100+ LLM integrations with a clean browser UI.",
       "source": "https://github.com/Mintplex-Labs/anything-llm",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/icon.png",
       "website": "https://anythingllm.com",
@@ -13766,7 +13766,7 @@
     },
     {
       "name": "authentik",
-      "description": "Open-source identity provider — SSO, OAuth2, SAML, LDAP, MFA, and social login. Self-hosted alternative to Okta and Auth0.",
+      "description": "Open-source identity provider \u2014 SSO, OAuth2, SAML, LDAP, MFA, and social login. Self-hosted alternative to Okta and Auth0.",
       "source": "https://github.com/goauthentik/authentik",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/authentik/icon.png",
       "website": "https://goauthentik.io",
@@ -13818,7 +13818,7 @@
     },
     {
       "name": "keycloak",
-      "description": "Enterprise-grade open-source identity and access management — SSO, OAuth2, SAML, LDAP federation, MFA, and user management.",
+      "description": "Enterprise-grade open-source identity and access management \u2014 SSO, OAuth2, SAML, LDAP federation, MFA, and user management.",
       "source": "https://github.com/keycloak/keycloak",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/icon.png",
       "website": "https://www.keycloak.org",
@@ -13869,7 +13869,7 @@
     },
     {
       "name": "zitadel",
-      "description": "Cloud-native identity platform — OIDC, OAuth2, SAML, passkeys, MFA, and multi-tenancy out of the box. Self-hosted alternative to Auth0.",
+      "description": "Cloud-native identity platform \u2014 OIDC, OAuth2, SAML, passkeys, MFA, and multi-tenancy out of the box. Self-hosted alternative to Auth0.",
       "source": "https://github.com/zitadel/zitadel",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zitadel/icon.png",
       "website": "https://zitadel.com",
@@ -13920,7 +13920,7 @@
     },
     {
       "name": "baserow",
-      "description": "Open-source no-code database and Airtable alternative — build relational databases, forms, and automations with a spreadsheet-like UI.",
+      "description": "Open-source no-code database and Airtable alternative \u2014 build relational databases, forms, and automations with a spreadsheet-like UI.",
       "source": "https://gitlab.com/bramw/baserow",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/icon.png",
       "website": "https://baserow.io",
@@ -13972,7 +13972,7 @@
     },
     {
       "name": "teable",
-      "description": "Open-source Airtable alternative built on native Postgres — spreadsheet UI over real SQL tables with automations, views, and API.",
+      "description": "Open-source Airtable alternative built on native Postgres \u2014 spreadsheet UI over real SQL tables with automations, views, and API.",
       "source": "https://github.com/teableio/teable",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/teable/icon.png",
       "website": "https://teable.io",
@@ -14075,7 +14075,7 @@
     },
     {
       "name": "pocketbase",
-      "description": "Open-source Firebase alternative — realtime subscriptions, auth, file storage, and admin UI, all in a single Go binary backed by SQLite.",
+      "description": "Open-source Firebase alternative \u2014 realtime subscriptions, auth, file storage, and admin UI, all in a single Go binary backed by SQLite.",
       "source": "https://github.com/pocketbase/pocketbase",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pocketbase/icon.png",
       "website": "https://pocketbase.io",
@@ -14124,7 +14124,7 @@
     },
     {
       "name": "strapi",
-      "description": "Most popular open-source headless CMS — REST and GraphQL APIs, role-based access, media library, and a customisable admin panel.",
+      "description": "Most popular open-source headless CMS \u2014 REST and GraphQL APIs, role-based access, media library, and a customisable admin panel.",
       "source": "https://github.com/strapi/strapi",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/icon.png",
       "website": "https://strapi.io",
@@ -14175,7 +14175,7 @@
     },
     {
       "name": "clickhouse",
-      "description": "Column-oriented OLAP database for real-time analytics — processes billions of rows per second with sub-second query latency.",
+      "description": "Column-oriented OLAP database for real-time analytics \u2014 processes billions of rows per second with sub-second query latency.",
       "source": "https://github.com/ClickHouse/ClickHouse",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/clickhouse/icon.png",
       "website": "https://clickhouse.com",
@@ -14224,7 +14224,7 @@
     },
     {
       "name": "questdb",
-      "description": "High-performance time-series database with SQL — optimised for IoT, financial, and observability data with a built-in web console.",
+      "description": "High-performance time-series database with SQL \u2014 optimised for IoT, financial, and observability data with a built-in web console.",
       "source": "https://github.com/questdb/questdb",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/questdb/icon.png",
       "website": "https://questdb.io",
@@ -14273,7 +14273,7 @@
     },
     {
       "name": "timescaledb",
-      "description": "Time-series database built on Postgres — hypertables, compression, continuous aggregates, and full SQL compatibility for metrics and events.",
+      "description": "Time-series database built on Postgres \u2014 hypertables, compression, continuous aggregates, and full SQL compatibility for metrics and events.",
       "source": "https://github.com/timescale/timescaledb",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/timescaledb/icon.png",
       "website": "https://www.timescale.com",
@@ -14322,7 +14322,7 @@
     },
     {
       "name": "adminer",
-      "description": "Lightweight single-file database manager for MySQL, PostgreSQL, SQLite, MongoDB, and more — simpler alternative to phpMyAdmin.",
+      "description": "Lightweight single-file database manager for MySQL, PostgreSQL, SQLite, MongoDB, and more \u2014 simpler alternative to phpMyAdmin.",
       "source": "https://github.com/vrana/adminer",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/adminer/icon.png",
       "website": "https://www.adminer.org",
@@ -14418,7 +14418,7 @@
     },
     {
       "name": "headscale",
-      "description": "Self-hosted Tailscale control server — manage your own WireGuard mesh VPN with the full Tailscale client ecosystem but zero vendor lock-in.",
+      "description": "Self-hosted Tailscale control server \u2014 manage your own WireGuard mesh VPN with the full Tailscale client ecosystem but zero vendor lock-in.",
       "source": "https://github.com/juanfont/headscale",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/headscale/icon.png",
       "website": "https://headscale.net",
@@ -14520,7 +14520,7 @@
     },
     {
       "name": "stalwart-mail",
-      "description": "All-in-one mail server with SMTP, IMAP, JMAP, and ManageSieve — modern Rust implementation with built-in anti-spam, DKIM, and web admin.",
+      "description": "All-in-one mail server with SMTP, IMAP, JMAP, and ManageSieve \u2014 modern Rust implementation with built-in anti-spam, DKIM, and web admin.",
       "source": "https://github.com/stalwartlabs/mail-server",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stalwart-mail/icon.png",
       "website": "https://stalw.art",
@@ -14616,7 +14616,7 @@
     },
     {
       "name": "firefly-iii",
-      "description": "Self-hosted personal finance manager — transactions, budgets, bills, piggy banks, reports, and recurring transactions. Full-featured money management.",
+      "description": "Self-hosted personal finance manager \u2014 transactions, budgets, bills, piggy banks, reports, and recurring transactions. Full-featured money management.",
       "source": "https://github.com/firefly-iii/firefly-iii",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefly-iii/icon.png",
       "website": "https://www.firefly-iii.org",
@@ -14669,7 +14669,7 @@
     },
     {
       "name": "verdaccio",
-      "description": "Lightweight private npm/yarn/pnpm registry — proxy public packages and publish private ones with simple auth and no external database.",
+      "description": "Lightweight private npm/yarn/pnpm registry \u2014 proxy public packages and publish private ones with simple auth and no external database.",
       "source": "https://github.com/verdaccio/verdaccio",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/icon.png",
       "website": "https://verdaccio.org",
@@ -14720,7 +14720,7 @@
     },
     {
       "name": "seafile",
-      "description": "High-performance self-hosted file sync and share — encrypted libraries, version history, team collaboration, and Office online editing.",
+      "description": "High-performance self-hosted file sync and share \u2014 encrypted libraries, version history, team collaboration, and Office online editing.",
       "source": "https://github.com/haiwen/seafile",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seafile/icon.png",
       "website": "https://www.seafile.com",
@@ -14769,7 +14769,7 @@
     },
     {
       "name": "payload",
-      "description": "Headless CMS and application framework built with TypeScript, Node.js and React — an auto-generated admin UI, REST & GraphQL APIs, authentication, and a flexible code-first content model.",
+      "description": "Headless CMS and application framework built with TypeScript, Node.js and React \u2014 an auto-generated admin UI, REST & GraphQL APIs, authentication, and a flexible code-first content model.",
       "source": "https://github.com/payloadcms/payload",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/icon.png",
       "website": "https://payloadcms.com",
@@ -14818,7 +14818,7 @@
     },
     {
       "name": "wagtail",
-      "description": "Wagtail is a popular open-source CMS built on Django — a refined editing experience, rich page modelling, a powerful image library and full content control. This template runs the official Wagtail \"bakerydemo\" sample site.",
+      "description": "Wagtail is a popular open-source CMS built on Django \u2014 a refined editing experience, rich page modelling, a powerful image library and full content control. This template runs the official Wagtail \"bakerydemo\" sample site.",
       "source": "https://github.com/wagtail/wagtail",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wagtail/icon.png",
       "website": "https://wagtail.org",

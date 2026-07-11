@@ -12,7 +12,7 @@ metadata:
       to your public URL before going live, then create the initial admin at
       /signup_user_complete on first visit.
     kubero.dev/template.links: '["https://docs.mattermost.com/"]'
-    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@dc873f9/services/mattermost/demo.mp4","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/dashboard.png","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-town-square.png","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-engineering.png","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-product-launch.png","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-releases.png","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-customer-success.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/mattermost/demo.mp4", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/dashboard.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-town-square.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-engineering.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-product-launch.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-releases.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-customer-success.png"]'
     kubero.dev/template.source: https://github.com/mattermost/mattermost
     kubero.dev/template.categories: '["communication", "work"]'
     kubero.dev/template.title: Mattermost
@@ -31,20 +31,6 @@ spec:
     value: postgres://mattermost:mattermost@{{KUBERO_APP_NAME}}-postgresql-rw:5432/mattermost?sslmode=disable&connect_timeout=10
   - name: TZ
     value: Etc/UTC
-  - name: STACKBLAZE_LOAD_DEMO_DATA
-    value: 'false'
-  - name: STACKBLAZE_DEMO_ADMIN_LOGIN
-    value: admin
-  - name: STACKBLAZE_DEMO_ADMIN_PASSWORD
-    value: changeme
-  - name: STACKBLAZE_DEMO_ADMIN_EMAIL
-    value: admin@stackblaze.local
-  - name: STACKBLAZE_DEMO_USER_PASSWORD
-    value: StackblazeDemo1!
-  - name: STACKBLAZE_DEMO_TEAM
-    value: stackblaze-team
-  - name: STACKBLAZE_DEMO_TEAM_DISPLAY
-    value: Stackblaze team
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
