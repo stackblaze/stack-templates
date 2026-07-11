@@ -1,0 +1,19 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/signin/",
+    "steps": [
+      { "fill": { "input[type=email]": "${NOCODB_EMAIL}" } },
+      { "fill": { "input[type=password]": "${NOCODB_PASSWORD}" } },
+      { "click": "button:has-text(\"Sign In\"), button[type=submit]" },
+      { "waitForNavigation": true },
+      { "click": "text=Skip" }
+    ],
+    "waitAfterMs": 2500
+  },
+  "pages": [
+    { "name": "workspace", "path": "/", "waitMs": 2500 },
+    { "name": "customers", "path": "/", "waitMs": 2500 }
+  ]
+}
