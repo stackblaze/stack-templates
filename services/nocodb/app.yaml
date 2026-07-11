@@ -5,10 +5,10 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: The Open Source Airtable Alternative. Turns any
       MySQL, PostgreSQL, SQL Server, SQLite & MariaDB into a smart-spreadsheet.
-    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nocodb/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nocodb/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nocodb/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nocodb/screenshot-customers.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nocodb/screenshot-pipeline.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/screenshot-customers.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/screenshot-pipeline.png"]'
     kubero.dev/template.source: https://github.com/nocodb/nocodb
     kubero.dev/template.categories: '["data", "development", "work"]'
     kubero.dev/template.title: NocoDB

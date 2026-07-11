@@ -867,7 +867,7 @@
       "name": "nocodb",
       "description": "The Open Source Airtable Alternative. Turns any MySQL, PostgreSQL, SQL Server, SQLite & MariaDB into a smart-spreadsheet.",
       "source": "https://github.com/nocodb/nocodb",
-      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nocodb/icon.png",
+      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/icon.png",
       "website": "https://www.nocodb.com",
       "installation": "",
       "architecture": [],
@@ -877,10 +877,10 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nocodb/demo.mp4",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nocodb/dashboard.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nocodb/screenshot-customers.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nocodb/screenshot-pipeline.png"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/dashboard.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/screenshot-customers.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/screenshot-pipeline.png"
       ],
       "links": [],
       "addons": [
