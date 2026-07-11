@@ -93,11 +93,8 @@ export async function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-export async function runLogin(page, login, baseUrl) {
-  if (!login) return;
-  const loginUrl = login.url || `${baseUrl}${login.path || '/login'}`;
-  await page.goto(loginUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
-  for (const step of login.steps || []) {
+export async function runSteps(page, steps) {
+  for (const step of steps || []) {
     if (step.sleep) await sleep(step.sleep);
     if (step.waitForSelector) {
       await page.waitForSelector(step.waitForSelector, { timeout: step.timeout || 30000 });
@@ -120,6 +117,32 @@ export async function runLogin(page, login, baseUrl) {
       await page.waitForLoadState('networkidle', { timeout: step.timeout || 45000 }).catch(() => {});
     }
   }
+}
+
+export async function apiLogin(context, baseUrl, apiLogin) {
+  if (!apiLogin?.email || !apiLogin?.password) return false;
+  const res = await context.request.post(`${baseUrl}/rest/login`, {
+    data: {
+      emailOrLdapLoginId: apiLogin.email,
+      password: apiLogin.password,
+    },
+  });
+  if (!res.ok()) throw new Error(`API login failed: ${res.status()}`);
+  return true;
+}
+
+export async function runLogin(page, login, baseUrl, context) {
+  if (!login) return;
+  if (login.api && context) {
+    await apiLogin(context, baseUrl, login.api);
+    const home = login.afterApiPath || '/home/workflows';
+    await page.goto(`${baseUrl}${home}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    if (login.waitAfterMs) await sleep(login.waitAfterMs);
+    return;
+  }
+  const loginUrl = login.url || `${baseUrl}${login.path || '/login'}`;
+  await page.goto(loginUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  await runSteps(page, login.steps);
   if (login.waitAfterMs) await sleep(login.waitAfterMs);
 }
 
@@ -138,6 +161,8 @@ export async function capturePages(page, spec, baseUrl, outDir, slug) {
     }
     if (p.waitMs) await sleep(p.waitMs);
     else if (!p.waitFor) await sleep(spec.waitAfterNavigationMs ?? 2500);
+
+    if (p.steps?.length) await runSteps(page, p.steps);
 
     await page.screenshot({
       path: outPath,

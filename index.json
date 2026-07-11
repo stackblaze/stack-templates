@@ -169,7 +169,7 @@
       "source": "https://github.com/n8n-io/n8n",
       "icon": "https://avatars.githubusercontent.com/u/45487711?s=200&v=4",
       "website": "https://n8n.io",
-      "installation": "",
+      "installation": "With Load demo data enabled, first boot creates owner demo@stackblaze.local / changeme and three sample workflows. Without it, complete the one-time owner setup at your app URL, then sign in.",
       "architecture": [],
       "categories": [
         "work",
@@ -199,6 +199,7 @@
       "license": "Other",
       "spdx_id": "NOASSERTION",
       "dirname": "n8n",
+      "supportsDemoData": true,
       "deploymentTypes": [
         {
           "id": "standard",

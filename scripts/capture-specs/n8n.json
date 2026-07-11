@@ -2,15 +2,11 @@
   "viewport": { "width": 1920, "height": 1080 },
   "deviceScaleFactor": 2,
   "login": {
-    "path": "/signin",
-    "steps": [
-      { "waitForSelector": "input#email, input[type='email']", "timeout": 30000 },
-      { "fill": { "input#email, input[type='email']": "adam.mkk@gmail.com" } },
-      { "fill": { "input#password, input[type='password']": "Fr03en12" } },
-      { "click": "button:has-text('Sign in'), button[type='submit']" },
-      { "waitForURL": "**/home/**", "timeout": 60000 },
-      { "sleep": 2000 }
-    ],
+    "api": {
+      "email": "adam.mkk@gmail.com",
+      "password": "Fr03en12"
+    },
+    "afterApiPath": "/home/workflows",
     "waitAfterMs": 2000
   },
   "pages": [
@@ -24,19 +20,31 @@
       "name": "lead-capture",
       "path": "/workflow/l4HkA64EnVY0CNkt",
       "waitFor": "text=Lead capture",
-      "waitMs": 4000
+      "waitMs": 3000,
+      "steps": [
+        { "click": "[data-test-id='zoom-to-fit']" },
+        { "sleep": 800 }
+      ]
     },
     {
       "name": "daily-digest",
       "path": "/workflow/L6tduBHXGn0Kxboy",
       "waitFor": "text=Daily digest",
-      "waitMs": 4000
+      "waitMs": 3000,
+      "steps": [
+        { "click": "[data-test-id='zoom-to-fit']" },
+        { "sleep": 800 }
+      ]
     },
     {
       "name": "ai-email-summary",
       "path": "/workflow/AXKmfJtPkjZvRvx2",
       "waitFor": "text=AI email",
-      "waitMs": 4000
+      "waitMs": 3000,
+      "steps": [
+        { "click": "[data-test-id='zoom-to-fit']" },
+        { "sleep": 800 }
+      ]
     },
     {
       "name": "credentials",

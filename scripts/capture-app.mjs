@@ -81,7 +81,7 @@ async function main() {
   page.setDefaultTimeout(spec.defaultTimeoutMs || 60000);
 
   try {
-    await runLogin(page, spec.login, baseUrl);
+    await runLogin(page, spec.login, baseUrl, context);
     const shots = await capturePages(page, spec, baseUrl, outDir, args.slug);
 
     if (args.apply) {
