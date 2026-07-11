@@ -4,7 +4,7 @@
       "name": "metabase",
       "description": "Metabase is the easy, open-source way for everyone in your company to ask questions and learn from data.",
       "source": "https://github.com/metabase/metabase",
-      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/metabase/icon.png",
+      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/icon.png",
       "website": "https://www.metabase.com/",
       "installation": "",
       "architecture": [],
@@ -13,10 +13,10 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/metabase/demo.mp4",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/metabase/dashboard.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/metabase/screenshot-question.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/metabase/screenshot-metric.png"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/dashboard.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/screenshot-question.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/screenshot-metric.png"
       ],
       "links": [],
       "addons": [

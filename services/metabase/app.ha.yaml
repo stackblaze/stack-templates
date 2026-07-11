@@ -6,11 +6,11 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Metabase is the easy, open-source way for everyone
       in your company to ask questions and learn from data.
-    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/metabase/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/icon.png
     kubero.dev/template.installation: First boot can take several minutes while Metabase
       initializes its application database.
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/metabase/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/metabase/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/metabase/screenshot-question.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/metabase/screenshot-metric.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/screenshot-question.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/screenshot-metric.png"]'
     kubero.dev/template.source: https://github.com/metabase/metabase
     kubero.dev/template.categories: '[ "data", "work" ]'
     kubero.dev/template.title: Metabase
