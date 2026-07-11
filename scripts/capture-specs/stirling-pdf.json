@@ -1,0 +1,18 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      { "fill": { "#email, input[name='username']": "${STIRLING_PDF_USER}" } },
+      { "fill": { "#password, input[type='password']": "${STIRLING_PDF_PASSWORD}" } },
+      { "click": "button[type='submit'], button:has-text('Login')" },
+      { "waitForNavigation": true }
+    ],
+    "waitAfterMs": 2500
+  },
+  "pages": [
+    { "name": "home", "path": "/", "waitMs": 4000 },
+    { "name": "login", "path": "/login", "waitMs": 2000 }
+  ]
+}
