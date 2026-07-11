@@ -6,10 +6,10 @@ metadata:
     kubero.dev/template.description: Painless self-hosted all-in-one software development
       service, includes Git hosting, code review, team collaboration, package registry
       and CI/CD
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/gitea/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e1e91781144b4f96bf330019f945a0db1b06534a/services/gitea/icon.png
     kubero.dev/template.installation: 'Install lock is set via env — open the app and register the first account (it becomes admin).'
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/gitea/demo.mp4", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/gitea/dashboard.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/gitea/screenshot-repo.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/gitea/screenshot-explore.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e1e91781144b4f96bf330019f945a0db1b06534a/services/gitea/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e1e91781144b4f96bf330019f945a0db1b06534a/services/gitea/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e1e91781144b4f96bf330019f945a0db1b06534a/services/gitea/screenshot-repo.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e1e91781144b4f96bf330019f945a0db1b06534a/services/gitea/screenshot-explore.png"]'
     kubero.dev/template.source: https://github.com/go-gitea/gitea
     kubero.dev/template.categories: '["work","development","collaboration"]'
     kubero.dev/template.title: gitea
