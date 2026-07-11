@@ -1797,7 +1797,7 @@
       "name": "excalidraw",
       "description": "An open source virtual hand-drawn style whiteboard. Collaborative and end-to-end encrypted.",
       "source": "https://github.com/excalidraw/excalidraw",
-      "icon": "https://avatars.githubusercontent.com/u/59452120?s=200&v=4",
+      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/icon.png",
       "website": "https://excalidraw.com/",
       "installation": "",
       "architecture": [],
@@ -1807,7 +1807,12 @@
         "collaboration"
       ],
       "screenshots": [
-        "https://excalidraw.nyc3.cdn.digitaloceanspaces.com/github%2Fproduct_showcase.png"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/excalidraw/demo.mp4",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/dashboard.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-board.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-architecture.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-dark.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-tools.png"
       ],
       "links": [],
       "addons": [],

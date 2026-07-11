@@ -1,0 +1,14 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "waitAfterNavigationMs": 2000,
+  "pages": [
+    {
+      "name": "board",
+      "path": "/",
+      "waitMs": 3000,
+      "fullPage": false
+    }
+  ],
+  "notes": "Prefer scripts/seed-excalidraw-and-capture.mjs — injects a demo board into localStorage then captures multiple zooms/themes."
+}
