@@ -150,21 +150,39 @@ def bootstrap_admin(
     return MMClient.login(base, login, password)
 
 
+def search_team_by_name(admin: MMClient, team_name: str) -> dict | None:
+    results = admin.request("POST", "/api/v4/teams/search", {"term": team_name})
+    if not isinstance(results, list):
+        return None
+    for team in results:
+        if team.get("name") == team_name:
+            return team
+    return None
+
+
 def ensure_team(admin: MMClient, team_name: str, display_name: str) -> dict:
-    try:
-        team = admin.request("GET", f"/api/v4/teams/name/{team_name}")
+    # Prefer teams/search — GET /teams/name/{name} can be a stale CDN response.
+    team = search_team_by_name(admin, team_name)
+    if team:
         print(f"  team exists: {team['display_name']}")
         return team
+    try:
+        team = admin.request(
+            "POST",
+            "/api/v4/teams",
+            {"name": team_name, "display_name": display_name, "type": "O"},
+        )
+        print(f"  created team: {display_name}")
+        return team
     except RuntimeError as e:
-        if "404" not in str(e):
+        err = str(e).lower()
+        if "already" not in err and "exists" not in err:
             raise
-    team = admin.request(
-        "POST",
-        "/api/v4/teams",
-        {"name": team_name, "display_name": display_name, "type": "O"},
-    )
-    print(f"  created team: {display_name}")
-    return team
+        team = search_team_by_name(admin, team_name)
+        if not team:
+            raise RuntimeError(f"could not resolve team {team_name}") from e
+        print(f"  team exists: {team['display_name']}")
+        return team
 
 
 def user_exists(client: MMClient, username: str) -> dict | None:
@@ -184,8 +202,14 @@ def add_team_member(admin: MMClient, team_id: str, user_id: str) -> None:
             {"team_id": team_id, "user_id": user_id},
         )
     except RuntimeError as e:
-        if "already" not in str(e).lower():
-            raise
+        err = str(e).lower()
+        if "already" in err:
+            return
+        if "404" in err:
+            raise RuntimeError(
+                f"team {team_id} not found when adding member — retry seed via internal app URL"
+            ) from e
+        raise
 
 
 def add_user_to_channel(admin: MMClient, channel_id: str, user_id: str) -> None:
