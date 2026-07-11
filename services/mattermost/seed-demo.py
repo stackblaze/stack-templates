@@ -206,6 +206,10 @@ def add_team_member(admin: MMClient, team_id: str, user_id: str) -> None:
         if "already" in err:
             return
         if "404" in err:
+            if "user" in err or "missing_account" in err:
+                raise RuntimeError(
+                    f"user {user_id} not found when adding to team — use internal app URL"
+                ) from e
             raise RuntimeError(
                 f"team {team_id} not found when adding member — retry seed via internal app URL"
             ) from e
