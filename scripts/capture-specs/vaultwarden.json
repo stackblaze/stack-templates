@@ -1,0 +1,29 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/#/login",
+    "steps": [
+      { "fill": { "input[type=email]": "${VAULTWARDEN_EMAIL}" } },
+      { "click": "button:has-text(\"Continue\")" },
+      { "waitFor": "input[type=password]" },
+      { "fill": { "input[type=password]": "${VAULTWARDEN_PASSWORD}" } },
+      { "click": "button:has-text(\"Log in with master password\")" },
+      { "waitForNavigation": true },
+      {
+        "evaluate": "(() => { const b = [...document.querySelectorAll('button')].find(el => /add it later/i.test(el.textContent||'')); b?.click(); })()"
+      },
+      { "waitFor": "vault-add-extension-later-dialog" },
+      { "click": "vault-add-extension-later-dialog a:has-text(\"Skip to web app\")" },
+      { "waitForNavigation": true },
+      { "press": "Escape" }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "vault", "path": "/#/vault", "waitMs": 2500 },
+    { "name": "generator", "path": "/#/tools/generator", "waitMs": 2500 },
+    { "name": "send", "path": "/#/send", "waitMs": 2000 },
+    { "name": "settings", "path": "/#/settings", "waitMs": 2000 }
+  ]
+}

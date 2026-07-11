@@ -3840,7 +3840,10 @@
         "utilities"
       ],
       "screenshots": [
-        "https://raw.githubusercontent.com/dani-garcia/vaultwarden/main/resources/vaultwarden-logo-auto.svg"
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/demo.mp4",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/dashboard.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-login.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-generator.png"
       ],
       "links": [],
       "addons": [
