@@ -5389,8 +5389,13 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@8c97a17/services/mattermost/demo.mp4",
-        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/dashboard.png"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/mattermost/demo.mp4",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/dashboard.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-town-square.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-engineering.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-product-launch.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-releases.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-customer-success.png"
       ],
       "links": [
         "https://docs.mattermost.com/"

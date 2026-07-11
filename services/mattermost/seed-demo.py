@@ -239,8 +239,28 @@ def ensure_users(
 
 
 def ensure_channels(admin: MMClient, team_id: str) -> dict[str, str]:
-    existing = {c["name"]: c for c in admin.request("GET", f"/api/v4/teams/{team_id}/channels")}
+    # Public team channels (paginated)
+    existing: dict[str, dict] = {}
+    page = 0
+    while True:
+        batch = admin.request(
+            "GET", f"/api/v4/teams/{team_id}/channels?page={page}&per_page=60"
+        )
+        if not isinstance(batch, list) or not batch:
+            break
+        for c in batch:
+            existing[c["name"]] = c
+        if len(batch) < 60:
+            break
+        page += 1
+
     ids: dict[str, str] = {}
+    # Seed Town Square / Off-Topic first so they never get skipped by early failures
+    for name in ("town-square", "off-topic"):
+        if name in existing:
+            ids[name] = existing[name]["id"]
+            print(f"  channel exists: #{name}")
+
     for name, display, purpose in CHANNELS:
         if name in existing:
             ids[name] = existing[name]["id"]
@@ -260,9 +280,6 @@ def ensure_channels(admin: MMClient, team_id: str) -> dict[str, str]:
         )
         ids[name] = ch["id"]
         print(f"  created channel: #{name}")
-    for name in ("town-square", "off-topic"):
-        if name in existing:
-            ids[name] = existing[name]["id"]
     return ids
 
 
@@ -275,6 +292,111 @@ def ensure_channel_members(
         for uid in user_ids:
             add_user_to_channel(admin, ch_id, uid)
             time.sleep(0.05)
+
+
+def ensure_sidebar_channels(
+    admin: MMClient,
+    team_id: str,
+    user_ids: dict[str, str],
+    channel_ids: dict[str, str],
+) -> None:
+    """Put demo channels into each user's Channels sidebar category."""
+    wanted = [cid for name, cid in channel_ids.items() if name != "off-topic"]
+    for username, uid in user_ids.items():
+        try:
+            cats = admin.request(
+                "GET", f"/api/v4/users/{uid}/teams/{team_id}/channels/categories"
+            )
+        except RuntimeError as e:
+            print(f"  sidebar skip {username}: {e}")
+            continue
+
+        categories = cats.get("categories") if isinstance(cats, dict) else cats
+        if not isinstance(categories, list):
+            print(f"  sidebar skip {username}: unexpected categories payload")
+            continue
+
+        channels_cat = None
+        for cat in categories:
+            if cat.get("type") == "channels" or cat.get("display_name") == "Channels":
+                channels_cat = cat
+                break
+        if not channels_cat:
+            channels_cat = next(
+                (c for c in categories if c.get("type") not in ("favorites", "direct_messages")),
+                None,
+            )
+        if not channels_cat:
+            print(f"  sidebar skip {username}: no channels category")
+            continue
+
+        existing_ids = list(channels_cat.get("channel_ids") or [])
+        merged = list(dict.fromkeys(existing_ids + wanted))
+        if merged == existing_ids:
+            print(f"  sidebar ok {username}")
+            continue
+
+        channels_cat = {**channels_cat, "channel_ids": merged}
+        try:
+            admin.request(
+                "PUT",
+                f"/api/v4/users/{uid}/teams/{team_id}/channels/categories",
+                [channels_cat],
+            )
+            print(f"  sidebar updated {username} (+{len(merged) - len(existing_ids)} channels)")
+        except RuntimeError as e:
+            # Some MM versions want the full category list
+            try:
+                updated = []
+                for cat in categories:
+                    if cat.get("id") == channels_cat.get("id"):
+                        updated.append(channels_cat)
+                    else:
+                        updated.append(cat)
+                admin.request(
+                    "PUT",
+                    f"/api/v4/users/{uid}/teams/{team_id}/channels/categories",
+                    updated,
+                )
+                print(f"  sidebar updated {username} (full list)")
+            except RuntimeError as e2:
+                print(f"  sidebar failed {username}: {e2}")
+
+
+def dismiss_onboarding_ui(admin: MMClient, user_ids: dict[str, str]) -> None:
+    """Hide welcome tip / onboarding task list so screenshots stay clean."""
+    for username, uid in user_ids.items():
+        prefs = [
+            {
+                "user_id": uid,
+                "category": "onboarding_task_list",
+                "name": "onboarding_task_list_open",
+                "value": "false",
+            },
+            {
+                "user_id": uid,
+                "category": "onboarding_task_list",
+                "name": "onboarding_task_list_show",
+                "value": "false",
+            },
+            {
+                "user_id": uid,
+                "category": "recommended_next_steps",
+                "name": "hide",
+                "value": "true",
+            },
+            {
+                "user_id": uid,
+                "category": "tutorial_step",
+                "name": uid,
+                "value": "999",
+            },
+        ]
+        try:
+            admin.request("PUT", f"/api/v4/users/{uid}/preferences", prefs)
+            print(f"  onboarding dismissed {username}")
+        except RuntimeError as e:
+            print(f"  onboarding dismiss skip {username}: {e}")
 
 
 def post_message(
@@ -292,15 +414,24 @@ def post_message(
     return post["id"]
 
 
-def channel_has_marker(admin: MMClient, channel_id: str) -> bool:
-    posts = admin.request("GET", f"/api/v4/channels/{channel_id}/posts?per_page=30")
+def channel_demo_post_count(admin: MMClient, channel_id: str) -> int:
+    """Count user posts that carry the demo marker (ignore system messages)."""
+    posts = admin.request("GET", f"/api/v4/channels/{channel_id}/posts?per_page=60")
     order = posts.get("order", [])
     pmap = posts.get("posts", {})
+    count = 0
     for pid in order:
-        msg = pmap.get(pid, {}).get("message", "")
-        if MARKER in msg or "Stackblaze Team" in msg:
-            return True
-    return False
+        post = pmap.get(pid, {})
+        msg = post.get("message", "")
+        if post.get("type"):
+            continue  # system message
+        if MARKER in msg:
+            count += 1
+    return count
+
+
+def channel_has_marker(admin: MMClient, channel_id: str, *, min_posts: int = 3) -> bool:
+    return channel_demo_post_count(admin, channel_id) >= min_posts
 
 
 def seed_channel(
@@ -311,30 +442,40 @@ def seed_channel(
     admin: MMClient,
     admin_password: str,
     demo_password: str,
+    *,
+    force: bool = False,
 ) -> None:
-    if channel_has_marker(admin, channel_id):
+    min_posts = 4 if channel_name == "town-square" else 3
+    if not force and channel_has_marker(admin, channel_id, min_posts=min_posts):
         print(f"  skip #{channel_name} (demo content present)")
         return
     msgs = MESSAGES.get(channel_name, [])
+    if not msgs:
+        print(f"  skip #{channel_name} (no message template)")
+        return
     root_id = ""
     for i, (user, text) in enumerate(msgs):
         tagged = f"{text}\n\n_{MARKER}_"
         pw = admin_password if user == "admin" else demo_password
         if user not in tokens:
             tokens[user] = MMClient.login(base, user, pw).token
-        root_id = post_message(
-            tokens[user],
-            base,
-            channel_id,
-            tagged,
-            root_id if i == 0 else "",
-        )
+        # First post is always a root; later posts are also roots (not thread replies)
+        post_root = ""
+        new_id = post_message(tokens[user], base, channel_id, tagged, post_root)
+        if i == 0:
+            root_id = new_id
         time.sleep(0.12)
         if i == 0 and channel_name == "town-square":
             for reply_user, reply_text in THREAD_REPLIES:
                 if reply_user not in tokens:
                     tokens[reply_user] = MMClient.login(base, reply_user, demo_password).token
-                post_message(tokens[reply_user], base, channel_id, reply_text, root_id)
+                post_message(
+                    tokens[reply_user],
+                    base,
+                    channel_id,
+                    f"{reply_text}\n\n_{MARKER}_",
+                    root_id,
+                )
                 time.sleep(0.08)
 
 
@@ -351,6 +492,11 @@ def main() -> int:
     parser.add_argument("--team", default=os.environ.get("STACKBLAZE_DEMO_TEAM", "stackblaze-team"))
     parser.add_argument("--team-display", default=os.environ.get("STACKBLAZE_DEMO_TEAM_DISPLAY", "Stackblaze team"))
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Re-post demo messages even if marker posts already exist",
+    )
     args = parser.parse_args()
 
     if not args.password:
@@ -373,8 +519,15 @@ def main() -> int:
     channel_ids = ensure_channels(admin, team_id)
     print("Channel membership (sidebar visibility):")
     ensure_channel_members(admin, channel_ids, list(user_ids.values()))
+    print("Sidebar categories:")
+    ensure_sidebar_channels(admin, team_id, user_ids, channel_ids)
+    print("Onboarding UI:")
+    dismiss_onboarding_ui(admin, user_ids)
     print("Posts:")
-    for ch_name, ch_id in channel_ids.items():
+    # Town Square first — most visible in the demo video
+    ordered = ["town-square"] + [n for n in channel_ids if n != "town-square"]
+    for ch_name in ordered:
+        ch_id = channel_ids[ch_name]
         seed_channel(
             base,
             ch_id,
@@ -383,6 +536,7 @@ def main() -> int:
             admin,
             args.password,
             args.demo_password,
+            force=args.force,
         )
         print(f"  seeded #{ch_name}")
 

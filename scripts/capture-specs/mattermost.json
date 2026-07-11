@@ -5,45 +5,63 @@
     "path": "/login",
     "steps": [
       { "click": "a.btn-tertiary:has-text('View in Browser')" },
-      { "waitForSelector": "input#input_loginId", "timeout": 30000 },
+      { "sleep": 800 },
+      { "waitForSelector": "input#input_loginId, input[name='loginId']", "timeout": 30000 },
       { "fill": { "input#input_loginId, input[name='loginId']": "admin" } },
       { "fill": { "input#input_password-input, input[name='password-input']": "changeme" } },
       { "click": "button[type='submit'], #saveSetting" },
-      { "waitForURL": "**/select_team**", "timeout": 60000 },
-      { "sleep": 1500 }
+      { "sleep": 2500 },
+      { "optionalClick": "button:has-text('No thanks'), a:has-text('No thanks'), button:has-text(\"I'll figure it out\")", "timeout": 3000 },
+      { "sleep": 800 }
     ],
-    "waitAfterMs": 3000
+    "waitAfterMs": 2000
   },
   "pages": [
     {
       "name": "town-square",
       "path": "/stackblaze-team/channels/town-square",
-      "waitFor": "#post-list, .post-list__dynamic",
-      "waitMs": 3000
+      "waitFor": "#post-list .post, .post-list__dynamic .post, [data-testid='postView']",
+      "waitMs": 5000,
+      "steps": [
+        { "optionalClick": "button:has-text('No thanks'), a:has-text('No thanks')", "timeout": 2000 },
+        { "sleep": 500 }
+      ]
     },
     {
       "name": "engineering",
       "path": "/stackblaze-team/channels/engineering",
-      "waitFor": "#post-list, .post-list__dynamic",
-      "waitMs": 2500
+      "waitFor": "#post-list .post, .post-list__dynamic .post, [data-testid='postView']",
+      "waitMs": 3500,
+      "steps": [
+        { "optionalClick": "button:has-text('No thanks'), a:has-text('No thanks')", "timeout": 2000 }
+      ]
     },
     {
       "name": "product-launch",
       "path": "/stackblaze-team/channels/product-launch",
-      "waitFor": "#post-list, .post-list__dynamic",
-      "waitMs": 2500
+      "waitFor": "#post-list .post, .post-list__dynamic .post, [data-testid='postView']",
+      "waitMs": 3500,
+      "steps": [
+        { "optionalClick": "button:has-text('No thanks'), a:has-text('No thanks')", "timeout": 2000 }
+      ]
     },
     {
       "name": "releases",
       "path": "/stackblaze-team/channels/releases",
-      "waitFor": "#post-list, .post-list__dynamic",
-      "waitMs": 2500
+      "waitFor": "#post-list .post, .post-list__dynamic .post, [data-testid='postView']",
+      "waitMs": 3500,
+      "steps": [
+        { "optionalClick": "button:has-text('No thanks'), a:has-text('No thanks')", "timeout": 2000 }
+      ]
     },
     {
       "name": "customer-success",
       "path": "/stackblaze-team/channels/customer-success",
-      "waitFor": "#post-list, .post-list__dynamic",
-      "waitMs": 2500
+      "waitFor": "#post-list .post, .post-list__dynamic .post, [data-testid='postView']",
+      "waitMs": 3500,
+      "steps": [
+        { "optionalClick": "button:has-text('No thanks'), a:has-text('No thanks')", "timeout": 2000 }
+      ]
     }
   ]
 }

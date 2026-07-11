@@ -107,6 +107,9 @@ export async function runSteps(page, steps) {
     if (step.click) {
       await page.locator(step.click).first().click();
     }
+    if (step.optionalClick) {
+      await page.locator(step.optionalClick).first().click({ timeout: step.timeout || 2000 }).catch(() => {});
+    }
     if (step.press) {
       await page.locator(step.press.selector).first().press(step.press.key);
     }
