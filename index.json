@@ -460,7 +460,7 @@
       "name": "uptime-kuma",
       "description": "Self-hosted monitoring tool like \"Uptime Robot\".",
       "source": "https://github.com/louislam/uptime-kuma",
-      "icon": "https://github.com/louislam/uptime-kuma/raw/master/public/icon.svg",
+      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/icon.png",
       "website": "https://uptime.kuma.pet",
       "installation": "",
       "architecture": [],
@@ -468,7 +468,10 @@
         "monitoring"
       ],
       "screenshots": [
-        "https://camo.githubusercontent.com/9674a2b1b7d094b060fd79e6df7dca10b86a484ce6015b2668cff768dfc786ee/68747470733a2f2f757074696d652e6b756d612e7065742f696d672f6461726b2e6a7067"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/dashboard.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/screenshot-monitor-detail.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/screenshot-status-page.png"
       ],
       "links": [],
       "addons": [

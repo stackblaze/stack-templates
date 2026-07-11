@@ -4,10 +4,10 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Self-hosted monitoring tool like "Uptime Robot".
-    kubero.dev/template.icon: https://github.com/louislam/uptime-kuma/raw/master/public/icon.svg
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/9674a2b1b7d094b060fd79e6df7dca10b86a484ce6015b2668cff768dfc786ee/68747470733a2f2f757074696d652e6b756d612e7065742f696d672f6461726b2e6a7067"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/screenshot-monitor-detail.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/uptime-kuma/screenshot-status-page.png"]'
     kubero.dev/template.source: https://github.com/louislam/uptime-kuma
     kubero.dev/template.categories: '["monitoring"]'
     kubero.dev/template.title: Uptime Kuma

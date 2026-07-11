@@ -1,0 +1,37 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/dashboard",
+    "steps": [
+      { "fill": { "#floatingInput, input[placeholder='Username']": "admin" } },
+      { "fill": { "#floatingPassword, input[placeholder='Password']": "changeme123" } },
+      { "click": "button[type='submit'], button:has-text('Login'), button:has-text('Log in')" },
+      { "waitForNavigation": true }
+    ],
+    "waitAfterMs": 2000,
+    "skipIfUrlIncludes": "/dashboard"
+  },
+  "pages": [
+    {
+      "name": "dashboard",
+      "path": "/dashboard",
+      "waitMs": 6000
+    },
+    {
+      "name": "monitor-detail",
+      "path": "/dashboard/1",
+      "waitMs": 3500
+    },
+    {
+      "name": "status-page",
+      "path": "/status/stackblaze",
+      "waitMs": 3500
+    },
+    {
+      "name": "add-monitor",
+      "path": "/add",
+      "waitMs": 2500
+    }
+  ]
+}
