@@ -764,7 +764,7 @@
       "source": "https://github.com/go-gitea/gitea",
       "icon": "https://avatars.githubusercontent.com/u/12724356?s=200&v=4",
       "website": "https://gitea.io/",
-      "installation": "",
+      "installation": "Install lock is set via env — open the app and register the first account (it becomes admin).",
       "architecture": [],
       "categories": [
         "work",

@@ -88,6 +88,12 @@ spec:
     value: '1000'
   - name: FORGEJO__server__ROOT_URL
     value: '{{KUBERO_APP_URL}}'
+  # Skip the browser install wizard — DB/server settings come from env.
+  # First registered user becomes the site admin.
+  - name: FORGEJO__security__INSTALL_LOCK
+    value: 'true'
+  - name: FORGEJO__server__DOMAIN
+    value: '{{KUBERO_APP_HOST}}'
   - name: FORGEJO__database__DB_TYPE
     value: postgres
   - name: FORGEJO__database__HOST
