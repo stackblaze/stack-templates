@@ -31,6 +31,20 @@ spec:
     value: postgres://mattermost:mattermost@{{KUBERO_APP_NAME}}-postgresql-rw:5432/mattermost?sslmode=disable&connect_timeout=10
   - name: TZ
     value: Etc/UTC
+  - name: STACKBLAZE_LOAD_DEMO_DATA
+    value: 'false'
+  - name: STACKBLAZE_DEMO_ADMIN_LOGIN
+    value: admin
+  - name: STACKBLAZE_DEMO_ADMIN_PASSWORD
+    value: changeme
+  - name: STACKBLAZE_DEMO_ADMIN_EMAIL
+    value: admin@stackblaze.local
+  - name: STACKBLAZE_DEMO_USER_PASSWORD
+    value: StackblazeDemo1!
+  - name: STACKBLAZE_DEMO_TEAM
+    value: stackblaze-team
+  - name: STACKBLAZE_DEMO_TEAM_DISPLAY
+    value: Stackblaze team
   extraVolumes:
   - accessModes:
     - ReadWriteMany
