@@ -294,8 +294,7 @@ spec:
     - name: WEB_URL
       value: '{{KUBERO_APP_URL}}'
     healthcheck:
-      enabled: true
-      path: /
+      enabled: false
   - id: admin
     nameHint: plane-admin
     exposeInternet: false
@@ -307,8 +306,7 @@ spec:
     - name: WEB_URL
       value: '{{KUBERO_APP_URL}}'
     healthcheck:
-      enabled: true
-      path: /
+      enabled: false
   - id: live
     nameHint: plane-live
     exposeInternet: false
@@ -326,8 +324,7 @@ spec:
     - name: LIVE_SERVER_SECRET_KEY
       value: '{{KUBERO_GEN_ALNUM:32}}'
     healthcheck:
-      enabled: true
-      path: /
+      enabled: false
   - id: proxy
     nameHint: plane-proxy
     exposeInternet: true
