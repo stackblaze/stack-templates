@@ -1,0 +1,22 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      { "fill": { "input[type=email], input[name=email]": "${PLAUSIBLE_EMAIL}" } },
+      { "fill": { "input[type=password], input[name=password]": "${PLAUSIBLE_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForNavigation": true },
+      { "sleep": 2000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "sites", "path": "/sites", "waitMs": 3000 },
+    { "name": "dashboard", "path": "/northwind.io?period=day", "waitMs": 4500 },
+    { "name": "sources", "path": "/northwind.io?period=day", "waitMs": 4500, "scrollY": 650 },
+    { "name": "goals", "path": "/northwind.io?period=day", "waitMs": 4500, "scrollY": 1450 },
+    { "name": "settings", "path": "/northwind.io/settings/general", "waitMs": 3000 }
+  ]
+}
