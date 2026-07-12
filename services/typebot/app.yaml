@@ -6,12 +6,12 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: "Open-source conversational form builder \u2014\
       \ a Typeform alternative you can self-host."
-    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/typebot/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@45afbcf915e2937f16515a4a5b41352ac48cf714/services/typebot/icon.png
     kubero.dev/template.installation: This template deploys the Typebot builder. Set
       NEXT_PUBLIC_VIEWER_URL to your public viewer URL. For production, deploy baptistearno/typebot-viewer
       with the same DATABASE_URL and ENCRYPTION_SECRET in the same pipeline phase.
     kubero.dev/template.links: '["https://docs.typebot.io/"]'
-    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/typebot/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/typebot/dashboard.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@45afbcf915e2937f16515a4a5b41352ac48cf714/services/typebot/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@45afbcf915e2937f16515a4a5b41352ac48cf714/services/typebot/dashboard.png"]'
     kubero.dev/template.source: https://github.com/baptisteArno/typebot.io
     kubero.dev/template.categories: '["automation", "utilities", "work"]'
     kubero.dev/template.title: Typebot
