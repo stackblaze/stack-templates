@@ -5854,7 +5854,7 @@
       "name": "plane",
       "description": "Open-source project management platform \u00e2\u20ac\u201d modern alternative to Jira and Linear.",
       "source": "https://github.com/makeplane/plane",
-      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/plane/icon.png",
+      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fb81551a75397a83ffaf13ba694117a354efd63a/services/plane/icon.png",
       "website": "https://plane.so/",
       "installation": "Deploys Plane CE as a multi-service monorepo (api, worker, beat, web, space, admin, live, proxy) with PostgreSQL, Valkey, RabbitMQ, and RustFS on the api service. Companions share gitrepo.clone_url for Architecture grouping. After deploy: create alias Services (api/web/space/admin/live/plane-minio) for the proxy Caddyfile, and point WEB_URL/CORS at the proxy URL.",
       "architecture": [],
@@ -5864,13 +5864,13 @@
         "collaboration"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/plane/demo.mp4",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/plane/dashboard.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/plane/screenshot-all-projects.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/plane/screenshot-home.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/plane/screenshot-analytics.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/plane/screenshot-settings.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/plane/screenshot-admin-general.png"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fb81551a75397a83ffaf13ba694117a354efd63a/services/plane/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fb81551a75397a83ffaf13ba694117a354efd63a/services/plane/dashboard.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fb81551a75397a83ffaf13ba694117a354efd63a/services/plane/screenshot-all-projects.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fb81551a75397a83ffaf13ba694117a354efd63a/services/plane/screenshot-home.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fb81551a75397a83ffaf13ba694117a354efd63a/services/plane/screenshot-analytics.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fb81551a75397a83ffaf13ba694117a354efd63a/services/plane/screenshot-settings.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fb81551a75397a83ffaf13ba694117a354efd63a/services/plane/screenshot-admin-general.png"
       ],
       "links": [
         "https://developers.plane.so/"
