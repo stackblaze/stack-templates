@@ -6,12 +6,12 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: "Open-source customer engagement platform \u2014\
       \ an alternative to Intercom and Zendesk."
-    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/chatwoot/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/icon.png
     kubero.dev/template.installation: Background jobs run inline in this minimal template.
       For production throughput, deploy a dedicated Sidekiq worker using the same
       image and env with `bundle exec sidekiq -C config/sidekiq.yml`.
     kubero.dev/template.links: '["https://www.chatwoot.com/docs/"]'
-    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/chatwoot/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/chatwoot/dashboard.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/dashboard.png"]'
     kubero.dev/template.source: https://github.com/chatwoot/chatwoot
     kubero.dev/template.categories: '["communication", "work", "helpdesk"]'
     kubero.dev/template.title: Chatwoot
