@@ -1,0 +1,30 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "colorScheme": "light",
+  "login": {
+    "path": "/",
+    "steps": [
+      { "optionalClick": "a:has-text(\"Sign up\"), button:has-text(\"Sign up\"), a:has-text(\"Create account\")" },
+      { "sleep": 800 },
+      { "fill": { "input[type=email], input[name=email], input[placeholder*=Email i]": "${PLANE_EMAIL}" } },
+      { "fill": { "input[type=password], input[name=password]": "${PLANE_PASSWORD}" } },
+      { "optionalFill": { "input[name=first_name], input[placeholder*=First i]": "Demo" } },
+      { "optionalFill": { "input[name=last_name], input[placeholder*=Last i]": "User" } },
+      { "click": "button:has-text(\"Continue\"), button:has-text(\"Sign up\"), button:has-text(\"Create account\"), button[type=submit]" },
+      { "sleep": 2500 },
+      { "optionalFill": { "input[name=workspace_name], input[placeholder*=Workspace i], input[placeholder*=workspace i]": "Stackblaze" } },
+      { "optionalFill": { "input[name=slug], input[placeholder*=slug i]": "stackblaze" } },
+      { "optionalClick": "button:has-text(\"Create Workspace\"), button:has-text(\"Continue\"), button:has-text(\"Get Started\"), button[type=submit]" },
+      { "sleep": 2000 },
+      { "optionalClick": "button:has-text(\"Skip\"), button:has-text(\"I'll do it later\"), button:has-text(\"Continue\")" },
+      { "sleep": 1500 }
+    ],
+    "waitAfterMs": 3000
+  },
+  "pages": [
+    { "name": "home", "path": "/", "waitMs": 3500 },
+    { "name": "projects", "path": "/", "waitMs": 2500 },
+    { "name": "signin", "path": "/sign-in", "waitMs": 2000 }
+  ]
+}
