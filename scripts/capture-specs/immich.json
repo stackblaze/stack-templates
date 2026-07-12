@@ -1,0 +1,84 @@
+{
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "deviceScaleFactor": 2,
+  "colorScheme": "dark",
+  "login": {
+    "path": "/auth/login",
+    "steps": [
+      {
+        "fill": {
+          "input[type=email], input[name=email], #email": "${IMMICH_EMAIL}"
+        }
+      },
+      {
+        "fill": {
+          "input[type=password], input[name=password], #password": "${IMMICH_PASSWORD}"
+        }
+      },
+      {
+        "click": "button[type=submit]"
+      },
+      {
+        "waitForNavigation": true
+      },
+      {
+        "sleep": 2500
+      },
+      {
+        "optionalClick": "button:has-text(\"Acknowledge\")"
+      },
+      {
+        "optionalClick": "button:has-text(\"Done\")"
+      },
+      {
+        "optionalClick": "button:has-text(\"Get Started\")"
+      },
+      {
+        "optionalClick": "button:has-text(\"Skip\")"
+      },
+      {
+        "optionalClick": "button:has-text(\"Close\")"
+      },
+      {
+        "optionalClick": "[aria-label=Close]"
+      }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    {
+      "name": "photos",
+      "path": "/photos",
+      "waitMs": 4000,
+      "steps": [
+        {
+          "optionalClick": "button:has-text(\"Acknowledge\")"
+        }
+      ]
+    },
+    {
+      "name": "albums",
+      "path": "/albums",
+      "waitMs": 3500,
+      "steps": [
+        {
+          "optionalClick": "button:has-text(\"Acknowledge\")"
+        }
+      ]
+    },
+    {
+      "name": "album",
+      "path": "/albums",
+      "waitMs": 3500,
+      "note": "Override path to /albums/<id> after seed; Acknowledge version modal before shot",
+      "steps": [
+        {
+          "optionalClick": "button:has-text(\"Acknowledge\")"
+        }
+      ]
+    }
+  ]
+}

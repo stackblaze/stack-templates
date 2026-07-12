@@ -5562,7 +5562,7 @@
       "name": "immich",
       "description": "Self-hosted photo and video backup solution with a mobile-first focus.",
       "source": "https://github.com/immich-app/immich",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/immich/icon.png",
+      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/immich/icon.png",
       "website": "https://immich.app/",
       "installation": "Machine learning is disabled in this minimal template.",
       "architecture": [],
@@ -5572,7 +5572,8 @@
         "utilities"
       ],
       "screenshots": [
-        "https://immich.app/img/hero.webp"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/immich/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/immich/dashboard.png"
       ],
       "links": [
         "https://docs.immich.app/"
