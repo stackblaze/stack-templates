@@ -5856,7 +5856,7 @@
       "source": "https://github.com/makeplane/plane",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/icon.png",
       "website": "https://plane.so/",
-      "installation": "Deploys the Plane API with PostgreSQL, Valkey, RabbitMQ, and RustFS. Plane CE also needs web, worker, beat, and proxy companions for a full UI.",
+      "installation": "Deploys Plane CE as a multi-service monorepo (api, worker, beat, web, space, admin, live, proxy) with PostgreSQL, Valkey, RabbitMQ, and RustFS on the api service. Companions share gitrepo.clone_url for Architecture grouping. After deploy: create alias Services (api/web/space/admin/live/plane-minio) for the proxy Caddyfile, and point WEB_URL/CORS at the proxy URL.",
       "architecture": [],
       "categories": [
         "productivity",

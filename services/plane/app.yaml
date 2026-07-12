@@ -4,14 +4,10 @@ metadata:
   name: plane
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Open-source project management platform \u2014\
-      \ modern alternative to Jira and Linear."
+    kubero.dev/template.description: "Open-source project management platform — modern alternative to Jira and Linear."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/icon.png
-    kubero.dev/template.installation: "This template deploys the Plane API backend\
-      \ with PostgreSQL, Valkey, RabbitMQ, and RustFS. Plane CE also requires web,\
-      \ worker, beat, and proxy containers \u2014 use the official Plane Helm chart\
-      \ for a full stack, or deploy makeplane/plane-frontend and makeplane/plane-proxy\
-      \ companions pointed at this API service."
+    kubero.dev/template.installation: |
+      Deploys Plane CE as a multi-service monorepo group (same Architecture UX as voting-app): api + worker + beat (makeplane/plane-backend), web/space/admin/live frontends, and plane-proxy as the public entrypoint. Shared add-ons (PostgreSQL, Valkey, RabbitMQ, RustFS) attach to the api service; companions share gitrepo.clone_url https://github.com/makeplane/plane.git so the Architecture graph groups them. After deploy, create cluster-local alias Services the proxy Caddyfile expects (api→api app :8000, web/space/admin/live→:3000, plane-minio→RustFS IO :9000), then set WEB_URL and CORS_ALLOWED_ORIGINS on api/frontends to the proxy public URL. Rotate SECRET_KEY, LIVE_SERVER_SECRET_KEY, and RustFS credentials before production use.
     kubero.dev/template.links: '["https://developers.plane.so/"]'
     kubero.dev/template.screenshots: '["https://plane.so/og-image.png"]'
     kubero.dev/template.source: https://github.com/makeplane/plane
@@ -23,6 +19,13 @@ metadata:
 spec:
   name: plane
   deploymentstrategy: docker
+  # Synthetic monorepo key — Architecture groups siblings by clone_url (+ branch).
+  gitrepo:
+    admin: false
+    clone_url: https://github.com/makeplane/plane.git
+    default_branch: master
+    private: false
+    ssh_url: ''
   addons:
   - displayName: PostgreSQL (CloudNativePG)
     env: []
@@ -171,6 +174,7 @@ spec:
             additionalConfig: "default_user = plane\ndefault_pass = plane\ndefault_vhost\
               \ = plane\n"
   envVars:
+
   - name: WEB_URL
     value: '{{KUBERO_APP_URL}}'
   - name: CORS_ALLOWED_ORIGINS
@@ -191,6 +195,8 @@ spec:
     value: '5672'
   - name: SECRET_KEY
     value: '{{KUBERO_GEN_ALNUM:50}}'
+  - name: LIVE_SERVER_SECRET_KEY
+    value: '{{KUBERO_GEN_ALNUM:32}}'
   - name: USE_MINIO
     value: '1'
   - name: AWS_ACCESS_KEY_ID
@@ -236,3 +242,125 @@ spec:
     run:
       securityContext:
         readOnlyRootFilesystem: false
+  # Catalog-only (not written to the KuberoApp CR). Dashboard expands these into
+  # docker multi-app cards; addons stay on the primary api card above.
+  # exposeInternet:false → web replicas, no Ingress (proxy is the public entry).
+  templateServices:
+  - id: worker
+    nameHint: plane-worker
+    exposeInternet: false
+    image:
+      repository: makeplane/plane-backend
+      tag: stable
+      containerPort: '8000'
+      command:
+      - ./bin/docker-entrypoint-worker.sh
+    inheritEnvFrom: primary
+    healthcheck:
+      enabled: false
+  - id: beat
+    nameHint: plane-beat
+    exposeInternet: false
+    image:
+      repository: makeplane/plane-backend
+      tag: stable
+      containerPort: '8000'
+      command:
+      - ./bin/docker-entrypoint-beat.sh
+    inheritEnvFrom: primary
+    healthcheck:
+      enabled: false
+  - id: web
+    nameHint: plane-web
+    exposeInternet: false
+    image:
+      repository: makeplane/plane-frontend
+      tag: stable
+      containerPort: '3000'
+    envVars:
+    - name: WEB_URL
+      value: '{{KUBERO_APP_URL}}'
+    healthcheck:
+      enabled: true
+      path: /
+  - id: space
+    nameHint: plane-space
+    exposeInternet: false
+    image:
+      repository: makeplane/plane-space
+      tag: stable
+      containerPort: '3000'
+    envVars:
+    - name: WEB_URL
+      value: '{{KUBERO_APP_URL}}'
+    healthcheck:
+      enabled: false
+  - id: admin
+    nameHint: plane-admin
+    exposeInternet: false
+    image:
+      repository: makeplane/plane-admin
+      tag: stable
+      containerPort: '3000'
+    envVars:
+    - name: WEB_URL
+      value: '{{KUBERO_APP_URL}}'
+    healthcheck:
+      enabled: false
+  - id: live
+    nameHint: plane-live
+    exposeInternet: false
+    image:
+      repository: makeplane/plane-live
+      tag: stable
+      containerPort: '3000'
+    envVars:
+    - name: API_BASE_URL
+      value: http://api:8000
+    - name: WEB_URL
+      value: '{{KUBERO_APP_URL}}'
+    - name: REDIS_URL
+      value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    - name: LIVE_SERVER_SECRET_KEY
+      value: '{{KUBERO_GEN_ALNUM:32}}'
+    healthcheck:
+      enabled: false
+  - id: proxy
+    nameHint: plane-proxy
+    exposeInternet: true
+    publicUrlSource: true
+    image:
+      repository: makeplane/plane-proxy
+      tag: stable
+      containerPort: '80'
+    envVars:
+    - name: BUCKET_NAME
+      value: uploads
+    - name: FILE_SIZE_LIMIT
+      value: '5242880'
+    - name: SITE_ADDRESS
+      value: ':80'
+    healthcheck:
+      enabled: true
+      path: /
+  # Alias Services the plane-proxy Caddyfile expects (created post-install /
+  # by the deploy helper). Selectors use KuberoApp instance labels.
+  templateServiceAliases:
+  - name: api
+    port: 8000
+    targetRole: primary
+  - name: web
+    port: 3000
+    targetRole: web
+  - name: space
+    port: 3000
+    targetRole: space
+  - name: admin
+    port: 3000
+    targetRole: admin
+  - name: live
+    port: 3000
+    targetRole: live
+  - name: plane-minio
+    port: 9000
+    externalNameRole: rustfs-io
