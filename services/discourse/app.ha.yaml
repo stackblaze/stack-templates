@@ -6,12 +6,12 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: "Open-source community discussion platform \u2014\
       \ modern forum software."
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e63cc2a96db49c9abb60cb62e0a6b20b6ad3346f/services/discourse/icon.png
     kubero.dev/template.installation: "Set DISCOURSE_HOST to your public hostname\
       \ (without protocol) before first boot. Default admin password is configured\
       \ via DISCOURSE_PASSWORD \u2014 change it after install."
     kubero.dev/template.links: '["https://meta.discourse.org/"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/demo.mp4","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/screenshot-latest.png","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/screenshot-categories.png","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/screenshot-support.png","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/dashboard.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e63cc2a96db49c9abb60cb62e0a6b20b6ad3346f/services/discourse/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e63cc2a96db49c9abb60cb62e0a6b20b6ad3346f/services/discourse/screenshot-latest.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e63cc2a96db49c9abb60cb62e0a6b20b6ad3346f/services/discourse/screenshot-categories.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e63cc2a96db49c9abb60cb62e0a6b20b6ad3346f/services/discourse/screenshot-support.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e63cc2a96db49c9abb60cb62e0a6b20b6ad3346f/services/discourse/dashboard.png"]'
     kubero.dev/template.source: https://github.com/discourse/discourse
     kubero.dev/template.categories: '["communication", "social", "work"]'
     kubero.dev/template.title: Discourse
