@@ -1,0 +1,66 @@
+{
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      {
+        "fill": {
+          "input[name=user], #user": "${NEXTCLOUD_USER}"
+        }
+      },
+      {
+        "fill": {
+          "input[name=password], #password": "${NEXTCLOUD_PASSWORD}"
+        }
+      },
+      {
+        "click": "button[type=submit], button[data-login-form-submit]"
+      },
+      {
+        "waitForNavigation": true
+      },
+      {
+        "sleep": 2500
+      },
+      {
+        "optionalClick": "button:has-text(\"Skip\")"
+      },
+      {
+        "optionalClick": "button:has-text(\"Close\")"
+      },
+      {
+        "optionalClick": "[aria-label=Close]"
+      },
+      {
+        "optionalClick": "button:has-text(\"Got it\")"
+      }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    {
+      "name": "files",
+      "path": "/apps/files/files",
+      "waitMs": 3500
+    },
+    {
+      "name": "documents",
+      "path": "/apps/files/files/9?dir=/Documents",
+      "waitMs": 3000
+    },
+    {
+      "name": "photos",
+      "path": "/apps/files/files/17?dir=/Photos",
+      "waitMs": 3500
+    },
+    {
+      "name": "dashboard",
+      "path": "/apps/dashboard/",
+      "waitMs": 3500
+    }
+  ]
+}

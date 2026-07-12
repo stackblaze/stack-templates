@@ -12,7 +12,7 @@ metadata:
       are set (no web setup wizard). Default login is admin / nextcloud — rotate the
       password after first login. NEXTCLOUD_TRUSTED_DOMAINS is wired to the app host.
     kubero.dev/template.links: '["https://docs.nextcloud.com/"]'
-    kubero.dev/template.screenshots: '["https://nextcloud.com/wp-content/uploads/2022/03/hero.webp"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/screenshot-files.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/screenshot-documents.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/screenshot-photos.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/screenshot-dashboard.png"]'
     kubero.dev/template.source: https://github.com/nextcloud/server
     kubero.dev/template.categories: '["storage", "work", "collaboration"]'
     kubero.dev/template.title: Nextcloud

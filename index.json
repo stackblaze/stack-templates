@@ -5508,7 +5508,7 @@
       "source": "https://github.com/nextcloud/server",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nextcloud/icon.png",
       "website": "https://nextcloud.com/",
-      "installation": "Set NEXTCLOUD_TRUSTED_DOMAINS to your public hostname before going live.",
+      "installation": "Auto-installs on first boot against the bundled MariaDB add-on when NEXTCLOUD_ADMIN_USER / NEXTCLOUD_ADMIN_PASSWORD and MYSQL_* are set (no web setup wizard). Default login is admin / nextcloud \u2014 rotate the password after first login. NEXTCLOUD_TRUSTED_DOMAINS is wired to the app host.",
       "architecture": [],
       "categories": [
         "storage",
@@ -5516,7 +5516,12 @@
         "collaboration"
       ],
       "screenshots": [
-        "https://nextcloud.com/wp-content/uploads/2022/03/hero.webp"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/dashboard.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/screenshot-files.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/screenshot-documents.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/screenshot-photos.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/screenshot-dashboard.png"
       ],
       "links": [
         "https://docs.nextcloud.com/"
