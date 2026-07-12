@@ -1,0 +1,24 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/app/login",
+    "steps": [
+      { "fill": { "input[name=email_address]": "${CHATWOOT_EMAIL}" } },
+      { "fill": { "input[name=password]": "${CHATWOOT_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForNavigation": true },
+      { "sleep": 3000 },
+      { "optionalClick": "button:has-text(\"Continue\")" },
+      { "optionalClick": "button:has-text(\"Skip\")" },
+      { "optionalClick": "button:has-text(\"Close\")" }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "conversations", "path": "/app/accounts/1/conversations", "waitMs": 3500 },
+    { "name": "conversation", "path": "/app/accounts/1/conversations/4", "waitMs": 3500 },
+    { "name": "contacts", "path": "/app/accounts/1/contacts", "waitMs": 3000 },
+    { "name": "dashboard", "path": "/app/accounts/1/dashboard", "waitMs": 3500 }
+  ]
+}

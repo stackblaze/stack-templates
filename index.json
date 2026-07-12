@@ -5705,7 +5705,7 @@
       "name": "chatwoot",
       "description": "Open-source customer engagement platform \u00e2\u20ac\u201d an alternative to Intercom and Zendesk.",
       "source": "https://github.com/chatwoot/chatwoot",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/icon.png",
+      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/chatwoot/icon.png",
       "website": "https://www.chatwoot.com/",
       "installation": "Replace SECRET_KEY_BASE before production use.",
       "architecture": [],
@@ -5715,7 +5715,8 @@
         "helpdesk"
       ],
       "screenshots": [
-        "https://www.chatwoot.com/images/chatwoot-dashboard.png"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/chatwoot/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/chatwoot/dashboard.png"
       ],
       "links": [
         "https://www.chatwoot.com/docs/"
