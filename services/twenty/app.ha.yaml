@@ -6,14 +6,11 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Building a modern alternative to Salesforce,
       powered by the community.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/twenty/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/twenty/icon.png
     kubero.dev/template.installation: 'All available environment variables are described
       here : https://twenty.com/developers/section/self-hosting/self-hosting-var'
     kubero.dev/template.links: '["https://twenty.com/user-guide", "https://twenty.com/developers"]'
-    kubero.dev/template.screenshots: '[ "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/index-light.png",
-      "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/kanban-light.png",
-      "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/boards-light.png",
-      "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/roadmap-dark.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/twenty/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/twenty/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/twenty/screenshot-people.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/twenty/screenshot-opportunities.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/twenty/screenshot-tasks.png"]'
     kubero.dev/template.source: https://github.com/twentyhq/twenty
     kubero.dev/template.categories: '["productivity", "work" ]'
     kubero.dev/template.title: twenty
@@ -25,6 +22,8 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: FRONT_BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: SERVER_URL
     value: '{{KUBERO_APP_URL}}'
   - name: ENABLE_DB_MIGRATIONS
     value: 'true'
@@ -165,7 +164,7 @@ spec:
   web:
     replicaCount: 2
   worker:
-    replicaCount: 0
+    replicaCount: 1
   image:
     containerPort: '3000'
     pullPolicy: Always

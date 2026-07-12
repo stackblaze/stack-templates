@@ -1,0 +1,28 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/welcome",
+    "steps": [
+      { "click": "button:has-text(\"Continue\")" },
+      { "fill": { "input[placeholder=Email]": "${TWENTY_EMAIL}" } },
+      { "click": "button:has-text(\"Continue\")" },
+      { "fill": { "input[type=password]": "${TWENTY_PASSWORD}" } },
+      { "click": "button:has-text(\"Sign in\")" },
+      { "optionalClick": "text=Continue without sync" },
+      { "sleep": 2000 },
+      { "fill": { "input[placeholder=Tim]": "Demo" } },
+      { "fill": { "input[placeholder=Cook]": "User" } },
+      { "optionalClick": "button:has-text(\"Continue\")" },
+      { "sleep": 1500 },
+      { "optionalClick": "button:has-text(\"Continue\")" }
+    ],
+    "waitAfterMs": 2500
+  },
+  "pages": [
+    { "name": "companies", "path": "/objects/companies", "waitMs": 3000 },
+    { "name": "people", "path": "/objects/people", "waitMs": 3000 },
+    { "name": "opportunities", "path": "/objects/opportunities", "waitMs": 3000 },
+    { "name": "tasks", "path": "/objects/tasks", "waitMs": 3000 }
+  ]
+}
