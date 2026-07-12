@@ -6,13 +6,13 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Nextcloud is a self-hosted file sync and collaboration
       platform.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nextcloud/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/icon.png
     kubero.dev/template.installation: Auto-installs on first boot against the bundled
       MariaDB add-on when NEXTCLOUD_ADMIN_USER / NEXTCLOUD_ADMIN_PASSWORD and MYSQL_*
       are set (no web setup wizard). Default login is admin / nextcloud — rotate the
       password after first login. NEXTCLOUD_TRUSTED_DOMAINS is wired to the app host.
     kubero.dev/template.links: '["https://docs.nextcloud.com/"]'
-    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/screenshot-files.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/screenshot-documents.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/screenshot-photos.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/nextcloud/screenshot-dashboard.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/screenshot-files.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/screenshot-documents.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/screenshot-photos.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/screenshot-dashboard.png"]'
     kubero.dev/template.source: https://github.com/nextcloud/server
     kubero.dev/template.categories: '["storage", "work", "collaboration"]'
     kubero.dev/template.title: Nextcloud
