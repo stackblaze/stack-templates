@@ -170,7 +170,7 @@ spec:
   - name: AWS_SECRET_ACCESS_KEY
     value: changeme
   - name: AWS_S3_ENDPOINT_URL
-    value: http://{{KUBERO_APP_NAME}}-rustfs:9000
+    value: http://{{KUBERO_APP_NAME}}-rustfs-io:9000
   - name: AWS_S3_BUCKET_NAME
     value: uploads
   - name: AWS_REGION
