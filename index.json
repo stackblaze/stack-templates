@@ -5933,7 +5933,11 @@
         "work"
       ],
       "screenshots": [
-        "https://www.discourse.org/a/images/discourse-screen.jpg"
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/demo.mp4",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/screenshot-latest.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/screenshot-categories.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/screenshot-support.png",
+        "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/dashboard.png"
       ],
       "links": [
         "https://meta.discourse.org/"

@@ -1,0 +1,25 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      { "fill": { "#login-account-name": "${DISCOURSE_EMAIL}" } },
+      { "fill": { "#login-account-password": "${DISCOURSE_PASSWORD}" } },
+      { "click": "#login-button" },
+      { "waitForNavigation": true },
+      { "sleep": 2500 },
+      { "optionalClick": "button:has-text(\"Skip\")" },
+      { "optionalClick": ".btn:has-text(\"Skip\")" },
+      { "optionalClick": "button:has-text(\"Maybe Later\")" },
+      { "optionalClick": ".d-modal-cancel" }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "latest", "path": "/latest", "waitMs": 3500 },
+    { "name": "categories", "path": "/categories", "waitMs": 3000 },
+    { "name": "topic", "path": "/t/-/12", "waitMs": 4000 },
+    { "name": "support", "path": "/c/support/6", "waitMs": 3000 }
+  ]
+}

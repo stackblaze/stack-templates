@@ -11,7 +11,7 @@ metadata:
       \ (without protocol) before first boot. Default admin password is configured\
       \ via DISCOURSE_PASSWORD \u2014 change it after install."
     kubero.dev/template.links: '["https://meta.discourse.org/"]'
-    kubero.dev/template.screenshots: '["https://www.discourse.org/a/images/discourse-screen.jpg"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/demo.mp4","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/screenshot-latest.png","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/screenshot-categories.png","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/screenshot-support.png","https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/discourse/dashboard.png"]'
     kubero.dev/template.source: https://github.com/discourse/discourse
     kubero.dev/template.categories: '["communication", "social", "work"]'
     kubero.dev/template.title: Discourse
