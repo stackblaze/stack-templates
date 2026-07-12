@@ -112,7 +112,7 @@
       "name": "twenty",
       "description": "Building a modern alternative to Salesforce, powered by the community.",
       "source": "https://github.com/twentyhq/twenty",
-      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/twenty/icon.png",
+      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/icon.png",
       "website": "https://twenty.com/",
       "installation": "All available environment variables are described here : https://twenty.com/developers/section/self-hosting/self-hosting-var",
       "architecture": [],
@@ -121,11 +121,11 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/twenty/demo.mp4",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/twenty/dashboard.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/twenty/screenshot-people.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/twenty/screenshot-opportunities.png",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/twenty/screenshot-tasks.png"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/dashboard.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/screenshot-people.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/screenshot-opportunities.png",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/screenshot-tasks.png"
       ],
       "links": [
         "https://twenty.com/user-guide",
