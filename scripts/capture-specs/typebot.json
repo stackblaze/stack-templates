@@ -1,0 +1,18 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/signin",
+    "steps": [
+      { "fill": { "input[name=email], input[type=email]": "${TYPEBOT_EMAIL}" } },
+      { "click": "button[type=submit]" },
+      { "sleep": 2000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "typebots", "path": "/typebots", "waitMs": 3500 },
+    { "name": "editor", "path": "/typebots", "waitMs": 2000 },
+    { "name": "share", "path": "/typebots", "waitMs": 2000 }
+  ]
+}

@@ -5758,7 +5758,7 @@
       "name": "typebot",
       "description": "Open-source conversational form builder \u00e2\u20ac\u201d a Typeform alternative you can self-host.",
       "source": "https://github.com/baptisteArno/typebot.io",
-      "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typebot/icon.png",
+      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/typebot/icon.png",
       "website": "https://typebot.io/",
       "installation": "Deploy typebot-viewer separately for published bots in production.",
       "architecture": [],
@@ -5768,7 +5768,8 @@
         "work"
       ],
       "screenshots": [
-        "https://docs.typebot.io/images/og.png"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/typebot/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/typebot/dashboard.png"
       ],
       "links": [
         "https://docs.typebot.io/"
