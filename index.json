@@ -5810,7 +5810,7 @@
       "name": "plausible",
       "description": "Privacy-friendly alternative to Google Analytics \u00e2\u20ac\u201d lightweight and open source.",
       "source": "https://github.com/plausible/analytics",
-      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/plausible/icon.png",
+      "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b034abb844fe2bb6ce82bbf34bb651285f059a6/services/plausible/icon.png",
       "website": "https://plausible.io/",
       "installation": "Requires ClickHouse and PostgreSQL addons. Rotate SECRET_KEY_BASE and TOTP_VAULT_KEY.",
       "architecture": [],
@@ -5820,8 +5820,8 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/plausible/demo.mp4",
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@main/services/plausible/dashboard.png"
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b034abb844fe2bb6ce82bbf34bb651285f059a6/services/plausible/demo.mp4",
+        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b034abb844fe2bb6ce82bbf34bb651285f059a6/services/plausible/dashboard.png"
       ],
       "links": [
         "https://plausible.io/docs/"
