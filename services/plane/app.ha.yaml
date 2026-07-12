@@ -8,10 +8,10 @@ metadata:
       \ modern alternative to Jira and Linear."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/icon.png
     kubero.dev/template.installation: "This template deploys the Plane API backend\
-      \ with PostgreSQL and Valkey. Plane CE also requires web, worker, beat, and\
-      \ proxy containers \u2014 use the official Plane Helm chart for a full stack,\
-      \ or deploy makeplane/plane-frontend and makeplane/plane-proxy companions pointed\
-      \ at this API service."
+      \ with PostgreSQL, Valkey, RabbitMQ, and RustFS. Plane CE also requires web,\
+      \ worker, beat, and proxy containers \u2014 use the official Plane Helm chart\
+      \ for a full stack, or deploy makeplane/plane-frontend and makeplane/plane-proxy\
+      \ companions pointed at this API service."
     kubero.dev/template.links: '["https://developers.plane.so/"]'
     kubero.dev/template.screenshots: '["https://plane.so/og-image.png"]'
     kubero.dev/template.source: https://github.com/makeplane/plane
@@ -148,6 +148,31 @@ spec:
         stringData:
           accesskey: planeadmin
           secretkey: changeme
+  - displayName: RabbitMQ
+    env: []
+    icon: /img/addons/rabbitmq.svg
+    id: kubero-operator
+    kind: RabbitmqCluster
+    resourceDefinitions:
+      RabbitmqCluster:
+        apiVersion: rabbitmq.com/v1beta1
+        kind: RabbitmqCluster
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-rabbitmq'
+        spec:
+          replicas: 1
+          persistence:
+            storageClassName: lite
+            storage: 1Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+          rabbitmq:
+            additionalConfig: "default_user = plane\ndefault_pass = plane\ndefault_vhost\
+              \ = plane\n"
   envVars:
   - name: WEB_URL
     value: '{{KUBERO_APP_URL}}'
@@ -161,6 +186,12 @@ spec:
     value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
   - name: CELERY_RESULT_BACKEND
     value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+  - name: AMQP_URL
+    value: amqp://plane:plane@{{KUBERO_APP_NAME}}-rabbitmq:5672/plane
+  - name: RABBITMQ_HOST
+    value: '{{KUBERO_APP_NAME}}-rabbitmq'
+  - name: RABBITMQ_PORT
+    value: '5672'
   - name: SECRET_KEY
     value: '{{KUBERO_GEN_ALNUM:50}}'
   - name: USE_MINIO

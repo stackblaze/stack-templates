@@ -5856,7 +5856,7 @@
       "source": "https://github.com/makeplane/plane",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/icon.png",
       "website": "https://plane.so/",
-      "installation": "Minimal API backend. Use Plane Helm chart for a complete CE deployment.",
+      "installation": "Deploys the Plane API with PostgreSQL, Valkey, RabbitMQ, and RustFS. Plane CE also needs web, worker, beat, and proxy companions for a full UI.",
       "architecture": [],
       "categories": [
         "productivity",
@@ -5872,6 +5872,7 @@
       "addons": [
         "Cluster",
         "Valkey",
+        "RabbitmqCluster",
         "Tenant"
       ],
       "stars": 47000,
