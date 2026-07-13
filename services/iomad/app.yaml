@@ -128,7 +128,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: elestio/iomad
+    repository: registry.stackblaze.cloud/elestio/iomad
     tag: latest
     run:
       securityContext:

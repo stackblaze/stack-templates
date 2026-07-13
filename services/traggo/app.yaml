@@ -29,7 +29,7 @@ spec:
     storageClass: lite
   image:
     containerPort: '3030'
-    repository: traggo/server
+    repository: registry.stackblaze.cloud/traggo/server
     tag: latest
     run:
       securityContext:

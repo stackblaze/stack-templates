@@ -113,7 +113,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: everco/ever-traduora
+    repository: registry.stackblaze.cloud/everco/ever-traduora
     tag: latest
     run:
       securityContext:

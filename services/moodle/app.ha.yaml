@@ -139,7 +139,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: elestio/moodle
+    repository: registry.stackblaze.cloud/elestio/moodle
     tag: latest
     run:
       securityContext:

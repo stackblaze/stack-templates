@@ -65,7 +65,7 @@ spec:
   image:
     containerPort: '18083'
     pullPolicy: Always
-    repository: emqx/emqx
+    repository: registry.stackblaze.cloud/emqx/emqx
     tag: latest
     run:
       securityContext:

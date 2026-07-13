@@ -117,7 +117,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: xlrl/mantisbt
+    repository: registry.stackblaze.cloud/xlrl/mantisbt
     tag: 2.28.3
     run:
       securityContext:

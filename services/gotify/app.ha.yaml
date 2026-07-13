@@ -105,7 +105,7 @@ spec:
     storageClass: shared
   image:
     containerPort: '8080'
-    repository: gotify/server
+    repository: registry.stackblaze.cloud/gotify/server
     tag: latest
     run:
       securityContext:

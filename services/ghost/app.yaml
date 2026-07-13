@@ -90,7 +90,7 @@ spec:
     storageClass: lite
   image:
     containerPort: '2368'
-    repository: ghost
+    repository: registry.stackblaze.cloud/library/ghost
     tag: latest
     run:
       securityContext:

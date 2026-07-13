@@ -29,7 +29,7 @@ spec:
     storageClass: shared
   image:
     containerPort: '8080'
-    repository: zadam/trilium
+    repository: registry.stackblaze.cloud/zadam/trilium
     tag: latest
     run:
       securityContext:

@@ -101,7 +101,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: countly/countly-server
+    repository: registry.stackblaze.cloud/countly/countly-server
     tag: 23.11.22
     run:
       securityContext:

@@ -236,7 +236,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: zulip/docker-zulip
+    repository: registry.stackblaze.cloud/zulip/docker-zulip
     tag: 11.6-0
     run:
       securityContext:

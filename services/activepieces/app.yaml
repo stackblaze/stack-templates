@@ -149,7 +149,7 @@ spec:
     run:
       command: node index.js
       readOnlyAppStorage: true
-      repository: node
+      repository: registry.stackblaze.cloud/library/node
       securityContext:
         allowPrivilegeEscalation: false
         capabilities:

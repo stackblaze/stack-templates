@@ -119,7 +119,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: openproject/openproject
+    repository: registry.stackblaze.cloud/openproject/openproject
     tag: 16-slim
     run:
       securityContext:

@@ -185,7 +185,7 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: inventree/inventree
+    repository: registry.stackblaze.cloud/inventree/inventree
     tag: stable
     run:
       securityContext:

@@ -192,7 +192,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: juspaydotin/hyperswitch-router
+    repository: registry.stackblaze.cloud/juspaydotin/hyperswitch-router
     tag: 2026.06.11.0-standalone
     command:
     - sh

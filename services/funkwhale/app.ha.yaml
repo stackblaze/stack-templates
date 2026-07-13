@@ -221,7 +221,7 @@ spec:
   image:
     containerPort: '5000'
     pullPolicy: Always
-    repository: funkwhale/api
+    repository: registry.stackblaze.cloud/funkwhale/api
     tag: '1.4'
     run:
       securityContext:

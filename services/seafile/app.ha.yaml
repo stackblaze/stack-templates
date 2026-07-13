@@ -119,7 +119,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: seafileltd/seafile-mc
+    repository: registry.stackblaze.cloud/seafileltd/seafile-mc
     tag: latest
     run:
       securityContext:

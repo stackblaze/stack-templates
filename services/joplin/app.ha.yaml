@@ -125,7 +125,7 @@ spec:
   image:
     containerPort: '22300'
     pullPolicy: Always
-    repository: joplin/server
+    repository: registry.stackblaze.cloud/joplin/server
     tag: latest
     run:
       securityContext:

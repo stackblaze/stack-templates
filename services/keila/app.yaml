@@ -94,7 +94,7 @@ spec:
   image:
     containerPort: '4000'
     pullPolicy: Always
-    repository: pentacent/keila
+    repository: registry.stackblaze.cloud/pentacent/keila
     tag: latest
     run:
       securityContext:

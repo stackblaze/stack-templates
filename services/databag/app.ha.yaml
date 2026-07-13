@@ -34,7 +34,7 @@ spec:
   image:
     containerPort: '7000'
     pullPolicy: Always
-    repository: balzack/databag
+    repository: registry.stackblaze.cloud/balzack/databag
     tag: latest
     run:
       securityContext:

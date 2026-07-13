@@ -118,7 +118,7 @@ spec:
     timeoutSeconds: 10
     periodSeconds: 30
   image:
-    repository: apache/airflow
+    repository: registry.stackblaze.cloud/apache/airflow
     tag: 2.10.5-python3.12
     pullPolicy: IfNotPresent
     containerPort: '8080'

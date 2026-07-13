@@ -111,7 +111,7 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: lycheeorg/lychee
+    repository: registry.stackblaze.cloud/lycheeorg/lychee
     tag: latest
     command:
     - sh

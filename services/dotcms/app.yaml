@@ -172,7 +172,7 @@ spec:
   image:
     containerPort: '8082'
     pullPolicy: Always
-    repository: dotcms/dotcms
+    repository: registry.stackblaze.cloud/dotcms/dotcms
     tag: latest
     run:
       securityContext:

@@ -142,7 +142,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: mautic/mautic
+    repository: registry.stackblaze.cloud/mautic/mautic
     tag: 5-apache
     command:
     - sh

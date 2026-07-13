@@ -84,7 +84,7 @@ spec:
         metadata:
           name: '{{KUBERO_APP_NAME}}-rustfs'
         spec:
-          image: rustfs/rustfs:latest
+          image: registry.stackblaze.cloud/rustfs/rustfs:latest
           credsSecret:
             name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
           pools:
@@ -136,7 +136,7 @@ spec:
   extraVolumes: []
   image:
     containerPort: '3000'
-    repository: lukevella/rallly
+    repository: registry.stackblaze.cloud/lukevella/rallly
     tag: '4'
     run:
       securityContext:

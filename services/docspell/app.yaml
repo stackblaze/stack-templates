@@ -121,7 +121,7 @@ spec:
   image:
     containerPort: '7880'
     pullPolicy: Always
-    repository: docspell/restserver
+    repository: registry.stackblaze.cloud/docspell/restserver
     tag: latest
     run:
       securityContext:

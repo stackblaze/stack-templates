@@ -121,7 +121,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: evershop/evershop
+    repository: registry.stackblaze.cloud/evershop/evershop
     tag: latest
     command:
     - sh

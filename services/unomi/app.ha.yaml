@@ -83,7 +83,7 @@ spec:
                 fsGroupChangePolicy: OnRootMismatch
               initContainers:
               - name: sysctl
-                image: busybox:1.36
+                image: registry.stackblaze.cloud/library/busybox:1.36
                 command:
                 - sh
                 - -c
@@ -91,7 +91,7 @@ spec:
                 securityContext:
                   privileged: true
               - name: data-perms
-                image: busybox:1.36
+                image: registry.stackblaze.cloud/library/busybox:1.36
                 command:
                 - sh
                 - -c
@@ -209,7 +209,7 @@ spec:
   image:
     containerPort: '8181'
     pullPolicy: Always
-    repository: apache/unomi
+    repository: registry.stackblaze.cloud/apache/unomi
     tag: 3.0.0
     command:
     - bash

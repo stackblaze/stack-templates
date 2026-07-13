@@ -160,7 +160,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: espocrm/espocrm
+    repository: registry.stackblaze.cloud/espocrm/espocrm
     tag: apache
     run:
       securityContext:

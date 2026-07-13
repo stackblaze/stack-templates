@@ -123,7 +123,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: docmost/docmost
+    repository: registry.stackblaze.cloud/docmost/docmost
     tag: latest
     run:
       securityContext:

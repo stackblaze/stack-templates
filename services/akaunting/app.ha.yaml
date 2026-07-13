@@ -141,7 +141,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: akaunting/akaunting
+    repository: registry.stackblaze.cloud/akaunting/akaunting
     tag: latest
     run:
       securityContext:

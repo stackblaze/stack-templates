@@ -139,7 +139,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: vabene1111/recipes
+    repository: registry.stackblaze.cloud/vabene1111/recipes
     tag: latest
     run:
       securityContext:

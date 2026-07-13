@@ -46,7 +46,7 @@ spec:
   extraVolumes: []
   image:
     containerPort: '3000'
-    repository: mirotalk/p2p
+    repository: registry.stackblaze.cloud/mirotalk/p2p
     tag: latest
     run:
       securityContext:

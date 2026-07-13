@@ -163,7 +163,7 @@ spec:
   image:
     containerPort: '3333'
     pullPolicy: Always
-    repository: ghostfolio/ghostfolio
+    repository: registry.stackblaze.cloud/ghostfolio/ghostfolio
     tag: latest
     run:
       securityContext:

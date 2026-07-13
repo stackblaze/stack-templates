@@ -99,7 +99,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: lakhansamani/authorizer
+    repository: registry.stackblaze.cloud/lakhansamani/authorizer
     tag: latest
     command:
     - sh

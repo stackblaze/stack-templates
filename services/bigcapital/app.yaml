@@ -189,7 +189,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: bigcapitalhq/server
+    repository: registry.stackblaze.cloud/bigcapitalhq/server
     tag: latest
     command:
     - sh

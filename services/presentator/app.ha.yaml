@@ -36,7 +36,7 @@ spec:
   image:
     containerPort: 8080
     pullPolicy: Always
-    repository: ganigeorgiev/presentator
+    repository: registry.stackblaze.cloud/ganigeorgiev/presentator
     tag: latest
     run:
       securityContext:

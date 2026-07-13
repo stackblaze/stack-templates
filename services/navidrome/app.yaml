@@ -54,7 +54,7 @@ spec:
   image:
     containerPort: '4533'
     pullPolicy: Always
-    repository: deluan/navidrome
+    repository: registry.stackblaze.cloud/deluan/navidrome
     tag: latest
     run:
       securityContext:

@@ -48,7 +48,7 @@ spec:
     periodSeconds: 10
   image:
     containerPort: '2022'
-    repository: illasoft/illa-builder
+    repository: registry.stackblaze.cloud/illasoft/illa-builder
     run:
       securityContext:
         readOnlyRootFilesystem: false

@@ -93,7 +93,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: searxng/searxng
+    repository: registry.stackblaze.cloud/searxng/searxng
     tag: latest
     run:
       securityContext:

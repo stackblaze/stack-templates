@@ -71,7 +71,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: rocketchat/rocket.chat
+    repository: registry.stackblaze.cloud/rocketchat/rocket.chat
     tag: 5.4.10
     run:
       securityContext:

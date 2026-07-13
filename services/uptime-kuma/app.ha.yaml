@@ -82,7 +82,7 @@ spec:
   extraVolumes: []
   image:
     containerPort: '3001'
-    repository: louislam/uptime-kuma
+    repository: registry.stackblaze.cloud/louislam/uptime-kuma
     tag: latest
     run:
       securityContext:

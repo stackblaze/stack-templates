@@ -124,7 +124,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: mriedmann/humhub
+    repository: registry.stackblaze.cloud/mriedmann/humhub
     tag: stable
     run:
       securityContext:

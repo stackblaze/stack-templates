@@ -25,7 +25,7 @@ spec:
   image:
     containerPort: '8334'
     pullPolicy: Always
-    repository: machines/filestash
+    repository: registry.stackblaze.cloud/machines/filestash
     tag: latest
     run:
       securityContext:

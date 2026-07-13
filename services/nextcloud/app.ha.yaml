@@ -109,7 +109,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: nextcloud
+    repository: registry.stackblaze.cloud/library/nextcloud
     tag: apache
     run:
       securityContext:

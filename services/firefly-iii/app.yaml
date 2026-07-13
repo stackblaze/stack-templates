@@ -161,7 +161,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: fireflyiii/core
+    repository: registry.stackblaze.cloud/fireflyiii/core
     tag: latest
     run:
       securityContext:

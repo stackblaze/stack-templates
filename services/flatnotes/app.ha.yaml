@@ -61,7 +61,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: dullage/flatnotes
+    repository: registry.stackblaze.cloud/dullage/flatnotes
     tag: latest
     run:
       securityContext:

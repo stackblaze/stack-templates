@@ -179,7 +179,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: invoiceninja/invoiceninja
+    repository: registry.stackblaze.cloud/invoiceninja/invoiceninja
     tag: '5'
     command:
     - sh

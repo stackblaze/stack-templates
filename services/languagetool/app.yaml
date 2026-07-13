@@ -41,7 +41,7 @@ spec:
     periodSeconds: 10
   image:
     containerPort: '8010'
-    repository: erikvl87/languagetool
+    repository: registry.stackblaze.cloud/erikvl87/languagetool
     tag: latest
     run:
       securityContext:

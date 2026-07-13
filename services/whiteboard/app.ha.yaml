@@ -24,7 +24,7 @@ spec:
   image:
     containerPort: 8080
     pullPolicy: Always
-    repository: rofl256/whiteboard
+    repository: registry.stackblaze.cloud/rofl256/whiteboard
     tag: latest
     run:
       securityContext:

@@ -158,7 +158,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: baserow/baserow
+    repository: registry.stackblaze.cloud/baserow/baserow
     tag: 2.2.2
     run:
       securityContext:

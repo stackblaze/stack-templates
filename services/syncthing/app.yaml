@@ -42,7 +42,7 @@ spec:
   image:
     containerPort: '8384'
     pullPolicy: Always
-    repository: syncthing/syncthing
+    repository: registry.stackblaze.cloud/syncthing/syncthing
     tag: latest
     run:
       securityContext:

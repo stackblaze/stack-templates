@@ -51,7 +51,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: adminer
+    repository: registry.stackblaze.cloud/library/adminer
     tag: latest
     run:
       securityContext:

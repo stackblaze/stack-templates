@@ -71,7 +71,7 @@ spec:
   image:
     containerPort: '3900'
     pullPolicy: Always
-    repository: dxflrs/garage
+    repository: registry.stackblaze.cloud/dxflrs/garage
     tag: v2.3.0
     run:
       securityContext:

@@ -81,7 +81,7 @@ spec:
   extraVolumes: []
   image:
     containerPort: '5230'
-    repository: neosmemo/memos
+    repository: registry.stackblaze.cloud/neosmemo/memos
     tag: stable
     run:
       securityContext:

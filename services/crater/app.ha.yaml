@@ -131,7 +131,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: shinsenter/crater
+    repository: registry.stackblaze.cloud/shinsenter/crater
     tag: php7.4
     run:
       securityContext:

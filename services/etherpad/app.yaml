@@ -86,7 +86,7 @@ spec:
   extraVolumes: []
   image:
     containerPort: '8080'
-    repository: etherpad/etherpad
+    repository: registry.stackblaze.cloud/etherpad/etherpad
     run:
       securityContext:
         readOnlyRootFilesystem: false

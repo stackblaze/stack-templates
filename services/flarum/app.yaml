@@ -117,7 +117,7 @@ spec:
   image:
     containerPort: '8888'
     pullPolicy: Always
-    repository: mondedie/flarum
+    repository: registry.stackblaze.cloud/mondedie/flarum
     tag: stable
     run:
       securityContext:

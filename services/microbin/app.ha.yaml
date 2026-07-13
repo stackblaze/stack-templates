@@ -87,7 +87,7 @@ spec:
     storageClass: shared
   image:
     containerPort: '8080'
-    repository: danielszabo99/microbin
+    repository: registry.stackblaze.cloud/danielszabo99/microbin
     tag: latest
     run:
       securityContext:

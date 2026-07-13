@@ -63,7 +63,7 @@ spec:
   image:
     containerPort: '5432'
     pullPolicy: Always
-    repository: timescale/timescaledb
+    repository: registry.stackblaze.cloud/timescale/timescaledb
     tag: latest-pg16
     run:
       securityContext:

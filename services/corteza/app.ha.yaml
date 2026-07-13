@@ -91,7 +91,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: cortezaproject/corteza
+    repository: registry.stackblaze.cloud/cortezaproject/corteza
     tag: '2023.3'
     run:
       securityContext:

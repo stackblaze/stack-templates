@@ -79,7 +79,7 @@ spec:
   image:
     containerPort: '9047'
     pullPolicy: Always
-    repository: dremio/dremio-oss
+    repository: registry.stackblaze.cloud/dremio/dremio-oss
     tag: latest
     run:
       securityContext:

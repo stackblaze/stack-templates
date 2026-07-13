@@ -161,7 +161,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: automatischio/automatisch
+    repository: registry.stackblaze.cloud/automatischio/automatisch
     tag: latest
     run:
       securityContext:

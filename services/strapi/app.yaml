@@ -139,7 +139,7 @@ spec:
   image:
     containerPort: '1337'
     pullPolicy: Always
-    repository: kubekanvas/strapi
+    repository: registry.stackblaze.cloud/kubekanvas/strapi
     tag: 5.30.2
     run:
       securityContext:

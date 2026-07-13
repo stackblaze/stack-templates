@@ -173,7 +173,7 @@ spec:
   image:
     containerPort: '8055'
     pullPolicy: Always
-    repository: directus/directus
+    repository: registry.stackblaze.cloud/directus/directus
     tag: '11'
     run:
       securityContext:

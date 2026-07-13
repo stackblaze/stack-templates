@@ -169,7 +169,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: chatwoot/chatwoot
+    repository: registry.stackblaze.cloud/chatwoot/chatwoot
     tag: latest
     command:
     - sh

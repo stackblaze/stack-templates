@@ -131,7 +131,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: documenso/documenso
+    repository: registry.stackblaze.cloud/documenso/documenso
     tag: latest
     run:
       securityContext:

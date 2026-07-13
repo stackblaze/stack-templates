@@ -189,7 +189,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: elestio/attendize-web
+    repository: registry.stackblaze.cloud/elestio/attendize-web
     tag: latest
     command:
     - /bin/bash

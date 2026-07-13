@@ -99,7 +99,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: getfider/fider
+    repository: registry.stackblaze.cloud/getfider/fider
     tag: stable
     run:
       securityContext:

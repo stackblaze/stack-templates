@@ -165,7 +165,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: twentycrm/twenty
+    repository: registry.stackblaze.cloud/twentycrm/twenty
     tag: v2.16.1
     run:
       securityContext:

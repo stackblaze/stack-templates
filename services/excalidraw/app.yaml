@@ -22,7 +22,7 @@ spec:
   extraVolumes: []
   image:
     containerPort: '80'
-    repository: excalidraw/excalidraw
+    repository: registry.stackblaze.cloud/excalidraw/excalidraw
     run:
       securityContext:
         readOnlyRootFilesystem: false

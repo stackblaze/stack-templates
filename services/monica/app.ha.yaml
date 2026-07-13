@@ -121,7 +121,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: monica
+    repository: registry.stackblaze.cloud/library/monica
     tag: latest
     run:
       securityContext:

@@ -110,7 +110,7 @@ spec:
     - mkdir -p /etc/passbolt/gpg /etc/passbolt/jwt && chown -R 33:33 /etc/passbolt/gpg
       /etc/passbolt/jwt && exec /docker-entrypoint.sh
     pullPolicy: Always
-    repository: passbolt/passbolt
+    repository: registry.stackblaze.cloud/passbolt/passbolt
     run:
       securityContext:
         runAsNonRoot: false

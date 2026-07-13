@@ -51,7 +51,7 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: archivebox/archivebox
+    repository: registry.stackblaze.cloud/archivebox/archivebox
     tag: latest
     run:
       securityContext:

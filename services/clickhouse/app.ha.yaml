@@ -64,7 +64,7 @@ spec:
   image:
     containerPort: '8123'
     pullPolicy: Always
-    repository: clickhouse/clickhouse-server
+    repository: registry.stackblaze.cloud/clickhouse/clickhouse-server
     tag: latest
     run:
       securityContext:

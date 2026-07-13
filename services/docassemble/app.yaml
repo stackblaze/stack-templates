@@ -170,7 +170,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: jhpyle/docassemble
+    repository: registry.stackblaze.cloud/jhpyle/docassemble
     tag: latest
     command:
     - bash

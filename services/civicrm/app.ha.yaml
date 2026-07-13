@@ -128,7 +128,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: civicrm/civicrm
+    repository: registry.stackblaze.cloud/civicrm/civicrm
     tag: '5'
     run:
       securityContext:

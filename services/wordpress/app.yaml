@@ -105,7 +105,7 @@ spec:
     size: 1Gi
   image:
     containerPort: '80'
-    repository: wordpress
+    repository: registry.stackblaze.cloud/library/wordpress
     tag: latest
     run:
       securityContext:

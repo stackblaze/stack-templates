@@ -46,7 +46,7 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: yuzutech/kroki
+    repository: registry.stackblaze.cloud/yuzutech/kroki
     tag: 0.31.0
     run:
       securityContext:

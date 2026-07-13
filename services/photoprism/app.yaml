@@ -132,7 +132,7 @@ spec:
   image:
     containerPort: '2342'
     pullPolicy: Always
-    repository: photoprism/photoprism
+    repository: registry.stackblaze.cloud/photoprism/photoprism
     tag: latest
     run:
       securityContext:

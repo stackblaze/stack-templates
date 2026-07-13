@@ -130,7 +130,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: infisical/infisical
+    repository: registry.stackblaze.cloud/infisical/infisical
     tag: latest
     run:
       securityContext:

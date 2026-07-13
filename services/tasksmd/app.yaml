@@ -51,7 +51,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: baldissaramatheus/tasks.md
+    repository: registry.stackblaze.cloud/baldissaramatheus/tasks.md
     tag: latest
     run:
       securityContext:

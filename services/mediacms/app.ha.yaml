@@ -183,7 +183,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: mediacms/mediacms
+    repository: registry.stackblaze.cloud/mediacms/mediacms
     tag: latest
     run:
       securityContext:

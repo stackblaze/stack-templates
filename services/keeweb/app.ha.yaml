@@ -43,7 +43,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: antelle/keeweb
+    repository: registry.stackblaze.cloud/antelle/keeweb
     tag: 1.16.3
     command:
     - sh

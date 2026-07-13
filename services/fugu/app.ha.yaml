@@ -122,7 +122,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: shafyy/fugu
+    repository: registry.stackblaze.cloud/shafyy/fugu
     tag: latest
     command:
     - sh

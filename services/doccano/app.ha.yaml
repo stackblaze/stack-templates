@@ -105,7 +105,7 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: doccano/doccano
+    repository: registry.stackblaze.cloud/doccano/doccano
     run:
       securityContext:
         runAsNonRoot: false

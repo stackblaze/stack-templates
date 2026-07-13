@@ -84,7 +84,7 @@ spec:
   extraVolumes: []
   image:
     containerPort: '4242'
-    repository: unleashorg/unleash-server
+    repository: registry.stackblaze.cloud/unleashorg/unleash-server
     tag: latest
     run:
       securityContext:

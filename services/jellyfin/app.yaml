@@ -57,7 +57,7 @@ spec:
   image:
     containerPort: '8096'
     pullPolicy: Always
-    repository: jellyfin/jellyfin
+    repository: registry.stackblaze.cloud/jellyfin/jellyfin
     tag: latest
     run:
       securityContext:

@@ -100,8 +100,7 @@ spec:
   image:
     containerPort: '8065'
     pullPolicy: IfNotPresent
-    repository: mattermost/mattermost-team-edition
-    # Pinned, NOT :latest. Modern Mattermost images are shell-less (no /bin/bash,
+    repository: registry.stackblaze.cloud/mattermost/mattermost-team-edition # Pinned, NOT :latest. Modern Mattermost images are shell-less (no /bin/bash,
     # /bin/sh, wget) — a floating :latest pulled fresh on a node/cluster rebuild
     # breaks any command override, and the `sh -c` tmp-perms init too. Use the
     # image's DEFAULT entrypoint (the mattermost binary) + config via MM_* env.

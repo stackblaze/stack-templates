@@ -76,7 +76,7 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: cupcakearmy/cryptgeon
+    repository: registry.stackblaze.cloud/cupcakearmy/cryptgeon
     tag: latest
     run:
       securityContext:

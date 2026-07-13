@@ -120,7 +120,7 @@ spec:
   image:
     containerPort: 8080
     pullPolicy: Always
-    repository: tolgee/tolgee
+    repository: registry.stackblaze.cloud/tolgee/tolgee
     tag: latest
     run:
       securityContext:

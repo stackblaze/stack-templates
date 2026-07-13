@@ -114,7 +114,7 @@ spec:
   image:
     containerPort: 8000
     pullPolicy: Always
-    repository: psono/psono-combo
+    repository: registry.stackblaze.cloud/psono/psono-combo
     tag: latest
     run:
       securityContext:

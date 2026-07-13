@@ -110,7 +110,7 @@ spec:
   image:
     containerPort: '3001'
     pullPolicy: Always
-    repository: svhd/logto
+    repository: registry.stackblaze.cloud/svhd/logto
     tag: latest
     command:
     - sh

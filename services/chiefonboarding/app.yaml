@@ -111,7 +111,7 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: chiefonboarding/chiefonboarding
+    repository: registry.stackblaze.cloud/chiefonboarding/chiefonboarding
     tag: latest
     run:
       securityContext:

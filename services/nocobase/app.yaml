@@ -126,7 +126,7 @@ spec:
   image:
     containerPort: '13000'
     pullPolicy: Always
-    repository: nocobase/nocobase
+    repository: registry.stackblaze.cloud/nocobase/nocobase
     tag: latest
     run:
       securityContext:

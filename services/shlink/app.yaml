@@ -100,7 +100,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: shlinkio/shlink
+    repository: registry.stackblaze.cloud/shlinkio/shlink
     tag: stable
     run:
       securityContext:

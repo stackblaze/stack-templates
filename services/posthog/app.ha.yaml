@@ -186,7 +186,7 @@ spec:
                       cpu: '1'
                       memory: 2Gi
                 - name: zookeeper
-                  image: zookeeper:3.7.0
+                  image: registry.stackblaze.cloud/library/zookeeper:3.7.0
                   env:
                   - name: ZOO_AUTOPURGE_PURGEINTERVAL
                     value: '1'

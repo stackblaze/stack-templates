@@ -111,7 +111,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: vbkunin/itop
+    repository: registry.stackblaze.cloud/vbkunin/itop
     tag: latest-base
     run:
       securityContext:

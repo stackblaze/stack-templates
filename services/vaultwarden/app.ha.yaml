@@ -87,7 +87,7 @@ spec:
     storageClass: shared
   image:
     containerPort: '80'
-    repository: vaultwarden/server
+    repository: registry.stackblaze.cloud/vaultwarden/server
     tag: latest
     run:
       securityContext:

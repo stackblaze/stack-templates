@@ -193,7 +193,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: getlago/api
+    repository: registry.stackblaze.cloud/getlago/api
     tag: v1.48.1
     run:
       securityContext:

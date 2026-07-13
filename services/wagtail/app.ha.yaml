@@ -143,7 +143,7 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: wagtail/bakerydemo
+    repository: registry.stackblaze.cloud/wagtail/bakerydemo
     tag: latest
   resources:
     requests:

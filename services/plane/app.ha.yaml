@@ -124,7 +124,7 @@ spec:
         metadata:
           name: '{{KUBERO_APP_NAME}}-rustfs'
         spec:
-          image: rustfs/rustfs:latest
+          image: registry.stackblaze.cloud/rustfs/rustfs:latest
           credsSecret:
             name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
           pools:
@@ -233,7 +233,7 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: makeplane/plane-backend
+    repository: registry.stackblaze.cloud/makeplane/plane-backend
     tag: stable
     command:
     - sh
@@ -250,7 +250,7 @@ spec:
     nameHint: plane-worker
     exposeInternet: false
     image:
-      repository: makeplane/plane-backend
+      repository: registry.stackblaze.cloud/makeplane/plane-backend
       tag: stable
       containerPort: '8000'
       command:
@@ -262,7 +262,7 @@ spec:
     nameHint: plane-beat
     exposeInternet: false
     image:
-      repository: makeplane/plane-backend
+      repository: registry.stackblaze.cloud/makeplane/plane-backend
       tag: stable
       containerPort: '8000'
       command:
@@ -274,7 +274,7 @@ spec:
     nameHint: plane-web
     exposeInternet: false
     image:
-      repository: makeplane/plane-frontend
+      repository: registry.stackblaze.cloud/makeplane/plane-frontend
       tag: stable
       containerPort: '3000'
     envVars:
@@ -287,7 +287,7 @@ spec:
     nameHint: plane-space
     exposeInternet: false
     image:
-      repository: makeplane/plane-space
+      repository: registry.stackblaze.cloud/makeplane/plane-space
       tag: stable
       containerPort: '3000'
     envVars:
@@ -299,7 +299,7 @@ spec:
     nameHint: plane-admin
     exposeInternet: false
     image:
-      repository: makeplane/plane-admin
+      repository: registry.stackblaze.cloud/makeplane/plane-admin
       tag: stable
       containerPort: '3000'
     envVars:
@@ -311,7 +311,7 @@ spec:
     nameHint: plane-live
     exposeInternet: false
     image:
-      repository: makeplane/plane-live
+      repository: registry.stackblaze.cloud/makeplane/plane-live
       tag: stable
       containerPort: '3000'
     envVars:
@@ -330,7 +330,7 @@ spec:
     exposeInternet: true
     publicUrlSource: true
     image:
-      repository: makeplane/plane-proxy
+      repository: registry.stackblaze.cloud/makeplane/plane-proxy
       tag: stable
       containerPort: '80'
     envVars:

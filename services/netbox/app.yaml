@@ -170,7 +170,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: netboxcommunity/netbox
+    repository: registry.stackblaze.cloud/netboxcommunity/netbox
     tag: latest
     run:
       securityContext:

@@ -191,7 +191,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: pretix/standalone
+    repository: registry.stackblaze.cloud/pretix/standalone
     tag: stable
     command:
     - pretix

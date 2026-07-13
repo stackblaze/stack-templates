@@ -98,7 +98,7 @@ spec:
   image:
     containerPort: '5100'
     pullPolicy: Always
-    repository: pglombardo/pwpush
+    repository: registry.stackblaze.cloud/pglombardo/pwpush
     tag: stable
     run:
       securityContext:

@@ -44,7 +44,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: owncast/owncast
+    repository: registry.stackblaze.cloud/owncast/owncast
     tag: latest
     run:
       securityContext:

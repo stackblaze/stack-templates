@@ -95,7 +95,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: docuseal/docuseal
+    repository: registry.stackblaze.cloud/docuseal/docuseal
     tag: latest
     run:
       securityContext:

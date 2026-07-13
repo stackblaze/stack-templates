@@ -41,7 +41,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: towfiqi/serpbear
+    repository: registry.stackblaze.cloud/towfiqi/serpbear
     tag: latest
     run:
       securityContext:

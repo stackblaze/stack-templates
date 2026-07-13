@@ -111,7 +111,7 @@ spec:
   image:
     containerPort: '8001'
     pullPolicy: Always
-    repository: kimai/kimai2
+    repository: registry.stackblaze.cloud/kimai/kimai2
     tag: apache
     run:
       securityContext:

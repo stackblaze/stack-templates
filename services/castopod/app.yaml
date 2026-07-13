@@ -164,7 +164,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: castopod/castopod
+    repository: registry.stackblaze.cloud/castopod/castopod
     tag: latest
     run:
       securityContext:

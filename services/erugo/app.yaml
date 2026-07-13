@@ -104,7 +104,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: wardy784/erugo
+    repository: registry.stackblaze.cloud/wardy784/erugo
     tag: latest
     run:
       securityContext:

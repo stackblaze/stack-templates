@@ -183,7 +183,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: frappe/erpnext
+    repository: registry.stackblaze.cloud/frappe/erpnext
     tag: version-15
     command:
     - bash

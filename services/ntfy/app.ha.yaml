@@ -34,7 +34,7 @@ spec:
     - ntfy
     - serve
     containerPort: '80'
-    repository: binwiederhier/ntfy
+    repository: registry.stackblaze.cloud/binwiederhier/ntfy
     tag: latest
     run:
       securityContext:

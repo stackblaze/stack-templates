@@ -92,7 +92,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: miniflux/miniflux
+    repository: registry.stackblaze.cloud/miniflux/miniflux
     tag: latest
     run:
       securityContext:

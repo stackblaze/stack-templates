@@ -106,7 +106,7 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: 2fauth/2fauth
+    repository: registry.stackblaze.cloud/2fauth/2fauth
     tag: latest
     run:
       securityContext:

@@ -110,7 +110,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: wallabag/wallabag
+    repository: registry.stackblaze.cloud/wallabag/wallabag
     tag: latest
     run:
       securityContext:

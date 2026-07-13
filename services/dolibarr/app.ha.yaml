@@ -98,7 +98,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: dolibarr/dolibarr
+    repository: registry.stackblaze.cloud/dolibarr/dolibarr
     tag: latest
     run:
       securityContext:

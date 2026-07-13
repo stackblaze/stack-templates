@@ -109,7 +109,7 @@ spec:
   image:
     containerPort: '4000'
     pullPolicy: Always
-    repository: papercups/papercups
+    repository: registry.stackblaze.cloud/papercups/papercups
     tag: latest
     run:
       securityContext:

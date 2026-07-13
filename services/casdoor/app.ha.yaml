@@ -69,7 +69,7 @@ spec:
   extraVolumes: []
   image:
     containerPort: '8000'
-    repository: casbin/casdoor
+    repository: registry.stackblaze.cloud/casbin/casdoor
     tag: latest
     run:
       securityContext:

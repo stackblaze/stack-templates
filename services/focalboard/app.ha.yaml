@@ -90,7 +90,7 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: mattermost/focalboard
+    repository: registry.stackblaze.cloud/mattermost/focalboard
     tag: latest
     command:
     - sh

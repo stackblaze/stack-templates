@@ -104,7 +104,7 @@ spec:
         metadata:
           name: '{{KUBERO_APP_NAME}}-rustfs'
         spec:
-          image: rustfs/rustfs:latest
+          image: registry.stackblaze.cloud/rustfs/rustfs:latest
           credsSecret:
             name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
           pools:
@@ -184,7 +184,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: lightdash/lightdash
+    repository: registry.stackblaze.cloud/lightdash/lightdash
     tag: latest
     run:
       securityContext:

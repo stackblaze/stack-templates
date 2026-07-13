@@ -143,7 +143,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: rajnandan1/kener
+    repository: registry.stackblaze.cloud/rajnandan1/kener
     tag: latest
     run:
       securityContext:

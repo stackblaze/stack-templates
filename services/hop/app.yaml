@@ -73,7 +73,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: apache/hop-web
+    repository: registry.stackblaze.cloud/apache/hop-web
     tag: latest
     command:
     - bash

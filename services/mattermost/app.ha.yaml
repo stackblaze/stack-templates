@@ -100,8 +100,7 @@ spec:
   image:
     containerPort: '8065'
     pullPolicy: IfNotPresent
-    repository: mattermost/mattermost-team-edition
-    # Pinned, NOT :latest — modern Mattermost images are shell-less; a floating
+    repository: registry.stackblaze.cloud/mattermost/mattermost-team-edition # Pinned, NOT :latest — modern Mattermost images are shell-less; a floating
     # tag pulled fresh on rebuild breaks command overrides. Default entrypoint +
     # MM_* env only.
     tag: '10.5'

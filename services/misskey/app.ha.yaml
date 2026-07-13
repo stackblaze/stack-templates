@@ -183,7 +183,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: misskey/misskey
+    repository: registry.stackblaze.cloud/misskey/misskey
     tag: latest
     command:
     - sh

@@ -25,7 +25,7 @@ spec:
   image:
     containerPort: '1200'
     pullPolicy: Always
-    repository: diygod/rsshub
+    repository: registry.stackblaze.cloud/diygod/rsshub
     tag: chromium-bundled
     run:
       securityContext:
