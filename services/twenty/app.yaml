@@ -65,12 +65,12 @@ spec:
     value: --max-old-space-size=1536
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/docker-data/
     name: '{{KUBERO_APP_NAME}}-data-volume'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons:
   - displayName: PostgreSQL (CloudNativePG)
