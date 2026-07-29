@@ -23,7 +23,7 @@ spec:
   - name: NODE_ENV
     value: production
   - name: SECRET_KEY
-    value: 4b8767e288424f2f47630e005e1109ddfec63ee561fa86657f1ab41c401465ce
+    value: '{{KUBERO_GEN_HEX:64}}'
   - name: DATABASE_URL
     value: postgres://outline:outline@{{KUBERO_APP_NAME}}-postgresql-rw:5432/outline
   - name: PGSSLMODE
@@ -41,11 +41,11 @@ spec:
   - name: DEFAULT_LANGUAGE
     value: en_US
   - name: UTILS_SECRET
-    value: 74e934cd60281e460db22128382511ffe49031363db1a7e85d4812772e5207e9
+    value: '{{KUBERO_GEN_HEX:64}}'
   - name: URL
-    value: https://outline.localhost
+    value: '{{KUBERO_APP_URL}}'
   - name: CDN_URL
-    value: https://outline.localhost
+    value: '{{KUBERO_APP_URL}}'
   - name: FORCE_HTTPS
     value: 'false'
   - name: SLACK_CLIENT_ID

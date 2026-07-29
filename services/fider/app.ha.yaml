@@ -20,7 +20,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: BASE_URL
-    value: https://fider.localhost
+    value: '{{KUBERO_APP_URL}}'
   - name: DATABASE_URL
     value: postgres://fider:fider@{{KUBERO_APP_NAME}}-postgresql-rw/fider?sslmode=disable
   - name: JWT_SECRET

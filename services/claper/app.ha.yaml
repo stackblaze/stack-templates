@@ -45,7 +45,7 @@ spec:
   - name: LOGOUT_REDIRECT_URL
     value: https://google.com
   - name: BASE_URL
-    value: http://claper.localhost
+    value: '{{KUBERO_APP_URL}}'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

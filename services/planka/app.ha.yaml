@@ -75,7 +75,7 @@ spec:
   - name: SECRET_KEY
     value: notsecretkey
   - name: BASE_URL
-    value: http://planka.localhost:80
+    value: '{{KUBERO_APP_URL}}'
   - name: DATABASE_URL
     value: postgresql://postgresql:postgresql@{{KUBERO_APP_NAME}}-postgresql-rw/postgresql
   - name: DEFAULT_ADMIN_EMAIL

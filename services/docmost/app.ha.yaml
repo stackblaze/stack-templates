@@ -22,7 +22,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: APP_URL
-    value: http://docmost.localhost
+    value: '{{KUBERO_APP_URL}}'
   - name: APP_SECRET
     value: 0LZiQBLw4WvqPlz4cz8RsHJlxNiSqM9B48y4ChyJ5v1oA0L/TPIqRjQNdPZN3iEG
   - name: DATABASE_URL
