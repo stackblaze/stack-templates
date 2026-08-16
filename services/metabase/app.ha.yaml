@@ -91,7 +91,7 @@ spec:
   - name: MB_DB_HOST
     value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: JAVA_OPTS
-    value: -Xmx1536m
+    value: -XX:MaxRAMPercentage=75.0
   extraVolumes: []
   cronjobs: []
   web:
