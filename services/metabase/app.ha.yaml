@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.installation: First boot can take several minutes while Metabase
       initializes its application database.
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/screenshot-question.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/screenshot-metric.png"]'
+    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/metabase/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/screenshot-question.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/screenshot-metric.png"]'
     kubero.dev/template.source: https://github.com/metabase/metabase
     kubero.dev/template.categories: '[ "data", "work" ]'
     kubero.dev/template.title: Metabase

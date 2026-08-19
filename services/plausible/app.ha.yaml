@@ -11,7 +11,7 @@ metadata:
       -hex 64` and TOTP_VAULT_KEY with `openssl rand -base64 32`. Update BASE_URL
       before going live.
     kubero.dev/template.links: '["https://plausible.io/docs/"]'
-    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b034abb844fe2bb6ce82bbf34bb651285f059a6/services/plausible/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b034abb844fe2bb6ce82bbf34bb651285f059a6/services/plausible/dashboard.png"]'
+    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/plausible/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b034abb844fe2bb6ce82bbf34bb651285f059a6/services/plausible/dashboard.png"]'
     kubero.dev/template.source: https://github.com/plausible/analytics
     kubero.dev/template.categories: '["data", "utilities", "work"]'
     kubero.dev/template.title: Plausible Analytics

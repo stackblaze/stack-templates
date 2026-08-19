@@ -11,7 +11,7 @@ metadata:
       starts and optional assets download. Config and OCR data persist under /configs
       and /usr/share/tessdata when volumes are attached.
     kubero.dev/template.links: '["https://docs.stirlingpdf.com/"]'
-    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/screenshot-login.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/screenshot-watermark.png"]'
+    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/stirling-pdf/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/screenshot-login.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/screenshot-watermark.png"]'
     kubero.dev/template.source: https://github.com/Frooodle/Stirling-PDF
     kubero.dev/template.categories: '["productivity", "utilities", "work"]'
     kubero.dev/template.title: Stirling PDF

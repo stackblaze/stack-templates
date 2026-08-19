@@ -13,7 +13,7 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/demo.mp4",
+        "https://media.stackblaze.cloud/templates/metabase/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/dashboard.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/screenshot-question.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/screenshot-metric.png"
@@ -121,7 +121,7 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/demo.mp4",
+        "https://media.stackblaze.cloud/templates/twenty/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/dashboard.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/screenshot-people.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/screenshot-opportunities.png",
@@ -178,7 +178,7 @@
         "utilities"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3a031742ce2eb5ab0979d9ae03614f7ec10d218f/services/n8n/demo.mp4",
+        "https://media.stackblaze.cloud/templates/n8n/demo.mp4",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/dashboard.png"
       ],
       "links": [],
@@ -469,7 +469,7 @@
         "monitoring"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/demo.mp4",
+        "https://media.stackblaze.cloud/templates/uptime-kuma/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/dashboard.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/screenshot-monitor-detail.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/screenshot-status-page.png"
@@ -773,7 +773,7 @@
         "collaboration"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e1e91781144b4f96bf330019f945a0db1b06534a/services/gitea/demo.mp4",
+        "https://media.stackblaze.cloud/templates/gitea/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e1e91781144b4f96bf330019f945a0db1b06534a/services/gitea/dashboard.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e1e91781144b4f96bf330019f945a0db1b06534a/services/gitea/screenshot-repo.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e1e91781144b4f96bf330019f945a0db1b06534a/services/gitea/screenshot-explore.png"
@@ -878,7 +878,7 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/demo.mp4",
+        "https://media.stackblaze.cloud/templates/nocodb/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/dashboard.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/screenshot-customers.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/screenshot-pipeline.png"
@@ -1373,7 +1373,7 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/demo.mp4",
+        "https://media.stackblaze.cloud/templates/stirling-pdf/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/dashboard.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/screenshot-login.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/screenshot-watermark.png"
@@ -1813,7 +1813,7 @@
         "collaboration"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1ca4dbd/services/excalidraw/demo.mp4",
+        "https://media.stackblaze.cloud/templates/excalidraw/demo.mp4",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/dashboard.png",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-board.png",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-architecture.png",
@@ -2934,7 +2934,7 @@
         "ai"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/demo.mp4",
+        "https://media.stackblaze.cloud/templates/flowise/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/dashboard.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/screenshot-agentic-rag.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/screenshot-sql-agent.png"
@@ -3843,7 +3843,7 @@
         "utilities"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/demo.mp4",
+        "https://media.stackblaze.cloud/templates/vaultwarden/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/dashboard.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/screenshot-login.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/screenshot-generator.png"
@@ -5406,7 +5406,7 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@ca0d40f/services/mattermost/demo.mp4",
+        "https://media.stackblaze.cloud/templates/mattermost/demo.mp4",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/dashboard.png",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-town-square.png",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/screenshot-engineering.png",
@@ -5516,7 +5516,7 @@
         "collaboration"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/demo.mp4",
+        "https://media.stackblaze.cloud/templates/nextcloud/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/dashboard.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/screenshot-files.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/screenshot-documents.png",
@@ -5572,7 +5572,7 @@
         "utilities"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7b68b21d85234eb2a734d361d16b2b939c2cf10b/services/immich/demo.mp4",
+        "https://media.stackblaze.cloud/templates/immich/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7b68b21d85234eb2a734d361d16b2b939c2cf10b/services/immich/dashboard.png"
       ],
       "links": [
@@ -5715,7 +5715,7 @@
         "helpdesk"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/demo.mp4",
+        "https://media.stackblaze.cloud/templates/chatwoot/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/dashboard.png"
       ],
       "links": [
@@ -5768,7 +5768,7 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@45afbcf915e2937f16515a4a5b41352ac48cf714/services/typebot/demo.mp4",
+        "https://media.stackblaze.cloud/templates/typebot/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@45afbcf915e2937f16515a4a5b41352ac48cf714/services/typebot/dashboard.png"
       ],
       "links": [
@@ -5820,7 +5820,7 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b034abb844fe2bb6ce82bbf34bb651285f059a6/services/plausible/demo.mp4",
+        "https://media.stackblaze.cloud/templates/plausible/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b034abb844fe2bb6ce82bbf34bb651285f059a6/services/plausible/dashboard.png"
       ],
       "links": [
@@ -5873,7 +5873,7 @@
         "collaboration"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/demo.mp4",
+        "https://media.stackblaze.cloud/templates/plane/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/dashboard.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-all-projects.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-home.png",
@@ -5933,7 +5933,7 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e63cc2a96db49c9abb60cb62e0a6b20b6ad3346f/services/discourse/demo.mp4",
+        "https://media.stackblaze.cloud/templates/discourse/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e63cc2a96db49c9abb60cb62e0a6b20b6ad3346f/services/discourse/screenshot-latest.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e63cc2a96db49c9abb60cb62e0a6b20b6ad3346f/services/discourse/screenshot-categories.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e63cc2a96db49c9abb60cb62e0a6b20b6ad3346f/services/discourse/screenshot-support.png",
@@ -7358,7 +7358,7 @@
         "work"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@8c97a17/services/attendize/demo.mp4",
+        "https://media.stackblaze.cloud/templates/attendize/demo.mp4",
         "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/attendize/dashboard.png"
       ],
       "links": [
@@ -13561,7 +13561,7 @@
         "utilities"
       ],
       "screenshots": [
-        "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@bddd2bdc0792a05092319696827e99fea190b35d/services/open-webui/demo.mp4",
+        "https://media.stackblaze.cloud/templates/open-webui/demo.mp4",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@bddd2bdc0792a05092319696827e99fea190b35d/services/open-webui/dashboard.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@bddd2bdc0792a05092319696827e99fea190b35d/services/open-webui/screenshot-login.png",
         "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@bddd2bdc0792a05092319696827e99fea190b35d/services/open-webui/screenshot-connections.png"

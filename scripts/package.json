@@ -6,7 +6,8 @@
   "scripts": {
     "capture": "node capture-app.mjs",
     "capture:batch": "node capture-batch.mjs",
-    "capture:install": "playwright install chromium"
+    "capture:install": "playwright install chromium",
+    "upload:video": "node upload-demo-video.mjs"
   },
   "dependencies": {
     "playwright": "^1.52.0"

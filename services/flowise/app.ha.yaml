@@ -8,7 +8,7 @@ metadata:
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/icon.png
     kubero.dev/template.installation: 'First visit opens /organization-setup — create the admin account (email + password).'
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/screenshot-agentic-rag.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/screenshot-sql-agent.png"]'
+    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/flowise/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/screenshot-agentic-rag.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/screenshot-sql-agent.png"]'
     kubero.dev/template.source: https://github.com/FlowiseAI/Flowise
     kubero.dev/template.categories: '[ "ai" ]'
     kubero.dev/template.title: Flowise

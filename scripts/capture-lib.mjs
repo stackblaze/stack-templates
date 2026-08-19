@@ -37,10 +37,16 @@ export function resolveBaseUrl(spec, cliUrl) {
   return raw.replace(/\/$/, '');
 }
 
+export const TEMPLATE_VIDEO_CDN = 'https://media.stackblaze.cloud/templates';
+
 export function screenshotUrlsForSlug(slug, filenames) {
-  const base =
+  const stills =
     'https://raw.githubusercontent.com/stackblaze/stack-templates/main/services';
-  return filenames.map((f) => `${base}/${slug}/${f}`);
+  return filenames.map((f) =>
+    /\.(mp4|webm)$/i.test(f)
+      ? `${TEMPLATE_VIDEO_CDN}/${slug}/${f}`
+      : `${stills}/${slug}/${f}`,
+  );
 }
 
 export function patchYamlScreenshots(yamlPath, urls) {

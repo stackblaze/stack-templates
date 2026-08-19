@@ -11,7 +11,7 @@ metadata:
       For production throughput, deploy a dedicated Sidekiq worker using the same
       image and env with `bundle exec sidekiq -C config/sidekiq.yml`.
     kubero.dev/template.links: '["https://www.chatwoot.com/docs/"]'
-    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/dashboard.png"]'
+    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/chatwoot/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/dashboard.png"]'
     kubero.dev/template.source: https://github.com/chatwoot/chatwoot
     kubero.dev/template.categories: '["communication", "work", "helpdesk"]'
     kubero.dev/template.title: Chatwoot
