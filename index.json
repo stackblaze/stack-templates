@@ -2046,7 +2046,7 @@
       "source": "https://github.com/outline/outline",
       "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/icon.png",
       "website": "https://www.getoutline.com/",
-      "installation": "",
+      "installation": "Deployed from this template, Outline needs no manual configuration: SECRET_KEY and UTILS_SECRET are generated as 64-char hex values and URL/CDN_URL are filled in with the app's public URL automatically.\n\nBundles two add-ons: **PostgreSQL 16** (CloudNativePG) and **Valkey 8.0**. Documents and uploads live on the mounted volume at `/var/lib/outline/data` (FILE_STORAGE=local), so keep that volume when moving or restoring the app. The app listens on port 3000.\n\nOutline refuses to start without SECRET_KEY, UTILS_SECRET and URL: a container that boots and immediately exits almost always means one of those is missing. Deploying Outline from git instead of this template means setting all three yourself, plus DATABASE_URL and REDIS_URL for your own datastores; that is the usual cause of a crash-looping hand-rolled Outline.\n\nThe image tracks `latest`, so a newly released Outline version can require a variable this template does not set yet: check the Outline release notes if a fresh deploy crashes on a missing variable.\n",
       "architecture": [
         "linux/amd64",
         "linux/arm64",
