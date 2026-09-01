@@ -150,6 +150,17 @@ spec:
     periodSeconds: 10
   image:
     containerPort: '4567'
+    # Seed trust_proxy into the persisted config before the stock entrypoint:
+    # TLS terminates at the edge, and without it Express refuses the secure
+    # session cookie (no login, socket.io CSRF 403 → "Unable to reach the
+    # server"). NodeBB reads trust_proxy ONLY from config.json (no env knob),
+    # and install.save merges existing keys, so the patch survives setups.
+    # First boot (no config yet) is a no-op; the post-setup restart applies it.
+    # This image ships bash+node and its own entrypoint expects bash.
+    command:
+    - bash
+    - -c
+    - 'node -e ''try{const fs=require("fs"),f="/opt/config/config.json";const c=JSON.parse(fs.readFileSync(f));if(c.trust_proxy===undefined){c.trust_proxy=true;fs.writeFileSync(f,JSON.stringify(c,null,4));}}catch(e){}''; exec /usr/local/bin/entrypoint.sh'
     pullPolicy: Always
     repository: ghcr.io/nodebb/nodebb
     tag: latest
