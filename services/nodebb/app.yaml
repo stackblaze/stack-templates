@@ -90,12 +90,14 @@ spec:
     value: admin@example.com
   - name: NODEBB_DB
     value: postgres
-  # Non-empty SETUP makes the entrypoint run `nodebb setup` instead of the web
-  # installer; '{}' overrides nothing, so all values come from the NODEBB_*
-  # env vars above (install.js checkSetupFlagEnv). The container exits after
-  # setup and the restart boots the configured forum.
-  - name: SETUP
-    value: '{}'
+  - name: NODEBB_INIT_VERB
+    value: setup
+  # First boot has no /opt/config/config.json (persisted volume): the
+  # entrypoint then runs `nodebb $NODEBB_INIT_VERB` — with verb `setup` that
+  # is the AUTOMATED install driven by the NODEBB_* env above (install.js
+  # checkSetupFlagEnv), which exits when done; the restart finds config.json
+  # and starts the forum. Do NOT use the SETUP env for this: the entrypoint
+  # re-runs setup on EVERY boot while it is set (exec, never reaches start).
   - name: NODEBB_DB_HOST
     value: '$(PGHOST)'
   - name: NODEBB_DB_PORT
