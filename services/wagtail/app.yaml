@@ -99,6 +99,7 @@ spec:
     emptyDir: false
     mountPath: /code/bakerydemo/media
     name: wagtail-media
+    storageClass: shared
     size: 10Gi
   cronjobs: []
   web:

@@ -32,6 +32,7 @@ spec:
     emptyDir: false
     mountPath: /home/coder/project
     name: '{{KUBERO_APP_NAME}}-workspace'
+    storageClass: shared
     size: 10Gi
   healthcheck:
     enabled: true

@@ -27,9 +27,10 @@ variant was removed on 2026-09-02: on the shared tier the platform itself
 provides the resilience the variant used to encode — databases are logical
 instances on the zone's communal servers (CNPG ×3 / MariaDB primary+replica),
 new dashboard volumes default to the RWX `shared` class, and web replicas are
-scalable from the dashboard. Template-authored volumes keep their declared
-mode — author `shared` + ReadWriteMany when an app is expected to scale past
-one replica. Do not add `app.ha.yaml` or
+scalable from the dashboard. Since 2026-09-02 every template volume is
+authored `storageClass: shared` + ReadWriteMany (add-on/database storage is
+untouched) — author new templates the same way so replica scaling never
+Multi-Attach-deadlocks on an RWO volume. Do not add `app.ha.yaml` or
 Galera/multi-instance topology to new templates; a per-cluster scale knob is
 the plan for dedicated deployments.
 
