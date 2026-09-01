@@ -257,7 +257,7 @@ spec:
   - name: QUARKUS_HTTP_PORT
     value: '8080'
   - name: QUARKUS_DATASOURCE_JDBC_URL
-    value: jdbc:postgresql://{{KUBERO_APP_NAME}}-postgresql-rw:5432/cryptomator
+    value: 'jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: QUARKUS_DATASOURCE_USERNAME
     value: cryptomator
   - name: QUARKUS_DATASOURCE_PASSWORD

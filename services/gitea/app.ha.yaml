@@ -83,7 +83,7 @@ spec:
   - name: GITEA__database__DB_TYPE
     value: postgres
   - name: GITEA__database__HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: GITEA__database__PORT
     value: '5432'
   - name: GITEA__database__NAME

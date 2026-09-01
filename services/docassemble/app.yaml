@@ -131,17 +131,17 @@ spec:
   - name: DBPREFIX
     value: postgresql+psycopg2://
   - name: DBHOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DBPORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DBNAME
-    value: docassemble
+    value: '$(PGDATABASE)'
   - name: DBUSER
-    value: docassemble
+    value: '$(PGUSER)'
   - name: DBPASSWORD
-    value: docassemble
+    value: '$(PGPASSWORD)'
   - name: REDIS
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: 'redis://$(REDISHOST):$(REDISPORT)'
   - name: SECRETKEY
     value: replace-with-openssl-rand-base64-32
   - name: DAHOSTNAME

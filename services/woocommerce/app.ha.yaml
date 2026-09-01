@@ -85,13 +85,13 @@ spec:
           password: woocommerce
   envVars:
   - name: WORDPRESS_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mariadb'
+    value: '$(MYSQL_HOST)'
   - name: WORDPRESS_DB_NAME
-    value: woocommerce
+    value: '$(MYSQL_DATABASE)'
   - name: WORDPRESS_DB_USER
-    value: woocommerce
+    value: '$(MYSQL_USER)'
   - name: WORDPRESS_DB_PASSWORD
-    value: woocommerce
+    value: '$(MYSQL_PASSWORD)'
   - name: WORDPRESS_TABLE_PREFIX
     value: wp_
   - name: WORDPRESS_CONFIG_EXTRA

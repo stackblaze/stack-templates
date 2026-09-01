@@ -77,7 +77,7 @@ spec:
           password: seafile
   envVars:
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-db'
+    value: '$(MYSQL_HOST)'
   - name: DB_ROOT_PASSWD
     value: seafile
   - name: TIME_ZONE

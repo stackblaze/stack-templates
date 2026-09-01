@@ -124,23 +124,23 @@ spec:
   - name: PYTHONPATH
     value: /app/pythonpath:/app/docker/pythonpath_dev
   - name: SUPERSET__SQLALCHEMY_DATABASE_URI
-    value: postgresql+psycopg2://superset:superset@{{KUBERO_APP_NAME}}-postgresql-rw:5432/superset
+    value: 'postgresql+psycopg2://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DATABASE_DIALECT
     value: postgresql
   - name: DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DATABASE_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DATABASE_DB
-    value: superset
+    value: '$(PGDATABASE)'
   - name: DATABASE_USER
-    value: superset
+    value: '$(PGUSER)'
   - name: DATABASE_PASSWORD
-    value: superset
+    value: '$(PGPASSWORD)'
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   extraVolumes: []
   cronjobs: []
   web:

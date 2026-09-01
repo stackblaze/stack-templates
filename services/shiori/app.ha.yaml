@@ -77,7 +77,7 @@ spec:
   - name: SHIORI_DIR
     value: /srv/shiori
   - name: SHIORI_DATABASE_URL
-    value: postgres://shiori:shiori@{{KUBERO_APP_NAME}}-postgresql-rw:5432/shiori?sslmode=disable
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
   - name: SHIORI_HTTP_SECRET_KEY
     value: change-me-to-a-random-string
   extraVolumes:

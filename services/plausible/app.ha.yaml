@@ -130,7 +130,7 @@ spec:
   - name: TOTP_VAULT_KEY
     value: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
   - name: DATABASE_URL
-    value: postgresql://plausible:plausible@{{KUBERO_APP_NAME}}-postgresql-rw:5432/plausible
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: CLICKHOUSE_DATABASE_URL
     value: http://admin:plausible@chi-{{KUBERO_APP_NAME}}-clickhouse-db-0-0:8123/plausible_events
   extraVolumes: []

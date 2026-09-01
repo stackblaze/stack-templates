@@ -84,15 +84,15 @@ spec:
   - name: SYMFONY__ENV__DATABASE_DRIVER
     value: pdo_mysql
   - name: SYMFONY__ENV__DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: SYMFONY__ENV__DATABASE_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: SYMFONY__ENV__DATABASE_NAME
-    value: wallabag
+    value: '$(MYSQL_DATABASE)'
   - name: SYMFONY__ENV__DATABASE_USER
-    value: wallabag
+    value: '$(MYSQL_USER)'
   - name: SYMFONY__ENV__DATABASE_PASSWORD
-    value: wallabag
+    value: '$(MYSQL_PASSWORD)'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

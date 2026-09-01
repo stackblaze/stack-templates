@@ -144,21 +144,21 @@ spec:
   - name: INVENTREE_DB_ENGINE
     value: postgresql
   - name: INVENTREE_DB_NAME
-    value: inventree
+    value: '$(PGDATABASE)'
   - name: INVENTREE_DB_USER
-    value: inventree
+    value: '$(PGUSER)'
   - name: INVENTREE_DB_PASSWORD
-    value: inventree
+    value: '$(PGPASSWORD)'
   - name: INVENTREE_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: INVENTREE_DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: INVENTREE_CACHE_ENABLED
     value: 'True'
   - name: INVENTREE_CACHE_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: INVENTREE_CACHE_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: INVENTREE_EXT_VOLUME
     value: /home/inventree/data
   - name: INVENTREE_AUTO_UPDATE

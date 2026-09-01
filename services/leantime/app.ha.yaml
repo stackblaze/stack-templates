@@ -62,13 +62,13 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: LEAN_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: LEAN_DB_USER
-    value: root
+    value: '$(MYSQL_USER)'
   - name: LEAN_DB_PASSWORD
-    value: leantime
+    value: '$(MYSQL_PASSWORD)'
   - name: LEAN_DB_DATABASE
-    value: leantime
+    value: '$(MYSQL_DATABASE)'
   - name: LEAN_EMAIL_RETURN
     value: changeme@local.local
   - name: LEAN_APP_URL

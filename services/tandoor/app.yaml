@@ -84,15 +84,15 @@ spec:
   - name: DB_ENGINE
     value: django.db.backends.postgresql
   - name: POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: POSTGRES_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRES_USER
-    value: tandoor
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: tandoor
+    value: '$(PGPASSWORD)'
   - name: POSTGRES_DB
-    value: tandoor
+    value: '$(PGDATABASE)'
   - name: ALLOWED_HOSTS
     value: '*'
   - name: TZ

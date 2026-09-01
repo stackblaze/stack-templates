@@ -123,13 +123,11 @@ spec:
             quorum: 2
   envVars:
   - name: DATABASE_URL
-    value: postgresql://saleor:saleor@{{KUBERO_APP_NAME}}-postgresql-rw:5432/saleor
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: CACHE_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
   - name: CELERY_BROKER_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/1
+    value: 'redis://$(REDISHOST):$(REDISPORT)/1'
   - name: SECRET_KEY
     value: replace-with-openssl-rand-hex-32
   - name: RSA_PRIVATE_KEY

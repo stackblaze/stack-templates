@@ -76,7 +76,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgresql://umami:umami@{{KUBERO_APP_NAME}}-postgresql-rw:5432/umami
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DATABASE_TYPE
     value: postgresql
   - name: HASH_SALT

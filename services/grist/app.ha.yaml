@@ -101,11 +101,11 @@ spec:
   - name: TYPEORM_TYPE
     value: postgres
   - name: TYPEORM_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: TYPEORM_PORT
     value: '5432'
   - name: TYPEORM_DATABASE
-    value: grist
+    value: '$(PGDATABASE)'
   - name: TYPEORM_USERNAME
     value: grist
   - name: TYPEORM_PASSWORD

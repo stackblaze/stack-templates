@@ -24,7 +24,7 @@ spec:
   - name: VIRTUAL_HOST
     value: corteza.localhost
   - name: DB_DSN
-    value: postgres://corteza:corteza@{{KUBERO_APP_NAME}}-postgresql-rw:5432/corteza?sslmode=disable
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
   - name: HTTP_WEBAPP_ENABLED
     value: 'true'
   - name: ACTIONLOG_ENABLED

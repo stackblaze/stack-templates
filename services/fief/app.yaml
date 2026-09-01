@@ -109,7 +109,7 @@ spec:
   - name: FORWARDED_ALLOW_IPS
     value: '*'
   - name: DATABASE_URL
-    value: postgresql+asyncpg://fief:fief@{{KUBERO_APP_NAME}}-postgresql-rw:5432/fief
+    value: 'postgresql+asyncpg://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   extraVolumes: []
   image:
     containerPort: '8000'

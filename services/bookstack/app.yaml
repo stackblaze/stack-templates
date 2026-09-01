@@ -81,15 +81,15 @@ spec:
   - name: APP_KEY
     value: base64:dm1hdnZvbmdvaDhxcTlnZXZkeXVzdmU4MnRnaWlhcDg=
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-bookstack-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: DB_USERNAME
-    value: bookstack
+    value: '$(MYSQL_USER)'
   - name: DB_PASSWORD
-    value: bookstack
+    value: '$(MYSQL_PASSWORD)'
   - name: DB_DATABASE
-    value: bookstack
+    value: '$(MYSQL_DATABASE)'
   extraVolumes: []
   image:
     containerPort: '80'

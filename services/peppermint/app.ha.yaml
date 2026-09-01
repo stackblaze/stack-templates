@@ -22,11 +22,11 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DB_USERNAME
-    value: peppermint
+    value: '$(PGUSER)'
   - name: DB_PASSWORD
-    value: peppermint
+    value: '$(PGPASSWORD)'
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: SECRET
     value: peppermint4life
   extraVolumes: []

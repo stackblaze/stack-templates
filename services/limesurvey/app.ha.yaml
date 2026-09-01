@@ -62,15 +62,15 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: LIMESURVEY_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: LIMESURVEY_DB_PASSWORD
-    value: root
+    value: '$(MYSQL_PASSWORD)'
   - name: LIMESURVEY_ADMIN_USER
     value: admin
   - name: LIMESURVEY_ADMIN_PASSWORD
     value: root
   - name: LIMESURVEY_DB_NAME
-    value: limesurvey
+    value: '$(MYSQL_DATABASE)'
   - name: LIMESURVEY_USE_INNODB
     value: '1'
   - name: LIMESURVEY_ADMIN_NAME

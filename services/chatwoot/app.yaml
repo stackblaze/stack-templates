@@ -114,17 +114,15 @@ spec:
   - name: FRONTEND_URL
     value: '{{KUBERO_APP_URL}}'
   - name: POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-db-rw'
+    value: '$(PGHOST)'
   - name: POSTGRES_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRES_DATABASE
-    value: chatwoot
+    value: '$(PGDATABASE)'
   - name: POSTGRES_USERNAME
-    value: chatwoot
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: chatwoot
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-cache-readwrite:6379
+    value: '$(PGPASSWORD)'
   - name: SECRET_KEY_BASE
     value: '0000000000000000000000000000000000000000000000000000000000000000'
   - name: RAILS_ENV

@@ -116,7 +116,7 @@ spec:
   - name: NEXT_PUBLIC_BASE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: DATABASE_URL
-    value: postgres://rallly:rallly@{{KUBERO_APP_NAME}}-postgresql-rw:5432/postgresql
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: SECRET_PASSWORD
     value: replace-me-now-with-a-own-secret
   - name: SUPPORT_EMAIL

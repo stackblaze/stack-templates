@@ -75,7 +75,7 @@ spec:
           password: hedgedoc
   envVars:
   - name: CMD_DB_URL
-    value: postgres://hedgedoc:hedgedoc@{{KUBERO_APP_NAME}}-postgresql-rw:5432/hedgedoc
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: CMD_DOMAIN
     value: hedgedoc.localhost
   - name: CMD_PROTOCOL_USESSL

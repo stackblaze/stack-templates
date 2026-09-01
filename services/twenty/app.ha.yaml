@@ -29,8 +29,6 @@ spec:
     value: 'true'
   - name: CACHE_STORAGE_TYPE
     value: redis
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: API_RATE_LIMITING_TTL
     value: '100'
   - name: API_RATE_LIMITING_LIMIT
@@ -38,9 +36,9 @@ spec:
   - name: APP_SECRET
     value: base64:Mnl3bDdlYjY2bzBmcWMzanE3dDhiN3BxY2ZqZzh3bmM=
   - name: POSTGRES_ADMIN_PASSWORD
-    value: twenty
+    value: '$(PGPASSWORD)'
   - name: PG_DATABASE_URL
-    value: postgres://twenty:twenty@{{KUBERO_APP_NAME}}-postgresql-rw:5432/twenty
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: IS_SIGN_UP_DISABLED
     value: 'false'
   - name: PASSWORD_RESET_TOKEN_EXPIRES_IN

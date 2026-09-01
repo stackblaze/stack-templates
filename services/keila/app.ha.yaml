@@ -75,7 +75,7 @@ spec:
   - name: SECRET_KEY_BASE
     value: EiHaPZPt+t8SA9MuAIeVixPhDJI1T+XhYr1S54PcOAxNh+Z30PNWM/WSIhfREUvo
   - name: DB_URL
-    value: postgres://postgres:keila@{{KUBERO_APP_NAME}}-postgresql-rw/postgresql
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: MAILER_SMTP_HOST
     value: 127.0.0.1
   - name: MAILER_SMTP_PORT

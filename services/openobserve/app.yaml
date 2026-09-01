@@ -99,7 +99,7 @@ spec:
   - name: ZO_META_STORE
     value: postgres
   - name: ZO_META_POSTGRES_DSN
-    value: postgresql://openobserve:openobserve@{{KUBERO_APP_NAME}}-postgresql-rw:5432/openobserve
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

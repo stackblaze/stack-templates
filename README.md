@@ -55,6 +55,58 @@ Users start on Standard and can move to HA when their plan allows (redeploy
 with the HA deployment type or migrate the addon footprint). Do not put
 Galera, multi-instance CNPG, or Valkey failover in `app.yaml`.
 
+## Database connection contract (communal databases)
+
+On shared zones the platform provisions Postgres and MariaDB add-ons as
+**logical databases on the zone's communal server** (one role + database per
+add-on, random password, a stateless pooler pod + a Service named after the
+add-on instance in the tenant namespace) and Valkey as an ephemeral instance.
+The add-on CR in the template is still what gets created on zones without a
+communal server and on dedicated clusters — keep it — but **nothing in the
+template may assume the CR's host name, user, database or password**: in
+logical mode those are `<namespace>_<instance>`, a minted password, and the
+`<instance>` Service.
+
+Instead, kubero-server injects the connection contract into every app that
+references the add-on, and templates compose their own variables from it with
+Kubernetes `$(NAME)` expansion (kubero-server dependency-orders the env list):
+
+| Add-on kind | Injected variables |
+|---|---|
+| `Cluster` (CloudNativePG) | `PGHOST` `PGPORT` `PGUSER` `PGDATABASE` `PGPASSWORD` |
+| `MariaDB` | `MYSQL_HOST` `MYSQL_PORT` `MYSQL_USER` `MYSQL_DATABASE` `MYSQL_PASSWORD` |
+| `Valkey` | `REDISHOST` `REDISPORT` `REDIS_URL` |
+
+```yaml
+envVars:
+- name: DATABASE_URL
+  value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+- name: DB_HOST
+  value: '$(MYSQL_HOST)'
+- name: DB_PASSWORD
+  value: '$(MYSQL_PASSWORD)'
+- name: REDIS_URL
+  value: 'redis://$(REDISHOST):$(REDISPORT)/0'
+```
+
+Rules:
+
+- Never write `{{KUBERO_APP_NAME}}-postgresql-rw`, `{{KUBERO_APP_NAME}}-mysql`,
+  `rfr-{{KUBERO_APP_NAME}}-valkey-readwrite`, or a literal user/database/
+  password into `envVars`. Reference the injected variable.
+- Never define a variable **named** like an injected one (`PGPASSWORD`,
+  `MYSQL_HOST`, …) in a template — an explicit template value wins over the
+  injection and blocks the real credentials.
+- `bootstrap.initdb.postInitApplicationSQL` in the CNPG CR only runs in
+  server mode. In logical mode the tenant role owns its database (it can
+  `CREATE EXTENSION` any *trusted* extension itself); a template that needs a
+  superuser-only extension (`vector`), a second database, `CREATE DATABASE`
+  rights or MariaDB `root` cannot run logically — see the compatibility list in
+  `docs3.0/communal-databases.md`.
+- `scripts/migrate-to-communal-db-env.py --check` lints every DB-backed
+  template against this contract (run it before committing; it is also the
+  tool that performed the catalog-wide rewrite).
+
 When adding a new template, always ship `app.yaml` + `app.ha.yaml` when the
 app uses a stateful addon that supports clustering. Use
 `scripts/generate-top10-templates.py` as a reference for addon helpers.

@@ -69,13 +69,13 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: WORDPRESS_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mariadb'
+    value: '$(MYSQL_HOST)'
   - name: WORDPRESS_DB_USER
-    value: wordpress
+    value: '$(MYSQL_USER)'
   - name: WORDPRESS_DB_PASSWORD
-    value: wordpress
+    value: '$(MYSQL_PASSWORD)'
   - name: WORDPRESS_DB_NAME
-    value: wordpress
+    value: '$(MYSQL_DATABASE)'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

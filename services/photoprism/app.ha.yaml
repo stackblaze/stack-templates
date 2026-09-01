@@ -92,13 +92,13 @@ spec:
   - name: PHOTOPRISM_DATABASE_DRIVER
     value: mysql
   - name: PHOTOPRISM_DATABASE_SERVER
-    value: '{{KUBERO_APP_NAME}}-mysql:3306'
+    value: '$(MYSQL_HOST):$(MYSQL_PORT)'
   - name: PHOTOPRISM_DATABASE_NAME
-    value: photoprism
+    value: '$(MYSQL_DATABASE)'
   - name: PHOTOPRISM_DATABASE_USER
-    value: photoprism
+    value: '$(MYSQL_USER)'
   - name: PHOTOPRISM_DATABASE_PASSWORD
-    value: photoprism
+    value: '$(MYSQL_PASSWORD)'
   - name: PHOTOPRISM_HTTP_HOST
     value: 0.0.0.0
   - name: PHOTOPRISM_HTTP_PORT

@@ -21,7 +21,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgresql://docuseal:docuseal@{{KUBERO_APP_NAME}}-postgresql-rw:5432/docuseal
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

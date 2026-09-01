@@ -26,9 +26,7 @@ spec:
   - name: APP_SECRET
     value: 0LZiQBLw4WvqPlz4cz8RsHJlxNiSqM9B48y4ChyJ5v1oA0L/TPIqRjQNdPZN3iEG
   - name: DATABASE_URL
-    value: postgresql://docmost:docmost@{{KUBERO_APP_NAME}}-postgresql-rw:5432/docmost?schema=public
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?schema=public'
   extraVolumes: []
   cronjobs: []
   addons:

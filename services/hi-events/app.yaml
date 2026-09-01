@@ -148,23 +148,23 @@ spec:
   - name: VITE_API_URL_SERVER
     value: '{{KUBERO_APP_URL}}/api'
   - name: DATABASE_URL
-    value: postgresql://hi-events:hi-events@{{KUBERO_APP_NAME}}-postgresql-rw:5432/hi-events
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DB_CONNECTION
     value: pgsql
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DB_DATABASE
-    value: hi-events
+    value: '$(PGDATABASE)'
   - name: DB_USERNAME
-    value: hi-events
+    value: '$(PGUSER)'
   - name: DB_PASSWORD
-    value: hi-events
+    value: '$(PGPASSWORD)'
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: REDIS_PASSWORD
     value: 'null'
   - name: QUEUE_CONNECTION

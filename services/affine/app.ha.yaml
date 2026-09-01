@@ -108,9 +108,9 @@ spec:
   - name: NODE_OPTIONS
     value: --import=./scripts/register.js
   - name: REDIS_SERVER_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: DATABASE_URL
-    value: postgres://affine:afffine@{{KUBERO_APP_NAME}}-postgresql-rw:5432/postgresql
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: NODE_ENV
     value: production
   - name: AFFINE_ADMIN_EMAIL

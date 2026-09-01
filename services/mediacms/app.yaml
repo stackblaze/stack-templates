@@ -145,17 +145,17 @@ spec:
   - name: FRONTEND_HOST
     value: '{{KUBERO_APP_URL}}'
   - name: POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: POSTGRES_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRES_DB
-    value: mediacms
+    value: '$(PGDATABASE)'
   - name: POSTGRES_USER
-    value: mediacms
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: mediacms
+    value: '$(PGPASSWORD)'
   - name: REDIS_LOCATION
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/1
+    value: 'redis://$(REDISHOST):$(REDISPORT)/1'
   - name: ADMIN_USER
     value: admin
   - name: ADMIN_EMAIL

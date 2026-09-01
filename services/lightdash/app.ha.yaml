@@ -129,16 +129,6 @@ spec:
           accesskey: lightdashadmin
           secretkey: changeme
   envVars:
-  - name: PGHOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
-  - name: PGPORT
-    value: '5432'
-  - name: PGUSER
-    value: lightdash
-  - name: PGPASSWORD
-    value: lightdash
-  - name: PGDATABASE
-    value: lightdash
   - name: LIGHTDASH_SECRET
     value: replace-with-openssl-rand-base64-32
   - name: PORT

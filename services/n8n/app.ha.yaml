@@ -83,13 +83,13 @@ spec:
   - name: DB_TYPE
     value: postgresdb
   - name: DB_POSTGRESDB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgres-rw'
+    value: '$(PGHOST)'
   - name: DB_POSTGRESDB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DB_POSTGRESDB_USER
-    value: n8n
+    value: '$(PGUSER)'
   - name: DB_POSTGRESDB_PASSWORD
-    value: '123456'
+    value: '$(PGPASSWORD)'
   - name: N8N_BASIC_AUTH_ACTIVE
     value: 'false'
   - name: WEBHOOK_URL
@@ -105,7 +105,7 @@ spec:
   - name: N8N_PROXY_HOPS
     value: '1'
   - name: DB_POSTGRESDB_DATABASE
-    value: n8n
+    value: '$(PGDATABASE)'
   - name: STACKBLAZE_LOAD_DEMO_DATA
     value: 'false'
   - name: STACKBLAZE_DEMO_EMAIL

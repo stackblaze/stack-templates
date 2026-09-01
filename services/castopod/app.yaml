@@ -119,23 +119,23 @@ spec:
   - name: CP_ANALYTICS_SALT
     value: replace-with-openssl-rand-hex-32
   - name: CP_DATABASE_HOSTNAME
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: CP_DATABASE_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: CP_DATABASE_NAME
-    value: castopod
+    value: '$(MYSQL_DATABASE)'
   - name: CP_DATABASE_USERNAME
-    value: castopod
+    value: '$(MYSQL_USER)'
   - name: CP_DATABASE_PASSWORD
-    value: castopod
+    value: '$(MYSQL_PASSWORD)'
   - name: CP_DATABASE_PREFIX
     value: cp_
   - name: CP_CACHE_HANDLER
     value: redis
   - name: CP_REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: CP_REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: CP_REDIS_PASSWORD
     value: ''
   - name: CP_REDIS_DATABASE

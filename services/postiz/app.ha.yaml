@@ -28,9 +28,7 @@ spec:
     value: random string that is unique to every install - just type random characters
       here!
   - name: DATABASE_URL
-    value: postgresql://postiz:postiz@{{KUBERO_APP_NAME}}-postgresql-rw:5432/postiz
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: IS_GENERAL
     value: 'true'
   - name: STORAGE_PROVIDER

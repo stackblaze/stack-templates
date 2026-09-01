@@ -126,29 +126,29 @@ spec:
   - name: MISSKEY_URL
     value: '{{KUBERO_APP_URL}}'
   - name: DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DATABASE_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DATABASE_DB
-    value: misskey
+    value: '$(PGDATABASE)'
   - name: DATABASE_USER
-    value: misskey
+    value: '$(PGUSER)'
   - name: DATABASE_PASSWORD
-    value: misskey
+    value: '$(PGPASSWORD)'
   - name: POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: POSTGRES_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRES_DB
-    value: misskey
+    value: '$(PGDATABASE)'
   - name: POSTGRES_USER
-    value: misskey
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: misskey
+    value: '$(PGPASSWORD)'
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: NODE_ENV
     value: production
   extraVolumes:

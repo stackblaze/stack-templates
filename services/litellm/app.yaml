@@ -84,7 +84,7 @@ spec:
           password: litellm
   envVars:
   - name: DATABASE_URL
-    value: postgresql://litellm:litellm@{{KUBERO_APP_NAME}}-postgresql-rw:5432/litellm
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: LITELLM_MASTER_KEY
     value: sk-change-me
   - name: STORE_MODEL_IN_DB

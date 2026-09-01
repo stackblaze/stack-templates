@@ -229,14 +229,12 @@ spec:
               cpu: 500m
               memory: 256Mi
   envVars:
-  - name: PGHOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
   - name: CHHOST
     value: clickhouse-{{KUBERO_APP_NAME}}-clickhouse
   - name: S3HOST
     value: langfuse-minio
   - name: DATABASE_URL
-    value: postgresql://langfuse:langfuse@{{KUBERO_APP_NAME}}-postgresql-rw:5432/langfuse
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: NEXTAUTH_URL
     value: '{{KUBERO_APP_URL}}'
   - name: NEXTAUTH_SECRET
@@ -256,9 +254,9 @@ spec:
   - name: CLICKHOUSE_CLUSTER_ENABLED
     value: 'false'
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: LANGFUSE_S3_EVENT_UPLOAD_BUCKET
     value: langfuse
   - name: LANGFUSE_S3_EVENT_UPLOAD_REGION

@@ -104,15 +104,15 @@ spec:
   - name: HEADSCALE_DATABASE_TYPE
     value: postgres
   - name: HEADSCALE_DATABASE_POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: HEADSCALE_DATABASE_POSTGRES_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: HEADSCALE_DATABASE_POSTGRES_NAME
-    value: headscale
+    value: '$(PGDATABASE)'
   - name: HEADSCALE_DATABASE_POSTGRES_USER
-    value: headscale
+    value: '$(PGUSER)'
   - name: HEADSCALE_DATABASE_POSTGRES_PASS
-    value: headscale
+    value: '$(PGPASSWORD)'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

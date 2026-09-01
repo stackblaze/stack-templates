@@ -149,9 +149,9 @@ spec:
           secretkey: changeme
   envVars:
   - name: APPFLOWY_DATABASE_URL
-    value: postgres://appflowy:appflowy@{{KUBERO_APP_NAME}}-postgresql-rw:5432/appflowy
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: APPFLOWY_REDIS_URI
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: 'redis://$(REDISHOST):$(REDISPORT)'
   - name: APPFLOWY_CLOUD_BASE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: APPFLOWY_WEB_URL
@@ -165,7 +165,7 @@ spec:
   - name: APPFLOWY_GOTRUE_BASE_URL
     value: http://127.0.0.1:9999
   - name: GOTRUE_DATABASE_URL
-    value: postgres://appflowy:appflowy@{{KUBERO_APP_NAME}}-postgresql-rw:5432/appflowy?search_path=auth
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?search_path=auth'
   - name: GOTRUE_DB_DRIVER
     value: postgres
   - name: GOTRUE_PORT

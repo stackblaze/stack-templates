@@ -72,13 +72,13 @@ spec:
   - name: APP_FULL_BASE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: DATASOURCES_DEFAULT_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DATASOURCES_DEFAULT_USERNAME
     value: passbolt
   - name: DATASOURCES_DEFAULT_PASSWORD
     value: changeme
   - name: DATASOURCES_DEFAULT_DATABASE
-    value: passbolt
+    value: '$(MYSQL_DATABASE)'
   - name: EMAIL_TRANSPORT_DEFAULT_HOST
     value: localhost
   - name: EMAIL_TRANSPORT_DEFAULT_PORT

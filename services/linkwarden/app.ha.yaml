@@ -84,7 +84,7 @@ spec:
   - name: NEXTAUTH_SECRET
     value: H+KbL/OFrqbEuDy/1zX8bsPG+spXri3S
   - name: DATABASE_URL
-    value: postgresql://linkwarden:linkwarden@{{KUBERO_APP_NAME}}-db-rw:5432/linkwarden
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

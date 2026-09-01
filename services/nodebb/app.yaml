@@ -91,15 +91,15 @@ spec:
   - name: NODEBB_DB
     value: postgres
   - name: NODEBB_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: NODEBB_DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: NODEBB_DB_USER
-    value: nodebb
+    value: '$(PGUSER)'
   - name: NODEBB_DB_PASSWORD
-    value: nodebb
+    value: '$(PGPASSWORD)'
   - name: NODEBB_DB_NAME
-    value: nodebb
+    value: '$(PGDATABASE)'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

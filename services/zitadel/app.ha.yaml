@@ -83,21 +83,21 @@ spec:
           password: zitadel
   envVars:
   - name: ZITADEL_DATABASE_POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: ZITADEL_DATABASE_POSTGRES_PORT
-    value: 5432
+    value: '$(PGPORT)'
   - name: ZITADEL_DATABASE_POSTGRES_DATABASE
-    value: zitadel
+    value: '$(PGDATABASE)'
   - name: ZITADEL_DATABASE_POSTGRES_USER_USERNAME
-    value: zitadel
+    value: '$(PGUSER)'
   - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
-    value: zitadel
+    value: '$(PGPASSWORD)'
   - name: ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE
     value: disable
   - name: ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME
-    value: postgres
+    value: '$(PGUSER)'
   - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
-    value: zitadel
+    value: '$(PGPASSWORD)'
   - name: ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE
     value: disable
   - name: ZITADEL_EXTERNALDOMAIN

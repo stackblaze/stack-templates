@@ -111,21 +111,21 @@ spec:
             quorum: 2
   envVars:
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_NAME
-    value: netbox
+    value: '$(PGDATABASE)'
   - name: DB_USER
-    value: netbox
+    value: '$(PGUSER)'
   - name: DB_PASSWORD
-    value: netbox
+    value: '$(PGPASSWORD)'
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PASSWORD
     value: ''
   - name: REDIS_DATABASE
     value: '0'
   - name: REDIS_CACHE_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_CACHE_PASSWORD
     value: ''
   - name: REDIS_CACHE_DATABASE

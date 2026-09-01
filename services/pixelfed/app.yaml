@@ -141,23 +141,23 @@ spec:
   - name: DB_CONNECTION
     value: mysql
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: DB_DATABASE
-    value: pixelfed
+    value: '$(MYSQL_DATABASE)'
   - name: DB_USERNAME
-    value: pixelfed
+    value: '$(MYSQL_USER)'
   - name: DB_PASSWORD
-    value: pixelfed
+    value: '$(MYSQL_PASSWORD)'
   - name: REDIS_CLIENT
     value: phpredis
   - name: REDIS_SCHEME
     value: tcp
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: REDIS_PASSWORD
     value: 'null'
   - name: REDIS_DATABASE

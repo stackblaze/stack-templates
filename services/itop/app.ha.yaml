@@ -84,10 +84,8 @@ spec:
   envVars:
   - name: TZ
     value: UTC
-  - name: MYSQL_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
   - name: MYSQL_PASS
-    value: itop
+    value: '$(MYSQL_PASSWORD)'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

@@ -86,15 +86,15 @@ spec:
   - name: GOTIFY_DATABASE_DIALECT
     value: postgres
   - name: GOTIFY_DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: GOTIFY_DATABASE_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: GOTIFY_DATABASE_USER
-    value: gotify
+    value: '$(PGUSER)'
   - name: GOTIFY_DATABASE_PASSWORD
-    value: gotify
+    value: '$(PGPASSWORD)'
   - name: GOTIFY_DATABASE_NAME
-    value: gotify
+    value: '$(PGDATABASE)'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

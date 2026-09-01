@@ -128,19 +128,19 @@ spec:
   - name: DISCOURSE_SMTP_PROTOCOL
     value: tls
   - name: DISCOURSE_DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DISCOURSE_DATABASE_PORT_NUMBER
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DISCOURSE_DATABASE_USER
-    value: bn_discourse
+    value: '$(PGUSER)'
   - name: DISCOURSE_DATABASE_PASSWORD
-    value: discourse
+    value: '$(PGPASSWORD)'
   - name: DISCOURSE_DATABASE_NAME
-    value: bitnami_discourse
+    value: '$(PGDATABASE)'
   - name: DISCOURSE_REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: DISCOURSE_REDIS_PORT_NUMBER
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: ALLOW_EMPTY_PASSWORD
     value: 'yes'
   extraVolumes:

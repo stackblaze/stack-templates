@@ -72,13 +72,13 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: JOOMLA_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-db'
+    value: '$(MYSQL_HOST)'
   - name: JOOMLA_DB_USER
-    value: joomla
+    value: '$(MYSQL_USER)'
   - name: JOOMLA_DB_PASSWORD
-    value: joomla
+    value: '$(MYSQL_PASSWORD)'
   - name: JOOMLA_DB_NAME
-    value: joomla
+    value: '$(MYSQL_DATABASE)'
   - name: JOOMLA_DB_TYPE
     value: mysqli
   - name: JOOMLA_SITE_NAME

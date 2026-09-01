@@ -86,7 +86,7 @@ spec:
           password: wagtail
   envVars:
   - name: DATABASE_URL
-    value: postgres://wagtail:wagtail@{{KUBERO_APP_NAME}}-postgresql-rw:5432/wagtail
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DJANGO_SECRET_KEY
     value: change-me-django-secret-key
   - name: DJANGO_ALLOWED_HOSTS

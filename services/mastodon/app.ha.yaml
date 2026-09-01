@@ -145,19 +145,19 @@ spec:
   - name: RAILS_SERVE_STATIC_FILES
     value: 'true'
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DB_NAME
-    value: mastodon
+    value: '$(PGDATABASE)'
   - name: DB_USER
-    value: mastodon
+    value: '$(PGUSER)'
   - name: DB_PASS
-    value: mastodon
+    value: '$(PGPASSWORD)'
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: ES_ENABLED
     value: 'false'
   - name: SECRET_KEY_BASE

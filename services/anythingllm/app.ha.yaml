@@ -95,7 +95,7 @@ spec:
   - name: DISABLE_TELEMETRY
     value: true
   - name: DATABASE_URL
-    value: postgresql://anythingllm:anythingllm@{{KUBERO_APP_NAME}}-postgresql-rw:5432/anythingllm
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

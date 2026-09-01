@@ -32,15 +32,15 @@ spec:
   - name: DB_CLIENT
     value: pg
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DB_DATABASE
-    value: directus
+    value: '$(PGDATABASE)'
   - name: DB_USER
-    value: directus
+    value: '$(PGUSER)'
   - name: DB_PASSWORD
-    value: directus
+    value: '$(PGPASSWORD)'
   - name: CACHE_ENABLED
     value: 'true'
   - name: CACHE_AUTO_PURGE
@@ -50,7 +50,7 @@ spec:
   - name: SYNCHRONIZATION_STORE
     value: redis
   - name: REDIS
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: 'redis://$(REDISHOST):$(REDISPORT)'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

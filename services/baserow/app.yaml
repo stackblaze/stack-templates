@@ -112,17 +112,15 @@ spec:
               memory: 256Mi
   envVars:
   - name: DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DATABASE_PORT
-    value: 5432
+    value: '$(PGPORT)'
   - name: DATABASE_NAME
-    value: baserow
+    value: '$(PGDATABASE)'
   - name: DATABASE_USER
-    value: baserow
+    value: '$(PGUSER)'
   - name: DATABASE_PASSWORD
-    value: baserow
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-cache-readwrite:6379/0
+    value: '$(PGPASSWORD)'
   - name: BASEROW_PUBLIC_URL
     value: '{{KUBERO_APP_URL}}'
   - name: SECRET_KEY

@@ -31,7 +31,7 @@ spec:
   - name: PSONO_ALLOWED_HOSTS
     value: '*'
   - name: PSONO_DATABASE_URL
-    value: postgres://psono:psono@{{KUBERO_APP_NAME}}-postgresql-rw:5432/psono
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: PSONO_SECRET_KEY
     value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: PSONO_ACTIVATION_LINK_SECRET

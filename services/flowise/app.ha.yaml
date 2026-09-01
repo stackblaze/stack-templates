@@ -30,15 +30,15 @@ spec:
   - name: DATABASE_TYPE
     value: postgres
   - name: DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DATABASE_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DATABASE_NAME
-    value: flowise
+    value: '$(PGDATABASE)'
   - name: DATABASE_USER
-    value: flowise
+    value: '$(PGUSER)'
   - name: DATABASE_PASSWORD
-    value: flowise
+    value: '$(PGPASSWORD)'
   extraVolumes: []
   cronjobs: []
   addons:

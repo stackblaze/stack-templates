@@ -83,15 +83,15 @@ spec:
           password: civicrm
   envVars:
   - name: CIVICRM_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: CIVICRM_DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: CIVICRM_DB_NAME
-    value: civicrm
+    value: '$(MYSQL_DATABASE)'
   - name: CIVICRM_DB_USER
-    value: civicrm
+    value: '$(MYSQL_USER)'
   - name: CIVICRM_DB_PASSWORD
-    value: civicrm
+    value: '$(MYSQL_PASSWORD)'
   - name: CIVICRM_UF_BASEURL
     value: '{{KUBERO_APP_URL}}'
   - name: CIVICRM_ADMIN_USER

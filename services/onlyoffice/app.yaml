@@ -116,20 +116,20 @@ spec:
   envVars:
   # --- Database (CloudNativePG) ---
   - name: POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-ncdb-rw'
+    value: '{{KUBERO_APP_NAME}}-$(PGHOST)'
   - name: POSTGRES_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRES_DB
-    value: nextcloud
+    value: '$(PGDATABASE)'
   - name: POSTGRES_USER
-    value: nextcloud
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: nextcloud
+    value: '$(PGPASSWORD)'
   # --- Cache (Valkey/Redis) ---
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-nccache-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   # --- Nextcloud admin + access ---
   - name: NEXTCLOUD_ADMIN_USER
     value: admin

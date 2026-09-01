@@ -116,15 +116,15 @@ spec:
   - name: ESPOCRM_DATABASE_PLATFORM
     value: Mysql
   - name: ESPOCRM_DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: ESPOCRM_DATABASE_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: ESPOCRM_DATABASE_NAME
-    value: espocrm
+    value: '$(MYSQL_DATABASE)'
   - name: ESPOCRM_DATABASE_USER
-    value: espocrm
+    value: '$(MYSQL_USER)'
   - name: ESPOCRM_DATABASE_PASSWORD
-    value: espocrm
+    value: '$(MYSQL_PASSWORD)'
   - name: ESPOCRM_SITE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: ESPOCRM_ADMIN_USERNAME
@@ -136,9 +136,9 @@ spec:
   - name: ESPOCRM_CONFIG_CACHE_PROVIDER
     value: Redis
   - name: ESPOCRM_CONFIG_REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: ESPOCRM_CONFIG_REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

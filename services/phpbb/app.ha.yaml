@@ -86,15 +86,15 @@ spec:
           password: phpbb
   envVars:
   - name: PHPBB_DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: PHPBB_DATABASE_PORT_NUMBER
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: PHPBB_DATABASE_NAME
-    value: phpbb
+    value: '$(MYSQL_DATABASE)'
   - name: PHPBB_DATABASE_USER
-    value: phpbb
+    value: '$(MYSQL_USER)'
   - name: PHPBB_DATABASE_PASSWORD
-    value: phpbb
+    value: '$(MYSQL_PASSWORD)'
   - name: PHPBB_HOST
     value: '{{KUBERO_APP_HOST}}'
   - name: PHPBB_USERNAME

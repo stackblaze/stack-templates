@@ -79,18 +79,8 @@ spec:
         stringData:
           password: uvdesk
   envVars:
-  - name: MYSQL_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
-  - name: MYSQL_PORT
-    value: '3306'
-  - name: MYSQL_DATABASE
-    value: uvdesk
-  - name: MYSQL_USER
-    value: uvdesk
-  - name: MYSQL_PASSWORD
-    value: uvdesk
   - name: MYSQL_ROOT_PASSWORD
-    value: uvdesk
+    value: '$(MYSQL_PASSWORD)'
   - name: SITE_URL
     value: '{{KUBERO_APP_URL}}'
   extraVolumes:

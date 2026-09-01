@@ -79,15 +79,15 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-db-rw'
+    value: '$(PGHOST)'
   - name: DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DB_NAME
-    value: evershop
+    value: '$(PGDATABASE)'
   - name: DB_USER
-    value: evershop
+    value: '$(PGUSER)'
   - name: DB_PASSWORD
-    value: postgres
+    value: '$(PGPASSWORD)'
   - name: DB_SSLMODE
     value: disable
   - name: ADMIN_EMAIL

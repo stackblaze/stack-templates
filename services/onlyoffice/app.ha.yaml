@@ -150,21 +150,21 @@ spec:
   - name: DB_TYPE
     value: postgres
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DB_NAME
-    value: onlyoffice
+    value: '$(PGDATABASE)'
   - name: DB_USER
-    value: onlyoffice
+    value: '$(PGUSER)'
   - name: DB_PWD
-    value: onlyoffice
+    value: '$(PGPASSWORD)'
   - name: AMQP_TYPE
     value: rabbitmq
   - name: AMQP_URI
     value: amqp://onlyoffice:onlyoffice@onlyoffice-rabbitmq:5672
   - name: REDIS_SERVER_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_SERVER_PORT
     value: '6379'
   - name: JWT_ENABLED

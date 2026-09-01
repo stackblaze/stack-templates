@@ -83,13 +83,13 @@ spec:
   - name: VIKUNJA_DATABASE_TYPE
     value: postgres
   - name: VIKUNJA_DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: VIKUNJA_DATABASE_USER
-    value: vikunja
+    value: '$(PGUSER)'
   - name: VIKUNJA_DATABASE_PASSWORD
-    value: vikunja
+    value: '$(PGPASSWORD)'
   - name: VIKUNJA_DATABASE_DATABASE
-    value: vikunja
+    value: '$(PGDATABASE)'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

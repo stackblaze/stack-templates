@@ -78,7 +78,7 @@ spec:
   - name: PHOTOVIEW_DATABASE_DRIVER
     value: mysql
   - name: PHOTOVIEW_MYSQL_URL
-    value: photoview:photoview@tcp({{KUBERO_APP_NAME}}-mysql)/photoview
+    value: '$(MYSQL_USER):$(MYSQL_PASSWORD)@tcp($(MYSQL_HOST):$(MYSQL_PORT))/$(MYSQL_DATABASE)'
   - name: PHOTOVIEW_LISTEN_IP
     value: 0.0.0.0
   - name: PHOTOVIEW_LISTEN_PORT

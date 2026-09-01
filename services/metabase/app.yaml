@@ -81,15 +81,15 @@ spec:
   - name: MB_DB_TYPE
     value: postgres
   - name: MB_DB_DBNAME
-    value: metabase
+    value: '$(PGDATABASE)'
   - name: MB_DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: MB_DB_USER
-    value: metabase
+    value: '$(PGUSER)'
   - name: MB_DB_PASS
-    value: metabase
+    value: '$(PGPASSWORD)'
   - name: MB_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: JAVA_OPTS
     value: -XX:MaxRAMPercentage=75.0
   extraVolumes: []

@@ -214,15 +214,15 @@ spec:
   - name: PASSWORD
     value: dittofeed
   - name: DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DATABASE_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DATABASE_USER
-    value: dittofeed
+    value: '$(PGUSER)'
   - name: DATABASE_PASSWORD
-    value: dittofeed
+    value: '$(PGPASSWORD)'
   - name: DATABASE_NAME
-    value: dittofeed
+    value: '$(PGDATABASE)'
   - name: CLICKHOUSE_HOST
     value: http://clickhouse-{{KUBERO_APP_NAME}}-clickhouse:8123
   - name: CLICKHOUSE_USER
@@ -230,7 +230,7 @@ spec:
   - name: CLICKHOUSE_PASSWORD
     value: dittofeed
   - name: CLICKHOUSE_DATABASE
-    value: dittofeed
+    value: '$(PGDATABASE)'
   - name: TEMPORAL_ADDRESS
     value: dittofeed-temporal:7233
   - name: DASHBOARD_API_BASE

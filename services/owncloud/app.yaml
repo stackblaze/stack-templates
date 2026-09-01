@@ -118,13 +118,13 @@ spec:
   - name: OWNCLOUD_DB_TYPE
     value: mysql
   - name: OWNCLOUD_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: OWNCLOUD_DB_NAME
-    value: owncloud
+    value: '$(MYSQL_DATABASE)'
   - name: OWNCLOUD_DB_USERNAME
-    value: owncloud
+    value: '$(MYSQL_USER)'
   - name: OWNCLOUD_DB_PASSWORD
-    value: owncloud
+    value: '$(MYSQL_PASSWORD)'
   - name: OWNCLOUD_ADMIN_USERNAME
     value: admin
   - name: OWNCLOUD_ADMIN_PASSWORD
@@ -134,9 +134,9 @@ spec:
   - name: OWNCLOUD_REDIS_ENABLED
     value: 'true'
   - name: OWNCLOUD_REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: OWNCLOUD_REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

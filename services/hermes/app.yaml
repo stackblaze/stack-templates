@@ -95,15 +95,15 @@ spec:
           password: hermes
   envVars:
   - name: HERMES_SERVER_POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: HERMES_SERVER_POSTGRES_PORT
     value: '5432'
   - name: HERMES_SERVER_POSTGRES_DBNAME
-    value: hermes
+    value: '$(PGDATABASE)'
   - name: HERMES_SERVER_POSTGRES_USER
-    value: hermes
+    value: '$(PGUSER)'
   - name: HERMES_SERVER_POSTGRES_PASSWORD
-    value: hermes
+    value: '$(PGPASSWORD)'
   - name: HERMES_BASE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: HERMES_WEB_BASE_URL

@@ -25,11 +25,9 @@ spec:
   - name: SECRET_KEY
     value: '{{KUBERO_GEN_HEX:64}}'
   - name: DATABASE_URL
-    value: postgres://outline:outline@{{KUBERO_APP_NAME}}-postgresql-rw:5432/outline
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: PGSSLMODE
     value: disable
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: FILE_STORAGE
     value: local
   - name: FILE_STORAGE_LOCAL_ROOT_DIR

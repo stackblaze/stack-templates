@@ -142,23 +142,21 @@ spec:
   - name: LAGO_ORG_NAME
     value: Lago QA
   - name: DATABASE_URL
-    value: postgresql://lago:lago@{{KUBERO_APP_NAME}}-postgresql-rw:5432/lago
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: POSTGRES_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRES_DB
-    value: lago
+    value: '$(PGDATABASE)'
   - name: POSTGRES_USER
-    value: lago
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: lago
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: '$(PGPASSWORD)'
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: SECRET_KEY_BASE
     value: c3ca1454fe7a7fb2caf01788087960abbd8b0fd95437048038568ce7c50d66dffdfe9060d38ad2004eeda3b4d855f8b68f03fd05a89683058a0b18f0f42789df
   - name: LAGO_ENCRYPTION_PRIMARY_KEY
@@ -176,7 +174,7 @@ spec:
   - name: LAGO_PDF_URL
     value: http://lago-pdf:3000
   - name: LAGO_REDIS_CACHE_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: 'redis://$(REDISHOST):$(REDISPORT)'
   - name: LAGO_SIDEKIQ_WEB
     value: 'false'
   - name: LAGO_DISABLE_SEGMENT

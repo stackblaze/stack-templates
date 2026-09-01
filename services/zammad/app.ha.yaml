@@ -131,21 +131,19 @@ spec:
             quorum: 2
   envVars:
   - name: POSTGRESQL_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: POSTGRESQL_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRESQL_DB
-    value: zammad
+    value: '$(PGDATABASE)'
   - name: POSTGRESQL_USER
-    value: zammad
+    value: '$(PGUSER)'
   - name: POSTGRESQL_PASS
-    value: zammad
+    value: '$(PGPASSWORD)'
   - name: POSTGRESQL_DB_CREATE
     value: 'false'
   - name: POSTGRESQL_OPTIONS
     value: ?pool=50
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: NGINX_PORT
     value: '8080'
   - name: ZAMMAD_RAILSSERVER_HOST

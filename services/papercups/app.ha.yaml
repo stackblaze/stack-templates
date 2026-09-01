@@ -85,7 +85,7 @@ spec:
           password: papercups
   envVars:
   - name: DATABASE_URL
-    value: ecto://papercups:papercups@{{KUBERO_APP_NAME}}-postgresql-rw:5432/papercups
+    value: 'ecto://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: REQUIRE_DB_SSL
     value: 'false'
   - name: SECRET_KEY_BASE

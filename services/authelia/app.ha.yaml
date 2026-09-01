@@ -127,17 +127,17 @@ spec:
             quorum: 2
   envVars:
   - name: AUTHELIA_STORAGE_POSTGRES_ADDRESS
-    value: tcp://{{KUBERO_APP_NAME}}-postgresql-rw:5432
+    value: 'tcp://$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: AUTHELIA_STORAGE_POSTGRES_DATABASE
-    value: authelia
+    value: '$(PGDATABASE)'
   - name: AUTHELIA_STORAGE_POSTGRES_USERNAME
-    value: authelia
+    value: '$(PGUSER)'
   - name: AUTHELIA_STORAGE_POSTGRES_PASSWORD
-    value: authelia
+    value: '$(PGPASSWORD)'
   - name: AUTHELIA_SESSION_REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: AUTHELIA_SESSION_REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: AUTHELIA_STORAGE_ENCRYPTION_KEY
     value: replace-with-openssl-rand-hex-32
   - name: AUTHELIA_SESSION_SECRET

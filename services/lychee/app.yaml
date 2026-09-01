@@ -91,15 +91,15 @@ spec:
   - name: DB_CONNECTION
     value: mysql
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: DB_DATABASE
-    value: lychee
+    value: '$(MYSQL_DATABASE)'
   - name: DB_USERNAME
-    value: lychee
+    value: '$(MYSQL_USER)'
   - name: DB_PASSWORD
-    value: lychee
+    value: '$(MYSQL_PASSWORD)'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

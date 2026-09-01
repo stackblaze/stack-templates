@@ -118,19 +118,17 @@ spec:
   - name: RAILS_ASSUME_SSL
     value: 'false'
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: POSTGRES_DB
-    value: maybe
+    value: '$(PGDATABASE)'
   - name: POSTGRES_USER
-    value: maybe
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: maybe
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: '$(PGPASSWORD)'
   extraVolumes: []
   cronjobs: []
   web:

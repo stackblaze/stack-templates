@@ -96,15 +96,15 @@ spec:
   - name: DB_CONNECTION
     value: mysql
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: DB_DATABASE
-    value: crater
+    value: '$(MYSQL_DATABASE)'
   - name: DB_USERNAME
-    value: crater
+    value: '$(MYSQL_USER)'
   - name: DB_PASSWORD
-    value: crater
+    value: '$(MYSQL_PASSWORD)'
   - name: CACHE_DRIVER
     value: file
   - name: SESSION_DRIVER

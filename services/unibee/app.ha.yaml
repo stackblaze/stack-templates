@@ -125,11 +125,11 @@ spec:
   - name: UNIBEE_API_URL
     value: '{{KUBERO_APP_URL}}/api'
   - name: DATABASE_LINK
-    value: mysql:unibee:unibee@tcp({{KUBERO_APP_NAME}}-mysql:3306)/unibee?loc=UTC&parseTime=false
+    value: '$(MYSQL_USER):$(MYSQL_PASSWORD)@tcp($(MYSQL_HOST):$(MYSQL_PORT))/$(MYSQL_DATABASE)?loc=UTC&parseTime=false'
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: REDIS_ADDRESS
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: '$(REDISHOST):$(REDISPORT)'
   - name: REDIS_PASSWORD
     value: ''
   - name: UNIBEE_LICENSE

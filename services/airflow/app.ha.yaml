@@ -85,7 +85,7 @@ spec:
   - name: AIRFLOW__CORE__EXECUTOR
     value: LocalExecutor
   - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
-    value: postgresql+psycopg2://airflow:airflow@{{KUBERO_APP_NAME}}-postgresql-rw:5432/airflow
+    value: 'postgresql+psycopg2://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: AIRFLOW__CORE__FERNET_KEY
     value: CfPdvNM1LwtKIeqg7rMUA_2cc6mw2DuSVcQ3GIcuauA=
   - name: AIRFLOW__WEBSERVER__EXPOSE_CONFIG

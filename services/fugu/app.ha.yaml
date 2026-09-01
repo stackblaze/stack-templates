@@ -92,13 +92,13 @@ spec:
   - name: RAILS_SERVE_STATIC_FILES
     value: 'true'
   - name: DATABASE_URL
-    value: postgresql://fugu:fugu@{{KUBERO_APP_NAME}}-postgresql-rw:5432/fugu
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DATABASE_NAME
-    value: fugu
+    value: '$(PGDATABASE)'
   - name: DATABASE_USER
-    value: fugu
+    value: '$(PGUSER)'
   - name: DATABASE_PASSWORD
-    value: fugu
+    value: '$(PGPASSWORD)'
   - name: SECRET_KEY_BASE
     value: '0000000000000000000000000000000000000000000000000000000000000000'
   - name: ALLOW_REGISTRATION

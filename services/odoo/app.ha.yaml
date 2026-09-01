@@ -95,7 +95,7 @@ spec:
           password: odoo
   envVars:
   - name: HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: PORT
     value: '5432'
   - name: USER

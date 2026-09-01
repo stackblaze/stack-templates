@@ -89,15 +89,15 @@ spec:
   - name: DOCKER_MAUTIC_ROLE
     value: mautic_web
   - name: MAUTIC_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: MAUTIC_DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: MAUTIC_DB_DATABASE
-    value: mautic
+    value: '$(MYSQL_DATABASE)'
   - name: MAUTIC_DB_USER
-    value: mautic
+    value: '$(MYSQL_USER)'
   - name: MAUTIC_DB_PASSWORD
-    value: mautic
+    value: '$(MYSQL_PASSWORD)'
   - name: MAUTIC_DB_SERVER_VERSION
     value: mariadb-10.11.7
   - name: MAUTIC_RUN_CRON_JOBS

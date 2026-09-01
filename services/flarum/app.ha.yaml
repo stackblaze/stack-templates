@@ -82,15 +82,15 @@ spec:
           password: flarum
   envVars:
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: DB_NAME
-    value: flarum
+    value: '$(MYSQL_DATABASE)'
   - name: DB_USER
-    value: flarum
+    value: '$(MYSQL_USER)'
   - name: DB_PASS
-    value: flarum
+    value: '$(MYSQL_PASSWORD)'
   - name: DB_PREF
     value: flarum_
   - name: FORUM_URL

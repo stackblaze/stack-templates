@@ -75,14 +75,6 @@ spec:
         stringData:
           password: nextcloud
   envVars:
-  - name: MYSQL_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
-  - name: MYSQL_DATABASE
-    value: nextcloud
-  - name: MYSQL_USER
-    value: nextcloud
-  - name: MYSQL_PASSWORD
-    value: nextcloud
   - name: NEXTCLOUD_ADMIN_USER
     value: admin
   - name: NEXTCLOUD_ADMIN_PASSWORD

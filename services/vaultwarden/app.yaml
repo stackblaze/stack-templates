@@ -76,7 +76,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgresql://vaultwarden:vaultwarden@{{KUBERO_APP_NAME}}-postgresql-rw:5432/vaultwarden
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

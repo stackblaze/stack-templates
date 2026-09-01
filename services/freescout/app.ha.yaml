@@ -97,21 +97,21 @@ spec:
   - name: DB_CONNECTION
     value: pgsql
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DB_NAME
-    value: freescout
+    value: '$(PGDATABASE)'
   - name: DB_DATABASE
-    value: freescout
+    value: '$(PGDATABASE)'
   - name: DB_USER
-    value: freescout
+    value: '$(PGUSER)'
   - name: DB_USERNAME
-    value: freescout
+    value: '$(PGUSER)'
   - name: DB_PASS
-    value: freescout
+    value: '$(PGPASSWORD)'
   - name: DB_PASSWORD
-    value: freescout
+    value: '$(PGPASSWORD)'
   - name: ADMIN_EMAIL
     value: admin@example.com
   - name: ADMIN_PASS

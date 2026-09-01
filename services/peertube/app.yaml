@@ -145,23 +145,23 @@ spec:
   - name: PEERTUBE_ADMIN_EMAIL
     value: admin@example.com
   - name: PEERTUBE_DB_HOSTNAME
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: PEERTUBE_DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: PEERTUBE_DB_NAME
-    value: peertube
+    value: '$(PGDATABASE)'
   - name: PEERTUBE_DB_SUFFIX
     value: ''
   - name: PEERTUBE_DB_USERNAME
-    value: peertube
+    value: '$(PGUSER)'
   - name: PEERTUBE_DB_PASSWORD
-    value: peertube
+    value: '$(PGPASSWORD)'
   - name: PEERTUBE_DB_SSL
     value: 'false'
   - name: PEERTUBE_REDIS_HOSTNAME
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: PEERTUBE_REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: PEERTUBE_REDIS_AUTH
     value: ''
   - name: PEERTUBE_SMTP_HOSTNAME

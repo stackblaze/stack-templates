@@ -90,8 +90,7 @@ spec:
   - name: DOCUMIZEPORT
     value: '5001'
   - name: DOCUMIZEDB
-    value: host={{KUBERO_APP_NAME}}-postgresql-rw port=5432 dbname=documize user=documize
-      password=documize sslmode=disable
+    value: 'host=$(PGHOST) port=$(PGPORT) dbname=$(PGDATABASE) user=$(PGUSER) password=$(PGPASSWORD) sslmode=disable'
   - name: DOCUMIZEDBTYPE
     value: postgresql
   - name: DOCUMIZESALT

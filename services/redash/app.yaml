@@ -125,9 +125,9 @@ spec:
   - name: REDASH_LOG_LEVEL
     value: INFO
   - name: REDASH_DATABASE_URL
-    value: postgresql://redash:redash@{{KUBERO_APP_NAME}}-postgresql-rw:5432/redash
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: REDASH_REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
   - name: REDASH_COOKIE_SECRET
     value: replace-with-openssl-rand-hex-32
   - name: REDASH_SECRET_KEY

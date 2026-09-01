@@ -33,7 +33,7 @@ spec:
   - name: TOLGEE_POSTGRES_AUTOSTART_ENABLED
     value: 'false'
   - name: SPRING_DATASOURCE_URL
-    value: jdbc:postgresql://{{KUBERO_APP_NAME}}-postgresql-rw:5432/tolgee
+    value: 'jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: SPRING_DATASOURCE_USERNAME
     value: tolgee
   - name: SPRING_DATASOURCE_PASSWORD

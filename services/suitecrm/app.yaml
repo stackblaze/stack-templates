@@ -115,15 +115,15 @@ spec:
               memory: 256Mi
   envVars:
   - name: SUITECRM_DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: SUITECRM_DATABASE_PORT_NUMBER
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: SUITECRM_DATABASE_NAME
-    value: suitecrm
+    value: '$(MYSQL_DATABASE)'
   - name: SUITECRM_DATABASE_USER
-    value: suitecrm
+    value: '$(MYSQL_USER)'
   - name: SUITECRM_DATABASE_PASSWORD
-    value: suitecrm
+    value: '$(MYSQL_PASSWORD)'
   - name: SUITECRM_HOST
     value: '{{KUBERO_APP_HOST}}'
   - name: SUITECRM_USERNAME
@@ -135,9 +135,9 @@ spec:
   - name: SUITECRM_ENABLE_REDIS
     value: 'yes'
   - name: SUITECRM_REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: SUITECRM_REDIS_PORT_NUMBER
-    value: '6379'
+    value: '$(REDISPORT)'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

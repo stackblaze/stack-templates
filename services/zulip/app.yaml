@@ -170,19 +170,19 @@ spec:
   - name: SETTING_ZULIP_ADMINISTRATOR
     value: admin@example.com
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_HOST_PORT
     value: '5432'
   - name: DB_NAME
-    value: zulip
+    value: '$(PGDATABASE)'
   - name: DB_USER
-    value: zulip
+    value: '$(PGUSER)'
   - name: REMOTE_POSTGRES_SSLMODE
     value: prefer
   - name: SETTING_RABBITMQ_HOST
     value: '{{KUBERO_APP_NAME}}-rabbitmq'
   - name: SETTING_REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: SETTING_MEMCACHED_LOCATION
     value: '{{KUBERO_APP_NAME}}-memcached:11211'
   - name: DISABLE_HTTPS
@@ -202,11 +202,11 @@ spec:
   - name: SECRETS_secret_key
     value: '{{KUBERO_GEN_ALNUM:50}}'
   - name: POSTGRES_DB
-    value: zulip
+    value: '$(PGDATABASE)'
   - name: POSTGRES_USER
-    value: zulip
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: zulip
+    value: '$(PGPASSWORD)'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

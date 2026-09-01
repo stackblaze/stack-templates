@@ -130,21 +130,21 @@ spec:
   - name: APP_SECRET_KEY
     value: replace-with-openssl-rand-base64-36
   - name: POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: POSTGRES_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRES_DATABASE
-    value: automatisch
+    value: '$(PGDATABASE)'
   - name: POSTGRES_USERNAME
-    value: automatisch
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: automatisch
+    value: '$(PGPASSWORD)'
   - name: POSTGRES_ENABLE_SSL
     value: 'false'
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   extraVolumes:
   - accessModes:
     - ReadWriteOnce

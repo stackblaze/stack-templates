@@ -112,11 +112,11 @@ spec:
               memory: 256Mi
   envVars:
   - name: PRISMA_DATABASE_URL
-    value: postgresql://teable:teable@{{KUBERO_APP_NAME}}-postgresql-rw:5432/teable
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: BACKEND_CACHE_PROVIDER
     value: redis
   - name: BACKEND_CACHE_REDIS_URI
-    value: redis://rfr-{{KUBERO_APP_NAME}}-cache-readwrite:6379/0
+    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
   - name: SECRET_KEY
     value: change-me-to-random-string
   - name: PUBLIC_ORIGIN

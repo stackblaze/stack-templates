@@ -144,13 +144,13 @@ spec:
     value: enable-registration enable-login-with-password disable-email-verification
       disable-secure-session-cookies
   - name: PENPOT_DATABASE_URI
-    value: postgresql://{{KUBERO_APP_NAME}}-postgresql-rw:5432/penpot
+    value: 'postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: PENPOT_DATABASE_USERNAME
-    value: penpot
+    value: '$(PGUSER)'
   - name: PENPOT_DATABASE_PASSWORD
-    value: penpot
+    value: '$(PGPASSWORD)'
   - name: PENPOT_REDIS_URI
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
   - name: PENPOT_SECRET_KEY
     value: replace-with-openssl-rand-hex-32
   - name: PENPOT_ASSETS_STORAGE_BACKEND

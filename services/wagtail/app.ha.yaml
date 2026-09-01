@@ -119,9 +119,7 @@ spec:
               memory: 256Mi
   envVars:
   - name: DATABASE_URL
-    value: postgres://wagtail:wagtail@{{KUBERO_APP_NAME}}-postgresql-rw:5432/wagtail
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DJANGO_SECRET_KEY
     value: change-me-django-secret-key
   - name: DJANGO_ALLOWED_HOSTS

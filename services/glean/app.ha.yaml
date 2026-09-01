@@ -120,15 +120,13 @@ spec:
             quorum: 2
   envVars:
   - name: DATABASE_URL
-    value: postgresql+asyncpg://glean:glean@{{KUBERO_APP_NAME}}-postgresql-rw:5432/glean
+    value: 'postgresql+asyncpg://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: POSTGRES_DB
-    value: glean
+    value: '$(PGDATABASE)'
   - name: POSTGRES_USER
-    value: glean
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: glean
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: '$(PGPASSWORD)'
   - name: SECRET_KEY
     value: replace-with-openssl-rand-hex-32
   - name: ADMIN_USERNAME

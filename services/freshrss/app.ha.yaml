@@ -78,8 +78,7 @@ spec:
   - name: CRON_MIN
     value: 13,43
   - name: FRESHRSS_INSTALL
-    value: --default-user admin --db-type mysql --db-host {{KUBERO_APP_NAME}}-freshrss-mysql
-      --db-user freshrss --db-password freshrss --db-base freshrss
+    value: '--default-user admin --db-type mysql --db-host $(MYSQL_HOST) --db-user $(MYSQL_USER) --db-password $(MYSQL_PASSWORD) --db-base $(MYSQL_DATABASE)'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

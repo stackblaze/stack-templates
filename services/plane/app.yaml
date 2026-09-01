@@ -180,13 +180,11 @@ spec:
   - name: CORS_ALLOWED_ORIGINS
     value: '{{KUBERO_APP_URL}}'
   - name: DATABASE_URL
-    value: postgresql://plane:plane@{{KUBERO_APP_NAME}}-postgresql-rw:5432/plane
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: CELERY_BROKER_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
   - name: CELERY_RESULT_BACKEND
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
   - name: AMQP_URL
     value: amqp://plane:plane@{{KUBERO_APP_NAME}}-rabbitmq:5672/plane
   - name: RABBITMQ_HOST

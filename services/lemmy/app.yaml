@@ -109,7 +109,7 @@ spec:
   - name: LEMMY_HOSTNAME
     value: '{{KUBERO_APP_HOST}}'
   - name: LEMMY_DATABASE_URL
-    value: postgresql://lemmy:lemmy@{{KUBERO_APP_NAME}}-postgresql-rw:5432/lemmy
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: LEMMY_PICTRS__URL
     value: http://lemmy-pictrs:8080/
   - name: LEMMY_PICTRS__API_KEY

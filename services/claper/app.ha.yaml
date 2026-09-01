@@ -21,7 +21,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgres://claper:claper@{{KUBERO_APP_NAME}}-postgresql-rw:5432/postgresql
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: SECRET_KEY_BASE
     value: 0LZiQBLw4WvqPlz4cz8RsHJlxNiSqM9B48y4ChyJ5v1oA0L/TPIqRjQNdPZN3iEG
   - name: PRESENTATION_STORAGE

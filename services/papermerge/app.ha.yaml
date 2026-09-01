@@ -130,9 +130,9 @@ spec:
   - name: PAPERMERGE__AUTH__PASSWORD
     value: papermerge
   - name: PAPERMERGE__DATABASE__URL
-    value: postgresql://papermerge:papermerge@{{KUBERO_APP_NAME}}-postgresql-rw:5432/papermerge
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: PAPERMERGE__REDIS__URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
   - name: PAPERMERGE__MAIN__MEDIA_ROOT
     value: /db/media
   - name: PAPERMERGE__OCR__LANG_CODES

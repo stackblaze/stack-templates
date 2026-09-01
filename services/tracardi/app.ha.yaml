@@ -166,17 +166,9 @@ spec:
   - name: ELASTIC_HOST
     value: http://{{KUBERO_APP_NAME}}-opensearch:9200
   - name: REDIS_HOST
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
-  - name: MYSQL_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
-  - name: MYSQL_PORT
-    value: '3306'
+    value: 'redis://$(REDISHOST):$(REDISPORT)'
   - name: MYSQL_USERNAME
-    value: tracardi
-  - name: MYSQL_PASSWORD
-    value: tracardi
-  - name: MYSQL_DATABASE
-    value: tracardi
+    value: '$(MYSQL_USER)'
   - name: PRODUCTION
     value: 'yes'
   - name: DEMO

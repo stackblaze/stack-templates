@@ -83,7 +83,7 @@ spec:
   - name: OPENPROJECT_HOST__NAME
     value: '{{KUBERO_APP_HOST}}'
   - name: DATABASE_URL
-    value: postgresql://openproject:openproject@{{KUBERO_APP_NAME}}-postgresql-rw:5432/openproject
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: OPENPROJECT_SECRET_KEY_BASE
     value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: MIGRATE

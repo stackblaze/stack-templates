@@ -83,13 +83,13 @@ spec:
           password: wordpress-multisite
   envVars:
   - name: WORDPRESS_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: WORDPRESS_DB_NAME
-    value: wordpress-multisite
+    value: '$(MYSQL_DATABASE)'
   - name: WORDPRESS_DB_USER
-    value: wordpress-multisite
+    value: '$(MYSQL_USER)'
   - name: WORDPRESS_DB_PASSWORD
-    value: wordpress-multisite
+    value: '$(MYSQL_PASSWORD)'
   - name: WORDPRESS_TABLE_PREFIX
     value: wp_
   - name: WORDPRESS_CONFIG_EXTRA

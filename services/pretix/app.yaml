@@ -125,23 +125,23 @@ spec:
   - name: PRETIX_DATABASE_BACKEND
     value: postgresql
   - name: PRETIX_DATABASE_NAME
-    value: pretix
+    value: '$(PGDATABASE)'
   - name: PRETIX_DATABASE_USER
-    value: pretix
+    value: '$(PGUSER)'
   - name: PRETIX_DATABASE_PASSWORD
-    value: pretix
+    value: '$(PGPASSWORD)'
   - name: PRETIX_DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: PRETIX_DATABASE_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: PRETIX_REDIS_LOCATION
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
   - name: PRETIX_REDIS_SESSIONS
     value: 'true'
   - name: PRETIX_CELERY_BROKER
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/1
+    value: 'redis://$(REDISHOST):$(REDISPORT)/1'
   - name: PRETIX_CELERY_BACKEND
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/2
+    value: 'redis://$(REDISHOST):$(REDISPORT)/2'
   - name: PRETIX_PRETIX_URL
     value: '{{KUBERO_APP_URL}}'
   - name: PRETIX_PRETIX_INSTANCE_NAME

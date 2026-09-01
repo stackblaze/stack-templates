@@ -31,7 +31,7 @@ spec:
   - name: TRUSTED_PROXIES
     value: 10.0.0.0/8,REMOTE_ADDR
   - name: DATABASE_URL
-    value: mysql://kimai:kimai@{{KUBERO_APP_NAME}}-kimai-mysql/kimai?charset=utf8mb4
+    value: 'mysql://$(MYSQL_USER):$(MYSQL_PASSWORD)@$(MYSQL_HOST):$(MYSQL_PORT)/$(MYSQL_DATABASE)?charset=utf8mb4'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

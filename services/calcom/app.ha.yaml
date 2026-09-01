@@ -76,11 +76,11 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgresql://calcom:calcom@{{KUBERO_APP_NAME}}-db-rw:5432/calcom
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DATABASE_DIRECT_URL
-    value: postgresql://calcom:calcom@{{KUBERO_APP_NAME}}-db-rw:5432/calcom
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-db-rw:5432'
+    value: '$(PGHOST):$(PGPORT)'
   - name: NODE_ENV
     value: production
   - name: NEXT_PUBLIC_LICENSE_CONSENT

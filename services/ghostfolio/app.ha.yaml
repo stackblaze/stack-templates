@@ -123,17 +123,17 @@ spec:
   - name: NODE_ENV
     value: production
   - name: DATABASE_URL
-    value: postgresql://ghostfolio:ghostfolio@{{KUBERO_APP_NAME}}-postgresql-rw:5432/ghostfolio?connect_timeout=300&sslmode=disable
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?connect_timeout=300&sslmode=disable'
   - name: POSTGRES_DB
-    value: ghostfolio
+    value: '$(PGDATABASE)'
   - name: POSTGRES_USER
-    value: ghostfolio
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: ghostfolio
+    value: '$(PGPASSWORD)'
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: REDIS_PASSWORD
     value: ''
   - name: ACCESS_TOKEN_SALT

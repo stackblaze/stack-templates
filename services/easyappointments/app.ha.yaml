@@ -78,13 +78,13 @@ spec:
   - name: DEBUG_MODE
     value: 'FALSE'
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DB_NAME
-    value: easyappointments
+    value: '$(MYSQL_DATABASE)'
   - name: DB_USERNAME
-    value: easyappointments
+    value: '$(MYSQL_USER)'
   - name: DB_PASSWORD
-    value: easyappointments
+    value: '$(MYSQL_PASSWORD)'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

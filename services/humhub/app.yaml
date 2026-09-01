@@ -72,13 +72,13 @@ spec:
           password: humhub
   envVars:
   - name: HUMHUB_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: HUMHUB_DB_NAME
-    value: humhub
+    value: '$(MYSQL_DATABASE)'
   - name: HUMHUB_DB_USER
-    value: humhub
+    value: '$(MYSQL_USER)'
   - name: HUMHUB_DB_PASSWORD
-    value: humhub
+    value: '$(MYSQL_PASSWORD)'
   - name: HUMHUB_PROTO
     value: https
   - name: HUMHUB_HOST

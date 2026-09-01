@@ -126,21 +126,21 @@ spec:
   - name: DJANGO_DB_ENGINE
     value: django.db.backends.postgresql
   - name: DJANGO_DB_DATABASE
-    value: wger
+    value: '$(PGDATABASE)'
   - name: DJANGO_DB_USER
-    value: wger
+    value: '$(PGUSER)'
   - name: DJANGO_DB_PASSWORD
-    value: wger
+    value: '$(PGPASSWORD)'
   - name: DJANGO_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DJANGO_DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DJANGO_PERFORM_MIGRATIONS
     value: 'True'
   - name: DJANGO_CACHE_BACKEND
     value: django_redis.cache.RedisCache
   - name: DJANGO_CACHE_LOCATION
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/1
+    value: 'redis://$(REDISHOST):$(REDISPORT)/1'
   - name: DJANGO_CACHE_CLIENT_CLASS
     value: django_redis.client.DefaultClient
   - name: DJANGO_CACHE_TIMEOUT
@@ -148,9 +148,9 @@ spec:
   - name: USE_CELERY
     value: 'False'
   - name: CELERY_BROKER
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/2
+    value: 'redis://$(REDISHOST):$(REDISPORT)/2'
   - name: CELERY_BACKEND
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/2
+    value: 'redis://$(REDISHOST):$(REDISPORT)/2'
   - name: SITE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: CSRF_TRUSTED_ORIGINS

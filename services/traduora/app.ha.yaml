@@ -95,15 +95,15 @@ spec:
   - name: TR_DB_TYPE
     value: postgres
   - name: TR_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: TR_DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: TR_DB_USER
-    value: traduora
+    value: '$(PGUSER)'
   - name: TR_DB_PASSWORD
-    value: traduora
+    value: '$(PGPASSWORD)'
   - name: TR_DB_DATABASE
-    value: traduora
+    value: '$(PGDATABASE)'
   extraVolumes: []
   cronjobs: []
   web:

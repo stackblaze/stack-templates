@@ -87,13 +87,13 @@ spec:
   - name: PHP_MAX_UPLOAD_SIZE
     value: 32M
   - name: MANTIS_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: MANTIS_DB_NAME
-    value: mantisbt
+    value: '$(MYSQL_DATABASE)'
   - name: MANTIS_DB_USER
-    value: mantisbt
+    value: '$(MYSQL_USER)'
   - name: MANTIS_DB_PASS
-    value: mantisbt
+    value: '$(MYSQL_PASSWORD)'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

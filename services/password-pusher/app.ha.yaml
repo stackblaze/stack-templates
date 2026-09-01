@@ -75,7 +75,7 @@ spec:
           password: pwpush
   envVars:
   - name: DATABASE_URL
-    value: postgres://pwpush:pwpush@{{KUBERO_APP_NAME}}-postgresql-rw:5432/pwpush
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: PWPUSH_MASTER_KEY
     value: replace-with-generated-master-key
   - name: PWP__ALLOW_ANONYMOUS
