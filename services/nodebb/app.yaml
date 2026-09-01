@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: "Next-generation forum software \u2014 powerful,\
       \ mobile-ready, and fully customizable."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nodebb/icon.png
-    kubero.dev/template.installation: First boot runs automated install via NODEBB_*
+    kubero.dev/template.installation: First boot runs `nodebb setup` (SETUP env) against the platform database using the NODEBB_*
       env vars (takes several minutes). Change admin password after login.
     kubero.dev/template.links: '["https://docs.nodebb.org/"]'
     kubero.dev/template.screenshots: '["https://nodebb.org/assets/images/nodebb-screenshot.png"]'
@@ -90,6 +90,12 @@ spec:
     value: admin@example.com
   - name: NODEBB_DB
     value: postgres
+  # Non-empty SETUP makes the entrypoint run `nodebb setup` instead of the web
+  # installer; '{}' overrides nothing, so all values come from the NODEBB_*
+  # env vars above (install.js checkSetupFlagEnv). The container exits after
+  # setup and the restart boots the configured forum.
+  - name: SETUP
+    value: '{}'
   - name: NODEBB_DB_HOST
     value: '$(PGHOST)'
   - name: NODEBB_DB_PORT
