@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: "Next-generation forum software \u2014 powerful,\
       \ mobile-ready, and fully customizable."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nodebb/icon.png
-    kubero.dev/template.installation: First boot runs `nodebb setup` (SETUP env) against the platform database using the NODEBB_*
+    kubero.dev/template.installation: First boot runs `nodebb setup` (NODEBB_INIT_VERB) against the platform database using the NODEBB_*
       env vars (takes several minutes). Change admin password after login.
     kubero.dev/template.links: '["https://docs.nodebb.org/"]'
     kubero.dev/template.screenshots: '["https://nodebb.org/assets/images/nodebb-screenshot.png"]'
