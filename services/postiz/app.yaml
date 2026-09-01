@@ -43,19 +43,19 @@ spec:
     value: http://localhost:3000
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /upload
     name: postiz-upload-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /config
     name: '{{KUBERO_APP_NAME}}-config-volume'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons:
   - displayName: PostgreSQL (CloudNativePG)

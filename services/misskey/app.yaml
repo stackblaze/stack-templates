@@ -153,19 +153,19 @@ spec:
     value: production
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /misskey/files
     name: '{{KUBERO_APP_NAME}}-files'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /misskey/.config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

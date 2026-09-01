@@ -98,12 +98,12 @@ spec:
     value: replace-with-openssl-rand-hex-32
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/user
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

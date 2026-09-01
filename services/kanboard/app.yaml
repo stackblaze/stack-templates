@@ -84,12 +84,12 @@ spec:
     value: '$(MYSQL_HOST)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/app/plugins
     name: kanboard-plugins-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '80'
     pullPolicy: Always

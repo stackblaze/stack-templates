@@ -126,19 +126,19 @@ spec:
     value: false
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /media
     name: '{{KUBERO_APP_NAME}}-media'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /templates
     name: authentik-templates
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

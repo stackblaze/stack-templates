@@ -83,12 +83,12 @@ spec:
     value: '$(MYSQL_PASSWORD)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/glpi
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

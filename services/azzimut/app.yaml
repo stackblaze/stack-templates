@@ -100,12 +100,12 @@ spec:
     value: 'true'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/bin/uploads
     name: '{{KUBERO_APP_NAME}}-uploads'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

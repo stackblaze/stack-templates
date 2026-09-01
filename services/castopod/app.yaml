@@ -144,12 +144,12 @@ spec:
     value: '1'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/public/media
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

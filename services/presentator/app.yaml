@@ -21,12 +21,12 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /pr/pb_data
     name: presentator-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons: []
   web:

@@ -184,26 +184,26 @@ spec:
     value: noreply@example.com
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /srv/funkwhale/data/media
     name: '{{KUBERO_APP_NAME}}-media'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /srv/funkwhale/data/music
     name: funkwhale-music
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /srv/funkwhale/data/static
     name: '{{KUBERO_APP_NAME}}-static'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

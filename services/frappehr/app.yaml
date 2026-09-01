@@ -151,12 +151,12 @@ spec:
     value: '{{KUBERO_APP_HOST}}'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /home/frappe/frappe-bench/sites
     name: frappehr-sites
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   resources:
     requests:

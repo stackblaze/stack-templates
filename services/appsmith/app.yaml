@@ -21,12 +21,12 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /appsmith-stacks
     name: appsmith-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '80'
     repository: registry.stackblaze.cloud/appsmith/appsmith-ce

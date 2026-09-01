@@ -34,19 +34,19 @@ spec:
     value: 'mysql://$(MYSQL_USER):$(MYSQL_PASSWORD)@$(MYSQL_HOST):$(MYSQL_PORT)/$(MYSQL_DATABASE)?charset=utf8mb4'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/kimai/var/data
     name: '{{KUBERO_APP_NAME}}-data-volume'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/kimai/var/plugins
     name: kimai-plugins-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons:
   - displayName: MariaDB

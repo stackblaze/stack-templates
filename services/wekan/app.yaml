@@ -42,12 +42,12 @@ spec:
     value: polling
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: WRITABLE_PATH
     name: wekan-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons:
   - displayName: Document DB

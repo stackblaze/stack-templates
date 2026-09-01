@@ -52,33 +52,33 @@ spec:
     value: 'false'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /usr/src/paperless/export
     name: paperless-export-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /usr/src/paperless/consume
     name: paperless-consume-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /usr/src/paperless/media
     name: paperless-media-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /usr/src/paperless/data
     name: paperless-data-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons:
   - displayName: Valkey

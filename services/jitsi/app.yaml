@@ -89,12 +89,12 @@ spec:
     value: replace-with-openssl-rand-hex-16
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

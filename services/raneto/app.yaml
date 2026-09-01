@@ -24,12 +24,12 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /config
     name: raneto-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons: []
   web:

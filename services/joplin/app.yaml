@@ -109,12 +109,12 @@ spec:
     value: '$(PGPASSWORD)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /home/joplin/storage
     name: '{{KUBERO_APP_NAME}}-storage'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: false

@@ -97,8 +97,8 @@ spec:
     value: '{{KUBERO_GEN_ALNUM:64}}'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
-    storageClass: lite
+    - ReadWriteMany
+    storageClass: shared
     emptyDir: false
     mountPath: /var/www/html/wp-content
     name: '{{KUBERO_APP_NAME}}-data'

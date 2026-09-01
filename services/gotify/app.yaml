@@ -97,12 +97,12 @@ spec:
     value: '$(PGDATABASE)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/data
     name: gotify-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '8080'
     repository: registry.stackblaze.cloud/gotify/server

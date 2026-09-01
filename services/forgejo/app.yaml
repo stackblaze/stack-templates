@@ -129,12 +129,12 @@ spec:
     externalPort: 2222
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 10Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '3000'
     pullPolicy: Always

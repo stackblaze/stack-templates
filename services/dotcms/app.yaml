@@ -53,8 +53,8 @@ spec:
     value: dotcms-production
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
-    storageClass: lite
+    - ReadWriteMany
+    storageClass: shared
     emptyDir: false
     mountPath: /data/shared
     name: '{{KUBERO_APP_NAME}}-shared'

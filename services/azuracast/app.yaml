@@ -150,12 +150,12 @@ spec:
     value: '1'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/azuracast/stations
     name: azuracast-stations
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

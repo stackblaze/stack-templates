@@ -112,12 +112,12 @@ spec:
     value: grist
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /persist
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

@@ -203,12 +203,12 @@ spec:
     value: replace-with-stripe-publishable-key
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/backend/storage/app
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

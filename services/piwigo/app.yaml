@@ -23,19 +23,19 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /config
     name: '{{KUBERO_APP_NAME}}-config-volume'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /gallery
     name: piwigo-gallery-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons:
   - displayName: MariaDB

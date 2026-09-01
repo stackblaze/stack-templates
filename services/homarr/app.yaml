@@ -91,12 +91,12 @@ spec:
     value: '$(PGPASSWORD)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /appdata
     name: homarr-appdata
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '7575'
     repository: ghcr.io/homarr-labs/homarr

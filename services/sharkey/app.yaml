@@ -164,19 +164,19 @@ spec:
     value: '$(REDISPORT)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /sharkey/.config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /sharkey/files
     name: '{{KUBERO_APP_NAME}}-files'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

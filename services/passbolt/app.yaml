@@ -91,17 +91,17 @@ spec:
     periodSeconds: 10
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     mountPath: /etc/passbolt/gpg
     name: passbolt-gpg-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     mountPath: /etc/passbolt/jwt
     name: passbolt-jwt-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '80'
     command:

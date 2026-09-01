@@ -148,12 +148,12 @@ spec:
     value: 'false'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/logs
     name: '{{KUBERO_APP_NAME}}-logs'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

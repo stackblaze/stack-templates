@@ -52,12 +52,12 @@ spec:
     value: '512'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/dremio/data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   resources:
     requests:

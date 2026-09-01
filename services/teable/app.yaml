@@ -129,12 +129,12 @@ spec:
     value: '209715200'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/.teable
     name: '{{KUBERO_APP_NAME}}-storage'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

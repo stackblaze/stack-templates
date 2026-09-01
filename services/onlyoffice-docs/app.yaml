@@ -166,12 +166,12 @@ spec:
     value: Authorization
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/onlyoffice
     name: ncdata
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

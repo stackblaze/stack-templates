@@ -25,12 +25,12 @@ spec:
     value: secret
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/databag
     name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '7000'
     pullPolicy: Always

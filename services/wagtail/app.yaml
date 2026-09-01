@@ -95,7 +95,7 @@ spec:
     value: 'on'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /code/bakerydemo/media
     name: wagtail-media

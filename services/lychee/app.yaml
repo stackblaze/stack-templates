@@ -102,12 +102,12 @@ spec:
     value: '$(MYSQL_PASSWORD)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/public/uploads
     name: lychee-upload-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '8000'
     pullPolicy: Always

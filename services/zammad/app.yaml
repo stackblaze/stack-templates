@@ -161,12 +161,12 @@ spec:
     value: Etc/UTC
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/zammad/storage
     name: '{{KUBERO_APP_NAME}}-storage'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   resources:
     requests:

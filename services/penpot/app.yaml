@@ -156,12 +156,12 @@ spec:
     value: /opt/data/assets
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/data/assets
     name: '{{KUBERO_APP_NAME}}-assets'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

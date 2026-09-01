@@ -74,12 +74,12 @@ spec:
     value: mongodb://mongoadmin:countly@documentdb-service-{{KUBERO_APP_NAME}}-documentdb:10260/countly?directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/countly/frontend/express/public/appimages
     name: countly-appimages
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   resources:
     requests:

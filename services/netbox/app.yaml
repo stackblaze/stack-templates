@@ -143,12 +143,12 @@ spec:
     value: change-me
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/netbox/netbox/media
     name: '{{KUBERO_APP_NAME}}-media'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

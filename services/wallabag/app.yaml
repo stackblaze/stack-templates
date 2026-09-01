@@ -95,12 +95,12 @@ spec:
     value: '$(MYSQL_PASSWORD)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/wallabag/web/assets/images
     name: wallabag-images
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   healthcheck:
     enabled: true
     path: /

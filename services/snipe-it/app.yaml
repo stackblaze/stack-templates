@@ -144,12 +144,12 @@ spec:
     value: log
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/snipeit
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

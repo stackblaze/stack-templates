@@ -42,12 +42,12 @@ spec:
     value: '{{KUBERO_APP_URL}}'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: tolgee-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons:
   - displayName: PostgreSQL (CloudNativePG)

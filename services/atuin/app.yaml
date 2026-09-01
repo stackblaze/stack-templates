@@ -94,12 +94,12 @@ spec:
     value: info,atuin_server=debug
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

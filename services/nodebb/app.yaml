@@ -110,26 +110,26 @@ spec:
     value: '$(PGDATABASE)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /usr/src/app/build
     name: nodebb-build
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /usr/src/app/public/uploads
     name: '{{KUBERO_APP_NAME}}-uploads'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

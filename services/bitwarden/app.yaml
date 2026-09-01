@@ -94,12 +94,12 @@ spec:
     value: XXXXXXXXXXXXXXXXXXXX
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /etc/bitwarden
     name: bitwarden
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   healthcheck:
     enabled: true
     path: /

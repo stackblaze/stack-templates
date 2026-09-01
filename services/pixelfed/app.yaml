@@ -190,12 +190,12 @@ spec:
     value: 'true'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/storage
     name: '{{KUBERO_APP_NAME}}-storage'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

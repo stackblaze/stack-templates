@@ -77,26 +77,26 @@ spec:
     value: lime@lime.me
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/upload
     name: limesurvey-upload
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/plugins
     name: limesurvey-plugins
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/application/config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '80'
     pullPolicy: Always

@@ -147,12 +147,12 @@ spec:
     value: '$(REDISPORT)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /automatisch/storage
     name: '{{KUBERO_APP_NAME}}-storage'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

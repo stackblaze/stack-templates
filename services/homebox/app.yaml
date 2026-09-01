@@ -91,12 +91,12 @@ spec:
     value: disable
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '7745'
     repository: ghcr.io/hay-kot/homebox

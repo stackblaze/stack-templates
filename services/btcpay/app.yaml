@@ -122,12 +122,12 @@ spec:
     value: btcpay.log
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /datadir
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

@@ -134,12 +134,12 @@ spec:
     value: '**'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/storage/upload
     name: '{{KUBERO_APP_NAME}}-uploads'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

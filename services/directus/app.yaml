@@ -51,26 +51,26 @@ spec:
     value: 'redis://$(REDISHOST):$(REDISPORT)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /directus/uploads
     name: '{{KUBERO_APP_NAME}}-uploads-volume'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /directus/extensions
     name: directus-extensions-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /directus/templates
     name: directus-templates-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons:
   - displayName: PostgreSQL (CloudNativePG)

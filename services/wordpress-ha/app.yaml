@@ -78,8 +78,8 @@ spec:
     value: '$(MYSQL_DATABASE)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
-    storageClass: lite
+    - ReadWriteMany
+    storageClass: shared
     emptyDir: false
     mountPath: /var/www/html
     name: '{{KUBERO_APP_NAME}}-data'

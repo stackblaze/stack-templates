@@ -28,7 +28,7 @@ spec:
     value: '1'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /home/coder/project
     name: '{{KUBERO_APP_NAME}}-workspace'

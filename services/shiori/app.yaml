@@ -82,12 +82,12 @@ spec:
     value: change-me-to-a-random-string
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /srv/shiori
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '8080'
     repository: ghcr.io/go-shiori/shiori

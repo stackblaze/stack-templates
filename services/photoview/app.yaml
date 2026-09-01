@@ -85,12 +85,12 @@ spec:
     value: /tmp
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /photoview/images
     name: photoview-images
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '8080'
     repository: registry.stackblaze.cloud/viktorstrate/photoview

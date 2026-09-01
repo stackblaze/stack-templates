@@ -112,12 +112,12 @@ spec:
     value: production
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/app/public/uploads
     name: '{{KUBERO_APP_NAME}}-uploads'
     size: 10Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

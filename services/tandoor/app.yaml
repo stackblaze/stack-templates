@@ -105,19 +105,19 @@ spec:
     value: '2'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/recipes/staticfiles
     name: '{{KUBERO_APP_NAME}}-static'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/recipes/mediafiles
     name: '{{KUBERO_APP_NAME}}-media'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   resources:
     requests:

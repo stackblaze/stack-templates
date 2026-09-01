@@ -22,12 +22,12 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/packages/package_handle
     name: concrete5-pkg-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons: []
   web:

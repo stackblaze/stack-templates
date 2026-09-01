@@ -24,12 +24,12 @@ spec:
     value: admin:admin
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /space
     name: silverbullet-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons: []
   web:

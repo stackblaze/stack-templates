@@ -26,19 +26,19 @@ spec:
     value: Etc/UTC
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /kavita/config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: kavita-library
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   healthcheck:
     enabled: true
     path: /
