@@ -27,7 +27,7 @@ spec:
   # small pod size (QA repro: java.lang.OutOfMemoryError: Metaspace).
   envVars:
   - name: JAVA_TOOL_OPTIONS
-    value: '-XX:MaxMetaspaceSize=512m -XX:MaxRAMPercentage=75'
+    value: '-XX:MaxMetaspaceSize=1g -XX:MaxRAMPercentage=75'
   - name: TZ
     value: Etc/UTC
   extraVolumes: []
