@@ -149,7 +149,7 @@ spec:
   healthcheck:
     enabled: true
     path: /api/health
-    startupSeconds: 600
+    startupSeconds: 900
     timeoutSeconds: 5
     periodSeconds: 10
   image:
