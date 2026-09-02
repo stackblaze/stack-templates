@@ -153,13 +153,6 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
-  resources:
-    requests:
-      cpu: 500m
-      memory: 2Gi
-    limits:
-      cpu: '2'
-      memory: 6Gi
   healthcheck:
     enabled: true
     path: /

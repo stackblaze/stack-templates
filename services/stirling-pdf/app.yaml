@@ -25,13 +25,6 @@ spec:
   deploymentstrategy: docker
   # Stirling-PDF is a heavy Spring app: default JVM metaspace exhausts at the
   # small pod size (QA repro: java.lang.OutOfMemoryError: Metaspace).
-  resources:
-    requests:
-      cpu: 250m
-      memory: 768Mi
-    limits:
-      cpu: '2'
-      memory: 2Gi
   envVars:
   - name: JAVA_TOOL_OPTIONS
     value: '-XX:MaxMetaspaceSize=512m -XX:MaxRAMPercentage=75'
