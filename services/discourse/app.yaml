@@ -168,7 +168,7 @@ spec:
       memory: 2Gi
     limits:
       cpu: '2'
-      memory: 6Gi
+      memory: 8Gi
   image:
     containerPort: '3000'
     pullPolicy: Always
