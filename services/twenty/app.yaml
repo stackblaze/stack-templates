@@ -173,11 +173,14 @@ spec:
       cpu: 500m
       memory: 1Gi
     limits:
-      cpu: '1'
+      cpu: '2'
       memory: 2Gi
   healthcheck:
     enabled: true
     path: /
-    startupSeconds: 600
+    # First-boot migrations run in BOTH web and worker (shared envVars, no
+    # per-role toggle) and exceed 10 min at 1 CPU — the startup probe killed
+    # both at exactly the 600s deadline (QA repro: paired exit 137).
+    startupSeconds: 1500
     timeoutSeconds: 5
     periodSeconds: 10
