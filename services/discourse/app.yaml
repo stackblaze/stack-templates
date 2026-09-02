@@ -163,9 +163,19 @@ spec:
   healthcheck:
     enabled: true
     path: /
-    startupSeconds: 900
+    startupSeconds: 1800
     timeoutSeconds: 5
     periodSeconds: 10
+  # First-boot asset precompile is CPU/RAM heavy (10-20 min at small pod
+  # sizes) — give it room and time, or the startup probe kills it mid-way and
+  # the persisted half-install crash-loops on every restart.
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '2'
+      memory: 3Gi
   image:
     containerPort: '3000'
     pullPolicy: Always
