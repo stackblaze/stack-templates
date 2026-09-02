@@ -160,7 +160,7 @@ spec:
     command:
     - sh
     - -c
-    - "for i in $(seq 1 90); do\n  if wget -q -O- http://chi-plausible-clickhouse-db-0-0:8123/ping\
+    - "for i in $(seq 1 90); do\n  if wget -q -O- http://chi-{{KUBERO_APP_NAME}}-clickhouse-db-0-0:8123/ping\
       \ 2>/dev/null | grep -q Ok; then break; fi\n  sleep 5\ndone\n/entrypoint.sh\
       \ db createdb && /entrypoint.sh db migrate && /entrypoint.sh run\n"
     run:
