@@ -165,10 +165,10 @@ spec:
   resources:
     requests:
       cpu: 500m
-      memory: 1Gi
+      memory: 2Gi
     limits:
       cpu: '2'
-      memory: 3Gi
+      memory: 6Gi
   image:
     containerPort: '3000'
     pullPolicy: Always
