@@ -76,15 +76,15 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgresql://vaultwarden:vaultwarden@{{KUBERO_APP_NAME}}-postgresql-rw:5432/vaultwarden
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '80'
     repository: registry.stackblaze.cloud/vaultwarden/server

@@ -73,23 +73,23 @@ spec:
           password: dolidbpass
   envVars:
   - name: DOLI_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-dolibarr-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DOLI_DB_NAME
-    value: dolidb
+    value: '$(MYSQL_DATABASE)'
   - name: DOLI_DB_USER
-    value: dolidbuser
+    value: '$(MYSQL_USER)'
   - name: DOLI_DB_PASSWORD
-    value: dolidbpass
+    value: '$(MYSQL_PASSWORD)'
   - name: DOLI_URL_ROOT
     value: '{{KUBERO_APP_URL}}'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/documents
     name: dolibarr-documents
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

@@ -95,7 +95,7 @@ spec:
           password: odoo
   envVars:
   - name: HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: PORT
     value: '5432'
   - name: USER
@@ -104,12 +104,12 @@ spec:
     value: odoo
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/odoo
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

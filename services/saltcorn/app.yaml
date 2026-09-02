@@ -89,26 +89,16 @@ spec:
     value: replace-with-openssl-rand-hex-32
   - name: SALTCORN_MULTI_TENANT
     value: 'false'
-  - name: PGHOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
-  - name: PGPORT
-    value: '5432'
-  - name: PGDATABASE
-    value: saltcorn
-  - name: PGUSER
-    value: saltcorn
-  - name: PGPASSWORD
-    value: saltcorn
   - name: SALTCORN_FILE_STORE
     value: /saltcorn
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /saltcorn
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

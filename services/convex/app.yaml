@@ -103,7 +103,7 @@ spec:
   - name: CONVEX_SITE_ORIGIN
     value: '{{KUBERO_APP_URL}}'
   - name: POSTGRES_URL
-    value: postgresql://convex:convex@{{KUBERO_APP_NAME}}-postgresql-rw:5432?sslmode=disable
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
   - name: DO_NOT_REQUIRE_SSL
     value: 'true'
   - name: DISABLE_BEACON
@@ -112,12 +112,12 @@ spec:
     value: info
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /convex/data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

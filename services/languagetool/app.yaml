@@ -28,11 +28,11 @@ spec:
     value: 1g
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     mountPath: /ngrams
     name: languagetool-ngrams
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   healthcheck:
     enabled: true
     path: /v2/languages

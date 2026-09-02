@@ -70,15 +70,15 @@ spec:
   - name: DB_TYPE
     value: mariadb
   - name: DB_MYSQL_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DB_MYSQL_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: DB_MYSQL_USER
-    value: uptimekuma
+    value: '$(MYSQL_USER)'
   - name: DB_MYSQL_PASSWORD
-    value: uptimekuma
+    value: '$(MYSQL_PASSWORD)'
   - name: DB_MYSQL_DATABASE
-    value: uptimekuma
+    value: '$(MYSQL_DATABASE)'
   extraVolumes: []
   image:
     containerPort: '3001'

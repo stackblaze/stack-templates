@@ -85,16 +85,6 @@ spec:
         stringData:
           password: iomad
   envVars:
-  - name: MYSQL_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
-  - name: MYSQL_PORT
-    value: '3306'
-  - name: MYSQL_DATABASE
-    value: iomad
-  - name: MYSQL_USER
-    value: iomad
-  - name: MYSQL_PASSWORD
-    value: iomad
   - name: MOODLE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: SSL_PROXY
@@ -107,19 +97,19 @@ spec:
     value: 512M
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html
     name: iomad-html
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/moodledata
     name: iomad-moodledata
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

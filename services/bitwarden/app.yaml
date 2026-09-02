@@ -79,13 +79,13 @@ spec:
   - name: BW_DB_PROVIDER
     value: postgresql
   - name: BW_DB_SERVER
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: BW_DB_DATABASE
-    value: bitwarden
+    value: '$(PGDATABASE)'
   - name: BW_DB_USERNAME
-    value: bitwarden
+    value: '$(PGUSER)'
   - name: BW_DB_PASSWORD
-    value: bitwarden
+    value: '$(PGPASSWORD)'
   - name: BW_DOMAIN
     value: '{{KUBERO_APP_HOST}}'
   - name: BW_INSTALLATION_ID
@@ -94,12 +94,12 @@ spec:
     value: XXXXXXXXXXXXXXXXXXXX
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /etc/bitwarden
     name: bitwarden
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   healthcheck:
     enabled: true
     path: /

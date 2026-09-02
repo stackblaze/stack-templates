@@ -79,7 +79,7 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
-    value: postgres://miniflux:miniflux@{{KUBERO_APP_NAME}}-postgresql-rw:5432/miniflux?sslmode=disable
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
   - name: RUN_MIGRATIONS
     value: '1'
   - name: CREATE_ADMIN

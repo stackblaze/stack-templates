@@ -85,11 +85,11 @@ spec:
   - name: KC_DB
     value: postgres
   - name: KC_DB_URL
-    value: jdbc:postgresql://{{KUBERO_APP_NAME}}-postgresql-rw:5432/keycloak
+    value: 'jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: KC_DB_USERNAME
-    value: keycloak
+    value: '$(PGUSER)'
   - name: KC_DB_PASSWORD
-    value: keycloak
+    value: '$(PGPASSWORD)'
   - name: KC_HOSTNAME
     value: '{{KUBERO_APP_URL}}'
   - name: KC_PROXY_HEADERS

@@ -89,17 +89,17 @@ spec:
   - name: ATUIN_OPEN_REGISTRATION
     value: 'true'
   - name: ATUIN_DB_URI
-    value: postgres://atuin:atuin@{{KUBERO_APP_NAME}}-postgresql-rw:5432/atuin
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: RUST_LOG
     value: info,atuin_server=debug
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

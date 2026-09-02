@@ -113,19 +113,19 @@ spec:
   - name: DB_CONNECTION
     value: mysql
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-db'
+    value: '$(MYSQL_HOST)'
   - name: DB_PORT
-    value: 3306
+    value: '$(MYSQL_PORT)'
   - name: DB_DATABASE
-    value: firefly-iii
+    value: '$(MYSQL_DATABASE)'
   - name: DB_USERNAME
-    value: firefly-iii
+    value: '$(MYSQL_USER)'
   - name: DB_PASSWORD
-    value: firefly-iii
+    value: '$(MYSQL_PASSWORD)'
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-cache-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: 6379
+    value: '$(REDISPORT)'
   - name: CACHE_DRIVER
     value: redis
   - name: SESSION_DRIVER
@@ -134,12 +134,12 @@ spec:
     value: '**'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/storage/upload
     name: '{{KUBERO_APP_NAME}}-uploads'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

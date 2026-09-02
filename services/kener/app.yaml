@@ -121,20 +121,18 @@ spec:
     value: '{{KUBERO_APP_URL}}'
   - name: KENER_SECRET_KEY
     value: replace-with-openssl-rand-hex-32
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: DATABASE_URL
-    value: postgresql://kener:kener@{{KUBERO_APP_NAME}}-postgresql-rw:5432/kener
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: PORT
     value: '3000'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/uploads
     name: '{{KUBERO_APP_NAME}}-uploads'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

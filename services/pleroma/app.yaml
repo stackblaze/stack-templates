@@ -118,32 +118,32 @@ spec:
   - name: NOTIFY_EMAIL
     value: admin@example.com
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DB_NAME
-    value: pleroma
+    value: '$(PGDATABASE)'
   - name: DB_USER
-    value: pleroma
+    value: '$(PGUSER)'
   - name: DB_PASS
-    value: pleroma
+    value: '$(PGPASSWORD)'
   - name: DATABASE_URL
-    value: postgresql://pleroma:pleroma@{{KUBERO_APP_NAME}}-postgresql-rw:5432/pleroma
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/pleroma/uploads
     name: '{{KUBERO_APP_NAME}}-uploads'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/pleroma/static
     name: '{{KUBERO_APP_NAME}}-static'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

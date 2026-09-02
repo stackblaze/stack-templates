@@ -38,11 +38,11 @@ spec:
   - name: TZ
     value: UTC
   - name: DB_BASE_URL
-    value: jdbc:postgresql://{{KUBERO_APP_NAME}}-db-rw:5432/dotcms
+    value: 'jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DB_USERNAME
-    value: dotcmsdbuser
+    value: '$(PGUSER)'
   - name: DB_PASSWORD
-    value: password
+    value: '$(PGPASSWORD)'
   - name: DOT_ES_ENDPOINTS
     value: http://{{KUBERO_APP_NAME}}-opensearch:9200
   - name: DOT_ES_AUTH_TYPE
@@ -53,8 +53,8 @@ spec:
     value: dotcms-production
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
-    storageClass: lite
+    - ReadWriteMany
+    storageClass: shared
     emptyDir: false
     mountPath: /data/shared
     name: '{{KUBERO_APP_NAME}}-shared'

@@ -125,47 +125,50 @@ spec:
   - name: DISCOURSE_SMTP_PROTOCOL
     value: tls
   - name: DISCOURSE_DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DISCOURSE_DATABASE_PORT_NUMBER
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DISCOURSE_DATABASE_USER
-    value: bn_discourse
+    value: '$(PGUSER)'
   - name: DISCOURSE_DATABASE_PASSWORD
-    value: discourse
+    value: '$(PGPASSWORD)'
   - name: DISCOURSE_DATABASE_NAME
-    value: bitnami_discourse
+    value: '$(PGDATABASE)'
   - name: DISCOURSE_REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: DISCOURSE_REDIS_PORT_NUMBER
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: ALLOW_EMPTY_PASSWORD
     value: 'yes'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /bitnami/discourse
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 1800
+    timeoutSeconds: 5
+    periodSeconds: 10
+  # First-boot asset precompile is CPU/RAM heavy (10-20 min at small pod
+  # sizes) — give it room and time, or the startup probe kills it mid-way and
+  # the persisted half-install crash-loops on every restart.
   resources:
     requests:
       cpu: 500m
       memory: 2Gi
     limits:
       cpu: '2'
-      memory: 6Gi
-  healthcheck:
-    enabled: true
-    path: /
-    startupSeconds: 900
-    timeoutSeconds: 5
-    periodSeconds: 10
+      memory: 8Gi
   image:
     containerPort: '3000'
     pullPolicy: Always

@@ -142,7 +142,7 @@ spec:
   - name: REVOLT__DATABASE__MONGODB
     value: mongodb://ferretdb:changeme@{{KUBERO_APP_NAME}}-ferretdb-kuberoferretdb:27017/revolt
   - name: REVOLT__DATABASE__REDIS
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/
+    value: 'redis://$(REDISHOST):$(REDISPORT)'
   - name: REVOLT__RABBIT__HOST
     value: '{{KUBERO_APP_NAME}}-rabbitmq'
   - name: REVOLT__RABBIT__PORT
@@ -161,12 +161,12 @@ spec:
     value: '8000'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

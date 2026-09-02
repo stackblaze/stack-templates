@@ -33,9 +33,9 @@ spec:
   - name: NEXT_PRIVATE_INTERNAL_WEBAPP_URL
     value: '{{KUBERO_APP_URL}}'
   - name: NEXT_PRIVATE_DATABASE_URL
-    value: postgresql://documenso:documenso@{{KUBERO_APP_NAME}}-postgresql-rw:5432/documenso
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: NEXT_PRIVATE_DIRECT_DATABASE_URL
-    value: postgresql://documenso:documenso@{{KUBERO_APP_NAME}}-postgresql-rw:5432/documenso
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: NEXT_PRIVATE_SMTP_TRANSPORT
     value: smtp-auth
   - name: NEXT_PRIVATE_SMTP_HOST

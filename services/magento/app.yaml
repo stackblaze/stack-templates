@@ -131,17 +131,17 @@ spec:
   - name: ADMIN_LASTNAME
     value: Admin
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: ES_HOST
     value: '{{KUBERO_APP_NAME}}-elasticsearch'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   resources:
     requests:

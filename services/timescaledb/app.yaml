@@ -38,12 +38,12 @@ spec:
     value: /var/lib/postgresql/data/pgdata
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/postgresql/data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 20Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: false

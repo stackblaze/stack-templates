@@ -133,19 +133,19 @@ spec:
               memory: 256Mi
   envVars:
   - name: POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: POSTGRES_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRES_DB
-    value: eneo
+    value: '$(PGDATABASE)'
   - name: POSTGRES_USER
-    value: eneo
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: eneo
+    value: '$(PGPASSWORD)'
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: PUBLIC_ORIGIN
     value: '{{KUBERO_APP_URL}}'
   - name: API_PREFIX
@@ -186,12 +186,12 @@ spec:
     value: '1'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

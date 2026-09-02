@@ -37,12 +37,12 @@ spec:
     value: '''Authorised users only'''
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/pgadmin
     name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

@@ -93,25 +93,25 @@ spec:
   - name: CELLS_WORKING_DIR
     value: /var/cells
   - name: CELLS_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: CELLS_DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: CELLS_DB_NAME
-    value: pydio
+    value: '$(MYSQL_DATABASE)'
   - name: CELLS_DB_USER
-    value: pydio
+    value: '$(MYSQL_USER)'
   - name: CELLS_DB_PASSWORD
-    value: pydio
+    value: '$(MYSQL_PASSWORD)'
   - name: CELLS_DB_DSN
-    value: pydio:pydio@tcp({{KUBERO_APP_NAME}}-mysql:3306)/pydio?parseTime=true
+    value: '$(MYSQL_USER):$(MYSQL_PASSWORD)@tcp($(MYSQL_HOST):$(MYSQL_PORT))/$(MYSQL_DATABASE)?parseTime=true'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/cells
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

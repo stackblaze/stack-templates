@@ -71,7 +71,7 @@ spec:
   - name: database__client
     value: mysql
   - name: database__connection__host
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: database__connection__user
     value: ghost
   - name: database__connection__password
@@ -82,12 +82,12 @@ spec:
     value: http://ghost.lacolhost.com:81
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/ghost/content
     name: ghost-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '2368'
     repository: registry.stackblaze.cloud/library/ghost

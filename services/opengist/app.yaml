@@ -76,14 +76,14 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: OG_DB_URI
-    value: postgres://opengist:opengist@{{KUBERO_APP_NAME}}-postgresql-rw:5432/opengist?sslmode=disable
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     mountPath: /root/.opengist
     name: opengist-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '6157'
     repository: ghcr.io/thomiceli/opengist

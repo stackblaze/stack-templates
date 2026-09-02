@@ -28,19 +28,19 @@ spec:
     value: 'false'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/db
     name: '{{KUBERO_APP_NAME}}-db-volume'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /home/libretranslate/.local/share/argos-translate
     name: libtranslate-lang-models
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons: []
   web:

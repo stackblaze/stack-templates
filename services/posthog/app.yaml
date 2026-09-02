@@ -315,21 +315,21 @@ spec:
                     memory: 384Mi
   envVars:
   - name: DATABASE_URL
-    value: postgresql://posthog:posthog@{{KUBERO_APP_NAME}}-postgresql-rw:5432/posthog
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: POSTHOG_DB_NAME
-    value: posthog
+    value: '$(PGDATABASE)'
   - name: POSTHOG_DB_USER
-    value: posthog
+    value: '$(PGUSER)'
   - name: POSTHOG_DB_PASSWORD
-    value: posthog
+    value: '$(PGPASSWORD)'
   - name: POSTHOG_POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: POSTHOG_POSTGRES_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: CLICKHOUSE_HOST
     value: clickhouse-{{KUBERO_APP_NAME}}-clickhouse
   - name: CLICKHOUSE_DATABASE
-    value: posthog
+    value: '$(PGDATABASE)'
   - name: CLICKHOUSE_USER
     value: admin
   - name: CLICKHOUSE_PASSWORD
@@ -338,8 +338,6 @@ spec:
     value: 'false'
   - name: CLICKHOUSE_VERIFY
     value: 'false'
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: KAFKA_HOSTS
     value: '{{KUBERO_APP_NAME}}-kafka:9092'
   - name: KAFKA_URL

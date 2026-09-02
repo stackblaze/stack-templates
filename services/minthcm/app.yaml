@@ -81,17 +81,15 @@ spec:
           password: minthcm
   envVars:
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: DB_NAME
-    value: minthcm
+    value: '$(MYSQL_DATABASE)'
   - name: DB_USER
-    value: minthcm
+    value: '$(MYSQL_USER)'
   - name: DB_PASS
-    value: minthcm
-  - name: MYSQL_PASSWORD
-    value: minthcm
+    value: '$(MYSQL_PASSWORD)'
   - name: MINT_URL
     value: '{{KUBERO_APP_URL}}'
   - name: MINT_USER
@@ -114,19 +112,19 @@ spec:
     value: 'no'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/spool/cron/crontabs
     name: minthcm-cron
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   resources:
     requests:

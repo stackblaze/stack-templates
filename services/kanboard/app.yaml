@@ -75,21 +75,21 @@ spec:
   - name: DB_DRIVER
     value: mysql
   - name: DB_USERNAME
-    value: kanboard
+    value: '$(MYSQL_USER)'
   - name: DB_PASSWORD
-    value: kanboard
+    value: '$(MYSQL_PASSWORD)'
   - name: DB_NAME
-    value: kanboard
+    value: '$(MYSQL_DATABASE)'
   - name: DB_HOSTNAME
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/app/plugins
     name: kanboard-plugins-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '80'
     pullPolicy: Always

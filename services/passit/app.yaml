@@ -116,9 +116,7 @@ spec:
   - name: SECRET_KEY
     value: replace-with-openssl-rand-hex-32
   - name: DATABASE_URL
-    value: postgres://passit:passit@{{KUBERO_APP_NAME}}-postgresql-rw:5432/passit
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: ALLOWED_HOSTS
     value: '*'
   - name: SITE_URL

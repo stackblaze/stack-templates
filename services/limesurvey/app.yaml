@@ -60,15 +60,15 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: LIMESURVEY_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: LIMESURVEY_DB_PASSWORD
-    value: root
+    value: '$(MYSQL_PASSWORD)'
   - name: LIMESURVEY_ADMIN_USER
     value: admin
   - name: LIMESURVEY_ADMIN_PASSWORD
     value: root
   - name: LIMESURVEY_DB_NAME
-    value: limesurvey
+    value: '$(MYSQL_DATABASE)'
   - name: LIMESURVEY_USE_INNODB
     value: '1'
   - name: LIMESURVEY_ADMIN_NAME
@@ -77,26 +77,26 @@ spec:
     value: lime@lime.me
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/upload
     name: limesurvey-upload
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/plugins
     name: limesurvey-plugins
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/application/config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '80'
     pullPolicy: Always

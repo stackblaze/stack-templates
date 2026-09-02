@@ -101,23 +101,23 @@ spec:
   - name: TYPEORM_TYPE
     value: postgres
   - name: TYPEORM_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: TYPEORM_PORT
     value: '5432'
   - name: TYPEORM_DATABASE
-    value: grist
+    value: '$(PGDATABASE)'
   - name: TYPEORM_USERNAME
     value: grist
   - name: TYPEORM_PASSWORD
     value: grist
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /persist
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

@@ -73,12 +73,12 @@ spec:
     value: mongodb://mongoadmin:trudesk@documentdb-service-{{KUBERO_APP_NAME}}-documentdb:10260/trudesk?authSource=admin&directConnection=true&authMechanism=SCRAM-SHA-256&tls=true&tlsAllowInvalidCertificates=true&replicaSet=rs0&retryWrites=false
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /usr/src/trudesk/public/uploads
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

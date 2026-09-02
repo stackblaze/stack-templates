@@ -67,7 +67,7 @@ spec:
   - name: SEARXNG_SECRET
     value: replace-with-openssl-rand-hex-32
   - name: SEARXNG_REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
   - name: SEARXNG_PORT
     value: '8080'
   - name: SEARXNG_BIND_ADDRESS
@@ -76,12 +76,12 @@ spec:
     value: SearXNG
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /etc/searxng
     name: '{{KUBERO_APP_NAME}}-config'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

@@ -46,12 +46,12 @@ spec:
     value: /config/audit
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   resources:
     requests:

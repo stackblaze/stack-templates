@@ -70,13 +70,13 @@ spec:
   - name: APP_FULL_BASE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: DATASOURCES_DEFAULT_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DATASOURCES_DEFAULT_USERNAME
     value: passbolt
   - name: DATASOURCES_DEFAULT_PASSWORD
     value: changeme
   - name: DATASOURCES_DEFAULT_DATABASE
-    value: passbolt
+    value: '$(MYSQL_DATABASE)'
   - name: EMAIL_TRANSPORT_DEFAULT_HOST
     value: localhost
   - name: EMAIL_TRANSPORT_DEFAULT_PORT
@@ -91,17 +91,17 @@ spec:
     periodSeconds: 10
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     mountPath: /etc/passbolt/gpg
     name: passbolt-gpg-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     mountPath: /etc/passbolt/jwt
     name: passbolt-jwt-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '80'
     command:

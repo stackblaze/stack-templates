@@ -98,23 +98,23 @@ spec:
   - name: DB_CLIENT
     value: pg
   - name: POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: POSTGRES_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRES_DATABASE
-    value: joplin
+    value: '$(PGDATABASE)'
   - name: POSTGRES_USER
-    value: joplin
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: joplin
+    value: '$(PGPASSWORD)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /home/joplin/storage
     name: '{{KUBERO_APP_NAME}}-storage'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: false

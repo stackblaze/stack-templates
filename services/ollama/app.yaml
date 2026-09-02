@@ -34,12 +34,12 @@ spec:
     value: 5m
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /root/.ollama
     name: ollama-models
     size: 20Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

@@ -80,23 +80,23 @@ spec:
   - name: DB_DRIVER
     value: node-postgres
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DB_NAME
-    value: homarr
+    value: '$(PGDATABASE)'
   - name: DB_USER
-    value: homarr
+    value: '$(PGUSER)'
   - name: DB_PASSWORD
-    value: homarr
+    value: '$(PGPASSWORD)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /appdata
     name: homarr-appdata
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '7575'
     repository: ghcr.io/homarr-labs/homarr

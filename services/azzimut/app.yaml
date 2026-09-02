@@ -89,7 +89,7 @@ spec:
   - name: SECRET_KEY_BASE
     value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: DATABASE_URL
-    value: postgresql://azimutt:azimutt@{{KUBERO_APP_NAME}}-db-rw:5432/azimutt
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: FILE_STORAGE_ADAPTER
     value: local
   - name: AUTH_PASSWORD
@@ -100,12 +100,12 @@ spec:
     value: 'true'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/bin/uploads
     name: '{{KUBERO_APP_NAME}}-uploads'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

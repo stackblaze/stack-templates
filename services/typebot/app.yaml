@@ -80,7 +80,7 @@ spec:
           password: typebot
   envVars:
   - name: DATABASE_URL
-    value: postgresql://typebot:typebot@{{KUBERO_APP_NAME}}-postgresql-rw:5432/typebot
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: NEXTAUTH_URL
     value: '{{KUBERO_APP_URL}}'
   - name: NEXT_PUBLIC_VIEWER_URL

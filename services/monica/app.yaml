@@ -80,15 +80,15 @@ spec:
   - name: DB_CONNECTION
     value: mysql
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-monica-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: DB_DATABASE
-    value: monica
+    value: '$(MYSQL_DATABASE)'
   - name: DB_USERNAME
-    value: monica
+    value: '$(MYSQL_USER)'
   - name: DB_PASSWORD
-    value: monica
+    value: '$(MYSQL_PASSWORD)'
   - name: LOG_CHANNEL
     value: stderr
   - name: CACHE_DRIVER
@@ -99,12 +99,12 @@ spec:
     value: sync
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/storage
     name: '{{KUBERO_APP_NAME}}-storage'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

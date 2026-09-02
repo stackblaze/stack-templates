@@ -118,15 +118,15 @@ spec:
   - name: DB_CONNECTION
     value: mysql
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: DB_DATABASE
-    value: attendize
+    value: '$(MYSQL_DATABASE)'
   - name: DB_USERNAME
-    value: attendize
+    value: '$(MYSQL_USER)'
   - name: DB_PASSWORD
-    value: attendize
+    value: '$(MYSQL_PASSWORD)'
   - name: QUEUE_CONNECTION
     value: redis
   - name: CACHE_DRIVER
@@ -134,9 +134,9 @@ spec:
   - name: SESSION_DRIVER
     value: redis
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: REDIS_PASSWORD
     value: 'null'
   - name: MAIL_DRIVER
@@ -167,12 +167,12 @@ spec:
     value: 'true'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/public/uploads
     name: '{{KUBERO_APP_NAME}}-uploads'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

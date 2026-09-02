@@ -59,7 +59,7 @@ spec:
   - name: driverName
     value: mysql
   - name: dataSourceName
-    value: root:casdoor@tcp(casdoor-mysql:3306)/
+    value: '$(MYSQL_USER):$(MYSQL_PASSWORD)@tcp($(MYSQL_HOST):$(MYSQL_PORT))/$(MYSQL_DATABASE)'
   - name: dbName
     value: casdoor
   - name: initScore

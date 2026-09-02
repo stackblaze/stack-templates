@@ -83,7 +83,7 @@ spec:
           password: openwebui
   envVars:
   - name: DATABASE_URL
-    value: postgresql://openwebui:openwebui@{{KUBERO_APP_NAME}}-postgresql-rw:5432/openwebui
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: WEBUI_SECRET_KEY
     value: change-me-to-a-random-32char-secret
   - name: WEBUI_URL
@@ -98,12 +98,12 @@ spec:
     value: true
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/backend/data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

@@ -72,23 +72,23 @@ spec:
           password: glpi
   envVars:
   - name: GLPI_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: GLPI_DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: GLPI_DB_NAME
-    value: glpi
+    value: '$(MYSQL_DATABASE)'
   - name: GLPI_DB_USER
-    value: glpi
+    value: '$(MYSQL_USER)'
   - name: GLPI_DB_PASSWORD
-    value: glpi
+    value: '$(MYSQL_PASSWORD)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/glpi
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

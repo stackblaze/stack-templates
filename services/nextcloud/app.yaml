@@ -73,14 +73,6 @@ spec:
         stringData:
           password: nextcloud
   envVars:
-  - name: MYSQL_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
-  - name: MYSQL_DATABASE
-    value: nextcloud
-  - name: MYSQL_USER
-    value: nextcloud
-  - name: MYSQL_PASSWORD
-    value: nextcloud
   - name: NEXTCLOUD_ADMIN_USER
     value: admin
   - name: NEXTCLOUD_ADMIN_PASSWORD
@@ -93,8 +85,8 @@ spec:
     value: '{{KUBERO_APP_HOST}}'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
-    storageClass: lite
+    - ReadWriteMany
+    storageClass: shared
     emptyDir: false
     # Persist full app tree (config + apps + data) so first-boot auto-install
     # survives restarts and users never see the web setup wizard.

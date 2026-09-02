@@ -60,7 +60,7 @@ spec:
               memory: 256Mi
   envVars:
   - name: REDIS
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: 'redis://$(REDISHOST):$(REDISPORT)'
   - name: SIZE_LIMIT
     value: 4 MiB
   - name: MAX_VIEWS

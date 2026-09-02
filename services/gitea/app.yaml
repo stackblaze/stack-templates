@@ -83,7 +83,7 @@ spec:
   - name: GITEA__database__DB_TYPE
     value: postgres
   - name: GITEA__database__HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: GITEA__database__PORT
     value: '5432'
   - name: GITEA__database__NAME
@@ -124,12 +124,12 @@ spec:
     externalPort: 2222
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 10Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '3000'
     repository: registry.stackblaze.cloud/gitea/gitea

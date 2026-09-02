@@ -111,34 +111,34 @@ spec:
               memory: 256Mi
   envVars:
   - name: AUTHENTIK_POSTGRESQL__HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: AUTHENTIK_POSTGRESQL__USER
-    value: authentik
+    value: '$(PGUSER)'
   - name: AUTHENTIK_POSTGRESQL__PASSWORD
-    value: authentik
+    value: '$(PGPASSWORD)'
   - name: AUTHENTIK_POSTGRESQL__NAME
-    value: authentik
+    value: '$(PGDATABASE)'
   - name: AUTHENTIK_REDIS__HOST
-    value: rfr-{{KUBERO_APP_NAME}}-cache-readwrite
+    value: '$(REDISHOST)'
   - name: AUTHENTIK_SECRET_KEY
     value: change-me-to-a-random-50-character-secret-key-value
   - name: AUTHENTIK_ERROR_REPORTING__ENABLED
     value: false
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /media
     name: '{{KUBERO_APP_NAME}}-media'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /templates
     name: authentik-templates
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

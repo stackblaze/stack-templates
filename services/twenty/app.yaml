@@ -29,8 +29,6 @@ spec:
     value: 'true'
   - name: CACHE_STORAGE_TYPE
     value: redis
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
   - name: API_RATE_LIMITING_TTL
     value: '100'
   - name: API_RATE_LIMITING_LIMIT
@@ -38,9 +36,9 @@ spec:
   - name: APP_SECRET
     value: base64:Mnl3bDdlYjY2bzBmcWMzanE3dDhiN3BxY2ZqZzh3bmM=
   - name: POSTGRES_ADMIN_PASSWORD
-    value: twenty
+    value: '$(PGPASSWORD)'
   - name: PG_DATABASE_URL
-    value: postgres://twenty:twenty@{{KUBERO_APP_NAME}}-postgresql-rw:5432/twenty
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: IS_SIGN_UP_DISABLED
     value: 'false'
   - name: PASSWORD_RESET_TOKEN_EXPIRES_IN
@@ -173,13 +171,16 @@ spec:
   resources:
     requests:
       cpu: 500m
-      memory: 1Gi
+      memory: 1536Mi
     limits:
-      cpu: '1'
-      memory: 2Gi
+      cpu: '2'
+      memory: 3Gi
   healthcheck:
     enabled: true
     path: /
-    startupSeconds: 600
+    # First-boot migrations run in BOTH web and worker (shared envVars, no
+    # per-role toggle) and exceed 10 min at 1 CPU — the startup probe killed
+    # both at exactly the 600s deadline (QA repro: paired exit 137).
+    startupSeconds: 1500
     timeoutSeconds: 5
     periodSeconds: 10

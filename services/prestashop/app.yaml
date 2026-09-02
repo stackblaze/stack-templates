@@ -83,13 +83,13 @@ spec:
           password: prestashop
   envVars:
   - name: DB_SERVER
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: DB_NAME
-    value: prestashop
+    value: '$(MYSQL_DATABASE)'
   - name: DB_USER
-    value: prestashop
+    value: '$(MYSQL_USER)'
   - name: DB_PASSWD
     value: prestashop
   - name: DB_PREFIX
@@ -118,12 +118,12 @@ spec:
     value: prestashop
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

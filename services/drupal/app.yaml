@@ -84,25 +84,25 @@ spec:
   - name: DRUPAL_DATABASE_DRIVER
     value: pgsql
   - name: DRUPAL_DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DRUPAL_DATABASE_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DRUPAL_DATABASE_NAME
-    value: drupal
+    value: '$(PGDATABASE)'
   - name: DRUPAL_DATABASE_USERNAME
-    value: drupal
+    value: '$(PGUSER)'
   - name: DRUPAL_DATABASE_PASSWORD
-    value: drupal
+    value: '$(PGPASSWORD)'
   - name: PHP_MEMORY_LIMIT
     value: 256M
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/sites
     name: drupal-sites
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

@@ -141,21 +141,21 @@ spec:
   - name: DB_TYPE
     value: postgres
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-ncdb-rw'
+    value: '{{KUBERO_APP_NAME}}-$(PGHOST)'
   - name: DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DB_NAME
-    value: onlyoffice
+    value: '$(PGDATABASE)'
   - name: DB_USER
-    value: onlyoffice
+    value: '$(PGUSER)'
   - name: DB_PWD
-    value: onlyoffice
+    value: '$(PGPASSWORD)'
   - name: AMQP_TYPE
     value: rabbitmq
   - name: AMQP_URI
     value: 'amqp://onlyoffice:onlyoffice@{{KUBERO_APP_NAME}}-ncmq:5672'
   - name: REDIS_SERVER_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-nccache-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_SERVER_PORT
     value: '6379'
   - name: JWT_ENABLED
@@ -166,12 +166,12 @@ spec:
     value: Authorization
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/onlyoffice
     name: ncdata
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

@@ -114,9 +114,7 @@ spec:
   - name: PORT
     value: '8080'
   - name: DB_CONNECTION_URI
-    value: postgresql://infisical:infisical@{{KUBERO_APP_NAME}}-postgresql-rw:5432/infisical
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: ENCRYPTION_KEY
     value: f13dbc92aaaf86fa7cb0ed8ac3265f47
   - name: AUTH_SECRET

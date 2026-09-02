@@ -103,8 +103,13 @@ spec:
         kind: Tenant
         metadata:
           name: '{{KUBERO_APP_NAME}}-rustfs'
+          annotations:
+            # The operator refuses custom-repo images it cannot verify for
+            # RuntimeDefault seccomp ("WorkloadSecurityIncompatible") unless the
+            # exact reference is acknowledged. Keep in sync with spec.image.
+            operator.rustfs.com/runtime-default-image-ack: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
         spec:
-          image: registry.stackblaze.cloud/rustfs/rustfs:latest
+          image: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
           credsSecret:
             name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
           pools:
@@ -129,16 +134,6 @@ spec:
           accesskey: lightdashadmin
           secretkey: changeme
   envVars:
-  - name: PGHOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
-  - name: PGPORT
-    value: '5432'
-  - name: PGUSER
-    value: lightdash
-  - name: PGPASSWORD
-    value: lightdash
-  - name: PGDATABASE
-    value: lightdash
   - name: LIGHTDASH_SECRET
     value: replace-with-openssl-rand-base64-32
   - name: PORT

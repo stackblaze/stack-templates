@@ -80,7 +80,7 @@ spec:
   # NocoDB expects a connection URL in NC_DB (not "pg" + split host vars).
   # Format: pg://host:port?u=user&p=password&d=database
   - name: NC_DB
-    value: 'pg://{{KUBERO_APP_NAME}}-postgresql-rw:5432?u=nocodb&p=nocodb&d=nocodb'
+    value: 'pg://$(PGHOST):$(PGPORT)?u=$(PGUSER)&p=$(PGPASSWORD)&d=$(PGDATABASE)'
   - name: PORT
     value: '8080'
   extraVolumes: []

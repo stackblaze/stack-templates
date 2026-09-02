@@ -29,22 +29,22 @@ spec:
   - name: CORE_PORT
     value: '3000'
   - name: DATABASE_URL
-    value: postgres://zipline:zipline@{{KUBERO_APP_NAME}}-postgresql-rw:5432/zipline
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /zipline/uploads
     name: '{{KUBERO_APP_NAME}}-uploads-volume'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /zipline/public
     name: zipline-public-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons:
   - displayName: PostgreSQL (CloudNativePG)

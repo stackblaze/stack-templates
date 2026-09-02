@@ -87,32 +87,32 @@ spec:
   - name: APP_TIMEZONE
     value: UTC
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: DB_DATABASE
-    value: hortusfox
+    value: '$(MYSQL_DATABASE)'
   - name: DB_USERNAME
-    value: hortusfox
+    value: '$(MYSQL_USER)'
   - name: DB_PASSWORD
-    value: hortusfox
+    value: '$(MYSQL_PASSWORD)'
   - name: DB_CHARSET
     value: utf8mb4
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/public/backup
     name: hortusfox-backup
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/app/logs
     name: '{{KUBERO_APP_NAME}}-logs'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

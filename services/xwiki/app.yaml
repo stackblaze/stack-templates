@@ -91,23 +91,23 @@ spec:
           password: xwiki
   envVars:
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_DATABASE
-    value: xwiki
+    value: '$(PGDATABASE)'
   - name: DB_USER
-    value: xwiki
+    value: '$(PGUSER)'
   - name: DB_PASSWORD
-    value: xwiki
+    value: '$(PGPASSWORD)'
   - name: JAVA_OPTS
     value: -Xmx1024m -Xms512m
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /usr/local/xwiki
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   resources:
     requests:

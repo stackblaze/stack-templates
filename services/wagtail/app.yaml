@@ -86,7 +86,7 @@ spec:
           password: wagtail
   envVars:
   - name: DATABASE_URL
-    value: postgres://wagtail:wagtail@{{KUBERO_APP_NAME}}-postgresql-rw:5432/wagtail
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DJANGO_SECRET_KEY
     value: change-me-django-secret-key
   - name: DJANGO_ALLOWED_HOSTS
@@ -95,10 +95,11 @@ spec:
     value: 'on'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /code/bakerydemo/media
     name: wagtail-media
+    storageClass: shared
     size: 10Gi
   cronjobs: []
   web:

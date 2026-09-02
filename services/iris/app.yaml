@@ -119,21 +119,21 @@ spec:
               memory: 1Gi
   envVars:
   - name: POSTGRES_SERVER
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: POSTGRES_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRES_USER
-    value: iris
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: iris
+    value: '$(PGPASSWORD)'
   - name: POSTGRES_ADMIN_USER
-    value: postgres
+    value: '$(PGUSER)'
   - name: POSTGRES_ADMIN_PASSWORD
-    value: iris
+    value: '$(PGPASSWORD)'
   - name: POSTGRES_DB
-    value: iris
+    value: '$(PGDATABASE)'
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: CELERY_HOST
     value: iris-rabbitmq
   - name: IRIS_SECRET_KEY
@@ -146,12 +146,12 @@ spec:
     value: INFO
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /home/iris/downloads
     name: '{{KUBERO_APP_NAME}}-data'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

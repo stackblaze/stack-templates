@@ -27,12 +27,12 @@ spec:
     value: '{{KUBERO_APP_HOST}}'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/config
     name: '{{KUBERO_APP_NAME}}-config'
     size: 100Mi
-    storageClass: lite
+    storageClass: shared
   healthcheck:
     enabled: true
     path: /

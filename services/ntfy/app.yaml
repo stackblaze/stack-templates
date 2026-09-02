@@ -23,12 +23,12 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/cache/ntfy
     name: '{{KUBERO_APP_NAME}}-cache-volume'
     size: 500Mi
-    storageClass: lite
+    storageClass: shared
   image:
     command:
     - ntfy

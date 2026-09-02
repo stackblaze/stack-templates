@@ -84,27 +84,27 @@ spec:
   - name: DB_DIALECT
     value: postgres
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_PORT
-    value: 5432
+    value: '$(PGPORT)'
   - name: DB_DATABASE
-    value: nocobase
+    value: '$(PGDATABASE)'
   - name: DB_USER
-    value: nocobase
+    value: '$(PGUSER)'
   - name: DB_PASSWORD
-    value: nocobase
+    value: '$(PGPASSWORD)'
   - name: APP_KEY
     value: change-me-to-random-string
   - name: APP_PORT
     value: 13000
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/nocobase/storage
     name: '{{KUBERO_APP_NAME}}-storage'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

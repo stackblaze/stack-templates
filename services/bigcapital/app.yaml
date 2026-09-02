@@ -128,25 +128,25 @@ spec:
   - name: JWT_SECRET
     value: replace-with-openssl-rand-hex-32
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: DB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: DB_USER
-    value: bigcapital
+    value: '$(MYSQL_USER)'
   - name: DB_PASSWORD
-    value: bigcapital
+    value: '$(MYSQL_PASSWORD)'
   - name: DB_CHARSET
     value: utf8
   - name: SYSTEM_DB_NAME
-    value: bigcapital
+    value: '$(MYSQL_DATABASE)'
   - name: TENANT_DB_NAME_PERFIX
     value: bigcapital_tenant_
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: QUEUE_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: QUEUE_PORT
     value: '6379'
   - name: GOTENBERG_URL
@@ -169,12 +169,12 @@ spec:
     value: 'false'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

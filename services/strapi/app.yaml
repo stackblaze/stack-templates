@@ -85,15 +85,15 @@ spec:
   - name: DATABASE_CLIENT
     value: postgres
   - name: DATABASE_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DATABASE_PORT
-    value: 5432
+    value: '$(PGPORT)'
   - name: DATABASE_NAME
-    value: strapi
+    value: '$(PGDATABASE)'
   - name: DATABASE_USERNAME
-    value: strapi
+    value: '$(PGUSER)'
   - name: DATABASE_PASSWORD
-    value: strapi
+    value: '$(PGPASSWORD)'
   - name: DATABASE_SSL
     value: 'false'
   - name: ENCRYPTION_KEY
@@ -112,12 +112,12 @@ spec:
     value: production
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/app/public/uploads
     name: '{{KUBERO_APP_NAME}}-uploads'
     size: 10Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

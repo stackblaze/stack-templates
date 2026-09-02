@@ -21,12 +21,12 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /datastore
     name: changedetection-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '5000'
     repository: registry.stackblaze.cloud/dgtlmoon/changedetection.io

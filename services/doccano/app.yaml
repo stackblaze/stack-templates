@@ -31,15 +31,15 @@ spec:
   - name: DEBUG
     value: 'False'
   - name: DATABASE_URL
-    value: postgresql://doccano:doccano@{{KUBERO_APP_NAME}}-postgresql-rw:5432/doccano
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: '{{KUBERO_APP_NAME}}-data-volume'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   addons:
   - displayName: PostgreSQL (CloudNativePG)

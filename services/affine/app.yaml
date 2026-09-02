@@ -108,9 +108,9 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: REDIS_SERVER_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: DATABASE_URL
-    value: postgresql://affine:afffine@{{KUBERO_APP_NAME}}-postgresql-rw:5432/affine
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: AFFINE_INDEXER_ENABLED
     value: 'false'
   - name: NODE_ENV
@@ -125,12 +125,12 @@ spec:
     value: ''
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /root/.affine
     name: affine-volume
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '3010'
     pullPolicy: Always

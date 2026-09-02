@@ -79,25 +79,25 @@ spec:
   - name: DB_ENGINE
     value: postgres
   - name: POSTGRES_SERVER
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: POSTGRES_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRES_USER
-    value: mealie
+    value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
-    value: mealie
+    value: '$(PGPASSWORD)'
   - name: POSTGRES_DB
-    value: mealie
+    value: '$(PGDATABASE)'
   - name: TZ
     value: Etc/UTC
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

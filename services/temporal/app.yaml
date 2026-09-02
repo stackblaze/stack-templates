@@ -103,15 +103,15 @@ spec:
   - name: DB
     value: postgres12
   - name: DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: POSTGRES_SEEDS
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: POSTGRES_USER
-    value: temporal
+    value: '$(PGUSER)'
   - name: POSTGRES_PWD
-    value: temporal
+    value: '$(PGPASSWORD)'
   - name: DBNAME
-    value: temporal
+    value: '$(PGDATABASE)'
   - name: VISIBILITY_DBNAME
     value: temporal_visibility
   - name: SKIP_DEFAULT_NAMESPACE_CREATION

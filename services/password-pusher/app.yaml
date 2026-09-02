@@ -75,7 +75,7 @@ spec:
           password: pwpush
   envVars:
   - name: DATABASE_URL
-    value: postgres://pwpush:pwpush@{{KUBERO_APP_NAME}}-postgresql-rw:5432/pwpush
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: PWPUSH_MASTER_KEY
     value: replace-with-generated-master-key
   - name: PWP__ALLOW_ANONYMOUS
@@ -84,12 +84,12 @@ spec:
     value: 'true'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/PasswordPusher/storage
     name: '{{KUBERO_APP_NAME}}-storage'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

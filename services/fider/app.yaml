@@ -22,7 +22,7 @@ spec:
   - name: BASE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: DATABASE_URL
-    value: postgres://fider:fider@{{KUBERO_APP_NAME}}-postgresql-rw/fider?sslmode=disable
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
   - name: JWT_SECRET
     value: random64
   - name: EMAIL_NOREPLY

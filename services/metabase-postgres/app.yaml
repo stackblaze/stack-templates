@@ -95,15 +95,15 @@ spec:
   - name: MB_DB_TYPE
     value: postgres
   - name: MB_DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: MB_DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: MB_DB_DBNAME
-    value: metabase-postgres
+    value: '$(PGDATABASE)'
   - name: MB_DB_USER
-    value: metabase-postgres
+    value: '$(PGUSER)'
   - name: MB_DB_PASS
-    value: metabase-postgres
+    value: '$(PGPASSWORD)'
   - name: MB_SITE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: MB_ENCRYPTION_SECRET_KEY

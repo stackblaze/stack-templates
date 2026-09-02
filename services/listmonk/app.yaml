@@ -82,7 +82,7 @@ spec:
           password: listmonk
   envVars:
   - name: LISTMONK_db__host
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: LISTMONK_db__port
     value: 5432
   - name: LISTMONK_db__user
@@ -101,12 +101,12 @@ spec:
     value: 0.0.0.0:9000
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /listmonk/uploads
     name: '{{KUBERO_APP_NAME}}-uploads'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

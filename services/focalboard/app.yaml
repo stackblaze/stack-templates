@@ -81,12 +81,12 @@ spec:
     value: '{{KUBERO_APP_URL}}'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/focalboard/data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '8000'
     pullPolicy: Always
@@ -95,8 +95,8 @@ spec:
     command:
     - sh
     - -c
-    - mkdir -p /opt/focalboard/data/files && printf '%s\n' "{\"serverRoot\":\"${FOCALBOARD_SERVER_ROOT}\",\"port\":8000,\"dbtype\":\"postgres\",\"dbconfig\":\"host=focalboard-postgresql-rw
-      port=5432 user=focalboard password=focalboard dbname=focalboard sslmode=disable\",\"postgres_dbconfig\":\"dbname=focalboard
+    - mkdir -p /opt/focalboard/data/files && printf '%s\n' "{\"serverRoot\":\"${FOCALBOARD_SERVER_ROOT}\",\"port\":8000,\"dbtype\":\"postgres\",\"dbconfig\":\"host=${PGHOST}
+      port=${PGPORT} user=${PGUSER} password=${PGPASSWORD} dbname=${PGDATABASE} sslmode=disable\",\"postgres_dbconfig\":\"dbname=${PGDATABASE}
       sslmode=disable\",\"useSSL\":false,\"webpath\":\"./pack\",\"filespath\":\"./data/files\",\"telemetry\":false,\"session_expire_time\":2592000,\"session_refresh_time\":18000,\"localOnly\":false,\"enableLocalMode\":true,\"localModeSocketLocation\":\"/var/tmp/focalboard_local.socket\",\"enablePublicSharedBoards\":false}"
       > /opt/focalboard/config.json && exec /opt/focalboard/bin/focalboard-server
     run:

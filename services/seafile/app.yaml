@@ -77,7 +77,7 @@ spec:
           password: seafile
   envVars:
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-db'
+    value: '$(MYSQL_HOST)'
   - name: DB_ROOT_PASSWD
     value: seafile
   - name: TIME_ZONE
@@ -92,12 +92,12 @@ spec:
     value: false
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /shared
     name: '{{KUBERO_APP_NAME}}-data'
     size: 50Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

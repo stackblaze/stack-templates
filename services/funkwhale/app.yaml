@@ -151,21 +151,21 @@ spec:
   - name: DJANGO_ALLOWED_HOSTS
     value: '{{KUBERO_APP_HOST}}'
   - name: DATABASE_URL
-    value: postgresql://funkwhale:funkwhale@{{KUBERO_APP_NAME}}-postgresql-rw:5432/funkwhale
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DB_NAME
-    value: funkwhale
+    value: '$(PGDATABASE)'
   - name: DB_USER
-    value: funkwhale
+    value: '$(PGUSER)'
   - name: DB_PASSWORD
-    value: funkwhale
+    value: '$(PGPASSWORD)'
   - name: CACHE_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
   - name: CELERY_BROKER_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
   - name: MEDIA_ROOT
     value: /srv/funkwhale/data/media
   - name: STATIC_ROOT
@@ -184,26 +184,26 @@ spec:
     value: noreply@example.com
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /srv/funkwhale/data/media
     name: '{{KUBERO_APP_NAME}}-media'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /srv/funkwhale/data/music
     name: funkwhale-music
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /srv/funkwhale/data/static
     name: '{{KUBERO_APP_NAME}}-static'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

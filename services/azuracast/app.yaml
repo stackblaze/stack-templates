@@ -130,42 +130,32 @@ spec:
     value: '1000'
   - name: PGID
     value: '1000'
-  - name: MYSQL_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
-  - name: MYSQL_PORT
-    value: '3306'
-  - name: MYSQL_DATABASE
-    value: azuracast
-  - name: MYSQL_USER
-    value: azuracast
-  - name: MYSQL_PASSWORD
-    value: azuracast
   - name: MARIADB_HOST
-    value: '{{KUBERO_APP_NAME}}-mysql'
+    value: '$(MYSQL_HOST)'
   - name: MARIADB_PORT
-    value: '3306'
+    value: '$(MYSQL_PORT)'
   - name: MARIADB_DATABASE
-    value: azuracast
+    value: '$(MYSQL_DATABASE)'
   - name: MARIADB_USERNAME
-    value: azuracast
+    value: '$(MYSQL_USER)'
   - name: MARIADB_PASSWORD
-    value: azuracast
+    value: '$(MYSQL_PASSWORD)'
   - name: ENABLE_REDIS
     value: 'true'
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: REDIS_DB
     value: '1'
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/azuracast/stations
     name: azuracast-stations
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true

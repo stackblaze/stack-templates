@@ -125,13 +125,11 @@ spec:
   - name: INSTANCE_ID_HASH
     value: replace-with-openssl-rand-hex-32
   - name: DATABASE_URL
-    value: mysql://shopware:shopware@{{KUBERO_APP_NAME}}-mysql:3306/shopware
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: 'mysql://$(MYSQL_USER):$(MYSQL_PASSWORD)@$(MYSQL_HOST):$(MYSQL_PORT)/$(MYSQL_DATABASE)'
   - name: REDIS_CACHE_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
+    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
   - name: REDIS_SESSION_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/1
+    value: 'redis://$(REDISHOST):$(REDISPORT)/1'
   - name: SHOPWARE_HTTP_CACHE_ENABLED
     value: '1'
   - name: SHOPWARE_ES_ENABLED
@@ -144,19 +142,19 @@ spec:
     value: 512M
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/files
     name: '{{KUBERO_APP_NAME}}-files'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/public/media
     name: '{{KUBERO_APP_NAME}}-media'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   resources:
     requests:

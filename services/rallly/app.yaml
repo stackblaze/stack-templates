@@ -83,8 +83,13 @@ spec:
         kind: Tenant
         metadata:
           name: '{{KUBERO_APP_NAME}}-rustfs'
+          annotations:
+            # The operator refuses custom-repo images it cannot verify for
+            # RuntimeDefault seccomp ("WorkloadSecurityIncompatible") unless the
+            # exact reference is acknowledged. Keep in sync with spec.image.
+            operator.rustfs.com/runtime-default-image-ack: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
         spec:
-          image: registry.stackblaze.cloud/rustfs/rustfs:latest
+          image: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
           credsSecret:
             name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
           pools:
@@ -116,7 +121,7 @@ spec:
   - name: NEXT_PUBLIC_BASE_URL
     value: '{{KUBERO_APP_URL}}'
   - name: DATABASE_URL
-    value: postgres://rallly:rallly@{{KUBERO_APP_NAME}}-postgresql-rw:5432/postgresql
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: SECRET_PASSWORD
     value: replace-me-now-with-a-own-secret
   - name: SUPPORT_EMAIL

@@ -115,9 +115,7 @@ spec:
   - name: NEXTAUTH_URL
     value: '{{KUBERO_APP_URL}}'
   - name: DATABASE_URL
-    value: postgresql://formbricks:formbricks@{{KUBERO_APP_NAME}}-postgresql-rw:5432/formbricks?schema=public
-  - name: REDIS_URL
-    value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?schema=public'
   - name: NEXTAUTH_SECRET
     value: random64
   - name: ENCRYPTION_KEY

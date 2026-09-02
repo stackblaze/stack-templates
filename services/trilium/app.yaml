@@ -21,12 +21,12 @@ spec:
   envVars: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /home/node/trilium-data
     name: '{{KUBERO_APP_NAME}}-data'
     size: 1Gi
-    storageClass: lite
+    storageClass: shared
   image:
     containerPort: '8080'
     repository: registry.stackblaze.cloud/zadam/trilium

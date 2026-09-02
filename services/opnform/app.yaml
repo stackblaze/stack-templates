@@ -141,19 +141,19 @@ spec:
   - name: DB_CONNECTION
     value: pgsql
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-postgresql-rw'
+    value: '$(PGHOST)'
   - name: DB_PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: DB_DATABASE
-    value: opnform
+    value: '$(PGDATABASE)'
   - name: DB_USERNAME
-    value: opnform
+    value: '$(PGUSER)'
   - name: DB_PASSWORD
-    value: opnform
+    value: '$(PGPASSWORD)'
   - name: REDIS_HOST
-    value: rfr-{{KUBERO_APP_NAME}}-valkey-readwrite
+    value: '$(REDISHOST)'
   - name: REDIS_PORT
-    value: '6379'
+    value: '$(REDISPORT)'
   - name: QUEUE_CONNECTION
     value: redis
   - name: CACHE_DRIVER
@@ -172,12 +172,12 @@ spec:
     value: 64m
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /usr/share/nginx/html/storage/app
     name: '{{KUBERO_APP_NAME}}-storage'
     size: 5Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   web:
     replicaCount: 1

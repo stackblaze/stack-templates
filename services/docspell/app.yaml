@@ -101,7 +101,7 @@ spec:
   - name: DOCSPELL_SERVER_ADMIN__ENDPOINT_SECRET
     value: replace-with-openssl-rand-hex-32
   - name: DOCSPELL_SERVER_BACKEND_JDBC_URL
-    value: jdbc:postgresql://{{KUBERO_APP_NAME}}-postgresql-rw:5432/docspell
+    value: 'jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DOCSPELL_SERVER_BACKEND_JDBC_USER
     value: docspell
   - name: DOCSPELL_SERVER_BACKEND_JDBC_PASSWORD

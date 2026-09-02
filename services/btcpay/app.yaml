@@ -111,11 +111,9 @@ spec:
   - name: BTCPAY_ROOTPATH
     value: /
   - name: BTCPAY_POSTGRES
-    value: User ID=btcpay;Password=btcpay;Host={{KUBERO_APP_NAME}}-postgresql-rw;Port=5432;Database=btcpay;Include
-      Error Detail=true
+    value: 'User ID=$(PGUSER);Password=$(PGPASSWORD);Host=$(PGHOST);Port=$(PGPORT);Database=$(PGDATABASE);Include Error Detail=true'
   - name: BTCPAY_EXPLORERPOSTGRES
-    value: User ID=btcpay;Password=btcpay;Host={{KUBERO_APP_NAME}}-postgresql-rw;Port=5432;Database=btcpay;Include
-      Error Detail=true
+    value: 'User ID=$(PGUSER);Password=$(PGPASSWORD);Host=$(PGHOST);Port=$(PGPORT);Database=$(PGDATABASE);Include Error Detail=true'
   - name: BTCPAY_BTCEXPLORERURL
     value: http://nbxplorer:32838/
   - name: BTCPAY_DATADIR
@@ -124,12 +122,12 @@ spec:
     value: btcpay.log
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /datadir
     name: '{{KUBERO_APP_NAME}}-data'
     size: 2Gi
-    storageClass: lite
+    storageClass: shared
   cronjobs: []
   healthcheck:
     enabled: true
