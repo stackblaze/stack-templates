@@ -83,8 +83,13 @@ spec:
         kind: Tenant
         metadata:
           name: '{{KUBERO_APP_NAME}}-rustfs'
+          annotations:
+            # The operator refuses custom-repo images it cannot verify for
+            # RuntimeDefault seccomp ("WorkloadSecurityIncompatible") unless the
+            # exact reference is acknowledged. Keep in sync with spec.image.
+            operator.rustfs.com/runtime-default-image-ack: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
         spec:
-          image: registry.stackblaze.cloud/rustfs/rustfs:latest
+          image: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
           credsSecret:
             name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
           pools:
