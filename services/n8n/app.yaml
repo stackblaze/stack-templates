@@ -8,10 +8,12 @@ metadata:
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/45487711?s=200&v=4
     kubero.dev/template.installation: With Load demo data enabled, first boot creates
       owner demo@stackblaze.local / changeme and three sample workflows. Without it,
-      complete the one-time owner setup at your app URL, then sign in. If you are sent
-      back to /setup, delete the app and its PostgreSQL addon together, redeploy, and
-      verify POST /rest/login returns 200 (not 404) before signing in.
-    kubero.dev/template.links: '[]'
+      complete the one-time owner setup at your app URL, then sign in. AI Assistant
+      uses a bundled n8n sandbox (provider, service URL, and API key are preconfigured).
+      Add an Anthropic, OpenAI, or OpenRouter key in n8n AI settings or set N8N_INSTANCE_AI_MODEL_API_KEY.
+      If you are sent back to /setup, delete the app and its PostgreSQL addon together,
+      redeploy, and verify POST /rest/login returns 200 (not 404) before signing in.
+    kubero.dev/template.links: '["https://docs.n8n.io/deploy/host-n8n/configure-n8n/set-up-ai-assistant"]'
     kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/n8n/demo.mp4", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/dashboard.png"]'
     kubero.dev/template.source: https://github.com/n8n-io/n8n
     kubero.dev/template.categories: '["work", "productivity", "utilities"]'
@@ -77,6 +79,180 @@ spec:
         stringData:
           username: n8n
           password: '123456'
+      sandboxDeployment:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-sandbox'
+        spec:
+          replicas: 1
+          strategy:
+            type: Recreate
+          selector:
+            matchLabels:
+              app: '{{KUBERO_APP_NAME}}-sandbox'
+          template:
+            metadata:
+              labels:
+                app: '{{KUBERO_APP_NAME}}-sandbox'
+            spec:
+              initContainers:
+              - name: certs
+                image: ghcr.io/n8n-io/n8n-sandbox-service-api:latest
+                imagePullPolicy: Always
+                securityContext:
+                  runAsUser: 0
+                  runAsGroup: 0
+                command:
+                - sh
+                - -c
+                - bootstrap-mtls.sh --out-dir /tls --api-san {{KUBERO_APP_NAME}}-sandbox-api
+                  --control-san-prefix {{KUBERO_APP_NAME}}-sandbox-runner --runners
+                  1 --world-readable && chown -R sandbox-api:sandbox-api /tls/api
+                env:
+                - name: NUM_RUNNERS
+                  value: '1'
+                volumeMounts:
+                - name: tls
+                  mountPath: /tls
+              containers:
+              - name: api
+                image: ghcr.io/n8n-io/n8n-sandbox-service-api:latest
+                imagePullPolicy: Always
+                ports:
+                - name: http
+                  containerPort: 8080
+                - name: grpc
+                  containerPort: 9090
+                env:
+                - name: SANDBOX_API_KEYS
+                  value: changeme-n8n-sandbox-key
+                - name: SANDBOX_API_RUNNER_REGISTRATION_TOKEN
+                  value: changeme-n8n-sandbox-reg
+                - name: SANDBOX_API_RUNNER_API_KEY
+                  value: changeme-n8n-sandbox-runner
+                - name: SANDBOX_API_GRPC_TLS_CERT_FILE
+                  value: /tls/api/grpc-server.crt
+                - name: SANDBOX_API_GRPC_TLS_KEY_FILE
+                  value: /tls/api/grpc-server.key
+                - name: SANDBOX_API_GRPC_TLS_CLIENT_CA_FILE
+                  value: /tls/api/ca.crt
+                - name: SANDBOX_API_RUNNER_CONTROL_GRPC_TLS_CA_FILE
+                  value: /tls/api/ca.crt
+                - name: SANDBOX_API_RUNNER_CONTROL_GRPC_TLS_CERT_FILE
+                  value: /tls/api/control-grpc-api-client.crt
+                - name: SANDBOX_API_RUNNER_CONTROL_GRPC_TLS_KEY_FILE
+                  value: /tls/api/control-grpc-api-client.key
+                - name: SANDBOX_API_RUNNER_CONTROL_GRPC_TLS_SERVER_NAME
+                  value: '{{KUBERO_APP_NAME}}-sandbox-runner-1'
+                volumeMounts:
+                - name: tls
+                  mountPath: /tls
+                  readOnly: true
+                readinessProbe:
+                  httpGet:
+                    path: /healthz
+                    port: 8080
+                  initialDelaySeconds: 5
+                  periodSeconds: 5
+                  failureThreshold: 12
+                resources:
+                  requests:
+                    cpu: 50m
+                    memory: 128Mi
+                  limits:
+                    cpu: 500m
+                    memory: 512Mi
+              - name: runner
+                image: ghcr.io/n8n-io/n8n-sandbox-service-runner-dind:latest
+                imagePullPolicy: Always
+                securityContext:
+                  privileged: true
+                  runAsUser: 0
+                ports:
+                - name: http
+                  containerPort: 8081
+                - name: control
+                  containerPort: 9091
+                env:
+                - name: SANDBOX_RUNNER_API_KEYS
+                  value: changeme-n8n-sandbox-runner
+                - name: SANDBOX_RUNNER_REGISTRATION_TOKEN
+                  value: changeme-n8n-sandbox-reg
+                - name: SANDBOX_RUNNER_API_GRPC_ADDR
+                  value: '{{KUBERO_APP_NAME}}-sandbox-api:9090'
+                - name: SANDBOX_RUNNER_LISTEN_ADDR
+                  value: ':8081'
+                - name: SANDBOX_RUNNER_HTTP_BASE_URL
+                  value: http://{{KUBERO_APP_NAME}}-sandbox-runner-1:8080
+                - name: SANDBOX_RUNNER_CONTROL_GRPC_LISTEN_ADDR
+                  value: ':9091'
+                - name: SANDBOX_RUNNER_CONTROL_GRPC_ADVERTISE_ADDR
+                  value: '{{KUBERO_APP_NAME}}-sandbox-runner-1:9091'
+                - name: SANDBOX_RUNNER_ID
+                  value: runner-1
+                - name: SANDBOX_RUNNER_DOCKER_SANDBOX_IMAGE
+                  value: ghcr.io/n8n-io/n8n-sandbox-service-sandbox:latest
+                - name: SANDBOX_RUNNER_REGISTRATION_GRPC_CA_FILE
+                  value: /tls/runner/ca.crt
+                - name: SANDBOX_RUNNER_REGISTRATION_GRPC_CERT_FILE
+                  value: /tls/runner/grpc-client.crt
+                - name: SANDBOX_RUNNER_REGISTRATION_GRPC_KEY_FILE
+                  value: /tls/runner/grpc-client.key
+                - name: SANDBOX_RUNNER_REGISTRATION_GRPC_SERVER_NAME
+                  value: '{{KUBERO_APP_NAME}}-sandbox-api'
+                - name: SANDBOX_RUNNER_CONTROL_GRPC_TLS_CERT_FILE
+                  value: /tls/runner/control-grpc-server.crt
+                - name: SANDBOX_RUNNER_CONTROL_GRPC_TLS_KEY_FILE
+                  value: /tls/runner/control-grpc-server.key
+                - name: SANDBOX_RUNNER_CONTROL_GRPC_TLS_CLIENT_CA_FILE
+                  value: /tls/runner/ca.crt
+                volumeMounts:
+                - name: tls
+                  mountPath: /tls
+                  readOnly: true
+                resources:
+                  requests:
+                    cpu: 250m
+                    memory: 512Mi
+                  limits:
+                    cpu: '2'
+                    memory: 2Gi
+              volumes:
+              - name: tls
+                emptyDir: {}
+      sandboxApiService:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-sandbox-api'
+        spec:
+          type: ClusterIP
+          selector:
+            app: '{{KUBERO_APP_NAME}}-sandbox'
+          ports:
+          - name: http
+            port: 8080
+            targetPort: 8080
+          - name: grpc
+            port: 9090
+            targetPort: 9090
+      sandboxRunnerService:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-sandbox-runner-1'
+        spec:
+          type: ClusterIP
+          selector:
+            app: '{{KUBERO_APP_NAME}}-sandbox'
+          ports:
+          - name: http
+            port: 8080
+            targetPort: 8081
+          - name: control
+            port: 9091
+            targetPort: 9091
   cronjobs: []
   deploymentstrategy: docker
   envVars:
@@ -103,7 +279,9 @@ spec:
   - name: N8N_PROTOCOL
     value: https
   - name: N8N_PROXY_HOPS
-    value: '1'
+    value: '2'
+  - name: N8N_PUSH_BACKEND
+    value: websocket
   - name: DB_POSTGRESDB_DATABASE
     value: '$(PGDATABASE)'
   - name: STACKBLAZE_LOAD_DEMO_DATA
@@ -112,6 +290,20 @@ spec:
     value: demo@stackblaze.local
   - name: STACKBLAZE_DEMO_PASSWORD
     value: changeme
+  - name: N8N_ENABLED_MODULES
+    value: instance-ai
+  - name: N8N_INSTANCE_AI_SANDBOX_ENABLED
+    value: 'true'
+  - name: N8N_INSTANCE_AI_SANDBOX_PROVIDER
+    value: n8n-sandbox
+  - name: N8N_SANDBOX_SERVICE_URL
+    value: http://{{KUBERO_APP_NAME}}-sandbox-api:8080
+  - name: N8N_SANDBOX_SERVICE_API_KEY
+    value: changeme-n8n-sandbox-key
+  - name: N8N_INSTANCE_AI_SANDBOX_IMAGE
+    value: ghcr.io/n8n-io/n8n-sandbox-service-sandbox:latest
+  - name: N8N_INSTANCE_AI_MODEL_API_KEY
+    value: ''
   extraVolumes: []
   image:
     containerPort: '5678'
@@ -126,6 +318,11 @@ spec:
     run:
       securityContext:
         readOnlyRootFilesystem: false
+  ingress:
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: '3600'
+      nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'
+      nginx.ingress.kubernetes.io/proxy-buffering: 'off'
   name: n8n
   web:
     replicaCount: 1
