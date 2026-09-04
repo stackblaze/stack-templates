@@ -97,6 +97,11 @@ spec:
               labels:
                 app: '{{KUBERO_APP_NAME}}-sandbox'
             spec:
+              hostAliases:
+              - ip: 127.0.0.1
+                hostnames:
+                - '{{KUBERO_APP_NAME}}-sandbox-api'
+                - '{{KUBERO_APP_NAME}}-sandbox-runner-1'
               initContainers:
               - name: certs
                 image: ghcr.io/n8n-io/n8n-sandbox-service-api:latest
@@ -185,7 +190,7 @@ spec:
                 - name: SANDBOX_RUNNER_LISTEN_ADDR
                   value: ':8081'
                 - name: SANDBOX_RUNNER_HTTP_BASE_URL
-                  value: http://{{KUBERO_APP_NAME}}-sandbox-runner-1:8080
+                  value: http://{{KUBERO_APP_NAME}}-sandbox-runner-1:8081
                 - name: SANDBOX_RUNNER_CONTROL_GRPC_LISTEN_ADDR
                   value: ':9091'
                 - name: SANDBOX_RUNNER_CONTROL_GRPC_ADVERTISE_ADDR
@@ -382,12 +387,10 @@ spec:
     value: changeme-n8n-sandbox-key
   - name: N8N_INSTANCE_AI_SANDBOX_IMAGE
     value: ghcr.io/n8n-io/n8n-sandbox-service-sandbox:latest
-  - name: N8N_INSTANCE_AI_MODEL_API_KEY
-    value: ''
+  - name: N8N_INSTANCE_AI_SANDBOX_TIMEOUT
+    value: '600000'
   - name: N8N_INSTANCE_AI_SEARXNG_URL
     value: http://{{KUBERO_APP_NAME}}-searxng:8080
-  - name: INSTANCE_AI_BRAVE_SEARCH_API_KEY
-    value: ''
   extraVolumes: []
   image:
     containerPort: '5678'
