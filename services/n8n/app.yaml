@@ -9,8 +9,9 @@ metadata:
     kubero.dev/template.installation: With Load demo data enabled, first boot creates
       owner demo@stackblaze.local / changeme and three sample workflows. Without it,
       complete the one-time owner setup at your app URL, then sign in. AI Assistant
-      uses a bundled n8n sandbox (provider, service URL, and API key are preconfigured).
-      Add an Anthropic, OpenAI, or OpenRouter key in n8n AI settings or set N8N_INSTANCE_AI_MODEL_API_KEY.
+      uses a bundled n8n sandbox and SearXNG for web search. Add an Anthropic,
+      OpenAI, or OpenRouter key in n8n AI settings or set N8N_INSTANCE_AI_MODEL_API_KEY.
+      Optionally set INSTANCE_AI_BRAVE_SEARCH_API_KEY to prefer Brave over SearXNG.
       If you are sent back to /setup, delete the app and its PostgreSQL addon together,
       redeploy, and verify POST /rest/login returns 200 (not 404) before signing in.
     kubero.dev/template.links: '["https://docs.n8n.io/deploy/host-n8n/configure-n8n/set-up-ai-assistant"]'
@@ -253,6 +254,85 @@ spec:
           - name: control
             port: 9091
             targetPort: 9091
+      searxngConfig:
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-searxng'
+        data:
+          settings.yml: |
+            use_default_settings: true
+            search:
+              formats:
+                - html
+                - json
+      searxngDeployment:
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-searxng'
+        spec:
+          replicas: 1
+          strategy:
+            type: Recreate
+          selector:
+            matchLabels:
+              app: '{{KUBERO_APP_NAME}}-searxng'
+          template:
+            metadata:
+              labels:
+                app: '{{KUBERO_APP_NAME}}-searxng'
+            spec:
+              containers:
+              - name: searxng
+                image: registry.stackblaze.cloud/searxng/searxng:latest
+                imagePullPolicy: Always
+                ports:
+                - name: http
+                  containerPort: 8080
+                env:
+                - name: SEARXNG_SECRET
+                  value: changeme-n8n-searxng-secret
+                - name: SEARXNG_PORT
+                  value: '8080'
+                - name: SEARXNG_BIND_ADDRESS
+                  value: 0.0.0.0
+                volumeMounts:
+                - name: settings
+                  mountPath: /etc/searxng/settings.yml
+                  subPath: settings.yml
+                  readOnly: true
+                readinessProbe:
+                  httpGet:
+                    path: /
+                    port: 8080
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  failureThreshold: 6
+                resources:
+                  requests:
+                    cpu: 50m
+                    memory: 128Mi
+                  limits:
+                    cpu: 250m
+                    memory: 256Mi
+              volumes:
+              - name: settings
+                configMap:
+                  name: '{{KUBERO_APP_NAME}}-searxng'
+      searxngService:
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-searxng'
+        spec:
+          type: ClusterIP
+          selector:
+            app: '{{KUBERO_APP_NAME}}-searxng'
+          ports:
+          - name: http
+            port: 8080
+            targetPort: 8080
   cronjobs: []
   deploymentstrategy: docker
   envVars:
@@ -303,6 +383,10 @@ spec:
   - name: N8N_INSTANCE_AI_SANDBOX_IMAGE
     value: ghcr.io/n8n-io/n8n-sandbox-service-sandbox:latest
   - name: N8N_INSTANCE_AI_MODEL_API_KEY
+    value: ''
+  - name: N8N_INSTANCE_AI_SEARXNG_URL
+    value: http://{{KUBERO_APP_NAME}}-searxng:8080
+  - name: INSTANCE_AI_BRAVE_SEARCH_API_KEY
     value: ''
   extraVolumes: []
   image:
