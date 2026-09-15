@@ -401,12 +401,13 @@ spec:
     # first-boot restart). Bump deliberately; 2.39+ needs a fixed
     # N8N_ENCRYPTION_KEY first. Pulled through the shared registry like the
     # other pinned templates (mattermost, twenty).
-    # 2026-09-15 18:20 UTC: pulled directly from docker.n8n.io for now.
-    # registry.stackblaze.cloud (zot on leaseweb-sfo) answers 503: its only
-    # pod is stuck Terminating on hosthatch-sfo-vm1, the Service has no
-    # endpoints, and the 2Ti local-path volume cannot move. Switch back to
-    # registry.stackblaze.cloud/n8nio/n8n once that registry is healthy.
-    repository: docker.n8n.io/n8nio/n8n
+    # Referenced as docker.io on purpose: zone nodes mirror docker.io through
+    # the REGIONAL registry (containerd hosts.d -> registry.<region>/v2/docker,
+    # the zot in each services cluster, on-demand sync, Docker Hub fallback),
+    # so each region serves this from its own cache. Not docker.n8n.io (never
+    # mirrored) and not registry.stackblaze.cloud (the sfo zot, 503 since
+    # 2026-09-14: node hosthatch-sfo-vm1 down, zot-0 stuck on a local-path PVC).
+    repository: docker.io/n8nio/n8n
     tag: '2.38.7'
     command:
     - /bin/sh
