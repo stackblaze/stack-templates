@@ -394,8 +394,15 @@ spec:
   extraVolumes: []
   image:
     containerPort: '5678'
-    repository: docker.n8n.io/n8nio/n8n
-    tag: latest
+    pullPolicy: IfNotPresent
+    # Pinned, NOT :latest. Upstream re-tagged latest 2.38.7 -> 2.39.5 on
+    # 2026-09-15 and every fresh deploy crash-looped (2.39.x refuses to start
+    # when the auto-generated instance encryption key changes across the
+    # first-boot restart). Bump deliberately; 2.39+ needs a fixed
+    # N8N_ENCRYPTION_KEY first. Pulled through the shared registry like the
+    # other pinned templates (mattermost, twenty).
+    repository: registry.stackblaze.cloud/n8nio/n8n
+    tag: '2.38.7'
     command:
     - /bin/sh
     - -c
