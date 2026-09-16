@@ -162,8 +162,10 @@ spec:
     replicaCount: 1
   image:
     containerPort: '3000'
-    pullPolicy: Always
-    repository: registry.stackblaze.cloud/twentycrm/twenty
+    pullPolicy: IfNotPresent
+    # docker.io so zone nodes mirror through the regional zot
+    # (registry.<region>/v2/docker). Not registry.stackblaze.cloud (sfo, 503).
+    repository: docker.io/twentycrm/twenty
     tag: v2.16.1
     run:
       securityContext:
