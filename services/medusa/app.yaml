@@ -168,9 +168,13 @@ spec:
     periodSeconds: 10
   image:
     containerPort: '9000'
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
+    # Referenced as ghcr.io on purpose: zone nodes mirror ghcr.io through
+    # the regional registry (containerd hosts.d -> registry.<region>/v2/ghcr,
+    # the zot in each services cluster, on-demand sync, ghcr.io fallback).
+    # Anonymous read on the LAN, no pull secret. Pinned tag, not :latest.
     repository: ghcr.io/stackblaze/stack-templates/medusa
-    tag: 2.21.0
+    tag: '2.21.0'
     run:
       securityContext:
         readOnlyRootFilesystem: false
