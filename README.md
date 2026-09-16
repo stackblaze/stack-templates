@@ -1361,6 +1361,14 @@ To record a QA pass, edit `qa-status.json` and re-run
       <td align="center">—</td>
     </tr>
     <tr>
+      <td><img src="https://avatars.githubusercontent.com/u/62591822?s=200&amp;v=4" width="32" height="32" alt="medusa" title="medusa" style="vertical-align:middle;border-radius:4px;" /></td>
+      <td><strong>medusa</strong></td>
+      <td align="center"><code>2.21.0</code></td>
+      <td>PostgreSQL (CloudNativePG), Valkey</td>
+      <td align="center">No</td>
+      <td align="center">—</td>
+    </tr>
+    <tr>
       <td><img src="https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/memos/icon.png" width="32" height="32" alt="memos" title="memos" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>memos</strong></td>
       <td align="center"><code>stable</code></td>
