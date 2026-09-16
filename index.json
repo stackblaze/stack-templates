@@ -155,52 +155,7 @@
    "source": "https://github.com/n8n-io/n8n",
    "icon": "https://avatars.githubusercontent.com/u/45487711?s=200&v=4",
    "website": "https://n8n.io",
-   "installation": "With Load demo data enabled, first boot creates owner demo@stackblaze.local / changeme and three sample workflows. Without it, complete the one-time owner setup at your app URL, then sign in. AI Assistant uses a bundled n8n sandbox and SearXNG for web search; add an Anthropic, OpenAI, or OpenRouter key in n8n AI settings or set N8N_INSTANCE_AI_MODEL_API_KEY. Optional: set INSTANCE_AI_BRAVE_SEARCH_API_KEY to prefer Brave over SearXNG.",
-   "architecture": [],
-   "categories": [
-    "work",
-    "productivity",
-    "utilities"
-   ],
-   "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/screenshot-workflow.png"
-   ],
-   "links": [],
-   "addons": [
-    "Cluster"
-   ],
-   "stars": 187423,
-   "forks": 57530,
-   "watchers": 187423,
-   "issues": 1470,
-   "last_updated": "2026-05-11T12:49:35Z",
-   "last_pushed": "2026-05-11T12:48:59Z",
-   "created_at": "2019-06-22T09:24:21Z",
-   "size": 503550,
-   "language": "TypeScript",
-   "gitops": false,
-   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/app.yaml",
-   "status": "active",
-   "license": "Other",
-   "spdx_id": "NOASSERTION",
-   "dirname": "n8n",
-   "supportsDemoData": true,
-   "deploymentTypes": [
-    {
-     "id": "standard",
-     "label": "Standard",
-     "default": true,
-     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/app.yaml"
-    }
-   ]
-  },
-  {
-   "name": "n8n Queue",
-   "description": "n8n in queue mode with Postgres, Valkey (Redis), and a worker so executions run off the editor.",
-   "source": "https://github.com/n8n-io/n8n",
-   "icon": "https://avatars.githubusercontent.com/u/45487711?s=200&v=4",
-   "website": "https://n8n.io",
-   "installation": "Queue mode. The editor is the public URL; a companion worker runs executions. With Load demo data enabled, first boot creates owner demo@stackblaze.local / changeme and three sample workflows. Without it, complete the one-time owner setup at your app URL.",
+   "installation": "Queue mode with Postgres, Valkey, and a worker. With Load demo data enabled, first boot creates owner demo@stackblaze.local / changeme and three sample workflows. Without it, complete the one-time owner setup at your app URL, then sign in. AI Assistant uses a bundled n8n sandbox and SearXNG for web search; add an Anthropic, OpenAI, or OpenRouter key in n8n AI settings or set N8N_INSTANCE_AI_MODEL_API_KEY. Optional: set INSTANCE_AI_BRAVE_SEARCH_API_KEY to prefer Brave over SearXNG.",
    "architecture": [],
    "categories": [
     "work",
@@ -225,18 +180,18 @@
    "size": 503550,
    "language": "TypeScript",
    "gitops": false,
-   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n-queue/app.yaml",
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/app.yaml",
    "status": "active",
    "license": "Other",
    "spdx_id": "NOASSERTION",
-   "dirname": "n8n-queue",
+   "dirname": "n8n",
    "supportsDemoData": true,
    "deploymentTypes": [
     {
      "id": "standard",
      "label": "Standard",
      "default": true,
-     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n-queue/app.yaml"
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/app.yaml"
     }
    ]
   },
