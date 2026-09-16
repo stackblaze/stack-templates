@@ -372,6 +372,14 @@ spec:
               memory: 256Mi
   cronjobs: []
   deploymentstrategy: docker
+  # Synthetic monorepo key — Overview groups api + worker siblings by
+  # clone_url (+ branch), same Architecture UX as Plane / voting-app.
+  gitrepo:
+    admin: false
+    clone_url: https://github.com/n8n-io/n8n.git
+    default_branch: master
+    private: false
+    ssh_url: ''
   envVars:
   - name: DB_TYPE
     value: postgresdb
