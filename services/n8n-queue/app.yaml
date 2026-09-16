@@ -3,21 +3,21 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Free and source-available fair-code licensed
-      workflow automation tool. Easily automate tasks across different services.
+    kubero.dev/template.description: n8n in queue mode — Postgres for the workspace,
+      Valkey for the job queue, and a worker that runs executions off the editor.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/45487711?s=200&v=4
-    kubero.dev/template.installation: With Load demo data enabled, first boot creates
+    kubero.dev/template.installation: Queue mode. The editor is the public URL; a
+      companion worker runs executions. With Load demo data enabled, first boot creates
       owner demo@stackblaze.local / changeme and three sample workflows. Without it,
-      complete the one-time owner setup at your app URL, then sign in. If you are sent
-      back to /setup, delete the app and its PostgreSQL addon together, redeploy, and
-      verify POST /rest/login returns 200 (not 404) before signing in.
+      complete the one-time owner setup at your app URL. N8N_ENCRYPTION_KEY is generated
+      at deploy and shared with the worker — do not change it on only one of the apps.
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/screenshot-workflow.png"]'
     kubero.dev/template.source: https://github.com/n8n-io/n8n
     kubero.dev/template.categories: '["work", "productivity", "utilities"]'
-    kubero.dev/template.title: n8n
+    kubero.dev/template.title: n8n Queue
     kubero.dev/template.website: https://n8n.io
-  name: n8n
+  name: n8n-queue
 spec:
   addons:
   - displayName: PostgreSQL (CloudNativePG)
@@ -77,6 +77,35 @@ spec:
         stringData:
           username: n8n
           password: '123456'
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-valkey'
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
   cronjobs: []
   deploymentstrategy: docker
   envVars:
@@ -90,6 +119,20 @@ spec:
     value: '$(PGUSER)'
   - name: DB_POSTGRESDB_PASSWORD
     value: '$(PGPASSWORD)'
+  - name: DB_POSTGRESDB_DATABASE
+    value: '$(PGDATABASE)'
+  - name: EXECUTIONS_MODE
+    value: queue
+  - name: QUEUE_BULL_REDIS_HOST
+    value: '$(REDISHOST)'
+  - name: QUEUE_BULL_REDIS_PORT
+    value: '$(REDISPORT)'
+  - name: QUEUE_HEALTH_CHECK_ACTIVE
+    value: 'true'
+  - name: OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS
+    value: 'true'
+  - name: N8N_ENCRYPTION_KEY
+    value: '{{KUBERO_GEN_ALNUM:32}}'
   - name: N8N_BASIC_AUTH_ACTIVE
     value: 'false'
   - name: WEBHOOK_URL
@@ -104,8 +147,6 @@ spec:
     value: https
   - name: N8N_PROXY_HOPS
     value: '1'
-  - name: DB_POSTGRESDB_DATABASE
-    value: '$(PGDATABASE)'
   - name: STACKBLAZE_LOAD_DEMO_DATA
     value: 'false'
   - name: STACKBLAZE_DEMO_EMAIL
@@ -126,8 +167,27 @@ spec:
     run:
       securityContext:
         readOnlyRootFilesystem: false
-  name: n8n
+  name: n8n-queue
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  # Catalog-only. Dashboard expands this into a second docker card that shares
+  # env (including the generated encryption key) and runs `n8n worker`.
+  templateServices:
+  - id: worker
+    nameHint: n8n-worker
+    exposeInternet: false
+    image:
+      repository: docker.n8n.io/n8nio/n8n
+      tag: latest
+      containerPort: '5678'
+      command:
+      - n8n
+      - worker
+    inheritEnvFrom: primary
+    healthcheck:
+      enabled: true
+      path: /healthz
+      timeoutSeconds: 5
+      periodSeconds: 10
