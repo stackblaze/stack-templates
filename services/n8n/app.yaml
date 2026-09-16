@@ -15,7 +15,7 @@ metadata:
       If you are sent back to /setup, delete the app and its PostgreSQL addon together,
       redeploy, and verify POST /rest/login returns 200 (not 404) before signing in.
     kubero.dev/template.links: '["https://docs.n8n.io/deploy/host-n8n/configure-n8n/set-up-ai-assistant"]'
-    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/n8n/demo.mp4", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/dashboard.png"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/screenshot-workflow.png"]'
     kubero.dev/template.source: https://github.com/n8n-io/n8n
     kubero.dev/template.categories: '["work", "productivity", "utilities"]'
     kubero.dev/template.title: n8n
