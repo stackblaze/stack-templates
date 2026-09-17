@@ -86,6 +86,57 @@ Rules:
   template against this contract (run it before committing; it is also the
   tool that performed the catalog-wide rewrite).
 
+## Email contract (Email add-on)
+
+Apps that send mail get it from the platform's **Email add-on** (kind `Smtp`):
+no resources in the template, no credentials, no provider account. When the
+add-on is live for the pipeline, kubero-server injects:
+
+| Add-on kind | Injected variables |
+|---|---|
+| `Smtp` | `SMTP_HOST` `SMTP_PORT` `SMTP_USER` `SMTP_PASSWORD` `SMTP_FROM` |
+
+Email is a **paid-plan** feature. On a trial the Email node is still created
+(locked) but nothing is injected, so the app's own email variables must not be
+set either — an unconditional `EMAIL_SMTP_HOST: $(SMTP_HOST)` would ship as the
+literal text `$(SMTP_HOST)`. That is why the mapping does **not** go in
+`spec.envVars`: it goes in the add-on entry's `env`, which the platform applies
+only while the add-on is live and removes again if it is disconnected.
+
+```yaml
+addons:
+- displayName: Email
+  icon: /img/addons/email.svg
+  id: kubero-smtp
+  kind: Smtp
+  env:
+  - name: MAIL_MAILER          # the app's own names…
+    value: smtp
+  - name: MAIL_HOST
+    value: '$(SMTP_HOST)'      # …mapped onto the injected contract
+  - name: MAIL_PASSWORD
+    value: '$(SMTP_PASSWORD)'
+  - name: MAIL_FROM_ADDRESS
+    value: '$(SMTP_FROM)'
+  resourceDefinitions: {}
+```
+
+Rules:
+
+- Put **every** email variable in the add-on `env`, including the driver /
+  transport switch (`EMAIL_DRIVER=smtp`, `MAIL_MAILER=smtp`). Left in
+  `spec.envVars` it turns SMTP on with no server behind it.
+- Literal `name`/`value` pairs only — no `valueFrom`.
+- The relay is Amazon SES on port 587 with STARTTLS. Do not force implicit TLS
+  (`secure: true` / port 465 settings) or disable TLS.
+- The From address must stay on the injected `SMTP_FROM` domain
+  (`<anything>@<pipeline>.<platform mail domain>`); SES rejects any other
+  sender for that login.
+- An app that reads `SMTP_HOST` … natively needs no `env` at all — declare the
+  add-on entry with `env: []`.
+- Run `python3 scripts/sync-index-addons.py` after adding the entry so the
+  catalog card lists Email.
+
 <!-- qa-table:start -->
 ## QA status
 
