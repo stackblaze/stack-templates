@@ -7,14 +7,16 @@ metadata:
     kubero.dev/template.description: Open-source headless commerce platform — products,
       carts, checkout, and an admin dashboard, with a REST/JS API for custom storefronts.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/62591822?s=200&v=4
+    kubero.dev/template.homepage: /app
     kubero.dev/template.installation: 'Deploys the Medusa 2 backend and admin (at /app)
-      with PostgreSQL and Valkey add-ons. First boot runs migrations and creates the
-      admin user from MEDUSA_ADMIN_EMAIL / MEDUSA_ADMIN_PASSWORD (default admin@example.com
-      / changeme — rotate immediately). JWT_SECRET and COOKIE_SECRET are generated
-      per deploy. After login, create a publishable API key under Settings > API Key
-      Management if you attach a Next.js storefront (official starter: github.com/medusajs/dtc-starter
-      apps/storefront) and set STORE_CORS to that storefront URL. Product images persist
-      on the uploads volume.'
+      with PostgreSQL and Valkey add-ons. Open /app — the root URL has no storefront.
+      First boot runs migrations and creates the admin user from MEDUSA_ADMIN_EMAIL /
+      MEDUSA_ADMIN_PASSWORD (default admin@example.com / changeme — rotate immediately).
+      JWT_SECRET and COOKIE_SECRET are generated per deploy. After login, create a
+      publishable API key under Settings > API Key Management if you attach a Next.js
+      storefront (official starter: github.com/medusajs/dtc-starter apps/storefront)
+      and set STORE_CORS to that storefront URL. Product images persist on the uploads
+      volume.'
     kubero.dev/template.links: '["https://docs.medusajs.com/learn/deployment/general",
       "https://docs.medusajs.com/"]'
     kubero.dev/template.screenshots: '["https://medusajs.com/images/og.jpg"]'
@@ -178,3 +180,7 @@ spec:
     run:
       securityContext:
         readOnlyRootFilesystem: false
+  # Medusa 2 serves admin at /app. Without this, GET / is Express "Cannot GET /".
+  ingress:
+    annotations:
+      nginx.ingress.kubernetes.io/app-root: /app
