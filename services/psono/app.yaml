@@ -113,9 +113,9 @@ spec:
     periodSeconds: 10
   image:
     containerPort: 8000
-    pullPolicy: Always
-    repository: registry.stackblaze.cloud/psono/psono-combo
-    tag: latest
+    pullPolicy: IfNotPresent
+    repository: docker.io/psono/psono-combo
+    tag: 7.4.3-4.8.2-1.10.0
     run:
       securityContext:
         readOnlyRootFilesystem: false
