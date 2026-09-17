@@ -105,8 +105,12 @@ spec:
     size: 1Gi
   image:
     containerPort: '80'
-    repository: registry.stackblaze.cloud/library/wordpress
-    tag: latest
+    pullPolicy: IfNotPresent
+    # docker.io/library so zone nodes mirror through the regional zot
+    # (registry.<region>/v2/docker). Not registry.stackblaze.cloud (sfo, 503).
+    # Pinned patch tag, not :latest.
+    repository: docker.io/library/wordpress
+    tag: 7.1.0-php8.3-apache
     run:
       securityContext:
         readOnlyRootFilesystem: false
