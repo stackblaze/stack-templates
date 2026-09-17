@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: "Psono is an open-source, self-hosted password\
       \ manager for teams \u2014 end-to-end encrypted secret storage with sharing,\
       \ an admin portal and a REST API."
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/29746989?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/psono/icon.png
     kubero.dev/template.installation: "The six server keys are generated uniquely\
       \ per deploy by kubero and persisted (they never change for the life of the\
       \ instance) \u2014 no manual setup. The web client is served at /, the admin\
