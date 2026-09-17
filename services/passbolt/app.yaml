@@ -4,7 +4,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: The open source password manager for teams
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/4386228?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/passbolt/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/passbolt/passbolt_styleguide/master/src/img/screenshots/teaser-screenshot-login.png","https://raw.githubusercontent.com/passbolt/passbolt_styleguide/master/src/img/screenshots/teaser-screenshot-share.png","https://raw.githubusercontent.com/passbolt/passbolt_styleguide/master/src/img/screenshots/teaser-screenshot4.png"]'
@@ -39,7 +39,7 @@ spec:
             key: password
           storage:
             size: 5Gi
-            storageClassName: fast
+            storageClassName: smart
           replicas: 1
           resources:
             requests:
@@ -92,14 +92,16 @@ spec:
   extraVolumes:
   - accessModes:
     - ReadWriteMany
+    emptyDir: false
     mountPath: /etc/passbolt/gpg
-    name: passbolt-gpg-volume
+    name: '{{KUBERO_APP_NAME}}-gpg'
     size: 1Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
+    emptyDir: false
     mountPath: /etc/passbolt/jwt
-    name: passbolt-jwt-volume
+    name: '{{KUBERO_APP_NAME}}-jwt'
     size: 1Gi
     storageClass: shared
   image:
@@ -109,14 +111,14 @@ spec:
     - -c
     - mkdir -p /etc/passbolt/gpg /etc/passbolt/jwt && chown -R 33:33 /etc/passbolt/gpg
       /etc/passbolt/jwt && exec /docker-entrypoint.sh
-    pullPolicy: Always
-    repository: registry.stackblaze.cloud/passbolt/passbolt
+    pullPolicy: IfNotPresent
+    repository: docker.io/passbolt/passbolt
     run:
       securityContext:
         runAsNonRoot: false
         runAsUser: 0
         readOnlyRootFilesystem: false
-    tag: latest-ce
+    tag: 5.16.0-1-ce
   name: passbolt
   resources:
     requests:
