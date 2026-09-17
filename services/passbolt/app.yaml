@@ -72,9 +72,9 @@ spec:
   - name: DATASOURCES_DEFAULT_HOST
     value: '$(MYSQL_HOST)'
   - name: DATASOURCES_DEFAULT_USERNAME
-    value: passbolt
+    value: '$(MYSQL_USER)'
   - name: DATASOURCES_DEFAULT_PASSWORD
-    value: changeme
+    value: '$(MYSQL_PASSWORD)'
   - name: DATASOURCES_DEFAULT_DATABASE
     value: '$(MYSQL_DATABASE)'
   - name: EMAIL_TRANSPORT_DEFAULT_HOST
