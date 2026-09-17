@@ -32,6 +32,12 @@ spec:
     value: '*'
   - name: PSONO_ALLOWED_DOMAINS
     value: '{{KUBERO_APP_HOST}}'
+  - name: PSONO_WEB_CLIENT_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: PSONO_EMAIL_BACKEND
+    value: django.core.mail.backends.console.EmailBackend
+  - name: PSONO_EMAIL_FROM
+    value: noreply@{{KUBERO_APP_HOST}}
   - name: PSONO_DATABASE_URL
     value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: PSONO_SECRET_KEY
@@ -107,9 +113,9 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    # Nginx (port 80) serves the client and proxies /server/* to daphne.
-    # /server/healthcheck/ rewrites to the API probe and returns JSON.
-    path: /server/healthcheck/
+    # Probe nginx on / . The API /server/healthcheck/ path is rate limited
+    # and will crash the pod when startup probes hit every second.
+    path: /
     startupSeconds: 300
     timeoutSeconds: 5
     periodSeconds: 10
