@@ -105,14 +105,14 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    # psono (daphne) serves no route at "/" (404) — the REST API is under
-    # /server. /server/info/ is a public, no-auth endpoint that returns 200.
-    path: /server/info/
+    # Nginx (port 80) serves the client and proxies /server/* to daphne.
+    # /server/healthcheck/ rewrites to the API probe and returns JSON.
+    path: /server/healthcheck/
     startupSeconds: 300
     timeoutSeconds: 5
     periodSeconds: 10
   image:
-    containerPort: 8000
+    containerPort: 80
     pullPolicy: IfNotPresent
     repository: docker.io/psono/psono-combo
     tag: 7.4.3-4.8.2-1.10.0
