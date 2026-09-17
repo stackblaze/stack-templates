@@ -5,7 +5,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Open source password management solutions for
       individuals, teams, and business organizations.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/15990069?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bitwarden/icon.png
     kubero.dev/template.installation: 'Register at https://bitwarden.com/host/ and set BW_INSTALLATION_ID
       and BW_INSTALLATION_KEY before first use. BW_DOMAIN is set from {{KUBERO_APP_HOST}}
       when the platform assigns a public URL. Rotate the default postgres password
@@ -115,9 +115,9 @@ spec:
         pathType: Prefix
   image:
     containerPort: 8080
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     repository: ghcr.io/bitwarden/lite
-    tag: latest
+    tag: 2026.9.0
     run:
       securityContext:
         readOnlyRootFilesystem: false
