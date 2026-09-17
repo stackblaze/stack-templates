@@ -530,15 +530,6 @@
     "ingressOk": null,
     "durationMs": 10046
   },
-  "bitwarden": {
-    "name": "bitwarden",
-    "status": "fail",
-    "validatedAt": "2026-06-13T03:45:46.749Z",
-    "error": "Validation cancelled",
-    "url": null,
-    "ingressOk": null,
-    "durationMs": 9921
-  },
   "rallly": {
     "name": "rallly",
     "status": "pass",
