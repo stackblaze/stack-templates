@@ -30,6 +30,8 @@ spec:
     value: '{{KUBERO_APP_URL}}/server'
   - name: PSONO_ALLOWED_HOSTS
     value: '*'
+  - name: PSONO_ALLOWED_DOMAINS
+    value: '{{KUBERO_APP_HOST}}'
   - name: PSONO_DATABASE_URL
     value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: PSONO_SECRET_KEY
