@@ -93,6 +93,36 @@ spec:
         stringData:
           username: mattermost
           password: mattermost
+  # Platform email (see README "Email contract"). Applied only while the
+  # Email add-on is live (paid plans); without it Mattermost keeps its
+  # defaults (SendEmailNotifications=false, no SMTP server) and simply does
+  # not mail. Env-set values show as locked in the System Console.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: MM_EMAILSETTINGS_SENDEMAILNOTIFICATIONS
+      value: 'true'
+    - name: MM_EMAILSETTINGS_SMTPSERVER
+      value: '$(SMTP_HOST)'
+    - name: MM_EMAILSETTINGS_SMTPPORT
+      value: '$(SMTP_PORT)'
+    - name: MM_EMAILSETTINGS_ENABLESMTPAUTH
+      value: 'true'
+    - name: MM_EMAILSETTINGS_SMTPUSERNAME
+      value: '$(SMTP_USER)'
+    - name: MM_EMAILSETTINGS_SMTPPASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: MM_EMAILSETTINGS_CONNECTIONSECURITY
+      value: STARTTLS
+    - name: MM_EMAILSETTINGS_FEEDBACKEMAIL
+      value: '$(SMTP_FROM)'
+    - name: MM_EMAILSETTINGS_REPLYTOADDRESS
+      value: '$(SMTP_FROM)'
+    - name: MM_EMAILSETTINGS_FEEDBACKNAME
+      value: Mattermost
+    resourceDefinitions: {}
   web:
     replicaCount: 1
   worker:

@@ -169,7 +169,8 @@
    "links": [],
    "addons": [
     "Cluster",
-    "Valkey"
+    "Valkey",
+    "Smtp"
    ],
    "stars": 187423,
    "forks": 57530,
@@ -260,7 +261,8 @@
    ],
    "links": [],
    "addons": [
-    "MariaDB"
+    "MariaDB",
+    "Smtp"
    ],
    "stars": 21103,
    "forks": 12937,
@@ -3072,7 +3074,8 @@
    ],
    "links": [],
    "addons": [
-    "MariaDB"
+    "MariaDB",
+    "Smtp"
    ],
    "stars": 5891,
    "forks": 382,
@@ -4826,7 +4829,8 @@
     "https://docs.mattermost.com/"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
    "stars": 36839,
    "forks": 8631,

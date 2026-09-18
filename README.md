@@ -132,8 +132,13 @@ Rules:
 - The From address must stay on the injected `SMTP_FROM` domain
   (`<anything>@<pipeline>.<platform mail domain>`); SES rejects any other
   sender for that login.
+- Remove the app's email variables from `spec.envVars` when you add the
+  mapping: a same-named variable there (even a `localhost` placeholder) always
+  wins over the add-on `env`, so the mapping would never apply.
 - An app that reads `SMTP_HOST` … natively needs no `env` at all — declare the
-  add-on entry with `env: []`.
+  add-on entry with `env: []`. An app with no SMTP setting of its own gets a
+  small start-time shim that reads `SMTP_*` (WordPress: a must-use plugin
+  written by `image.command`, inert while `SMTP_HOST` is absent).
 - Run `python3 scripts/sync-index-addons.py` after adding the entry so the
   catalog card lists Email.
 
@@ -1366,8 +1371,8 @@ To record a QA pass, edit `qa-status.json` and re-run
     <tr>
       <td><img src="https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/icon.png" width="32" height="32" alt="mattermost" title="mattermost" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>mattermost</strong></td>
-      <td align="center"><code>10.5</code></td>
-      <td>PostgreSQL (CloudNativePG)</td>
+      <td align="center"><code>10.5.14</code></td>
+      <td>PostgreSQL (CloudNativePG), Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
@@ -1502,8 +1507,8 @@ To record a QA pass, edit `qa-status.json` and re-run
     <tr>
       <td><img src="https://avatars.githubusercontent.com/u/45487711?s=200&amp;v=4" width="32" height="32" alt="n8n" title="n8n" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>n8n</strong></td>
-      <td align="center"><code>latest</code></td>
-      <td>PostgreSQL (CloudNativePG)</td>
+      <td align="center"><code>2.38.7</code></td>
+      <td>PostgreSQL (CloudNativePG), Valkey, Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
@@ -1718,8 +1723,8 @@ To record a QA pass, edit `qa-status.json` and re-run
     <tr>
       <td><img src="https://avatars.githubusercontent.com/u/4386228?s=200&amp;v=4" width="32" height="32" alt="passbolt" title="passbolt" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>passbolt</strong></td>
-      <td align="center"><code>latest-ce</code></td>
-      <td>MariaDB</td>
+      <td align="center"><code>5.16.0-1-ce</code></td>
+      <td>MariaDB, Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
@@ -1918,7 +1923,7 @@ To record a QA pass, edit `qa-status.json` and re-run
     <tr>
       <td><img src="https://avatars.githubusercontent.com/u/29746989?s=200&amp;v=4" width="32" height="32" alt="psono" title="psono" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>psono</strong></td>
-      <td align="center"><code>latest</code></td>
+      <td align="center"><code>7.4.3-4.8.2-1.10.0</code></td>
       <td>PostgreSQL (CloudNativePG)</td>
       <td align="center">No</td>
       <td align="center">—</td>
@@ -2303,7 +2308,7 @@ To record a QA pass, edit `qa-status.json` and re-run
       <td><img src="https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/icon.png" width="32" height="32" alt="twenty" title="twenty" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>twenty</strong></td>
       <td align="center"><code>v2.16.1</code></td>
-      <td>PostgreSQL (CloudNativePG), Valkey</td>
+      <td>PostgreSQL (CloudNativePG), Valkey, Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
@@ -2454,8 +2459,8 @@ To record a QA pass, edit `qa-status.json` and re-run
     <tr>
       <td><img src="https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/icon.png" width="32" height="32" alt="wordpress" title="wordpress" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>wordpress</strong></td>
-      <td align="center"><code>latest</code></td>
-      <td>MariaDB</td>
+      <td align="center"><code>7.1.0-php8.3-apache</code></td>
+      <td>MariaDB, Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
