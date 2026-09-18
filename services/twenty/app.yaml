@@ -167,6 +167,21 @@ spec:
     # (registry.<region>/v2/docker). Not registry.stackblaze.cloud (sfo, 503).
     repository: docker.io/twentycrm/twenty
     tag: v2.16.1
+    # The chart gives web and worker the same command and only sets
+    # PROC_TYPE, so branch on it. Without this the "worker" was a second API
+    # server (the image's default `node dist/main`) and Twenty's BullMQ
+    # queues — invitation emails, workflows, webhooks, sync — were never
+    # consumed. Web goes through the image entrypoint (DB migrations + cron
+    # registration); the worker skips both, as upstream's compose does.
+    command:
+      - sh
+      - -c
+      - >-
+        if [ "$PROC_TYPE" = worker ]; then
+          exec node dist/queue-worker/queue-worker;
+        else
+          exec /app/entrypoint.sh node dist/main;
+        fi
     run:
       securityContext:
         readOnlyRootFilesystem: false
@@ -180,9 +195,10 @@ spec:
   healthcheck:
     enabled: true
     path: /
-    # First-boot migrations run in BOTH web and worker (shared envVars, no
-    # per-role toggle) and exceed 10 min at 1 CPU — the startup probe killed
-    # both at exactly the 600s deadline (QA repro: paired exit 137).
+    # First-boot migrations exceed 10 min at 1 CPU — the startup probe killed
+    # the web pod at exactly the 600s deadline (QA repro: exit 137). Only the
+    # web container migrates now (see image.command); the worker has no probe
+    # and simply restarts until the schema exists.
     startupSeconds: 1500
     timeoutSeconds: 5
     periodSeconds: 10
