@@ -51,8 +51,6 @@ spec:
     value: '400'
   - name: STORAGE_TYPE
     value: local
-  - name: MESSAGE_QUEUE_TYPE
-    value: pg-boss
   - name: SIGN_IN_PREFILLED
     value: 'false'
   - name: DEBUG_MODE
