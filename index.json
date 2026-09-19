@@ -4878,7 +4878,8 @@
     "https://doc.psono.com/"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
    "stars": 0,
    "forks": 0,

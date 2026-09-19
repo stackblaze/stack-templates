@@ -96,12 +96,14 @@ add-on is live for the pipeline, kubero-server injects:
 |---|---|
 | `Smtp` | `SMTP_HOST` `SMTP_PORT` `SMTP_USER` `SMTP_PASSWORD` `SMTP_FROM` |
 
-Email is a **paid-plan** feature. On a trial the Email node is still created
-(locked) but nothing is injected, so the app's own email variables must not be
-set either — an unconditional `EMAIL_SMTP_HOST: $(SMTP_HOST)` would ship as the
-literal text `$(SMTP_HOST)`. That is why the mapping does **not** go in
-`spec.envVars`: it goes in the add-on entry's `env`, which the platform applies
-only while the add-on is live and removes again if it is disconnected.
+Email is metered per send on every plan (trial included), so the mapping is
+live from the first deploy. It can still be absent — Platform → Email off, the
+plan's email switch off, or the node disconnected — and then nothing is
+injected, so the app's own email variables must not be set unconditionally: an
+`EMAIL_SMTP_HOST: $(SMTP_HOST)` in `spec.envVars` would ship as the literal
+text `$(SMTP_HOST)`. That is why the mapping does **not** go in `spec.envVars`:
+it goes in the add-on entry's `env`, which the platform applies only while the
+add-on is live and removes again if it is disconnected.
 
 ```yaml
 addons:
@@ -1924,7 +1926,7 @@ To record a QA pass, edit `qa-status.json` and re-run
       <td><img src="https://avatars.githubusercontent.com/u/29746989?s=200&amp;v=4" width="32" height="32" alt="psono" title="psono" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>psono</strong></td>
       <td align="center"><code>7.4.3-4.8.2-1.10.0</code></td>
-      <td>PostgreSQL (CloudNativePG)</td>
+      <td>PostgreSQL (CloudNativePG), Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
