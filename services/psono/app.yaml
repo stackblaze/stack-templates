@@ -34,10 +34,6 @@ spec:
     value: '{{KUBERO_APP_HOST}}'
   - name: PSONO_WEB_CLIENT_URL
     value: '{{KUBERO_APP_URL}}'
-  - name: PSONO_EMAIL_BACKEND
-    value: django.core.mail.backends.console.EmailBackend
-  - name: PSONO_EMAIL_FROM
-    value: noreply@{{KUBERO_APP_HOST}}
   - name: PSONO_DATABASE_URL
     value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: PSONO_SECRET_KEY
@@ -107,6 +103,33 @@ spec:
         stringData:
           username: psono
           password: psono
+  # Platform email (see README "Email contract"). Psono cannot onboard a
+  # user without mail (registration and recovery links go out by email), so
+  # every mail variable lives here and nothing in envVars: a same-named var
+  # there would win over this mapping. Email is metered on every plan, so
+  # the mapping is live from the first deploy; only with the platform switch
+  # off does Psono fall back to its smtp→localhost default (registration
+  # then fails with REGISTRATION_EMAIL_DELIVERY_FAILED).
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: PSONO_EMAIL_BACKEND
+      value: django.core.mail.backends.smtp.EmailBackend
+    - name: PSONO_EMAIL_HOST
+      value: '$(SMTP_HOST)'
+    - name: PSONO_EMAIL_PORT
+      value: '$(SMTP_PORT)'
+    - name: PSONO_EMAIL_HOST_USER
+      value: '$(SMTP_USER)'
+    - name: PSONO_EMAIL_HOST_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: PSONO_EMAIL_USE_TLS
+      value: 'True'
+    - name: PSONO_EMAIL_FROM
+      value: '$(SMTP_FROM)'
+    resourceDefinitions: {}
   web:
     replicaCount: 1
   worker:

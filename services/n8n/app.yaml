@@ -370,6 +370,32 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  # Platform email (see README "Email contract"). Applied only while the
+  # Email add-on is live (paid plans); without it N8N_SMTP_HOST stays empty
+  # and n8n falls back to invite links instead of invite emails. SES is
+  # STARTTLS on 587, so implicit SSL (n8n's default) is switched off.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: N8N_EMAIL_MODE
+      value: smtp
+    - name: N8N_SMTP_HOST
+      value: '$(SMTP_HOST)'
+    - name: N8N_SMTP_PORT
+      value: '$(SMTP_PORT)'
+    - name: N8N_SMTP_USER
+      value: '$(SMTP_USER)'
+    - name: N8N_SMTP_PASS
+      value: '$(SMTP_PASSWORD)'
+    - name: N8N_SMTP_SENDER
+      value: 'n8n <$(SMTP_FROM)>'
+    - name: N8N_SMTP_SSL
+      value: 'false'
+    - name: N8N_SMTP_STARTTLS
+      value: 'true'
+    resourceDefinitions: {}
   cronjobs: []
   deploymentstrategy: docker
   # Synthetic monorepo key — Overview groups api + worker siblings by
