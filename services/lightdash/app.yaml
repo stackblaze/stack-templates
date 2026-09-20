@@ -116,7 +116,7 @@ spec:
           - name: pool-0
             servers: 1
             persistence:
-              volumesPerServer: 4
+              volumesPerServer: 1
               volumeClaimTemplate:
                 accessModes:
                 - ReadWriteOnce
