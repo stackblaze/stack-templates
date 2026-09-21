@@ -94,9 +94,9 @@ spec:
     replicaCount: 0
   image:
     containerPort: '3000'
-    pullPolicy: Always
-    repository: registry.stackblaze.cloud/docuseal/docuseal
-    tag: latest
+    pullPolicy: IfNotPresent
+    repository: docker.io/docuseal/docuseal
+    tag: '3.2.6'
     run:
       securityContext:
         readOnlyRootFilesystem: false
