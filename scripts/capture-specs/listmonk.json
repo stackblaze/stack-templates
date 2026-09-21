@@ -1,0 +1,24 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/admin",
+    "steps": [
+      { "waitForSelector": "#email", "timeout": 120000 },
+      { "fill": { "#email": "newsletter@stackblaze.local" } },
+      { "fill": { "#username": "admin" } },
+      { "fill": { "#password": "Changeme1!" } },
+      { "fill": { "#password2": "Changeme1!" } },
+      { "click": "section.login form.form button[type=\"submit\"]" },
+      { "sleep": 3500 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "dashboard", "path": "/admin", "waitMs": 3000 },
+    { "name": "lists", "path": "/admin/lists", "waitMs": 3000 },
+    { "name": "subscribers", "path": "/admin/subscribers", "waitMs": 3000 },
+    { "name": "campaigns", "path": "/admin/campaigns", "waitMs": 3000 },
+    { "name": "archive", "path": "/archive", "waitMs": 2500 }
+  ]
+}
