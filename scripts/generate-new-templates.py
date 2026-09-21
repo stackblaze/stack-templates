@@ -998,14 +998,12 @@ APPS: list[dict] = [
             {"name": "LISTMONK_db__user", "value": "listmonk"},
             {"name": "LISTMONK_db__password", "value": "listmonk"},
             {"name": "LISTMONK_db__database", "value": "listmonk"},
-            {"name": "LISTMONK_app__admin_username", "value": "admin"},
-            {"name": "LISTMONK_app__admin_password", "value": "change-me"},
             {"name": "LISTMONK_app__address", "value": "0.0.0.0:9000"},
         ],
         "extraVolumes": [{"mountPath": "/listmonk/uploads", "name": "listmonk-uploads", "size": "5Gi"}],
         "resources": {"requests": {"cpu": "100m", "memory": "128Mi"}, "limits": {"cpu": "1", "memory": "512Mi"}},
         "healthcheck": {"path": "/health", "startupSeconds": 120},
-        "installation": "Change LISTMONK_app__admin_password. On first boot, listmonk runs database migrations automatically. Log in at /admin with admin/<password>. Configure an SMTP server in Settings > SMTP to send campaigns. Import subscribers via CSV or the API. Listmonk is extremely efficient — a single instance can send millions of emails per hour with a good SMTP provider.",
+        "installation": "On first boot, listmonk runs database migrations automatically. Open /admin and complete the one-time Super Admin setup (email, username, password). Do not set legacy admin_username/admin_password in config or env — listmonk v6 manages users in Admin > Settings > Users. Configure SMTP under Settings > SMTP to send campaigns. Import subscribers via CSV or the API.",
     },
 
     {
