@@ -145,9 +145,14 @@ spec:
     periodSeconds: 10
   image:
     containerPort: '80'
-    pullPolicy: Always
-    repository: registry.stackblaze.cloud/nfrastack/freescout
-    tag: latest
+    pullPolicy: IfNotPresent
+    # Referenced as docker.io on purpose: zone nodes mirror docker.io through
+    # the regional registry (containerd hosts.d -> registry.<region>/v2/docker,
+    # the zot in each services cluster, on-demand sync, Docker Hub fallback).
+    # Anonymous read, no pull secret. Not registry.stackblaze.cloud (sfo zot,
+    # 503). Pinned patch tag, not :latest.
+    repository: docker.io/nfrastack/freescout
+    tag: '2.2.12-alpine'
     run:
       securityContext:
         readOnlyRootFilesystem: false
