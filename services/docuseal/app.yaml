@@ -95,6 +95,11 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: IfNotPresent
+    # Referenced as docker.io on purpose: zone nodes mirror docker.io through
+    # the regional registry (containerd hosts.d -> registry.<region>/v2/docker,
+    # the zot in each services cluster, on-demand sync, Docker Hub fallback).
+    # Anonymous read, no pull secret. Not registry.stackblaze.cloud (sfo zot,
+    # 503). Pinned patch tag, not :latest.
     repository: docker.io/docuseal/docuseal
     tag: '3.2.6'
     run:
