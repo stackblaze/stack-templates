@@ -15,7 +15,7 @@ metadata:
       via gunicorn on port 5000. Create the first admin/user via the web sign-up flow
       (registration is open by default; disable open registration with SIGN_UP_ENABLED=false
       after creating your accounts). DATABASE_URL points at the bundled postgres add-on
-      (passit-postgresql-rw) and REDIS_URL at the valkey add-on (used for Celery background
+      ($(PGHOST), the ProxySQL pooler) and REDIS_URL at the valkey add-on (used for Celery background
       jobs / caching). For password-reset and invite emails, configure SMTP via EMAIL_*
       / SERVER_EMAIL env vars or the Django settings after install. No object storage
       required.'
