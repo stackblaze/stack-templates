@@ -1,0 +1,212 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: openbooks
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source accounting-first ERP with a PostgreSQL-enforced
+      double-entry ledger, projects/job costing, and optional Canada/US payroll packs
+      (alpha).
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/icon.png
+    kubero.dev/template.installation: "OpenBooks is ALPHA software — evaluate with test\
+      \ or parallel books before production financials. Image ghcr.io/braedonsaunders/openbooks:0.1.0-alpha.17\
+      \ (Node standalone + Chromium). Bundled add-ons: PostgreSQL 16 (CloudNativePG)\
+      \ and Valkey (Redis). Object storage is optional; with S3_* unset, attachments\
+      \ live in Postgres. On first web boot the container runs scripts/bootstrap.mjs\
+      \ (migrations, RLS, org seed, admin), then the web server; a worker pod runs\
+      \ scripts/worker.mjs for scheduled jobs. Sign in with ADMIN_EMAIL / ADMIN_PASSWORD\
+      \ (generated at deploy). Change ORG_COUNTRY (ISO-3166 alpha-2) and ORG_CURRENCY\
+      \ (ISO-4217) before first boot if you are not US/USD — they seed the first organization.\
+      \ After login, finish Company Settings → Setup wizard and enable Features (e.g.\
+      \ payroll, hrm) as needed. ROTATE is automatic for SESSION_SECRET / OPENBOOKS_DATA_KEY\
+      \ / OPENBOOKS_INTERNAL_TOKEN / ADMIN_PASSWORD via KUBERO_GEN_*; do not change DATA_KEY\
+      \ after data exists. Postgres password must be ≥24 characters (OpenBooks runtime\
+      \ role check) — communal injects a long password; if you override the add-on secret,\
+      \ keep it long. Behind Stackblaze ingress OPENBOOKS_TRUST_PROXY=1. Health: GET\
+      \ /api/v1/health."
+    kubero.dev/template.links: '["https://github.com/braedonsaunders/openbooks", "https://github.com/braedonsaunders/openbooks/blob/main/SECURITY.md"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/executive-dashboard.jpg",
+      "https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/profit-and-loss.jpg",
+      "https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/project-profitability.jpg"]'
+    kubero.dev/template.source: https://github.com/braedonsaunders/openbooks
+    kubero.dev/template.categories: '["finance", "erp", "work"]'
+    kubero.dev/template.title: OpenBooks
+    kubero.dev/template.website: https://openbooks-site.vercel.app
+  labels:
+    manager: kubero
+spec:
+  name: openbooks
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql'
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: smart
+            size: 10Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: '1'
+              memory: 2Gi
+          bootstrap:
+            initdb:
+              database: openbooks
+              owner: openbooks
+              secret:
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO openbooks
+              - GRANT CREATE ON SCHEMA public TO openbooks
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO openbooks
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: openbooks-change-me-min-24-chars
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: openbooks
+          # OpenBooks requires the runtime DB password to be ≥24 characters.
+          password: openbooks-change-me-min-24-chars
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-valkey'
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: NODE_ENV
+    value: production
+  - name: HOSTNAME
+    value: 0.0.0.0
+  - name: PORT
+    value: '3000'
+  # Single tenant role for both bootstrap and runtime (communal PG injects one
+  # role). Upstream Compose uses separate owner/app roles; Stackblaze uses the
+  # injected PG* contract for all three URLs so logical/communal DBs work.
+  - name: OPENBOOKS_DB_URL
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  - name: OPENBOOKS_MIGRATION_DB_URL
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  - name: OPENBOOKS_RUNTIME_DB_URL
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  - name: OPENBOOKS_REDIS_URL
+    value: 'redis://$(REDISHOST):$(REDISPORT)'
+  - name: OPENBOOKS_APP_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: APP_BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: OPENBOOKS_TRUST_PROXY
+    value: '1'
+  - name: SESSION_SECRET
+    value: '{{KUBERO_GEN_HEX:64}}'
+  - name: OPENBOOKS_DATA_KEY
+    value: '{{KUBERO_GEN_HEX:64}}'
+  - name: OPENBOOKS_INTERNAL_TOKEN
+    value: '{{KUBERO_GEN_HEX:48}}'
+  # Worker → web (same-app Service targets web pods).
+  - name: OPENBOOKS_INTERNAL_URL
+    value: 'http://{{KUBERO_APP_NAME}}:3000'
+  - name: ORG_NAME
+    value: OpenBooks
+  - name: ORG_COUNTRY
+    value: US
+  - name: ORG_CURRENCY
+    value: USD
+  - name: ADMIN_EMAIL
+    value: admin@openbooks.local
+  - name: ADMIN_NAME
+    value: Administrator
+  - name: ADMIN_PASSWORD
+    value: '{{KUBERO_GEN_HEX:24}}'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 1
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1536Mi
+    limits:
+      cpu: '2'
+      memory: 3Gi
+  healthcheck:
+    enabled: true
+    path: /api/v1/health
+    startupSeconds: 1500
+    timeoutSeconds: 10
+    periodSeconds: 15
+  image:
+    containerPort: '3000'
+    pullPolicy: IfNotPresent
+    # Prefer ghcr.io so regional zot pull-through can cache it.
+    repository: ghcr.io/braedonsaunders/openbooks
+    tag: 0.1.0-alpha.17
+    # Chart shares this command for web and worker; branch on PROC_TYPE.
+    # Bootstrap must not leave OPENBOOKS_BOOTSTRAP=1 on the long-running web
+    # process (that would keep using the migration connection selector).
+    command:
+    - sh
+    - -c
+    - >-
+      if [ "$PROC_TYPE" = worker ]; then
+        exec node scripts/worker.mjs;
+      else
+        OPENBOOKS_BOOTSTRAP=1 node scripts/bootstrap.mjs &&
+        exec env -u OPENBOOKS_BOOTSTRAP node web/server.js;
+      fi
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
