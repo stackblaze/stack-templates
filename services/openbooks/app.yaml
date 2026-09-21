@@ -159,8 +159,10 @@ spec:
   - name: OPENBOOKS_INTERNAL_TOKEN
     value: '{{KUBERO_GEN_HEX:48}}'
   # Worker → web (same-app Service targets web pods).
+  # Same-pod loopback. The Kubero Service only exposes :80 (→ container :3000);
+  # http://{{KUBERO_APP_NAME}}:3000 hangs SSR and leaves the UI on the splash.
   - name: OPENBOOKS_INTERNAL_URL
-    value: 'http://{{KUBERO_APP_NAME}}:3000'
+    value: 'http://127.0.0.1:3000'
   - name: ORG_NAME
     value: OpenBooks
   - name: ORG_COUNTRY
