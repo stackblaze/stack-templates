@@ -8,20 +8,14 @@ metadata:
       double-entry ledger, projects/job costing, and optional Canada/US payroll packs
       (alpha).
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/icon.png
-    kubero.dev/template.installation: "OpenBooks is ALPHA software — evaluate with test\
-      \ or parallel books before production financials. Image ghcr.io/braedonsaunders/openbooks:0.1.0-alpha.17\
-      \ (Node standalone + Chromium). Postgres is pinned to a dedicated CloudNativePG\
-      \ cluster (mode: server), not a communal logical database: bootstrap must CREATE\
-      \ ROLE (openbooks_read + openbooks_app) and only the cluster superuser can.\
-      \ Valkey is bundled. Object storage is optional; with S3_* unset, attachments\
-      \ live in Postgres. Web boot runs scripts/bootstrap.mjs as postgres, then the\
-      \ server as openbooks_app; the worker uses openbooks_app. Sign in with ADMIN_EMAIL\
-      \ / ADMIN_PASSWORD (generated at deploy). Change ORG_COUNTRY and ORG_CURRENCY\
-      \ before first boot if you are not US/USD. After login, finish Company Settings\
-      \ → Setup wizard. If a previous deploy used the communal database, delete the\
-      \ app and its Postgres add-on, then redeploy — an existing logical database\
-      \ is not converted in place. Do not change OPENBOOKS_DATA_KEY after data exists.\
-      \ Health: GET /api/v1/health."
+    kubero.dev/template.installation: "OpenBooks is ALPHA and not open for deploy\
+      \ on StackBlaze shared plans yet. Bootstrap creates PostgreSQL roles (openbooks_read)\
+      \ and needs privileges communal tenant logins do not have. Dedicated Postgres\
+      \ works but burns a limited volume slot — we are not offering that path. Upstream\
+      \ precreated-roles support is tracked at https://github.com/braedonsaunders/openbooks/pull/29;\
+      \ deploy will open after that and our communal hook land. Do not deploy from\
+      \ the dashboard in the meantime. Image ghcr.io/braedonsaunders/openbooks:0.1.0-alpha.17.\
+      \ Valkey is bundled. Health: GET /api/v1/health."
     kubero.dev/template.links: '["https://github.com/braedonsaunders/openbooks", "https://github.com/braedonsaunders/openbooks/blob/main/SECURITY.md"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/executive-dashboard.jpg",
       "https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/profit-and-loss.jpg",

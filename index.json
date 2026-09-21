@@ -9987,7 +9987,7 @@
    "source": "https://github.com/braedonsaunders/openbooks",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/icon.png",
    "website": "https://openbooks-site.vercel.app",
-   "installation": "OpenBooks is ALPHA software. Postgres is a dedicated CloudNativePG cluster (mode: server), not a communal logical database, because bootstrap must CREATE ROLE as the cluster superuser and then serve as openbooks_app. Valkey is bundled. Sign in with ADMIN_EMAIL / ADMIN_PASSWORD from the app env. Change ORG_COUNTRY and ORG_CURRENCY before first boot if you are not US/USD. If a previous deploy used the communal database, delete the app and its Postgres add-on, then redeploy \u2014 an existing logical database is not converted in place. Do not change OPENBOOKS_DATA_KEY after data exists.",
+   "installation": "OpenBooks is ALPHA and not open for deploy on StackBlaze shared plans yet. Bootstrap creates PostgreSQL roles (openbooks_read) and needs privileges communal tenant logins do not have. Dedicated Postgres works but burns a limited volume slot \u2014 we are not offering that path. Upstream precreated-roles support is tracked at https://github.com/braedonsaunders/openbooks/pull/29; deploy will open after that and our communal hook land. Do not deploy from the dashboard in the meantime.",
    "architecture": [],
    "categories": [
     "finance",
