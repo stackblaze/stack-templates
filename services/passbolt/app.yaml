@@ -64,6 +64,31 @@ spec:
         type: Opaque
         stringData:
           password: changeme
+  # Platform email (see README "Email contract"). Applied only while the
+  # Email add-on is live (paid plans). Passbolt cannot onboard users without
+  # mail (the registration/recovery links go out by email), so nothing is
+  # left in envVars: an explicit EMAIL_TRANSPORT_DEFAULT_HOST there would win
+  # over this mapping. Unlinked, Passbolt keeps its localhost:25 default.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: EMAIL_TRANSPORT_DEFAULT_HOST
+      value: '$(SMTP_HOST)'
+    - name: EMAIL_TRANSPORT_DEFAULT_PORT
+      value: '$(SMTP_PORT)'
+    - name: EMAIL_TRANSPORT_DEFAULT_USERNAME
+      value: '$(SMTP_USER)'
+    - name: EMAIL_TRANSPORT_DEFAULT_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: EMAIL_TRANSPORT_DEFAULT_TLS
+      value: 'true'
+    - name: EMAIL_DEFAULT_FROM
+      value: '$(SMTP_FROM)'
+    - name: EMAIL_DEFAULT_FROM_NAME
+      value: Passbolt
+    resourceDefinitions: {}
   cronjobs: []
   deploymentstrategy: docker
   envVars:
@@ -77,12 +102,6 @@ spec:
     value: '$(MYSQL_PASSWORD)'
   - name: DATASOURCES_DEFAULT_DATABASE
     value: '$(MYSQL_DATABASE)'
-  - name: EMAIL_TRANSPORT_DEFAULT_HOST
-    value: localhost
-  - name: EMAIL_TRANSPORT_DEFAULT_PORT
-    value: '25'
-  - name: EMAIL_DEFAULT_FROM
-    value: noreply@example.com
   healthcheck:
     enabled: true
     path: /healthcheck/status.json

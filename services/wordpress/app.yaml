@@ -65,6 +65,16 @@ spec:
         type: Opaque
         stringData:
           password: wordpress
+  # Platform email (see README "Email contract"). WordPress has no SMTP
+  # setting of its own: the must-use plugin written by image.command reads
+  # the injected SMTP_* directly, so no mapping is needed here. Unlinked
+  # (trial), SMTP_HOST is absent and the plugin does nothing.
+  - displayName: Email
+    env: []
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    resourceDefinitions: {}
   cronjobs: []
   deploymentstrategy: docker
   envVars:
@@ -111,6 +121,39 @@ spec:
     # Pinned patch tag, not :latest.
     repository: docker.io/library/wordpress
     tag: 7.1.0-php8.3-apache
+    # Drop a must-use plugin that routes wp_mail() through the platform
+    # Email add-on, then hand over to the image entrypoint. Rewritten on
+    # every start (wp-content is the persistent volume), inert without
+    # SMTP_HOST. The From address is forced to SMTP_FROM: SES rejects any
+    # other sender for the pipeline's login.
+    command:
+    - sh
+    - -c
+    - |
+      mkdir -p /var/www/html/wp-content/mu-plugins
+      cat > /var/www/html/wp-content/mu-plugins/stackblaze-email.php <<'PHP'
+      <?php
+      /**
+       * Plugin Name: Stackblaze Email
+       * Description: Sends wp_mail() through the platform Email add-on (SMTP_* environment). Managed by the template — rewritten on every restart.
+       */
+      if (!getenv('SMTP_HOST')) {
+          return;
+      }
+      add_action('phpmailer_init', function ($phpmailer) {
+          $phpmailer->isSMTP();
+          $phpmailer->Host       = getenv('SMTP_HOST');
+          $phpmailer->Port       = (int) (getenv('SMTP_PORT') ?: 587);
+          $phpmailer->SMTPAuth   = true;
+          $phpmailer->Username   = getenv('SMTP_USER');
+          $phpmailer->Password   = getenv('SMTP_PASSWORD');
+          $phpmailer->SMTPSecure = 'tls'; // STARTTLS on 587
+      });
+      add_filter('wp_mail_from', function () {
+          return getenv('SMTP_FROM');
+      });
+      PHP
+      exec docker-entrypoint.sh apache2-foreground
     run:
       securityContext:
         readOnlyRootFilesystem: false

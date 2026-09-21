@@ -154,6 +154,30 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  # Platform email. No resources: the platform provisions the sending login
+  # and injects SMTP_*; `env` maps Twenty's own variable names onto it and is
+  # applied ONLY while the Email add-on is live (paid plans). Without it
+  # Twenty stays on its default `logger` driver and simply doesn't send.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: EMAIL_DRIVER
+      value: smtp
+    - name: EMAIL_SMTP_HOST
+      value: '$(SMTP_HOST)'
+    - name: EMAIL_SMTP_PORT
+      value: '$(SMTP_PORT)'
+    - name: EMAIL_SMTP_USER
+      value: '$(SMTP_USER)'
+    - name: EMAIL_SMTP_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: EMAIL_FROM_ADDRESS
+      value: '$(SMTP_FROM)'
+    - name: EMAIL_FROM_NAME
+      value: Twenty
+    resourceDefinitions: {}
   web:
     replicaCount: 1
   worker:

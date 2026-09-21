@@ -92,6 +92,64 @@ Rules:
   template against this contract (run it before committing; it is also the
   tool that performed the catalog-wide rewrite).
 
+## Email contract (Email add-on)
+
+Apps that send mail get it from the platform's **Email add-on** (kind `Smtp`):
+no resources in the template, no credentials, no provider account. When the
+add-on is live for the pipeline, kubero-server injects:
+
+| Add-on kind | Injected variables |
+|---|---|
+| `Smtp` | `SMTP_HOST` `SMTP_PORT` `SMTP_USER` `SMTP_PASSWORD` `SMTP_FROM` |
+
+Email is metered per send on every plan (trial included), so the mapping is
+live from the first deploy. It can still be absent — Platform → Email off, the
+plan's email switch off, or the node disconnected — and then nothing is
+injected, so the app's own email variables must not be set unconditionally: an
+`EMAIL_SMTP_HOST: $(SMTP_HOST)` in `spec.envVars` would ship as the literal
+text `$(SMTP_HOST)`. That is why the mapping does **not** go in `spec.envVars`:
+it goes in the add-on entry's `env`, which the platform applies only while the
+add-on is live and removes again if it is disconnected.
+
+```yaml
+addons:
+- displayName: Email
+  icon: /img/addons/email.svg
+  id: kubero-smtp
+  kind: Smtp
+  env:
+  - name: MAIL_MAILER          # the app's own names…
+    value: smtp
+  - name: MAIL_HOST
+    value: '$(SMTP_HOST)'      # …mapped onto the injected contract
+  - name: MAIL_PASSWORD
+    value: '$(SMTP_PASSWORD)'
+  - name: MAIL_FROM_ADDRESS
+    value: '$(SMTP_FROM)'
+  resourceDefinitions: {}
+```
+
+Rules:
+
+- Put **every** email variable in the add-on `env`, including the driver /
+  transport switch (`EMAIL_DRIVER=smtp`, `MAIL_MAILER=smtp`). Left in
+  `spec.envVars` it turns SMTP on with no server behind it.
+- Literal `name`/`value` pairs only — no `valueFrom`.
+- The relay is Amazon SES on port 587 with STARTTLS. Do not force implicit TLS
+  (`secure: true` / port 465 settings) or disable TLS.
+- The From address must stay on the injected `SMTP_FROM` domain
+  (`<anything>@<pipeline>.<platform mail domain>`); SES rejects any other
+  sender for that login.
+- Remove the app's email variables from `spec.envVars` when you add the
+  mapping: a same-named variable there (even a `localhost` placeholder) always
+  wins over the add-on `env`, so the mapping would never apply.
+- An app that reads `SMTP_HOST` … natively needs no `env` at all — declare the
+  add-on entry with `env: []`. An app with no SMTP setting of its own gets a
+  small start-time shim that reads `SMTP_*` (WordPress: a must-use plugin
+  written by `image.command`, inert while `SMTP_HOST` is absent).
+- Run `python3 scripts/sync-index-addons.py` after adding the entry so the
+  catalog card lists Email.
+
 <!-- qa-table:start -->
 ## QA status
 
@@ -1321,8 +1379,8 @@ To record a QA pass, edit `qa-status.json` and re-run
     <tr>
       <td><img src="https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/icon.png" width="32" height="32" alt="mattermost" title="mattermost" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>mattermost</strong></td>
-      <td align="center"><code>10.5</code></td>
-      <td>PostgreSQL (CloudNativePG)</td>
+      <td align="center"><code>10.5.14</code></td>
+      <td>PostgreSQL (CloudNativePG), Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
@@ -1457,8 +1515,8 @@ To record a QA pass, edit `qa-status.json` and re-run
     <tr>
       <td><img src="https://avatars.githubusercontent.com/u/45487711?s=200&amp;v=4" width="32" height="32" alt="n8n" title="n8n" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>n8n</strong></td>
-      <td align="center"><code>latest</code></td>
-      <td>PostgreSQL (CloudNativePG)</td>
+      <td align="center"><code>2.38.7</code></td>
+      <td>PostgreSQL (CloudNativePG), Valkey, Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
@@ -1673,8 +1731,8 @@ To record a QA pass, edit `qa-status.json` and re-run
     <tr>
       <td><img src="https://avatars.githubusercontent.com/u/4386228?s=200&amp;v=4" width="32" height="32" alt="passbolt" title="passbolt" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>passbolt</strong></td>
-      <td align="center"><code>latest-ce</code></td>
-      <td>MariaDB</td>
+      <td align="center"><code>5.16.0-1-ce</code></td>
+      <td>MariaDB, Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
@@ -1873,8 +1931,8 @@ To record a QA pass, edit `qa-status.json` and re-run
     <tr>
       <td><img src="https://avatars.githubusercontent.com/u/29746989?s=200&amp;v=4" width="32" height="32" alt="psono" title="psono" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>psono</strong></td>
-      <td align="center"><code>latest</code></td>
-      <td>PostgreSQL (CloudNativePG)</td>
+      <td align="center"><code>7.4.3-4.8.2-1.10.0</code></td>
+      <td>PostgreSQL (CloudNativePG), Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
@@ -2258,7 +2316,7 @@ To record a QA pass, edit `qa-status.json` and re-run
       <td><img src="https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/icon.png" width="32" height="32" alt="twenty" title="twenty" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>twenty</strong></td>
       <td align="center"><code>v2.16.1</code></td>
-      <td>PostgreSQL (CloudNativePG), Valkey</td>
+      <td>PostgreSQL (CloudNativePG), Valkey, Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
@@ -2409,8 +2467,8 @@ To record a QA pass, edit `qa-status.json` and re-run
     <tr>
       <td><img src="https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/icon.png" width="32" height="32" alt="wordpress" title="wordpress" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>wordpress</strong></td>
-      <td align="center"><code>latest</code></td>
-      <td>MariaDB</td>
+      <td align="center"><code>7.1.0-php8.3-apache</code></td>
+      <td>MariaDB, Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
