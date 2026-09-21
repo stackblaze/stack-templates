@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/drupal/icon.png
     kubero.dev/template.installation: The official drupal image installs interactively
       via the web setup wizard on first run; complete the wizard at the app URL. On
-      the database step choose PostgreSQL and enter host '{{KUBERO_APP_NAME}}-postgresql-rw',
+      the database step choose PostgreSQL and enter host '{{KUBERO_APP_NAME}}-postgresql' (the ProxySQL pooler, not `-rw`),
       port 5432, database/user/password 'drupal' (rotate the postgres add-on credentials
       and the wizard admin password after setup). Drupal writes settings.php and uploaded
       files under /var/www/html/sites, which is persisted by the drupal-sites volume.
