@@ -12,7 +12,7 @@ metadata:
       rand -base64 32)`), the Postgres password (default ''freescout''), and ADMIN_PASS
       before exposing publicly. First run auto-installs and seeds the admin user from
       ADMIN_EMAIL / ADMIN_PASS; change the admin password after first login. DB_TYPE=pgsql
-      points FreeScout at the bundled postgres add-on (host freescout-postgresql-rw).
+      points FreeScout at the bundled postgres add-on (host $(PGHOST), the ProxySQL pooler).
       For inbound/outbound email, configure SMTP/IMAP in the FreeScout settings UI
       (or via mail env vars) after install. Persistent /data volume holds uploads,
       installed modules, cache and config.'
