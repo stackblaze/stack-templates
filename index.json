@@ -9945,56 +9945,6 @@
    ]
   },
   {
-   "name": "openbooks",
-   "description": "Open-source accounting-first ERP with a PostgreSQL-enforced double-entry ledger, projects/job costing, and optional Canada/US payroll packs (alpha).",
-   "source": "https://github.com/braedonsaunders/openbooks",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/icon.png",
-   "website": "https://openbooks-site.vercel.app",
-   "installation": "OpenBooks is ALPHA software \u2014 evaluate with test or parallel books before production financials. Image ghcr.io/braedonsaunders/openbooks:0.1.0-alpha.17 (Node standalone + Chromium). Bundled add-ons: PostgreSQL 16 (CloudNativePG) and Valkey (Redis). Object storage is optional; with S3_* unset, attachments live in Postgres. On first web boot the container runs scripts/bootstrap.mjs (migrations, RLS, org seed, admin), then the web server; a worker pod runs scripts/worker.mjs for scheduled jobs. Sign in with ADMIN_EMAIL / ADMIN_PASSWORD (generated at deploy \u2014 read ADMIN_PASSWORD from the app env after install). Change ORG_COUNTRY (ISO-3166 alpha-2) and ORG_CURRENCY (ISO-4217) before first boot if you are not US/USD. After login, finish Company Settings \u2192 Setup wizard and enable Features (e.g. payroll, hrm) as needed. ROTATE is automatic for SESSION_SECRET / OPENBOOKS_DATA_KEY / OPENBOOKS_INTERNAL_TOKEN / ADMIN_PASSWORD via KUBERO_GEN_*; do not change DATA_KEY after data exists. Postgres password must be \u226524 characters (OpenBooks runtime role check). Behind Stackblaze ingress OPENBOOKS_TRUST_PROXY=1. Health: GET /api/v1/health.",
-   "architecture": [],
-   "categories": [
-    "finance",
-    "erp",
-    "work"
-   ],
-   "screenshots": [
-    "https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/executive-dashboard.jpg",
-    "https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/profit-and-loss.jpg",
-    "https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/project-profitability.jpg"
-   ],
-   "links": [
-    "https://github.com/braedonsaunders/openbooks",
-    "https://github.com/braedonsaunders/openbooks/blob/main/SECURITY.md"
-   ],
-   "addons": [
-    "Cluster",
-    "Valkey"
-   ],
-   "stars": 13,
-   "forks": 3,
-   "watchers": 13,
-   "issues": 1,
-   "last_updated": "2026-09-21T16:50:07Z",
-   "last_pushed": "2026-09-21T16:52:56Z",
-   "created_at": "2026-08-05T14:46:24Z",
-   "size": 88467,
-   "language": "TypeScript",
-   "gitops": false,
-   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/app.yaml",
-   "status": "active",
-   "license": "GNU Affero General Public License v3.0",
-   "spdx_id": "AGPL-3.0",
-   "dirname": "openbooks",
-   "deploymentTypes": [
-    {
-     "id": "standard",
-     "label": "Standard",
-     "default": true,
-     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/app.yaml"
-    }
-   ]
-  },
-  {
    "name": "opnform",
    "description": "Beautiful open-source form builder to create and share forms, surveys and quizzes with no code, a self-hosted alternative to Typeform and Google Forms.",
    "source": "https://github.com/JhumanJ/OpnForm",
