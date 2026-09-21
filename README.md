@@ -38,11 +38,8 @@ the plan for dedicated deployments.
 
 On shared zones the platform provisions Postgres and MariaDB add-ons as
 **logical databases on the zone's communal server** (one role + database per
-add-on, random password, a ProxySQL pooler pod + a Service named after the
+add-on, random password, a stateless pooler pod + a Service named after the
 add-on instance in the tenant namespace) and Valkey as an ephemeral instance.
-ProxySQL sits on that Service: writes and transactional reads go to the
-communal primary, `SELECT` goes to the read replicas. Apps never dial
-`*-rw` / `*-ro` themselves.
 The add-on CR in the template is still what gets created on zones without a
 communal server and on dedicated clusters — keep it — but **nothing in the
 template may assume the CR's host name, user, database or password**: in
@@ -75,10 +72,7 @@ Rules:
 
 - Never write `{{KUBERO_APP_NAME}}-postgresql-rw`, `{{KUBERO_APP_NAME}}-mysql`,
   `rfr-{{KUBERO_APP_NAME}}-valkey-readwrite`, or a literal user/database/
-  password into `envVars` (or into sidecar Deployments / ConfigMaps bundled
-  in the add-on CR). The host is the `<instance>` Service — ProxySQL — not
-  the CNPG/MariaDB writer. Reference the injected variable; sidecars that
-  cannot expand `$(PGHOST)` use `{{KUBERO_APP_NAME}}-<engine>` (no `-rw`).
+  password into `envVars`. Reference the injected variable.
 - Never define a variable **named** like an injected one (`PGPASSWORD`,
   `MYSQL_HOST`, …) in a template — an explicit template value wins over the
   injection and blocks the real credentials.

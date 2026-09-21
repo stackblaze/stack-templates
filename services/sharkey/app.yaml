@@ -15,7 +15,7 @@ metadata:
       a default.yml into the mounted /sharkey/.config volume - set ''url'' to your
       public https URL (it is baked into ActivityPub actor URLs and cannot be changed
       cleanly later; {{KUBERO_APP_URL}} is provided below for reference), and set
-      db.host from PGHOST (the ProxySQL pooler / sharkey-postgresql Service, not `-rw`) / db.port=5432 / db.db=sharkey / db.user=sharkey
+      db.host=sharkey-postgresql-rw / db.port=5432 / db.db=sharkey / db.user=sharkey
       / db.pass=sharkey and redis.host=rfr-sharkey-valkey-readwrite / redis.port=6379.
       The env vars below (POSTGRES_*/DATABASE_*/REDIS_*) mirror those values for the
       parts Sharkey reads from the environment; keep them in sync with default.yml.
