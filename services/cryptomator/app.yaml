@@ -89,7 +89,7 @@ spec:
           name: '{{KUBERO_APP_NAME}}-config'
         data:
           KC_DB: postgres
-          KC_DB_URL: jdbc:postgresql://{{KUBERO_APP_NAME}}-postgresql:5432/keycloak
+          KC_DB_URL: jdbc:postgresql://cryptomator-postgresql-rw:5432/keycloak
           KC_DB_USERNAME: cryptomator
           KC_BOOTSTRAP_ADMIN_USERNAME: admin
           KC_HEALTH_ENABLED: 'true'

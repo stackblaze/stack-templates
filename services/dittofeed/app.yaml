@@ -134,7 +134,7 @@ spec:
                 - name: DB_PORT
                   value: '5432'
                 - name: POSTGRES_SEEDS
-                  value: '{{KUBERO_APP_NAME}}-postgresql'
+                  value: '{{KUBERO_APP_NAME}}-postgresql-rw'
                 - name: POSTGRES_USER
                   value: postgres
                 - name: POSTGRES_PWD

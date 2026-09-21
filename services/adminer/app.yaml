@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.installation: Adminer has no credentials of its own — it proxies
       your database credentials. Enter the hostname, username, and password of any
       database server accessible from within the cluster (e.g. a CNPG Postgres at
-      myapp-postgresql — the ProxySQL pooler, not `-rw`, port 5432). Supports PostgreSQL, MySQL/MariaDB, SQLite,
+      myapp-postgresql-rw, port 5432). Supports PostgreSQL, MySQL/MariaDB, SQLite,
       and more. For security, restrict ingress access to internal users only.
     kubero.dev/template.links: '["https://www.adminer.org/"]'
     kubero.dev/template.screenshots: '["https://www.adminer.org/static/screenshots/table.png"]'

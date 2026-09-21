@@ -12,7 +12,7 @@ metadata:
       the Community+ release from downloads.documize.com on first start (same approach
       as the upstream docker-compose.yaml). Deploy with the bundled PostgreSQL add-on;
       DOCUMIZEDB and DOCUMIZEDBTYPE=postgresql point Documize at the PostgreSQL
-      add-on via $(PGHOST) (the ProxySQL pooler, not the CNPG writer; rotate the Postgres add-on password and update DOCUMIZEDB
+      add-on read-write service (rotate the Postgres add-on password and update DOCUMIZEDB
       after install).
       DOCUMIZELOCATION is set to ''selfhost''. IMPORTANT: replace DOCUMIZESALT with
       a unique random string (e.g. openssl rand -hex 16) before production. All documents
