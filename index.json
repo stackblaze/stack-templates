@@ -155,7 +155,7 @@
    "source": "https://github.com/n8n-io/n8n",
    "icon": "https://avatars.githubusercontent.com/u/45487711?s=200&v=4",
    "website": "https://n8n.io",
-   "installation": "With Load demo data enabled, first boot creates owner demo@stackblaze.local / changeme and three sample workflows. Without it, complete the one-time owner setup at your app URL, then sign in. AI Assistant uses a bundled n8n sandbox and SearXNG for web search; add an Anthropic, OpenAI, or OpenRouter key in n8n AI settings or set N8N_INSTANCE_AI_MODEL_API_KEY. Optional: set INSTANCE_AI_BRAVE_SEARCH_API_KEY to prefer Brave over SearXNG.",
+   "installation": "Queue mode with Postgres, Valkey, and a worker. With Load demo data enabled, first boot creates owner demo@stackblaze.local / changeme and three sample workflows. Without it, complete the one-time owner setup at your app URL, then sign in. AI Assistant uses a bundled n8n sandbox and SearXNG for web search; add an Anthropic, OpenAI, or OpenRouter key in n8n AI settings or set N8N_INSTANCE_AI_MODEL_API_KEY. Optional: set INSTANCE_AI_BRAVE_SEARCH_API_KEY to prefer Brave over SearXNG.",
    "architecture": [],
    "categories": [
     "work",
@@ -163,12 +163,12 @@
     "utilities"
    ],
    "screenshots": [
-    "https://media.stackblaze.cloud/templates/n8n/demo.mp4",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/dashboard.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/n8n/screenshot-workflow.png"
    ],
    "links": [],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Valkey"
    ],
    "stars": 187423,
    "forks": 57530,
@@ -1789,49 +1789,6 @@
      "label": "Standard",
      "default": true,
      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/silverbullet/app.yaml"
-    }
-   ]
-  },
-  {
-   "name": "bitwarden",
-   "description": "Open source password management solutions for individuals, teams, and business organizations.",
-   "source": "https://github.com/bitwarden/server",
-   "icon": "https://avatars.githubusercontent.com/u/15990069?s=200&v=4",
-   "website": "https://bitwarden.com/",
-   "installation": "Register at https://bitwarden.com/host/ and set BW_INSTALLATION_ID and BW_INSTALLATION_KEY before first use. BW_DOMAIN is set from the app's public URL when the platform assigns ingress. Rotate the default postgres password (bitwarden) before production.",
-   "architecture": [],
-   "categories": [
-    "security",
-    "utilities"
-   ],
-   "screenshots": [
-    "https://raw.githubusercontent.com/bitwarden/brand/main/screenshots/apps-combo-logo.png"
-   ],
-   "links": [],
-   "addons": [
-    "Cluster"
-   ],
-   "stars": 18570,
-   "forks": 1573,
-   "watchers": 18570,
-   "issues": 191,
-   "last_updated": "2026-05-11T12:01:20Z",
-   "last_pushed": "2026-05-11T02:51:53Z",
-   "created_at": "2015-11-23T23:45:33Z",
-   "size": 49661,
-   "language": "C#",
-   "gitops": false,
-   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bitwarden/app.yaml",
-   "status": "active",
-   "license": "Other",
-   "spdx_id": "NOASSERTION",
-   "dirname": "bitwarden",
-   "deploymentTypes": [
-    {
-     "id": "standard",
-     "label": "Standard",
-     "default": true,
-     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bitwarden/app.yaml"
     }
    ]
   },
@@ -7421,7 +7378,7 @@
    "source": "https://github.com/documize/community",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documize/icon.png",
    "website": "https://www.documize.com/",
-   "installation": "Uses the official documize/community image on internal port 5001. Deploy with the bundled PostgreSQL add-on; the DOCUMIZEDB connection string and DOCUMIZEDBTYPE=postgresql point Documize at the 'documize-postgresql-rw' Postgres service (rotate the Postgres add-on password and update DOCUMIZEDB after install). DOCUMIZELOCATION is set to 'selfhost' for self-hosted operation. IMPORTANT: replace DOCUMIZESALT with a unique random string (e.g. openssl rand -hex 16) before going to production. Documize stores all documents, settings and uploads in the database, so no persistent volume is required. On first boot open the app URL to run the setup wizard: name your organization and create the initial admin account; the database schema is migrated automatically on startup.",
+   "installation": "Uses the official documize/community image on internal port 5001. Deploy with the bundled PostgreSQL add-on; the DOCUMIZEDB connection string and DOCUMIZEDBTYPE=postgresql point Documize at the '$(PGHOST) (ProxySQL pooler)' Postgres service (rotate the Postgres add-on password and update DOCUMIZEDB after install). DOCUMIZELOCATION is set to 'selfhost' for self-hosted operation. IMPORTANT: replace DOCUMIZESALT with a unique random string (e.g. openssl rand -hex 16) before going to production. Documize stores all documents, settings and uploads in the database, so no persistent volume is required. On first boot open the app URL to run the setup wizard: name your organization and create the initial admin account; the database schema is migrated automatically on startup.",
    "architecture": [],
    "categories": [
     "documentation",
@@ -7556,7 +7513,7 @@
    "source": "https://github.com/drupal/drupal",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/drupal/icon.png",
    "website": "https://www.drupal.org/",
-   "installation": "The official drupal image installs interactively via the web setup wizard on first run; complete the wizard at the app URL. On the database step choose PostgreSQL and enter host '{{KUBERO_APP_NAME}}-postgresql-rw', port 5432, database/user/password 'drupal' (rotate the postgres add-on credentials and the wizard admin password after setup). Drupal writes settings.php and uploaded files under /var/www/html/sites, which is persisted by the drupal-sites volume. For production, increase PHP memory_limit and the app pod size for large sites. No external object store or search engine is required for a base install (add Solr/Search API later if needed).",
+   "installation": "The official drupal image installs interactively via the web setup wizard on first run; complete the wizard at the app URL. On the database step choose PostgreSQL and enter host '{{KUBERO_APP_NAME}}-postgresql', port 5432, database/user/password 'drupal' (rotate the postgres add-on credentials and the wizard admin password after setup). Drupal writes settings.php and uploaded files under /var/www/html/sites, which is persisted by the drupal-sites volume. For production, increase PHP memory_limit and the app pod size for large sites. No external object store or search engine is required for a base install (add Solr/Search API later if needed).",
    "architecture": [],
    "categories": [
     "cms",
@@ -8023,7 +7980,7 @@
    "source": "https://github.com/freescout-help-desk/freescout",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freescout/icon.png",
    "website": "https://freescout.net",
-   "installation": "Image: nfrastack/freescout (community-maintained, formerly tiredofit). Rotate APP_KEY (base64 of 32 random bytes: `base64:$(openssl rand -base64 32)`), the Postgres password (default 'freescout'), and ADMIN_PASS before exposing publicly. First run auto-installs and seeds the admin user from ADMIN_EMAIL / ADMIN_PASS; change the admin password after first login. DB_TYPE=pgsql points FreeScout at the bundled postgres add-on (host freescout-postgresql-rw). For inbound/outbound email, configure SMTP/IMAP in the FreeScout settings UI (or via mail env vars) after install. Persistent /data volume holds uploads, installed modules, cache and config.",
+   "installation": "Image: nfrastack/freescout (community-maintained, formerly tiredofit). Rotate APP_KEY (base64 of 32 random bytes: `base64:$(openssl rand -base64 32)`), the Postgres password (default 'freescout'), and ADMIN_PASS before exposing publicly. First run auto-installs and seeds the admin user from ADMIN_EMAIL / ADMIN_PASS; change the admin password after first login. DB_TYPE=pgsql points FreeScout at the bundled postgres add-on (host $(PGHOST) (ProxySQL pooler)). For inbound/outbound email, configure SMTP/IMAP in the FreeScout settings UI (or via mail env vars) after install. Persistent /data volume holds uploads, installed modules, cache and config.",
    "architecture": [],
    "categories": [
     "helpdesk",
@@ -9611,7 +9568,7 @@
    "source": "https://github.com/misskey-dev/misskey",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/misskey/icon.png",
    "website": "https://misskey-hub.net/",
-   "installation": "Misskey is configured PRIMARILY via a YAML file (.config/default.yml), not env vars alone, so before first boot you MUST supply that config (mounted at /misskey/.config) pointing db.host=misskey-postgresql-rw / db.port=5432 / db.db=misskey and redis.host=rfr-misskey-valkey-readwrite / redis.port=6379, and set url to your public https URL. The env vars below mirror those values and cover the parts Misskey reads from the environment; rotate POSTGRES_PASSWORD and the db password in default.yml to match. After the web container is up, run the DB migrations (it runs `pnpm migrate` on start in the official image). COMPANION SERVICES: the single misskey/misskey image runs web + the federation/inbox/deliver/queue workers in one process by default, so no extra worker container is strictly required for small instances; for scale you can run additional misskey/misskey replicas with MK_ONLY_QUEUE/MK_ONLY_SERVER style splits. OPTIONAL: for full-text post search Misskey can use Elasticsearch/OpenSearch or Meilisearch (image getmeili/meilisearch) configured in default.yml under meilisearch/elasticsearch - not provisioned here; and for object storage of Drive uploads it can use any S3-compatible bucket (configured under objectStorage in default.yml) instead of the local volume.",
+   "installation": "Misskey is configured PRIMARILY via a YAML file (.config/default.yml), not env vars alone, so before first boot you MUST supply that config (mounted at /misskey/.config) pointing db.host=$(PGHOST) (ProxySQL pooler, not -rw) / db.port=5432 / db.db=misskey and redis.host=rfr-misskey-valkey-readwrite / redis.port=6379, and set url to your public https URL. The env vars below mirror those values and cover the parts Misskey reads from the environment; rotate POSTGRES_PASSWORD and the db password in default.yml to match. After the web container is up, run the DB migrations (it runs `pnpm migrate` on start in the official image). COMPANION SERVICES: the single misskey/misskey image runs web + the federation/inbox/deliver/queue workers in one process by default, so no extra worker container is strictly required for small instances; for scale you can run additional misskey/misskey replicas with MK_ONLY_QUEUE/MK_ONLY_SERVER style splits. OPTIONAL: for full-text post search Misskey can use Elasticsearch/OpenSearch or Meilisearch (image getmeili/meilisearch) configured in default.yml under meilisearch/elasticsearch - not provisioned here; and for object storage of Drive uploads it can use any S3-compatible bucket (configured under objectStorage in default.yml) instead of the local volume.",
    "architecture": [],
    "categories": [
     "social",
@@ -9749,7 +9706,7 @@
    "source": "https://github.com/nopSolutions/nopCommerce",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nopcommerce/icon.png",
    "website": "https://www.nopcommerce.com",
-   "installation": "First run launches the nopCommerce install wizard at the app URL: pick the PostgreSQL provider and enter the connection details below (host nopcommerce-postgresql-rw, port 5432, db/user/pass = nopcommerce). The wizard creates the admin user you specify and writes config to /app/App_Data (persisted via the data volume). Rotate the default postgres password after install. nopCommerce can run without the DB add-on against SQL Server/MySQL too, but this template ships PostgreSQL. Optional: front with a CDN/object storage for media at scale; not required to boot.",
+   "installation": "First run launches the nopCommerce install wizard at the app URL: pick the PostgreSQL provider and enter the connection details below (host $(PGHOST) (ProxySQL pooler), port 5432, db/user/pass = nopcommerce). The wizard creates the admin user you specify and writes config to /app/App_Data (persisted via the data volume). Rotate the default postgres password after install. nopCommerce can run without the DB add-on against SQL Server/MySQL too, but this template ships PostgreSQL. Optional: front with a CDN/object storage for media at scale; not required to boot.",
    "architecture": [],
    "categories": [
     "e-commerce",
@@ -9978,6 +9935,56 @@
      "label": "Standard",
      "default": true,
      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openobserve/app.yaml"
+    }
+   ]
+  },
+  {
+   "name": "openbooks",
+   "description": "Open-source accounting-first ERP with a PostgreSQL-enforced double-entry ledger, projects/job costing, and optional Canada/US payroll packs (alpha).",
+   "source": "https://github.com/braedonsaunders/openbooks",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/icon.png",
+   "website": "https://openbooks-site.vercel.app",
+   "installation": "OpenBooks is ALPHA software. Postgres is a dedicated CloudNativePG cluster (mode: server), not a communal logical database, because bootstrap must CREATE ROLE as the cluster superuser and then serve as openbooks_app. Valkey is bundled. Sign in with ADMIN_EMAIL / ADMIN_PASSWORD from the app env. Change ORG_COUNTRY and ORG_CURRENCY before first boot if you are not US/USD. If a previous deploy used the communal database, delete the app and its Postgres add-on, then redeploy \u2014 an existing logical database is not converted in place. Do not change OPENBOOKS_DATA_KEY after data exists.",
+   "architecture": [],
+   "categories": [
+    "finance",
+    "erp",
+    "work"
+   ],
+   "screenshots": [
+    "https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/executive-dashboard.jpg",
+    "https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/profit-and-loss.jpg",
+    "https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/project-profitability.jpg"
+   ],
+   "links": [
+    "https://github.com/braedonsaunders/openbooks",
+    "https://github.com/braedonsaunders/openbooks/blob/main/SECURITY.md"
+   ],
+   "addons": [
+    "Cluster",
+    "Valkey"
+   ],
+   "stars": 13,
+   "forks": 3,
+   "watchers": 13,
+   "issues": 1,
+   "last_updated": "2026-09-21T16:50:07Z",
+   "last_pushed": "2026-09-21T16:52:56Z",
+   "created_at": "2026-08-05T14:46:24Z",
+   "size": 88467,
+   "language": "TypeScript",
+   "gitops": false,
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/app.yaml",
+   "status": "active",
+   "license": "GNU Affero General Public License v3.0",
+   "spdx_id": "AGPL-3.0",
+   "dirname": "openbooks",
+   "deploymentTypes": [
+    {
+     "id": "standard",
+     "label": "Standard",
+     "default": true,
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/app.yaml"
     }
    ]
   },
@@ -10268,7 +10275,7 @@
    "source": "https://gitlab.com/passit/passit",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/passit/icon.png",
    "website": "https://passit.io",
-   "installation": "Image: passit/passit:stable (official, on Docker Hub; project is hosted on GitLab). This is a Django app. ROTATE SECRET_KEY (set it to `openssl rand -hex 32`) and the Postgres password (default 'passit') before exposing publicly. ALLOWED_HOSTS is set to '*' for first boot; tighten it to your real host. The container runs Django migrations on start, then serves via gunicorn on port 5000. Create the first admin/user via the web sign-up flow (registration is open by default; disable open registration with SIGN_UP_ENABLED=false after creating your accounts). DATABASE_URL points at the bundled postgres add-on (passit-postgresql-rw) and REDIS_URL at the valkey add-on (used for Celery background jobs / caching). For password-reset and invite emails, configure SMTP via EMAIL_* / SERVER_EMAIL env vars or the Django settings after install. No object storage required.",
+   "installation": "Image: passit/passit:stable (official, on Docker Hub; project is hosted on GitLab). This is a Django app. ROTATE SECRET_KEY (set it to `openssl rand -hex 32`) and the Postgres password (default 'passit') before exposing publicly. ALLOWED_HOSTS is set to '*' for first boot; tighten it to your real host. The container runs Django migrations on start, then serves via gunicorn on port 5000. Create the first admin/user via the web sign-up flow (registration is open by default; disable open registration with SIGN_UP_ENABLED=false after creating your accounts). DATABASE_URL points at the bundled postgres add-on ($(PGHOST) (ProxySQL pooler)) and REDIS_URL at the valkey add-on (used for Celery background jobs / caching). For password-reset and invite emails, configure SMTP via EMAIL_* / SERVER_EMAIL env vars or the Django settings after install. No object storage required.",
    "architecture": [],
    "categories": [
     "security",
@@ -10364,7 +10371,7 @@
    "source": "https://github.com/penpot/penpot",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot/icon.png",
    "website": "https://penpot.app",
-   "installation": "Penpot is a MULTI-CONTAINER stack. This template deploys the PRIMARY web entrypoint, the nginx FRONTEND image `penpotapp/frontend` (HTTP 8080), which serves the SPA and reverse-proxies API/asset traffic to the backend and exporter. By itself the frontend will not function until you also deploy these COMPANION services as their own Kubero apps (all pinned to the SAME version tag 2.16): (1) BACKEND -> image `penpotapp/backend` (listens on HTTP 6060); give it the database/redis/secret env shown below: PENPOT_DATABASE_URI=postgresql://penpot-postgresql-rw:5432/penpot, PENPOT_DATABASE_USERNAME=penpot, PENPOT_DATABASE_PASSWORD=penpot, PENPOT_REDIS_URI=redis://rfr-penpot-valkey-readwrite:6379/0, PENPOT_SECRET_KEY=(rotate, `openssl rand -hex 32`), PENPOT_PUBLIC_URI={{KUBERO_APP_URL}}, PENPOT_FLAGS, and the assets-fs storage env; it must MOUNT THE SAME shared assets volume at /opt/data/assets as the frontend. (2) EXPORTER -> image `penpotapp/exporter` (HTTP 6061), set PENPOT_PUBLIC_URI=http://penpot-frontend:8080 and PENPOT_REDIS_URI to the same Valkey URI; it renders thumbnails/exports via a headless browser. The frontend reaches the backend/exporter by the env PENPOT_BACKEND_URI / PENPOT_EXPORTER_URI (or PENPOT_INTERNAL_RESOLVER) -> point these at the backend (`http://penpot-backend:6060`) and exporter (`http://penpot-exporter:6061`) service names once those apps are up. ADD-ONS provisioned: a Postgres add-on (Penpot requires PostgreSQL) and a Valkey/Redis add-on. ROTATE the default Postgres password and set a strong PENPOT_SECRET_KEY (the same value MUST be shared by frontend, backend and exporter). FIRST RUN: by default registration is open; after creating the first owner account add `disable-registration` to PENPOT_FLAGS. SMTP is optional via PENPOT_SMTP_* env (with the `enable-smtp` flag); without it user emails print to the backend log. User-uploaded assets live on the shared local volume at /opt/data/assets (for multi-replica or large deployments use an S3-compatible backend instead, set via PENPOT_ASSETS_STORAGE_BACKEND=assets-s3, which is NOT provisioned here).",
+   "installation": "Penpot is a MULTI-CONTAINER stack. This template deploys the PRIMARY web entrypoint, the nginx FRONTEND image `penpotapp/frontend` (HTTP 8080), which serves the SPA and reverse-proxies API/asset traffic to the backend and exporter. By itself the frontend will not function until you also deploy these COMPANION services as their own Kubero apps (all pinned to the SAME version tag 2.16): (1) BACKEND -> image `penpotapp/backend` (listens on HTTP 6060); give it the database/redis/secret env shown below: PENPOT_DATABASE_URI=postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE), PENPOT_DATABASE_USERNAME=penpot, PENPOT_DATABASE_PASSWORD=penpot, PENPOT_REDIS_URI=redis://rfr-penpot-valkey-readwrite:6379/0, PENPOT_SECRET_KEY=(rotate, `openssl rand -hex 32`), PENPOT_PUBLIC_URI={{KUBERO_APP_URL}}, PENPOT_FLAGS, and the assets-fs storage env; it must MOUNT THE SAME shared assets volume at /opt/data/assets as the frontend. (2) EXPORTER -> image `penpotapp/exporter` (HTTP 6061), set PENPOT_PUBLIC_URI=http://penpot-frontend:8080 and PENPOT_REDIS_URI to the same Valkey URI; it renders thumbnails/exports via a headless browser. The frontend reaches the backend/exporter by the env PENPOT_BACKEND_URI / PENPOT_EXPORTER_URI (or PENPOT_INTERNAL_RESOLVER) -> point these at the backend (`http://penpot-backend:6060`) and exporter (`http://penpot-exporter:6061`) service names once those apps are up. ADD-ONS provisioned: a Postgres add-on (Penpot requires PostgreSQL) and a Valkey/Redis add-on. ROTATE the default Postgres password and set a strong PENPOT_SECRET_KEY (the same value MUST be shared by frontend, backend and exporter). FIRST RUN: by default registration is open; after creating the first owner account add `disable-registration` to PENPOT_FLAGS. SMTP is optional via PENPOT_SMTP_* env (with the `enable-smtp` flag); without it user emails print to the backend log. User-uploaded assets live on the shared local volume at /opt/data/assets (for multi-replica or large deployments use an S3-compatible backend instead, set via PENPOT_ASSETS_STORAGE_BACKEND=assets-s3, which is NOT provisioned here).",
    "architecture": [],
    "categories": [
     "development",
@@ -11108,7 +11115,7 @@
    "source": "https://github.com/saltcorn/saltcorn",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/saltcorn/icon.png",
    "website": "https://saltcorn.com",
-   "installation": "Image: saltcorn/saltcorn (official). Saltcorn requires PostgreSQL; it connects via the discrete PG* vars pointing at the bundled postgres add-on (host saltcorn-postgresql-rw). Rotate SALTCORN_SESSION_SECRET (any long random string, e.g. `openssl rand -hex 32`) and the Postgres password (default 'saltcorn') before exposing publicly. On first run Saltcorn auto-initializes the schema, then presents a setup wizard to create the admin user and site name - complete this immediately. User-installed plugins, uploaded files and config persist on the /saltcorn volume. Multi-tenant mode is off by default (SALTCORN_MULTI_TENANT=false).",
+   "installation": "Image: saltcorn/saltcorn (official). Saltcorn requires PostgreSQL; it connects via the discrete PG* vars pointing at the bundled postgres add-on (host $(PGHOST) (ProxySQL pooler)). Rotate SALTCORN_SESSION_SECRET (any long random string, e.g. `openssl rand -hex 32`) and the Postgres password (default 'saltcorn') before exposing publicly. On first run Saltcorn auto-initializes the schema, then presents a setup wizard to create the admin user and site name - complete this immediately. User-installed plugins, uploaded files and config persist on the /saltcorn volume. Multi-tenant mode is off by default (SALTCORN_MULTI_TENANT=false).",
    "architecture": [],
    "categories": [
     "development",
@@ -11245,7 +11252,7 @@
    "source": "https://activitypub.software/TransFem-org/Sharkey",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sharkey/icon.png",
    "website": "https://joinsharkey.org/",
-   "installation": "This template runs the PRIMARY Sharkey Node.js web/server container only (official image joinsharkey/sharkey, listens on HTTP port 3000). CONFIG: Sharkey (like its Misskey parent) is configured PRIMARILY via .config/default.yml, not env vars alone, so BEFORE first boot you MUST drop a default.yml into the mounted /sharkey/.config volume - set 'url' to your public https URL (it is baked into ActivityPub actor URLs and cannot be changed cleanly later; {{KUBERO_APP_URL}} is provided below for reference), and set db.host=sharkey-postgresql-rw / db.port=5432 / db.db=sharkey / db.user=sharkey / db.pass=sharkey and redis.host=rfr-sharkey-valkey-readwrite / redis.port=6379. The env vars below (POSTGRES_*/DATABASE_*/REDIS_*) mirror those values for the parts Sharkey reads from the environment; keep them in sync with default.yml. FIRST-RUN: the official image runs DB migrations automatically on start (pnpm migrate); once the pod is healthy open the site, create the first account (it becomes the instance admin), then configure the instance in the admin control panel. ROTATE the Postgres password (default 'sharkey') in BOTH the postgres add-on and default.yml to match. ADD-ONS PROVISIONED: PostgreSQL (primary datastore) and Valkey/Redis (queue + cache, password-less in-cluster). COMPANION SERVICES: Sharkey's background job queue (federation delivery/inbox, media processing, notifications) runs IN-PROCESS in this same image by default, so NO separate worker container is required for a single-node start; for scale you can run additional replicas of joinsharkey/sharkey with MK_ONLY_SERVER / MK_ONLY_QUEUE (clusterLimits in default.yml) pointing at the same Postgres + Valkey. EXTERNAL SERVICES not provisioned here: object storage (S3-compatible, e.g. the RustFS add-on) is strongly recommended for media at scale - configure under 'objectStorage' in default.yml instead of relying on the local /sharkey/files volume; SMTP for email verification; and an OPTIONAL MeiliSearch backend (image getmeili/meilisearch) for full-text post search, configured under 'meilisearch' in default.yml.",
+   "installation": "This template runs the PRIMARY Sharkey Node.js web/server container only (official image joinsharkey/sharkey, listens on HTTP port 3000). CONFIG: Sharkey (like its Misskey parent) is configured PRIMARILY via .config/default.yml, not env vars alone, so BEFORE first boot you MUST drop a default.yml into the mounted /sharkey/.config volume - set 'url' to your public https URL (it is baked into ActivityPub actor URLs and cannot be changed cleanly later; {{KUBERO_APP_URL}} is provided below for reference), and set db.host=$(PGHOST) (ProxySQL pooler, not -rw) / db.port=5432 / db.db=sharkey / db.user=sharkey / db.pass=sharkey and redis.host=rfr-sharkey-valkey-readwrite / redis.port=6379. The env vars below (POSTGRES_*/DATABASE_*/REDIS_*) mirror those values for the parts Sharkey reads from the environment; keep them in sync with default.yml. FIRST-RUN: the official image runs DB migrations automatically on start (pnpm migrate); once the pod is healthy open the site, create the first account (it becomes the instance admin), then configure the instance in the admin control panel. ROTATE the Postgres password (default 'sharkey') in BOTH the postgres add-on and default.yml to match. ADD-ONS PROVISIONED: PostgreSQL (primary datastore) and Valkey/Redis (queue + cache, password-less in-cluster). COMPANION SERVICES: Sharkey's background job queue (federation delivery/inbox, media processing, notifications) runs IN-PROCESS in this same image by default, so NO separate worker container is required for a single-node start; for scale you can run additional replicas of joinsharkey/sharkey with MK_ONLY_SERVER / MK_ONLY_QUEUE (clusterLimits in default.yml) pointing at the same Postgres + Valkey. EXTERNAL SERVICES not provisioned here: object storage (S3-compatible, e.g. the RustFS add-on) is strongly recommended for media at scale - configure under 'objectStorage' in default.yml instead of relying on the local /sharkey/files volume; SMTP for email verification; and an OPTIONAL MeiliSearch backend (image getmeili/meilisearch) for full-text post search, configured under 'meilisearch' in default.yml.",
    "architecture": [],
    "categories": [
     "social",
@@ -11997,7 +12004,7 @@
    "source": "https://github.com/xwiki/xwiki-platform",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/xwiki/icon.png",
    "website": "https://www.xwiki.org/",
-   "installation": "Uses the official xwiki image (Tomcat, postgres variant) on internal port 8080. Deploy with the bundled PostgreSQL add-on; the DB_USER/DB_PASSWORD/DB_DATABASE/DB_HOST env vars point XWiki at the '{{KUBERO_APP_NAME}}-postgresql-rw' Postgres service (rotate the Postgres add-on password after install). On first boot XWiki connects to the empty database, runs the Distribution Wizard to install the default flavor (XWiki Standard), and prompts you to create the admin (superadmin) user and password at the app URL, complete the wizard and set a strong admin password before going to production. The permanent directory (config, extensions, attachments cache, Solr search index) lives under /usr/local/xwiki and is persisted by the xwiki-data volume, no external Solr/Elasticsearch is required since XWiki ships an embedded Solr index there. Increase the app pod size (JVM heap) for larger wikis. The 'stable-postgres-tomcat' tag tracks the latest stable XWiki release, switch to an 'lts-postgres-tomcat' tag for long-term-support builds.",
+   "installation": "Uses the official xwiki image (Tomcat, postgres variant) on internal port 8080. Deploy with the bundled PostgreSQL add-on; the DB_USER/DB_PASSWORD/DB_DATABASE/DB_HOST env vars point XWiki at the '{{KUBERO_APP_NAME}}-postgresql' Postgres service (rotate the Postgres add-on password after install). On first boot XWiki connects to the empty database, runs the Distribution Wizard to install the default flavor (XWiki Standard), and prompts you to create the admin (superadmin) user and password at the app URL, complete the wizard and set a strong admin password before going to production. The permanent directory (config, extensions, attachments cache, Solr search index) lives under /usr/local/xwiki and is persisted by the xwiki-data volume, no external Solr/Elasticsearch is required since XWiki ships an embedded Solr index there. Increase the app pod size (JVM heap) for larger wikis. The 'stable-postgres-tomcat' tag tracks the latest stable XWiki release, switch to an 'lts-postgres-tomcat' tag for long-term-support builds.",
    "architecture": [],
    "categories": [
     "documentation",
@@ -13445,14 +13452,62 @@
      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wagtail/app.yaml"
     }
    ]
+  },
+  {
+   "name": "medusa",
+   "description": "Open-source headless commerce platform — products, carts, checkout, and an admin dashboard, with a REST/JS API for custom storefronts.",
+   "source": "https://github.com/medusajs/medusa",
+   "icon": "https://avatars.githubusercontent.com/u/62591822?s=200&v=4",
+   "website": "https://medusajs.com",
+   "installation": "Deploys the Medusa 2 backend and admin (at /app) with PostgreSQL and Valkey add-ons. First boot runs migrations and creates the admin user from MEDUSA_ADMIN_EMAIL / MEDUSA_ADMIN_PASSWORD (default admin@example.com / changeme — rotate immediately). JWT_SECRET and COOKIE_SECRET are generated per deploy. After login, create a publishable API key under Settings > API Key Management if you attach a Next.js storefront (official starter: github.com/medusajs/dtc-starter apps/storefront) and set STORE_CORS to that storefront URL. Product images persist on the uploads volume.",
+   "architecture": [],
+   "categories": [
+    "e-commerce",
+    "development",
+    "work"
+   ],
+   "screenshots": [
+    "https://medusajs.com/images/og.jpg"
+   ],
+   "links": [
+    "https://docs.medusajs.com/learn/deployment/general",
+    "https://docs.medusajs.com/"
+   ],
+   "addons": [
+    "Cluster",
+    "Valkey"
+   ],
+   "stars": 36333,
+   "forks": 5253,
+   "watchers": 36333,
+   "issues": 0,
+   "last_updated": "2026-09-16T00:00:00Z",
+   "last_pushed": "2026-09-16T00:00:00Z",
+   "created_at": "2021-03-08T00:00:00Z",
+   "size": 0,
+   "language": "TypeScript",
+   "gitops": false,
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/app.yaml",
+   "status": "active",
+   "license": "MIT",
+   "spdx_id": "MIT",
+   "dirname": "medusa",
+   "deploymentTypes": [
+    {
+     "id": "standard",
+     "label": "Standard",
+     "default": true,
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/app.yaml"
+    }
+   ]
   }
  ],
  "categories": {
-  "work": 120,
+  "work": 121,
   "utilities": 106,
   "productivity": 95,
   "collaboration": 59,
-  "development": 40,
+  "development": 41,
   "communication": 45,
   "security": 26,
   "cms": 19,
@@ -13464,7 +13519,7 @@
   "dashboard": 3,
   "media": 27,
   "admin": 2,
-  "e-commerce": 17,
+  "e-commerce": 18,
   "helpdesk": 10,
   "homepage": 3,
   "management": 2,
@@ -13490,9 +13545,9 @@
   "finance": 13
  },
  "stats": {
-  "total": 293,
+  "total": 296,
   "categories": 40,
   "gitops": 2,
-  "stars": 4431669
+  "stars": 4468002
  }
 }

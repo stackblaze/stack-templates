@@ -100,11 +100,14 @@ spec:
   image:
     containerPort: '8065'
     pullPolicy: IfNotPresent
-    repository: registry.stackblaze.cloud/mattermost/mattermost-team-edition # Pinned, NOT :latest. Modern Mattermost images are shell-less (no /bin/bash,
-    # /bin/sh, wget) — a floating :latest pulled fresh on a node/cluster rebuild
-    # breaks any command override, and the `sh -c` tmp-perms init too. Use the
-    # image's DEFAULT entrypoint (the mattermost binary) + config via MM_* env.
-    tag: '10.5'
+    # Referenced as docker.io on purpose: zone nodes mirror docker.io through
+    # the regional registry (containerd hosts.d -> registry.<region>/v2/docker,
+    # the zot in each services cluster, on-demand sync, Docker Hub fallback).
+    # Anonymous read, no pull secret. Not registry.stackblaze.cloud (sfo zot,
+    # 503). Pinned patch tag, not :latest and not the floating 10.5 tag.
+    # Modern Mattermost images are shell-less. Use the default entrypoint.
+    repository: docker.io/mattermost/mattermost-team-edition
+    tag: '10.5.14'
     run:
       securityContext:
         readOnlyRootFilesystem: false

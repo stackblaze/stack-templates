@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: "Psono is an open-source, self-hosted password\
       \ manager for teams \u2014 end-to-end encrypted secret storage with sharing,\
       \ an admin portal and a REST API."
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/29746989?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/psono/icon.png
     kubero.dev/template.installation: "The six server keys are generated uniquely\
       \ per deploy by kubero and persisted (they never change for the life of the\
       \ instance) \u2014 no manual setup. The web client is served at /, the admin\
@@ -30,6 +30,14 @@ spec:
     value: '{{KUBERO_APP_URL}}/server'
   - name: PSONO_ALLOWED_HOSTS
     value: '*'
+  - name: PSONO_ALLOWED_DOMAINS
+    value: '{{KUBERO_APP_HOST}}'
+  - name: PSONO_WEB_CLIENT_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: PSONO_EMAIL_BACKEND
+    value: django.core.mail.backends.console.EmailBackend
+  - name: PSONO_EMAIL_FROM
+    value: noreply@{{KUBERO_APP_HOST}}
   - name: PSONO_DATABASE_URL
     value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: PSONO_SECRET_KEY
@@ -105,17 +113,17 @@ spec:
     replicaCount: 0
   healthcheck:
     enabled: true
-    # psono (daphne) serves no route at "/" (404) — the REST API is under
-    # /server. /server/info/ is a public, no-auth endpoint that returns 200.
-    path: /server/info/
+    # Probe nginx on / . The API /server/healthcheck/ path is rate limited
+    # and will crash the pod when startup probes hit every second.
+    path: /
     startupSeconds: 300
     timeoutSeconds: 5
     periodSeconds: 10
   image:
-    containerPort: 8000
-    pullPolicy: Always
-    repository: registry.stackblaze.cloud/psono/psono-combo
-    tag: latest
+    containerPort: 80
+    pullPolicy: IfNotPresent
+    repository: docker.io/psono/psono-combo
+    tag: 7.4.3-4.8.2-1.10.0
     run:
       securityContext:
         readOnlyRootFilesystem: false
