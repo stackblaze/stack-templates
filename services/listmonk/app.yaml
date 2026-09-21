@@ -84,13 +84,13 @@ spec:
   - name: LISTMONK_db__host
     value: '$(PGHOST)'
   - name: LISTMONK_db__port
-    value: 5432
+    value: '$(PGPORT)'
   - name: LISTMONK_db__user
-    value: listmonk
+    value: '$(PGUSER)'
   - name: LISTMONK_db__password
-    value: listmonk
+    value: '$(PGPASSWORD)'
   - name: LISTMONK_db__database
-    value: listmonk
+    value: '$(PGDATABASE)'
   - name: LISTMONK_db__ssl_mode
     value: disable
   - name: LISTMONK_app__admin_username
