@@ -13,7 +13,7 @@ metadata:
       does NOT create an admin user, so once the web pod is ready open a shell on it and run: python manage.py createsuperuser.
       The bakerydemo data-load is not idempotent — set DJANGO_LOAD_INITIAL_DATA to off (or remove it) after the first boot so
       restarts do not reload sample data over your edits. PostgreSQL is provided by the CloudNativePG add-on; DATABASE_URL points
-      at {{KUBERO_APP_NAME}}-postgresql-rw:5432 and migrations run automatically on startup. Set DJANGO_SECRET_KEY to a unique random value
+      at $(PGHOST) (the ProxySQL pooler Service, not the CNPG `-rw` writer) and migrations run automatically on startup. Set DJANGO_SECRET_KEY to a unique random value
       and restrict DJANGO_ALLOWED_HOSTS to your domain before exposing publicly. Media uploads persist on the mounted volume at
       /code/bakerydemo/media. For a real project, build your own image from "wagtail start" rather than bakerydemo.'
     kubero.dev/template.links: '["https://docs.wagtail.org/", "https://github.com/wagtail/bakerydemo"]'

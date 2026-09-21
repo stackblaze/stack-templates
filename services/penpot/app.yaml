@@ -13,7 +13,7 @@ metadata:
       backend and exporter. By itself the frontend will not function until you also
       deploy these COMPANION services as their own Kubero apps (all pinned to the
       SAME version tag 2.16): (1) BACKEND -> image `penpotapp/backend` (listens on
-      HTTP 6060); give it the database/redis/secret env shown below: PENPOT_DATABASE_URI=postgresql://penpot-postgresql-rw:5432/penpot,
+      HTTP 6060); give it the database/redis/secret env shown below: PENPOT_DATABASE_URI=postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE),
       PENPOT_DATABASE_USERNAME=penpot, PENPOT_DATABASE_PASSWORD=penpot, PENPOT_REDIS_URI=redis://rfr-penpot-valkey-readwrite:6379/0,
       PENPOT_SECRET_KEY=(rotate, `openssl rand -hex 32`), PENPOT_PUBLIC_URI={{KUBERO_APP_URL}},
       PENPOT_FLAGS, and the assets-fs storage env; it must MOUNT THE SAME shared assets
