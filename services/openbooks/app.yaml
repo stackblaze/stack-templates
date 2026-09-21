@@ -10,18 +10,20 @@ metadata:
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/icon.png
     kubero.dev/template.installation: "OpenBooks is ALPHA software — evaluate with test\
       \ or parallel books before production financials. Image ghcr.io/braedonsaunders/openbooks:0.1.0-alpha.17\
-      \ (Node standalone + Chromium). Postgres is pinned to a dedicated CloudNativePG\
-      \ cluster (mode: server), not a communal logical database: bootstrap must CREATE\
-      \ ROLE (openbooks_read + openbooks_app) and only the cluster superuser can.\
-      \ Valkey is bundled. Object storage is optional; with S3_* unset, attachments\
-      \ live in Postgres. Web boot runs scripts/bootstrap.mjs as postgres, then the\
-      \ server as openbooks_app; the worker uses openbooks_app. Sign in with ADMIN_EMAIL\
-      \ / ADMIN_PASSWORD (generated at deploy). Change ORG_COUNTRY and ORG_CURRENCY\
-      \ before first boot if you are not US/USD. After login, finish Company Settings\
-      \ → Setup wizard. If a previous deploy used the communal database, delete the\
-      \ app and its Postgres add-on, then redeploy — an existing logical database\
-      \ is not converted in place. Do not change OPENBOOKS_DATA_KEY after data exists.\
-      \ Health: GET /api/v1/health."
+      \ (Node standalone + Chromium). Bundled add-ons: PostgreSQL 16 (CloudNativePG)\
+      \ and Valkey (Redis). Object storage is optional; with S3_* unset, attachments\
+      \ live in Postgres. On first web boot the container runs scripts/bootstrap.mjs\
+      \ (migrations, RLS, org seed, admin), then the web server; a worker pod runs\
+      \ scripts/worker.mjs for scheduled jobs. Sign in with ADMIN_EMAIL / ADMIN_PASSWORD\
+      \ (generated at deploy). Change ORG_COUNTRY (ISO-3166 alpha-2) and ORG_CURRENCY\
+      \ (ISO-4217) before first boot if you are not US/USD — they seed the first organization.\
+      \ After login, finish Company Settings → Setup wizard and enable Features (e.g.\
+      \ payroll, hrm) as needed. ROTATE is automatic for SESSION_SECRET / OPENBOOKS_DATA_KEY\
+      \ / OPENBOOKS_INTERNAL_TOKEN / ADMIN_PASSWORD via KUBERO_GEN_*; do not change DATA_KEY\
+      \ after data exists. Postgres password must be ≥24 characters (OpenBooks runtime\
+      \ role check) — communal injects a long password; if you override the add-on secret,\
+      \ keep it long. Behind Stackblaze ingress OPENBOOKS_TRUST_PROXY=1. Health: GET\
+      \ /api/v1/health."
     kubero.dev/template.links: '["https://github.com/braedonsaunders/openbooks", "https://github.com/braedonsaunders/openbooks/blob/main/SECURITY.md"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/executive-dashboard.jpg",
       "https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/profit-and-loss.jpg",
@@ -41,9 +43,6 @@ spec:
     icon: /img/addons/pgsql.svg
     id: kubero-operator
     kind: Cluster
-    # Bootstrap runs CREATE ROLE. Communal logical logins cannot. Keep a real
-    # CNPG cluster so the injected PGUSER is the postgres superuser.
-    mode: server
     resourceDefinitions:
       Cluster:
         apiVersion: postgresql.cnpg.io/v1
@@ -132,18 +131,15 @@ spec:
     value: 0.0.0.0
   - name: PORT
     value: '3000'
-  # Dedicated CNPG injects PGUSER=postgres (superuser). Bootstrap uses that
-  # connection to CREATE ROLE. The running app and worker use openbooks_app,
-  # which bootstrap creates from OPENBOOKS_RUNTIME_DB_URL. Password must be
-  # >= 24 characters (OpenBooks rejects shorter runtime passwords).
-  - name: OPENBOOKS_APP_PASSWORD
-    value: '{{KUBERO_GEN_HEX:32}}'
+  # Single tenant role for both bootstrap and runtime (communal PG injects one
+  # role). Upstream Compose uses separate owner/app roles; Stackblaze uses the
+  # injected PG* contract for all three URLs so logical/communal DBs work.
   - name: OPENBOOKS_DB_URL
-    value: 'postgres://openbooks_app:$(OPENBOOKS_APP_PASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
-  - name: OPENBOOKS_RUNTIME_DB_URL
-    value: 'postgres://openbooks_app:$(OPENBOOKS_APP_PASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: OPENBOOKS_MIGRATION_DB_URL
-    value: 'postgres://postgres:$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  - name: OPENBOOKS_RUNTIME_DB_URL
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: OPENBOOKS_REDIS_URL
     value: 'redis://$(REDISHOST):$(REDISPORT)'
   - name: OPENBOOKS_APP_URL
