@@ -1,0 +1,216 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: openbooks
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source accounting-first ERP with a PostgreSQL-enforced
+      double-entry ledger, projects/job costing, and optional Canada/US payroll packs
+      (alpha).
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/icon.png
+    kubero.dev/template.installation: "OpenBooks is ALPHA software — evaluate with test\
+      \ or parallel books before production financials. Image ghcr.io/braedonsaunders/openbooks:0.1.0-alpha.17\
+      \ (Node standalone + Chromium). Postgres is pinned to a dedicated CloudNativePG\
+      \ cluster (mode: server), not a communal logical database: bootstrap must CREATE\
+      \ ROLE (openbooks_read + openbooks_app) and only the cluster superuser can.\
+      \ Valkey is bundled. Object storage is optional; with S3_* unset, attachments\
+      \ live in Postgres. Web boot runs scripts/bootstrap.mjs as postgres, then the\
+      \ server as openbooks_app; the worker uses openbooks_app. Sign in with ADMIN_EMAIL\
+      \ / ADMIN_PASSWORD (generated at deploy). Change ORG_COUNTRY and ORG_CURRENCY\
+      \ before first boot if you are not US/USD. After login, finish Company Settings\
+      \ → Setup wizard. If a previous deploy used the communal database, delete the\
+      \ app and its Postgres add-on, then redeploy — an existing logical database\
+      \ is not converted in place. Do not change OPENBOOKS_DATA_KEY after data exists.\
+      \ Health: GET /api/v1/health."
+    kubero.dev/template.links: '["https://github.com/braedonsaunders/openbooks", "https://github.com/braedonsaunders/openbooks/blob/main/SECURITY.md"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/executive-dashboard.jpg",
+      "https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/profit-and-loss.jpg",
+      "https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/project-profitability.jpg"]'
+    kubero.dev/template.source: https://github.com/braedonsaunders/openbooks
+    kubero.dev/template.categories: '["finance", "erp", "work"]'
+    kubero.dev/template.title: OpenBooks
+    kubero.dev/template.website: https://openbooks-site.vercel.app
+  labels:
+    manager: kubero
+spec:
+  name: openbooks
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    # Bootstrap runs CREATE ROLE. Communal logical logins cannot. Keep a real
+    # CNPG cluster so the injected PGUSER is the postgres superuser.
+    mode: server
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql'
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: smart
+            size: 10Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: '1'
+              memory: 2Gi
+          bootstrap:
+            initdb:
+              database: openbooks
+              owner: openbooks
+              secret:
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO openbooks
+              - GRANT CREATE ON SCHEMA public TO openbooks
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO openbooks
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: openbooks-change-me-min-24-chars
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: openbooks
+          # OpenBooks requires the runtime DB password to be ≥24 characters.
+          password: openbooks-change-me-min-24-chars
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-valkey'
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  envVars:
+  - name: NODE_ENV
+    value: production
+  - name: HOSTNAME
+    value: 0.0.0.0
+  - name: PORT
+    value: '3000'
+  # Dedicated CNPG injects PGUSER=postgres (superuser). Bootstrap uses that
+  # connection to CREATE ROLE. The running app and worker use openbooks_app,
+  # which bootstrap creates from OPENBOOKS_RUNTIME_DB_URL. Password must be
+  # >= 24 characters (OpenBooks rejects shorter runtime passwords).
+  - name: OPENBOOKS_APP_PASSWORD
+    value: '{{KUBERO_GEN_HEX:32}}'
+  - name: OPENBOOKS_DB_URL
+    value: 'postgres://openbooks_app:$(OPENBOOKS_APP_PASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  - name: OPENBOOKS_RUNTIME_DB_URL
+    value: 'postgres://openbooks_app:$(OPENBOOKS_APP_PASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  - name: OPENBOOKS_MIGRATION_DB_URL
+    value: 'postgres://postgres:$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  - name: OPENBOOKS_REDIS_URL
+    value: 'redis://$(REDISHOST):$(REDISPORT)'
+  - name: OPENBOOKS_APP_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: APP_BASE_URL
+    value: '{{KUBERO_APP_URL}}'
+  - name: OPENBOOKS_TRUST_PROXY
+    value: '1'
+  - name: SESSION_SECRET
+    value: '{{KUBERO_GEN_HEX:64}}'
+  - name: OPENBOOKS_DATA_KEY
+    value: '{{KUBERO_GEN_HEX:64}}'
+  - name: OPENBOOKS_INTERNAL_TOKEN
+    value: '{{KUBERO_GEN_HEX:48}}'
+  # Worker → web (same-app Service targets web pods).
+  - name: OPENBOOKS_INTERNAL_URL
+    value: 'http://{{KUBERO_APP_NAME}}:3000'
+  - name: ORG_NAME
+    value: OpenBooks
+  - name: ORG_COUNTRY
+    value: US
+  - name: ORG_CURRENCY
+    value: USD
+  - name: ADMIN_EMAIL
+    value: admin@openbooks.local
+  - name: ADMIN_NAME
+    value: Administrator
+  - name: ADMIN_PASSWORD
+    value: '{{KUBERO_GEN_HEX:24}}'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 1
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1536Mi
+    limits:
+      cpu: '2'
+      memory: 3Gi
+  healthcheck:
+    enabled: true
+    path: /api/v1/health
+    startupSeconds: 1500
+    timeoutSeconds: 10
+    periodSeconds: 15
+  image:
+    containerPort: '3000'
+    pullPolicy: IfNotPresent
+    # Prefer ghcr.io so regional zot pull-through can cache it.
+    repository: ghcr.io/braedonsaunders/openbooks
+    tag: 0.1.0-alpha.17
+    # Chart shares this command for web and worker; branch on PROC_TYPE.
+    # Bootstrap must not leave OPENBOOKS_BOOTSTRAP=1 on the long-running web
+    # process (that would keep using the migration connection selector).
+    command:
+    - sh
+    - -c
+    - >-
+      if [ "$PROC_TYPE" = worker ]; then
+        exec node scripts/worker.mjs;
+      else
+        OPENBOOKS_BOOTSTRAP=1 node scripts/bootstrap.mjs &&
+        exec env -u OPENBOOKS_BOOTSTRAP node web/server.js;
+      fi
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
