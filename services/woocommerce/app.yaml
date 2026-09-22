@@ -8,17 +8,15 @@ metadata:
       platform, built as a WordPress plugin to turn any WordPress site into a fully
       featured online store.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/woocommerce/icon.png
-    kubero.dev/template.installation: 'WooCommerce is a WordPress plugin, so this
-      template runs the official wordpress image (PHP/Apache) and you install WooCommerce
-      from inside wp-admin. WordPress requires MySQL/MariaDB (it does not support
-      PostgreSQL), so the mariadb add-on is shipped. First run: complete the WordPress
-      install wizard, then in wp-admin go to Plugins > Add New, search ''WooCommerce'',
-      install + activate, and run the WooCommerce setup wizard (store address, currency,
-      payment, shipping). Rotate the MariaDB password and all eight WORDPRESS_AUTH_KEY/SALT
-      secrets (openssl rand -base64 64) before production. WP_HOME/WP_SITEURL are
-      pinned to the app URL so checkout and admin URLs resolve. Persistent data (wp-content:
-      plugins incl. WooCommerce, themes, uploads/product images) lives on the mounted
-      volume at /var/www/html. For email (order receipts) configure an SMTP plugin;
+    kubero.dev/template.installation: 'Runs the official wordpress image (PHP/Apache)
+      with WooCommerce 11.1.1 pre-installed into wp-content/plugins and auto-activated
+      after the WordPress install wizard. WordPress requires MySQL/MariaDB (not PostgreSQL),
+      so the mariadb add-on is shipped. First run: complete the WordPress install wizard;
+      WooCommerce activates on the next request and opens its store setup (address,
+      currency, payment, shipping). Rotate the MariaDB password and all eight WORDPRESS_AUTH_KEY/SALT
+      secrets before production. WP_HOME/WP_SITEURL follow the request host. Persistent
+      data (plugins incl. WooCommerce, themes, uploads) lives on the mounted volume
+      at /var/www/html/wp-content. Platform Email routes order receipts through SMTP_*;
       for payments add a gateway plugin (Stripe/PayPal).'
     kubero.dev/template.links: '["https://woocommerce.com/documentation/", "https://hub.docker.com/_/wordpress"]'
     kubero.dev/template.screenshots: '["https://woocommerce.com/wp-content/uploads/2025/02/woo-take-control-of-your-success.jpg"]'
@@ -81,6 +79,14 @@ spec:
         type: Opaque
         stringData:
           password: woocommerce
+  # Platform email (see README "Email contract"). Same mu-plugin pattern as
+  # the WordPress template — routes wp_mail() (order receipts) through SMTP_*.
+  - displayName: Email
+    env: []
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    resourceDefinitions: {}
   envVars:
   - name: WORDPRESS_DB_HOST
     value: '$(MYSQL_HOST)'
@@ -93,23 +99,24 @@ spec:
   - name: WORDPRESS_TABLE_PREFIX
     value: wp_
   - name: WORDPRESS_CONFIG_EXTRA
-    value: define('WP_HOME', '{{KUBERO_APP_URL}}'); define('WP_SITEURL', '{{KUBERO_APP_URL}}');
+    value: define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST']); define('WP_SITEURL',
+      'https://' . $_SERVER['HTTP_HOST']);
   - name: WORDPRESS_AUTH_KEY
-    value: replace-with-openssl-rand-base64-64
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_SECURE_AUTH_KEY
-    value: replace-with-openssl-rand-base64-64
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_LOGGED_IN_KEY
-    value: replace-with-openssl-rand-base64-64
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_NONCE_KEY
-    value: replace-with-openssl-rand-base64-64
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_AUTH_SALT
-    value: replace-with-openssl-rand-base64-64
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_SECURE_AUTH_SALT
-    value: replace-with-openssl-rand-base64-64
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_LOGGED_IN_SALT
-    value: replace-with-openssl-rand-base64-64
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: WORDPRESS_NONCE_SALT
-    value: replace-with-openssl-rand-base64-64
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -125,8 +132,85 @@ spec:
     replicaCount: 0
   image:
     containerPort: '80'
-    repository: ghcr.io/stackblaze/stack-templates/wordpress
-    tag: latest
+    pullPolicy: IfNotPresent
+    # docker.io/library so zone nodes mirror through the regional zot
+    # (registry.<region>/v2/docker). Not ghcr.io/stackblaze (stale :latest)
+    # and not registry.stackblaze.cloud (sfo, 503). Pinned patch tag.
+    repository: docker.io/library/wordpress
+    tag: 7.1.0-php8.3-apache
+    # 1) Drop Stackblaze Email + WooCommerce auto-activate mu-plugins.
+    # 2) Download a pinned WooCommerce zip into wp-content/plugins when missing.
+    # 3) Hand over to the image entrypoint.
+    command:
+    - sh
+    - -c
+    - |
+      set -eu
+      mkdir -p /var/www/html/wp-content/mu-plugins /var/www/html/wp-content/plugins
+      cat > /var/www/html/wp-content/mu-plugins/stackblaze-email.php <<'PHP'
+      <?php
+      /**
+       * Plugin Name: Stackblaze Email
+       * Description: Sends wp_mail() through the platform Email add-on (SMTP_* environment). Managed by the template — rewritten on every restart.
+       */
+      if (!getenv('SMTP_HOST')) {
+          return;
+      }
+      add_action('phpmailer_init', function ($phpmailer) {
+          $phpmailer->isSMTP();
+          $phpmailer->Host       = getenv('SMTP_HOST');
+          $phpmailer->Port       = (int) (getenv('SMTP_PORT') ?: 587);
+          $phpmailer->SMTPAuth   = true;
+          $phpmailer->Username   = getenv('SMTP_USER');
+          $phpmailer->Password   = getenv('SMTP_PASSWORD');
+          $phpmailer->SMTPSecure = 'tls'; // STARTTLS on 587
+      });
+      add_filter('wp_mail_from', function () {
+          return getenv('SMTP_FROM');
+      });
+      PHP
+      cat > /var/www/html/wp-content/mu-plugins/stackblaze-woocommerce.php <<'PHP'
+      <?php
+      /**
+       * Plugin Name: Stackblaze WooCommerce Activate
+       * Description: Activates the bundled WooCommerce plugin after WordPress is installed. Managed by the template — rewritten on every restart.
+       */
+      add_action('init', function () {
+          if (!defined('ABSPATH') || !function_exists('get_option')) {
+              return;
+          }
+          // Install wizard unfinished — do not touch plugins yet.
+          if (!get_option('siteurl')) {
+              return;
+          }
+          if (!function_exists('is_plugin_active')) {
+              require_once ABSPATH . 'wp-admin/includes/plugin.php';
+          }
+          $plugin = 'woocommerce/woocommerce.php';
+          if (file_exists(WP_PLUGIN_DIR . '/' . $plugin) && !is_plugin_active($plugin)) {
+              activate_plugin($plugin, '', false, true);
+          }
+      }, 20);
+      PHP
+      WC_VER=11.1.1
+      WC_DIR=/var/www/html/wp-content/plugins/woocommerce
+      if [ ! -f "$WC_DIR/woocommerce.php" ]; then
+        echo "Installing WooCommerce ${WC_VER}..."
+        php -r "
+          \$url = 'https://downloads.wordpress.org/plugin/woocommerce.${WC_VER}.zip';
+          \$zip = '/tmp/woocommerce.zip';
+          \$dest = '/var/www/html/wp-content/plugins';
+          if (!copy(\$url, \$zip)) { fwrite(STDERR, \"download failed\\n\"); exit(1); }
+          \$z = new ZipArchive();
+          if (\$z->open(\$zip) !== true) { fwrite(STDERR, \"open zip failed\\n\"); exit(1); }
+          \$z->extractTo(\$dest);
+          \$z->close();
+          unlink(\$zip);
+        "
+      fi
+      chown -R www-data:www-data /var/www/html/wp-content/plugins/woocommerce \
+        /var/www/html/wp-content/mu-plugins 2>/dev/null || true
+      exec docker-entrypoint.sh apache2-foreground
     run:
       securityContext:
         readOnlyRootFilesystem: false
