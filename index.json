@@ -5279,7 +5279,7 @@
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/app.yaml",
-   "status": "unsupported",
+   "status": "active",
    "license": "GNU Affero General Public License v3.0",
    "spdx_id": "AGPL-3.0",
    "dirname": "plane",
