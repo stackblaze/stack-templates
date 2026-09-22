@@ -168,13 +168,13 @@ spec:
   - name: ORG_CURRENCY
     value: USD
   - name: ADMIN_EMAIL
-    value: admin@openbooks.local
+    value: admin@example.com
   - name: ADMIN_NAME
     value: Administrator
   # Fixed ≥24-char password so catalog e2e can sign in without scraping
   # a generated secret from the deploy. Rotate for production.
   - name: ADMIN_PASSWORD
-    value: 'KuberoQaOpenBooksPass123!'
+    value: KuberoQaOpenBooksPass123
   extraVolumes: []
   cronjobs: []
   web:
