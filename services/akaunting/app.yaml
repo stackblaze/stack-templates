@@ -104,8 +104,8 @@ spec:
       value: Akaunting
     resourceDefinitions: {}
   # Platform object storage (RustFS Tenant → communal-s3 logical bucket
-  # on shared). Laravel filesystem S3 disk; maps only while Tenant live
-  # via injected S3_*/AWS_* (same $(VAR) pattern as PGHOST).
+  # on shared). Laravel filesystem S3 disk; compose from injected S3_*/AWS_*
+  # in envVars (same $(VAR) pattern as PGHOST — Tenant always provisions).
 
   - displayName: RustFS
     env: []
