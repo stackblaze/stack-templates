@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: "Open-source project management platform — modern alternative to Jira and Linear."
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/icon.png
     kubero.dev/template.installation: |
-      Deploys Plane CE as a multi-service monorepo group (same Architecture UX as voting-app): api + worker + beat (makeplane/plane-backend), web/space/admin/live frontends, and plane-proxy as the public entrypoint. Shared add-ons (PostgreSQL, Valkey, RabbitMQ, RustFS) attach to the api service; companions share gitrepo.clone_url https://github.com/makeplane/plane.git so the Architecture graph groups them. After deploy, create cluster-local alias Services the proxy Caddyfile expects (api→api app :8000, web/space/admin/live→:3000, plane-minio→RustFS IO :9000), then set WEB_URL and CORS_ALLOWED_ORIGINS on api/frontends to the proxy public URL. Rotate SECRET_KEY, LIVE_SERVER_SECRET_KEY, and RustFS credentials before production use.
+      Deploys Plane CE as a multi-service monorepo group (same Architecture UX as voting-app): api + worker + beat (makeplane/plane-backend), web/space/admin/live frontends, and plane-proxy as the public entrypoint. Shared add-ons (PostgreSQL, Valkey, RabbitMQ, RustFS) attach to the api service; companions share gitrepo.clone_url https://github.com/makeplane/plane.git so the Architecture graph groups them. On first API boot the instance admin is seeded from ADMIN_EMAIL / ADMIN_PASSWORD / ADMIN_FIRST_NAME (God Mode setup is skipped). After deploy, alias Services (api/web/space/admin/live/plane-minio) are created for the proxy Caddyfile and WEB_URL/CORS point at the proxy URL. Open the proxy URL and sign in with ADMIN_EMAIL/ADMIN_PASSWORD, then create your workspace. Rotate ADMIN_PASSWORD, SECRET_KEY, LIVE_SERVER_SECRET_KEY, and RustFS credentials before production use.
     kubero.dev/template.links: '["https://developers.plane.so/"]'
     kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/plane/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-all-projects.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-home.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-analytics.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-settings.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-admin-general.png"]'
     kubero.dev/template.source: https://github.com/makeplane/plane
@@ -212,6 +212,19 @@ spec:
     value: '{{KUBERO_APP_URL}}'
   - name: CORS_ALLOWED_ORIGINS
     value: '{{KUBERO_APP_URL}}'
+  # Seeded on first API boot (skips /god-mode). Change after first login.
+  - name: ADMIN_EMAIL
+    value: admin@example.com
+  - name: ADMIN_PASSWORD
+    value: '{{KUBERO_GEN_ALNUM:24}}'
+  - name: ADMIN_FIRST_NAME
+    value: Admin
+  - name: INSTANCE_NAME
+    value: Plane
+  - name: ENABLE_SIGNUP
+    value: '1'
+  - name: ENABLE_EMAIL_PASSWORD
+    value: '1'
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: CELERY_BROKER_URL
@@ -264,10 +277,63 @@ spec:
     # (registry.<region>/v2/docker). Not registry.stackblaze.cloud (sfo, 503).
     repository: docker.io/makeplane/plane-backend
     tag: stable
+    # Wrap gunicorn so instance admin is seeded after register_instance
+    # (inside docker-entrypoint-api.sh) and before the server accepts traffic.
     command:
     - sh
     - -c
-    - ./bin/docker-entrypoint-migrator.sh && ./bin/docker-entrypoint-api.sh
+    - |
+      set -e
+      mkdir -p /tmp/plane-seed
+      cat > /tmp/plane-seed/gunicorn <<'EOS'
+      #!/bin/sh
+      python - <<'PY' || true
+      import os, uuid
+      import django
+      os.environ.setdefault("DJANGO_SETTINGS_MODULE", "plane.settings.production")
+      django.setup()
+      from django.contrib.auth.hashers import make_password
+      from django.utils import timezone
+      from plane.db.models import User, Profile
+      from plane.license.models import Instance, InstanceAdmin
+      email = (os.environ.get("ADMIN_EMAIL") or "").strip().lower()
+      password = os.environ.get("ADMIN_PASSWORD") or ""
+      first = (os.environ.get("ADMIN_FIRST_NAME") or "Admin").strip() or "Admin"
+      company = (os.environ.get("INSTANCE_NAME") or "Plane").strip() or "Plane"
+      if not email or not password:
+          raise SystemExit(0)
+      instance = Instance.objects.first()
+      if instance is None:
+          raise SystemExit(0)
+      if InstanceAdmin.objects.exists():
+          if not instance.is_setup_done:
+              instance.is_setup_done = True
+              instance.save(update_fields=["is_setup_done"])
+          raise SystemExit(0)
+      user = User.objects.filter(email=email).first()
+      if user is None:
+          user = User.objects.create(
+              first_name=first,
+              last_name="",
+              email=email,
+              username=uuid.uuid4().hex,
+              password=make_password(password),
+              is_password_autoset=False,
+              is_active=True,
+              last_active=timezone.now(),
+          )
+          Profile.objects.create(user=user, company_name=company)
+      InstanceAdmin.objects.get_or_create(user=user, instance=instance)
+      instance.is_setup_done = True
+      instance.instance_name = company
+      instance.save()
+      print("plane: seeded instance admin", email)
+      PY
+      exec /usr/local/bin/gunicorn "$@"
+      EOS
+      chmod +x /tmp/plane-seed/gunicorn
+      export PATH="/tmp/plane-seed:$PATH"
+      ./bin/docker-entrypoint-migrator.sh && ./bin/docker-entrypoint-api.sh
     run:
       securityContext:
         readOnlyRootFilesystem: false

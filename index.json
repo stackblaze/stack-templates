@@ -5243,7 +5243,7 @@
    "source": "https://github.com/makeplane/plane",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/icon.png",
    "website": "https://plane.so/",
-   "installation": "Deploys Plane CE as a multi-service monorepo (api, worker, beat, web, space, admin, live, proxy) with PostgreSQL, Valkey, RabbitMQ, and RustFS on the api service. Companions share gitrepo.clone_url for Architecture grouping. After deploy: create alias Services (api/web/space/admin/live/plane-minio) for the proxy Caddyfile, and point WEB_URL/CORS at the proxy URL.",
+   "installation": "Deploys Plane CE as a multi-service monorepo (api, worker, beat, web, space, admin, live, proxy) with PostgreSQL, Valkey, RabbitMQ, and RustFS on the api service. Companions share gitrepo.clone_url for Architecture grouping. On first API boot the instance admin is seeded from ADMIN_EMAIL / ADMIN_PASSWORD (God Mode setup is skipped). After deploy: alias Services for the proxy Caddyfile, and WEB_URL/CORS at the proxy URL. Sign in at the proxy URL with ADMIN_EMAIL/ADMIN_PASSWORD, then create your workspace. Rotate ADMIN_PASSWORD, SECRET_KEY, LIVE_SERVER_SECRET_KEY, and RustFS credentials.",
    "architecture": [],
    "categories": [
     "productivity",
