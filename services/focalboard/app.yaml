@@ -89,9 +89,12 @@ spec:
     storageClass: shared
   image:
     containerPort: '8000'
-    pullPolicy: Always
-    repository: registry.stackblaze.cloud/mattermost/focalboard
-    tag: latest
+    pullPolicy: IfNotPresent
+    # Referenced as docker.io on purpose: zone nodes mirror docker.io through
+    # the regional registry (containerd hosts.d -> registry.<region>/v2/docker).
+    # Not registry.stackblaze.cloud (sfo zot, 503). Pinned patch tag, not :latest.
+    repository: docker.io/mattermost/focalboard
+    tag: '7.11.4'
     command:
     - sh
     - -c
