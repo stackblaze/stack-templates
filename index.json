@@ -5266,6 +5266,7 @@
     "Cluster",
     "Valkey",
     "RabbitmqCluster",
+    "Smtp",
     "Tenant"
    ],
    "stars": 47000,

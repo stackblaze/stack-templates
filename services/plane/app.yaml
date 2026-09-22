@@ -112,6 +112,34 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  # Platform email (see README "Email contract"). Plane reads EMAIL_* from
+  # env (and Instance Admin); map from injected SMTP_*.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: EMAIL_HOST
+      value: '$(SMTP_HOST)'
+    - name: EMAIL_PORT
+      value: '$(SMTP_PORT)'
+    - name: EMAIL_HOST_USER
+      value: '$(SMTP_USER)'
+    - name: EMAIL_HOST_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: EMAIL_FROM
+      value: '$(SMTP_FROM)'
+    - name: EMAIL_USE_TLS
+      value: '1'
+    - name: EMAIL_USE_SSL
+      value: '0'
+    - name: ENABLE_SMTP
+      value: '1'
+    resourceDefinitions: {}
+  # Platform object storage (RustFS Tenant → communal-s3 logical bucket
+  # on shared). Plane natively reads AWS_*; map endpoint/bucket from the
+  # injected S3_* contract (access keys arrive as AWS_ACCESS_KEY_ID /
+  # AWS_SECRET_ACCESS_KEY from the Tenant secret).
   - displayName: RustFS
     env: []
     icon: /img/addons/rustfs.svg
@@ -151,8 +179,8 @@ spec:
           name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
         type: Opaque
         stringData:
-          accesskey: planeadmin
-          secretkey: changeme
+          accesskey: plane
+          secretkey: '{{KUBERO_GEN_HEX:32}}'
   - displayName: RabbitMQ
     env: []
     icon: /img/addons/rabbitmq.svg
@@ -202,16 +230,12 @@ spec:
     value: '{{KUBERO_GEN_ALNUM:32}}'
   - name: USE_MINIO
     value: '1'
-  - name: AWS_ACCESS_KEY_ID
-    value: planeadmin
-  - name: AWS_SECRET_ACCESS_KEY
-    value: changeme
   - name: AWS_S3_ENDPOINT_URL
-    value: http://{{KUBERO_APP_NAME}}-rustfs-io:9000
+    value: '$(S3_ENDPOINT)'
   - name: AWS_S3_BUCKET_NAME
-    value: uploads
+    value: '$(S3_BUCKET)'
   - name: AWS_REGION
-    value: us-east-1
+    value: '$(AWS_REGION)'
   - name: GUNICORN_WORKERS
     value: '1'
   extraVolumes: []
