@@ -4,9 +4,7 @@ metadata:
   name: openbooks
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source accounting-first ERP with a PostgreSQL-enforced
-      double-entry ledger, projects/job costing, and optional Canada/US payroll packs
-      (alpha).
+    kubero.dev/template.description: "Run accounting, projects, job costing, inventory, payroll, and month-end close on one audit-ready ledger. A modern alternative to NetSuite, Sage Intacct, Acumatica, and Odoo — currently in alpha."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/icon.png
     kubero.dev/template.installation: "OpenBooks is ALPHA and not open for deploy\
       \ on StackBlaze shared plans yet. Bootstrap creates PostgreSQL roles (openbooks_read)\
@@ -22,7 +20,7 @@ metadata:
       "https://raw.githubusercontent.com/braedonsaunders/openbooks/main/.github/assets/screenshots/project-profitability.jpg"]'
     kubero.dev/template.source: https://github.com/braedonsaunders/openbooks
     kubero.dev/template.categories: '["finance", "erp", "work"]'
-    kubero.dev/template.title: OpenBooks
+    kubero.dev/template.title: "OpenBooks Financial ERP"
     kubero.dev/template.website: https://openbooks-site.vercel.app
   labels:
     manager: kubero

@@ -3,15 +3,14 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: WordPress is a free and open-source content management
-      system written in hypertext preprocessor language.
+    kubero.dev/template.description: "Build and manage websites, blogs, and content experiences with the world's most popular CMS. A flexible alternative to Wix and Squarespace."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://wordpress.org/documentation/files/2021/07/test-widgets_v2-1-1024x643.jpeg","https://user-images.githubusercontent.com/12400734/168248949-f19a1a73-2c02-4eab-84d1-faaff57dbd07.png","https://wordpress.org/documentation/files/2021/06/menu-add-items-1024x557.png"]'
     kubero.dev/template.source: https://github.com/WordPress/WordPress
     kubero.dev/template.categories: '["cms"]'
-    kubero.dev/template.title: WordPress
+    kubero.dev/template.title: "WordPress CMS"
     kubero.dev/template.website: https://wordpress.org
   name: wordpress
 spec:
