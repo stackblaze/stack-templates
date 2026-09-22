@@ -4,8 +4,7 @@ metadata:
   name: twenty
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Building a modern alternative to Salesforce,
-      powered by the community.
+    kubero.dev/template.description: "Close more deals with a modern CRM for contacts, pipelines, tasks, and opportunities. A flexible alternative to Salesforce and HubSpot."
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/icon.png
     kubero.dev/template.installation: 'All available environment variables are described
       here : https://twenty.com/developers/section/self-hosting/self-hosting-var'
@@ -13,7 +12,7 @@ metadata:
     kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/twenty/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/screenshot-people.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/screenshot-opportunities.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/screenshot-tasks.png"]'
     kubero.dev/template.source: https://github.com/twentyhq/twenty
     kubero.dev/template.categories: '["productivity", "work" ]'
-    kubero.dev/template.title: twenty
+    kubero.dev/template.title: "Twenty CRM"
     kubero.dev/template.website: https://twenty.com/
   labels:
     manager: kubero

@@ -3,14 +3,14 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: The open source password manager for teams
+    kubero.dev/template.description: "Protect company credentials and share access securely across teams and roles. A business-focused alternative to 1Password and LastPass."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/passbolt/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/passbolt/passbolt_styleguide/master/src/img/screenshots/teaser-screenshot-login.png","https://raw.githubusercontent.com/passbolt/passbolt_styleguide/master/src/img/screenshots/teaser-screenshot-share.png","https://raw.githubusercontent.com/passbolt/passbolt_styleguide/master/src/img/screenshots/teaser-screenshot4.png"]'
     kubero.dev/template.source: https://github.com/passbolt/passbolt_api
     kubero.dev/template.categories: '["security", "utilities"]'
-    kubero.dev/template.title: Passbolt
+    kubero.dev/template.title: "Passbolt for Teams"
     kubero.dev/template.website: https://www.passbolt.com
   name: passbolt
 spec:

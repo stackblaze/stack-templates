@@ -4,9 +4,7 @@ metadata:
   name: woocommerce
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: The world's most popular open-source e-commerce
-      platform, built as a WordPress plugin to turn any WordPress site into a fully
-      featured online store.
+    kubero.dev/template.description: "Turn any WordPress site into a complete online store with products, payments, carts, and checkout. A highly customizable alternative to Shopify and BigCommerce."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/woocommerce/icon.png
     kubero.dev/template.installation: 'Runs the official wordpress image (PHP/Apache)
       with WooCommerce 11.1.1 pre-installed into wp-content/plugins and auto-activated
@@ -22,7 +20,7 @@ metadata:
     kubero.dev/template.screenshots: '["https://woocommerce.com/wp-content/uploads/2025/02/woo-take-control-of-your-success.jpg"]'
     kubero.dev/template.source: https://github.com/woocommerce/woocommerce
     kubero.dev/template.categories: '["e-commerce", "cms", "work"]'
-    kubero.dev/template.title: WooCommerce
+    kubero.dev/template.title: "WooCommerce Store"
     kubero.dev/template.website: https://woocommerce.com/
   labels:
     manager: kubero

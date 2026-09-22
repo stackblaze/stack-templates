@@ -3,15 +3,14 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: 'A Bitwarden compatible paswordsafe server written
-      in Rust. '
+    kubero.dev/template.description: "Keep passwords, secure notes, and logins organized across all your devices. A lightweight alternative to 1Password and LastPass."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/vaultwarden/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/screenshot-login.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/screenshot-generator.png"]'
     kubero.dev/template.source: https://github.com/dani-garcia/vaultwarden
     kubero.dev/template.categories: '["security", "utilities"]'
-    kubero.dev/template.title: Vaultwarden
+    kubero.dev/template.title: "Vaultwarden Passwords"
     kubero.dev/template.website: https://github.com/dani-garcia/vaultwarden
   name: vaultwarden
 spec:
