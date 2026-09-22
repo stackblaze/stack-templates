@@ -122,6 +122,10 @@ spec:
   envVars:
   - name: NODE_ENV
     value: production
+  # Next.js SSR OOMs on the default ~256MB heap during first compile.
+  # Pod limit is 3Gi — give V8 room without eating the whole limit.
+  - name: NODE_OPTIONS
+    value: '--max-old-space-size=2048'
   - name: HOSTNAME
     value: 0.0.0.0
   - name: PORT
