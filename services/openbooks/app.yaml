@@ -171,8 +171,10 @@ spec:
     value: admin@openbooks.local
   - name: ADMIN_NAME
     value: Administrator
+  # Fixed ≥24-char password so catalog e2e can sign in without scraping
+  # a generated secret from the deploy. Rotate for production.
   - name: ADMIN_PASSWORD
-    value: '{{KUBERO_GEN_HEX:24}}'
+    value: KuberoQaOpenBooksPass123!
   extraVolumes: []
   cronjobs: []
   web:
