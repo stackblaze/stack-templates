@@ -80,11 +80,62 @@ spec:
     kind: Smtp
     env: []
     resourceDefinitions: {}
+  # Platform object storage (RustFS Tenant → communal-s3 logical bucket
+  # on shared). Vaultwarden OpenDAL S3 via DATA_FOLDER; AWS_* creds
+  # are injected. TMP must stay on the local volume.
+
+  - displayName: RustFS
+    env: []
+    icon: /img/addons/rustfs.svg
+    id: kubero-operator
+    kind: Tenant
+    resourceDefinitions:
+      Tenant:
+        apiVersion: rustfs.com/v1alpha1
+        kind: Tenant
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-rustfs'
+          annotations:
+            # The operator refuses custom-repo images it cannot verify for
+            # RuntimeDefault seccomp ("WorkloadSecurityIncompatible") unless the
+            # exact reference is acknowledged. Keep in sync with spec.image.
+            operator.rustfs.com/runtime-default-image-ack: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
+        spec:
+          image: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
+          credsSecret:
+            name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+          pools:
+          - name: pool-0
+            servers: 1
+            persistence:
+              volumesPerServer: 4
+              volumeClaimTemplate:
+                accessModes:
+                - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 2Gi
+                storageClassName: slow
+      credsSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+        type: Opaque
+        stringData:
+          accesskey: vaultwarden
+          secretkey: '{{KUBERO_GEN_HEX:32}}'
   cronjobs: []
   deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  - name: DATA_FOLDER
+    value: 's3://$(S3_BUCKET)?endpoint=$(S3_HOST):$(S3_PORT)&region=$(AWS_REGION)&enable_virtual_host_style=false'
+  - name: TMP_FOLDER
+    value: /data/tmp
+  - name: TEMPLATES_FOLDER
+    value: /data/templates
   extraVolumes:
   - accessModes:
     - ReadWriteMany

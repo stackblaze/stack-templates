@@ -103,6 +103,52 @@ spec:
     - name: MAIL_FROM_NAME
       value: Akaunting
     resourceDefinitions: {}
+  # Platform object storage (RustFS Tenant → communal-s3 logical bucket
+  # on shared). Laravel filesystem S3 disk; compose from injected S3_*/AWS_*
+  # in envVars (same $(VAR) pattern as PGHOST — Tenant always provisions).
+
+  - displayName: RustFS
+    env: []
+    icon: /img/addons/rustfs.svg
+    id: kubero-operator
+    kind: Tenant
+    resourceDefinitions:
+      Tenant:
+        apiVersion: rustfs.com/v1alpha1
+        kind: Tenant
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-rustfs'
+          annotations:
+            # The operator refuses custom-repo images it cannot verify for
+            # RuntimeDefault seccomp ("WorkloadSecurityIncompatible") unless the
+            # exact reference is acknowledged. Keep in sync with spec.image.
+            operator.rustfs.com/runtime-default-image-ack: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
+        spec:
+          image: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
+          credsSecret:
+            name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+          pools:
+          - name: pool-0
+            servers: 1
+            persistence:
+              volumesPerServer: 4
+              volumeClaimTemplate:
+                accessModes:
+                - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 2Gi
+                storageClassName: slow
+      credsSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+        type: Opaque
+        stringData:
+          accesskey: akaunting
+          secretkey: '{{KUBERO_GEN_HEX:32}}'
+
   envVars:
   - name: APP_URL
     value: '{{KUBERO_APP_URL}}'
@@ -140,6 +186,16 @@ spec:
     value: replace-with-strong-password
   - name: LOCALE
     value: en-US
+  - name: FILESYSTEM_DISK
+    value: s3
+  - name: FILESYSTEM_CLOUD
+    value: s3
+  - name: AWS_BUCKET
+    value: '$(S3_BUCKET)'
+  - name: AWS_ENDPOINT
+    value: '$(S3_ENDPOINT)'
+  - name: AWS_USE_PATH_STYLE_ENDPOINT
+    value: 'true'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

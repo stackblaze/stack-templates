@@ -937,7 +937,8 @@
    "links": [],
    "addons": [
     "Cluster",
-    "Smtp"
+    "Smtp",
+    "Tenant"
    ],
    "stars": 16314,
    "forks": 1481,
@@ -3424,7 +3425,8 @@
    "links": [],
    "addons": [
     "Cluster",
-    "Smtp"
+    "Smtp",
+    "Tenant"
    ],
    "stars": 60104,
    "forks": 2781,
@@ -6550,7 +6552,8 @@
    ],
    "addons": [
     "MariaDB",
-    "Smtp"
+    "Smtp",
+    "Tenant"
    ],
    "stars": 8600,
    "forks": 860,
@@ -9974,7 +9977,8 @@
    "addons": [
     "Cluster",
     "Valkey",
-    "Smtp"
+    "Smtp",
+    "Tenant"
    ],
    "stars": 13,
    "forks": 3,
