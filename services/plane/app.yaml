@@ -216,7 +216,8 @@ spec:
   - name: ADMIN_EMAIL
     value: admin@example.com
   - name: ADMIN_PASSWORD
-    value: '{{KUBERO_GEN_ALNUM:24}}'
+    # Fixed so catalog e2e can sign in; rotate for production.
+    value: KuberoQaPlaneAdmin1!
   - name: ADMIN_FIRST_NAME
     value: Admin
   - name: INSTANCE_NAME
