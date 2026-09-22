@@ -119,6 +119,15 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  # Platform email (see README "Email contract"). OpenBooks configures the
+  # mail provider in Admin → Email; SMTP_* is injected while Email is live so
+  # the host/user/password/from can be pasted there (no native env mapping).
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env: []
+    resourceDefinitions: {}
   envVars:
   - name: NODE_ENV
     value: production

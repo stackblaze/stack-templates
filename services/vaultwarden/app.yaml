@@ -72,6 +72,14 @@ spec:
         stringData:
           username: vaultwarden
           password: vaultwarden
+  # Platform email (see README "Email contract"). Vaultwarden reads SMTP_*
+  # natively, so no env mapping — vars are injected only while Email is live.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env: []
+    resourceDefinitions: {}
   cronjobs: []
   deploymentstrategy: docker
   envVars:

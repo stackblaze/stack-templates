@@ -936,7 +936,8 @@
    ],
    "links": [],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
    "stars": 16314,
    "forks": 1481,
@@ -2080,7 +2081,8 @@
    ],
    "links": [],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
    "stars": 42447,
    "forks": 13180,
@@ -3421,7 +3423,8 @@
    ],
    "links": [],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
    "stars": 60104,
    "forks": 2781,
@@ -6546,7 +6549,8 @@
     "https://github.com/akaunting/docker"
    ],
    "addons": [
-    "MariaDB"
+    "MariaDB",
+    "Smtp"
    ],
    "stars": 8600,
    "forks": 860,
@@ -8001,7 +8005,8 @@
     "https://github.com/nfrastack/docker-freescout"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
    "stars": 4300,
    "forks": 430,
@@ -9968,7 +9973,8 @@
    ],
    "addons": [
     "Cluster",
-    "Valkey"
+    "Valkey",
+    "Smtp"
    ],
    "stars": 13,
    "forks": 3,
@@ -13122,7 +13128,8 @@
     "https://listmonk.app/docs/"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
    "stars": 16000,
    "forks": 0,
@@ -13483,7 +13490,8 @@
    ],
    "addons": [
     "Cluster",
-    "Valkey"
+    "Valkey",
+    "Smtp"
    ],
    "stars": 36333,
    "forks": 5253,
