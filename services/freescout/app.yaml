@@ -85,6 +85,30 @@ spec:
         stringData:
           username: freescout
           password: freescout
+  # Platform email (see README "Email contract"). nfrastack strips the
+  # FREESCOUT_ prefix into FreeScout's MAIL_* .env keys.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: FREESCOUT_MAIL_DRIVER
+      value: smtp
+    - name: FREESCOUT_MAIL_HOST
+      value: '$(SMTP_HOST)'
+    - name: FREESCOUT_MAIL_PORT
+      value: '$(SMTP_PORT)'
+    - name: FREESCOUT_MAIL_USERNAME
+      value: '$(SMTP_USER)'
+    - name: FREESCOUT_MAIL_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: FREESCOUT_MAIL_ENCRYPTION
+      value: tls
+    - name: FREESCOUT_MAIL_FROM_ADDRESS
+      value: '$(SMTP_FROM)'
+    - name: FREESCOUT_MAIL_FROM_NAME
+      value: FreeScout
+    resourceDefinitions: {}
   envVars:
   - name: APP_URL
     value: '{{KUBERO_APP_URL}}'

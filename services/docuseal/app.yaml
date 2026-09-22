@@ -88,6 +88,30 @@ spec:
         stringData:
           username: docuseal
           password: docuseal
+  # Platform email (see README "Email contract"). DocuSeal ActionMailer
+  # SMTP_* env (STARTTLS on 587 — do not enable implicit SSL/TLS).
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: SMTP_ADDRESS
+      value: '$(SMTP_HOST)'
+    - name: SMTP_PORT
+      value: '$(SMTP_PORT)'
+    - name: SMTP_USERNAME
+      value: '$(SMTP_USER)'
+    - name: SMTP_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: SMTP_AUTHENTICATION
+      value: plain
+    - name: SMTP_ENABLE_STARTTLS
+      value: 'true'
+    - name: SMTP_ENABLE_SSL
+      value: 'false'
+    - name: SMTP_ENABLE_TLS
+      value: 'false'
+    resourceDefinitions: {}
   web:
     replicaCount: 1
   worker:

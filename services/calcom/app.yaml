@@ -72,6 +72,25 @@ spec:
         stringData:
           username: calcom
           password: calcom
+  # Platform email (see README "Email contract"). Cal.com nodemailer SMTP.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: EMAIL_SERVER_HOST
+      value: '$(SMTP_HOST)'
+    - name: EMAIL_SERVER_PORT
+      value: '$(SMTP_PORT)'
+    - name: EMAIL_SERVER_USER
+      value: '$(SMTP_USER)'
+    - name: EMAIL_SERVER_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: EMAIL_FROM
+      value: '$(SMTP_FROM)'
+    - name: EMAIL_FROM_NAME
+      value: Cal.com
+    resourceDefinitions: {}
   cronjobs: []
   deploymentstrategy: docker
   envVars:

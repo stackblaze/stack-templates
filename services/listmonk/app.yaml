@@ -81,6 +81,14 @@ spec:
         stringData:
           username: listmonk
           password: listmonk
+  # Platform email (see README "Email contract"). Listmonk stores SMTP in
+  # Settings → SMTP (DB); SMTP_* is injected while Email is live for that form.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env: []
+    resourceDefinitions: {}
   envVars:
   - name: LISTMONK_db__host
     value: '$(PGHOST)'
