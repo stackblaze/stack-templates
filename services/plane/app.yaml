@@ -260,7 +260,9 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/makeplane/plane-backend
+    # docker.io so zone nodes mirror through the regional zot
+    # (registry.<region>/v2/docker). Not registry.stackblaze.cloud (sfo, 503).
+    repository: docker.io/makeplane/plane-backend
     tag: stable
     command:
     - sh
@@ -277,7 +279,7 @@ spec:
     nameHint: plane-worker
     exposeInternet: false
     image:
-      repository: registry.stackblaze.cloud/makeplane/plane-backend
+      repository: docker.io/makeplane/plane-backend
       tag: stable
       containerPort: '8000'
       command:
@@ -289,7 +291,7 @@ spec:
     nameHint: plane-beat
     exposeInternet: false
     image:
-      repository: registry.stackblaze.cloud/makeplane/plane-backend
+      repository: docker.io/makeplane/plane-backend
       tag: stable
       containerPort: '8000'
       command:
@@ -301,7 +303,7 @@ spec:
     nameHint: plane-web
     exposeInternet: false
     image:
-      repository: registry.stackblaze.cloud/makeplane/plane-frontend
+      repository: docker.io/makeplane/plane-frontend
       tag: stable
       containerPort: '3000'
     envVars:
@@ -314,7 +316,7 @@ spec:
     nameHint: plane-space
     exposeInternet: false
     image:
-      repository: registry.stackblaze.cloud/makeplane/plane-space
+      repository: docker.io/makeplane/plane-space
       tag: stable
       containerPort: '3000'
     envVars:
@@ -326,7 +328,7 @@ spec:
     nameHint: plane-admin
     exposeInternet: false
     image:
-      repository: registry.stackblaze.cloud/makeplane/plane-admin
+      repository: docker.io/makeplane/plane-admin
       tag: stable
       containerPort: '3000'
     envVars:
@@ -338,7 +340,7 @@ spec:
     nameHint: plane-live
     exposeInternet: false
     image:
-      repository: registry.stackblaze.cloud/makeplane/plane-live
+      repository: docker.io/makeplane/plane-live
       tag: stable
       containerPort: '3000'
     envVars:
@@ -357,7 +359,7 @@ spec:
     exposeInternet: true
     publicUrlSource: true
     image:
-      repository: registry.stackblaze.cloud/makeplane/plane-proxy
+      repository: docker.io/makeplane/plane-proxy
       tag: stable
       containerPort: '80'
     envVars:
