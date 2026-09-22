@@ -4,7 +4,7 @@ metadata:
   name: listmonk
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Send high-volume campaigns and manage subscriber lists with powerful segmentation and analytics. A performance-focused alternative to Mailchimp and Brevo."
+    kubero.dev/template.description: "Send high-volume campaigns and manage subscriber lists with powerful segmentation and analytics.\nA performance-focused alternative to Mailchimp and Brevo."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/icon.png
     kubero.dev/template.installation: "On first boot, listmonk runs database migrations\
       \ automatically. Open /admin and complete the one-time Super Admin setup (email,\

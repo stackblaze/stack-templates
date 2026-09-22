@@ -4,8 +4,7 @@ metadata:
   name: medusa
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source headless commerce platform — products,
-      carts, checkout, and an admin dashboard, with a REST/JS API for custom storefronts.
+    kubero.dev/template.description: "Build custom shopping experiences with modular commerce APIs, product management, carts, and checkout.\nA developer-first alternative to Shopify Plus and commercetools."
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/62591822?s=200&v=4
     kubero.dev/template.homepage: /app
     kubero.dev/template.installation: 'Deploys the Medusa 2 backend and admin (at /app)
@@ -22,7 +21,7 @@ metadata:
     kubero.dev/template.screenshots: '["https://medusajs.com/images/og.jpg"]'
     kubero.dev/template.source: https://github.com/medusajs/medusa
     kubero.dev/template.categories: '["e-commerce", "development", "work"]'
-    kubero.dev/template.title: Medusa
+    kubero.dev/template.title: "Medusa Commerce"
     kubero.dev/template.website: https://medusajs.com
   labels:
     manager: kubero

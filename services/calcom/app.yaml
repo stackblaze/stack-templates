@@ -3,7 +3,7 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Turn availability into booked meetings with customizable scheduling pages and automated workflows. A flexible alternative to Calendly and SavvyCal."
+    kubero.dev/template.description: "Turn availability into booked meetings with customizable scheduling pages and automated workflows.\nA flexible alternative to Calendly and SavvyCal."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/calcom/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'

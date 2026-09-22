@@ -4,7 +4,7 @@ metadata:
   name: openbooks
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Run accounting, projects, job costing, inventory, payroll, and month-end close on one audit-ready ledger. A modern alternative to NetSuite, Sage Intacct, Acumatica, and Odoo — currently in alpha."
+    kubero.dev/template.description: "Run accounting, projects, job costing, inventory, payroll, and month-end close on one audit-ready ledger.\nA modern alternative to NetSuite, Sage Intacct, Acumatica, and Odoo — currently in alpha."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/icon.png
     kubero.dev/template.installation: "OpenBooks is ALPHA and not open for deploy\
       \ on StackBlaze shared plans yet. Bootstrap creates PostgreSQL roles (openbooks_read)\

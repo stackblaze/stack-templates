@@ -4,7 +4,7 @@ metadata:
   name: freescout
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Deliver faster customer support with shared inboxes, assignments, conversations, and team collaboration. An affordable alternative to Zendesk and Help Scout."
+    kubero.dev/template.description: "Deliver faster customer support with shared inboxes, assignments, conversations, and team collaboration.\nAn affordable alternative to Zendesk and Help Scout."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freescout/icon.png
     kubero.dev/template.installation: 'Image: nfrastack/freescout (community-maintained,
       formerly tiredofit). Rotate APP_KEY (base64 of 32 random bytes: `base64:$(openssl

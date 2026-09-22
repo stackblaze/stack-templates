@@ -4,7 +4,7 @@ metadata:
   name: twenty
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Close more deals with a modern CRM for contacts, pipelines, tasks, and opportunities. A flexible alternative to Salesforce and HubSpot."
+    kubero.dev/template.description: "Close more deals with a modern CRM for contacts, pipelines, tasks, and opportunities.\nA flexible alternative to Salesforce and HubSpot."
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/icon.png
     kubero.dev/template.installation: 'All available environment variables are described
       here : https://twenty.com/developers/section/self-hosting/self-hosting-var'

@@ -100,7 +100,7 @@
   },
   {
    "name": "Twenty CRM",
-   "description": "Close more deals with a modern CRM for contacts, pipelines, tasks, and opportunities. A flexible alternative to Salesforce and HubSpot.",
+   "description": "Close more deals with a modern CRM for contacts, pipelines, tasks, and opportunities.\nA flexible alternative to Salesforce and HubSpot.",
    "source": "https://github.com/twentyhq/twenty",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/icon.png",
    "website": "https://twenty.com/",
@@ -152,7 +152,7 @@
   },
   {
    "name": "n8n Automation",
-   "description": "Automate repetitive work and connect your apps, APIs, and data with visual workflows. A powerful alternative to Zapier and Make.",
+   "description": "Automate repetitive work and connect your apps, APIs, and data with visual workflows.\nA powerful alternative to Zapier and Make.",
    "source": "https://github.com/n8n-io/n8n",
    "icon": "https://avatars.githubusercontent.com/u/45487711?s=200&v=4",
    "website": "https://n8n.io",
@@ -245,7 +245,7 @@
   },
   {
    "name": "WordPress CMS",
-   "description": "Build and manage websites, blogs, and content experiences with the world's most popular CMS. A flexible alternative to Wix and Squarespace.",
+   "description": "Build and manage websites, blogs, and content experiences with the world's most popular CMS.\nA flexible alternative to Wix and Squarespace.",
    "source": "https://github.com/WordPress/WordPress",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/icon.png",
    "website": "https://github.com/benbusby/whoogle-search",
@@ -921,7 +921,7 @@
   },
   {
    "name": "DocuSeal eSign",
-   "description": "Create, send, complete, and sign business documents from one streamlined workspace. A cost-effective alternative to DocuSign and Dropbox Sign.",
+   "description": "Create, send, complete, and sign business documents from one streamlined workspace.\nA cost-effective alternative to DocuSign and Dropbox Sign.",
    "source": "https://github.com/docusealco/docuseal",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docuseal/icon.png",
    "website": "https://www.docuseal.com/",
@@ -2067,7 +2067,7 @@
   },
   {
    "name": "Cal.com Scheduling",
-   "description": "Turn availability into booked meetings with customizable scheduling pages and automated workflows. A flexible alternative to Calendly and SavvyCal.",
+   "description": "Turn availability into booked meetings with customizable scheduling pages and automated workflows.\nA flexible alternative to Calendly and SavvyCal.",
    "source": "https://github.com/calcom/cal.com",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/calcom/icon.png",
    "website": "https://cal.com/",
@@ -2676,7 +2676,7 @@
   },
   {
    "name": "Umami Analytics",
-   "description": "Understand traffic, campaigns, and visitor behavior through fast, privacy-friendly analytics. A lightweight alternative to Google Analytics and Plausible.",
+   "description": "Understand traffic, campaigns, and visitor behavior through fast, privacy-friendly analytics.\nA lightweight alternative to Google Analytics and Plausible.",
    "source": "https://github.com/umami-software/umami",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/umami/icon.png",
    "website": "https://umami.is/",
@@ -3060,7 +3060,7 @@
   },
   {
    "name": "Passbolt for Teams",
-   "description": "Protect company credentials and share access securely across teams and roles. A business-focused alternative to 1Password and LastPass.",
+   "description": "Protect company credentials and share access securely across teams and roles.\nA business-focused alternative to 1Password and LastPass.",
    "source": "https://github.com/passbolt/passbolt_api",
    "icon": "https://avatars.githubusercontent.com/u/4386228?s=200&v=4",
    "website": "https://www.passbolt.com",
@@ -3406,7 +3406,7 @@
   },
   {
    "name": "Vaultwarden Passwords",
-   "description": "Keep passwords, secure notes, and logins organized across all your devices. A lightweight alternative to 1Password and LastPass.",
+   "description": "Keep passwords, secure notes, and logins organized across all your devices.\nA lightweight alternative to 1Password and LastPass.",
    "source": "https://github.com/dani-garcia/vaultwarden",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/icon.png",
    "website": "https://github.com/dani-garcia/vaultwarden",
@@ -4808,7 +4808,7 @@
   },
   {
    "name": "Mattermost Collaboration",
-   "description": "Bring team messaging, file sharing, and operational workflows into one secure workspace. A customizable alternative to Slack and Microsoft Teams.",
+   "description": "Bring team messaging, file sharing, and operational workflows into one secure workspace.\nA customizable alternative to Slack and Microsoft Teams.",
    "source": "https://github.com/mattermost/mattermost",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/icon.png",
    "website": "https://mattermost.com/",
@@ -5239,7 +5239,7 @@
   },
   {
    "name": "Plane Project Management",
-   "description": "Plan projects, prioritize issues, and deliver work through cycles, modules, and roadmaps. A streamlined alternative to Jira and Linear.",
+   "description": "Plan projects, prioritize issues, and deliver work through cycles, modules, and roadmaps.\nA streamlined alternative to Jira and Linear.",
    "source": "https://github.com/makeplane/plane",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/icon.png",
    "website": "https://plane.so/",
@@ -6535,7 +6535,7 @@
   },
   {
    "name": "Akaunting Finance",
-   "description": "Manage invoices, expenses, customers, and financial reporting from one approachable dashboard. A practical alternative to QuickBooks and FreshBooks.",
+   "description": "Manage invoices, expenses, customers, and financial reporting from one approachable dashboard.\nA practical alternative to QuickBooks and FreshBooks.",
    "source": "https://github.com/akaunting/akaunting",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/akaunting/icon.png",
    "website": "https://akaunting.com",
@@ -7990,7 +7990,7 @@
   },
   {
    "name": "FreeScout Help Desk",
-   "description": "Deliver faster customer support with shared inboxes, assignments, conversations, and team collaboration. An affordable alternative to Zendesk and Help Scout.",
+   "description": "Deliver faster customer support with shared inboxes, assignments, conversations, and team collaboration.\nAn affordable alternative to Zendesk and Help Scout.",
    "source": "https://github.com/freescout-help-desk/freescout",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freescout/icon.png",
    "website": "https://freescout.net",
@@ -9955,7 +9955,7 @@
   },
   {
    "name": "OpenBooks Financial ERP",
-   "description": "Run accounting, projects, job costing, inventory, payroll, and month-end close on one audit-ready ledger. A modern alternative to NetSuite, Sage Intacct, Acumatica, and Odoo \u2014 currently in alpha.",
+   "description": "Run accounting, projects, job costing, inventory, payroll, and month-end close on one audit-ready ledger.\nA modern alternative to NetSuite, Sage Intacct, Acumatica, and Odoo \u2014 currently in alpha.",
    "source": "https://github.com/braedonsaunders/openbooks",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/icon.png",
    "website": "https://openbooks-site.vercel.app",
@@ -11923,7 +11923,7 @@
   },
   {
    "name": "WooCommerce Store",
-   "description": "Turn any WordPress site into a complete online store with products, payments, carts, and checkout. A highly customizable alternative to Shopify and BigCommerce.",
+   "description": "Turn any WordPress site into a complete online store with products, payments, carts, and checkout.\nA highly customizable alternative to Shopify and BigCommerce.",
    "source": "https://github.com/woocommerce/woocommerce",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/woocommerce/icon.png",
    "website": "https://woocommerce.com/",
@@ -13114,7 +13114,7 @@
   },
   {
    "name": "Listmonk Email Marketing",
-   "description": "Send high-volume campaigns and manage subscriber lists with powerful segmentation and analytics. A performance-focused alternative to Mailchimp and Brevo.",
+   "description": "Send high-volume campaigns and manage subscriber lists with powerful segmentation and analytics.\nA performance-focused alternative to Mailchimp and Brevo.",
    "source": "https://github.com/knadh/listmonk",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/icon.png",
    "website": "https://listmonk.app",
@@ -13473,8 +13473,8 @@
    ]
   },
   {
-   "name": "medusa",
-   "description": "Open-source headless commerce platform \u2014 products, carts, checkout, and an admin dashboard, with a REST/JS API for custom storefronts.",
+   "name": "Medusa Commerce",
+   "description": "Build custom shopping experiences with modular commerce APIs, product management, carts, and checkout.\nA developer-first alternative to Shopify Plus and commercetools.",
    "source": "https://github.com/medusajs/medusa",
    "icon": "https://avatars.githubusercontent.com/u/62591822?s=200&v=4",
    "website": "https://medusajs.com",

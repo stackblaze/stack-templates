@@ -3,7 +3,7 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Protect company credentials and share access securely across teams and roles. A business-focused alternative to 1Password and LastPass."
+    kubero.dev/template.description: "Protect company credentials and share access securely across teams and roles.\nA business-focused alternative to 1Password and LastPass."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/passbolt/icon.png
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
