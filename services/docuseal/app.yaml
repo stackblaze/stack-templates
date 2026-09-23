@@ -21,6 +21,14 @@ spec:
   envVars:
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  # CDN terminates TLS at the edge and talks HTTP to the pod. DocuSeal
+  # defaults DEFAULT_URL_OPTIONS / cookies to http unless FORCE_SSL is set;
+  # that yields "Not Secure" share links and CSRF 422s (Origin https vs
+  # base_url http). FORCE_SSL enables assume_ssl + https URL generation.
+  - name: HOST
+    value: '{{KUBERO_APP_HOST}}'
+  - name: FORCE_SSL
+    value: 'true'
   - name: S3_ATTACHMENTS_BUCKET
     value: '$(S3_BUCKET)'
   extraVolumes:
