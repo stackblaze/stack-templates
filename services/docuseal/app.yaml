@@ -170,14 +170,18 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
-  # Postgres (and RustFS) come up after the web pod on a fresh deploy.
-  # DocuSeal exits immediately if the database refuses the connection, and
-  # that single restart is what the platform records as a startup-probe SLO
-  # breach. Wait here so the process never crashes, and keep the probe
-  # window long enough for a slow first boot.
+  # Postgres comes up after the web pod on a fresh deploy. DocuSeal exits
+  # immediately if the database refuses the connection, and that restart is
+  # what the platform records as a startup-probe SLO breach. Wait here so
+  # the process never crashes.
+  #
+  # Probe /up, not /. FORCE_SSL makes / return 302 to the public https URL.
+  # kubelet follows that redirect out through the CDN and records
+  # "Probe terminated redirects" as a cluster networking failure.
+  # Rails /up is 200 with no redirect.
   healthcheck:
     enabled: true
-    path: /
+    path: /up
     startupSeconds: 300
     timeoutSeconds: 5
     periodSeconds: 10
