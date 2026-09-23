@@ -170,9 +170,28 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  # Postgres (and RustFS) come up after the web pod on a fresh deploy.
+  # DocuSeal exits immediately if the database refuses the connection, and
+  # that single restart is what the platform records as a startup-probe SLO
+  # breach. Wait here so the process never crashes, and keep the probe
+  # window long enough for a slow first boot.
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '3000'
     pullPolicy: IfNotPresent
+    command:
+    - /bin/sh
+    - -c
+    - |
+      # Image CMD is: /app/bin/bundle exec puma -C /app/config/puma.rb --dir /app
+      # Wait for Postgres first so a cold database does not crash the process.
+      ruby -e 'require "socket"; h=ENV.fetch("PGHOST"); p=ENV.fetch("PGPORT","5432").to_i; 90.times { begin; TCPSocket.new(h,p).close; exit 0; rescue; sleep 2; end }; abort("postgres not ready")'
+      exec /app/bin/bundle exec puma -C /app/config/puma.rb --dir /app
     # Referenced as docker.io on purpose: zone nodes mirror docker.io through
     # the regional registry (containerd hosts.d -> registry.<region>/v2/docker,
     # the zot in each services cluster, on-demand sync, Docker Hub fallback).
