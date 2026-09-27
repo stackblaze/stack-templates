@@ -173,6 +173,29 @@ spec:
     # 503). Pinned patch tag, not :latest.
     repository: docker.io/docuseal/docuseal
     tag: '3.2.6'
+    # Communal S3 is only reachable inside the cluster. DocuSeal puts
+    # blob.url (a presigned S3 URL) in the builder JSON, so the browser
+    # requests the in-cluster host and the canvas stays blank. Serve those
+    # URLs through the app's blob proxy instead.
+    command:
+    - /bin/sh
+    - -c
+    - |
+      ruby -e 'require "socket"; h=ENV.fetch("PGHOST"); p=ENV.fetch("PGPORT","5432").to_i; 90.times { begin; TCPSocket.new(h,p).close; exit 0; rescue; sleep 2; end }; abort("postgres not ready")'
+      cat > /app/config/initializers/proxy_s3_urls.rb <<'RUBY'
+      # frozen_string_literal: true
+
+      ActiveSupport.on_load(:active_storage_blob) do
+        def url(...)
+          if service.name.to_sym == :aws_s3
+            ActiveStorage::Blob.proxy_url(self, expires_at: 4.hours.from_now)
+          else
+            super
+          end
+        end
+      end
+      RUBY
+      exec /app/bin/bundle exec puma -C /app/config/puma.rb --dir /app
     run:
       securityContext:
         readOnlyRootFilesystem: false
