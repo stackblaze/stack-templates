@@ -10006,6 +10006,49 @@
    ]
   },
   {
+   "name": "OpenBooks Accounting",
+   "description": "Keep a double-entry ledger, invoices, bills, and reports for a small business.\nOpenBooks on Postgres. This is the bookkeeping app, separate from the OpenBooks Financial ERP template.",
+   "source": "https://github.com/stackblaze-adam/open-accounting",
+   "icon": "https://github.com/stackblaze-adam.png",
+   "website": "https://github.com/stackblaze-adam/open-accounting",
+   "installation": "Builds https://github.com/stackblaze-adam/open-accounting from main with the repo Dockerfile. Postgres is created with the app. Sign in with OWNER_EMAIL and the generated OWNER_PASSWORD from the app environment. Plaid, Stripe, and AI stay off until those keys are added.",
+   "architecture": [],
+   "categories": [
+    "finance",
+    "work"
+   ],
+   "screenshots": [],
+   "links": [
+    "https://github.com/stackblaze-adam/open-accounting"
+   ],
+   "addons": [
+    "Cluster"
+   ],
+   "stars": 0,
+   "forks": 0,
+   "watchers": 0,
+   "issues": 0,
+   "last_updated": "2026-09-27T16:20:00Z",
+   "last_pushed": "2026-09-27T16:20:00Z",
+   "created_at": "2026-09-27T16:20:00Z",
+   "size": 0,
+   "language": "TypeScript",
+   "gitops": false,
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/open-accounting/app.yaml",
+   "status": "active",
+   "license": "GNU Affero General Public License v3.0",
+   "spdx_id": "AGPL-3.0",
+   "dirname": "open-accounting",
+   "deploymentTypes": [
+    {
+     "id": "standard",
+     "label": "Standard",
+     "default": true,
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/open-accounting/app.yaml"
+    }
+   ]
+  },
+  {
    "name": "opnform",
    "description": "Beautiful open-source form builder to create and share forms, surveys and quizzes with no code, a self-hosted alternative to Typeform and Google Forms.",
    "source": "https://github.com/JhumanJ/OpnForm",

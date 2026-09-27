@@ -1,0 +1,134 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: open-accounting
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: "Keep a double-entry ledger, invoices, bills, and reports for a small business.\nOpenBooks on Postgres. This is the bookkeeping app, separate from the OpenBooks Financial ERP template."
+    kubero.dev/template.icon: https://github.com/stackblaze-adam.png
+    kubero.dev/template.installation: "Builds https://github.com/stackblaze-adam/open-accounting from main with the repo Dockerfile. Postgres is created with the app. Sign in with OWNER_EMAIL and the generated OWNER_PASSWORD from the app environment. Plaid, Stripe, and AI stay off until those keys are added. File uploads persist on the data volume."
+    kubero.dev/template.links: '["https://github.com/stackblaze-adam/open-accounting"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/stackblaze-adam/open-accounting
+    kubero.dev/template.categories: '["finance", "work"]'
+    kubero.dev/template.title: "OpenBooks Accounting"
+    kubero.dev/template.website: https://github.com/stackblaze-adam/open-accounting
+  labels:
+    manager: kubero
+spec:
+  name: open-accounting
+  deploymentstrategy: git
+  buildstrategy: dockerfile
+  branch: main
+  dockerfile: Dockerfile
+  autodeploy: true
+  gitrepo:
+    admin: false
+    clone_url: https://github.com/stackblaze-adam/open-accounting.git
+    default_branch: main
+    private: false
+    ssh_url: git@github.com:stackblaze-adam/open-accounting.git
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql'
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: smart
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: openaccounting
+              owner: openaccounting
+              secret:
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO openaccounting
+              - GRANT CREATE ON SCHEMA public TO openaccounting
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO openaccounting
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: openaccounting
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: openaccounting
+          password: openaccounting
+  cronjobs: []
+  envVars:
+  - name: DATABASE_URL
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  - name: NEXT_PUBLIC_OPENBOOKS_BACKEND
+    value: postgres
+  - name: SITE_URL
+    value: 'https://{{KUBERO_APP_HOST}}'
+  - name: OWNER_EMAIL
+    value: owner@stackblaze.local
+  - name: OWNER_PASSWORD
+    value: '{{KUBERO_GEN_ALNUM:24}}'
+  - name: OPENBOOKS_SECRET_ENCRYPTION_KEY
+    value: '{{KUBERO_GEN_ALNUM:48}}'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/data
+    name: '{{KUBERO_APP_NAME}}-data'
+    size: 2Gi
+    storageClass: smart
+  healthcheck:
+    enabled: true
+    path: /sign-in
+    startupSeconds: 180
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: open-accounting
+    tag: latest
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
