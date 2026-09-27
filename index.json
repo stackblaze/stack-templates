@@ -13563,6 +13563,51 @@
      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/app.yaml"
     }
    ]
+  },
+  {
+   "name": "Supabase",
+   "description": "Build a Postgres backend with auth, storage, and a dashboard from one project.\nAn open-source alternative to Firebase.",
+   "source": "https://github.com/supabase/supabase",
+   "icon": "https://avatars.githubusercontent.com/u/54469796?s=200",
+   "website": "https://supabase.com/",
+   "installation": "Deploys Supabase as a multi-service group (Kong gateway, Studio, Auth, PostgREST, Realtime, Storage, Meta, Edge Functions, imgproxy). PostgreSQL and object storage are platform add-ons: on shared zones they are a communal logical database and a communal-s3 bucket. Kong is the public URL and proxies Studio at /. Sign in to Studio with DASHBOARD_USERNAME / DASHBOARD_PASSWORD (supabase / this_password_is_insecure_and_should_be_updated). The anon and service_role keys are the upstream demo JWTs \u2014 rotate JWT_SECRET and those keys before production use.",
+   "architecture": [],
+   "categories": [
+    "development",
+    "data"
+   ],
+   "screenshots": [],
+   "links": [
+    "https://supabase.com/docs/guides/self-hosting/docker"
+   ],
+   "addons": [
+    "Cluster",
+    "Tenant",
+    "Smtp"
+   ],
+   "stars": 80000,
+   "forks": 8000,
+   "watchers": 80000,
+   "issues": 0,
+   "last_updated": "2026-09-27T00:00:00Z",
+   "last_pushed": "2026-09-27T00:00:00Z",
+   "created_at": "2020-01-01T00:00:00Z",
+   "size": 0,
+   "language": "TypeScript",
+   "gitops": false,
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/app.yaml",
+   "status": "active",
+   "license": "Apache License 2.0",
+   "spdx_id": "Apache-2.0",
+   "dirname": "supabase",
+   "deploymentTypes": [
+    {
+     "id": "standard",
+     "label": "Standard",
+     "default": true,
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/app.yaml"
+    }
+   ]
   }
  ],
  "categories": {

@@ -1,0 +1,536 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: supabase
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: "Build a Postgres backend with auth, storage, and a dashboard from one project.\nAn open-source alternative to Firebase."
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/54469796?s=200
+    kubero.dev/template.installation: |
+      Deploys Supabase as a multi-service group (Kong gateway, Studio, Auth, PostgREST, Realtime, Storage, Meta, Edge Functions, imgproxy). PostgreSQL and object storage are platform add-ons: on shared zones they are a communal logical database and a communal-s3 bucket. Kong is the public URL and proxies Studio at /. Sign in to Studio with DASHBOARD_USERNAME / DASHBOARD_PASSWORD (supabase / this_password_is_insecure_and_should_be_updated). The anon and service_role keys are the upstream demo JWTs — rotate JWT_SECRET and those keys before production use. A zone should run one Supabase against communal Postgres; the Auth and Storage roles are cluster-wide.
+    kubero.dev/template.links: '["https://supabase.com/docs/guides/self-hosting/docker"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/supabase/supabase
+    kubero.dev/template.categories: '["development", "data"]'
+    kubero.dev/template.title: Supabase
+    kubero.dev/template.website: https://supabase.com/
+  labels:
+    manager: kubero
+spec:
+  name: supabase
+  deploymentstrategy: docker
+  gitrepo:
+    admin: false
+    clone_url: https://github.com/supabase/supabase.git
+    default_branch: master
+    private: false
+    ssh_url: ''
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql'
+          annotations:
+            # Communal zones run this SQL as the zone superuser (the tenant
+            # role cannot CREATE ROLE). Dedicated zones run postInitSQL.
+            kubero.dev/supabase-init: "true"
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: smart
+            size: 8Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: supabase
+              owner: supabase
+              secret:
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+              postInitSQL:
+              - |
+                \connect supabase
+                CREATE SCHEMA IF NOT EXISTS extensions;
+                CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
+                CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'postgres') THEN CREATE ROLE postgres NOLOGIN; END IF; END $$;
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_admin') THEN CREATE USER supabase_admin CREATEDB CREATEROLE LOGIN BYPASSRLS; END IF; END $$;
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'anon') THEN CREATE ROLE anon NOLOGIN NOINHERIT; END IF; END $$;
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'authenticated') THEN CREATE ROLE authenticated NOLOGIN NOINHERIT; END IF; END $$;
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'service_role') THEN CREATE ROLE service_role NOLOGIN NOINHERIT BYPASSRLS; END IF; END $$;
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'authenticator') THEN CREATE USER authenticator NOINHERIT; END IF; END $$;
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_auth_admin') THEN CREATE USER supabase_auth_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION; END IF; END $$;
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_storage_admin') THEN CREATE USER supabase_storage_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION; END IF; END $$;
+                GRANT anon TO authenticator;
+                GRANT authenticated TO authenticator;
+                GRANT service_role TO authenticator;
+                GRANT USAGE ON SCHEMA public TO postgres, anon, authenticated, service_role;
+                GRANT USAGE ON SCHEMA extensions TO postgres, anon, authenticated, service_role;
+                CREATE SCHEMA IF NOT EXISTS auth;
+                ALTER SCHEMA auth OWNER TO supabase_auth_admin;
+                GRANT ALL PRIVILEGES ON SCHEMA auth TO supabase_auth_admin;
+                GRANT USAGE ON SCHEMA auth TO anon, authenticated, service_role;
+                CREATE SCHEMA IF NOT EXISTS storage;
+                ALTER SCHEMA storage OWNER TO supabase_storage_admin;
+                GRANT USAGE ON SCHEMA storage TO postgres, anon, authenticated, service_role;
+                GRANT ALL ON SCHEMA storage TO supabase_storage_admin WITH GRANT OPTION;
+                CREATE SCHEMA IF NOT EXISTS _realtime;
+                ALTER SCHEMA _realtime OWNER TO supabase_admin;
+                GRANT USAGE, CREATE ON SCHEMA _realtime TO supabase_admin;
+                CREATE SCHEMA IF NOT EXISTS graphql_public;
+                GRANT USAGE ON SCHEMA graphql_public TO anon, authenticated, service_role;
+                DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN CREATE PUBLICATION supabase_realtime; END IF; END $$;
+                ALTER USER authenticator WITH PASSWORD 'supabase';
+                ALTER USER supabase_auth_admin WITH PASSWORD 'supabase';
+                ALTER USER supabase_storage_admin WITH PASSWORD 'supabase';
+                ALTER USER supabase_admin WITH PASSWORD 'supabase';
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: supabase
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: supabase
+          password: supabase
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env: []
+    resourceDefinitions: {}
+  - displayName: RustFS
+    env: []
+    icon: /img/addons/rustfs.svg
+    id: kubero-operator
+    kind: Tenant
+    resourceDefinitions:
+      Tenant:
+        apiVersion: rustfs.com/v1alpha1
+        kind: Tenant
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-rustfs'
+          annotations:
+            operator.rustfs.com/runtime-default-image-ack: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
+        spec:
+          image: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
+          credsSecret:
+            name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+          pools:
+          - name: pool-0
+            servers: 1
+            persistence:
+              volumesPerServer: 4
+              volumeClaimTemplate:
+                accessModes:
+                - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 2Gi
+                storageClassName: slow
+      credsSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+        type: Opaque
+        stringData:
+          accesskey: supabase
+          secretkey: '{{KUBERO_GEN_HEX:32}}'
+  envVars:
+  - name: KONG_DATABASE
+    value: 'off'
+  - name: KONG_DECLARATIVE_CONFIG
+    value: /usr/local/kong/kong.yml
+  - name: KONG_DNS_ORDER
+    value: LAST,A,CNAME
+  - name: KONG_PLUGINS
+    value: request-transformer,cors,key-auth,acl,basic-auth,post-function
+  - name: KONG_NGINX_WORKER_PROCESSES
+    value: '2'
+  - name: KONG_PROXY_LISTEN
+    value: 0.0.0.0:8000
+  - name: KONG_LOG_LEVEL
+    value: warn
+  - name: SUPABASE_ANON_KEY
+    value: &anonKey eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE
+  - name: SUPABASE_SERVICE_KEY
+    value: &serviceKey eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q
+  - name: DASHBOARD_USERNAME
+    value: supabase
+  - name: DASHBOARD_PASSWORD
+    value: this_password_is_insecure_and_should_be_updated
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 512Mi
+  healthcheck:
+    enabled: false
+  image:
+    containerPort: '8000'
+    pullPolicy: IfNotPresent
+    repository: docker.io/kong/kong
+    tag: '3.9.1'
+    command:
+    - /bin/bash
+    - -c
+    - |
+      set -euo pipefail
+      curl -fsSL https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/kong.yml -o /usr/local/kong/template.yml
+      curl -fsSL https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/kong-entrypoint.sh -o /tmp/kong-entrypoint.sh
+      chmod +x /tmp/kong-entrypoint.sh
+      exec /tmp/kong-entrypoint.sh
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  templateServices:
+  - id: studio
+    nameHint: supabase-studio
+    exposeInternet: false
+    usePrimaryAddons: true
+    image:
+      repository: docker.io/supabase/studio
+      tag: 2025.10.01-sha-8460121
+      containerPort: '3000'
+    envVars:
+    - name: HOSTNAME
+      value: '::'
+    - name: STUDIO_PORT
+      value: '3000'
+    - name: SUPABASE_URL
+      value: http://kong:8000
+    - name: SUPABASE_PUBLIC_URL
+      value: '{{KUBERO_APP_URL}}'
+    - name: STUDIO_PG_META_URL
+      value: http://meta:8080
+    - name: POSTGRES_HOST
+      value: '$(PGHOST)'
+    - name: POSTGRES_PORT
+      value: '$(PGPORT)'
+    - name: POSTGRES_DB
+      value: '$(PGDATABASE)'
+    - name: POSTGRES_PASSWORD
+      value: '$(PGPASSWORD)'
+    - name: SUPABASE_ANON_KEY
+      value: *anonKey
+    - name: SUPABASE_SERVICE_KEY
+      value: *serviceKey
+    - name: AUTH_JWT_SECRET
+      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+    - name: DEFAULT_ORGANIZATION_NAME
+      value: Default Organization
+    - name: DEFAULT_PROJECT_NAME
+      value: Default Project
+    healthcheck:
+      enabled: true
+      path: /
+      startupSeconds: 300
+  - id: auth
+    nameHint: supabase-auth
+    exposeInternet: false
+    usePrimaryAddons: true
+    image:
+      repository: docker.io/supabase/gotrue
+      tag: v2.186.0
+      containerPort: '9999'
+    envVars:
+    - name: GOTRUE_API_HOST
+      value: 0.0.0.0
+    - name: GOTRUE_API_PORT
+      value: '9999'
+    - name: API_EXTERNAL_URL
+      value: '{{KUBERO_APP_URL}}'
+    - name: GOTRUE_SITE_URL
+      value: '{{KUBERO_APP_URL}}'
+    - name: GOTRUE_URI_ALLOW_LIST
+      value: '*'
+    - name: GOTRUE_DISABLE_SIGNUP
+      value: 'false'
+    - name: GOTRUE_JWT_SECRET
+      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+    - name: GOTRUE_JWT_EXP
+      value: '3600'
+    - name: GOTRUE_JWT_DEFAULT_GROUP_NAME
+      value: authenticated
+    - name: GOTRUE_JWT_ADMIN_ROLES
+      value: service_role
+    - name: GOTRUE_JWT_AUD
+      value: authenticated
+    - name: GOTRUE_EXTERNAL_EMAIL_ENABLED
+      value: 'true'
+    - name: GOTRUE_MAILER_AUTOCONFIRM
+      value: 'true'
+    - name: GOTRUE_SMTP_HOST
+      value: '$(SMTP_HOST)'
+    - name: GOTRUE_SMTP_PORT
+      value: '$(SMTP_PORT)'
+    - name: GOTRUE_SMTP_USER
+      value: '$(SMTP_USER)'
+    - name: GOTRUE_SMTP_PASS
+      value: '$(SMTP_PASSWORD)'
+    - name: GOTRUE_SMTP_ADMIN_EMAIL
+      value: '$(SMTP_FROM)'
+    - name: GOTRUE_SMTP_SENDER_NAME
+      value: Supabase
+    - name: GOTRUE_MAILER_URLPATHS_INVITE
+      value: /auth/v1/verify
+    - name: GOTRUE_MAILER_URLPATHS_CONFIRMATION
+      value: /auth/v1/verify
+    - name: GOTRUE_MAILER_URLPATHS_RECOVERY
+      value: /auth/v1/verify
+    - name: GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE
+      value: /auth/v1/verify
+    - name: GOTRUE_DB_DRIVER
+      value: postgres
+    - name: GOTRUE_DB_DATABASE_URL
+      value: 'postgres://supabase_auth_admin:$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+    healthcheck:
+      enabled: true
+      path: /health
+      startupSeconds: 180
+  - id: rest
+    nameHint: supabase-rest
+    exposeInternet: false
+    usePrimaryAddons: true
+    image:
+      repository: docker.io/postgrest/postgrest
+      tag: v14.8
+      containerPort: '3000'
+    envVars:
+    - name: PGRST_DB_URI
+      value: 'postgres://authenticator:$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+    - name: PGRST_DB_SCHEMAS
+      value: public,storage,graphql_public
+    - name: PGRST_DB_ANON_ROLE
+      value: anon
+    - name: PGRST_JWT_SECRET
+      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+    - name: PGRST_DB_USE_LEGACY_GUCS
+      value: 'false'
+    healthcheck:
+      enabled: true
+      path: /
+      startupSeconds: 120
+  - id: realtime
+    nameHint: supabase-realtime
+    exposeInternet: false
+    usePrimaryAddons: true
+    image:
+      repository: docker.io/supabase/realtime
+      tag: v2.76.5
+      containerPort: '4000'
+    envVars:
+    - name: PORT
+      value: '4000'
+    - name: DB_HOST
+      value: '$(PGHOST)'
+    - name: DB_PORT
+      value: '$(PGPORT)'
+    - name: DB_USER
+      value: supabase_admin
+    - name: DB_PASSWORD
+      value: '$(PGPASSWORD)'
+    - name: DB_NAME
+      value: '$(PGDATABASE)'
+    - name: DB_SSL
+      value: 'false'
+    - name: DB_AFTER_CONNECT_QUERY
+      value: SET search_path TO _realtime
+    - name: DB_ENC_KEY
+      value: supabaserealtime
+    - name: API_JWT_SECRET
+      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+    - name: SECRET_KEY_BASE
+      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+    - name: ERL_AFLAGS
+      value: -proto_dist inet_tcp
+    - name: DNS_NODES
+      value: "''"
+    - name: APP_NAME
+      value: realtime
+    - name: SEED_SELF_HOST
+      value: 'true'
+    - name: RUN_JANITOR
+      value: 'true'
+    healthcheck:
+      enabled: false
+  - id: storage
+    nameHint: supabase-storage
+    exposeInternet: false
+    usePrimaryAddons: true
+    image:
+      repository: docker.io/supabase/storage-api
+      tag: v1.48.26
+      containerPort: '5000'
+    envVars:
+    - name: STORAGE_BACKEND
+      value: s3
+    - name: FILE_SIZE_LIMIT
+      value: '52428800'
+    - name: TENANT_ID
+      value: stub
+    - name: REGION
+      value: us-east-1
+    - name: GLOBAL_S3_BUCKET
+      value: '$(S3_BUCKET)'
+    - name: STORAGE_S3_BUCKET
+      value: '$(S3_BUCKET)'
+    - name: GLOBAL_S3_ENDPOINT
+      value: '$(S3_ENDPOINT)'
+    - name: STORAGE_S3_ENDPOINT
+      value: '$(S3_ENDPOINT)'
+    - name: GLOBAL_S3_FORCE_PATH_STYLE
+      value: 'true'
+    - name: STORAGE_S3_FORCE_PATH_STYLE
+      value: 'true'
+    - name: AWS_DEFAULT_REGION
+      value: us-east-1
+    - name: S3_PROTOCOL_ACCESS_KEY_ID
+      value: '$(AWS_ACCESS_KEY_ID)'
+    - name: S3_PROTOCOL_ACCESS_KEY_SECRET
+      value: '$(AWS_SECRET_ACCESS_KEY)'
+    - name: DATABASE_URL
+      value: 'postgres://supabase_storage_admin:$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+    - name: POSTGREST_URL
+      value: http://rest:3000
+    - name: IMGPROXY_URL
+      value: http://imgproxy:5001
+    - name: PGRST_JWT_SECRET
+      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+    - name: AUTH_JWT_SECRET
+      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+    - name: ANON_KEY
+      value: *anonKey
+    - name: SERVICE_KEY
+      value: *serviceKey
+    healthcheck:
+      enabled: true
+      path: /status
+      startupSeconds: 180
+  - id: meta
+    nameHint: supabase-meta
+    exposeInternet: false
+    usePrimaryAddons: true
+    image:
+      repository: docker.io/supabase/postgres-meta
+      tag: v0.96.3
+      containerPort: '8080'
+    envVars:
+    - name: PG_META_PORT
+      value: '8080'
+    - name: PG_META_DB_HOST
+      value: '$(PGHOST)'
+    - name: PG_META_DB_PORT
+      value: '$(PGPORT)'
+    - name: PG_META_DB_NAME
+      value: '$(PGDATABASE)'
+    - name: PG_META_DB_USER
+      value: supabase_admin
+    - name: PG_META_DB_PASSWORD
+      value: '$(PGPASSWORD)'
+    healthcheck:
+      enabled: true
+      path: /health
+      startupSeconds: 120
+  - id: functions
+    nameHint: supabase-functions
+    exposeInternet: false
+    usePrimaryAddons: true
+    image:
+      repository: docker.io/supabase/edge-runtime
+      tag: v1.71.2
+      containerPort: '9000'
+    envVars:
+    - name: VERIFY_JWT
+      value: 'false'
+    - name: SUPABASE_URL
+      value: http://kong:8000
+    - name: SUPABASE_ANON_KEY
+      value: *anonKey
+    - name: SUPABASE_SERVICE_ROLE_KEY
+      value: *serviceKey
+    - name: SUPABASE_DB_URL
+      value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+    - name: JWT_SECRET
+      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+    healthcheck:
+      enabled: false
+  - id: imgproxy
+    nameHint: supabase-imgproxy
+    exposeInternet: false
+    image:
+      repository: docker.io/darthsim/imgproxy
+      tag: v3.30.1
+      containerPort: '5001'
+    envVars:
+    - name: IMGPROXY_BIND
+      value: ':5001'
+    - name: IMGPROXY_LOCAL_FILESYSTEM_ROOT
+      value: /
+    - name: IMGPROXY_USE_ETAG
+      value: 'true'
+    healthcheck:
+      enabled: false
+  templateServiceAliases:
+  - name: kong
+    port: 8000
+    targetRole: primary
+  - name: studio
+    port: 3000
+    targetRole: studio
+  - name: auth
+    port: 9999
+    targetRole: auth
+  - name: rest
+    port: 3000
+    targetRole: rest
+  - name: realtime
+    port: 4000
+    targetRole: realtime
+  - name: storage
+    port: 5000
+    targetRole: storage
+  - name: meta
+    port: 8080
+    targetRole: meta
+  - name: functions
+    port: 9000
+    targetRole: functions
+  - name: imgproxy
+    port: 5001
+    targetRole: imgproxy
