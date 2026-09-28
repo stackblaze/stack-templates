@@ -13620,7 +13620,7 @@
    "source": "https://github.com/supabase/supabase",
    "icon": "https://avatars.githubusercontent.com/u/54469796?s=200",
    "website": "https://supabase.com/",
-   "installation": "Deploys Supabase as a multi-service group (Kong gateway, Studio, Auth, PostgREST, Realtime, Storage, Meta, Edge Functions, imgproxy). PostgreSQL and object storage are platform add-ons: on shared zones they are a communal logical database and a communal-s3 bucket. Kong is the public URL and proxies Studio at /. Sign in to Studio with DASHBOARD_USERNAME / DASHBOARD_PASSWORD (supabase / this_password_is_insecure_and_should_be_updated). The anon and service_role keys are the upstream demo JWTs \u2014 rotate JWT_SECRET and those keys before production use.",
+   "installation": "Deploys Supabase as a multi-service group (Kong gateway, Studio, Auth, PostgREST, Realtime, Storage, Meta, Edge Functions, imgproxy). PostgreSQL and object storage are platform add-ons: on shared zones they are a communal logical database and a communal-s3 bucket. Kong is the public URL and proxies Studio at /. Sign in to Studio with the gateway env vars DASHBOARD_USERNAME (supabase) and DASHBOARD_PASSWORD (generated per deploy). The anon and service_role keys are the upstream demo JWTs \u2014 rotate JWT_SECRET and those keys before production use.",
    "architecture": [],
    "categories": [
     "development",
