@@ -1,0 +1,205 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: libredesk
+  annotations:
+    kubero.dev/template.architecture: '["linux/amd64"]'
+    kubero.dev/template.description: "Modern, open-source omnichannel customer support desk with live chat, email, a help center, and automations.\nA self-hosted alternative to Zendesk and Help Scout."
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/libredesk/icon.png
+    kubero.dev/template.installation: 'Image ghcr.io/stackblaze/libredesk (Stackblaze fork of LibreDesk). First boot installs the schema and creates the System user. Sign in with email System and the password in LIBREDESK_SYSTEM_USER_PASSWORD (generated once at create; change it after login). Then set the public URL in Admin settings — app.root_url defaults to http://localhost:9000, which breaks links and the chat widget. The encryption key is generated once; do not change it after data exists. Uploads persist on the shared volume. Notification email is stored in Admin → Settings: copy SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, and SMTP_FROM (STARTTLS on 587). Customer inboxes are added in the LibreDesk admin.'
+    kubero.dev/template.links: '["https://docs.libredesk.io/getting-started/installation"]'
+    kubero.dev/template.screenshots: '["https://libredesk.io/hero-dark.png"]'
+    kubero.dev/template.source: https://github.com/stackblaze/libredesk
+    kubero.dev/template.categories: '["helpdesk", "communication", "collaboration"]'
+    kubero.dev/template.title: LibreDesk
+    kubero.dev/template.website: https://libredesk.io
+  labels:
+    manager: kubero
+spec:
+  name: libredesk
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql'
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: smart
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: libredesk
+              owner: libredesk
+              secret:
+                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO libredesk
+              - GRANT CREATE ON SCHEMA public TO libredesk
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO libredesk
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: libredesk
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: libredesk
+          password: libredesk
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-valkey'
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  # Platform email (see README "Email contract"). LibreDesk stores SMTP in
+  # Admin → Settings, not in env. SMTP_* is injected while Email is live so
+  # those fields can be copied in (STARTTLS on 587).
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env: []
+    resourceDefinitions: {}
+  envVars:
+  - name: LIBREDESK_APP__ENV
+    value: prod
+  - name: LIBREDESK_APP__LOG_LEVEL
+    value: info
+  - name: LIBREDESK_APP__ENCRYPTION_KEY
+    value: '{{KUBERO_GEN_HEX:32}}'
+  - name: LIBREDESK_APP__SERVER__ADDRESS
+    value: 0.0.0.0:9000
+  - name: LIBREDESK_SYSTEM_USER_PASSWORD
+    value: 'Aa1!{{KUBERO_GEN_ALNUM:16}}'
+  - name: LIBREDESK_DB__HOST
+    value: '$(PGHOST)'
+  - name: LIBREDESK_DB__PORT
+    value: '$(PGPORT)'
+  - name: LIBREDESK_DB__USER
+    value: '$(PGUSER)'
+  - name: LIBREDESK_DB__PASSWORD
+    value: '$(PGPASSWORD)'
+  - name: LIBREDESK_DB__DATABASE
+    value: '$(PGDATABASE)'
+  - name: LIBREDESK_DB__SSL_MODE
+    value: disable
+  - name: LIBREDESK_REDIS__URL
+    value: '$(REDIS_URL)'
+  - name: LIBREDESK_UPLOAD__PROVIDER
+    value: fs
+  - name: LIBREDESK_UPLOAD__FS__UPLOAD_PATH
+    value: uploads
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /libredesk/uploads
+    name: '{{KUBERO_APP_NAME}}-uploads'
+    size: 5Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /health
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '9000'
+    pullPolicy: IfNotPresent
+    # Published by stackblaze/libredesk on every push to main
+    # (ghcr.io/stackblaze/libredesk). Anonymous read, no pull secret.
+    # Pinned to the short SHA of current main, not :latest.
+    repository: ghcr.io/stackblaze/libredesk
+    tag: sha-4258681
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -eu
+      wait_tcp() {
+        host="$1"
+        port="$2"
+        i=0
+        while [ "$i" -lt 90 ]; do
+          if nc -z -w 2 "$host" "$port"; then
+            return 0
+          fi
+          i=$((i + 1))
+          sleep 2
+        done
+        echo "timed out waiting for $host:$port" >&2
+        return 1
+      }
+      wait_tcp "$PGHOST" "${PGPORT:-5432}"
+      wait_tcp "$REDISHOST" "${REDISPORT:-6379}"
+      ./libredesk --install --idempotent-install --yes
+      ./libredesk --upgrade --yes
+      exec ./libredesk
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false

@@ -8037,6 +8037,56 @@
    ]
   },
   {
+   "name": "LibreDesk",
+   "description": "Modern, open-source omnichannel customer support desk with live chat, email, a help center, and automations.\nA self-hosted alternative to Zendesk and Help Scout.",
+   "source": "https://github.com/stackblaze/libredesk",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/libredesk/icon.png",
+   "website": "https://libredesk.io",
+   "installation": "Image ghcr.io/stackblaze/libredesk (Stackblaze fork of LibreDesk). First boot installs the schema and creates the System user. Sign in with email System and the password in LIBREDESK_SYSTEM_USER_PASSWORD (generated once at create; change it after login). Then set the public URL in Admin settings — app.root_url defaults to http://localhost:9000, which breaks links and the chat widget. The encryption key is generated once; do not change it after data exists. Uploads persist on the shared volume. Notification email is stored in Admin → Settings: copy SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, and SMTP_FROM (STARTTLS on 587). Customer inboxes are added in the LibreDesk admin.",
+   "architecture": [
+    "linux/amd64"
+   ],
+   "categories": [
+    "helpdesk",
+    "communication",
+    "collaboration"
+   ],
+   "screenshots": [
+    "https://libredesk.io/hero-dark.png"
+   ],
+   "links": [
+    "https://docs.libredesk.io/getting-started/installation"
+   ],
+   "addons": [
+    "Cluster",
+    "Valkey",
+    "Smtp"
+   ],
+   "stars": 0,
+   "forks": 0,
+   "watchers": 0,
+   "issues": 0,
+   "last_updated": "2026-09-02T03:42:15Z",
+   "last_pushed": "2026-09-02T03:40:52Z",
+   "created_at": "2026-06-22T20:45:42Z",
+   "size": 10450,
+   "language": "Go",
+   "gitops": false,
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/libredesk/app.yaml",
+   "status": "active",
+   "license": "GNU Affero General Public License v3.0",
+   "spdx_id": "AGPL-3.0",
+   "dirname": "libredesk",
+   "deploymentTypes": [
+    {
+     "id": "standard",
+     "label": "Standard",
+     "default": true,
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/libredesk/app.yaml"
+    }
+   ]
+  },
+  {
    "name": "fugu",
    "description": "Free, privacy-friendly, simple, open-source and self-hostable product analytics.",
    "source": "https://github.com/shafy/fugu",
