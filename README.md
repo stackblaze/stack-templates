@@ -1924,7 +1924,7 @@ To record a QA pass, edit `qa-status.json` and re-run
       <td><img src="https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/prestashop/icon.png" width="32" height="32" alt="prestashop" title="prestashop" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>prestashop</strong></td>
       <td align="center"><code>8-apache</code></td>
-      <td>MariaDB</td>
+      <td>MariaDB, Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
