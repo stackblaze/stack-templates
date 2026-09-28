@@ -170,6 +170,8 @@ spec:
     value: /usr/local/kong/kong.yml
   - name: KONG_DNS_ORDER
     value: LAST,A,CNAME
+  - name: KONG_DNS_NOT_FOUND_TTL
+    value: '1'
   - name: KONG_PLUGINS
     value: request-transformer,cors,key-auth,acl,basic-auth,request-termination,ip-restriction,pre-function,post-function
   - name: KONG_ROUTER_FLAVOR
@@ -776,6 +778,24 @@ spec:
 
       sed -i '/^[[:space:]]*- key:[[:space:]]*$/d' /usr/local/kong/kong.yml
 
+      # Catalog companions are Kubero Services named
+      # supabase-<role>-<suffix>-kuberoapp (port 80 → the container port).
+      # This pod is supabase-api-<suffix>-kuberoapp-web-…. Short compose names
+      # (storage:5000, studio:3000) are not created with the apps, and Kong
+      # caches the miss.
+      self="${HOSTNAME%%-kuberoapp-*}"
+      suffix="${self#supabase-api-}"
+      sb_svc() { printf 'supabase-%s-%s-kuberoapp' "$1" "$suffix"; }
+      sed -i \
+        -e "s|http://auth:9999|http://$(sb_svc auth)|g" \
+        -e "s|http://rest:3000|http://$(sb_svc rest)|g" \
+        -e "s|http://realtime-dev.supabase-realtime:4000|http://$(sb_svc realtime)|g" \
+        -e "s|http://storage:5000|http://$(sb_svc storage)|g" \
+        -e "s|http://functions:9000|http://$(sb_svc functions)|g" \
+        -e "s|http://meta:8080|http://$(sb_svc meta)|g" \
+        -e "s|http://studio:3000|http://$(sb_svc studio)|g" \
+        /usr/local/kong/kong.yml
+
       exec /entrypoint.sh kong docker-start
       ENDENTRY
       chmod +x /tmp/kong-entrypoint.sh
@@ -798,11 +818,11 @@ spec:
     - name: STUDIO_PORT
       value: '3000'
     - name: SUPABASE_URL
-      value: http://kong:8000
+      value: http://supabase-api-{{KUBERO_NAME_SUFFIX}}-kuberoapp
     - name: SUPABASE_PUBLIC_URL
       value: '{{KUBERO_APP_URL}}'
     - name: STUDIO_PG_META_URL
-      value: http://meta:8080
+      value: http://supabase-meta-{{KUBERO_NAME_SUFFIX}}-kuberoapp
     - name: POSTGRES_HOST
       value: '$(PGHOST)'
     - name: POSTGRES_PORT
@@ -839,9 +859,9 @@ spec:
     - name: GOTRUE_API_PORT
       value: '9999'
     - name: API_EXTERNAL_URL
-      value: http://kong:8000
+      value: http://supabase-api-{{KUBERO_NAME_SUFFIX}}-kuberoapp
     - name: GOTRUE_SITE_URL
-      value: http://kong:8000
+      value: http://supabase-api-{{KUBERO_NAME_SUFFIX}}-kuberoapp
     - name: GOTRUE_URI_ALLOW_LIST
       value: '*'
     - name: GOTRUE_DISABLE_SIGNUP
@@ -992,9 +1012,9 @@ spec:
     - name: DATABASE_URL
       value: 'postgres://supabase_storage_admin:$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
     - name: POSTGREST_URL
-      value: http://rest:3000
+      value: http://supabase-rest-{{KUBERO_NAME_SUFFIX}}-kuberoapp
     - name: IMGPROXY_URL
-      value: http://imgproxy:5001
+      value: http://supabase-imgproxy-{{KUBERO_NAME_SUFFIX}}-kuberoapp
     - name: PGRST_JWT_SECRET
       value: your-super-secret-jwt-token-with-at-least-32-characters-long
     - name: AUTH_JWT_SECRET
@@ -1078,7 +1098,7 @@ spec:
     - name: VERIFY_JWT
       value: 'false'
     - name: SUPABASE_URL
-      value: http://kong:8000
+      value: http://supabase-api-{{KUBERO_NAME_SUFFIX}}-kuberoapp
     - name: SUPABASE_ANON_KEY
       value: *anonKey
     - name: SUPABASE_SERVICE_ROLE_KEY
@@ -1105,31 +1125,3 @@ spec:
       value: 'true'
     healthcheck:
       enabled: false
-  templateServiceAliases:
-  - name: kong
-    port: 8000
-    targetRole: primary
-  - name: studio
-    port: 3000
-    targetRole: studio
-  - name: auth
-    port: 9999
-    targetRole: auth
-  - name: rest
-    port: 3000
-    targetRole: rest
-  - name: realtime
-    port: 4000
-    targetRole: realtime
-  - name: storage
-    port: 5000
-    targetRole: storage
-  - name: meta
-    port: 8080
-    targetRole: meta
-  - name: functions
-    port: 9000
-    targetRole: functions
-  - name: imgproxy
-    port: 5001
-    targetRole: imgproxy

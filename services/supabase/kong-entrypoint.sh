@@ -28,4 +28,22 @@ sed \
 
 sed -i '/^[[:space:]]*- key:[[:space:]]*$/d' /usr/local/kong/kong.yml
 
+# Catalog companions are Kubero Services named
+# supabase-<role>-<suffix>-kuberoapp (port 80 → the container port).
+# This pod is supabase-api-<suffix>-kuberoapp-web-…. Short compose names
+# (storage:5000, studio:3000) are not created with the apps, and Kong
+# caches the miss.
+self="${HOSTNAME%%-kuberoapp-*}"
+suffix="${self#supabase-api-}"
+sb_svc() { printf 'supabase-%s-%s-kuberoapp' "$1" "$suffix"; }
+sed -i \
+  -e "s|http://auth:9999|http://$(sb_svc auth)|g" \
+  -e "s|http://rest:3000|http://$(sb_svc rest)|g" \
+  -e "s|http://realtime-dev.supabase-realtime:4000|http://$(sb_svc realtime)|g" \
+  -e "s|http://storage:5000|http://$(sb_svc storage)|g" \
+  -e "s|http://functions:9000|http://$(sb_svc functions)|g" \
+  -e "s|http://meta:8080|http://$(sb_svc meta)|g" \
+  -e "s|http://studio:3000|http://$(sb_svc studio)|g" \
+  /usr/local/kong/kong.yml
+
 exec /entrypoint.sh kong docker-start
