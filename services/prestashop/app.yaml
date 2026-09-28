@@ -8,18 +8,15 @@ metadata:
       and managing online stores, with a built-in admin back office and a marketplace
       of modules and themes.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/prestashop/icon.png
-    kubero.dev/template.installation: 'PrestaShop requires MySQL/MariaDB (it does
-      not support PostgreSQL). This template provisions the prestashop-mysql add-on
-      (db/user/password all ''prestashop'' - ROTATE before production). PS_INSTALL_AUTO=1
-      runs the installer automatically on first boot using ADMIN_MAIL/ADMIN_PASSWD
-      - change ADMIN_PASSWD (default ''prestashop'' here) and ADMIN_MAIL immediately,
-      then delete or rename the /admin folder after install as PrestaShop requires.
-      PS_DOMAIN is set to the app host so install URLs resolve; if you later change
-      the domain, update Shop URL under Shop Parameters > Traffic & SEO. Optional:
-      set PS_ENABLE_SSL=1 once TLS is fronting the app. The GHCR image includes a
-      Kubero-aware entrypoint (Kubero mounts emptyDir on /tmp, which hides the stock
-      /tmp/docker_run.sh). Do not mount an empty PVC over /var/www/html; add img/upload/var
-      volumes after first install if you need persistence.'
+    kubero.dev/template.installation: 'PrestaShop requires MariaDB (it does
+      not support PostgreSQL). The database login is the communal MariaDB contract
+      (MYSQL_*), not a password baked into the template. First boot installs the
+      store. Sign in to the back office with ADMIN_MAIL and the generated ADMIN_PASSWD,
+      then rename or remove the admin folder. PS_DOMAIN follows the app host; if
+      the domain changes later, update Shop URL under Shop Parameters > Traffic &
+      SEO. TLS is on. Platform Email is applied on each start while the Email add-on
+      is live, and order mail is sent through it. The image entrypoint restores
+      the stock installer because Kubero mounts an emptyDir on /tmp.'
     kubero.dev/template.links: '["https://devdocs.prestashop-project.org/", "https://github.com/PrestaShop/docker"]'
     kubero.dev/template.screenshots: '["https://github.com/user-attachments/assets/e6342778-e528-4ae7-acf2-f0d097a1e932"]'
     kubero.dev/template.source: https://github.com/PrestaShop/PrestaShop
@@ -81,6 +78,17 @@ spec:
         type: Opaque
         stringData:
           password: prestashop
+  # Platform email (see README "Email contract"). PrestaShop stores mail
+  # settings in the database, not the environment, so there is nothing to
+  # map here. image.command drops an init script the stock installer runs
+  # on every start; it writes PS_MAIL_* from SMTP_* and does nothing when
+  # SMTP_HOST is absent.
+  - displayName: Email
+    env: []
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    resourceDefinitions: {}
   envVars:
   - name: DB_SERVER
     value: '$(MYSQL_HOST)'
@@ -91,7 +99,7 @@ spec:
   - name: DB_USER
     value: '$(MYSQL_USER)'
   - name: DB_PASSWD
-    value: prestashop
+    value: '$(MYSQL_PASSWORD)'
   - name: DB_PREFIX
     value: ps_
   - name: PS_INSTALL_AUTO
@@ -115,7 +123,7 @@ spec:
   - name: ADMIN_MAIL
     value: admin@localhost.local
   - name: ADMIN_PASSWD
-    value: prestashop
+    value: '{{KUBERO_GEN_ALNUM:20}}'
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -137,9 +145,86 @@ spec:
     periodSeconds: 10
   image:
     containerPort: '80'
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     repository: ghcr.io/stackblaze/stack-templates/prestashop
     tag: 8-apache
+    # Write /tmp/init-scripts before the Kubero entrypoint. The stock
+    # docker_run.sh executes that directory on every start, after install.
+    command:
+    - sh
+    - -c
+    - |
+      set -eu
+      mkdir -p /tmp/init-scripts
+      cat > /tmp/init-scripts/10-smtp.sh <<'EOF'
+      #!/bin/sh
+      # Point PrestaShop at the platform Email add-on. Inert without SMTP_HOST.
+      if [ -z "${SMTP_HOST:-}" ]; then
+        exit 0
+      fi
+      if [ ! -f /var/www/html/app/config/parameters.php ]; then
+        echo "PrestaShop is not installed; skipping SMTP."
+        exit 0
+      fi
+      php <<'PHP'
+      <?php
+      $host = getenv('SMTP_HOST');
+      if ($host === false || $host === '') {
+          exit(0);
+      }
+      $prefix = getenv('DB_PREFIX') ?: 'ps_';
+      if (!preg_match('/^[A-Za-z0-9_]+$/', $prefix)) {
+          fwrite(STDERR, "refusing DB_PREFIX\n");
+          exit(1);
+      }
+      $port = (int) (getenv('DB_PORT') ?: 3306);
+      $db = new mysqli(
+          getenv('DB_SERVER'),
+          getenv('DB_USER'),
+          getenv('DB_PASSWD'),
+          getenv('DB_NAME'),
+          $port
+      );
+      if ($db->connect_errno) {
+          fwrite(STDERR, "smtp config: {$db->connect_error}\n");
+          exit(1);
+      }
+      $sets = [
+          'PS_MAIL_METHOD' => '2',
+          'PS_MAIL_SERVER' => $host,
+          'PS_MAIL_USER' => (string) getenv('SMTP_USER'),
+          'PS_MAIL_PASSWD' => (string) getenv('SMTP_PASSWORD'),
+          'PS_MAIL_SMTP_ENCRYPTION' => 'tls',
+          'PS_MAIL_SMTP_PORT' => (string) (getenv('SMTP_PORT') ?: '587'),
+          'PS_SHOP_EMAIL' => (string) getenv('SMTP_FROM'),
+      ];
+      $table = $prefix . 'configuration';
+      $select = $db->prepare("SELECT id_configuration FROM `{$table}` WHERE `name`=? LIMIT 1");
+      $update = $db->prepare("UPDATE `{$table}` SET `value`=?, `date_upd`=NOW() WHERE `name`=?");
+      $insert = $db->prepare("INSERT INTO `{$table}` (`name`, `value`, `date_add`, `date_upd`) VALUES (?, ?, NOW(), NOW())");
+      if (!$select || !$update || !$insert) {
+          fwrite(STDERR, "smtp config: {$db->error}\n");
+          exit(1);
+      }
+      foreach ($sets as $name => $value) {
+          $select->bind_param('s', $name);
+          $select->execute();
+          $select->store_result();
+          if ($select->num_rows > 0) {
+              $update->bind_param('ss', $value, $name);
+              $update->execute();
+          } else {
+              $insert->bind_param('ss', $name, $value);
+              $insert->execute();
+          }
+          $select->free_result();
+      }
+      echo "PrestaShop SMTP pointed at {$host}\n";
+      PHP
+      rm -rf /var/www/html/var/cache/prod /var/www/html/var/cache/dev
+      EOF
+      chmod +x /tmp/init-scripts/10-smtp.sh
+      exec /usr/local/bin/kubero-entrypoint.sh
     run:
       securityContext:
         readOnlyRootFilesystem: false
