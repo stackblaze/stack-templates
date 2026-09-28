@@ -4866,7 +4866,7 @@
    "name": "psono",
    "description": "Psono is an open-source, self-hosted password manager for teams - end-to-end encrypted secret storage with sharing, an admin portal and a REST API.",
    "source": "https://gitlab.com/psono/psono-combo",
-   "icon": "https://avatars.githubusercontent.com/u/29746989?s=200&v=4",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/psono/icon.png",
    "website": "https://psono.com/",
    "installation": "",
    "architecture": [

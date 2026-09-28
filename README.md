@@ -1937,7 +1937,7 @@ To record a QA pass, edit `qa-status.json` and re-run
       <td align="center">—</td>
     </tr>
     <tr>
-      <td><img src="https://avatars.githubusercontent.com/u/29746989?s=200&amp;v=4" width="32" height="32" alt="psono" title="psono" style="vertical-align:middle;border-radius:4px;" /></td>
+      <td><img src="https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/psono/icon.png" width="32" height="32" alt="psono" title="psono" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>psono</strong></td>
       <td align="center"><code>7.4.3-4.8.2-1.10.0</code></td>
       <td>PostgreSQL (CloudNativePG), Email</td>
