@@ -5350,7 +5350,7 @@
    "source": "https://github.com/Infisical/infisical",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/icon.png",
    "website": "https://infisical.com/",
-   "installation": "Generate ENCRYPTION_KEY and AUTH_SECRET before production use.",
+   "installation": "ENCRYPTION_KEY and AUTH_SECRET are generated per deploy. Sign-up is open on first boot; create the admin in the UI.",
    "architecture": [],
    "categories": [
     "security",
@@ -5365,7 +5365,8 @@
    ],
    "addons": [
     "Cluster",
-    "Valkey"
+    "Valkey",
+    "Smtp"
    ],
    "stars": 20000,
    "forks": 2000,

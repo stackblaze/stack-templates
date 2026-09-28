@@ -7,8 +7,8 @@ metadata:
     kubero.dev/template.description: Open-source secrets management and internal PKI
       platform for developers and teams.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/icon.png
-    kubero.dev/template.installation: Generate ENCRYPTION_KEY with `openssl rand -hex
-      16` and AUTH_SECRET with `openssl rand -base64 32` before production use.
+    kubero.dev/template.installation: ENCRYPTION_KEY and AUTH_SECRET are generated
+      per deploy. Sign-up is open on first boot; create the admin in the UI.
     kubero.dev/template.links: '["https://infisical.com/docs/"]'
     kubero.dev/template.screenshots: '["https://infisical.com/images/og-image.png"]'
     kubero.dev/template.source: https://github.com/Infisical/infisical
@@ -106,30 +106,48 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  # Platform email. Infisical already reads SMTP_HOST, SMTP_PORT, and
+  # SMTP_PASSWORD. Map the names that differ. STARTTLS on 587 is the default.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: SMTP_USERNAME
+      value: '$(SMTP_USER)'
+    - name: SMTP_FROM_ADDRESS
+      value: '$(SMTP_FROM)'
+    - name: SMTP_FROM_NAME
+      value: Infisical
+    resourceDefinitions: {}
   envVars:
   - name: SITE_URL
     value: '{{KUBERO_APP_URL}}'
-  - name: HOST
-    value: 0.0.0.0
-  - name: PORT
-    value: '8080'
+  - name: NODE_ENV
+    value: production
+  - name: TELEMETRY_ENABLED
+    value: 'false'
   - name: DB_CONNECTION_URI
-    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+  # 16-byte hex (openssl rand -hex 16). 32-byte base64 (openssl rand -base64 32).
   - name: ENCRYPTION_KEY
-    value: f13dbc92aaaf86fa7cb0ed8ac3265f47
+    value: '{{KUBERO_GEN_HEX:32}}'
   - name: AUTH_SECRET
-    value: 5lrMXKKWCVocS/uerPsl7V+TX/aaUaI7iDkgl3tSmLE=
+    value: '{{KUBERO_GEN_ALNUM:43}}='
   extraVolumes: []
   cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  # Community standalone image. Docker Hub publishes it as
+  # infisical/infisical (there is no infisical/community repository).
+  # HOST=0.0.0.0 and PORT=8080 are baked into the image. Valkey injects REDIS_URL.
   image:
     containerPort: '8080'
-    pullPolicy: Always
-    repository: registry.stackblaze.cloud/infisical/infisical
-    tag: latest
+    pullPolicy: IfNotPresent
+    repository: docker.io/infisical/infisical
+    tag: v0.165.16
     run:
       securityContext:
         readOnlyRootFilesystem: false
@@ -142,7 +160,7 @@ spec:
       memory: 2Gi
   healthcheck:
     enabled: true
-    path: /
+    path: /api/status
     startupSeconds: 300
     timeoutSeconds: 5
     periodSeconds: 10

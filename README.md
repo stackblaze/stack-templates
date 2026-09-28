@@ -1067,8 +1067,8 @@ To record a QA pass, edit `qa-status.json` and re-run
     <tr>
       <td><img src="https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/icon.png" width="32" height="32" alt="infisical" title="infisical" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>infisical</strong></td>
-      <td align="center"><code>latest</code></td>
-      <td>PostgreSQL (CloudNativePG), Valkey</td>
+      <td align="center"><code>v0.165.16</code></td>
+      <td>PostgreSQL (CloudNativePG), Valkey, Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
