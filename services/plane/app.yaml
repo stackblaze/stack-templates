@@ -7,10 +7,10 @@ metadata:
     kubero.dev/template.description: "Plan projects, prioritize issues, and deliver work through cycles, modules, and roadmaps.\nA streamlined alternative to Jira and Linear."
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/icon.png
     kubero.dev/template.installation: |
-      Deploys Plane CE as a multi-service monorepo group (same Architecture UX as voting-app): api + worker + beat (makeplane/plane-backend), web/space/admin/live frontends, and plane-proxy as the public entrypoint. Shared add-ons (PostgreSQL, Valkey, RabbitMQ, RustFS) attach to the api service; companions share gitrepo.clone_url https://github.com/makeplane/plane.git so the Architecture graph groups them. On first API boot the instance admin is seeded from ADMIN_EMAIL / ADMIN_PASSWORD / ADMIN_FIRST_NAME (God Mode setup is skipped). After deploy, alias Services (api/web/space/admin/live/plane-minio) are created for the proxy Caddyfile and WEB_URL/CORS point at the proxy URL. Open the proxy URL and sign in with ADMIN_EMAIL/ADMIN_PASSWORD, then create your workspace. Rotate ADMIN_PASSWORD, SECRET_KEY, LIVE_SERVER_SECRET_KEY, and RustFS credentials before production use.
+      Deploys the stackblaze/plane fork as a multi-service group: api + worker + beat (ghcr.io/stackblaze/plane-backend:latest), web/space/admin/live frontends, and plane-proxy as the public entrypoint. Shared add-ons (PostgreSQL, Valkey, RabbitMQ, RustFS) attach to the api service; invites and magic-code login use Platform Email while that add-on is connected. Uploads go to the platform object-storage add-on (a communal S3 bucket on shared zones). On first API boot the instance admin is seeded from ADMIN_EMAIL / ADMIN_PASSWORD / ADMIN_FIRST_NAME. Open the proxy URL and sign in with ADMIN_EMAIL/ADMIN_PASSWORD, then create your workspace. Rotate ADMIN_PASSWORD, SECRET_KEY, LIVE_SERVER_SECRET_KEY, and RustFS credentials before production use.
     kubero.dev/template.links: '["https://developers.plane.so/"]'
     kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/plane/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-all-projects.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-home.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-analytics.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-settings.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-admin-general.png"]'
-    kubero.dev/template.source: https://github.com/makeplane/plane
+    kubero.dev/template.source: https://github.com/stackblaze/plane
     kubero.dev/template.categories: '["productivity", "work", "collaboration"]'
     kubero.dev/template.title: "Plane Project Management"
     kubero.dev/template.website: https://plane.so/
@@ -22,8 +22,8 @@ spec:
   # Synthetic monorepo key — Architecture groups siblings by clone_url (+ branch).
   gitrepo:
     admin: false
-    clone_url: https://github.com/makeplane/plane.git
-    default_branch: master
+    clone_url: https://github.com/stackblaze/plane.git
+    default_branch: preview
     private: false
     ssh_url: ''
   addons:
@@ -134,6 +134,8 @@ spec:
     - name: EMAIL_USE_SSL
       value: '0'
     - name: ENABLE_SMTP
+      value: '1'
+    - name: ENABLE_MAGIC_LINK_LOGIN
       value: '1'
     resourceDefinitions: {}
   # Platform object storage (RustFS Tenant → communal-s3 logical bucket
@@ -274,10 +276,10 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    # docker.io so zone nodes mirror through the regional zot
-    # (registry.<region>/v2/docker). Not registry.stackblaze.cloud (sfo, 503).
-    repository: docker.io/makeplane/plane-backend
-    tag: stable
+    # Published by stackblaze/plane on every push to preview
+    # (ghcr.io/stackblaze/plane-*:latest). Anonymous read, no pull secret.
+    repository: ghcr.io/stackblaze/plane-backend
+    tag: latest
     # Wrap gunicorn so instance admin is seeded after register_instance
     # (inside docker-entrypoint-api.sh) and before the server accepts traffic.
     command:
@@ -346,8 +348,9 @@ spec:
     nameHint: plane-worker
     exposeInternet: false
     image:
-      repository: docker.io/makeplane/plane-backend
-      tag: stable
+      repository: ghcr.io/stackblaze/plane-backend
+      tag: latest
+      pullPolicy: Always
       containerPort: '8000'
       command:
       - ./bin/docker-entrypoint-worker.sh
@@ -358,8 +361,9 @@ spec:
     nameHint: plane-beat
     exposeInternet: false
     image:
-      repository: docker.io/makeplane/plane-backend
-      tag: stable
+      repository: ghcr.io/stackblaze/plane-backend
+      tag: latest
+      pullPolicy: Always
       containerPort: '8000'
       command:
       - ./bin/docker-entrypoint-beat.sh
@@ -370,8 +374,9 @@ spec:
     nameHint: plane-web
     exposeInternet: false
     image:
-      repository: docker.io/makeplane/plane-frontend
-      tag: stable
+      repository: ghcr.io/stackblaze/plane-frontend
+      tag: latest
+      pullPolicy: Always
       containerPort: '3000'
     envVars:
     - name: WEB_URL
@@ -383,8 +388,9 @@ spec:
     nameHint: plane-space
     exposeInternet: false
     image:
-      repository: docker.io/makeplane/plane-space
-      tag: stable
+      repository: ghcr.io/stackblaze/plane-space
+      tag: latest
+      pullPolicy: Always
       containerPort: '3000'
     envVars:
     - name: WEB_URL
@@ -395,8 +401,9 @@ spec:
     nameHint: plane-admin
     exposeInternet: false
     image:
-      repository: docker.io/makeplane/plane-admin
-      tag: stable
+      repository: ghcr.io/stackblaze/plane-admin
+      tag: latest
+      pullPolicy: Always
       containerPort: '3000'
     envVars:
     - name: WEB_URL
@@ -406,32 +413,32 @@ spec:
   - id: live
     nameHint: plane-live
     exposeInternet: false
+    inheritEnvFrom: primary
     image:
-      repository: docker.io/makeplane/plane-live
-      tag: stable
+      repository: ghcr.io/stackblaze/plane-live
+      tag: latest
+      pullPolicy: Always
       containerPort: '3000'
     envVars:
     - name: API_BASE_URL
       value: http://api:8000
     - name: WEB_URL
       value: '{{KUBERO_APP_URL}}'
-    - name: REDIS_URL
-      value: redis://rfr-{{KUBERO_APP_NAME}}-valkey-readwrite:6379/0
-    - name: LIVE_SERVER_SECRET_KEY
-      value: '{{KUBERO_GEN_ALNUM:32}}'
     healthcheck:
       enabled: false
   - id: proxy
     nameHint: plane-proxy
     exposeInternet: true
     publicUrlSource: true
+    inheritEnvFrom: primary
     image:
-      repository: docker.io/makeplane/plane-proxy
-      tag: stable
+      repository: ghcr.io/stackblaze/plane-proxy
+      tag: latest
+      pullPolicy: Always
       containerPort: '80'
     envVars:
     - name: BUCKET_NAME
-      value: uploads
+      value: '$(S3_BUCKET)'
     - name: FILE_SIZE_LIMIT
       value: '5242880'
     - name: SITE_ADDRESS
