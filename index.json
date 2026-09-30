@@ -922,7 +922,7 @@
   {
    "name": "DocuSeal eSign",
    "description": "Create, send, complete, and sign business documents from one streamlined workspace.\nA cost-effective alternative to DocuSign and Dropbox Sign.",
-   "source": "https://github.com/docusealco/docuseal",
+   "source": "https://github.com/stackblaze/docuseal",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docuseal/icon.png",
    "website": "https://www.docuseal.com/",
    "installation": "",

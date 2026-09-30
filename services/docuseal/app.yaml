@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://www.docuseal.com/packs/static/images/resources/quick-start-1-216aeed1da1db5b3e718.jpg"]'
-    kubero.dev/template.source: https://github.com/docusealco/docuseal
+    kubero.dev/template.source: https://github.com/stackblaze/docuseal
     kubero.dev/template.categories: '["work", "security"]'
     kubero.dev/template.title: "DocuSeal eSign"
     kubero.dev/template.website: https://www.docuseal.com/
@@ -188,13 +188,11 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: IfNotPresent
-    # Referenced as docker.io on purpose: zone nodes mirror docker.io through
-    # the regional registry (containerd hosts.d -> registry.<region>/v2/docker,
-    # the zot in each services cluster, on-demand sync, Docker Hub fallback).
-    # Anonymous read, no pull secret. Not registry.stackblaze.cloud (sfo zot,
-    # 503). Pinned patch tag, not :latest.
-    repository: docker.io/docuseal/docuseal
-    tag: '3.2.6'
+    # Published by stackblaze/docuseal on push to fork-updates
+    # (ghcr.io/stackblaze/docuseal). Anonymous read, no pull secret.
+    # Pinned to the short SHA of that build, not :latest.
+    repository: ghcr.io/stackblaze/docuseal
+    tag: sha-75dd8d7
     # Communal S3 is only reachable inside the cluster. DocuSeal puts
     # blob.url (a presigned S3 URL) in the builder JSON, so the browser
     # requests the in-cluster host and the canvas stays blank. Serve those
