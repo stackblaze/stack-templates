@@ -1981,10 +1981,10 @@
   {
    "name": "docmost",
    "description": "Docmost is an open-source collaborative wiki and documentation software. It is an open-source alternative to Confluence and Notion.",
-   "source": "https://github.com/docmost/docmost",
+   "source": "https://github.com/stackblaze/docmost",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docmost/icon.png",
    "website": "https://docmost.com/",
-   "installation": "",
+   "installation": "Uploads go to the platform object-storage add-on (a communal S3 bucket on shared zones). Invites and password resets use Platform Email while that add-on is connected. Open the app URL to create the first workspace.",
    "architecture": [],
    "categories": [
     "documentation",
@@ -1996,7 +1996,9 @@
    "links": [],
    "addons": [
     "Cluster",
-    "Valkey"
+    "Valkey",
+    "Tenant",
+    "Smtp"
    ],
    "stars": 20081,
    "forks": 1270,

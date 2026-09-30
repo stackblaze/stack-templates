@@ -588,7 +588,7 @@ To record a QA pass, edit `qa-status.json` and re-run
       <td><img src="https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docmost/icon.png" width="32" height="32" alt="docmost" title="docmost" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>docmost</strong></td>
       <td align="center"><code>latest</code></td>
-      <td>PostgreSQL (CloudNativePG), Valkey</td>
+      <td>PostgreSQL (CloudNativePG), Valkey, RustFS</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>

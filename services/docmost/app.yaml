@@ -8,10 +8,10 @@ metadata:
       and documentation software. It is an open-source alternative to Confluence and
       Notion.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docmost/icon.png
-    kubero.dev/template.installation: ''
+    kubero.dev/template.installation: 'Uploads go to the platform object-storage add-on (a communal S3 bucket on shared zones). Invites and password resets use Platform Email while that add-on is connected. Open the app URL to create the first workspace.'
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/242ed60fe9d9d3c7e1d8d7d3f64d28d23c0a81e5963265880095e0e9c7604205/68747470733a2f2f646f636d6f73742e636f6d2f73637265656e73686f74732f686f6d652e706e67"]'
-    kubero.dev/template.source: https://github.com/docmost/docmost
+    kubero.dev/template.source: https://github.com/stackblaze/docmost
     kubero.dev/template.categories: '["documentation", "work"]'
     kubero.dev/template.title: Docmost
     kubero.dev/template.website: https://docmost.com/
@@ -24,9 +24,21 @@ spec:
   - name: APP_URL
     value: '{{KUBERO_APP_URL}}'
   - name: APP_SECRET
-    value: 0LZiQBLw4WvqPlz4cz8RsHJlxNiSqM9B48y4ChyJ5v1oA0L/TPIqRjQNdPZN3iEG
+    value: '{{KUBERO_GEN_HEX:64}}'
   - name: DATABASE_URL
-    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?schema=public'
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+  # Docmost reads AWS_S3_*; the Tenant injects S3_ENDPOINT, AWS_REGION,
+  # AWS_S3_BUCKET, AWS_S3_FORCE_PATH_STYLE, and AWS_ACCESS_KEY_ID.
+  - name: STORAGE_DRIVER
+    value: s3
+  - name: AWS_S3_ENDPOINT
+    value: '$(S3_ENDPOINT)'
+  - name: AWS_S3_REGION
+    value: '$(AWS_REGION)'
+  - name: AWS_S3_ACCESS_KEY_ID
+    value: '$(AWS_ACCESS_KEY_ID)'
+  - name: AWS_S3_SECRET_ACCESS_KEY
+    value: '$(AWS_SECRET_ACCESS_KEY)'
   extraVolumes: []
   cronjobs: []
   addons:
@@ -111,6 +123,64 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  # Platform email. Docmost already reads SMTP_HOST, SMTP_PORT, and
+  # SMTP_PASSWORD. Map the names that differ, and turn the driver on only
+  # while Email is live (STARTTLS on 587; SMTP_SECURE stays unset).
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: MAIL_DRIVER
+      value: smtp
+    - name: SMTP_USERNAME
+      value: '$(SMTP_USER)'
+    - name: MAIL_FROM_ADDRESS
+      value: '$(SMTP_FROM)'
+    - name: MAIL_FROM_NAME
+      value: Docmost
+    resourceDefinitions: {}
+  # Platform object storage (RustFS Tenant → communal-s3 logical bucket
+  # on shared). Docmost proxies files through /api/files, so the in-cluster
+  # endpoint is never sent to the browser.
+  - displayName: RustFS
+    env: []
+    icon: /img/addons/rustfs.svg
+    id: kubero-operator
+    kind: Tenant
+    resourceDefinitions:
+      Tenant:
+        apiVersion: rustfs.com/v1alpha1
+        kind: Tenant
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-rustfs'
+          annotations:
+            operator.rustfs.com/runtime-default-image-ack: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
+        spec:
+          image: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
+          credsSecret:
+            name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+          pools:
+          - name: pool-0
+            servers: 1
+            persistence:
+              volumesPerServer: 4
+              volumeClaimTemplate:
+                accessModes:
+                - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 2Gi
+                storageClassName: slow
+      credsSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+        type: Opaque
+        stringData:
+          accesskey: docmost
+          secretkey: '{{KUBERO_GEN_HEX:32}}'
   web:
     replicaCount: 1
   worker:
@@ -118,7 +188,8 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/docmost/docmost
+    # Published from stackblaze/docmost. Anonymous read, no pull secret.
+    repository: ghcr.io/stackblaze/docmost
     tag: latest
     run:
       securityContext:
