@@ -1860,7 +1860,7 @@ To record a QA pass, edit `qa-status.json` and re-run
       <td><img src="https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/icon.png" width="32" height="32" alt="plane" title="plane" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>plane</strong></td>
       <td align="center"><code>latest</code></td>
-      <td>PostgreSQL (CloudNativePG), Valkey, RustFS, RabbitMQ</td>
+      <td>PostgreSQL (CloudNativePG), Valkey, RustFS, RabbitMQ, Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
