@@ -170,12 +170,11 @@ spec:
     periodSeconds: 10
   image:
     containerPort: '9000'
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     # Published by stackblaze/libredesk on every push to main
-    # (ghcr.io/stackblaze/libredesk). Anonymous read, no pull secret.
-    # Pinned to the short SHA of current main, not :latest.
+    # (ghcr.io/stackblaze/libredesk:latest). Anonymous read, no pull secret.
     repository: ghcr.io/stackblaze/libredesk
-    tag: sha-ba920ca
+    tag: latest
     command:
     - /bin/sh
     - -c

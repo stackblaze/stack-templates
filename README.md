@@ -1259,7 +1259,7 @@ To record a QA pass, edit `qa-status.json` and re-run
     <tr>
       <td><img src="https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/libredesk/icon.png" width="32" height="32" alt="LibreDesk" title="LibreDesk" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>LibreDesk</strong></td>
-      <td align="center"><code>sha-4258681</code></td>
+      <td align="center"><code>latest</code></td>
       <td>PostgreSQL (CloudNativePG), Valkey, Email</td>
       <td align="center">No</td>
       <td align="center">—</td>
