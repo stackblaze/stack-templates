@@ -175,7 +175,7 @@ spec:
     # (ghcr.io/stackblaze/libredesk). Anonymous read, no pull secret.
     # Pinned to the short SHA of current main, not :latest.
     repository: ghcr.io/stackblaze/libredesk
-    tag: sha-4258681
+    tag: sha-ba920ca
     command:
     - /bin/sh
     - -c
