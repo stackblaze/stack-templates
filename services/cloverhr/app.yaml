@@ -149,7 +149,7 @@ spec:
     # Published by stackblaze-adam/cloverhr (.github/workflows/image.yml)
     # on every push to main. Pin a sha-<short> tag once one is published.
     repository: ghcr.io/stackblaze-adam/cloverhr
-    tag: latest
+    tag: "1.0.0-beta.1"
     run:
       securityContext:
         readOnlyRootFilesystem: false
