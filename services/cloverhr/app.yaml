@@ -147,7 +147,7 @@ spec:
     containerPort: '3200'
     pullPolicy: Always
     # Published by stackblaze-adam/cloverhr (.github/workflows/image.yml)
-    # on every push to main. Pin a sha-<short> tag once one is published.
+    # for each release tag. Raise this to the new version with each release.
     repository: ghcr.io/stackblaze-adam/cloverhr
     tag: "1.0.0-beta.1"
     run:
