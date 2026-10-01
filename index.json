@@ -5245,7 +5245,7 @@
    "source": "https://github.com/stackblaze/plane",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/icon.png",
    "website": "https://plane.so/",
-   "installation": "Deploys the stackblaze/plane fork as a multi-service group (api, worker, beat, web, space, admin, live, proxy) with communal PostgreSQL, Valkey, RustFS, and Platform Email. Images are ghcr.io/stackblaze/plane-*:latest. On first API boot the instance is configured from ADMIN_EMAIL / ADMIN_PASSWORD / WORKSPACE_NAME — there is no /god-mode wizard. Sign in at the proxy URL with those credentials. Rotate ADMIN_PASSWORD, SECRET_KEY, LIVE_SERVER_SECRET_KEY, and RustFS credentials.",
+   "installation": "Deploys the stackblaze/plane fork as a multi-service group (api, worker, beat, web, space, live, proxy) with communal PostgreSQL, Valkey, RustFS, and Platform Email. Images are ghcr.io/stackblaze/plane-*:latest. The instance is configured from env on every API boot (ADMIN_EMAIL / ADMIN_PASSWORD / WORKSPACE_NAME, ENABLE_*, EMAIL_*); the /god-mode admin app is not deployed. Sign in at the proxy URL with those credentials. With Platform Email connected, users sign in with an emailed code, no password needed. Rotate ADMIN_PASSWORD, SECRET_KEY, LIVE_SERVER_SECRET_KEY, and RustFS credentials.",
    "architecture": [],
    "categories": [
     "productivity",
@@ -5258,8 +5258,7 @@
     "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-all-projects.png",
     "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-home.png",
     "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-analytics.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-settings.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-admin-general.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-settings.png"
    ],
    "links": [
     "https://developers.plane.so/"

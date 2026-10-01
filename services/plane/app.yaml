@@ -7,9 +7,9 @@ metadata:
     kubero.dev/template.description: "Plan projects, prioritize issues, and deliver work through cycles, modules, and roadmaps.\nA streamlined alternative to Jira and Linear."
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/icon.png
     kubero.dev/template.installation: |
-      Deploys the stackblaze/plane fork as a multi-service group: api + worker + beat (ghcr.io/stackblaze/plane-backend:latest), web/space/admin/live frontends, and plane-proxy as the public entrypoint. Shared add-ons (PostgreSQL, Valkey, RabbitMQ, RustFS) attach to the api service; invites and magic-code login use Platform Email while that add-on is connected. Uploads go to the platform object-storage add-on (a communal S3 bucket on shared zones). On first API boot the instance is configured from env (ADMIN_EMAIL / ADMIN_PASSWORD / WORKSPACE_NAME) — there is no /god-mode wizard. Open the proxy URL and sign in with ADMIN_EMAIL/ADMIN_PASSWORD. Rotate ADMIN_PASSWORD, SECRET_KEY, LIVE_SERVER_SECRET_KEY, and RustFS credentials before production use.
+      Deploys the stackblaze/plane fork as a multi-service group: api + worker + beat (ghcr.io/stackblaze/plane-backend:latest), web/space/live frontends, and plane-proxy as the public entrypoint. Shared add-ons (PostgreSQL, Valkey, RabbitMQ, RustFS) attach to the api service; invites and magic-code login use Platform Email while that add-on is connected. Uploads go to the platform object-storage add-on (a communal S3 bucket on shared zones). The instance is configured from env on every API boot (ADMIN_EMAIL / ADMIN_PASSWORD / WORKSPACE_NAME, ENABLE_* and EMAIL_*); the /god-mode admin app is not deployed. Open the proxy URL and sign in with ADMIN_EMAIL/ADMIN_PASSWORD. With Platform Email connected, everyone else signs in with a code sent to their email — no password to remember. Rotate ADMIN_PASSWORD, SECRET_KEY, LIVE_SERVER_SECRET_KEY, and RustFS credentials before production use.
     kubero.dev/template.links: '["https://developers.plane.so/"]'
-    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/plane/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-all-projects.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-home.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-analytics.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-settings.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-admin-general.png"]'
+    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/plane/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-all-projects.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-home.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-analytics.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-settings.png"]'
     kubero.dev/template.source: https://github.com/stackblaze/plane
     kubero.dev/template.categories: '["productivity", "work", "collaboration"]'
     kubero.dev/template.title: "Plane Project Management"
@@ -354,19 +354,6 @@ spec:
       value: '{{KUBERO_APP_URL}}'
     healthcheck:
       enabled: false
-  - id: admin
-    nameHint: plane-admin
-    exposeInternet: false
-    image:
-      repository: ghcr.io/stackblaze/plane-admin
-      tag: latest
-      pullPolicy: Always
-      containerPort: '3000'
-    envVars:
-    - name: WEB_URL
-      value: '{{KUBERO_APP_URL}}'
-    healthcheck:
-      enabled: false
   - id: live
     nameHint: plane-live
     exposeInternet: false
@@ -423,9 +410,6 @@ spec:
   - name: space
     port: 3000
     targetRole: space
-  - name: admin
-    port: 3000
-    targetRole: admin
   - name: live
     port: 3000
     targetRole: live
