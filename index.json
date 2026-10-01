@@ -10144,7 +10144,7 @@
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/app.yaml",
    "status": "active",
-   "license": "MIT License",
+   "license": "Business Source License 1.1",
    "spdx_id": "MIT",
    "dirname": "openpeople-hr",
    "deploymentTypes": [
