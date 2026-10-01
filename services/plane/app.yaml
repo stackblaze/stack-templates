@@ -205,9 +205,13 @@ spec:
               memory: 512Mi
             limits:
               memory: 1Gi
+          # No default_user / default_pass / default_vhost here: plane reads
+          # AMQP_URL from the broker's own default-user Secret (below), so the
+          # same template runs on a dedicated broker or as a vhost on the
+          # zone's communal RabbitMQ. The disk alarm must sit well under the
+          # 1Gi volume or it latches on and blocks every publisher.
           rabbitmq:
-            additionalConfig: "default_user = plane\ndefault_pass = plane\ndefault_vhost\
-              \ = plane\n"
+            additionalConfig: "disk_free_limit.absolute = 200MB\n"
   envVars:
 
   - name: WEB_URL
@@ -230,16 +234,14 @@ spec:
     value: '1'
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
-  - name: CELERY_BROKER_URL
-    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
-  - name: CELERY_RESULT_BACKEND
-    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
+  # Plane's Celery broker (settings/common.py: CELERY_BROKER_URL = AMQP_URL).
+  # `connection_string` is written by the RabbitMQ operator on a dedicated
+  # broker and by kubero on a communal one (it carries the tenant vhost).
   - name: AMQP_URL
-    value: amqp://plane:plane@{{KUBERO_APP_NAME}}-rabbitmq:5672/plane
-  - name: RABBITMQ_HOST
-    value: '{{KUBERO_APP_NAME}}-rabbitmq'
-  - name: RABBITMQ_PORT
-    value: '5672'
+    valueFrom:
+      secretKeyRef:
+        name: '{{KUBERO_APP_NAME}}-rabbitmq-default-user'
+        key: connection_string
   - name: SECRET_KEY
     value: '{{KUBERO_GEN_ALNUM:50}}'
   - name: LIVE_SERVER_SECRET_KEY
