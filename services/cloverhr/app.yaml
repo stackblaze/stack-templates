@@ -1,22 +1,22 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-  name: openpeople-hr
+  name: cloverhr
   annotations:
     kubero.dev/template.architecture: '["linux/amd64"]'
     kubero.dev/template.description: "Keep everything about your people in one place: profiles, time off, timesheets, hiring, onboarding, benefits, performance, and reports.\nOpen-source HR for small and mid-sized teams in the United States and Canada. A self-hosted alternative to BambooHR, without payroll: it exports what your payroll or accounting software needs."
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/icon.png
-    kubero.dev/template.installation: "Pulls the prebuilt ghcr.io/stackblaze-adam/openpeople-hr image. There is nothing to fill in before you deploy. On the first start the app creates its tables; then open the app's address and a short setup asks for your company (name, country, time zone, language), your name, work email and password, optional two-step login (an authenticator app or a passkey), and whether to start empty or with the Northwind Studio demo company. That first account becomes the workspace owner, and the setup page is gone for good. Open it soon after deploying: until then whoever opens the address first can claim it (set OPENPEOPLE_SETUP_CODE to have the setup ask for a code first). Postgres 16 is created with the app, and uploaded documents persist on the 5 GiB data volume. OPENPEOPLE_SECRET_ENCRYPTION_KEY is generated once and encrypts bank and identity numbers: copy it somewhere safe and never change it once people have been added. Email goes out through the platform's Email add-on when it is on; until then email waits in Settings, Email. Scheduled jobs (accruals, reminders) run inside the app. Load demo data preselects the demo company in the setup's last step; its logins share the owner's password, so leave it off for real use."
-    kubero.dev/template.links: '["https://github.com/stackblaze-adam/openpeople-hr/blob/main/docs/help/owner/install.md", "https://github.com/stackblaze-adam/openpeople-hr/blob/main/docs/self-host.md"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/dashboard.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/screenshot-people.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/screenshot-profile.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/screenshot-time-off.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/screenshot-hiring.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/screenshot-reports.png"]'
-    kubero.dev/template.source: https://github.com/stackblaze-adam/openpeople-hr
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/icon.png
+    kubero.dev/template.installation: "Pulls the prebuilt ghcr.io/stackblaze-adam/cloverhr image. There is nothing to fill in before you deploy. On the first start the app creates its tables; then open the app's address and a short setup asks for your company (name, country, time zone, language), your name, work email and password, optional two-step login (an authenticator app or a passkey), and whether to start empty or with the Northwind Studio demo company. That first account becomes the workspace owner, and the setup page is gone for good. Open it soon after deploying: until then whoever opens the address first can claim it (set CLOVERHR_SETUP_CODE to have the setup ask for a code first). Postgres 16 is created with the app, and uploaded documents persist on the 5 GiB data volume. CLOVERHR_SECRET_ENCRYPTION_KEY is generated once and encrypts bank and identity numbers: copy it somewhere safe and never change it once people have been added. Email goes out through the platform's Email add-on when it is on; until then email waits in Settings, Email. Scheduled jobs (accruals, reminders) run inside the app. Load demo data preselects the demo company in the setup's last step; its logins share the owner's password, so leave it off for real use."
+    kubero.dev/template.links: '["https://github.com/stackblaze-adam/cloverhr/blob/main/docs/help/owner/install.md", "https://github.com/stackblaze-adam/cloverhr/blob/main/docs/self-host.md"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/dashboard.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/screenshot-people.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/screenshot-profile.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/screenshot-time-off.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/screenshot-hiring.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/screenshot-reports.png"]'
+    kubero.dev/template.source: https://github.com/stackblaze-adam/cloverhr
     kubero.dev/template.categories: '["work", "productivity", "management"]'
-    kubero.dev/template.title: Openpeople HR
-    kubero.dev/template.website: https://github.com/stackblaze-adam/openpeople-hr
+    kubero.dev/template.title: CloverHR
+    kubero.dev/template.website: https://cloverhr.net
   labels:
     manager: kubero
 spec:
-  name: openpeople-hr
+  name: cloverhr
   deploymentstrategy: docker
   addons:
   - displayName: PostgreSQL (CloudNativePG)
@@ -46,14 +46,14 @@ spec:
               memory: 1Gi
           bootstrap:
             initdb:
-              database: openpeople
-              owner: openpeople
+              database: cloverhr
+              owner: cloverhr
               secret:
                 name: '{{KUBERO_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
-              - GRANT ALL ON SCHEMA public TO openpeople
-              - GRANT CREATE ON SCHEMA public TO openpeople
-              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO openpeople
+              - GRANT ALL ON SCHEMA public TO cloverhr
+              - GRANT CREATE ON SCHEMA public TO cloverhr
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO cloverhr
           enableSuperuserAccess: true
           superuserSecret:
             name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
@@ -73,11 +73,11 @@ spec:
           name: '{{KUBERO_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
-          username: openpeople
+          username: cloverhr
           password: '{{KUBERO_GEN_ALNUM:32}}'
   # Platform email (see README "Email contract"). The image reads the injected
   # SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD and SMTP_FROM itself and
-  # turns them into OPENPEOPLE_SMTP_URL and OPENPEOPLE_MAIL_FROM (STARTTLS on
+  # turns them into CLOVERHR_SMTP_URL and CLOVERHR_MAIL_FROM (STARTTLS on
   # 587), so no mapping is needed. While Email is off, mail is held in the
   # app's outbox (Settings → Email) and sent once mail is set up.
   - displayName: Email
@@ -91,24 +91,24 @@ spec:
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
   # The public address. Links in email, invites, password resets, passkeys and
   # single sign-on are built from it.
-  - name: OPENPEOPLE_APP_URL
+  - name: CLOVERHR_APP_URL
     value: '{{KUBERO_APP_URL}}'
   # No owner is set here: on the first visit the app's setup (/setup) creates
   # the first account. For a scripted install, add OWNER_EMAIL and
   # OWNER_PASSWORD (at least 10 characters) and the container creates the
-  # owner on its first start instead. Add OPENPEOPLE_SETUP_CODE to have the
+  # owner on its first start instead. Add CLOVERHR_SETUP_CODE to have the
   # setup ask for a code before anyone can create the first account.
   # Encrypts bank account and identity numbers. Generated once; keep a copy
   # outside the platform and never change it after people have been added.
-  - name: OPENPEOPLE_SECRET_ENCRYPTION_KEY
+  - name: CLOVERHR_SECRET_ENCRYPTION_KEY
     value: '{{KUBERO_GEN_ALNUM:64}}'
   # One ingress sits in front of the app.
-  - name: OPENPEOPLE_TRUSTED_PROXIES
+  - name: CLOVERHR_TRUSTED_PROXIES
     value: '1'
-  - name: OPENPEOPLE_DATA_DIR
+  - name: CLOVERHR_DATA_DIR
     value: /data
   # 1 lets anyone create a separate workspace of their own. Leave at 0.
-  - name: OPENPEOPLE_ALLOW_SIGNUP
+  - name: CLOVERHR_ALLOW_SIGNUP
     value: '0'
   # The dashboard's "Load demo data" switch: true preselects the Northwind
   # Studio demo company in the setup's last step (with OWNER_* set, it adds it
@@ -146,10 +146,10 @@ spec:
   image:
     containerPort: '3200'
     pullPolicy: Always
-    # Published by stackblaze-adam/openpeople-hr (.github/workflows/image.yml)
-    # on every push to main. Pin a sha-<short> tag once one is published.
-    repository: ghcr.io/stackblaze-adam/openpeople-hr
-    tag: latest
+    # Published by stackblaze-adam/cloverhr (.github/workflows/image.yml)
+    # for each release tag. Raise this to the new version with each release.
+    repository: ghcr.io/stackblaze-adam/cloverhr
+    tag: "1.0.0-beta.1"
     run:
       securityContext:
         readOnlyRootFilesystem: false
