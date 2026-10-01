@@ -10102,12 +10102,12 @@
    ]
   },
   {
-   "name": "Openpeople HR",
+   "name": "CloverHR",
    "description": "Keep everything about your people in one place: profiles, time off, timesheets, hiring, onboarding, benefits, performance, and reports.\nOpen-source HR for small and mid-sized teams in the United States and Canada. A self-hosted alternative to BambooHR, without payroll: it exports what your payroll or accounting software needs.",
-   "source": "https://github.com/stackblaze-adam/openpeople-hr",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/icon.png",
-   "website": "https://github.com/stackblaze-adam/openpeople-hr",
-   "installation": "Pulls the prebuilt ghcr.io/stackblaze-adam/openpeople-hr image. There is nothing to fill in before you deploy. On the first start the app creates its tables; then open the app's address and a short setup asks for your company (name, country, time zone, language), your name, work email and password, optional two-step login (an authenticator app or a passkey), and whether to start empty or with the Northwind Studio demo company. That first account becomes the workspace owner, and the setup page is gone for good. Open it soon after deploying: until then whoever opens the address first can claim it (set OPENPEOPLE_SETUP_CODE to have the setup ask for a code first). Postgres 16 is created with the app, and uploaded documents persist on the 5 GiB data volume. OPENPEOPLE_SECRET_ENCRYPTION_KEY is generated once and encrypts bank and identity numbers: copy it somewhere safe and never change it once people have been added. Email goes out through the platform's Email add-on when it is on; until then email waits in Settings, Email. Scheduled jobs (accruals, reminders) run inside the app. Load demo data preselects the demo company in the setup's last step; its logins share the owner's password, so leave it off for real use.",
+   "source": "https://github.com/stackblaze-adam/cloverhr",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/icon.png",
+   "website": "https://cloverhr.net",
+   "installation": "Pulls the prebuilt ghcr.io/stackblaze-adam/cloverhr image. There is nothing to fill in before you deploy. On the first start the app creates its tables; then open the app's address and a short setup asks for your company (name, country, time zone, language), your name, work email and password, optional two-step login (an authenticator app or a passkey), and whether to start empty or with the Northwind Studio demo company. That first account becomes the workspace owner, and the setup page is gone for good. Open it soon after deploying: until then whoever opens the address first can claim it (set CLOVERHR_SETUP_CODE to have the setup ask for a code first). Postgres 16 is created with the app, and uploaded documents persist on the 5 GiB data volume. CLOVERHR_SECRET_ENCRYPTION_KEY is generated once and encrypts bank and identity numbers: copy it somewhere safe and never change it once people have been added. Email goes out through the platform's Email add-on when it is on; until then email waits in Settings, Email. Scheduled jobs (accruals, reminders) run inside the app. Load demo data preselects the demo company in the setup's last step; its logins share the owner's password, so leave it off for real use.",
    "architecture": [
     "linux/amd64"
    ],
@@ -10117,16 +10117,16 @@
     "management"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/dashboard.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/screenshot-people.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/screenshot-profile.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/screenshot-time-off.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/screenshot-hiring.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/screenshot-reports.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/dashboard.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/screenshot-people.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/screenshot-profile.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/screenshot-time-off.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/screenshot-hiring.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/screenshot-reports.png"
    ],
    "links": [
-    "https://github.com/stackblaze-adam/openpeople-hr/blob/main/docs/help/owner/install.md",
-    "https://github.com/stackblaze-adam/openpeople-hr/blob/main/docs/self-host.md"
+    "https://github.com/stackblaze-adam/cloverhr/blob/main/docs/help/owner/install.md",
+    "https://github.com/stackblaze-adam/cloverhr/blob/main/docs/self-host.md"
    ],
    "addons": [
     "Cluster",
@@ -10142,17 +10142,17 @@
    "size": 0,
    "language": "TypeScript",
    "gitops": false,
-   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/app.yaml",
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/app.yaml",
    "status": "active",
    "license": "Business Source License 1.1",
    "spdx_id": "BUSL-1.1",
-   "dirname": "openpeople-hr",
+   "dirname": "cloverhr",
    "deploymentTypes": [
     {
      "id": "standard",
      "label": "Standard",
      "default": true,
-     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openpeople-hr/app.yaml"
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/app.yaml"
     }
    ],
    "supportsDemoData": true
