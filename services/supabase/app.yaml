@@ -92,7 +92,13 @@ spec:
                 ALTER ROLE "supabase_storage" WITH LOGIN NOINHERIT NOBYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD $sbpw$supabase$sbpw$;
                 DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_authenticator') THEN CREATE ROLE "supabase_authenticator" LOGIN; END IF; END $$;
                 ALTER ROLE "supabase_authenticator" WITH LOGIN NOINHERIT NOBYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD $sbpw$supabase$sbpw$;
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_readonly') THEN CREATE ROLE "supabase_readonly" LOGIN; END IF; END $$;
+                ALTER ROLE "supabase_readonly" WITH LOGIN INHERIT BYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD $sbpw$supabase$sbpw$;
                 GRANT "supabase" TO "supabase_admin";
+                -- Studio's read-only mode (POSTGRES_USER_READ_ONLY) sees what admin sees;
+                -- its sessions start read-only. Studio connects as this user on request.
+                GRANT "supabase_admin" TO "supabase_readonly";
+                ALTER ROLE "supabase_readonly" SET default_transaction_read_only = on;
                 GRANT anon, authenticated, service_role TO "supabase_authenticator";
                 GRANT anon, authenticated, service_role TO "supabase_auth";
                 GRANT anon, authenticated, service_role TO "supabase_storage";
@@ -106,7 +112,7 @@ spec:
                 -- Only this tenant's roles may connect to its database.
                 REVOKE CONNECT ON DATABASE "supabase" FROM PUBLIC;
                 GRANT CONNECT, CREATE ON DATABASE "supabase" TO "supabase", "supabase_admin", "supabase_auth", "supabase_storage";
-                GRANT CONNECT ON DATABASE "supabase" TO "supabase_authenticator";
+                GRANT CONNECT ON DATABASE "supabase" TO "supabase_authenticator", "supabase_readonly";
                 -- Deployments from before per-tenant users still connect as the old
                 -- server-wide roles; keep them working until they are redeployed.
                 DO $$ DECLARE r text; BEGIN
@@ -952,6 +958,12 @@ spec:
       value: '$(PGDATABASE)'
     - name: POSTGRES_PASSWORD
       value: '$(PGPASSWORD)'
+    # Studio builds pg-meta's connection string itself; without these it
+    # dials supabase_admin, which no longer carries this tenant's password.
+    - name: POSTGRES_USER_READ_WRITE
+      value: '$(SUPABASE_DB_ADMIN_USER)'
+    - name: POSTGRES_USER_READ_ONLY
+      value: '$(SUPABASE_DB_READONLY_USER)'
     - name: SUPABASE_ANON_KEY
       value: *anonKey
     - name: SUPABASE_SERVICE_KEY
