@@ -847,7 +847,8 @@ spec:
       mountPath: /app/edge-functions
       emptyDir: false
       storageClass: shared
-      size: 1Gi
+      # 5Gi is the smallest size the dashboard provisions.
+      size: 5Gi
       accessModes:
       - ReadWriteMany
     envVars:
@@ -1163,7 +1164,7 @@ spec:
       mountPath: /home/deno/functions
       emptyDir: false
       storageClass: shared
-      size: 1Gi
+      size: 5Gi
       accessModes:
       - ReadWriteMany
     envVars:
