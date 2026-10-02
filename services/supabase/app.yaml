@@ -836,8 +836,20 @@ spec:
       - /bin/sh
       - -c
       - |
-        mkdir -p /tmp/edge-functions /tmp/snippets
+        # No-op on the mounted volume; keeps the page working where the
+        # volume is not attached.
+        mkdir -p /app/edge-functions /tmp/snippets
         exec docker-entrypoint.sh node apps/studio/server.js
+    # Function code lives on one volume: Studio owns the claim and lists it,
+    # the functions service mounts the same claim and serves it.
+    extraVolumes:
+    - name: '{{KUBERO_APP_NAME}}-functions'
+      mountPath: /app/edge-functions
+      emptyDir: false
+      storageClass: shared
+      size: 1Gi
+      accessModes:
+      - ReadWriteMany
     envVars:
     - name: HOSTNAME
       value: '::'
@@ -868,7 +880,7 @@ spec:
     - name: DEFAULT_PROJECT_NAME
       value: Default Project
     - name: EDGE_FUNCTIONS_MANAGEMENT_FOLDER
-      value: /tmp/edge-functions
+      value: /app/edge-functions
     - name: SNIPPETS_MANAGEMENT_FOLDER
       value: /tmp/snippets
     healthcheck:
@@ -1104,8 +1116,20 @@ spec:
       - -c
       - |
         set -euo pipefail
-        mkdir -p /home/deno/functions/main
-        cat > /home/deno/functions/main/index.ts << 'ENDFN'
+        # The router stays off the shared volume so Studio does not list it.
+        mkdir -p /home/deno/main /home/deno/functions
+        if [ -z "$(ls -A /home/deno/functions 2>/dev/null)" ]; then
+          mkdir -p /home/deno/functions/hello
+          cat > /home/deno/functions/hello/index.ts << 'ENDHELLO'
+        Deno.serve(async (req: Request) => {
+          const { name } = await req.json().catch(() => ({}))
+          return new Response(JSON.stringify({ message: `Hello ${name || "world"}!` }), {
+            headers: { "Content-Type": "application/json" },
+          })
+        })
+        ENDHELLO
+        fi
+        cat > /home/deno/main/index.ts << 'ENDFN'
         Deno.serve(async (req: Request) => {
           const service = new URL(req.url).pathname.split("/")[1] || ""
           if (!service) {
@@ -1132,7 +1156,16 @@ spec:
           }
         })
         ENDFN
-        exec edge-runtime start --main-service /home/deno/functions/main
+        exec edge-runtime start --main-service /home/deno/main
+    extraVolumes:
+    - name: '{{KUBERO_APP_NAME}}-functions'
+      existingClaim: supabase-studio-{{KUBERO_NAME_SUFFIX}}-functions
+      mountPath: /home/deno/functions
+      emptyDir: false
+      storageClass: shared
+      size: 1Gi
+      accessModes:
+      - ReadWriteMany
     envVars:
     - name: VERIFY_JWT
       value: 'false'
