@@ -820,6 +820,14 @@ spec:
       repository: docker.io/supabase/studio
       tag: 2026.04.27-sha-5f60601
       containerPort: '3000'
+      # Studio 500s on the Edge Functions page unless its management folders
+      # exist; the image does not ship them.
+      command:
+      - /bin/sh
+      - -c
+      - |
+        mkdir -p /tmp/edge-functions /tmp/snippets
+        exec docker-entrypoint.sh node apps/studio/server.js
     envVars:
     - name: HOSTNAME
       value: '::'
@@ -849,6 +857,10 @@ spec:
       value: Default Organization
     - name: DEFAULT_PROJECT_NAME
       value: Default Project
+    - name: EDGE_FUNCTIONS_MANAGEMENT_FOLDER
+      value: /tmp/edge-functions
+    - name: SNIPPETS_MANAGEMENT_FOLDER
+      value: /tmp/snippets
     healthcheck:
       enabled: true
       path: /
