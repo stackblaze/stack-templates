@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: "Build a Postgres backend with auth, storage, and a dashboard from one project.\nAn open-source alternative to Firebase."
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/54469796?s=200
     kubero.dev/template.installation: |
-      Deploys Supabase as a multi-service group (Kong gateway, Studio, Auth, PostgREST, Realtime, Storage, Meta, Edge Functions, imgproxy). PostgreSQL and object storage are platform add-ons: on shared zones they are a communal logical database and a communal-s3 bucket. Kong is the public URL and proxies Studio at /. Sign in to Studio with DASHBOARD_USERNAME (supabase) and DASHBOARD_PASSWORD (generated per deploy; the gateway and Studio cards carry the same value). The anon and service_role keys are the upstream demo JWTs — rotate JWT_SECRET and those keys before production use. A zone should run one Supabase against communal Postgres; the Auth and Storage roles are cluster-wide.
+      Deploys Supabase as a multi-service group (Kong gateway, Studio, Auth, PostgREST, Realtime, Storage, Meta, Edge Functions, imgproxy). PostgreSQL and object storage are platform add-ons: on shared zones they are a communal logical database and a communal-s3 bucket. Kong is the public URL and proxies Studio at /. Data API reads (GET/HEAD on /rest/v1) are served from the Postgres replicas by a second PostgREST; set KONG_REST_READ_REPLICAS=off on the gateway to keep every read on the primary. Sign in to Studio with DASHBOARD_USERNAME (supabase) and DASHBOARD_PASSWORD (generated per deploy; the gateway and Studio cards carry the same value). The anon and service_role keys are the upstream demo JWTs — rotate JWT_SECRET and those keys before production use. A zone should run one Supabase against communal Postgres; the Auth and Storage roles are cluster-wide.
     kubero.dev/template.links: '["https://supabase.com/docs/guides/self-hosting/docker"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/supabase/supabase
@@ -325,6 +325,10 @@ spec:
     value: supabase
   - name: DASHBOARD_PASSWORD
     value: '{{KUBERO_GEN_ALNUM:24}}'
+  # Data API reads (GET/HEAD on /rest/v1) are served by a PostgREST on the
+  # Postgres replicas; 'off' sends them to the primary like writes.
+  - name: KONG_REST_READ_REPLICAS
+    value: 'on'
   extraVolumes: []
   cronjobs: []
   web:
@@ -506,6 +510,40 @@ spec:
                 hide_groups_header: true
                 allow:
                   - admin
+
+        ## PostgREST reads: GET/HEAD on /rest/v1/* go to the replica-backed instance.
+        ## Writes and RPC POSTs stay on rest-v1 (primary). KONG_REST_READ_REPLICAS=off
+        ## points this at the primary PostgREST instead (see kong-entrypoint.sh).
+        - name: rest-v1-ro
+          _comment: 'PostgREST reads: GET/HEAD /rest/v1/* -> http://rest-ro:3000/*'
+          url: http://rest-ro:3000/
+          routes:
+            - name: rest-v1-reads
+              strip_path: true
+              paths:
+                - /rest/v1/
+              methods:
+                - GET
+                - HEAD
+          plugins:
+            - name: cors
+            - name: key-auth
+              config:
+                hide_credentials: false
+            - name: request-transformer
+              config:
+                add:
+                  headers:
+                    - "Authorization: ${LUA_AUTH_EXPR}"
+                replace:
+                  headers:
+                    - "Authorization: ${LUA_AUTH_EXPR}"
+            - name: acl
+              config:
+                hide_groups_header: true
+                allow:
+                  - admin
+                  - anon
 
         ## Secure PostgREST routes
         - name: rest-v1
@@ -858,8 +896,12 @@ spec:
       self="${HOSTNAME%%-kuberoapp-*}"
       suffix="${self#supabase-api-}"
       sb_svc() { printf 'supabase-%s-%s-kuberoapp' "$1" "$suffix"; }
+      # GET/HEAD on the Data API read from the replica-backed PostgREST unless the
+      # deployment opts out (then they go to the primary instance like everything else).
+      if [ "${KONG_REST_READ_REPLICAS:-on}" = "off" ]; then rest_ro=$(sb_svc rest); else rest_ro=$(sb_svc rest-ro); fi
       sed -i \
         -e "s|http://auth:9999|http://$(sb_svc auth)|g" \
+        -e "s|http://rest-ro:3000|http://$rest_ro|g" \
         -e "s|http://rest:3000|http://$(sb_svc rest)|g" \
         -e "s|http://realtime-dev.supabase-realtime:4000|http://$(sb_svc realtime)|g" \
         -e "s|http://storage:5000|http://$(sb_svc storage)|g" \
@@ -1033,6 +1075,34 @@ spec:
     envVars:
     - name: PGRST_DB_URI
       value: 'postgres://$(SUPABASE_DB_AUTHENTICATOR_USER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+    - name: PGRST_DB_SCHEMAS
+      value: public,storage,graphql_public
+    - name: PGRST_DB_ANON_ROLE
+      value: anon
+    - name: PGRST_JWT_SECRET
+      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+    - name: PGRST_DB_USE_LEGACY_GUCS
+      value: 'false'
+    healthcheck:
+      enabled: true
+      path: /
+      startupSeconds: 120
+    # Read-only twin of `rest` on the Postgres replicas (Data API GET/HEAD).
+  - id: rest-ro
+    nameHint: supabase-rest-ro
+    exposeInternet: false
+    usePrimaryAddons: true
+    image:
+      repository: docker.io/postgrest/postgrest
+      tag: v14.8
+      containerPort: '3000'
+    envVars:
+    - name: PGRST_DB_URI
+      # Replica first, primary second: libpq opens the pool on the first host
+      # that answers, PostgREST's schema-reload listener insists on a
+      # read-write host (>= 12.2), and a zone without replicas just uses the
+      # primary. Kong only sends GET/HEAD here.
+      value: 'postgres://$(SUPABASE_DB_AUTHENTICATOR_USER):$(PGPASSWORD)@$(PGHOST_RO):$(PGPORT_RO),$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
     - name: PGRST_DB_SCHEMAS
       value: public,storage,graphql_public
     - name: PGRST_DB_ANON_ROLE
