@@ -91,6 +91,11 @@ spec:
                 CREATE SCHEMA IF NOT EXISTS _realtime;
                 ALTER SCHEMA _realtime OWNER TO supabase_admin;
                 GRANT USAGE, CREATE ON SCHEMA _realtime TO supabase_admin;
+                CREATE SCHEMA IF NOT EXISTS realtime;
+                ALTER SCHEMA realtime OWNER TO supabase_admin;
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_realtime_admin') THEN CREATE ROLE supabase_realtime_admin NOLOGIN NOINHERIT; END IF; END $$;
+                GRANT supabase_realtime_admin TO supabase_admin WITH ADMIN OPTION;
+                GRANT SET ON PARAMETER log_min_messages TO supabase_admin;
                 CREATE SCHEMA IF NOT EXISTS graphql_public;
                 GRANT USAGE ON SCHEMA graphql_public TO anon, authenticated, service_role;
                 GRANT supabase_auth_admin, supabase_storage_admin TO supabase_admin;
@@ -990,6 +995,10 @@ spec:
       value: realtime
     - name: SEED_SELF_HOST
       value: 'true'
+    # Realtime looks its tenant up by the first label of the Host header,
+    # which is this service's name when Kong dials it.
+    - name: SELF_HOST_TENANT_NAME
+      value: supabase-realtime-{{KUBERO_NAME_SUFFIX}}-kuberoapp
     - name: RUN_JANITOR
       value: 'true'
     healthcheck:
