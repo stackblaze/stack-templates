@@ -19,6 +19,11 @@ metadata:
 spec:
   name: supabase
   deploymentstrategy: docker
+  ingress:
+    annotations:
+      # ingress-nginx defaults to 1m, which rejects Studio's 6 MB upload
+      # chunks. Storage's own FILE_SIZE_LIMIT (50 MiB) stays the real cap.
+      nginx.ingress.kubernetes.io/proxy-body-size: 64m
   gitrepo:
     admin: false
     clone_url: https://github.com/supabase/supabase.git
@@ -1045,6 +1050,8 @@ spec:
       value: 'postgres://supabase_storage_admin:$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
     - name: POSTGREST_URL
       value: http://supabase-rest-{{KUBERO_NAME_SUFFIX}}-kuberoapp
+    - name: ENABLE_IMAGE_TRANSFORMATION
+      value: 'true'
     - name: IMGPROXY_URL
       value: http://supabase-imgproxy-{{KUBERO_NAME_SUFFIX}}-kuberoapp
     - name: PGRST_JWT_SECRET
