@@ -154,6 +154,40 @@ services:
           allow:
             - admin
 
+  ## PostgREST reads: GET/HEAD on /rest/v1/* go to the replica-backed instance.
+  ## Writes and RPC POSTs stay on rest-v1 (primary). KONG_REST_READ_REPLICAS=off
+  ## points this at the primary PostgREST instead (see kong-entrypoint.sh).
+  - name: rest-v1-ro
+    _comment: 'PostgREST reads: GET/HEAD /rest/v1/* -> http://rest-ro:3000/*'
+    url: http://rest-ro:3000/
+    routes:
+      - name: rest-v1-reads
+        strip_path: true
+        paths:
+          - /rest/v1/
+        methods:
+          - GET
+          - HEAD
+    plugins:
+      - name: cors
+      - name: key-auth
+        config:
+          hide_credentials: false
+      - name: request-transformer
+        config:
+          add:
+            headers:
+              - "Authorization: ${LUA_AUTH_EXPR}"
+          replace:
+            headers:
+              - "Authorization: ${LUA_AUTH_EXPR}"
+      - name: acl
+        config:
+          hide_groups_header: true
+          allow:
+            - admin
+            - anon
+
   ## Secure PostgREST routes
   - name: rest-v1
     _comment: 'PostgREST: /rest/v1/* -> http://rest:3000/*'

@@ -36,8 +36,12 @@ sed -i '/^[[:space:]]*- key:[[:space:]]*$/d' /usr/local/kong/kong.yml
 self="${HOSTNAME%%-kuberoapp-*}"
 suffix="${self#supabase-api-}"
 sb_svc() { printf 'supabase-%s-%s-kuberoapp' "$1" "$suffix"; }
+# GET/HEAD on the Data API read from the replica-backed PostgREST unless the
+# deployment opts out (then they go to the primary instance like everything else).
+if [ "${KONG_REST_READ_REPLICAS:-on}" = "off" ]; then rest_ro=$(sb_svc rest); else rest_ro=$(sb_svc rest-ro); fi
 sed -i \
   -e "s|http://auth:9999|http://$(sb_svc auth)|g" \
+  -e "s|http://rest-ro:3000|http://$rest_ro|g" \
   -e "s|http://rest:3000|http://$(sb_svc rest)|g" \
   -e "s|http://realtime-dev.supabase-realtime:4000|http://$(sb_svc realtime)|g" \
   -e "s|http://storage:5000|http://$(sb_svc storage)|g" \
