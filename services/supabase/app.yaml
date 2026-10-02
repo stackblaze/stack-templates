@@ -43,8 +43,9 @@ spec:
         metadata:
           name: '{{KUBERO_APP_NAME}}-postgresql'
           annotations:
-            # Communal zones run this SQL as the zone superuser (the tenant
-            # role cannot CREATE ROLE). Dedicated zones run postInitSQL.
+            # Communal zones: kubero-server runs its Supabase init as the zone
+            # superuser and injects SUPABASE_DB_*_USER next to PG*. Dedicated
+            # zones run postInitApplicationSQL below.
             kubero.dev/supabase-init: "true"
         spec:
           instances: 1
@@ -66,50 +67,131 @@ spec:
               owner: supabase
               secret:
                 name: '{{KUBERO_APP_NAME}}-postgresql-app'
-              postInitSQL:
+              # Dedicated zones. The same per-tenant login users the communal init
+              # creates (kubero-server supabase-communal-init.ts, generated for
+              # owner/password "supabase"), run in the supabase database. CNPG
+              # executes this over a plain connection, so no psql meta-commands.
+              postInitApplicationSQL:
               - |
-                \connect supabase
-                CREATE SCHEMA IF NOT EXISTS extensions;
-                CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
-                CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
+                -- Shared, passwordless labels. Server-wide, like every Postgres role, and safe
+                -- to share: what they may touch is granted per database.
                 DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'postgres') THEN CREATE ROLE postgres NOLOGIN; END IF; END $$;
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_admin') THEN CREATE USER supabase_admin CREATEDB CREATEROLE LOGIN BYPASSRLS; END IF; END $$;
                 DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'anon') THEN CREATE ROLE anon NOLOGIN NOINHERIT; END IF; END $$;
                 DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'authenticated') THEN CREATE ROLE authenticated NOLOGIN NOINHERIT; END IF; END $$;
                 DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'service_role') THEN CREATE ROLE service_role NOLOGIN NOINHERIT BYPASSRLS; END IF; END $$;
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'authenticator') THEN CREATE USER authenticator NOINHERIT; END IF; END $$;
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_auth_admin') THEN CREATE USER supabase_auth_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION; END IF; END $$;
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_storage_admin') THEN CREATE USER supabase_storage_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION; END IF; END $$;
-                GRANT anon TO authenticator;
-                GRANT authenticated TO authenticator;
-                GRANT service_role TO authenticator;
-                GRANT USAGE ON SCHEMA public TO postgres, anon, authenticated, service_role;
-                GRANT USAGE ON SCHEMA extensions TO postgres, anon, authenticated, service_role;
-                CREATE SCHEMA IF NOT EXISTS auth;
-                ALTER SCHEMA auth OWNER TO supabase_auth_admin;
-                GRANT ALL PRIVILEGES ON SCHEMA auth TO supabase_auth_admin;
-                GRANT USAGE ON SCHEMA auth TO anon, authenticated, service_role;
-                CREATE SCHEMA IF NOT EXISTS storage;
-                ALTER SCHEMA storage OWNER TO supabase_storage_admin;
-                GRANT USAGE ON SCHEMA storage TO postgres, anon, authenticated, service_role;
-                GRANT ALL ON SCHEMA storage TO supabase_storage_admin WITH GRANT OPTION;
-                CREATE SCHEMA IF NOT EXISTS _realtime;
-                ALTER SCHEMA _realtime OWNER TO supabase_admin;
-                GRANT USAGE, CREATE ON SCHEMA _realtime TO supabase_admin;
-                CREATE SCHEMA IF NOT EXISTS realtime;
-                ALTER SCHEMA realtime OWNER TO supabase_admin;
                 DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_realtime_admin') THEN CREATE ROLE supabase_realtime_admin NOLOGIN NOINHERIT; END IF; END $$;
-                GRANT supabase_realtime_admin TO supabase_admin WITH ADMIN OPTION;
-                GRANT SET ON PARAMETER log_min_messages TO supabase_admin;
+                ALTER ROLE anon SET statement_timeout = '3s';
+                ALTER ROLE authenticated SET statement_timeout = '8s';
+
+                -- This tenant's login users, all on the tenant Secret password.
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_admin') THEN CREATE ROLE "supabase_admin" LOGIN; END IF; END $$;
+                ALTER ROLE "supabase_admin" WITH LOGIN INHERIT BYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD $sbpw$supabase$sbpw$;
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_auth') THEN CREATE ROLE "supabase_auth" LOGIN; END IF; END $$;
+                ALTER ROLE "supabase_auth" WITH LOGIN NOINHERIT NOBYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD $sbpw$supabase$sbpw$;
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_storage') THEN CREATE ROLE "supabase_storage" LOGIN; END IF; END $$;
+                ALTER ROLE "supabase_storage" WITH LOGIN NOINHERIT NOBYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD $sbpw$supabase$sbpw$;
+                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_authenticator') THEN CREATE ROLE "supabase_authenticator" LOGIN; END IF; END $$;
+                ALTER ROLE "supabase_authenticator" WITH LOGIN NOINHERIT NOBYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD $sbpw$supabase$sbpw$;
+                GRANT "supabase" TO "supabase_admin";
+                GRANT anon, authenticated, service_role TO "supabase_authenticator";
+                GRANT anon, authenticated, service_role TO "supabase_auth";
+                GRANT anon, authenticated, service_role TO "supabase_storage";
+                GRANT supabase_realtime_admin TO "supabase_admin" WITH ADMIN OPTION;
+                GRANT SET ON PARAMETER log_min_messages TO "supabase_admin";
+                -- Studio reads auth.users / storage.* through pg-meta as the admin user.
+                GRANT "supabase_auth", "supabase_storage" TO "supabase_admin";
+                ALTER ROLE "supabase_auth" SET search_path = 'auth';
+                ALTER ROLE "supabase_storage" SET search_path = 'storage';
+
+                -- Only this tenant's roles may connect to its database.
+                REVOKE CONNECT ON DATABASE "supabase" FROM PUBLIC;
+                GRANT CONNECT, CREATE ON DATABASE "supabase" TO "supabase", "supabase_admin", "supabase_auth", "supabase_storage";
+                GRANT CONNECT ON DATABASE "supabase" TO "supabase_authenticator";
+                -- Deployments from before per-tenant users still connect as the old
+                -- server-wide roles; keep them working until they are redeployed.
+                DO $$ DECLARE r text; BEGIN
+                  FOREACH r IN ARRAY ARRAY['supabase_admin', 'supabase_auth_admin', 'supabase_storage_admin', 'authenticator'] LOOP
+                    IF EXISTS (SELECT FROM pg_roles WHERE rolname = r) THEN EXECUTE format('GRANT CONNECT ON DATABASE %I TO %I', 'supabase', r); END IF;
+                  END LOOP;
+                END $$;
+
+                -- Extensions + public schema
+                CREATE SCHEMA IF NOT EXISTS extensions;
+                CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
+                CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
+                GRANT USAGE ON SCHEMA extensions TO postgres, anon, authenticated, service_role;
+                GRANT ALL ON SCHEMA extensions TO "supabase_admin";
+                GRANT USAGE ON SCHEMA public TO postgres, anon, authenticated, service_role;
+                GRANT USAGE, CREATE ON SCHEMA public TO "supabase_admin";
+                -- Tables made in Studio (admin) or by the owner role are reachable through
+                -- the API, as upstream's defaults for its postgres role make them.
+                ALTER DEFAULT PRIVILEGES FOR ROLE "supabase_admin" IN SCHEMA public GRANT ALL ON TABLES TO postgres, anon, authenticated, service_role;
+                ALTER DEFAULT PRIVILEGES FOR ROLE "supabase_admin" IN SCHEMA public GRANT ALL ON FUNCTIONS TO postgres, anon, authenticated, service_role;
+                ALTER DEFAULT PRIVILEGES FOR ROLE "supabase_admin" IN SCHEMA public GRANT ALL ON SEQUENCES TO postgres, anon, authenticated, service_role;
+                ALTER DEFAULT PRIVILEGES FOR ROLE "supabase" IN SCHEMA public GRANT ALL ON TABLES TO postgres, anon, authenticated, service_role;
+                ALTER DEFAULT PRIVILEGES FOR ROLE "supabase" IN SCHEMA public GRANT ALL ON FUNCTIONS TO postgres, anon, authenticated, service_role;
+                ALTER DEFAULT PRIVILEGES FOR ROLE "supabase" IN SCHEMA public GRANT ALL ON SEQUENCES TO postgres, anon, authenticated, service_role;
+                GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, authenticated, service_role;
+                GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, service_role;
+                GRANT ALL ON ALL FUNCTIONS IN SCHEMA public TO anon, authenticated, service_role;
+
+                -- Auth (GoTrue connects as supabase_auth)
+                CREATE SCHEMA IF NOT EXISTS auth;
+                DO $$ BEGIN IF (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = 'auth') = current_user THEN EXECUTE format('ALTER SCHEMA auth OWNER TO %I', 'supabase_auth'); END IF; END $$;
+                GRANT USAGE ON SCHEMA auth TO anon, authenticated, service_role;
+                -- Same bodies GoTrue's own migrations install (they read request.jwt.claims,
+                -- which PostgREST sets). CREATE OR REPLACE keeps an existing owner; a function
+                -- we just created belongs to the superuser and is handed to the auth user, so
+                -- GoTrue can replace it later.
+                CREATE OR REPLACE FUNCTION auth.uid() RETURNS uuid AS $$
+                  SELECT coalesce(
+                    nullif(current_setting('request.jwt.claim.sub', true), ''),
+                    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')
+                  )::uuid;
+                $$ LANGUAGE sql STABLE;
+                CREATE OR REPLACE FUNCTION auth.role() RETURNS text AS $$
+                  SELECT coalesce(
+                    nullif(current_setting('request.jwt.claim.role', true), ''),
+                    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'role')
+                  )::text;
+                $$ LANGUAGE sql STABLE;
+                CREATE OR REPLACE FUNCTION auth.email() RETURNS text AS $$
+                  SELECT coalesce(
+                    nullif(current_setting('request.jwt.claim.email', true), ''),
+                    (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'email')
+                  )::text;
+                $$ LANGUAGE sql STABLE;
+                DO $$ DECLARE f text; BEGIN
+                  FOREACH f IN ARRAY ARRAY['auth.uid()', 'auth.role()', 'auth.email()'] LOOP
+                    IF (SELECT pg_get_userbyid(proowner) FROM pg_proc WHERE oid = f::regprocedure) = current_user THEN
+                      EXECUTE format('ALTER FUNCTION %s OWNER TO %I', f, 'supabase_auth');
+                    END IF;
+                  END LOOP;
+                END $$;
+
+                -- Storage (storage-api connects as supabase_storage)
+                CREATE SCHEMA IF NOT EXISTS storage;
+                DO $$ BEGIN IF (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = 'storage') = current_user THEN EXECUTE format('ALTER SCHEMA storage OWNER TO %I', 'supabase_storage'); END IF; END $$;
+                GRANT USAGE ON SCHEMA storage TO postgres, anon, authenticated, service_role;
+                GRANT ALL ON SCHEMA storage TO "supabase_storage" WITH GRANT OPTION;
+                ALTER DEFAULT PRIVILEGES FOR ROLE "supabase_storage" IN SCHEMA storage GRANT ALL ON TABLES TO postgres, anon, authenticated, service_role;
+                ALTER DEFAULT PRIVILEGES FOR ROLE "supabase_storage" IN SCHEMA storage GRANT ALL ON FUNCTIONS TO postgres, anon, authenticated, service_role;
+                ALTER DEFAULT PRIVILEGES FOR ROLE "supabase_storage" IN SCHEMA storage GRANT ALL ON SEQUENCES TO postgres, anon, authenticated, service_role;
+
+                -- Realtime (connects as supabase_admin; its tenant migrations expect these)
+                CREATE SCHEMA IF NOT EXISTS _realtime;
+                DO $$ BEGIN IF (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = '_realtime') = current_user THEN EXECUTE format('ALTER SCHEMA _realtime OWNER TO %I', 'supabase_admin'); END IF; END $$;
+                CREATE SCHEMA IF NOT EXISTS realtime;
+                DO $$ BEGIN IF (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = 'realtime') = current_user THEN EXECUTE format('ALTER SCHEMA realtime OWNER TO %I', 'supabase_admin'); END IF; END $$;
                 CREATE SCHEMA IF NOT EXISTS graphql_public;
                 GRANT USAGE ON SCHEMA graphql_public TO anon, authenticated, service_role;
-                GRANT supabase_auth_admin, supabase_storage_admin TO supabase_admin;
-                GRANT ALL ON SCHEMA extensions, graphql_public TO supabase_admin;
-                DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN CREATE PUBLICATION supabase_realtime; END IF; END $$;
-                ALTER USER authenticator WITH PASSWORD 'supabase';
-                ALTER USER supabase_auth_admin WITH PASSWORD 'supabase';
-                ALTER USER supabase_storage_admin WITH PASSWORD 'supabase';
-                ALTER USER supabase_admin WITH PASSWORD 'supabase';
+                GRANT ALL ON SCHEMA graphql_public TO "supabase_admin";
+                DO $$ BEGIN
+                  IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
+                    CREATE PUBLICATION supabase_realtime;
+                  END IF;
+                END $$;
+                ALTER PUBLICATION supabase_realtime OWNER TO "supabase_admin";
           enableSuperuserAccess: true
           superuserSecret:
             name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
@@ -946,7 +1028,8 @@ spec:
     - name: GOTRUE_DB_DRIVER
       value: postgres
     - name: GOTRUE_DB_DATABASE_URL
-      value: 'postgres://supabase_auth_admin:$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+      # SUPABASE_DB_*_USER: per-tenant login users the platform creates next to PG*.
+      value: 'postgres://$(SUPABASE_DB_AUTH_USER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
     healthcheck:
       enabled: true
       path: /health
@@ -961,7 +1044,7 @@ spec:
       containerPort: '3000'
     envVars:
     - name: PGRST_DB_URI
-      value: 'postgres://authenticator:$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+      value: 'postgres://$(SUPABASE_DB_AUTHENTICATOR_USER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
     - name: PGRST_DB_SCHEMAS
       value: public,storage,graphql_public
     - name: PGRST_DB_ANON_ROLE
@@ -990,7 +1073,7 @@ spec:
     - name: DB_PORT
       value: '$(PGPORT)'
     - name: DB_USER
-      value: supabase_admin
+      value: '$(SUPABASE_DB_ADMIN_USER)'
     - name: DB_PASSWORD
       value: '$(PGPASSWORD)'
     - name: DB_NAME
@@ -1060,7 +1143,7 @@ spec:
     - name: S3_PROTOCOL_ACCESS_KEY_SECRET
       value: '$(AWS_SECRET_ACCESS_KEY)'
     - name: DATABASE_URL
-      value: 'postgres://supabase_storage_admin:$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+      value: 'postgres://$(SUPABASE_DB_STORAGE_USER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
     - name: POSTGREST_URL
       value: http://supabase-rest-{{KUBERO_NAME_SUFFIX}}-kuberoapp
     - name: ENABLE_IMAGE_TRANSFORMATION
@@ -1097,7 +1180,7 @@ spec:
     - name: PG_META_DB_NAME
       value: '$(PGDATABASE)'
     - name: PG_META_DB_USER
-      value: supabase_admin
+      value: '$(SUPABASE_DB_ADMIN_USER)'
     - name: PG_META_DB_PASSWORD
       value: '$(PGPASSWORD)'
     healthcheck:
