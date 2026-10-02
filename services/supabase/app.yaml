@@ -184,6 +184,12 @@ spec:
     value: 0.0.0.0:8000
   - name: KONG_LOG_LEVEL
     value: warn
+  # Trust the ingress's X-Forwarded-Proto/Port so upstreams see https:443,
+  # not Kong's own http:8000. Storage builds resumable-upload URLs from them.
+  - name: KONG_TRUSTED_IPS
+    value: 0.0.0.0/0,::/0
+  - name: KONG_REAL_IP_HEADER
+    value: X-Forwarded-For
   - name: SUPABASE_ANON_KEY
     value: &anonKey eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE
   - name: SUPABASE_SERVICE_KEY
@@ -812,7 +818,7 @@ spec:
     usePrimaryAddons: true
     image:
       repository: docker.io/supabase/studio
-      tag: 2025.10.01-sha-8460121
+      tag: 2026.04.27-sha-5f60601
       containerPort: '3000'
     envVars:
     - name: HOSTNAME
@@ -987,6 +993,9 @@ spec:
     envVars:
     - name: STORAGE_BACKEND
       value: s3
+    # Keep Kong's /storage/v1 prefix in resumable-upload (TUS) URLs.
+    - name: REQUEST_ALLOW_X_FORWARDED_PATH
+      value: 'true'
     - name: FILE_SIZE_LIMIT
       value: '52428800'
     - name: TENANT_ID
