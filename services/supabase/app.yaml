@@ -937,7 +937,7 @@ spec:
       # stackblaze/supabase fork: self-hosted sign-in page and Edge Function
       # deploy/delete from the UI (upstream gates both behind IS_PLATFORM).
       repository: ghcr.io/stackblaze/supabase-studio
-      tag: sha-1ff2169
+      tag: sha-4e35967
       containerPort: '3000'
       # Studio 500s on the Edge Functions page unless its management folders
       # exist; the image does not ship them.
@@ -1024,6 +1024,15 @@ spec:
       value: '{{KUBERO_PHASE}}'
     - name: KUBERO_DB_INSTANCE
       value: '{{KUBERO_APP_NAME}}-postgresql'
+    # Logs: the zone's communal Logflare, where the platform creates a user
+    # for this deployment at deploy and collects its services' logs. A zone
+    # without one resolves these to ''/''/'false' and Studio hides Logs.
+    - name: LOGFLARE_URL
+      value: '{{KUBERO_LOGFLARE_URL}}'
+    - name: LOGFLARE_PRIVATE_ACCESS_TOKEN
+      value: '{{KUBERO_LOGFLARE_TOKEN}}'
+    - name: ENABLED_FEATURES_LOGS_ALL
+      value: '{{KUBERO_LOGFLARE_ENABLED}}'
     healthcheck:
       enabled: true
       path: /
