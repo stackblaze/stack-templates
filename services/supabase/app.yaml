@@ -317,6 +317,13 @@ spec:
     value: 0.0.0.0/0,::/0
   - name: KONG_REAL_IP_HEADER
     value: X-Forwarded-For
+  # One JSON line per request (client, country, sizes, timing) for the platform's
+  # log collector, which turns it into Studio's API Gateway logs and reports.
+  - name: KONG_NGINX_HTTP_LOG_FORMAT
+    value: >-
+      sb_json escape=json '{"client":"$remote_addr","country":"$http_cf_ipcountry","cdn_country":"$http_cdn_requestcountrycode","method":"$request_method","uri":"$request_uri","protocol":"$server_protocol","status":$status,"bytes_out":$body_bytes_sent,"bytes_in":$request_length,"request_time":$request_time,"host":"$host","referer":"$http_referer","agent":"$http_user_agent","cache_status":"$upstream_http_cf_cache_status","error_code":"$upstream_http_x_sb_error_code"}'
+  - name: KONG_PROXY_ACCESS_LOG
+    value: /dev/stdout sb_json
   - name: SUPABASE_ANON_KEY
     value: &anonKey eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE
   - name: SUPABASE_SERVICE_KEY
@@ -937,7 +944,7 @@ spec:
       # stackblaze/supabase fork: self-hosted sign-in page and Edge Function
       # deploy/delete from the UI (upstream gates both behind IS_PLATFORM).
       repository: ghcr.io/stackblaze/supabase-studio
-      tag: sha-4e35967
+      tag: sha-1520b29
       containerPort: '3000'
       # Studio 500s on the Edge Functions page unless its management folders
       # exist; the image does not ship them.
