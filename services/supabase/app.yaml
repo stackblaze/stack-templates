@@ -321,6 +321,17 @@ spec:
     value: &anonKey eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE
   - name: SUPABASE_SERVICE_KEY
     value: &serviceKey eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q
+  # New-style API keys (sb_publishable_/sb_secret_), one pair per deployment,
+  # shared by name with the functions and Studio cards. Kong accepts them and
+  # forwards the legacy JWT of the matching role to the services behind it.
+  - name: SUPABASE_PUBLISHABLE_KEY
+    value: 'sb_publishable_{{KUBERO_GEN_ALNUM:32}}'
+  - name: SUPABASE_SECRET_KEY
+    value: 'sb_secret_{{KUBERO_GEN_ALNUM:40}}'
+  - name: ANON_KEY_ASYMMETRIC
+    value: *anonKey
+  - name: SERVICE_ROLE_KEY_ASYMMETRIC
+    value: *serviceKey
   - name: DASHBOARD_USERNAME
     value: supabase
   - name: DASHBOARD_PASSWORD
@@ -978,6 +989,10 @@ spec:
       value: *anonKey
     - name: SUPABASE_SERVICE_KEY
       value: *serviceKey
+    - name: SUPABASE_PUBLISHABLE_KEY
+      value: 'sb_publishable_{{KUBERO_GEN_ALNUM:32}}'
+    - name: SUPABASE_SECRET_KEY
+      value: 'sb_secret_{{KUBERO_GEN_ALNUM:40}}'
     - name: AUTH_JWT_SECRET
       value: your-super-secret-jwt-token-with-at-least-32-characters-long
     - name: DEFAULT_ORGANIZATION_NAME
@@ -1322,6 +1337,12 @@ spec:
       accessModes:
       - ReadWriteMany
     envVars:
+    # Read by @supabase/server (withSupabase auth: publishable / secret),
+    # which Studio's function templates use.
+    - name: SUPABASE_PUBLISHABLE_KEY
+      value: 'sb_publishable_{{KUBERO_GEN_ALNUM:32}}'
+    - name: SUPABASE_SECRET_KEY
+      value: 'sb_secret_{{KUBERO_GEN_ALNUM:40}}'
     - name: VERIFY_JWT
       value: 'false'
     - name: SUPABASE_URL
