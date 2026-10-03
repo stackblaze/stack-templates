@@ -926,7 +926,7 @@ spec:
       # stackblaze/supabase fork: self-hosted sign-in page and Edge Function
       # deploy/delete from the UI (upstream gates both behind IS_PLATFORM).
       repository: ghcr.io/stackblaze/supabase-studio
-      tag: sha-e2528cc
+      tag: sha-27dec72
       containerPort: '3000'
       # Studio 500s on the Edge Functions page unless its management folders
       # exist; the image does not ship them.
@@ -996,6 +996,19 @@ spec:
       value: supabase
     - name: DASHBOARD_PASSWORD
       value: '{{KUBERO_GEN_ALNUM:24}}'
+    # Database > Backups in Studio shows the platform's backups of this
+    # database. The platform mints an app-scoped token at deploy (it may only
+    # call this environment's backup routes) and fills in where the app lives.
+    - name: KUBERO_API_URL
+      value: '{{KUBERO_API_URL}}'
+    - name: KUBERO_APP_TOKEN
+      value: '{{KUBERO_APP_TOKEN:backups}}'
+    - name: KUBERO_PIPELINE
+      value: '{{KUBERO_PIPELINE}}'
+    - name: KUBERO_PHASE
+      value: '{{KUBERO_PHASE}}'
+    - name: KUBERO_DB_INSTANCE
+      value: '{{KUBERO_APP_NAME}}-postgresql'
     healthcheck:
       enabled: true
       path: /
