@@ -937,7 +937,7 @@ spec:
       # stackblaze/supabase fork: self-hosted sign-in page and Edge Function
       # deploy/delete from the UI (upstream gates both behind IS_PLATFORM).
       repository: ghcr.io/stackblaze/supabase-studio
-      tag: sha-4e35967
+      tag: sha-64e7839
       containerPort: '3000'
       # Studio 500s on the Edge Functions page unless its management folders
       # exist; the image does not ship them.
