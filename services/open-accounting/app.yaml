@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: "Keep a double-entry ledger, invoices, bills, and reports for a small business.\nOpenBooks on Postgres. This is the bookkeeping app, separate from the OpenBooks Financial ERP template."
     kubero.dev/template.icon: https://github.com/stackblaze-adam.png
-    kubero.dev/template.installation: "Pulls the prebuilt ghcr.io/stackblaze-adam/open-accounting image (published from main by GitHub Actions), so deploys take seconds instead of a full build. Postgres is created with the app. Sign in with OWNER_EMAIL and the generated OWNER_PASSWORD from the app environment. Plaid, Stripe, and AI stay off until those keys are added. File uploads persist on the data volume."
+    kubero.dev/template.installation: "Pulls the prebuilt ghcr.io/stackblaze/clover-books image (published from main by GitHub Actions), so deploys take seconds instead of a full build. Postgres is created with the app. Sign in with OWNER_EMAIL and the generated OWNER_PASSWORD from the app environment. Plaid, Stripe, and AI stay off until those keys are added. File uploads persist on the data volume."
     kubero.dev/template.links: '["https://github.com/stackblaze-adam/open-accounting"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/stackblaze-adam/open-accounting
@@ -106,7 +106,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: ghcr.io/stackblaze-adam/open-accounting
+    repository: ghcr.io/stackblaze/clover-books
     tag: latest
     run:
       securityContext:
