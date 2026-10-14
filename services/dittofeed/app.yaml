@@ -123,7 +123,7 @@ spec:
             spec:
               containers:
               - name: temporal
-                image: registry.stackblaze.cloud/temporalio/auto-setup:1.22.4
+                image: docker.io/temporalio/auto-setup:1.22.4
                 imagePullPolicy: Always
                 ports:
                 - name: grpc
@@ -257,7 +257,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/dittofeed/dittofeed-lite
+    repository: docker.io/dittofeed/dittofeed-lite
     tag: v0.23.0
     run:
       securityContext:

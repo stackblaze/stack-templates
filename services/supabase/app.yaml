@@ -266,9 +266,9 @@ spec:
         metadata:
           name: '{{KUBERO_APP_NAME}}-rustfs'
           annotations:
-            operator.rustfs.com/runtime-default-image-ack: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
+            operator.rustfs.com/runtime-default-image-ack: docker.io/rustfs/rustfs:1.0.0-beta.10
         spec:
-          image: registry.stackblaze.cloud/rustfs/rustfs:1.0.0-beta.10
+          image: docker.io/rustfs/rustfs:1.0.0-beta.10
           credsSecret:
             name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
           pools:

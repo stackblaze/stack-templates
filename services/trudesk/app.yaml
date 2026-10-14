@@ -93,7 +93,7 @@ spec:
   image:
     containerPort: '8118'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/polonel/trudesk
+    repository: docker.io/polonel/trudesk
     tag: '1'
     run:
       securityContext:

@@ -63,7 +63,7 @@ spec:
   image:
     containerPort: '5000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/libretranslate/libretranslate
+    repository: docker.io/libretranslate/libretranslate
     tag: latest
     run:
       securityContext:

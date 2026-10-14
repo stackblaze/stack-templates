@@ -52,7 +52,7 @@ spec:
   image:
     containerPort: '8000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/chibisafe/chibisafe
+    repository: docker.io/chibisafe/chibisafe
     run:
       securityContext:
         readOnlyRootFilesystem: false

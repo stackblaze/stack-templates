@@ -99,7 +99,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/library/matomo
+    repository: docker.io/library/matomo
     tag: latest
     run:
       securityContext:

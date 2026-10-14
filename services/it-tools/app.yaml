@@ -22,7 +22,7 @@ spec:
   extraVolumes: []
   image:
     containerPort: '80'
-    repository: registry.stackblaze.cloud/corentinth/it-tools
+    repository: docker.io/corentinth/it-tools
     tag: latest
     run:
       securityContext:

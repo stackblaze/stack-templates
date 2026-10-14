@@ -100,7 +100,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/adamzammit/limesurvey
+    repository: docker.io/adamzammit/limesurvey
     tag: latest
     run:
       securityContext:

@@ -99,7 +99,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/alextselegidis/easyappointments
+    repository: docker.io/alextselegidis/easyappointments
     tag: latest
     command:
     - sh

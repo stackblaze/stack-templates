@@ -172,7 +172,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/bitnamilegacy/discourse
+    repository: docker.io/bitnamilegacy/discourse
     tag: 3-debian-12
     run:
       securityContext:

@@ -141,7 +141,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/rajnandan1/kener
+    repository: docker.io/rajnandan1/kener
     tag: latest
     run:
       securityContext:

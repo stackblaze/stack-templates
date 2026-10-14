@@ -132,7 +132,7 @@ spec:
     storageClass: shared
   image:
     containerPort: '3000'
-    repository: registry.stackblaze.cloud/gitea/gitea
+    repository: docker.io/gitea/gitea
     run:
       securityContext:
         readOnlyRootFilesystem: false

@@ -93,7 +93,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/kanboard/kanboard
+    repository: docker.io/kanboard/kanboard
     tag: latest
     run:
       securityContext:

@@ -106,7 +106,7 @@ spec:
   image:
     containerPort: '3456'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/vikunja/vikunja
+    repository: docker.io/vikunja/vikunja
     tag: latest
     run:
       securityContext:

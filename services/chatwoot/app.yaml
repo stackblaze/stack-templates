@@ -164,7 +164,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/chatwoot/chatwoot
+    repository: docker.io/chatwoot/chatwoot
     tag: latest
     command:
     - sh

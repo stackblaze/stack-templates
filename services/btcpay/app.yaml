@@ -142,7 +142,7 @@ spec:
   image:
     containerPort: '49392'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/btcpayserver/btcpayserver
+    repository: docker.io/btcpayserver/btcpayserver
     tag: 2.3.9
     run:
       securityContext:

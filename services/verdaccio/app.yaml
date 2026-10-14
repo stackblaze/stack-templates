@@ -61,7 +61,7 @@ spec:
   image:
     containerPort: '4873'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/verdaccio/verdaccio
+    repository: docker.io/verdaccio/verdaccio
     tag: latest
     run:
       securityContext:

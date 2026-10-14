@@ -153,7 +153,7 @@ spec:
   image:
     containerPort: '5000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/redash/redash
+    repository: docker.io/redash/redash
     tag: 10.1.0.b50633
     command:
     - /bin/sh

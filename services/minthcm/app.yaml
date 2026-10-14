@@ -146,7 +146,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/minthcm/minthcm
+    repository: docker.io/minthcm/minthcm
     tag: latest
     command:
     - bash

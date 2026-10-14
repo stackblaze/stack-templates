@@ -117,7 +117,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/baptistearno/typebot-builder
+    repository: docker.io/baptistearno/typebot-builder
     tag: latest
     run:
       securityContext:

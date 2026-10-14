@@ -103,7 +103,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/jitsi/web
+    repository: docker.io/jitsi/web
     tag: stable
     run:
       securityContext:

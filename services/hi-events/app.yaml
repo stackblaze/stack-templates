@@ -217,7 +217,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/daveearley/hi.events-all-in-one
+    repository: docker.io/daveearley/hi.events-all-in-one
     tag: latest
     run:
       securityContext:

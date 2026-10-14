@@ -39,7 +39,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/zefhemel/silverbullet
+    repository: docker.io/zefhemel/silverbullet
     tag: latest
     run:
       securityContext:

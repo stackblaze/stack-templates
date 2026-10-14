@@ -64,7 +64,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/localai/localai
+    repository: docker.io/localai/localai
     tag: latest-cpu
     run:
       securityContext:

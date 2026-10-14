@@ -86,7 +86,7 @@ spec:
   extraVolumes: []
   image:
     containerPort: '8080'
-    repository: registry.stackblaze.cloud/nocodb/nocodb
+    repository: docker.io/nocodb/nocodb
     run:
       securityContext:
         readOnlyRootFilesystem: false
