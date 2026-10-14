@@ -160,7 +160,7 @@ spec:
   image:
     containerPort: '8088'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/apache/superset
+    repository: docker.io/apache/superset
     run:
       securityContext:
         runAsNonRoot: false

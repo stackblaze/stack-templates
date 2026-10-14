@@ -167,7 +167,7 @@ spec:
   image:
     containerPort: '9091'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/authelia/authelia
+    repository: docker.io/authelia/authelia
     tag: '4.39'
     command:
     - sh

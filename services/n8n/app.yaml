@@ -292,7 +292,7 @@ spec:
             spec:
               containers:
               - name: searxng
-                image: registry.stackblaze.cloud/searxng/searxng:latest
+                image: docker.io/searxng/searxng:latest
                 imagePullPolicy: Always
                 ports:
                 - name: http
@@ -481,8 +481,9 @@ spec:
     # 2026-09-15 18:20 UTC: pulled directly from docker.n8n.io for now.
     # registry.stackblaze.cloud (zot on leaseweb-sfo) answers 503: its only
     # pod is stuck Terminating on hosthatch-sfo-vm1, the Service has no
-    # endpoints, and the 2Ti local-path volume cannot move. Switch back to
-    # registry.stackblaze.cloud/n8nio/n8n once that registry is healthy.
+    # endpoints, and the 2Ti local-path volume cannot move. That registry is
+    # retired; Docker Hub images now use docker.io/ and pull through the
+    # regional zot mirror (registry.<region>/v2/docker).
     repository: docker.n8n.io/n8nio/n8n
     tag: '2.38.7'
     command:

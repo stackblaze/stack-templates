@@ -93,7 +93,7 @@ spec:
     storageClass: shared
   image:
     containerPort: '8080'
-    repository: registry.stackblaze.cloud/viktorstrate/photoview
+    repository: docker.io/viktorstrate/photoview
     tag: '2'
     run:
       securityContext:

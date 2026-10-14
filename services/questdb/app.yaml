@@ -59,7 +59,7 @@ spec:
   image:
     containerPort: '9000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/questdb/questdb
+    repository: docker.io/questdb/questdb
     tag: latest
     run:
       securityContext:

@@ -37,7 +37,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/vectorim/element-web
+    repository: docker.io/vectorim/element-web
     tag: latest
     run:
       securityContext:

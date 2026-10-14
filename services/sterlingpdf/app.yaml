@@ -36,7 +36,7 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/stirlingtools/stirling-pdf
+    repository: docker.io/stirlingtools/stirling-pdf
     tag: latest
     run:
       securityContext:

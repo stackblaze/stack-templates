@@ -191,7 +191,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/getlago/api
+    repository: docker.io/getlago/api
     tag: v1.48.1
     run:
       securityContext:

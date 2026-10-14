@@ -132,7 +132,7 @@ spec:
   image:
     containerPort: '8484'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/gristlabs/grist-oss
+    repository: docker.io/gristlabs/grist-oss
     tag: stable
     run:
       securityContext:

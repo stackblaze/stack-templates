@@ -47,7 +47,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/filebrowser/filebrowser
+    repository: docker.io/filebrowser/filebrowser
     run:
       securityContext:
         readOnlyRootFilesystem: false

@@ -91,7 +91,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/pepperlabs/peppermint
+    repository: docker.io/pepperlabs/peppermint
     tag: latest
     run:
       securityContext:

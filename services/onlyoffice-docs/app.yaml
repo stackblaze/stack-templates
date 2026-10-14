@@ -193,7 +193,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/onlyoffice/documentserver
+    repository: docker.io/onlyoffice/documentserver
     tag: latest
     run:
       securityContext:

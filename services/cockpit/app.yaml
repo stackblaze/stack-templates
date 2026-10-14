@@ -51,7 +51,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/cockpithq/cockpit
+    repository: docker.io/cockpithq/cockpit
     tag: core-latest
     run:
       securityContext:

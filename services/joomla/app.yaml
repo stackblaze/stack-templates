@@ -91,7 +91,7 @@ spec:
     value: admin@example.com
   image:
     containerPort: '80'
-    repository: registry.stackblaze.cloud/library/joomla
+    repository: docker.io/library/joomla
     tag: latest
     run:
       securityContext:

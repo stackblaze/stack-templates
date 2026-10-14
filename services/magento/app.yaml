@@ -163,7 +163,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/shinsenter/magento
+    repository: docker.io/shinsenter/magento
     tag: php8.3-nginx
     command:
     - bash

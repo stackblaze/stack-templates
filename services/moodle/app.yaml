@@ -137,7 +137,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/elestio/moodle
+    repository: docker.io/elestio/moodle
     tag: latest
     run:
       securityContext:

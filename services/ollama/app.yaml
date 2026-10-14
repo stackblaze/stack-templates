@@ -61,7 +61,7 @@ spec:
   image:
     containerPort: '11434'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/ollama/ollama
+    repository: docker.io/ollama/ollama
     tag: latest
     run:
       securityContext:

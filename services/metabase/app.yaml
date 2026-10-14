@@ -101,7 +101,7 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/metabase/metabase
+    repository: docker.io/metabase/metabase
     tag: latest
     run:
       securityContext:

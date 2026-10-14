@@ -93,7 +93,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/freshrss/freshrss
+    repository: docker.io/freshrss/freshrss
     tag: latest
     run:
       securityContext:

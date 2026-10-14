@@ -113,7 +113,7 @@ spec:
   image:
     containerPort: '17170'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/lldap/lldap
+    repository: docker.io/lldap/lldap
     tag: stable
     run:
       securityContext:

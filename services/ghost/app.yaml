@@ -90,7 +90,7 @@ spec:
     storageClass: shared
   image:
     containerPort: '2368'
-    repository: registry.stackblaze.cloud/library/ghost
+    repository: docker.io/library/ghost
     tag: latest
     run:
       securityContext:

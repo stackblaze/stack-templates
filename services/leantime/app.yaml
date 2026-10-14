@@ -76,7 +76,7 @@ spec:
   extraVolumes: []
   image:
     containerPort: '8080'
-    repository: registry.stackblaze.cloud/leantime/leantime
+    repository: docker.io/leantime/leantime
     tag: latest
     run:
       securityContext:

@@ -97,7 +97,7 @@ spec:
   image:
     containerPort: '80'
     pullPolicy: Always
-    repository: registry.stackblaze.cloud/glpi/glpi
+    repository: docker.io/glpi/glpi
     tag: latest
     run:
       securityContext:
