@@ -478,13 +478,15 @@ spec:
     # first-boot restart). Bump deliberately; 2.39+ needs a fixed
     # N8N_ENCRYPTION_KEY first. Pulled through the shared registry like the
     # other pinned templates (mattermost, twenty).
-    # 2026-09-15 18:20 UTC: pulled directly from docker.n8n.io for now.
-    # registry.stackblaze.cloud (zot on leaseweb-sfo) answers 503: its only
-    # pod is stuck Terminating on hosthatch-sfo-vm1, the Service has no
-    # endpoints, and the 2Ti local-path volume cannot move. That registry is
-    # retired; Docker Hub images now use docker.io/ and pull through the
-    # regional zot mirror (registry.<region>/v2/docker).
-    repository: docker.n8n.io/n8nio/n8n
+    # Referenced as docker.io on purpose: zone nodes mirror docker.io through
+    # the REGIONAL registry (containerd hosts.d -> registry.<region>/v2/docker,
+    # the zot in each services cluster, on-demand sync, Docker Hub fallback),
+    # so each region serves this from its own cache. Not docker.n8n.io (never
+    # mirrored; used 2026-09-15..10-16 as a stopgap) and not
+    # registry.stackblaze.cloud (the old sfo zot, 503 since 2026-09-14 and
+    # retired by #131). The worker image in templateServices below must keep
+    # the same repository and tag (#132).
+    repository: docker.io/n8nio/n8n
     tag: '2.38.7'
     command:
     - /bin/sh
@@ -513,7 +515,8 @@ spec:
     serviceType: worker
     exposeInternet: false
     image:
-      repository: docker.n8n.io/n8nio/n8n
+      # Same pin and regional-mirror path as spec.image above (#132).
+      repository: docker.io/n8nio/n8n
       tag: '2.38.7'
       containerPort: '5678'
       command:
