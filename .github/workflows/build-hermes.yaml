@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64]
     steps:
       - uses: actions/checkout@v4
 
@@ -28,6 +28,11 @@ jobs:
         with:
           go-version: '1.22'
 
+      # yarn (classic) is preinstalled on GitHub-hosted images, not on a bare
+      # self-hosted runner; `make web/set-yarn-version` needs it on PATH.
+      - name: Install yarn
+        run: command -v yarn >/dev/null || npm install -g yarn@1.22.22
+
       - name: Build Hermes from upstream
         env:
           HERMES_REF: main
@@ -39,8 +44,12 @@ jobs:
           GOARCH: amd64
         run: |
           set -euo pipefail
-          git clone --depth 1 --branch "${HERMES_REF}" https://github.com/hashicorp-forge/hermes.git /tmp/hermes
-          cd /tmp/hermes
+          # RUNNER_TEMP, not a fixed /tmp path: self-hosted runners persist
+          # between jobs, so a fixed path would collide with the last run.
+          src="${RUNNER_TEMP}/hermes"
+          rm -rf "$src"
+          git clone --depth 1 --branch "${HERMES_REF}" https://github.com/hashicorp-forge/hermes.git "$src"
+          cd "$src"
           make web/set-yarn-version
           # main embeds hermes-plugin/dist; build/linux runs web + plugin builds first.
           make build/linux
