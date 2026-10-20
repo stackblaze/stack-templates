@@ -10,11 +10,12 @@ metadata:
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dittofeed/icon.png
     kubero.dev/template.installation: 'Dittofeed is a multi-service stack. This template
       runs the all-in-one dittofeed/dittofeed-lite image (API + dashboard + worker
-      in one process) on port 3000 in single-tenant mode. It needs two operator add-ons
-      (Postgres + ClickHouse, both provisioned here) AND an external Temporal cluster,
-      which is NOT an available add-on: deploy Temporal separately (image temporalio/auto-setup:1.22.4
-      with its own Postgres, plus optional temporalio/ui:2.22.1) and point TEMPORAL_ADDRESS
-      at it (default temporal:7233). For production scale you may instead run the
+      in one process) on port 3000 in single-tenant mode. It uses two operator add-ons
+      (Postgres + ClickHouse, both provisioned here) and a Temporal companion app
+      (temporalio/auto-setup:1.22.4, wired through TEMPORAL_ADDRESS) that keeps its
+      temporal and temporal_visibility databases on the same Postgres add-on. Temporal
+      creates those databases at first start, which needs CREATEDB: granted on a dedicated
+      cluster, possibly not on shared zones. For production scale you may instead run the
       split images dittofeed/api, dittofeed/dashboard, and dittofeed/worker (worker
       handles the Temporal-driven journey processing) rather than the lite bundle;
       blob storage (any S3/MinIO) is optional. BOOTSTRAP=true auto-creates the default
@@ -70,6 +71,10 @@ spec:
               - GRANT ALL ON SCHEMA public TO dittofeed
               - GRANT CREATE ON SCHEMA public TO dittofeed
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO dittofeed
+              # The Temporal companion creates its own temporal and
+              # temporal_visibility databases as this user.
+              postInitSQL:
+              - ALTER ROLE dittofeed CREATEDB
           enableSuperuserAccess: true
           superuserSecret:
             name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
@@ -91,69 +96,6 @@ spec:
         stringData:
           username: dittofeed
           password: dittofeed
-      temporalService:
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: dittofeed-temporal
-        spec:
-          type: ClusterIP
-          selector:
-            app: dittofeed-temporal
-          ports:
-          - name: grpc
-            port: 7233
-            targetPort: 7233
-      temporalDeployment:
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: dittofeed-temporal
-        spec:
-          replicas: 1
-          strategy:
-            type: Recreate
-          selector:
-            matchLabels:
-              app: dittofeed-temporal
-          template:
-            metadata:
-              labels:
-                app: dittofeed-temporal
-            spec:
-              containers:
-              - name: temporal
-                image: docker.io/temporalio/auto-setup:1.22.4
-                imagePullPolicy: Always
-                ports:
-                - name: grpc
-                  containerPort: 7233
-                env:
-                - name: DB
-                  value: postgresql
-                - name: DB_PORT
-                  value: '5432'
-                - name: POSTGRES_SEEDS
-                  value: '{{KUBERO_APP_NAME}}-postgresql'
-                - name: POSTGRES_USER
-                  value: postgres
-                - name: POSTGRES_PWD
-                  value: dittofeed
-                - name: ENABLE_ES
-                  value: 'false'
-                - name: BIND_ON_IP
-                  value: 0.0.0.0
-                - name: TEMPORAL_BROADCAST_ADDRESS
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: status.podIP
-                resources:
-                  requests:
-                    cpu: 100m
-                    memory: 256Mi
-                  limits:
-                    cpu: '1'
-                    memory: 512Mi
   - displayName: ClickHouse
     env: []
     icon: /img/addons/clickhouse.svg
@@ -231,8 +173,10 @@ spec:
     value: dittofeed
   - name: CLICKHOUSE_DATABASE
     value: '$(PGDATABASE)'
+  # The Temporal companion app below (gRPC). Sibling apps of a catalog group
+  # are reached as <nameHint>-<suffix>-kuberoapp on port 80.
   - name: TEMPORAL_ADDRESS
-    value: dittofeed-temporal:7233
+    value: dittofeed-temporal-{{KUBERO_NAME_SUFFIX}}-kuberoapp:80
   - name: DASHBOARD_API_BASE
     value: '{{KUBERO_APP_URL}}'
   extraVolumes: []
@@ -262,3 +206,42 @@ spec:
     run:
       securityContext:
         readOnlyRootFilesystem: false
+  # Temporal (journey/workflow engine) as its own app. It was a Deployment +
+  # Service baked into the Postgres add-on's resourceDefinitions, which the
+  # server refuses (#136). It shares the Postgres add-on (usePrimaryAddons
+  # injects PGHOST/PGPORT/PGUSER/PGPASSWORD; the old one dialled the
+  # superuser with a literal password) and auto-setup creates its databases.
+  # Private web service so the group Service fronts gRPC 7233; Temporal
+  # 1.22 has no HTTP endpoint, so the HTTP health check stays off.
+  # BIND_ON_IP 0.0.0.0 makes the image's entrypoint broadcast the pod IP.
+  templateServices:
+  - id: temporal
+    nameHint: dittofeed-temporal
+    serviceType: web
+    exposeInternet: false
+    usePrimaryAddons: true
+    image:
+      repository: docker.io/temporalio/auto-setup
+      tag: 1.22.4
+      containerPort: '7233'
+    envVars:
+    - name: DB
+      value: postgres12
+    - name: DB_PORT
+      value: '$(PGPORT)'
+    - name: POSTGRES_SEEDS
+      value: '$(PGHOST)'
+    - name: POSTGRES_USER
+      value: '$(PGUSER)'
+    - name: POSTGRES_PWD
+      value: '$(PGPASSWORD)'
+    - name: DBNAME
+      value: temporal
+    - name: VISIBILITY_DBNAME
+      value: temporal_visibility
+    - name: ENABLE_ES
+      value: 'false'
+    - name: BIND_ON_IP
+      value: 0.0.0.0
+    healthcheck:
+      enabled: false
