@@ -8,43 +8,27 @@ metadata:
       feature flags, A/B testing and surveys platform built on PostgreSQL, ClickHouse
       and Kafka.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/posthog/icon.png
-    kubero.dev/template.installation: "PostHog is a LARGE multi-service stack; this template runs\
-      \ the PRIMARY all-in-one image posthog/posthog (the `web` role: Django backend + frontend)\
-      \ on HTTP port 8000. It is NOT fully functional alone - PostHog needs several companion\
-      \ services and S3-compatible object storage, which are not provisioned here, so plan to\
-      \ deploy those alongside it. Kafka is bundled as a Redpanda companion app (KAFKA_HOSTS points\
-      \ at it).\n\nADD-ONS provisioned here: postgres (relational app DB), clickhouse (the OLAP\
-      \ event store - the heart of PostHog analytics, reached at clickhouse-posthog-clickhouse:8123\
-      \ over plain HTTP, so CLICKHOUSE_SECURE=false and CLICKHOUSE_VERIFY=false), and valkey (Redis-compatible\
-      \ cache/broker at rfr-posthog-valkey-readwrite:6379, no password).\n\nNOT provisionable\
-      \ as add-ons - deploy these as separate Kubero apps and update the *_HOSTS/endpoint env\
-      \ vars to point at them:\n  - KAFKA / event bus: bundled as the posthog-kafka companion\
-      \ app (Redpanda in dev-container mode, ephemeral). Copy KAFKA_HOSTS from the web app onto\
-      \ EVERY other PostHog container you add.\n  - OBJECT STORAGE (session recordings, exports,\
-      \ uploads): PostHog requires S3-compatible storage. Deploy the platform's RustFS/S3 add-on\
-      \ or `minio/minio`, then set OBJECT_STORAGE_ENABLED=true, OBJECT_STORAGE_ENDPOINT, OBJECT_STORAGE_ACCESS_KEY_ID,\
-      \ OBJECT_STORAGE_SECRET_ACCESS_KEY, OBJECT_STORAGE_BUCKET.\n  - TEMPORAL (batch exports\
-      \ / scheduled jobs): image `temporalio/auto-setup` on gRPC 7233; only needed if you use\
-      \ batch exports.\n\nCOMPANION POSTHOG CONTAINERS (same posthog/posthog image, different\
-      \ command - deploy each as its own Kubero app sharing the SAME env vars / DATABASE_URL /\
-      \ CLICKHOUSE / KAFKA / REDIS):\n  - WORKER (Celery): command `./bin/docker-worker-celery\
-      \ --with-scheduler` - runs async tasks AND the scheduler; REQUIRED for the app to work.\n\
-      \  - PLUGIN-SERVER / ingestion: command `./bin/plugin-server` - consumes Kafka events into\
-      \ ClickHouse; REQUIRED for any analytics data to appear.\n  - MIGRATE (one-shot, run FIRST):\
-      \ command `python manage.py migrate && python manage.py migrate_clickhouse` to create Postgres\
-      \ + ClickHouse schemas before the web/worker start. The migrate-clickhouse step needs Kafka\
-      \ reachable.\n  - (Optional high-scale, separate Rust images) CAPTURE -> `ghcr.io/posthog/posthog/capture:latest`\
-      \ (event intake on Kafka), FEATURE-FLAGS -> `ghcr.io/posthog/posthog/feature-flags:latest`.\n\
-      \nROTATE before production: SECRET_KEY and ENCRYPTION_SALT_KEYS (both set here to placeholder\
-      \ `replace-with-openssl-rand-hex-32` values - generate real ones with `openssl rand -hex\
-      \ 32`; ENCRYPTION_SALT_KEYS must be a 32-byte base64/urlsafe key and CANNOT change after\
-      \ first boot or stored secrets break), plus the postgres and clickhouse add-on passwords\
-      \ (default `posthog`).\n\nFIRST-RUN: run the MIGRATE job, then start web + worker + plugin-server;\
-      \ open {{KUBERO_APP_URL}} and complete the on-screen setup wizard to create the first organization\
-      \ and admin user. SITE_URL is preset to your public URL and IS_BEHIND_PROXY=true / DISABLE_SECURE_SSL_REDIRECT=true\
-      \ are set because TLS is terminated at the Kubero ingress. NOTE: PostHog deprecated its\
-      \ official Helm chart - self-hosting is officially Docker-Compose-based and unsupported\
-      \ for high scale; PostHog Cloud is the recommended path for large workloads."
+    kubero.dev/template.installation: |-
+      PostHog is a LARGE multi-service stack. This template deploys it as a group of apps:
+
+        - posthog (this app, image ghcr.io/posthog/posthog, HTTP port 8000): the Django backend + frontend. On every start it runs `./bin/migrate` (Postgres and ClickHouse schemas) before it serves, so there is no separate migrate job.
+        - posthog-worker: the same image running `./bin/docker-worker-celery --with-scheduler` (Celery async tasks and the scheduler). REQUIRED for the app to work.
+        - posthog-ingestion: the Node.js image ghcr.io/posthog/posthog-node with PLUGIN_SERVER_MODE=ingestion-v2-combined. It consumes events from Kafka and writes them to ClickHouse; REQUIRED for any analytics data to appear.
+        - posthog-plugins: the same Node.js image in its default mode (CDP destinations, webhooks, workflows, realtime cohorts, error tracking). Private web service on port 6738; the web app reaches it through CDP_API_URL.
+        - posthog-kafka: Redpanda (Kafka API) in dev-container mode, ephemeral. KAFKA_HOSTS points at it.
+
+      The worker and the Node.js apps inherit this app's env and add-ons, so they share the database, ClickHouse, Kafka and Valkey settings and the generated SECRET_KEY and ENCRYPTION_SALT_KEYS.
+
+      ADD-ONS provisioned here: postgres (relational app DB), clickhouse (the OLAP event store, reached at clickhouse-posthog-clickhouse:8123 over plain HTTP, so CLICKHOUSE_SECURE=false and CLICKHOUSE_VERIFY=false), and valkey (Redis-compatible cache/broker, no password).
+
+      NOT provisioned - deploy these yourself if you need them:
+        - OBJECT STORAGE (session recordings, exports, uploads): PostHog requires S3-compatible storage for these. Deploy the platform's RustFS/S3 add-on or `minio/minio`, then set OBJECT_STORAGE_ENABLED=true, OBJECT_STORAGE_ENDPOINT, OBJECT_STORAGE_ACCESS_KEY_ID, OBJECT_STORAGE_SECRET_ACCESS_KEY and OBJECT_STORAGE_BUCKET on the web, worker and Node.js apps.
+        - TEMPORAL (batch exports / scheduled jobs): image `temporalio/auto-setup` on gRPC 7233; only needed if you use batch exports.
+        - (Optional high-scale, separate Rust images) CAPTURE -> `ghcr.io/posthog/posthog/capture`, FEATURE-FLAGS -> `ghcr.io/posthog/posthog/feature-flags`.
+
+      SECRET_KEY and ENCRYPTION_SALT_KEYS are generated at deploy. ENCRYPTION_SALT_KEYS CANNOT change after first boot or stored secrets break.
+
+      FIRST-RUN: the first start runs the migrations, which can take several minutes. Then open {{KUBERO_APP_URL}} and complete the on-screen setup wizard to create the first organization and admin user. SITE_URL is preset to your public URL and IS_BEHIND_PROXY=true / DISABLE_SECURE_SSL_REDIRECT=true are set because TLS is terminated at the Kubero ingress. NOTE: PostHog deprecated its official Helm chart - self-hosting is officially Docker-Compose-based and unsupported for high scale; PostHog Cloud is the recommended path for large workloads.
     kubero.dev/template.links: '["https://posthog.com/docs/self-host", "https://posthog.com/docs/self-host/configure/environment-variables"]'
     kubero.dev/template.screenshots: '["https://posthog.com/images/og/default.png"]'
     kubero.dev/template.source: https://github.com/PostHog/posthog
@@ -273,10 +257,13 @@ spec:
     value: kafka://posthog-kafka-{{KUBERO_NAME_SUFFIX}}-kuberoapp:80
   - name: SITE_URL
     value: '{{KUBERO_APP_URL}}'
+  # Generated at deploy. The worker and Node.js companions inherit this env,
+  # so every app of the group gets the same values. ENCRYPTION_SALT_KEYS must
+  # be 32 characters and must not change after the first boot.
   - name: SECRET_KEY
-    value: replace-with-openssl-rand-hex-32
+    value: '{{KUBERO_GEN_ALNUM:64}}'
   - name: ENCRYPTION_SALT_KEYS
-    value: replace-with-openssl-rand-hex-32
+    value: '{{KUBERO_GEN_ALNUM:32}}'
   - name: DISABLE_SECURE_SSL_REDIRECT
     value: 'true'
   - name: IS_BEHIND_PROXY
@@ -295,6 +282,10 @@ spec:
     value: 'true'
   - name: OBJECT_STORAGE_ENABLED
     value: 'false'
+  # The posthog-plugins companion below (Node.js CDP API, port 6738 behind
+  # the group Service on 80).
+  - name: CDP_API_URL
+    value: http://posthog-plugins-{{KUBERO_NAME_SUFFIX}}-kuberoapp:80
   extraVolumes: []
   cronjobs: []
   resources:
@@ -321,6 +312,14 @@ spec:
     # PostHog publishes no release tags, only one per master commit; this is
     # the commit `latest` pointed at on 2026-10-20.
     tag: 48912b83f12851f5ca9188750b6ade3b97f93616
+    # The image's default command (./bin/docker) also starts the Celery
+    # worker and scheduler, which now run in the posthog-worker companion.
+    # Run the migrations, then only the web server (as PostHog's own hobby
+    # deployment does). The image ships bash.
+    command:
+    - bash
+    - -c
+    - ./bin/migrate && exec ./bin/docker-server
     run:
       securityContext:
         readOnlyRootFilesystem: false
@@ -360,3 +359,76 @@ spec:
       - redpanda.auto_create_topics_enabled=true
     healthcheck:
       enabled: false
+  # Celery worker + scheduler (one scheduler per install: do not scale this
+  # app above one replica). Same image and pin as the web app; it inherits
+  # the web app's env, add-ons and generated secrets.
+  - id: worker
+    nameHint: posthog-worker
+    serviceType: worker
+    exposeInternet: false
+    image:
+      repository: ghcr.io/posthog/posthog
+      tag: 48912b83f12851f5ca9188750b6ade3b97f93616
+      containerPort: '8000'
+      command:
+      - ./bin/docker-worker-celery
+      - --with-scheduler
+    inheritEnvFrom: primary
+    healthcheck:
+      enabled: false
+  # Event ingestion (the Node.js plugin server in ingestion mode): consumes
+  # Kafka and writes events and persons to ClickHouse and Postgres. The
+  # Node.js services ship in their own image, published only for commits
+  # that change them; this is the newest one at or before the web pin.
+  - id: ingestion
+    nameHint: posthog-ingestion
+    serviceType: worker
+    exposeInternet: false
+    image:
+      repository: ghcr.io/posthog/posthog-node
+      tag: 5e2fecf7e9e8e1c8ce0767809d109fd2b9314bba
+      containerPort: '6738'
+    inheritEnvFrom: primary
+    envVars:
+    - name: PLUGIN_SERVER_MODE
+      value: ingestion-v2-combined
+    - name: PERSONS_DATABASE_URL
+      value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+    - name: BEHAVIORAL_COHORTS_DATABASE_URL
+      value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+    - name: COOKIELESS_REDIS_HOST
+      value: '$(REDISHOST)'
+    - name: COOKIELESS_REDIS_PORT
+      value: '$(REDISPORT)'
+    - name: CDP_REDIS_HOST
+      value: '$(REDISHOST)'
+    - name: CDP_REDIS_PORT
+      value: '$(REDISPORT)'
+    healthcheck:
+      enabled: false
+  # The Node.js plugin server in its default mode (CDP destinations,
+  # webhooks, workflows, realtime cohorts, error tracking). Private web
+  # service: the web app calls its API through CDP_API_URL.
+  - id: plugins
+    nameHint: posthog-plugins
+    serviceType: web
+    exposeInternet: false
+    image:
+      repository: ghcr.io/posthog/posthog-node
+      tag: 5e2fecf7e9e8e1c8ce0767809d109fd2b9314bba
+      containerPort: '6738'
+    inheritEnvFrom: primary
+    envVars:
+    - name: PERSONS_DATABASE_URL
+      value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+    - name: BEHAVIORAL_COHORTS_DATABASE_URL
+      value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+    - name: CDP_REDIS_HOST
+      value: '$(REDISHOST)'
+    - name: CDP_REDIS_PORT
+      value: '$(REDISPORT)'
+    healthcheck:
+      enabled: true
+      path: /_health
+      timeoutSeconds: 5
+      periodSeconds: 10
