@@ -156,7 +156,7 @@
    "source": "https://github.com/n8n-io/n8n",
    "icon": "https://avatars.githubusercontent.com/u/45487711?s=200&v=4",
    "website": "https://n8n.io",
-   "installation": "Queue mode with Postgres, Valkey, and a worker. With Load demo data enabled, first boot creates owner demo@stackblaze.local / changeme and three sample workflows. Without it, complete the one-time owner setup at your app URL, then sign in. AI Assistant uses a bundled n8n sandbox and SearXNG for web search; add an Anthropic, OpenAI, or OpenRouter key in n8n AI settings or set N8N_INSTANCE_AI_MODEL_API_KEY. Optional: set INSTANCE_AI_BRAVE_SEARCH_API_KEY to prefer Brave over SearXNG.",
+   "installation": "Queue mode with Postgres, Valkey, and a worker. With Load demo data enabled, first boot creates owner demo@stackblaze.local / changeme and three sample workflows. Without it, complete the one-time owner setup at your app URL, then sign in. AI Assistant searches the web through a bundled SearXNG companion app (the n8n code sandbox is not included: it needs privileged containers); add an Anthropic, OpenAI, or OpenRouter key in n8n AI settings or set N8N_INSTANCE_AI_MODEL_API_KEY. Optional: set INSTANCE_AI_BRAVE_SEARCH_API_KEY to prefer Brave over SearXNG.",
    "architecture": [],
    "categories": [
     "work",
@@ -11952,9 +11952,7 @@
     "https://unomi.apache.org/manual/latest/index.html",
     "https://github.com/apache/unomi/tree/master/docker"
    ],
-   "addons": [
-    "Valkey"
-   ],
+   "addons": [],
    "stars": 600,
    "forks": 60,
    "watchers": 600,

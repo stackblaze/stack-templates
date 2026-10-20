@@ -10,8 +10,9 @@ metadata:
       complete the one-time owner setup at your app URL, then sign in. Queue mode
       uses Valkey as the job queue and a companion worker for executions. N8N_ENCRYPTION_KEY
       is generated at deploy and shared with the worker — do not change it on only
-      one of the apps. AI Assistant uses a bundled n8n sandbox and SearXNG for web
-      search. Add an Anthropic, OpenAI, or OpenRouter key in n8n AI settings or set
+      one of the apps. AI Assistant searches the web through a bundled SearXNG
+      companion app; code execution in the n8n sandbox is not included (it needs
+      privileged containers, which the platform does not allow). Add an Anthropic, OpenAI, or OpenRouter key in n8n AI settings or set
       N8N_INSTANCE_AI_MODEL_API_KEY. Optionally set INSTANCE_AI_BRAVE_SEARCH_API_KEY
       to prefer Brave over SearXNG. If you are sent back to /setup, delete the app
       and its PostgreSQL addon together, redeploy, and verify POST /rest/login returns
@@ -82,264 +83,6 @@ spec:
         stringData:
           username: n8n
           password: '123456'
-      sandboxDeployment:
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: '{{KUBERO_APP_NAME}}-sandbox'
-        spec:
-          replicas: 1
-          strategy:
-            type: Recreate
-          selector:
-            matchLabels:
-              app: '{{KUBERO_APP_NAME}}-sandbox'
-          template:
-            metadata:
-              labels:
-                app: '{{KUBERO_APP_NAME}}-sandbox'
-            spec:
-              hostAliases:
-              - ip: 127.0.0.1
-                hostnames:
-                - '{{KUBERO_APP_NAME}}-sandbox-api'
-                - '{{KUBERO_APP_NAME}}-sandbox-runner-1'
-              initContainers:
-              - name: certs
-                image: ghcr.io/n8n-io/n8n-sandbox-service-api:latest
-                imagePullPolicy: Always
-                securityContext:
-                  runAsUser: 0
-                  runAsGroup: 0
-                command:
-                - sh
-                - -c
-                - bootstrap-mtls.sh --out-dir /tls --api-san {{KUBERO_APP_NAME}}-sandbox-api
-                  --control-san-prefix {{KUBERO_APP_NAME}}-sandbox-runner --runners
-                  1 --world-readable && chown -R sandbox-api:sandbox-api /tls/api
-                env:
-                - name: NUM_RUNNERS
-                  value: '1'
-                volumeMounts:
-                - name: tls
-                  mountPath: /tls
-              containers:
-              - name: api
-                image: ghcr.io/n8n-io/n8n-sandbox-service-api:latest
-                imagePullPolicy: Always
-                ports:
-                - name: http
-                  containerPort: 8080
-                - name: grpc
-                  containerPort: 9090
-                env:
-                - name: SANDBOX_API_KEYS
-                  value: changeme-n8n-sandbox-key
-                - name: SANDBOX_API_RUNNER_REGISTRATION_TOKEN
-                  value: changeme-n8n-sandbox-reg
-                - name: SANDBOX_API_RUNNER_API_KEY
-                  value: changeme-n8n-sandbox-runner
-                - name: SANDBOX_API_GRPC_TLS_CERT_FILE
-                  value: /tls/api/grpc-server.crt
-                - name: SANDBOX_API_GRPC_TLS_KEY_FILE
-                  value: /tls/api/grpc-server.key
-                - name: SANDBOX_API_GRPC_TLS_CLIENT_CA_FILE
-                  value: /tls/api/ca.crt
-                - name: SANDBOX_API_RUNNER_CONTROL_GRPC_TLS_CA_FILE
-                  value: /tls/api/ca.crt
-                - name: SANDBOX_API_RUNNER_CONTROL_GRPC_TLS_CERT_FILE
-                  value: /tls/api/control-grpc-api-client.crt
-                - name: SANDBOX_API_RUNNER_CONTROL_GRPC_TLS_KEY_FILE
-                  value: /tls/api/control-grpc-api-client.key
-                - name: SANDBOX_API_RUNNER_CONTROL_GRPC_TLS_SERVER_NAME
-                  value: '{{KUBERO_APP_NAME}}-sandbox-runner-1'
-                volumeMounts:
-                - name: tls
-                  mountPath: /tls
-                  readOnly: true
-                readinessProbe:
-                  httpGet:
-                    path: /healthz
-                    port: 8080
-                  initialDelaySeconds: 5
-                  periodSeconds: 5
-                  failureThreshold: 12
-                resources:
-                  requests:
-                    cpu: 50m
-                    memory: 128Mi
-                  limits:
-                    cpu: 500m
-                    memory: 512Mi
-              - name: runner
-                image: ghcr.io/n8n-io/n8n-sandbox-service-runner-dind:latest
-                imagePullPolicy: Always
-                securityContext:
-                  privileged: true
-                  runAsUser: 0
-                ports:
-                - name: http
-                  containerPort: 8081
-                - name: control
-                  containerPort: 9091
-                env:
-                - name: SANDBOX_RUNNER_API_KEYS
-                  value: changeme-n8n-sandbox-runner
-                - name: SANDBOX_RUNNER_REGISTRATION_TOKEN
-                  value: changeme-n8n-sandbox-reg
-                - name: SANDBOX_RUNNER_API_GRPC_ADDR
-                  value: '{{KUBERO_APP_NAME}}-sandbox-api:9090'
-                - name: SANDBOX_RUNNER_LISTEN_ADDR
-                  value: ':8081'
-                - name: SANDBOX_RUNNER_HTTP_BASE_URL
-                  value: http://{{KUBERO_APP_NAME}}-sandbox-runner-1:8081
-                - name: SANDBOX_RUNNER_CONTROL_GRPC_LISTEN_ADDR
-                  value: ':9091'
-                - name: SANDBOX_RUNNER_CONTROL_GRPC_ADVERTISE_ADDR
-                  value: '{{KUBERO_APP_NAME}}-sandbox-runner-1:9091'
-                - name: SANDBOX_RUNNER_ID
-                  value: runner-1
-                - name: SANDBOX_RUNNER_DOCKER_SANDBOX_IMAGE
-                  value: ghcr.io/n8n-io/n8n-sandbox-service-sandbox:latest
-                - name: SANDBOX_RUNNER_REGISTRATION_GRPC_CA_FILE
-                  value: /tls/runner/ca.crt
-                - name: SANDBOX_RUNNER_REGISTRATION_GRPC_CERT_FILE
-                  value: /tls/runner/grpc-client.crt
-                - name: SANDBOX_RUNNER_REGISTRATION_GRPC_KEY_FILE
-                  value: /tls/runner/grpc-client.key
-                - name: SANDBOX_RUNNER_REGISTRATION_GRPC_SERVER_NAME
-                  value: '{{KUBERO_APP_NAME}}-sandbox-api'
-                - name: SANDBOX_RUNNER_CONTROL_GRPC_TLS_CERT_FILE
-                  value: /tls/runner/control-grpc-server.crt
-                - name: SANDBOX_RUNNER_CONTROL_GRPC_TLS_KEY_FILE
-                  value: /tls/runner/control-grpc-server.key
-                - name: SANDBOX_RUNNER_CONTROL_GRPC_TLS_CLIENT_CA_FILE
-                  value: /tls/runner/ca.crt
-                volumeMounts:
-                - name: tls
-                  mountPath: /tls
-                  readOnly: true
-                resources:
-                  requests:
-                    cpu: 250m
-                    memory: 512Mi
-                  limits:
-                    cpu: '2'
-                    memory: 2Gi
-              volumes:
-              - name: tls
-                emptyDir: {}
-      sandboxApiService:
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: '{{KUBERO_APP_NAME}}-sandbox-api'
-        spec:
-          type: ClusterIP
-          selector:
-            app: '{{KUBERO_APP_NAME}}-sandbox'
-          ports:
-          - name: http
-            port: 8080
-            targetPort: 8080
-          - name: grpc
-            port: 9090
-            targetPort: 9090
-      sandboxRunnerService:
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: '{{KUBERO_APP_NAME}}-sandbox-runner-1'
-        spec:
-          type: ClusterIP
-          selector:
-            app: '{{KUBERO_APP_NAME}}-sandbox'
-          ports:
-          - name: http
-            port: 8080
-            targetPort: 8081
-          - name: control
-            port: 9091
-            targetPort: 9091
-      searxngConfig:
-        apiVersion: v1
-        kind: ConfigMap
-        metadata:
-          name: '{{KUBERO_APP_NAME}}-searxng'
-        data:
-          settings.yml: |
-            use_default_settings: true
-            search:
-              formats:
-                - html
-                - json
-      searxngDeployment:
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: '{{KUBERO_APP_NAME}}-searxng'
-        spec:
-          replicas: 1
-          strategy:
-            type: Recreate
-          selector:
-            matchLabels:
-              app: '{{KUBERO_APP_NAME}}-searxng'
-          template:
-            metadata:
-              labels:
-                app: '{{KUBERO_APP_NAME}}-searxng'
-            spec:
-              containers:
-              - name: searxng
-                image: docker.io/searxng/searxng:latest
-                imagePullPolicy: Always
-                ports:
-                - name: http
-                  containerPort: 8080
-                env:
-                - name: SEARXNG_SECRET
-                  value: changeme-n8n-searxng-secret
-                - name: SEARXNG_PORT
-                  value: '8080'
-                - name: SEARXNG_BIND_ADDRESS
-                  value: 0.0.0.0
-                volumeMounts:
-                - name: settings
-                  mountPath: /etc/searxng/settings.yml
-                  subPath: settings.yml
-                  readOnly: true
-                readinessProbe:
-                  httpGet:
-                    path: /
-                    port: 8080
-                  initialDelaySeconds: 10
-                  periodSeconds: 10
-                  failureThreshold: 6
-                resources:
-                  requests:
-                    cpu: 50m
-                    memory: 128Mi
-                  limits:
-                    cpu: 250m
-                    memory: 256Mi
-              volumes:
-              - name: settings
-                configMap:
-                  name: '{{KUBERO_APP_NAME}}-searxng'
-      searxngService:
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: '{{KUBERO_APP_NAME}}-searxng'
-        spec:
-          type: ClusterIP
-          selector:
-            app: '{{KUBERO_APP_NAME}}-searxng'
-          ports:
-          - name: http
-            port: 8080
-            targetPort: 8080
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -454,20 +197,15 @@ spec:
     value: changeme
   - name: N8N_ENABLED_MODULES
     value: instance-ai
+  # The n8n code sandbox (n8n-sandbox-service runner-dind) needs a privileged
+  # Docker-in-Docker container, which the platform does not allow (#136), so
+  # it is not bundled: AI Assistant runs without code execution.
   - name: N8N_INSTANCE_AI_SANDBOX_ENABLED
-    value: 'true'
-  - name: N8N_INSTANCE_AI_SANDBOX_PROVIDER
-    value: n8n-sandbox
-  - name: N8N_SANDBOX_SERVICE_URL
-    value: http://{{KUBERO_APP_NAME}}-sandbox-api:8080
-  - name: N8N_SANDBOX_SERVICE_API_KEY
-    value: changeme-n8n-sandbox-key
-  - name: N8N_INSTANCE_AI_SANDBOX_IMAGE
-    value: ghcr.io/n8n-io/n8n-sandbox-service-sandbox:latest
-  - name: N8N_INSTANCE_AI_SANDBOX_TIMEOUT
-    value: '600000'
+    value: 'false'
+  # Web search through the SearXNG companion below. Sibling apps of a catalog
+  # group are reached as <nameHint>-<suffix>-kuberoapp on port 80.
   - name: N8N_INSTANCE_AI_SEARXNG_URL
-    value: http://{{KUBERO_APP_NAME}}-searxng:8080
+    value: http://n8n-searxng-{{KUBERO_NAME_SUFFIX}}-kuberoapp
   extraVolumes: []
   image:
     containerPort: '5678'
@@ -523,6 +261,38 @@ spec:
       - n8n
       - worker
     inheritEnvFrom: primary
+    healthcheck:
+      enabled: true
+      path: /healthz
+      timeoutSeconds: 5
+      periodSeconds: 10
+  # SearXNG web search for AI Assistant (was a Deployment baked into the
+  # Postgres add-on's resourceDefinitions, which the server refuses: #136).
+  # Private web service; n8n dials it through N8N_INSTANCE_AI_SEARXNG_URL.
+  # n8n queries SearXNG's JSON API, which the default settings.yml turns off,
+  # so the command writes a settings file that enables it, then starts the
+  # image's own entrypoint (the image ships /bin/sh).
+  - id: searxng
+    nameHint: n8n-searxng
+    serviceType: web
+    exposeInternet: false
+    image:
+      repository: docker.io/searxng/searxng
+      tag: 2026.10.17-1c10abe2d
+      containerPort: '8080'
+      command:
+      - /bin/sh
+      - -c
+      - |
+        printf 'use_default_settings: true\nsearch:\n  formats:\n    - html\n    - json\n' > /etc/searxng/settings.yml
+        exec /usr/local/searxng/entrypoint.sh
+    envVars:
+    - name: SEARXNG_SECRET
+      value: '{{KUBERO_GEN_ALNUM:32}}'
+    - name: SEARXNG_PORT
+      value: '8080'
+    - name: SEARXNG_BIND_ADDRESS
+      value: 0.0.0.0
     healthcheck:
       enabled: true
       path: /healthz

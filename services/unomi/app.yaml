@@ -10,8 +10,9 @@ metadata:
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/unomi/icon.png
     kubero.dev/template.installation: "Apache Unomi 3.x requires Elasticsearch 9.x\
       \ for all profile/event/segment storage. This template provisions a single-node\
-      \ Elasticsearch 9.1.3 companion (`elasticsearch` Service on :9200) automatically;\
-      \ for production HA you may point UNOMI_ELASTICSEARCH_ADDRESSES at an external\
+      \ Elasticsearch 9.1.3 companion app (unomi-elasticsearch, wired through\
+      \ UNOMI_ELASTICSEARCH_ADDRESSES; small heap for the default service size, raise\
+      \ ES_JAVA_OPTS with the size) automatically; for production HA you may point UNOMI_ELASTICSEARCH_ADDRESSES at an external\
       \ cluster instead. Unomi's Karaf runtime state lives on the persistent volume\
       \ at /opt/apache-unomi/data. The HTTP context-server and REST API listen on\
       \ 8181 (TLS :9443 and Karaf SSH :8102 are also exposed but need separate routing).\
@@ -31,141 +32,16 @@ metadata:
 spec:
   name: unomi
   deploymentstrategy: docker
-  addons:
-  - displayName: Elasticsearch
-    env: []
-    icon: /img/addons/opensearch.svg
-    id: kubero-operator
-    kind: Valkey
-    resourceDefinitions:
-      Valkey:
-        apiVersion: rds.valkey.buf.red/v1alpha1
-        kind: Valkey
-        metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
-        spec:
-          version: '8.0'
-          arch: replica
-          replicas:
-            shards: 1
-            replicasOfShard: 1
-          access:
-            serviceType: ClusterIP
-          storage:
-            capacity: 1Gi
-            storageClassName: fast
-          resources:
-            requests:
-              cpu: 50m
-              memory: 64Mi
-            limits:
-              cpu: 100m
-              memory: 128Mi
-      unomiEsDeployment:
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: '{{KUBERO_APP_NAME}}-es'
-        spec:
-          replicas: 1
-          strategy:
-            type: Recreate
-          selector:
-            matchLabels:
-              app: unomi-es
-          template:
-            metadata:
-              labels:
-                app: unomi-es
-            spec:
-              securityContext:
-                fsGroup: 1000
-                fsGroupChangePolicy: OnRootMismatch
-              initContainers:
-              - name: sysctl
-                image: docker.io/library/busybox:1.36
-                command:
-                - sh
-                - -c
-                - sysctl -w vm.max_map_count=262144 || true
-                securityContext:
-                  privileged: true
-              - name: data-perms
-                image: docker.io/library/busybox:1.36
-                command:
-                - sh
-                - -c
-                - chown -R 1000:1000 /usr/share/elasticsearch/data
-                volumeMounts:
-                - name: data
-                  mountPath: /usr/share/elasticsearch/data
-              containers:
-              - name: '{{KUBERO_APP_NAME}}-es'
-                image: docker.elastic.co/elasticsearch/elasticsearch:9.1.3
-                imagePullPolicy: Always
-                ports:
-                - name: http
-                  containerPort: 9200
-                env:
-                - name: discovery.type
-                  value: single-node
-                - name: xpack.security.enabled
-                  value: 'false'
-                - name: cluster.name
-                  value: contextElasticSearch
-                - name: ES_JAVA_OPTS
-                  value: -Xms512m -Xmx512m
-                - name: bootstrap.memory_lock
-                  value: 'false'
-                volumeMounts:
-                - name: data
-                  mountPath: /usr/share/elasticsearch/data
-                readinessProbe:
-                  httpGet:
-                    path: /_cluster/health
-                    port: 9200
-                  initialDelaySeconds: 30
-                  periodSeconds: 10
-                  failureThreshold: 12
-                resources:
-                  requests:
-                    cpu: 250m
-                    memory: 1Gi
-                  limits:
-                    cpu: '1'
-                    memory: 1536Mi
-              volumes:
-              - name: data
-                persistentVolumeClaim:
-                  claimName: unomi-es-data
-      unomiEsData:
-        apiVersion: v1
-        kind: PersistentVolumeClaim
-        metadata:
-          name: '{{KUBERO_APP_NAME}}-es-data'
-        spec:
-          accessModes:
-          - ReadWriteOnce
-          resources:
-            requests:
-              storage: 2Gi
-          storageClassName: fast
-      unomiEsService:
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: '{{KUBERO_APP_NAME}}-es'
-        spec:
-          type: ClusterIP
-          selector:
-            app: unomi-es
-          ports:
-          - name: http
-            port: 9200
-            targetPort: 9200
+  # No add-ons: the former "Elasticsearch" entry was a Valkey add-on (which
+  # Unomi does not use) carrying an Elasticsearch Deployment, PVC and Service
+  # in its resourceDefinitions, plus a privileged sysctl init container. The
+  # server refuses both (#136); Elasticsearch is now the companion app below.
+  addons: []
   envVars:
+  # The Elasticsearch companion app below. Sibling apps of a catalog group
+  # are reached as <nameHint>-<suffix>-kuberoapp on port 80.
   - name: UNOMI_ELASTICSEARCH_ADDRESSES
-    value: '{{KUBERO_APP_NAME}}-es:9200'
+    value: unomi-elasticsearch-{{KUBERO_NAME_SUFFIX}}-kuberoapp:80
   - name: UNOMI_ELASTICSEARCH_CLUSTERNAME
     value: contextElasticSearch
   - name: UNOMI_CLUSTER_PUBLIC_ADDRESS
@@ -219,3 +95,47 @@ spec:
     run:
       securityContext:
         readOnlyRootFilesystem: false
+  # Single-node Elasticsearch 9 for Unomi, as its own app. No privileged
+  # sysctl init container (not allowed): with discovery.type=single-node the
+  # bootstrap checks (vm.max_map_count among them) are not enforced, and
+  # mmap is turned off so the node's default max_map_count is enough. The
+  # chown init container is not needed either: app pods run with fsGroup
+  # 1000, the image's user. Settings use the image's ES_SETTING_* env form
+  # (a double underscore is a literal underscore). Heap is kept small for the
+  # default service size; raise ES_JAVA_OPTS together with the service size.
+  templateServices:
+  - id: elasticsearch
+    nameHint: unomi-elasticsearch
+    serviceType: web
+    exposeInternet: false
+    image:
+      repository: docker.io/library/elasticsearch
+      tag: 9.1.3
+      containerPort: '9200'
+    envVars:
+    - name: ES_SETTING_DISCOVERY_TYPE
+      value: single-node
+    - name: ES_SETTING_XPACK_SECURITY_ENABLED
+      value: 'false'
+    - name: ES_SETTING_CLUSTER_NAME
+      value: contextElasticSearch
+    - name: ES_SETTING_NODE_STORE_ALLOW__MMAP
+      value: 'false'
+    - name: ES_SETTING_BOOTSTRAP_MEMORY__LOCK
+      value: 'false'
+    - name: ES_JAVA_OPTS
+      value: -Xms256m -Xmx256m
+    extraVolumes:
+    - accessModes:
+      - ReadWriteMany
+      emptyDir: false
+      mountPath: /usr/share/elasticsearch/data
+      name: '{{KUBERO_APP_NAME}}-es-data'
+      size: 2Gi
+      storageClass: shared
+    healthcheck:
+      enabled: true
+      path: /_cluster/health
+      startupSeconds: 600
+      timeoutSeconds: 5
+      periodSeconds: 10
