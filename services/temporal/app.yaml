@@ -89,7 +89,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: temporal
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -98,7 +98,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: temporal
-          password: temporal
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   envVars:
   - name: DB
     value: postgres12

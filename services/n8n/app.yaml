@@ -73,7 +73,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: '123456'
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -82,7 +82,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: n8n
-          password: '123456'
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg

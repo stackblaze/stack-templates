@@ -74,7 +74,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: corteza
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -83,7 +83,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: corteza
-          password: corteza
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   web:
     replicaCount: 1
   worker:

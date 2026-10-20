@@ -69,7 +69,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: openobserve
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -78,7 +78,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: openobserve
-          password: openobserve
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   envVars:
   - name: ZO_ROOT_USER_EMAIL
     value: admin@example.com

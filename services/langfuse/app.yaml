@@ -16,8 +16,8 @@ metadata:
       S3. For full ingestion throughput you should ALSO
       deploy a companion WORKER from image ghcr.io/langfuse/langfuse-worker:3 (port
       3030) sharing the same env vars below. ROTATE before production: NEXTAUTH_SECRET,
-      SALT, ENCRYPTION_KEY (64-char hex via openssl rand -hex 32), Postgres/ClickHouse/MinIO
-      credentials, and LANGFUSE_INIT_* seed values. Instrument your app with the Langfuse
+      SALT and the LANGFUSE_INIT_* seed values (ENCRYPTION_KEY and the Postgres/ClickHouse/MinIO
+      passwords are generated at deploy). Instrument your app with the Langfuse
       SDK and set LANGFUSE_HOST={{KUBERO_APP_URL}}.'
     kubero.dev/template.links: '["https://langfuse.com/docs", "https://langfuse.com/self-hosting"]'
     kubero.dev/template.screenshots: '["https://langfuse.com/api/og?title=Langfuse+%E2%80%93+Open+Source+AI+Engineering+Platform&amp;description=Traces%2C+evals%2C+prompt+management+and+metrics+to+debug+and+improve+your+LLM+application."]'
@@ -77,7 +77,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: langfuse
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -86,7 +86,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: langfuse
-          password: langfuse
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   - displayName: ClickHouse
     env: []
     icon: /img/addons/clickhouse.svg
@@ -101,7 +101,7 @@ spec:
         spec:
           configuration:
             users:
-              admin/password: langfuse
+              admin/password: '{{KUBERO_GEN_SHARED:CLICKHOUSE_PASSWORD:ALNUM:32}}'
               admin/networks/ip:
               - 0.0.0.0/0
             clusters:
@@ -189,15 +189,17 @@ spec:
   - name: SALT
     value: change-me-to-random-string
   - name: ENCRYPTION_KEY
-    value: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+    value: '{{KUBERO_GEN_HEX:64}}'
   - name: CLICKHOUSE_MIGRATION_URL
     value: clickhouse://clickhouse-{{KUBERO_APP_NAME}}-clickhouse:9000
   - name: CLICKHOUSE_URL
     value: http://clickhouse-{{KUBERO_APP_NAME}}-clickhouse:8123
   - name: CLICKHOUSE_USER
     value: admin
+  # One generated value shared with the ClickHouse add-on's admin/password
+  # (KUBERO_GEN_SHARED, kubero-server#1668).
   - name: CLICKHOUSE_PASSWORD
-    value: langfuse
+    value: '{{KUBERO_GEN_SHARED:CLICKHOUSE_PASSWORD:ALNUM:32}}'
   - name: CLICKHOUSE_CLUSTER_ENABLED
     value: 'false'
   - name: REDIS_HOST

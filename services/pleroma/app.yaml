@@ -98,7 +98,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: pleroma
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -107,7 +107,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: pleroma
-          password: pleroma
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   envVars:
   - name: DOMAIN
     value: '{{KUBERO_APP_HOST}}'

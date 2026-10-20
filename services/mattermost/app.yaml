@@ -81,7 +81,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: mattermost
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -90,7 +90,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: mattermost
-          password: mattermost
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   # Platform email (see README "Email contract"). Applied only while the
   # Email add-on is live (paid plans); without it Mattermost keeps its
   # defaults (SendEmailNotifications=false, no SMTP server) and simply does

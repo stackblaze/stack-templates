@@ -80,7 +80,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: joplin
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -89,7 +89,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: joplin
-          password: joplin
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   envVars:
   - name: APP_PORT
     value: '22300'

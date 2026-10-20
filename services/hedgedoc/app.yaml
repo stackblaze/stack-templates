@@ -63,7 +63,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: hedgedoc
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -72,7 +72,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: hedgedoc
-          password: hedgedoc
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   envVars:
   - name: CMD_DB_URL
     value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'

@@ -103,7 +103,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: posthog
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -112,7 +112,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: posthog
-          password: posthog
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   - displayName: ClickHouse
     env: []
     icon: /img/addons/clickhouse.svg
@@ -151,7 +151,7 @@ spec:
                 \          <port>9000</port>\n        </replica>\n      </shard>\n\
                 \    </posthog_primary_replica>\n  </remote_servers>\n</clickhouse>\n"
             users:
-              admin/password: posthog
+              admin/password: '{{KUBERO_GEN_SHARED:CLICKHOUSE_PASSWORD:ALNUM:32}}'
               admin/networks/ip:
               - 0.0.0.0/0
             clusters:
@@ -259,8 +259,10 @@ spec:
     value: '$(PGDATABASE)'
   - name: CLICKHOUSE_USER
     value: admin
+  # One generated value shared with the ClickHouse add-on's admin/password
+  # (KUBERO_GEN_SHARED, kubero-server#1668).
   - name: CLICKHOUSE_PASSWORD
-    value: posthog
+    value: '{{KUBERO_GEN_SHARED:CLICKHOUSE_PASSWORD:ALNUM:32}}'
   - name: CLICKHOUSE_SECURE
     value: 'false'
   - name: CLICKHOUSE_VERIFY

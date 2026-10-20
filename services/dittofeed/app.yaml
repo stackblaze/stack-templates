@@ -20,8 +20,8 @@ metadata:
       handles the Temporal-driven journey processing) rather than the lite bundle;
       blob storage (any S3/MinIO) is optional. BOOTSTRAP=true auto-creates the default
       workspace and tables on first start. ROTATE before exposing: SECRET_KEY (openssl
-      rand -base64 32), the admin PASSWORD env, plus the Postgres and ClickHouse add-on
-      passwords. Set DASHBOARD_API_BASE / dashboard URLs to your public host. CLICKHOUSE_HOST
+      rand -base64 32) and the admin PASSWORD env (the Postgres and ClickHouse add-on
+      passwords are generated at deploy). Set DASHBOARD_API_BASE / dashboard URLs to your public host. CLICKHOUSE_HOST
       must be the full http://host:8123 URL.'
     kubero.dev/template.links: '["https://docs.dittofeed.com/deployment/self-hosted",
       "https://docs.dittofeed.com/deployment/self-hosted/docker-compose"]'
@@ -86,7 +86,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: dittofeed
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -95,7 +95,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: dittofeed
-          password: dittofeed
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   - displayName: ClickHouse
     env: []
     icon: /img/addons/clickhouse.svg
@@ -110,7 +110,7 @@ spec:
         spec:
           configuration:
             users:
-              admin/password: dittofeed
+              admin/password: '{{KUBERO_GEN_SHARED:CLICKHOUSE_PASSWORD:ALNUM:32}}'
               admin/networks/ip:
               - 0.0.0.0/0
             clusters:
@@ -169,8 +169,10 @@ spec:
     value: http://clickhouse-{{KUBERO_APP_NAME}}-clickhouse:8123
   - name: CLICKHOUSE_USER
     value: admin
+  # One generated value shared with the ClickHouse add-on's admin/password
+  # (KUBERO_GEN_SHARED, kubero-server#1668).
   - name: CLICKHOUSE_PASSWORD
-    value: dittofeed
+    value: '{{KUBERO_GEN_SHARED:CLICKHOUSE_PASSWORD:ALNUM:32}}'
   - name: CLICKHOUSE_DATABASE
     value: '$(PGDATABASE)'
   # The Temporal companion app below (gRPC). Sibling apps of a catalog group

@@ -238,7 +238,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: supabase
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -247,7 +247,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: supabase
-          password: supabase
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   - displayName: Email
     icon: /img/addons/email.svg
     id: kubero-smtp
