@@ -93,7 +93,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: zipline
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -102,7 +102,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: zipline
-          password: zipline
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   web:
     replicaCount: 1
   worker:

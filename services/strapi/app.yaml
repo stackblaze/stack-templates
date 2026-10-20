@@ -71,7 +71,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: strapi
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -80,7 +80,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: strapi
-          password: strapi
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   envVars:
   - name: DATABASE_CLIENT
     value: postgres

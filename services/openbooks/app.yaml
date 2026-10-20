@@ -77,7 +77,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: openbooks-change-me-min-24-chars
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -87,7 +87,7 @@ spec:
         stringData:
           username: openbooks
           # OpenBooks requires the runtime DB password to be ≥24 characters.
-          password: openbooks-change-me-min-24-chars
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg

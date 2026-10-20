@@ -61,7 +61,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: calcom
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -70,7 +70,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: calcom
-          password: calcom
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   # Platform email (see README "Email contract"). Cal.com nodemailer SMTP.
   - displayName: Email
     icon: /img/addons/email.svg

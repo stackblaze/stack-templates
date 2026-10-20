@@ -92,6 +92,41 @@ Rules:
   template against this contract (run it before committing; it is also the
   tool that performed the catalog-wide rewrite).
 
+## Generated secrets (`{{KUBERO_GEN_*}}`)
+
+kubero-server replaces these tokens once, when the app is created. It
+replaces them in `envVars` and in the add-ons' `resourceDefinitions`, and the
+values are never regenerated afterwards:
+
+| Token | Value |
+|---|---|
+| `{{KUBERO_GEN_ALNUM:N}}` | N random letters/digits |
+| `{{KUBERO_GEN_HEX:N}}` | N random hex chars (e.g. a 64-hex `ENCRYPTION_KEY`) |
+| `{{KUBERO_GEN_SHARED:KEY:ALNUM\|HEX:N}}` | one value per `KEY` across the app's env **and** its add-on CRs |
+| `{{KUBERO_GEN_BCRYPT_SALT}}`, `{{KUBERO_GEN_X25519_SK}}` / `_PK}}` | bcrypt salt, matched x25519 keypair |
+
+- Never put a literal password in an add-on CR or in `envVars`. A CNPG
+  superuser/app Secret takes `'{{KUBERO_GEN_ALNUM:32}}'`; the app reads it
+  through the injected `$(PGPASSWORD)`.
+- When the add-on CR and the app env must hold the **same** secret (for
+  example ClickHouse keeps its users inline in the CR), use
+  `KUBERO_GEN_SHARED` with the same `KEY` in both places. The first
+  occurrence sets the value:
+
+  ```yaml
+  admin/password: '{{KUBERO_GEN_SHARED:CLICKHOUSE_PASSWORD:ALNUM:32}}'   # CR
+  - name: CLICKHOUSE_PASSWORD
+    value: '{{KUBERO_GEN_SHARED:CLICKHOUSE_PASSWORD:ALNUM:32}}'         # env
+  ```
+
+- Across a template group (primary + `templateServices`), an env var with
+  the same **name** gets one value for every GEN kind, so a companion that
+  repeats `NAME: '{{KUBERO_GEN_HEX:64}}'` gets the primary's value. API/CLI
+  creates opt in with the same `genGroup` on each app.
+- The server derives ClickHouse `CLICKHOUSE_USER` / `CLICKHOUSE_PASSWORD`
+  from the CR. At create time, those injected credentials win over a literal
+  the template sets (kubero-server#1668).
+
 ## Email contract (Email add-on)
 
 Apps that send mail get it from the platform's **Email add-on** (kind `Smtp`):

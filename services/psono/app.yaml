@@ -93,7 +93,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: psono
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -102,7 +102,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: psono
-          password: psono
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   # Platform email (see README "Email contract"). Psono cannot onboard a
   # user without mail (registration and recovery links go out by email), so
   # every mail variable lives here and nothing in envVars: a same-named var

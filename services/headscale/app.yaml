@@ -72,7 +72,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: headscale
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -81,7 +81,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: headscale
-          password: headscale
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   envVars:
   - name: HEADSCALE_LISTEN_ADDR
     value: 0.0.0.0:8080

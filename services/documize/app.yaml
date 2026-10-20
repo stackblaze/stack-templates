@@ -76,7 +76,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: documize
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -85,7 +85,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: documize
-          password: documize
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   envVars:
   - name: DOCUMIZEPORT
     value: '5001'

@@ -74,7 +74,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: nopcommerce
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -83,7 +83,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: nopcommerce
-          password: nopcommerce
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   envVars:
   - name: ASPNETCORE_URLS
     value: http://+:80

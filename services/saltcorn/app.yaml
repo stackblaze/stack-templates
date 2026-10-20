@@ -74,7 +74,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: saltcorn
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -83,7 +83,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: saltcorn
-          password: saltcorn
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   envVars:
   - name: SALTCORN_SESSION_SECRET
     value: replace-with-openssl-rand-hex-32

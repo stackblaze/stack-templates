@@ -83,7 +83,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: hermes
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -92,7 +92,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: hermes
-          password: hermes
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   envVars:
   - name: HERMES_SERVER_POSTGRES_HOST
     value: '$(PGHOST)'

@@ -63,7 +63,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: vikunja
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -72,7 +72,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: vikunja
-          password: vikunja
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   envVars:
   - name: VIKUNJA_SERVICE_PUBLICURL
     value: '{{KUBERO_APP_URL}}'

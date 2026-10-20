@@ -61,7 +61,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: vaultwarden
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -70,7 +70,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: vaultwarden
-          password: vaultwarden
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   # Platform email (see README "Email contract"). Vaultwarden reads SMTP_*
   # natively, so no env mapping — vars are injected only while Email is live.
   - displayName: Email

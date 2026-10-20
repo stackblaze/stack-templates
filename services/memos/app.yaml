@@ -61,7 +61,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: memos
+          password: '{{KUBERO_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -70,7 +70,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: memos
-          password: memos
+          password: '{{KUBERO_GEN_ALNUM:32}}'
   cronjobs: []
   deploymentstrategy: docker
   envVars:
