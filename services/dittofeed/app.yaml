@@ -19,9 +19,9 @@ metadata:
       split images dittofeed/api, dittofeed/dashboard, and dittofeed/worker (worker
       handles the Temporal-driven journey processing) rather than the lite bundle;
       blob storage (any S3/MinIO) is optional. BOOTSTRAP=true auto-creates the default
-      workspace and tables on first start. ROTATE before exposing: SECRET_KEY (openssl
-      rand -base64 32), the admin PASSWORD env, plus the Postgres and ClickHouse add-on
-      passwords. Set DASHBOARD_API_BASE / dashboard URLs to your public host. CLICKHOUSE_HOST
+      workspace and tables on first start. SECRET_KEY and the dashboard login PASSWORD
+      are generated at deploy (read PASSWORD from the app''s env vars). ROTATE before
+      exposing: the Postgres and ClickHouse add-on passwords. Set DASHBOARD_API_BASE / dashboard URLs to your public host. CLICKHOUSE_HOST
       must be the full http://host:8123 URL.'
     kubero.dev/template.links: '["https://docs.dittofeed.com/deployment/self-hosted",
       "https://docs.dittofeed.com/deployment/self-hosted/docker-compose"]'
@@ -151,10 +151,13 @@ spec:
     value: 'true'
   - name: WORKSPACE_NAME
     value: Default
+  # Generated at deploy. SECRET_KEY must base64-decode to exactly 32 bytes
+  # (AES-256-GCM key): 43 base64 characters plus one '=' pad do. PASSWORD is
+  # the single-tenant dashboard login; read it from this app's env.
   - name: SECRET_KEY
-    value: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+    value: '{{KUBERO_GEN_ALNUM:43}}='
   - name: PASSWORD
-    value: dittofeed
+    value: '{{KUBERO_GEN_ALNUM:24}}'
   - name: DATABASE_HOST
     value: '$(PGHOST)'
   - name: DATABASE_PORT

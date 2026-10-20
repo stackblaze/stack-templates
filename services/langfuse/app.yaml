@@ -8,16 +8,17 @@ metadata:
       \ traces, evals, prompt management, datasets, and cost analytics for AI applications."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langfuse/icon.png
     kubero.dev/template.installation: 'Langfuse v3 is a multi-service stack. This
-      template runs the PRIMARY web/API container (ghcr.io/langfuse/langfuse:3, port
+      template runs the PRIMARY web/API container (ghcr.io/langfuse/langfuse, port
       3000). Bundled add-ons provision Postgres (transactional data), ClickHouse (trace/observation
       store), Valkey (Redis-compatible queue/cache), plus a MinIO companion app
       (S3 for event/media uploads, on a 5Gi volume, root password generated at deploy
       and shared with Langfuse). You may swap MinIO for the RustFS add-on or external
-      S3. For full ingestion throughput you should ALSO
-      deploy a companion WORKER from image ghcr.io/langfuse/langfuse-worker:3 (port
-      3030) sharing the same env vars below. ROTATE before production: NEXTAUTH_SECRET,
-      SALT, ENCRYPTION_KEY (64-char hex via openssl rand -hex 32), Postgres/ClickHouse/MinIO
-      credentials, and LANGFUSE_INIT_* seed values. Instrument your app with the Langfuse
+      S3. A langfuse-worker companion app (ghcr.io/langfuse/langfuse-worker,
+      same release as the web image) shares the web app''s env and processes ingestion.
+      NEXTAUTH_SECRET, SALT and the MinIO password are generated at deploy. ROTATE before
+      production: ENCRYPTION_KEY (64-char hex via openssl rand -hex 32; set the same value
+      on the web and worker apps), the Postgres/ClickHouse credentials, and LANGFUSE_INIT_*
+      seed values. Instrument your app with the Langfuse
       SDK and set LANGFUSE_HOST={{KUBERO_APP_URL}}.'
     kubero.dev/template.links: '["https://langfuse.com/docs", "https://langfuse.com/self-hosting"]'
     kubero.dev/template.screenshots: '["https://langfuse.com/api/og?title=Langfuse+%E2%80%93+Open+Source+AI+Engineering+Platform&amp;description=Traces%2C+evals%2C+prompt+management+and+metrics+to+debug+and+improve+your+LLM+application."]'
@@ -184,10 +185,12 @@ spec:
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: NEXTAUTH_URL
     value: '{{KUBERO_APP_URL}}'
+  # Generated at deploy; the worker companion inherits this env, so both get
+  # the same SALT (API key hashing).
   - name: NEXTAUTH_SECRET
-    value: change-me-to-random-32char-string
+    value: '{{KUBERO_GEN_ALNUM:32}}'
   - name: SALT
-    value: change-me-to-random-string
+    value: '{{KUBERO_GEN_ALNUM:32}}'
   - name: ENCRYPTION_KEY
     value: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
   - name: CLICKHOUSE_MIGRATION_URL
@@ -265,12 +268,14 @@ spec:
     containerPort: '3000'
     pullPolicy: Always
     repository: ghcr.io/langfuse/langfuse
-    tag: '3'
+    # Same pin as the langfuse-worker companion below: web and worker must
+    # run the same release.
+    tag: 3.225.11
     command:
     - sh
     - -c
     - 'node -e "const net=require(''net'');const wait=(h,p)=>new Promise(r=>{const
-      go=()=>{const s=net.connect(p,h,()=>{s.end();r();});s.on(''error'',()=>setTimeout(go,2000));};go();});Promise.all([wait(process.env.PGHOST,5432),wait(process.env.CHHOST,8123),wait(process.env.REDIS_HOST,+process.env.REDIS_PORT),wait(process.env.S3HOST,80)]).then(()=>process.exit(0));"
+      go=()=>{const s=net.connect(p,h,()=>{s.end();r();});s.on(''error'',()=>setTimeout(go,2000));};go();});Promise.all([wait(process.env.PGHOST,+(process.env.PGPORT||5432)),wait(process.env.CHHOST,8123),wait(process.env.REDIS_HOST,+process.env.REDIS_PORT),wait(process.env.S3HOST,80)]).then(()=>process.exit(0));"
       && dumb-init -- ./web/entrypoint.sh sh -c ''node ./web/server.js --keepAliveTimeout
       110000''
 
@@ -317,3 +322,19 @@ spec:
       path: /minio/health/live
       timeoutSeconds: 5
       periodSeconds: 10
+  # The Langfuse v3 worker: it processes the ingestion queue (events land in
+  # S3 + Valkey, the worker writes them to ClickHouse), so traces never show
+  # up without it. Same release as the web image, default entrypoint (it does
+  # not run the database migrations; the web app does). It inherits the web
+  # app's env (and so its add-ons and generated secrets) and serves nothing.
+  - id: worker
+    nameHint: langfuse-worker
+    serviceType: worker
+    exposeInternet: false
+    image:
+      repository: ghcr.io/langfuse/langfuse-worker
+      tag: 3.225.11
+      containerPort: '3030'
+    inheritEnvFrom: primary
+    healthcheck:
+      enabled: false

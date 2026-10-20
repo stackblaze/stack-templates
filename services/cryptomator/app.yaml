@@ -13,9 +13,10 @@ metadata:
       URL; after the first deploy set HUB_KEYCLOAK_PUBLIC_URL on the Hub app to that
       URL (browsers sign in there) and redeploy. Keycloak stores its data in a separate
       `keycloak` database that the PostgreSQL add-on creates on a dedicated cluster;
-      on shared zones that database is not provisioned. Rotate the seed realm credentials
-      (admin/cryptomator, client secret cryptomator, HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET)
-      before exposing publicly. Use the cryptomator.org/hub/self-hosted Setup Wizard
+      on shared zones that database is not provisioned. The seed realm's `admin` user
+      password (CRYPTOMATOR_REALM_ADMIN_PASSWORD on the Keycloak app, changed at first
+      sign-in) and the system client secret (HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET, the same
+      on both apps) are generated at deploy. Use the cryptomator.org/hub/self-hosted Setup Wizard
       output to customize realm/clients for production.
     kubero.dev/template.links: '["https://docs.cryptomator.org/hub/", "https://docs.cryptomator.org/hub/deployment/"]'
     kubero.dev/template.screenshots: '[]'
@@ -111,8 +112,11 @@ spec:
     value: cryptomator
   - name: HUB_KEYCLOAK_SYSTEM_CLIENT_ID
     value: cryptomatorhub-system
+  # Generated at deploy and shared with the Keycloak companion (one value per
+  # variable name across the group), whose seed realm uses it as the
+  # cryptomatorhub-system client secret.
   - name: HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET
-    value: cryptomator
+    value: '{{KUBERO_GEN_ALNUM:32}}'
   - name: HUB_KEYCLOAK_SYNCER_PERIOD
     value: 5m
   - name: HUB_KEYCLOAK_OIDC_CRYPTOMATOR_CLIENT_ID
@@ -209,6 +213,14 @@ spec:
       value: 'false'
     - name: QUARKUS_TRANSACTION_MANAGER_ENABLE_RECOVERY
       value: 'false'
+    # Same name as on the Hub app, so both get the same generated value.
+    - name: HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET
+      value: '{{KUBERO_GEN_ALNUM:32}}'
+    # First password of the realm's `admin` user (Hub sign-in); Keycloak
+    # makes the user change it at first login.
+    - name: CRYPTOMATOR_REALM_ADMIN_PASSWORD
+      value: '{{KUBERO_GEN_ALNUM:24}}'
+    # $(NAME) references are expanded by Kubernetes from the variables above.
     - name: CRYPTOMATOR_REALM_JSON
       value: |
         {
@@ -237,7 +249,7 @@ spec:
             {
               "username": "admin",
               "enabled": true,
-              "credentials": [{ "type": "password", "value": "cryptomator", "temporary": true }],
+              "credentials": [{ "type": "password", "value": "$(CRYPTOMATOR_REALM_ADMIN_PASSWORD)", "temporary": true }],
               "requiredActions": ["UPDATE_PASSWORD"],
               "realmRoles": ["admin"]
             },
@@ -284,7 +296,7 @@ spec:
               "name": "Cryptomator Hub System",
               "enabled": true,
               "clientAuthenticatorType": "client-secret",
-              "secret": "cryptomator",
+              "secret": "$(HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET)",
               "standardFlowEnabled": false
             }
           ]

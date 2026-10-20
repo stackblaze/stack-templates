@@ -318,7 +318,9 @@ spec:
     containerPort: '8000'
     pullPolicy: Always
     repository: ghcr.io/posthog/posthog
-    tag: latest
+    # PostHog publishes no release tags, only one per master commit; this is
+    # the commit `latest` pointed at on 2026-10-20.
+    tag: 48912b83f12851f5ca9188750b6ade3b97f93616
     run:
       securityContext:
         readOnlyRootFilesystem: false

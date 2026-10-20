@@ -937,8 +937,8 @@
    "links": [],
    "addons": [
     "Cluster",
-    "Smtp",
-    "Tenant"
+    "Tenant",
+    "Smtp"
    ],
    "stars": 16314,
    "forks": 1481,
@@ -3427,8 +3427,8 @@
    "links": [],
    "addons": [
     "Cluster",
-    "Smtp",
-    "Tenant"
+    "Tenant",
+    "Smtp"
    ],
    "stars": 60104,
    "forks": 2781,
@@ -5267,8 +5267,8 @@
     "Cluster",
     "Valkey",
     "RabbitmqCluster",
-    "Smtp",
-    "Tenant"
+    "Tenant",
+    "Smtp"
    ],
    "stars": 47000,
    "forks": 4700,
@@ -6555,8 +6555,8 @@
    ],
    "addons": [
     "MariaDB",
-    "Smtp",
-    "Tenant"
+    "Tenant",
+    "Smtp"
    ],
    "stars": 8600,
    "forks": 860,
@@ -9931,8 +9931,8 @@
    ],
    "addons": [
     "Cluster",
-    "RabbitmqCluster",
-    "Valkey"
+    "Valkey",
+    "RabbitmqCluster"
    ],
    "stars": 1500,
    "forks": 150,
@@ -10030,8 +10030,8 @@
    "addons": [
     "Cluster",
     "Valkey",
-    "Smtp",
-    "Tenant"
+    "Tenant",
+    "Smtp"
    ],
    "stars": 13,
    "forks": 3,
@@ -11115,9 +11115,9 @@
     "https://developers.revolt.chat/"
    ],
    "addons": [
-    "KuberoFerretDB",
     "Valkey",
-    "RabbitmqCluster"
+    "RabbitmqCluster",
+    "KuberoFerretDB"
    ],
    "stars": 4200,
    "forks": 420,
@@ -13597,7 +13597,9 @@
     "https://docs.wagtail.org/",
     "https://github.com/wagtail/bakerydemo"
    ],
-   "addons": [],
+   "addons": [
+    "Cluster"
+   ],
    "stars": 19000,
    "forks": 0,
    "watchers": 19000,
