@@ -165,13 +165,17 @@ spec:
   # the add-on's initdb creates. The command writes the seed realm from
   # CRYPTOMATOR_REALM_JSON into Keycloak's import folder, then starts it
   # (the image ships bash, which kc.sh needs anyway).
-  # exposeInternet is left unset on purpose: the dashboard then gives this
-  # companion its own public URL (browsers must reach Keycloak to sign in)
-  # without making it the group's public entry, so the Hub stays public too.
+  # Public, like the Hub: a web service whose exposeInternet is unset gets
+  # its own public URL (browsers must reach Keycloak to sign in). Leave it
+  # unset rather than `true`: dashboards that predate stack-templates#138
+  # read a companion's `true` as "this is the group's entry" and hide the Hub.
+  # `size` names a pod size of the platform catalog (requests/limits, still
+  # capped by the plan); Keycloak's JVM needs more than the default.
   templateServices:
   - id: keycloak
     nameHint: cryptomator-keycloak
     serviceType: web
+    size: medium
     usePrimaryAddons: true
     image:
       repository: ghcr.io/cryptomator/keycloak

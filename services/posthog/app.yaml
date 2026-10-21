@@ -365,6 +365,7 @@ spec:
   - id: worker
     nameHint: posthog-worker
     serviceType: worker
+    size: medium
     exposeInternet: false
     image:
       repository: ghcr.io/posthog/posthog
@@ -383,6 +384,7 @@ spec:
   - id: ingestion
     nameHint: posthog-ingestion
     serviceType: worker
+    size: medium
     exposeInternet: false
     image:
       repository: ghcr.io/posthog/posthog-node
@@ -412,6 +414,7 @@ spec:
   - id: plugins
     nameHint: posthog-plugins
     serviceType: web
+    size: medium
     exposeInternet: false
     image:
       repository: ghcr.io/posthog/posthog-node

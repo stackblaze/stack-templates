@@ -297,6 +297,10 @@ spec:
     run:
       securityContext:
         readOnlyRootFilesystem: false
+  # The api is internal: the proxy below is the group's public entry. Read by
+  # dashboards from stack-templates#138 on; older ones keep the api internal
+  # because of the proxy's own flags.
+  exposeInternet: false
   # Catalog-only (not written to the KuberoApp CR). Dashboard expands these into
   # docker multi-app cards; addons stay on the primary api card above.
   # exposeInternet:false → web replicas, no Ingress (proxy is the public entry).
