@@ -330,6 +330,7 @@ spec:
   - id: worker
     nameHint: langfuse-worker
     serviceType: worker
+    size: medium
     exposeInternet: false
     image:
       repository: ghcr.io/langfuse/langfuse-worker

@@ -101,12 +101,16 @@ spec:
   # mmap is turned off so the node's default max_map_count is enough. The
   # chown init container is not needed either: app pods run with fsGroup
   # 1000, the image's user. Settings use the image's ES_SETTING_* env form
-  # (a double underscore is a literal underscore). Heap is kept small for the
-  # default service size; raise ES_JAVA_OPTS together with the service size.
+  # (a double underscore is a literal underscore). `size` names a pod size
+  # of the platform catalog: the extra memory beyond the heap goes to the
+  # filesystem cache. The heap stays small so it also fits plans whose
+  # per-service ceiling is 1 GiB; raise ES_JAVA_OPTS (up to about half the
+  # memory) for real data.
   templateServices:
   - id: elasticsearch
     nameHint: unomi-elasticsearch
     serviceType: web
+    size: medium
     exposeInternet: false
     image:
       repository: docker.io/library/elasticsearch
