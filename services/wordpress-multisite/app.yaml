@@ -118,6 +118,15 @@ spec:
     size: 5Gi
     storageClass: shared
   cronjobs: []
+  # Probe a static file Apache serves without PHP or the database: the
+  # operator's liveness check runs every 3 s, and probing / made WordPress
+  # query MariaDB (missing tables before the install wizard) on every tick.
+  healthcheck:
+    enabled: true
+    path: /wp-includes/images/blank.gif
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:

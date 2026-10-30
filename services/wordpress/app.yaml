@@ -152,11 +152,25 @@ spec:
           return getenv('SMTP_FROM');
       });
       PHP
+      # Wait for MariaDB (its image may still be pulling) so the first start
+      # doesn't answer 500s and get restarted by the liveness check.
+      until php -r '[$h,$p]=array_pad(explode(":",getenv("WORDPRESS_DB_HOST"),2),2,3306); exit(@fsockopen($h,(int)$p,$n,$s,2)?0:1);'; do
+        echo "waiting for database at $WORDPRESS_DB_HOST"; sleep 2
+      done
       exec docker-entrypoint.sh apache2-foreground
     run:
       securityContext:
         readOnlyRootFilesystem: false
   name: wordpress
+  # Probe a static file Apache serves without PHP or the database: the
+  # operator's liveness check runs every 3 s, and probing / made WordPress
+  # query MariaDB (missing tables before the install wizard) on every tick.
+  healthcheck:
+    enabled: true
+    path: /wp-includes/images/blank.gif
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   web:
     replicaCount: 1
   worker:
