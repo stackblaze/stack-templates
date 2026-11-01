@@ -11,7 +11,7 @@ metadata:
       \ rotate the Postgres password (and after first login the admin password) from\
       \ the template defaults before production. Joplin Server validates incoming\
       \ requests against APP_BASE_URL, so it is set to the deployed public URL via\
-      \ {{KUBERO_APP_URL}} \u2014 if you change the hostname you must update this\
+      \ {{STACKBLAZE_APP_URL}} \u2014 if you change the hostname you must update this\
       \ or clients get an 'invalid origin' error. The server listens on port 22300\
       \ (APP_PORT) and serves both the web admin UI and the sync API. Storage driver\
       \ defaults to the database (DB_CLIENT=pg), so notes, attachments and blobs live\
@@ -44,7 +44,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -64,19 +64,19 @@ spec:
               database: joplin
               owner: joplin
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO joplin
               - GRANT CREATE ON SCHEMA public TO joplin
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO joplin
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -85,7 +85,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: joplin
@@ -94,7 +94,7 @@ spec:
   - name: APP_PORT
     value: '22300'
   - name: APP_BASE_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: DB_CLIENT
     value: pg
   - name: POSTGRES_HOST
@@ -112,7 +112,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /home/joplin/storage
-    name: '{{KUBERO_APP_NAME}}-storage'
+    name: '{{STACKBLAZE_APP_NAME}}-storage'
     size: 2Gi
     storageClass: shared
   cronjobs: []

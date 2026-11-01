@@ -37,7 +37,7 @@
     },
     {
       "name": "UNOMI_CLUSTER_PUBLIC_ADDRESS",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "UNOMI_CLUSTER_INTERNAL_ADDRESS",

@@ -34,7 +34,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -54,19 +54,19 @@ spec:
               database: listmonk
               owner: listmonk
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO listmonk
               - GRANT CREATE ON SCHEMA public TO listmonk
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO listmonk
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -75,7 +75,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: listmonk
@@ -108,7 +108,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /listmonk/uploads
-    name: '{{KUBERO_APP_NAME}}-uploads'
+    name: '{{STACKBLAZE_APP_NAME}}-uploads'
     size: 5Gi
     storageClass: shared
   cronjobs: []

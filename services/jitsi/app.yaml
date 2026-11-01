@@ -50,7 +50,7 @@ spec:
   - name: TZ
     value: UTC
   - name: PUBLIC_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: HTTP_PORT
     value: '80'
   - name: DISABLE_HTTPS
@@ -92,7 +92,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /config
-    name: '{{KUBERO_APP_NAME}}-config'
+    name: '{{STACKBLAZE_APP_NAME}}-config'
     size: 2Gi
     storageClass: shared
   cronjobs: []

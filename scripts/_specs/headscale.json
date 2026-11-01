@@ -10,7 +10,7 @@
     "security",
     "utilities"
   ],
-  "installation": "Headscale uses SQLite by default — no database add-on required. HEADSCALE_SERVER_URL must be the public HTTPS URL of this app. After deploy, create a user with headscale users create <name> (exec into the container or use the gRPC API). Generate a pre-auth key with headscale preauthkeys create --user <name> --reusable, then use it with the Tailscale client: tailscale up --login-server={{KUBERO_APP_URL}}.",
+  "installation": "Headscale uses SQLite by default — no database add-on required. HEADSCALE_SERVER_URL must be the public HTTPS URL of this app. After deploy, create a user with headscale users create <name> (exec into the container or use the gRPC API). Generate a pre-auth key with headscale preauthkeys create --user <name> --reusable, then use it with the Tailscale client: tailscale up --login-server={{STACKBLAZE_APP_URL}}.",
   "screenshots": [],
   "links": [
     "https://headscale.net/running-headscale-container/"
@@ -34,7 +34,7 @@
     },
     {
       "name": "HEADSCALE_SERVER_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "HEADSCALE_DB_TYPE",

@@ -461,7 +461,7 @@ def build_specs() -> None:
                     valkey_addon("chatwoot", ha),
                 ],
                 "envVars": [
-                    {"name": "FRONTEND_URL", "value": "{{KUBERO_APP_URL}}"},
+                    {"name": "FRONTEND_URL", "value": "{{STACKBLAZE_APP_URL}}"},
                     {"name": "POSTGRES_HOST", "value": "chatwoot-postgresql-rw"},
                     {"name": "POSTGRES_PORT", "value": "5432"},
                     {"name": "POSTGRES_DATABASE", "value": "chatwoot"},
@@ -523,8 +523,8 @@ def build_specs() -> None:
                         "name": "DATABASE_URL",
                         "value": "postgresql://typebot:typebot@typebot-postgresql-rw:5432/typebot",
                     },
-                    {"name": "NEXTAUTH_URL", "value": "{{KUBERO_APP_URL}}"},
-                    {"name": "NEXT_PUBLIC_VIEWER_URL", "value": "{{KUBERO_APP_URL}}"},
+                    {"name": "NEXTAUTH_URL", "value": "{{STACKBLAZE_APP_URL}}"},
+                    {"name": "NEXT_PUBLIC_VIEWER_URL", "value": "{{STACKBLAZE_APP_URL}}"},
                     {"name": "NEXTAUTH_SECRET", "value": "replace-with-openssl-rand-base64-32"},
                     {"name": "ENCRYPTION_SECRET", "value": "replace-with-openssl-rand-base64-32"},
                     {"name": "ADMIN_EMAIL", "value": "admin@example.com"},
@@ -571,7 +571,7 @@ def build_specs() -> None:
                     clickhouse_addon("plausible", ch_pass, 1),
                 ],
                 "envVars": [
-                    {"name": "BASE_URL", "value": "{{KUBERO_APP_URL}}"},
+                    {"name": "BASE_URL", "value": "{{STACKBLAZE_APP_URL}}"},
                     {
                         "name": "SECRET_KEY_BASE",
                         "value": "0000000000000000000000000000000000000000000000000000000000000000",
@@ -633,8 +633,8 @@ def build_specs() -> None:
                     valkey_addon("plane", ha),
                 ],
                 "envVars": [
-                    {"name": "WEB_URL", "value": "{{KUBERO_APP_URL}}"},
-                    {"name": "CORS_ALLOWED_ORIGINS", "value": "{{KUBERO_APP_URL}}"},
+                    {"name": "WEB_URL", "value": "{{STACKBLAZE_APP_URL}}"},
+                    {"name": "CORS_ALLOWED_ORIGINS", "value": "{{STACKBLAZE_APP_URL}}"},
                     {"name": "DATABASE_URL", "value": "postgresql://plane:plane@plane-postgresql-rw:5432/plane"},
                     {"name": "REDIS_URL", "value": "redis://rfr-plane-valkey-readwrite:6379/0"},
                     {"name": "SECRET_KEY", "value": "replace-with-openssl-rand-hex-32"},
@@ -739,7 +739,7 @@ def build_specs() -> None:
                     valkey_addon("infisical", ha),
                 ],
                 "envVars": [
-                    {"name": "SITE_URL", "value": "{{KUBERO_APP_URL}}"},
+                    {"name": "SITE_URL", "value": "{{STACKBLAZE_APP_URL}}"},
                     {"name": "HOST", "value": "0.0.0.0"},
                     {"name": "PORT", "value": "8080"},
                     {
@@ -787,7 +787,7 @@ def build_specs() -> None:
                 "deploymentstrategy": "docker",
                 "addons": [pg_addon("linkwarden", "linkwarden", "linkwarden", "linkwarden", 3 if ha else 1)],
                 "envVars": [
-                    {"name": "NEXTAUTH_URL", "value": "{{KUBERO_APP_URL}}"},
+                    {"name": "NEXTAUTH_URL", "value": "{{STACKBLAZE_APP_URL}}"},
                     {"name": "NEXTAUTH_SECRET", "value": "replace-with-openssl-rand-base64-32"},
                     {
                         "name": "DATABASE_URL",

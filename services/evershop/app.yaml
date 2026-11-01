@@ -29,7 +29,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-db'
+          name: '{{STACKBLAZE_APP_NAME}}-db'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -49,19 +49,19 @@ spec:
               database: evershop
               owner: evershop
               secret:
-                name: '{{KUBERO_APP_NAME}}-db-app'
+                name: '{{STACKBLAZE_APP_NAME}}-db-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO evershop
               - GRANT CREATE ON SCHEMA public TO evershop
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO evershop
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-db-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-db-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-db-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-db-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -70,7 +70,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-db-app'
+          name: '{{STACKBLAZE_APP_NAME}}-db-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: evershop
@@ -99,7 +99,7 @@ spec:
   - name: SUPPRESS_NO_CONFIG_WARNING
     value: 'true'
   - name: NODE_CONFIG
-    value: '{"shop":{"homeUrl":"https://{{KUBERO_APP_HOST}}"}}'
+    value: '{"shop":{"homeUrl":"https://{{STACKBLAZE_APP_HOST}}"}}'
   extraVolumes: []
   web:
     replicaCount: 1

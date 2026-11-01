@@ -13,7 +13,7 @@ metadata:
       GGUF file in the /models volume, or use the gallery API to install models: POST
       /models/apply with {"id":"gpt4all-j"}. Set THREADS to the number of CPU cores
       available. Use the /v1 endpoints with any OpenAI client library — just point
-      the base URL at {{KUBERO_APP_URL}}/v1.'
+      the base URL at {{STACKBLAZE_APP_URL}}/v1.'
     kubero.dev/template.links: '["https://localai.io/basics/getting_started/"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/mudler/LocalAI/master/docs/static/images/diagrams/composable-core.png"]'
     kubero.dev/template.source: https://github.com/mudler/LocalAI

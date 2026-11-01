@@ -43,11 +43,11 @@
     },
     {
       "name": "APP_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "FRONTEND_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "JWT_SECRET",

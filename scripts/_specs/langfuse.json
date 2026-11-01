@@ -10,7 +10,7 @@
     "monitoring",
     "development"
   ],
-  "installation": "Change NEXTAUTH_SECRET, SALT, and ENCRYPTION_KEY to random values before use (ENCRYPTION_KEY must be a 64-char hex string). LANGFUSE_INIT_* variables seed the first org/project/user — change them or delete after first login. Instrument your app with the Langfuse SDK (pip install langfuse) and set LANGFUSE_HOST={{KUBERO_APP_URL}} in your app. The free self-hosted version includes all features.",
+  "installation": "Change NEXTAUTH_SECRET, SALT, and ENCRYPTION_KEY to random values before use (ENCRYPTION_KEY must be a 64-char hex string). LANGFUSE_INIT_* variables seed the first org/project/user — change them or delete after first login. Instrument your app with the Langfuse SDK (pip install langfuse) and set LANGFUSE_HOST={{STACKBLAZE_APP_URL}} in your app. The free self-hosted version includes all features.",
   "screenshots": [],
   "links": [
     "https://langfuse.com/docs"
@@ -32,7 +32,7 @@
     },
     {
       "name": "NEXTAUTH_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "NEXTAUTH_SECRET",

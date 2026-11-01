@@ -29,12 +29,12 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: limesurvey
           storage:
@@ -52,7 +52,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: root
@@ -94,7 +94,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/application/config
-    name: '{{KUBERO_APP_NAME}}-config'
+    name: '{{STACKBLAZE_APP_NAME}}-config'
     size: 1Gi
     storageClass: shared
   image:

@@ -23,7 +23,7 @@ metadata:
       image `juspaydotin/hyperswitch-consumer:standalone` (executes those tasks);
       both are required for retries, payment-method-tokenization expiry and outgoing
       webhooks to work. (3) CONTROL CENTER (admin dashboard) -> image `juspaydotin/hyperswitch-control-center:latest`
-      (HTTP 9000); set its api_url to this router''s {{KUBERO_APP_URL}}. (4) CHECKOUT/SDK
+      (HTTP 9000); set its api_url to this router''s {{STACKBLAZE_APP_URL}}. (4) CHECKOUT/SDK
       WEB -> image `juspaydotin/hyperswitch-web:latest` (the unified client-side payment
       SDK, served on 9050/9060). FIRST RUN: the standalone router auto-applies DB
       migrations on boot; create your first merchant/admin-api-key via the /user/signup
@@ -55,7 +55,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -75,19 +75,19 @@ spec:
               database: hyperswitch
               owner: hyperswitch
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO hyperswitch
               - GRANT CREATE ON SCHEMA public TO hyperswitch
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO hyperswitch
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -96,7 +96,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: hyperswitch
@@ -111,7 +111,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -136,7 +136,7 @@ spec:
   - name: ROUTER__SERVER__PORT
     value: '8080'
   - name: ROUTER__SERVER__BASE_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: ROUTER__MASTER_DATABASE__HOST
     value: '$(PGHOST)'
   - name: ROUTER__MASTER_DATABASE__PORT

@@ -29,7 +29,7 @@
   "envVars": [
     {
       "name": "SEARXNG_BASE_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "SEARXNG_SECRET",

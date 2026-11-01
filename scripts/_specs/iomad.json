@@ -49,7 +49,7 @@
     },
     {
       "name": "MOODLE_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "SSL_PROXY",

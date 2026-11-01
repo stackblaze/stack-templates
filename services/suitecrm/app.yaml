@@ -45,17 +45,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: suitecrm
           username: suitecrm
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -72,7 +72,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: suitecrm
@@ -80,7 +80,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: suitecrm
@@ -94,7 +94,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -125,7 +125,7 @@ spec:
   - name: SUITECRM_DATABASE_PASSWORD
     value: '$(MYSQL_PASSWORD)'
   - name: SUITECRM_HOST
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: SUITECRM_USERNAME
     value: admin
   - name: SUITECRM_PASSWORD
@@ -143,7 +143,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /bitnami/suitecrm
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

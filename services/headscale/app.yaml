@@ -13,7 +13,7 @@ metadata:
       create a user with headscale users create <name> (exec into the container or
       use the gRPC API). Generate a pre-auth key with headscale preauthkeys create
       --user <name> --reusable, then use it with the Tailscale client: tailscale up
-      --login-server={{KUBERO_APP_URL}}.'
+      --login-server={{STACKBLAZE_APP_URL}}.'
     kubero.dev/template.links: '["https://headscale.net/running-headscale-container/"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/juanfont/headscale/main/docs/assets/logo/headscale3_header_stacked_left.png"]'
     kubero.dev/template.source: https://github.com/juanfont/headscale
@@ -36,7 +36,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -56,19 +56,19 @@ spec:
               database: headscale
               owner: headscale
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO headscale
               - GRANT CREATE ON SCHEMA public TO headscale
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO headscale
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -77,7 +77,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: headscale
@@ -86,7 +86,7 @@ spec:
   - name: HEADSCALE_LISTEN_ADDR
     value: 0.0.0.0:8080
   - name: HEADSCALE_SERVER_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: HEADSCALE_PRIVATE_KEY_PATH
     value: /var/lib/headscale/private.key
   - name: HEADSCALE_NOISE_PRIVATE_KEY_PATH
@@ -118,7 +118,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/headscale
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 1Gi
     storageClass: shared
   cronjobs: []

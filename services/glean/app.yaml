@@ -44,7 +44,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -64,15 +64,15 @@ spec:
               database: glean
               owner: glean
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -81,7 +81,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: glean
@@ -96,7 +96,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -141,7 +141,7 @@ spec:
   - name: MILVUS_PORT
     value: '19530'
   - name: CORS_ORIGINS
-    value: '["{{KUBERO_APP_URL}}"]'
+    value: '["{{STACKBLAZE_APP_URL}}"]'
   - name: LOG_LEVEL
     value: INFO
   - name: DEBUG
@@ -151,7 +151,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/logs
-    name: '{{KUBERO_APP_NAME}}-logs'
+    name: '{{STACKBLAZE_APP_NAME}}-logs'
     size: 1Gi
     storageClass: shared
   cronjobs: []

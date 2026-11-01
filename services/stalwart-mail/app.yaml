@@ -35,14 +35,14 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/stalwart
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 20Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /etc/stalwart
-    name: '{{KUBERO_APP_NAME}}-config'
+    name: '{{STACKBLAZE_APP_NAME}}-config'
     size: 1Gi
     storageClass: shared
   cronjobs: []

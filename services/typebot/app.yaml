@@ -32,7 +32,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -52,19 +52,19 @@ spec:
               database: typebot
               owner: typebot
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO typebot
               - GRANT CREATE ON SCHEMA public TO typebot
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO typebot
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -73,7 +73,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: typebot
@@ -82,9 +82,9 @@ spec:
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: NEXTAUTH_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: NEXT_PUBLIC_VIEWER_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: NEXTAUTH_SECRET
     value: H+KbL/OFrqbEuDy/1zX8bsPG+spXri3S
   - name: ENCRYPTION_SECRET

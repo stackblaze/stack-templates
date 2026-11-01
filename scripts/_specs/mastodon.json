@@ -39,11 +39,11 @@
     },
     {
       "name": "LOCAL_DOMAIN",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "WEB_DOMAIN",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "RAILS_SERVE_STATIC_FILES",

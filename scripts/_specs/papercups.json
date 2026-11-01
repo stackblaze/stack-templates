@@ -49,11 +49,11 @@
     },
     {
       "name": "BACKEND_URL",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "REACT_APP_URL",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "REACT_APP_FILE_UPLOADS_ENABLED",

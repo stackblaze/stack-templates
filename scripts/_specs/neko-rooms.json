@@ -41,11 +41,11 @@
     },
     {
       "name": "NEKO_ROOMS_NAT1TO1",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "NEKO_ROOMS_INSTANCE_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "NEKO_ROOMS_INSTANCE_NETWORK",

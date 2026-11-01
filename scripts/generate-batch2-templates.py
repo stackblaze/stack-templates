@@ -228,7 +228,7 @@ def build_specs() -> None:
                 "deploymentstrategy": "docker",
                 "addons": [],
                 "envVars": [
-                    {"name": "JELLYFIN_PublishedServerUrl", "value": "{{KUBERO_APP_URL}}"},
+                    {"name": "JELLYFIN_PublishedServerUrl", "value": "{{STACKBLAZE_APP_URL}}"},
                 ],
                 "extraVolumes": [
                     {
@@ -280,8 +280,8 @@ def build_specs() -> None:
                     valkey_addon("formbricks", ha),
                 ],
                 "envVars": [
-                    {"name": "WEBAPP_URL", "value": "{{KUBERO_APP_URL}}"},
-                    {"name": "NEXTAUTH_URL", "value": "{{KUBERO_APP_URL}}"},
+                    {"name": "WEBAPP_URL", "value": "{{STACKBLAZE_APP_URL}}"},
+                    {"name": "NEXTAUTH_URL", "value": "{{STACKBLAZE_APP_URL}}"},
                     {
                         "name": "DATABASE_URL",
                         "value": "postgresql://formbricks:formbricks@formbricks-postgresql-rw:5432/formbricks?schema=public",
@@ -426,7 +426,7 @@ def build_specs() -> None:
                     pg_addon("mealie", "mealie", "mealie", "mealie", 3 if ha else 1),
                 ],
                 "envVars": [
-                    {"name": "BASE_URL", "value": "{{KUBERO_APP_URL}}"},
+                    {"name": "BASE_URL", "value": "{{STACKBLAZE_APP_URL}}"},
                     {"name": "DB_ENGINE", "value": "postgres"},
                     {"name": "POSTGRES_SERVER", "value": "mealie-postgresql-rw"},
                     {"name": "POSTGRES_PORT", "value": "5432"},
@@ -478,7 +478,7 @@ def build_specs() -> None:
                 ],
                 "envVars": [
                     {"name": "SETUP", "value": "true"},
-                    {"name": "NODEBB_URL", "value": "{{KUBERO_APP_URL}}"},
+                    {"name": "NODEBB_URL", "value": "{{STACKBLAZE_APP_URL}}"},
                     {"name": "NODEBB_PORT", "value": "4567"},
                     {"name": "NODEBB_ADMIN_USERNAME", "value": "admin"},
                     {"name": "NODEBB_ADMIN_PASSWORD", "value": "change-me-on-first-login"},
@@ -684,7 +684,7 @@ def build_specs() -> None:
                     pg_addon("vikunja", "vikunja", "vikunja", "vikunja", 3 if ha else 1),
                 ],
                 "envVars": [
-                    {"name": "VIKUNJA_SERVICE_PUBLICURL", "value": "{{KUBERO_APP_URL}}"},
+                    {"name": "VIKUNJA_SERVICE_PUBLICURL", "value": "{{STACKBLAZE_APP_URL}}"},
                     {"name": "VIKUNJA_SERVICE_JWTSECRET", "value": "replace-with-openssl-rand-hex-32"},
                     {"name": "VIKUNJA_SERVICE_ENABLEREGISTRATION", "value": "true"},
                     {"name": "VIKUNJA_DATABASE_TYPE", "value": "postgres"},

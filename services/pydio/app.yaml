@@ -13,7 +13,7 @@ metadata:
       On first run Cells auto-installs against the database when CELLS_INSTALL_YAML
       is unset and the DB env vars are present; otherwise open the app URL and complete
       the web installer using DB host pydio-mysql:3306, db/user/pass = pydio. Set
-      CELLS_SITE_EXTERNAL to the app URL (handled via {{KUBERO_APP_URL}}). TLS is
+      CELLS_SITE_EXTERNAL to the app URL (handled via {{STACKBLAZE_APP_URL}}). TLS is
       terminated at the ingress, so the container runs plain HTTP (CELLS_SITE_NO_TLS=1).
       Cells stores config, logs and uploaded files under /var/cells (persistent volume).
       For large-scale search/object storage Cells embeds MinIO and a Bleve index by
@@ -40,17 +40,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: pydio
           username: pydio
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: pydio
@@ -75,7 +75,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: pydio
@@ -85,7 +85,7 @@ spec:
   - name: CELLS_SITE_BIND
     value: 0.0.0.0:8080
   - name: CELLS_SITE_EXTERNAL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: CELLS_SITE_NO_TLS
     value: '1'
   - name: CELLS_NO_TLS
@@ -109,7 +109,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/cells
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

@@ -47,7 +47,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -67,15 +67,15 @@ spec:
               database: saleor
               owner: saleor
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -84,7 +84,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: saleor
@@ -99,7 +99,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -184,13 +184,13 @@ spec:
   - name: DEBUG
     value: 'False'
   - name: ALLOWED_HOSTS
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: ALLOWED_CLIENT_HOSTS
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: ALLOWED_GRAPHQL_ORIGINS
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: PUBLIC_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: DEFAULT_FROM_EMAIL
     value: noreply@example.com
   - name: DEFAULT_CURRENCY
@@ -206,7 +206,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/media
-    name: '{{KUBERO_APP_NAME}}-media'
+    name: '{{STACKBLAZE_APP_NAME}}-media'
     size: 5Gi
     storageClass: shared
   cronjobs: []

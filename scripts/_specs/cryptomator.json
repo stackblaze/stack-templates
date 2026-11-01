@@ -45,11 +45,11 @@
     },
     {
       "name": "HUB_PUBLIC_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "HUB_KEYCLOAK_PUBLIC_URL",
-      "value": "{{KUBERO_APP_URL}}/kc"
+      "value": "{{STACKBLAZE_APP_URL}}/kc"
     },
     {
       "name": "HUB_KEYCLOAK_LOCAL_URL",
@@ -61,7 +61,7 @@
     },
     {
       "name": "QUARKUS_OIDC_AUTH_SERVER_URL",
-      "value": "{{KUBERO_APP_URL}}/kc/realms/cryptomator"
+      "value": "{{STACKBLAZE_APP_URL}}/kc/realms/cryptomator"
     },
     {
       "name": "QUARKUS_OIDC_CLIENT_ID",

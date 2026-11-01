@@ -28,7 +28,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/databag
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 1Gi
     storageClass: shared
   image:

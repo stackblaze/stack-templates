@@ -19,7 +19,7 @@ metadata:
       production: ENCRYPTION_KEY (64-char hex via openssl rand -hex 32; set the same value
       on the web and worker apps), the Postgres/ClickHouse credentials, and LANGFUSE_INIT_*
       seed values. Instrument your app with the Langfuse
-      SDK and set LANGFUSE_HOST={{KUBERO_APP_URL}}.'
+      SDK and set LANGFUSE_HOST={{STACKBLAZE_APP_URL}}.'
     kubero.dev/template.links: '["https://langfuse.com/docs", "https://langfuse.com/self-hosting"]'
     kubero.dev/template.screenshots: '["https://langfuse.com/api/og?title=Langfuse+%E2%80%93+Open+Source+AI+Engineering+Platform&amp;description=Traces%2C+evals%2C+prompt+management+and+metrics+to+debug+and+improve+your+LLM+application."]'
     kubero.dev/template.source: https://github.com/langfuse/langfuse
@@ -42,7 +42,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -62,19 +62,19 @@ spec:
               database: langfuse
               owner: langfuse
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO langfuse
               - GRANT CREATE ON SCHEMA public TO langfuse
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO langfuse
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -83,7 +83,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: langfuse
@@ -98,7 +98,7 @@ spec:
         apiVersion: clickhouse.altinity.com/v1
         kind: ClickHouseInstallation
         metadata:
-          name: '{{KUBERO_APP_NAME}}-clickhouse'
+          name: '{{STACKBLAZE_APP_NAME}}-clickhouse'
         spec:
           configuration:
             users:
@@ -151,7 +151,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -172,31 +172,31 @@ spec:
               memory: 256Mi
   envVars:
   - name: CHHOST
-    value: clickhouse-{{KUBERO_APP_NAME}}-clickhouse
+    value: clickhouse-{{STACKBLAZE_APP_NAME}}-clickhouse
   # The MinIO companion app below. Sibling apps of a catalog group are
   # reached as <nameHint>-<suffix>-kuberoapp on port 80.
   - name: S3HOST
-    value: langfuse-minio-{{KUBERO_NAME_SUFFIX}}-kuberoapp
+    value: langfuse-minio-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
   # Shared with the MinIO companion (one value per variable name across the
   # group), which uses it as MINIO_ROOT_PASSWORD.
   - name: LANGFUSE_MINIO_PASSWORD
-    value: '{{KUBERO_GEN_ALNUM:32}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: NEXTAUTH_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   # Generated at deploy; the worker companion inherits this env, so both get
   # the same SALT (API key hashing).
   - name: NEXTAUTH_SECRET
-    value: '{{KUBERO_GEN_ALNUM:32}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
   - name: SALT
-    value: '{{KUBERO_GEN_ALNUM:32}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
   - name: ENCRYPTION_KEY
     value: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
   - name: CLICKHOUSE_MIGRATION_URL
-    value: clickhouse://clickhouse-{{KUBERO_APP_NAME}}-clickhouse:9000
+    value: clickhouse://clickhouse-{{STACKBLAZE_APP_NAME}}-clickhouse:9000
   - name: CLICKHOUSE_URL
-    value: http://clickhouse-{{KUBERO_APP_NAME}}-clickhouse:8123
+    value: http://clickhouse-{{STACKBLAZE_APP_NAME}}-clickhouse:8123
   - name: CLICKHOUSE_USER
     value: admin
   - name: CLICKHOUSE_PASSWORD
@@ -304,7 +304,7 @@ spec:
       - mkdir -p /data/langfuse && exec minio server --address :9000 --console-address :9001 /data
     envVars:
     - name: LANGFUSE_MINIO_PASSWORD
-      value: '{{KUBERO_GEN_ALNUM:32}}'
+      value: '{{STACKBLAZE_GEN_ALNUM:32}}'
     - name: MINIO_ROOT_USER
       value: langfuseadmin
     - name: MINIO_ROOT_PASSWORD
@@ -314,7 +314,7 @@ spec:
       - ReadWriteMany
       emptyDir: false
       mountPath: /data
-      name: '{{KUBERO_APP_NAME}}-minio-data'
+      name: '{{STACKBLAZE_APP_NAME}}-minio-data'
       size: 5Gi
       storageClass: shared
     healthcheck:

@@ -53,7 +53,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -73,15 +73,15 @@ spec:
               database: hi-events
               owner: hi-events
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -90,7 +90,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: hi-events
@@ -105,7 +105,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -130,9 +130,9 @@ spec:
   - name: APP_DEBUG
     value: 'false'
   - name: APP_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: APP_FRONTEND_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: APP_KEY
     value: base64:replace-with-openssl-rand-base64-32
   - name: JWT_SECRET
@@ -142,11 +142,11 @@ spec:
   - name: APP_SAAS_MODE_ENABLED
     value: 'false'
   - name: VITE_FRONTEND_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: VITE_API_URL_CLIENT
-    value: '{{KUBERO_APP_URL}}/api'
+    value: '{{STACKBLAZE_APP_URL}}/api'
   - name: VITE_API_URL_SERVER
-    value: '{{KUBERO_APP_URL}}/api'
+    value: '{{STACKBLAZE_APP_URL}}/api'
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DB_CONNECTION
@@ -206,7 +206,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/backend/storage/app
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

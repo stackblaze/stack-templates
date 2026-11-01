@@ -141,7 +141,7 @@ spec:
   - name: DB_TYPE
     value: postgres
   - name: DB_HOST
-    value: '{{KUBERO_APP_NAME}}-$(PGHOST)'
+    value: '{{STACKBLAZE_APP_NAME}}-$(PGHOST)'
   - name: DB_PORT
     value: '$(PGPORT)'
   - name: DB_NAME
@@ -153,7 +153,7 @@ spec:
   - name: AMQP_TYPE
     value: rabbitmq
   - name: AMQP_URI
-    value: 'amqp://onlyoffice:onlyoffice@{{KUBERO_APP_NAME}}-ncmq:5672'
+    value: 'amqp://onlyoffice:onlyoffice@{{STACKBLAZE_APP_NAME}}-ncmq:5672'
   - name: REDIS_SERVER_HOST
     value: '$(REDISHOST)'
   - name: REDIS_SERVER_PORT

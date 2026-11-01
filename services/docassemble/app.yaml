@@ -14,7 +14,7 @@ metadata:
       to the bundled add-ons. ROTATE the Postgres password and SECRETKEY (openssl
       rand -base64 32) before production. The container listens on internal port 80;
       set BEHINDHTTPSLOADBALANCER=true because Kubero''s ingress terminates TLS, and
-      DAHOSTNAME is auto-set from {{KUBERO_APP_HOST}}. On first boot the schema is
+      DAHOSTNAME is auto-set from {{STACKBLAZE_APP_HOST}}. On first boot the schema is
       created automatically; the bootstrap admin is admin@admin.com / password (set/rotate
       via the configuration). Persistent application data (uploaded packages, generated
       files, certs, config.yml) lives under /usr/share/docassemble on the volume.
@@ -50,7 +50,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -70,19 +70,19 @@ spec:
               database: docassemble
               owner: docassemble
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO docassemble
               - GRANT CREATE ON SCHEMA public TO docassemble
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO docassemble
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -91,7 +91,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: docassemble
@@ -106,7 +106,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -145,7 +145,7 @@ spec:
   - name: SECRETKEY
     value: replace-with-openssl-rand-base64-32
   - name: DAHOSTNAME
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: BEHINDHTTPSLOADBALANCER
     value: 'true'
   - name: USEHTTPS
@@ -159,7 +159,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /usr/share/docassemble/backup
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

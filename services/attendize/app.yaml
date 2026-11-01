@@ -8,7 +8,7 @@ metadata:
       platform (Laravel) for organizing events and selling tickets online.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/attendize/icon.png
     kubero.dev/template.installation: 'Attendize auto-configures on first boot — no
-      /install wizard. Log in at {{KUBERO_APP_URL}}/login with admin@example.com /
+      /install wizard. Log in at {{STACKBLAZE_APP_URL}}/login with admin@example.com /
       changeme (change immediately). Sample organiser and demo events are pre-loaded.
       A queue worker runs in the background for PDF tickets and email jobs. SMTP is
       still placeholder (smtp.example.com) — set MAIL_HOST/MAIL_PORT/MAIL_USERNAME/MAIL_PASSWORD
@@ -38,17 +38,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: attendize
           username: attendize
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -65,7 +65,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: attendize
@@ -73,7 +73,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: attendize
@@ -87,7 +87,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -112,7 +112,7 @@ spec:
   - name: APP_DEBUG
     value: 'false'
   - name: APP_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: APP_KEY
     value: base64:NOZophDCMGE4GYrdDTo5Zt6yEKW+ymEHy85Wtk/HU58=
   - name: DB_CONNECTION
@@ -170,7 +170,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/public/uploads
-    name: '{{KUBERO_APP_NAME}}-uploads'
+    name: '{{STACKBLAZE_APP_NAME}}-uploads'
     size: 5Gi
     storageClass: shared
   cronjobs: []

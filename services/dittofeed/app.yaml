@@ -46,7 +46,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -66,7 +66,7 @@ spec:
               database: dittofeed
               owner: dittofeed
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO dittofeed
               - GRANT CREATE ON SCHEMA public TO dittofeed
@@ -77,12 +77,12 @@ spec:
               - ALTER ROLE dittofeed CREATEDB
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -91,7 +91,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: dittofeed
@@ -106,7 +106,7 @@ spec:
         apiVersion: clickhouse.altinity.com/v1
         kind: ClickHouseInstallation
         metadata:
-          name: '{{KUBERO_APP_NAME}}-clickhouse'
+          name: '{{STACKBLAZE_APP_NAME}}-clickhouse'
         spec:
           configuration:
             users:
@@ -155,9 +155,9 @@ spec:
   # (AES-256-GCM key): 43 base64 characters plus one '=' pad do. PASSWORD is
   # the single-tenant dashboard login; read it from this app's env.
   - name: SECRET_KEY
-    value: '{{KUBERO_GEN_ALNUM:43}}='
+    value: '{{STACKBLAZE_GEN_ALNUM:43}}='
   - name: PASSWORD
-    value: '{{KUBERO_GEN_ALNUM:24}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
   - name: DATABASE_HOST
     value: '$(PGHOST)'
   - name: DATABASE_PORT
@@ -169,7 +169,7 @@ spec:
   - name: DATABASE_NAME
     value: '$(PGDATABASE)'
   - name: CLICKHOUSE_HOST
-    value: http://clickhouse-{{KUBERO_APP_NAME}}-clickhouse:8123
+    value: http://clickhouse-{{STACKBLAZE_APP_NAME}}-clickhouse:8123
   - name: CLICKHOUSE_USER
     value: admin
   - name: CLICKHOUSE_PASSWORD
@@ -179,9 +179,9 @@ spec:
   # The Temporal companion app below (gRPC). Sibling apps of a catalog group
   # are reached as <nameHint>-<suffix>-kuberoapp on port 80.
   - name: TEMPORAL_ADDRESS
-    value: dittofeed-temporal-{{KUBERO_NAME_SUFFIX}}-kuberoapp:80
+    value: dittofeed-temporal-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp:80
   - name: DASHBOARD_API_BASE
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   extraVolumes: []
   cronjobs: []
   healthcheck:

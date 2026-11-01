@@ -22,7 +22,7 @@ metadata:
       \ (rfr-bigcapital-valkey-readwrite:6379, no password) used for both cache and\
       \ the BullMQ job queue. BEFORE exposing publicly ROTATE: JWT_SECRET (openssl\
       \ rand -hex 32) and the MariaDB password (default 'bigcapital'). Set BASE_URL\
-      \ to your public URL (pre-filled with {{KUBERO_APP_URL}}). After the stack is\
+      \ to your public URL (pre-filled with {{STACKBLAZE_APP_URL}}). After the stack is\
       \ up, browse to the gateway URL and create the first account (no default account\
       \ exists); set SIGNUP_DISABLED=true afterward to lock down registration. Optional\
       \ integrations (Plaid bank sync, Stripe/Lemon Squeezy billing, S3 attachments,\
@@ -50,17 +50,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: bigcapital
           username: bigcapital
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -77,7 +77,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: bigcapital
@@ -85,7 +85,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: bigcapital
@@ -99,7 +99,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -120,7 +120,7 @@ spec:
               memory: 256Mi
   envVars:
   - name: BASE_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: PORT
     value: '3000'
   - name: NODE_ENV
@@ -172,7 +172,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []

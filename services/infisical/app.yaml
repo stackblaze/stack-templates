@@ -31,7 +31,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -51,19 +51,19 @@ spec:
               database: infisical
               owner: infisical
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO infisical
               - GRANT CREATE ON SCHEMA public TO infisical
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO infisical
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -72,7 +72,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: infisical
@@ -87,7 +87,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -122,7 +122,7 @@ spec:
     resourceDefinitions: {}
   envVars:
   - name: SITE_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: NODE_ENV
     value: production
   - name: TELEMETRY_ENABLED
@@ -131,9 +131,9 @@ spec:
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
   # 16-byte hex (openssl rand -hex 16). 32-byte base64 (openssl rand -base64 32).
   - name: ENCRYPTION_KEY
-    value: '{{KUBERO_GEN_HEX:32}}'
+    value: '{{STACKBLAZE_GEN_HEX:32}}'
   - name: AUTH_SECRET
-    value: '{{KUBERO_GEN_ALNUM:43}}='
+    value: '{{STACKBLAZE_GEN_ALNUM:43}}='
   extraVolumes: []
   cronjobs: []
   web:

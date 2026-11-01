@@ -32,7 +32,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-db'
+          name: '{{STACKBLAZE_APP_NAME}}-db'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -52,7 +52,7 @@ spec:
               database: chatwoot
               owner: chatwoot
               secret:
-                name: '{{KUBERO_APP_NAME}}-db-app'
+                name: '{{STACKBLAZE_APP_NAME}}-db-app'
               postInitApplicationSQL:
               - CREATE EXTENSION IF NOT EXISTS vector
               - CREATE EXTENSION IF NOT EXISTS pgcrypto
@@ -62,12 +62,12 @@ spec:
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO chatwoot
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-db-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-db-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-db-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-db-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -76,7 +76,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-db-app'
+          name: '{{STACKBLAZE_APP_NAME}}-db-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: chatwoot
@@ -91,7 +91,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-cache'
+          name: '{{STACKBLAZE_APP_NAME}}-cache'
         spec:
           version: '8.0'
           arch: replica
@@ -112,7 +112,7 @@ spec:
               memory: 256Mi
   envVars:
   - name: FRONTEND_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: POSTGRES_HOST
     value: '$(PGHOST)'
   - name: POSTGRES_PORT
@@ -140,7 +140,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/storage
-    name: '{{KUBERO_APP_NAME}}-storage'
+    name: '{{STACKBLAZE_APP_NAME}}-storage'
     size: 2Gi
     storageClass: shared
   cronjobs: []

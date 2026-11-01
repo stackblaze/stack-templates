@@ -21,9 +21,9 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: MAIN_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: FRONTEND_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: JWT_SECRET
     value: random string that is unique to every install - just type random characters
       here!
@@ -38,7 +38,7 @@ spec:
   - name: NEXT_PUBLIC_UPLOAD_DIRECTORY
     value: /upload
   - name: NEXT_PUBLIC_BACKEND_URL
-    value: '{{KUBERO_APP_URL}}/api'
+    value: '{{STACKBLAZE_APP_URL}}/api'
   - name: BACKEND_INTERNAL_URL
     value: http://localhost:3000
   extraVolumes:
@@ -53,7 +53,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /config
-    name: '{{KUBERO_APP_NAME}}-config-volume'
+    name: '{{STACKBLAZE_APP_NAME}}-config-volume'
     size: 1Gi
     storageClass: shared
   cronjobs: []
@@ -68,7 +68,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -88,19 +88,19 @@ spec:
               database: postiz
               owner: postiz
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO postiz
               - GRANT CREATE ON SCHEMA public TO postiz
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO postiz
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -109,7 +109,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: postiz
@@ -124,7 +124,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica

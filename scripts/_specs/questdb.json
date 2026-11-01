@@ -10,7 +10,7 @@
     "analytics",
     "data"
   ],
-  "installation": "QuestDB exposes a web console at port 9000 (also accessible via {{KUBERO_APP_URL}}). Query with SQL in the web console or via the REST API at /exec?query=. The PostgreSQL wire protocol runs on port 8812 (not exposed externally). Ingest data via InfluxDB line protocol (TCP 9009) or REST. Partitioned by day/month/year for optimal time-series performance.",
+  "installation": "QuestDB exposes a web console at port 9000 (also accessible via {{STACKBLAZE_APP_URL}}). Query with SQL in the web console or via the REST API at /exec?query=. The PostgreSQL wire protocol runs on port 8812 (not exposed externally). Ingest data via InfluxDB line protocol (TCP 9009) or REST. Partitioned by day/month/year for optimal time-series performance.",
   "screenshots": [],
   "links": [
     "https://questdb.io/docs/"

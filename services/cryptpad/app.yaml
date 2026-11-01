@@ -24,7 +24,7 @@ spec:
   addons: []
   envVars:
   - name: CPAD_MAIN_DOMAIN
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: CPAD_SANDBOX_DOMAIN
     value: https://sandbox.example.com
   - name: CPAD_CONF
@@ -48,14 +48,14 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /cryptpad/data
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /cryptpad/datastore
-    name: '{{KUBERO_APP_NAME}}-files'
+    name: '{{STACKBLAZE_APP_NAME}}-files'
     size: 2Gi
     storageClass: shared
   cronjobs: []

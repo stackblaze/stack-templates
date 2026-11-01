@@ -47,7 +47,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -67,19 +67,19 @@ spec:
               database: taiga
               owner: taiga
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO taiga
               - GRANT CREATE ON SCHEMA public TO taiga
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO taiga
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -88,7 +88,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: taiga
@@ -137,7 +137,7 @@ spec:
   - name: TAIGA_SITES_SCHEME
     value: https
   - name: TAIGA_SITES_DOMAIN
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: TAIGA_SUBPATH
     value: ''
   - name: RABBITMQ_USER
@@ -159,7 +159,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /taiga-back/media
-    name: '{{KUBERO_APP_NAME}}-media'
+    name: '{{STACKBLAZE_APP_NAME}}-media'
     size: 5Gi
     storageClass: shared
   cronjobs: []

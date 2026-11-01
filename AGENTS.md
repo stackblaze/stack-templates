@@ -69,7 +69,7 @@ Workflows in `.github/workflows` (none gate PRs):
 ## Repo-specific gotchas
 
 - **Communal DB contract** (README "Database connection contract"): never
-  hard-code `{{KUBERO_APP_NAME}}-postgresql-rw`, `-mysql`, `rfr-...-valkey`, or a
+  hard-code `{{STACKBLAZE_APP_NAME}}-postgresql-rw`, `-mysql`, `rfr-...-valkey`, or a
   literal DB user/password; compose from injected `PGHOST`/`PGUSER`/...,
   `MYSQL_*`, `REDISHOST`/`REDISPORT`/`REDIS_URL` via `$(NAME)`. Never define a
   variable with an injected name, it overrides the real credentials. Keep the

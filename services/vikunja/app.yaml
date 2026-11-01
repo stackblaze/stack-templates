@@ -31,7 +31,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -51,15 +51,15 @@ spec:
               database: vikunja
               owner: vikunja
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -68,14 +68,14 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: vikunja
           password: vikunja
   envVars:
   - name: VIKUNJA_SERVICE_PUBLICURL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: VIKUNJA_SERVICE_JWTSECRET
     value: replace-with-openssl-rand-hex-32
   - name: VIKUNJA_SERVICE_ENABLEREGISTRATION
@@ -95,7 +95,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/vikunja/files
-    name: '{{KUBERO_APP_NAME}}-files'
+    name: '{{STACKBLAZE_APP_NAME}}-files'
     size: 2Gi
     storageClass: shared
   cronjobs: []

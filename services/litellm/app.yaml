@@ -12,7 +12,7 @@ metadata:
       endpoint that proxies to any LLM provider. Set LITELLM_MASTER_KEY (must start
       with sk-). Add models via the /ui dashboard (login with UI_USERNAME/UI_PASSWORD)
       or via the /models API. The Postgres add-on persists model configs, spend logs,
-      and keys. Connect any OpenAI SDK client to {{KUBERO_APP_URL}}/v1 with Authorization:
+      and keys. Connect any OpenAI SDK client to {{STACKBLAZE_APP_URL}}/v1 with Authorization:
       Bearer sk-change-me.'
     kubero.dev/template.links: '["https://docs.litellm.ai/"]'
     kubero.dev/template.screenshots: '["https://framerusercontent.com/images/DbFHR1t71NpmaSxIqej1LKWzD4.png"]'
@@ -36,7 +36,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -56,19 +56,19 @@ spec:
               database: litellm
               owner: litellm
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO litellm
               - GRANT CREATE ON SCHEMA public TO litellm
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO litellm
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -77,7 +77,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: litellm

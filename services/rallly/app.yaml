@@ -26,7 +26,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -46,19 +46,19 @@ spec:
               database: postgresql
               owner: rallly
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO rallly
               - GRANT CREATE ON SCHEMA public TO rallly
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO rallly
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: rallly
@@ -82,7 +82,7 @@ spec:
         apiVersion: rustfs.com/v1alpha1
         kind: Tenant
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rustfs'
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs'
           annotations:
             # The operator refuses custom-repo images it cannot verify for
             # RuntimeDefault seccomp ("WorkloadSecurityIncompatible") unless the
@@ -91,7 +91,7 @@ spec:
         spec:
           image: docker.io/rustfs/rustfs:1.0.0-beta.10
           credsSecret:
-            name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+            name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
           pools:
           - name: pool-0
             servers: 1
@@ -108,7 +108,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
         type: Opaque
         stringData:
           accesskey: ralllyadmin
@@ -119,7 +119,7 @@ spec:
   - name: NODE_ENV
     value: production
   - name: NEXT_PUBLIC_BASE_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: DATABASE_URL
     value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: SECRET_PASSWORD
@@ -129,7 +129,7 @@ spec:
   - name: NOREPLY_EMAIL
     value: noreply@example.com
   - name: S3_ENDPOINT
-    value: http://{{KUBERO_APP_NAME}}-rustfs:9000
+    value: http://{{STACKBLAZE_APP_NAME}}-rustfs:9000
   - name: S3_BUCKET_NAME
     value: rallly
   - name: S3_REGION

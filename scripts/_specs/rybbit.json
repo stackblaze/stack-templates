@@ -10,7 +10,7 @@
     "data",
     "utilities"
   ],
-  "installation": "Rybbit is a multi-container stack. This template deploys the PRIMARY server image ghcr.io/rybbit-io/rybbit-backend (Node/Koa API, port 3001). You MUST also deploy the companion frontend container ghcr.io/rybbit-io/rybbit-client (Next.js, port 3002) and route browser traffic to it; the client talks to this backend via BASE_URL. Add-ons provisioned: ClickHouse (analytics events), Postgres (accounts/projects), and Valkey/Redis (caching/sessions). Before first run: rotate BETTER_AUTH_SECRET (openssl rand -hex 32), and rotate the Postgres and ClickHouse passwords from the slug defaults. Set BASE_URL/{{KUBERO_APP_URL}} to the public client URL. The first account created becomes the admin; set DISABLE_SIGNUP=true after creating it. Optional: MAPBOX_TOKEN for the world map, OPENROUTER_API_KEY for AI features.",
+  "installation": "Rybbit is a multi-container stack. This template deploys the PRIMARY server image ghcr.io/rybbit-io/rybbit-backend (Node/Koa API, port 3001). You MUST also deploy the companion frontend container ghcr.io/rybbit-io/rybbit-client (Next.js, port 3002) and route browser traffic to it; the client talks to this backend via BASE_URL. Add-ons provisioned: ClickHouse (analytics events), Postgres (accounts/projects), and Valkey/Redis (caching/sessions). Before first run: rotate BETTER_AUTH_SECRET (openssl rand -hex 32), and rotate the Postgres and ClickHouse passwords from the slug defaults. Set BASE_URL/{{STACKBLAZE_APP_URL}} to the public client URL. The first account created becomes the admin; set DISABLE_SIGNUP=true after creating it. Optional: MAPBOX_TOKEN for the world map, OPENROUTER_API_KEY for AI features.",
   "screenshots": [],
   "links": [
     "https://rybbit.com/docs/self-hosting-manual"
@@ -32,7 +32,7 @@
     },
     {
       "name": "BASE_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "BETTER_AUTH_SECRET",

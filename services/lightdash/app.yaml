@@ -20,7 +20,7 @@ metadata:
       \ instead if preferred). ROTATE before exposing: LIGHTDASH_SECRET (`openssl\
       \ rand -base64 32`; do NOT change it after data exists or saved warehouse credentials\
       \ become undecryptable) and the Postgres add-on password (keep PGPASSWORD in\
-      \ sync). Set SITE_URL via the {{KUBERO_APP_URL}} token (already wired). The\
+      \ sync). Set SITE_URL via the {{STACKBLAZE_APP_URL}} token (already wired). The\
       \ first user to register becomes the admin/owner. Optional outbound email needs\
       \ the EMAIL_SMTP_* env vars (not provisioned)."
     kubero.dev/template.links: '["https://docs.lightdash.com/self-host/self-host-lightdash",
@@ -46,7 +46,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -66,19 +66,19 @@ spec:
               database: lightdash
               owner: lightdash
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO lightdash
               - GRANT CREATE ON SCHEMA public TO lightdash
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO lightdash
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -87,7 +87,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: lightdash
@@ -102,7 +102,7 @@ spec:
         apiVersion: rustfs.com/v1alpha1
         kind: Tenant
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rustfs'
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs'
           annotations:
             # The operator refuses custom-repo images it cannot verify for
             # RuntimeDefault seccomp ("WorkloadSecurityIncompatible") unless the
@@ -111,7 +111,7 @@ spec:
         spec:
           image: docker.io/rustfs/rustfs:1.0.0-beta.10
           credsSecret:
-            name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+            name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
           pools:
           - name: pool-0
             servers: 1
@@ -128,7 +128,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
         type: Opaque
         stringData:
           accesskey: lightdashadmin
@@ -139,7 +139,7 @@ spec:
   - name: PORT
     value: '8080'
   - name: SITE_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: TRUST_PROXY
     value: 'true'
   - name: SECURE_COOKIES
@@ -153,7 +153,7 @@ spec:
   - name: LIGHTDASH_INSTALL_TYPE
     value: kubero
   - name: S3_ENDPOINT
-    value: http://{{KUBERO_APP_NAME}}-rustfs:9000
+    value: http://{{STACKBLAZE_APP_NAME}}-rustfs:9000
   - name: S3_BUCKET
     value: lightdash
   - name: S3_REGION

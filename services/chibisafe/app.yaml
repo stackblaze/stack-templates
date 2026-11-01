@@ -26,21 +26,21 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /home/node/chibisafe/database
-    name: '{{KUBERO_APP_NAME}}-db-volume'
+    name: '{{STACKBLAZE_APP_NAME}}-db-volume'
     size: 1Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /home/node/chibisafe/uploads
-    name: '{{KUBERO_APP_NAME}}-uploads-volume'
+    name: '{{STACKBLAZE_APP_NAME}}-uploads-volume'
     size: 1Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /home/node/chibisafe/logs
-    name: '{{KUBERO_APP_NAME}}-logs-volume'
+    name: '{{STACKBLAZE_APP_NAME}}-logs-volume'
     size: 1Gi
     storageClass: shared
   healthcheck:

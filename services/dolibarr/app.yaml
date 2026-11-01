@@ -32,17 +32,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-dolibarr-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-dolibarr-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-dolibarr-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-dolibarr-mysql-root'
             key: password
           database: dolidb
           username: dolidbuser
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-dolibarr-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-dolibarr-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -59,7 +59,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-dolibarr-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-dolibarr-mysql-root'
         type: Opaque
         stringData:
           password: dolidbpass
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-dolibarr-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-dolibarr-mysql-app'
         type: Opaque
         stringData:
           password: dolidbpass
@@ -81,7 +81,7 @@ spec:
   - name: DOLI_DB_PASSWORD
     value: '$(MYSQL_PASSWORD)'
   - name: DOLI_URL_ROOT
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

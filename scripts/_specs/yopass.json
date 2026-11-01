@@ -10,7 +10,7 @@
     "utilities",
     "productivity"
   ],
-  "installation": "Yopass stores encrypted secrets ephemerally in Memcached (deployed as the bundled add-on); secrets auto-expire by TTL so no persistent volume is required. The server is reached at the memcached add-on host yopass-memcached:11211 via the MEMCACHED env var. Secrets are encrypted in the browser before upload, so the server never sees plaintext. Set the public URL via the BASE_URL env (already wired to {{KUBERO_APP_URL}}) so generated share links are correct. For production behind the Kubero ingress, optionally set TRUSTED_PROXIES to the ingress CIDR. No database credentials to rotate.",
+  "installation": "Yopass stores encrypted secrets ephemerally in Memcached (deployed as the bundled add-on); secrets auto-expire by TTL so no persistent volume is required. The server is reached at the memcached add-on host yopass-memcached:11211 via the MEMCACHED env var. Secrets are encrypted in the browser before upload, so the server never sees plaintext. Set the public URL via the BASE_URL env (already wired to {{STACKBLAZE_APP_URL}}) so generated share links are correct. For production behind the Kubero ingress, optionally set TRUSTED_PROXIES to the ingress CIDR. No database credentials to rotate.",
   "screenshots": [],
   "links": [
     "https://github.com/jhaals/yopass#yopass",
@@ -50,7 +50,7 @@
     },
     {
       "name": "BASE_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "MAX_LENGTH",

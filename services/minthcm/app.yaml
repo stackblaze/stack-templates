@@ -13,7 +13,7 @@ metadata:
       The bundled MariaDB add-on holds all relational data; rotate the default db
       password (currently the slug 'minthcm') after first deploy. On first run the
       entrypoint installs the schema using MINT_USER/MINT_PASS (admin/minthcm) and
-      MINT_URL ({{KUBERO_APP_URL}}) - log in and change the admin password immediately.
+      MINT_URL ({{STACKBLAZE_APP_URL}}) - log in and change the admin password immediately.
       Set INSTALL_DEMO_DATA=yes only for evaluation. First boot clones the app and
       runs MintCLI install (several minutes). Persistent state lives under /var/www/html
       (.initialized marker) and /var/spool/cron/crontabs (scheduled jobs).
@@ -40,17 +40,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: minthcm
           username: minthcm
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: minthcm
@@ -75,7 +75,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: minthcm
@@ -91,13 +91,13 @@ spec:
   - name: DB_PASS
     value: '$(MYSQL_PASSWORD)'
   - name: MINT_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: MINT_USER
     value: admin
   - name: MINT_PASS
     value: minthcm
   - name: ELASTICSEARCH_HOST
-    value: '{{KUBERO_APP_NAME}}-elasticsearch'
+    value: '{{STACKBLAZE_APP_NAME}}-elasticsearch'
   - name: ELASTICSEARCH_PORT
     value: '9200'
   - name: ELASTICSEARCH_USERNAME
@@ -115,7 +115,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   - accessModes:

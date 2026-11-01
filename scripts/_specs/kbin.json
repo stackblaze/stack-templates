@@ -10,7 +10,7 @@
     "communication",
     "media"
   ],
-  "installation": "kbin is a multi-container Symfony/PHP stack and does NOT ship a single official all-in-one image; this template runs the primary web tier (combined nginx + PHP-FPM, listening on port 8080) using the community-maintained kbin docker build. After deploy you MUST also run the companion services from the same source image/repo (ernestwisniewski/kbin): a 'messenger' worker container running 'php bin/console messenger:consume async old' for federation/queue processing, and a Mercure SSE hub (image dunglas/mercure) for real-time updates. First run: exec into the web pod and run 'php bin/console doctrine:migrations:migrate', 'php bin/console kbin:user:create <admin> <email> <password>', then 'php bin/console kbin:user:admin <admin>' to grant admin. ROTATE: APP_SECRET (openssl rand -hex 16), MERCURE_JWT_SECRET, and the postgres/rabbitmq passwords (all default to the slug). Media/uploads are stored on disk (/var/www/html/public/media) — mounted as a persistent volume. S3 media storage is optional and can be configured later via S3_* env vars (omitted here). Federation requires that {{KUBERO_APP_HOST}} resolves publicly over HTTPS.",
+  "installation": "kbin is a multi-container Symfony/PHP stack and does NOT ship a single official all-in-one image; this template runs the primary web tier (combined nginx + PHP-FPM, listening on port 8080) using the community-maintained kbin docker build. After deploy you MUST also run the companion services from the same source image/repo (ernestwisniewski/kbin): a 'messenger' worker container running 'php bin/console messenger:consume async old' for federation/queue processing, and a Mercure SSE hub (image dunglas/mercure) for real-time updates. First run: exec into the web pod and run 'php bin/console doctrine:migrations:migrate', 'php bin/console kbin:user:create <admin> <email> <password>', then 'php bin/console kbin:user:admin <admin>' to grant admin. ROTATE: APP_SECRET (openssl rand -hex 16), MERCURE_JWT_SECRET, and the postgres/rabbitmq passwords (all default to the slug). Media/uploads are stored on disk (/var/www/html/public/media) — mounted as a persistent volume. S3 media storage is optional and can be configured later via S3_* env vars (omitted here). Federation requires that {{STACKBLAZE_APP_HOST}} resolves publicly over HTTPS.",
   "screenshots": [],
   "links": [
     "https://docs.kbin.pub",
@@ -41,11 +41,11 @@
     },
     {
       "name": "SERVER_NAME",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "KBIN_DOMAIN",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "KBIN_TITLE",
@@ -105,11 +105,11 @@
     },
     {
       "name": "MERCURE_URL",
-      "value": "{{KUBERO_APP_URL}}/.well-known/mercure"
+      "value": "{{STACKBLAZE_APP_URL}}/.well-known/mercure"
     },
     {
       "name": "MERCURE_PUBLIC_URL",
-      "value": "{{KUBERO_APP_URL}}/.well-known/mercure"
+      "value": "{{STACKBLAZE_APP_URL}}/.well-known/mercure"
     },
     {
       "name": "MERCURE_JWT_SECRET",
@@ -117,7 +117,7 @@
     },
     {
       "name": "CORS_ALLOW_ORIGIN",
-      "value": "^https?://{{KUBERO_APP_HOST}}$"
+      "value": "^https?://{{STACKBLAZE_APP_HOST}}$"
     },
     {
       "name": "TRUSTED_PROXIES",
@@ -125,7 +125,7 @@
     },
     {
       "name": "TRUSTED_HOSTS",
-      "value": "^{{KUBERO_APP_HOST}}$"
+      "value": "^{{STACKBLAZE_APP_HOST}}$"
     }
   ],
   "addons": [

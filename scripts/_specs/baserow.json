@@ -56,7 +56,7 @@
     },
     {
       "name": "BASEROW_PUBLIC_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "SECRET_KEY",

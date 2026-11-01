@@ -22,9 +22,9 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: APP_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: APP_SECRET
-    value: '{{KUBERO_GEN_HEX:64}}'
+    value: '{{STACKBLAZE_GEN_HEX:64}}'
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
   # Docmost reads AWS_S3_*; the Tenant injects S3_ENDPOINT, AWS_REGION,
@@ -52,7 +52,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -72,15 +72,15 @@ spec:
               database: docmost
               owner: docmost
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -89,7 +89,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: docmost
@@ -104,7 +104,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -153,13 +153,13 @@ spec:
         apiVersion: rustfs.com/v1alpha1
         kind: Tenant
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rustfs'
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs'
           annotations:
             operator.rustfs.com/runtime-default-image-ack: docker.io/rustfs/rustfs:1.0.0-beta.10
         spec:
           image: docker.io/rustfs/rustfs:1.0.0-beta.10
           credsSecret:
-            name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+            name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
           pools:
           - name: pool-0
             servers: 1
@@ -176,11 +176,11 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
         type: Opaque
         stringData:
           accesskey: docmost
-          secretkey: '{{KUBERO_GEN_HEX:32}}'
+          secretkey: '{{STACKBLAZE_GEN_HEX:32}}'
   web:
     replicaCount: 1
   worker:

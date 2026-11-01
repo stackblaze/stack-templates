@@ -410,7 +410,7 @@ APPS: list[dict] = [
         "envVars": [
             {"name": "DATABASE_URL", "value": "postgresql://open-webui:open-webui@open-webui-postgresql-rw:5432/open-webui"},
             {"name": "WEBUI_SECRET_KEY", "value": "change-me-to-a-random-32char-secret"},
-            {"name": "WEBUI_URL", "value": "{{KUBERO_APP_URL}}"},
+            {"name": "WEBUI_URL", "value": "{{STACKBLAZE_APP_URL}}"},
             {"name": "OLLAMA_BASE_URL", "value": ""},
             {"name": "OPENAI_API_KEY", "value": ""},
             {"name": "OPENAI_API_BASE_URL", "value": "https://api.openai.com/v1"},
@@ -448,7 +448,7 @@ APPS: list[dict] = [
         "extraVolumes": [],
         "resources": {"requests": {"cpu": "250m", "memory": "512Mi"}, "limits": {"cpu": "2", "memory": "2Gi"}},
         "healthcheck": {"path": "/health/liveliness", "startupSeconds": 120},
-        "installation": "LiteLLM provides a single OpenAI-compatible endpoint that proxies to any LLM provider. Set LITELLM_MASTER_KEY (must start with sk-). Add models via the /ui dashboard (login with UI_USERNAME/UI_PASSWORD) or via the /models API. The Postgres add-on persists model configs, spend logs, and keys. Connect any OpenAI SDK client to {{KUBERO_APP_URL}}/v1 with Authorization: Bearer sk-change-me.",
+        "installation": "LiteLLM provides a single OpenAI-compatible endpoint that proxies to any LLM provider. Set LITELLM_MASTER_KEY (must start with sk-). Add models via the /ui dashboard (login with UI_USERNAME/UI_PASSWORD) or via the /models API. The Postgres add-on persists model configs, spend logs, and keys. Connect any OpenAI SDK client to {{STACKBLAZE_APP_URL}}/v1 with Authorization: Bearer sk-change-me.",
     },
 
     {
@@ -468,7 +468,7 @@ APPS: list[dict] = [
         "addons": [{"type": "postgres", "name": "langfuse", "db": "langfuse", "user": "langfuse", "password": "langfuse"}],
         "envVars": [
             {"name": "DATABASE_URL", "value": "postgresql://langfuse:langfuse@langfuse-postgresql-rw:5432/langfuse"},
-            {"name": "NEXTAUTH_URL", "value": "{{KUBERO_APP_URL}}"},
+            {"name": "NEXTAUTH_URL", "value": "{{STACKBLAZE_APP_URL}}"},
             {"name": "NEXTAUTH_SECRET", "value": "change-me-to-random-32char-string"},
             {"name": "SALT", "value": "change-me-to-random-string"},
             {"name": "ENCRYPTION_KEY", "value": "0000000000000000000000000000000000000000000000000000000000000000"},
@@ -483,7 +483,7 @@ APPS: list[dict] = [
         "extraVolumes": [],
         "resources": {"requests": {"cpu": "250m", "memory": "512Mi"}, "limits": {"cpu": "2", "memory": "2Gi"}},
         "healthcheck": {"path": "/api/public/health", "startupSeconds": 180},
-        "installation": "Change NEXTAUTH_SECRET, SALT, and ENCRYPTION_KEY to random values before use (ENCRYPTION_KEY must be a 64-char hex string). LANGFUSE_INIT_* variables seed the first org/project/user — change them or delete after first login. Instrument your app with the Langfuse SDK (pip install langfuse) and set LANGFUSE_HOST={{KUBERO_APP_URL}} in your app. The free self-hosted version includes all features.",
+        "installation": "Change NEXTAUTH_SECRET, SALT, and ENCRYPTION_KEY to random values before use (ENCRYPTION_KEY must be a 64-char hex string). LANGFUSE_INIT_* variables seed the first org/project/user — change them or delete after first login. Instrument your app with the Langfuse SDK (pip install langfuse) and set LANGFUSE_HOST={{STACKBLAZE_APP_URL}} in your app. The free self-hosted version includes all features.",
     },
 
     {
@@ -510,7 +510,7 @@ APPS: list[dict] = [
         "extraVolumes": [{"mountPath": "/models", "name": "localai-models", "size": "20Gi"}],
         "resources": {"requests": {"cpu": "500m", "memory": "2Gi"}, "limits": {"cpu": "4", "memory": "8Gi"}},
         "healthcheck": {"path": "/readyz", "startupSeconds": 180},
-        "installation": "LocalAI provides an OpenAI-compatible API for local models. Use the latest-cpu tag (no GPU). Download a model by placing a GGUF file in the /models volume, or use the gallery API to install models: POST /models/apply with {\"id\":\"gpt4all-j\"}. Set THREADS to the number of CPU cores available. Use the /v1 endpoints with any OpenAI client library — just point the base URL at {{KUBERO_APP_URL}}/v1.",
+        "installation": "LocalAI provides an OpenAI-compatible API for local models. Use the latest-cpu tag (no GPU). Download a model by placing a GGUF file in the /models volume, or use the gallery API to install models: POST /models/apply with {\"id\":\"gpt4all-j\"}. Set THREADS to the number of CPU cores available. Use the /v1 endpoints with any OpenAI client library — just point the base URL at {{STACKBLAZE_APP_URL}}/v1.",
     },
 
     {
@@ -600,7 +600,7 @@ APPS: list[dict] = [
             {"name": "KC_DB_URL", "value": "jdbc:postgresql://keycloak-postgresql-rw:5432/keycloak"},
             {"name": "KC_DB_USERNAME", "value": "keycloak"},
             {"name": "KC_DB_PASSWORD", "value": "keycloak"},
-            {"name": "KC_HOSTNAME", "value": "{{KUBERO_APP_URL}}"},
+            {"name": "KC_HOSTNAME", "value": "{{STACKBLAZE_APP_URL}}"},
             {"name": "KC_PROXY", "value": "edge"},
             {"name": "KC_HTTP_ENABLED", "value": "true"},
             {"name": "KC_BOOTSTRAP_ADMIN_USERNAME", "value": "admin"},
@@ -637,7 +637,7 @@ APPS: list[dict] = [
             {"name": "ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME", "value": "postgres"},
             {"name": "ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD", "value": "zitadel"},
             {"name": "ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE", "value": "disable"},
-            {"name": "ZITADEL_EXTERNALDOMAIN", "value": "{{KUBERO_APP_HOST}}"},
+            {"name": "ZITADEL_EXTERNALDOMAIN", "value": "{{STACKBLAZE_APP_HOST}}"},
             {"name": "ZITADEL_EXTERNALPORT", "value": "443"},
             {"name": "ZITADEL_EXTERNALSECURE", "value": "true"},
             {"name": "ZITADEL_MASTERKEY", "value": "MasterkeyNeedsToHave32Characters"},
@@ -676,7 +676,7 @@ APPS: list[dict] = [
             {"name": "DATABASE_PASSWORD", "value": "baserow"},
             {"name": "REDIS_HOST", "value": "rfr-baserow-cache-readwrite"},
             {"name": "REDIS_PORT", "value": "6379"},
-            {"name": "BASEROW_PUBLIC_URL", "value": "{{KUBERO_APP_URL}}"},
+            {"name": "BASEROW_PUBLIC_URL", "value": "{{STACKBLAZE_APP_URL}}"},
             {"name": "SECRET_KEY", "value": "change-me-to-random-string"},
         ],
         "extraVolumes": [{"mountPath": "/baserow/media", "name": "baserow-media", "size": "10Gi"}],
@@ -707,7 +707,7 @@ APPS: list[dict] = [
             {"name": "PRISMA_DATABASE_URL", "value": "postgresql://teable:teable@teable-postgresql-rw:5432/teable"},
             {"name": "BACKEND_CACHE_REDIS_URI", "value": "redis://rfr-teable-cache-readwrite:6379/0"},
             {"name": "SECRET_KEY", "value": "change-me-to-random-string"},
-            {"name": "PUBLIC_ORIGIN", "value": "{{KUBERO_APP_URL}}"},
+            {"name": "PUBLIC_ORIGIN", "value": "{{STACKBLAZE_APP_URL}}"},
             {"name": "BACKEND_STORAGE_TYPE", "value": "local"},
             {"name": "BACKEND_LOCAL_STORAGE_PATH", "value": "/app/.teable"},
             {"name": "BACKEND_UPLOAD_FILE_SIZE_LIMIT", "value": "209715200"},
@@ -835,7 +835,7 @@ APPS: list[dict] = [
         "extraVolumes": [{"mountPath": "/var/lib/clickhouse", "name": "clickhouse-data", "size": "20Gi"}],
         "resources": {"requests": {"cpu": "500m", "memory": "1Gi"}, "limits": {"cpu": "4", "memory": "8Gi"}},
         "healthcheck": {"path": "/ping", "startupSeconds": 120},
-        "installation": "Change CLICKHOUSE_PASSWORD. Access the HTTP interface at port 8123 and the Play UI at /play. Connect with any ClickHouse client using host={{KUBERO_APP_HOST}}, port=443, user=admin, password=<your-password>. The native TCP port 9000 is not exposed externally — use the HTTP interface or the JDBC/ODBC drivers via HTTP. Note: ClickHouse is also available as an operator-managed add-on for higher availability.",
+        "installation": "Change CLICKHOUSE_PASSWORD. Access the HTTP interface at port 8123 and the Play UI at /play. Connect with any ClickHouse client using host={{STACKBLAZE_APP_HOST}}, port=443, user=admin, password=<your-password>. The native TCP port 9000 is not exposed externally — use the HTTP interface or the JDBC/ODBC drivers via HTTP. Note: ClickHouse is also available as an operator-managed add-on for higher availability.",
     },
 
     {
@@ -860,7 +860,7 @@ APPS: list[dict] = [
         "extraVolumes": [{"mountPath": "/var/lib/questdb", "name": "questdb-data", "size": "20Gi"}],
         "resources": {"requests": {"cpu": "250m", "memory": "512Mi"}, "limits": {"cpu": "4", "memory": "4Gi"}},
         "healthcheck": {"path": "/", "startupSeconds": 120},
-        "installation": "QuestDB exposes a web console at port 9000 (also accessible via {{KUBERO_APP_URL}}). Query with SQL in the web console or via the REST API at /exec?query=. The PostgreSQL wire protocol runs on port 8812 (not exposed externally). Ingest data via InfluxDB line protocol (TCP 9009) or REST. Partitioned by day/month/year for optimal time-series performance.",
+        "installation": "QuestDB exposes a web console at port 9000 (also accessible via {{STACKBLAZE_APP_URL}}). Query with SQL in the web console or via the REST API at /exec?query=. The PostgreSQL wire protocol runs on port 8812 (not exposed externally). Ingest data via InfluxDB line protocol (TCP 9009) or REST. Partitioned by day/month/year for optimal time-series performance.",
     },
 
     {
@@ -962,7 +962,7 @@ APPS: list[dict] = [
         "addons": [],
         "envVars": [
             {"name": "HEADSCALE_LISTEN_ADDR", "value": "0.0.0.0:8080"},
-            {"name": "HEADSCALE_SERVER_URL", "value": "{{KUBERO_APP_URL}}"},
+            {"name": "HEADSCALE_SERVER_URL", "value": "{{STACKBLAZE_APP_URL}}"},
             {"name": "HEADSCALE_DB_TYPE", "value": "sqlite3"},
             {"name": "HEADSCALE_DB_PATH", "value": "/etc/headscale/db.sqlite"},
             {"name": "HEADSCALE_PRIVATE_KEY_PATH", "value": "/etc/headscale/private.key"},
@@ -972,7 +972,7 @@ APPS: list[dict] = [
         "extraVolumes": [{"mountPath": "/etc/headscale", "name": "headscale-data", "size": "1Gi"}],
         "resources": {"requests": {"cpu": "100m", "memory": "128Mi"}, "limits": {"cpu": "1", "memory": "512Mi"}},
         "healthcheck": {"path": "/health", "startupSeconds": 60},
-        "installation": "Headscale uses SQLite by default — no database add-on required. HEADSCALE_SERVER_URL must be the public HTTPS URL of this app. After deploy, create a user with headscale users create <name> (exec into the container or use the gRPC API). Generate a pre-auth key with headscale preauthkeys create --user <name> --reusable, then use it with the Tailscale client: tailscale up --login-server={{KUBERO_APP_URL}}.",
+        "installation": "Headscale uses SQLite by default — no database add-on required. HEADSCALE_SERVER_URL must be the public HTTPS URL of this app. After deploy, create a user with headscale users create <name> (exec into the container or use the gRPC API). Generate a pre-auth key with headscale preauthkeys create --user <name> --reusable, then use it with the Tailscale client: tailscale up --login-server={{STACKBLAZE_APP_URL}}.",
     },
 
     # ── Email ────────────────────────────────────────────────────────────────
@@ -1076,7 +1076,7 @@ APPS: list[dict] = [
         ],
         "envVars": [
             {"name": "APP_KEY", "value": "SomeRandomStringOf32CharsExactly"},
-            {"name": "APP_URL", "value": "{{KUBERO_APP_URL}}"},
+            {"name": "APP_URL", "value": "{{STACKBLAZE_APP_URL}}"},
             {"name": "APP_ENV", "value": "production"},
             {"name": "DB_CONNECTION", "value": "mysql"},
             {"name": "DB_HOST", "value": "firefly-iii-db"},
@@ -1123,7 +1123,7 @@ APPS: list[dict] = [
         ],
         "resources": {"requests": {"cpu": "100m", "memory": "128Mi"}, "limits": {"cpu": "1", "memory": "512Mi"}},
         "healthcheck": {"path": "/-/ping", "startupSeconds": 60},
-        "installation": "Configure your npm client: npm set registry {{KUBERO_APP_URL}}. Add users with npm adduser --registry {{KUBERO_APP_URL}}. Publish packages with npm publish --registry {{KUBERO_APP_URL}}. By default Verdaccio proxies missing packages from npmjs.org. Configure auth, package access rules, and proxy uplinks by mounting a custom config.yaml to /verdaccio/conf/config.yaml via the conf volume.",
+        "installation": "Configure your npm client: npm set registry {{STACKBLAZE_APP_URL}}. Add users with npm adduser --registry {{STACKBLAZE_APP_URL}}. Publish packages with npm publish --registry {{STACKBLAZE_APP_URL}}. By default Verdaccio proxies missing packages from npmjs.org. Configure auth, package access rules, and proxy uplinks by mounting a custom config.yaml to /verdaccio/conf/config.yaml via the conf volume.",
     },
 
     # ── Storage ──────────────────────────────────────────────────────────────
@@ -1149,7 +1149,7 @@ APPS: list[dict] = [
             {"name": "TIME_ZONE", "value": "Etc/UTC"},
             {"name": "SEAFILE_ADMIN_EMAIL", "value": "admin@example.com"},
             {"name": "SEAFILE_ADMIN_PASSWORD", "value": "change-me"},
-            {"name": "SEAFILE_SERVER_HOSTNAME", "value": "{{KUBERO_APP_HOST}}"},
+            {"name": "SEAFILE_SERVER_HOSTNAME", "value": "{{STACKBLAZE_APP_HOST}}"},
             {"name": "SEAFILE_SERVER_LETSENCRYPT", "value": "false"},
         ],
         "extraVolumes": [{"mountPath": "/shared", "name": "seafile-data", "size": "50Gi"}],
