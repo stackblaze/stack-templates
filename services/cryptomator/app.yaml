@@ -40,7 +40,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -60,7 +60,7 @@ spec:
               database: cryptomator
               owner: cryptomator
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO cryptomator
               - GRANT CREATE ON SCHEMA public TO cryptomator
@@ -68,12 +68,12 @@ spec:
               - CREATE DATABASE keycloak OWNER cryptomator
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -82,7 +82,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: cryptomator
@@ -99,15 +99,15 @@ spec:
   - name: HUB_PUBLIC_ROOT_PATH
     value: /
   - name: HUB_PUBLIC_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   # Browser-facing Keycloak URL: set it to the public URL of the
   # cryptomator-keycloak app once that app has one (see installation notes).
   - name: HUB_KEYCLOAK_PUBLIC_URL
-    value: '{{KUBERO_APP_URL}}/kc'
+    value: '{{STACKBLAZE_APP_URL}}/kc'
   # The Keycloak companion app below; sibling apps of a catalog group are
   # reached as <nameHint>-<suffix>-kuberoapp on port 80.
   - name: HUB_KEYCLOAK_LOCAL_URL
-    value: http://cryptomator-keycloak-{{KUBERO_NAME_SUFFIX}}-kuberoapp
+    value: http://cryptomator-keycloak-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
   - name: HUB_KEYCLOAK_REALM
     value: cryptomator
   - name: HUB_KEYCLOAK_SYSTEM_CLIENT_ID
@@ -116,13 +116,13 @@ spec:
   # variable name across the group), whose seed realm uses it as the
   # cryptomatorhub-system client secret.
   - name: HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET
-    value: '{{KUBERO_GEN_ALNUM:32}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
   - name: HUB_KEYCLOAK_SYNCER_PERIOD
     value: 5m
   - name: HUB_KEYCLOAK_OIDC_CRYPTOMATOR_CLIENT_ID
     value: cryptomator
   - name: QUARKUS_OIDC_AUTH_SERVER_URL
-    value: http://cryptomator-keycloak-{{KUBERO_NAME_SUFFIX}}-kuberoapp/realms/cryptomator
+    value: http://cryptomator-keycloak-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp/realms/cryptomator
   - name: QUARKUS_OIDC_CLIENT_ID
     value: cryptomatorhub
   - name: QUARKUS_OIDC_TOKEN_ISSUER
@@ -204,7 +204,7 @@ spec:
     - name: KC_BOOTSTRAP_ADMIN_USERNAME
       value: admin
     - name: KC_BOOTSTRAP_ADMIN_PASSWORD
-      value: '{{KUBERO_GEN_ALNUM:24}}'
+      value: '{{STACKBLAZE_GEN_ALNUM:24}}'
     - name: KC_HEALTH_ENABLED
       value: 'true'
     - name: KC_METRICS_ENABLED
@@ -219,11 +219,11 @@ spec:
       value: 'false'
     # Same name as on the Hub app, so both get the same generated value.
     - name: HUB_KEYCLOAK_SYSTEM_CLIENT_SECRET
-      value: '{{KUBERO_GEN_ALNUM:32}}'
+      value: '{{STACKBLAZE_GEN_ALNUM:32}}'
     # First password of the realm's `admin` user (Hub sign-in); Keycloak
     # makes the user change it at first login.
     - name: CRYPTOMATOR_REALM_ADMIN_PASSWORD
-      value: '{{KUBERO_GEN_ALNUM:24}}'
+      value: '{{STACKBLAZE_GEN_ALNUM:24}}'
     # $(NAME) references are expanded by Kubernetes from the variables above.
     - name: CRYPTOMATOR_REALM_JSON
       value: |

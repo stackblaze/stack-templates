@@ -73,12 +73,12 @@ envVars:
 
 Rules:
 
-- Never write `{{KUBERO_APP_NAME}}-postgresql-rw`, `{{KUBERO_APP_NAME}}-mysql`,
-  `rfr-{{KUBERO_APP_NAME}}-valkey-readwrite`, or a literal user/database/
+- Never write `{{STACKBLAZE_APP_NAME}}-postgresql-rw`, `{{STACKBLAZE_APP_NAME}}-mysql`,
+  `rfr-{{STACKBLAZE_APP_NAME}}-valkey-readwrite`, or a literal user/database/
   password into `envVars` (or into sidecar Deployments / ConfigMaps bundled
   in the add-on CR). The host is the `<instance>` Service — ProxySQL — not
   the CNPG/MariaDB writer. Reference the injected variable; sidecars that
-  cannot expand `$(PGHOST)` use `{{KUBERO_APP_NAME}}-<engine>` (no `-rw`).
+  cannot expand `$(PGHOST)` use `{{STACKBLAZE_APP_NAME}}-<engine>` (no `-rw`).
 - Never define a variable **named** like an injected one (`PGPASSWORD`,
   `MYSQL_HOST`, …) in a template — an explicit template value wins over the
   injection and blocks the real credentials.
@@ -2597,7 +2597,7 @@ Current fork-only entries:
 - `vikunja` — carried forward from the original stackblaze/kubero fork.
 - `mattermost` — Team Edition (MIT) chat/collaboration server; not in upstream.
 - `psono` — self-hosted password manager (combo CE); the six server keys are
-  generated per-deploy via kubero `{{KUBERO_GEN_*}}` tokens.
+  generated per-deploy via kubero `{{STACKBLAZE_GEN_*}}` tokens.
 
 ## Editing template bodies
 

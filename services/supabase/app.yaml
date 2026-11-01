@@ -41,7 +41,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
           annotations:
             # Communal zones: kubero-server runs its Supabase init as the zone
             # superuser and injects SUPABASE_DB_*_USER next to PG*. Dedicated
@@ -66,7 +66,7 @@ spec:
               database: supabase
               owner: supabase
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               # Dedicated zones. The same per-tenant login users the communal init
               # creates (kubero-server supabase-communal-init.ts, generated for
               # owner/password "supabase"), run in the supabase database. CNPG
@@ -229,12 +229,12 @@ spec:
                 CREATE EVENT TRIGGER pgrst_drop_watch ON sql_drop EXECUTE PROCEDURE extensions.pgrst_drop_watch();
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -243,7 +243,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: supabase
@@ -264,13 +264,13 @@ spec:
         apiVersion: rustfs.com/v1alpha1
         kind: Tenant
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rustfs'
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs'
           annotations:
             operator.rustfs.com/runtime-default-image-ack: docker.io/rustfs/rustfs:1.0.0-beta.10
         spec:
           image: docker.io/rustfs/rustfs:1.0.0-beta.10
           credsSecret:
-            name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+            name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
           pools:
           - name: pool-0
             servers: 1
@@ -287,11 +287,11 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
         type: Opaque
         stringData:
           accesskey: supabase
-          secretkey: '{{KUBERO_GEN_HEX:32}}'
+          secretkey: '{{STACKBLAZE_GEN_HEX:32}}'
   envVars:
   - name: KONG_DATABASE
     value: 'off'
@@ -332,9 +332,9 @@ spec:
   # shared by name with the functions and Studio cards. Kong accepts them and
   # forwards the legacy JWT of the matching role to the services behind it.
   - name: SUPABASE_PUBLISHABLE_KEY
-    value: 'sb_publishable_{{KUBERO_GEN_ALNUM:32}}'
+    value: 'sb_publishable_{{STACKBLAZE_GEN_ALNUM:32}}'
   - name: SUPABASE_SECRET_KEY
-    value: 'sb_secret_{{KUBERO_GEN_ALNUM:40}}'
+    value: 'sb_secret_{{STACKBLAZE_GEN_ALNUM:40}}'
   - name: ANON_KEY_ASYMMETRIC
     value: *anonKey
   - name: SERVICE_ROLE_KEY_ASYMMETRIC
@@ -342,7 +342,7 @@ spec:
   - name: DASHBOARD_USERNAME
     value: supabase
   - name: DASHBOARD_PASSWORD
-    value: '{{KUBERO_GEN_ALNUM:24}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
   # Data API reads (GET/HEAD on /rest/v1) are served by a PostgREST on the
   # Postgres replicas; 'off' sends them to the primary like writes.
   - name: KONG_REST_READ_REPLICAS
@@ -959,7 +959,7 @@ spec:
     # Function code lives on one volume: Studio owns the claim and lists it,
     # the functions service mounts the same claim and serves it.
     extraVolumes:
-    - name: '{{KUBERO_APP_NAME}}-functions'
+    - name: '{{STACKBLAZE_APP_NAME}}-functions'
       mountPath: /app/edge-functions
       emptyDir: false
       storageClass: shared
@@ -973,11 +973,11 @@ spec:
     - name: STUDIO_PORT
       value: '3000'
     - name: SUPABASE_URL
-      value: http://supabase-api-{{KUBERO_NAME_SUFFIX}}-kuberoapp
+      value: http://supabase-api-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: SUPABASE_PUBLIC_URL
-      value: '{{KUBERO_APP_URL}}'
+      value: '{{STACKBLAZE_APP_URL}}'
     - name: STUDIO_PG_META_URL
-      value: http://supabase-meta-{{KUBERO_NAME_SUFFIX}}-kuberoapp
+      value: http://supabase-meta-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: POSTGRES_HOST
       value: '$(PGHOST)'
     - name: POSTGRES_PORT
@@ -997,9 +997,9 @@ spec:
     - name: SUPABASE_SERVICE_KEY
       value: *serviceKey
     - name: SUPABASE_PUBLISHABLE_KEY
-      value: 'sb_publishable_{{KUBERO_GEN_ALNUM:32}}'
+      value: 'sb_publishable_{{STACKBLAZE_GEN_ALNUM:32}}'
     - name: SUPABASE_SECRET_KEY
-      value: 'sb_secret_{{KUBERO_GEN_ALNUM:40}}'
+      value: 'sb_secret_{{STACKBLAZE_GEN_ALNUM:40}}'
     - name: AUTH_JWT_SECRET
       value: your-super-secret-jwt-token-with-at-least-32-characters-long
     - name: DEFAULT_ORGANIZATION_NAME
@@ -1017,29 +1017,29 @@ spec:
     - name: DASHBOARD_USERNAME
       value: supabase
     - name: DASHBOARD_PASSWORD
-      value: '{{KUBERO_GEN_ALNUM:24}}'
+      value: '{{STACKBLAZE_GEN_ALNUM:24}}'
     # Database > Backups in Studio shows the platform's backups of this
     # database. The platform mints an app-scoped token at deploy (it may only
     # call this environment's backup routes) and fills in where the app lives.
     - name: KUBERO_API_URL
-      value: '{{KUBERO_API_URL}}'
+      value: '{{STACKBLAZE_API_URL}}'
     - name: KUBERO_APP_TOKEN
-      value: '{{KUBERO_APP_TOKEN:backups,branches}}'
+      value: '{{STACKBLAZE_APP_TOKEN:backups,branches}}'
     - name: KUBERO_PIPELINE
-      value: '{{KUBERO_PIPELINE}}'
+      value: '{{STACKBLAZE_PIPELINE}}'
     - name: KUBERO_PHASE
-      value: '{{KUBERO_PHASE}}'
+      value: '{{STACKBLAZE_PHASE}}'
     - name: KUBERO_DB_INSTANCE
-      value: '{{KUBERO_APP_NAME}}-postgresql'
+      value: '{{STACKBLAZE_APP_NAME}}-postgresql'
     # Logs: the zone's communal Logflare, where the platform creates a user
     # for this deployment at deploy and collects its services' logs. A zone
     # without one resolves these to ''/''/'false' and Studio hides Logs.
     - name: LOGFLARE_URL
-      value: '{{KUBERO_LOGFLARE_URL}}'
+      value: '{{STACKBLAZE_LOGFLARE_URL}}'
     - name: LOGFLARE_PRIVATE_ACCESS_TOKEN
-      value: '{{KUBERO_LOGFLARE_TOKEN}}'
+      value: '{{STACKBLAZE_LOGFLARE_TOKEN}}'
     - name: ENABLED_FEATURES_LOGS_ALL
-      value: '{{KUBERO_LOGFLARE_ENABLED}}'
+      value: '{{STACKBLAZE_LOGFLARE_ENABLED}}'
     healthcheck:
       enabled: true
       path: /
@@ -1058,9 +1058,9 @@ spec:
     - name: GOTRUE_API_PORT
       value: '9999'
     - name: API_EXTERNAL_URL
-      value: http://supabase-api-{{KUBERO_NAME_SUFFIX}}-kuberoapp
+      value: http://supabase-api-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: GOTRUE_SITE_URL
-      value: http://supabase-api-{{KUBERO_NAME_SUFFIX}}-kuberoapp
+      value: http://supabase-api-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: GOTRUE_URI_ALLOW_LIST
       value: '*'
     - name: GOTRUE_DISABLE_SIGNUP
@@ -1201,7 +1201,7 @@ spec:
     # Realtime looks its tenant up by the first label of the Host header,
     # which is this service's name when Kong dials it.
     - name: SELF_HOST_TENANT_NAME
-      value: supabase-realtime-{{KUBERO_NAME_SUFFIX}}-kuberoapp
+      value: supabase-realtime-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: RUN_JANITOR
       value: 'true'
     healthcheck:
@@ -1247,11 +1247,11 @@ spec:
     - name: DATABASE_URL
       value: 'postgres://$(SUPABASE_DB_STORAGE_USER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
     - name: POSTGREST_URL
-      value: http://supabase-rest-{{KUBERO_NAME_SUFFIX}}-kuberoapp
+      value: http://supabase-rest-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: ENABLE_IMAGE_TRANSFORMATION
       value: 'true'
     - name: IMGPROXY_URL
-      value: http://supabase-imgproxy-{{KUBERO_NAME_SUFFIX}}-kuberoapp
+      value: http://supabase-imgproxy-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: PGRST_JWT_SECRET
       value: your-super-secret-jwt-token-with-at-least-32-characters-long
     - name: AUTH_JWT_SECRET
@@ -1344,8 +1344,8 @@ spec:
         ENDFN
         exec edge-runtime start --main-service /home/deno/main
     extraVolumes:
-    - name: '{{KUBERO_APP_NAME}}-functions'
-      existingClaim: supabase-studio-{{KUBERO_NAME_SUFFIX}}-functions
+    - name: '{{STACKBLAZE_APP_NAME}}-functions'
+      existingClaim: supabase-studio-{{STACKBLAZE_NAME_SUFFIX}}-functions
       mountPath: /home/deno/functions
       emptyDir: false
       storageClass: shared
@@ -1356,13 +1356,13 @@ spec:
     # Read by @supabase/server (withSupabase auth: publishable / secret),
     # which Studio's function templates use.
     - name: SUPABASE_PUBLISHABLE_KEY
-      value: 'sb_publishable_{{KUBERO_GEN_ALNUM:32}}'
+      value: 'sb_publishable_{{STACKBLAZE_GEN_ALNUM:32}}'
     - name: SUPABASE_SECRET_KEY
-      value: 'sb_secret_{{KUBERO_GEN_ALNUM:40}}'
+      value: 'sb_secret_{{STACKBLAZE_GEN_ALNUM:40}}'
     - name: VERIFY_JWT
       value: 'false'
     - name: SUPABASE_URL
-      value: http://supabase-api-{{KUBERO_NAME_SUFFIX}}-kuberoapp
+      value: http://supabase-api-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: SUPABASE_ANON_KEY
       value: *anonKey
     - name: SUPABASE_SERVICE_ROLE_KEY

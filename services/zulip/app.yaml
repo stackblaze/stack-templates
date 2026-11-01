@@ -33,7 +33,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -53,19 +53,19 @@ spec:
               database: zulip
               owner: zulip
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO zulip
               - GRANT CREATE ON SCHEMA public TO zulip
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zulip
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -74,7 +74,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: zulip
@@ -89,7 +89,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -118,7 +118,7 @@ spec:
         apiVersion: rabbitmq.com/v1beta1
         kind: RabbitmqCluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rabbitmq'
+          name: '{{STACKBLAZE_APP_NAME}}-rabbitmq'
         spec:
           replicas: 1
           persistence:
@@ -146,7 +146,7 @@ spec:
         apiVersion: application.kubero.dev/v1alpha1
         kind: KuberoAddonMemcached
         metadata:
-          name: '{{KUBERO_APP_NAME}}-memcached'
+          name: '{{STACKBLAZE_APP_NAME}}-memcached'
         spec:
           memcached:
             image:
@@ -160,7 +160,7 @@ spec:
             resources: {}
   envVars:
   - name: SETTING_EXTERNAL_HOST
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: SETTING_ALLOWED_HOSTS
     value: '[''*'']'
   - name: SETTING_ROOT_DOMAIN_LANDING_PAGE
@@ -180,11 +180,11 @@ spec:
   - name: REMOTE_POSTGRES_SSLMODE
     value: prefer
   - name: SETTING_RABBITMQ_HOST
-    value: '{{KUBERO_APP_NAME}}-rabbitmq'
+    value: '{{STACKBLAZE_APP_NAME}}-rabbitmq'
   - name: SETTING_REDIS_HOST
     value: '$(REDISHOST)'
   - name: SETTING_MEMCACHED_LOCATION
-    value: '{{KUBERO_APP_NAME}}-memcached:11211'
+    value: '{{STACKBLAZE_APP_NAME}}-memcached:11211'
   - name: DISABLE_HTTPS
     value: 'True'
   - name: SSL_CERTIFICATE_GENERATION
@@ -200,7 +200,7 @@ spec:
   - name: SECRETS_memcached_password
     value: ''
   - name: SECRETS_secret_key
-    value: '{{KUBERO_GEN_ALNUM:50}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:50}}'
   - name: POSTGRES_DB
     value: '$(PGDATABASE)'
   - name: POSTGRES_USER
@@ -212,7 +212,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

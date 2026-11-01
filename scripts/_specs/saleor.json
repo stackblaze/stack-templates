@@ -53,15 +53,15 @@
     },
     {
       "name": "ALLOWED_HOSTS",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "ALLOWED_GRAPHQL_ORIGINS",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "PUBLIC_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "DEFAULT_FROM_EMAIL",

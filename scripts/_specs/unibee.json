@@ -41,7 +41,7 @@
     },
     {
       "name": "UNIBEE_API_URL",
-      "value": "{{KUBERO_APP_URL}}/api"
+      "value": "{{STACKBLAZE_APP_URL}}/api"
     },
     {
       "name": "DATABASE_LINK",

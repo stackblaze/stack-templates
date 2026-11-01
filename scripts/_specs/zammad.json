@@ -81,11 +81,11 @@
     },
     {
       "name": "ZAMMAD_FQDN",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "NGINX_SERVER_NAME",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "NGINX_SERVER_SCHEME",

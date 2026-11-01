@@ -8,7 +8,7 @@ metadata:
       history backup and sync across machines.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/122059230?s=200&v=4
     kubero.dev/template.installation: ATUIN_OPEN_REGISTRATION is true for first boot
-      so you can run `atuin register` against {{KUBERO_APP_URL}} (include port 8888
+      so you can run `atuin register` against {{STACKBLAZE_APP_URL}} (include port 8888
       in sync_address if not using the Kubero ingress URL). Set ATUIN_OPEN_REGISTRATION=false
       after creating accounts. Rotate the default postgres password (atuin) before
       production. Server config persists on the /config volume.
@@ -35,7 +35,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -55,19 +55,19 @@ spec:
               database: atuin
               owner: atuin
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO atuin
               - GRANT CREATE ON SCHEMA public TO atuin
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO atuin
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -76,7 +76,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: atuin
@@ -97,7 +97,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /config
-    name: '{{KUBERO_APP_NAME}}-config'
+    name: '{{STACKBLAZE_APP_NAME}}-config'
     size: 1Gi
     storageClass: shared
   cronjobs: []

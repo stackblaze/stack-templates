@@ -65,7 +65,7 @@
     },
     {
       "name": "MOODLE_HOST",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "MOODLE_REVERSEPROXY",

@@ -10,7 +10,7 @@
     "work",
     "productivity"
   ],
-  "installation": "Crater is a Laravel (PHP) + Vue invoicing app backed by MariaDB. This template runs the maintained community image ghcr.io/jee-r/crater (nginx + PHP-FPM on :8080), since the upstream project ships a build-from-source docker-compose rather than an official prebuilt image. BEFORE first boot ROTATE: APP_KEY (run `openssl rand -base64 32` and prefix with `base64:`, i.e. set APP_KEY=base64:<value>) and the MariaDB password (default 'crater'). APP_URL is pre-filled with {{KUBERO_APP_URL}} and MUST match the public URL or cookie-based auth (4.0.0+) will fail. FIRST RUN: browse to the app URL and complete the on-boarding wizard (admin account, company, currency); the wizard runs DB migrations automatically. Persistent app data (uploads, generated PDF invoices, logo, storage/) lives under /app and is kept on the mounted volume. Cache/queue/session default to the database and file drivers (no Redis required); SMTP for mail and optional S3 for storage are configured later via env vars or the Settings UI.",
+  "installation": "Crater is a Laravel (PHP) + Vue invoicing app backed by MariaDB. This template runs the maintained community image ghcr.io/jee-r/crater (nginx + PHP-FPM on :8080), since the upstream project ships a build-from-source docker-compose rather than an official prebuilt image. BEFORE first boot ROTATE: APP_KEY (run `openssl rand -base64 32` and prefix with `base64:`, i.e. set APP_KEY=base64:<value>) and the MariaDB password (default 'crater'). APP_URL is pre-filled with {{STACKBLAZE_APP_URL}} and MUST match the public URL or cookie-based auth (4.0.0+) will fail. FIRST RUN: browse to the app URL and complete the on-boarding wizard (admin account, company, currency); the wizard runs DB migrations automatically. Persistent app data (uploads, generated PDF invoices, logo, storage/) lives under /app and is kept on the mounted volume. Cache/queue/session default to the database and file drivers (no Redis required); SMTP for mail and optional S3 for storage are configured later via env vars or the Settings UI.",
   "screenshots": [
     "https://craterapp.com/static/img/crater-preview.png"
   ],
@@ -31,7 +31,7 @@
   "envVars": [
     {
       "name": "APP_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "APP_ENV",
@@ -83,11 +83,11 @@
     },
     {
       "name": "SANCTUM_STATEFUL_DOMAINS",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "SESSION_DOMAIN",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "TZ",

@@ -10,7 +10,7 @@
     "media",
     "e-commerce"
   ],
-  "installation": "WordPress requires MySQL/MariaDB (it does not support PostgreSQL), so this template ships the mariadb add-on. Multisite is enabled at the WordPress config layer via WORDPRESS_CONFIG_EXTRA (WP_ALLOW_MULTISITE=true). After the first-run install wizard completes, go to Tools > Network Setup in wp-admin to create the network, then add the printed wp-config.php / .htaccess rules. Subdomain multisite needs a wildcard DNS record (*.{{KUBERO_APP_HOST}}) and matching ingress/TLS; subdirectory multisite needs none. Rotate WORDPRESS_AUTH_KEY/SECURE_AUTH_KEY/LOGGED_IN_KEY/NONCE_KEY and the four matching salts (openssl rand -base64 64) plus the MariaDB password before going to production. Persistent data (wp-content: uploads, plugins, themes, languages) lives on the mounted volume at /var/www/html.",
+  "installation": "WordPress requires MySQL/MariaDB (it does not support PostgreSQL), so this template ships the mariadb add-on. Multisite is enabled at the WordPress config layer via WORDPRESS_CONFIG_EXTRA (WP_ALLOW_MULTISITE=true). After the first-run install wizard completes, go to Tools > Network Setup in wp-admin to create the network, then add the printed wp-config.php / .htaccess rules. Subdomain multisite needs a wildcard DNS record (*.{{STACKBLAZE_APP_HOST}}) and matching ingress/TLS; subdirectory multisite needs none. Rotate WORDPRESS_AUTH_KEY/SECURE_AUTH_KEY/LOGGED_IN_KEY/NONCE_KEY and the four matching salts (openssl rand -base64 64) plus the MariaDB password before going to production. Persistent data (wp-content: uploads, plugins, themes, languages) lives on the mounted volume at /var/www/html.",
   "screenshots": [
     "https://s.w.org/images/home/swag-collection-2024.jpg"
   ],

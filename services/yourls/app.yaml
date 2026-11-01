@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.installation: YOURLS only supports MySQL/MariaDB (no PostgreSQL),
       so this template ships the mariadb add-on. The admin account is bootstrapped
       from YOURLS_USER / YOURLS_PASS on first boot, and YOURLS_SITE is bound to the
-      deploy URL via {{KUBERO_APP_URL}} (must be the exact public URL, no trailing
+      deploy URL via {{STACKBLAZE_APP_URL}} (must be the exact public URL, no trailing
       slash). The admin UI lives at /admin/. Before going to production, rotate the
       MariaDB password, the YOURLS_PASS admin password, and the YOURLS_COOKIEKEY (openssl
       rand -hex 32). User-supplied plugins, custom pages, and language packs persist
@@ -38,17 +38,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: yourls
           username: yourls
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -65,7 +65,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: yourls
@@ -73,7 +73,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: yourls
@@ -89,7 +89,7 @@ spec:
   - name: YOURLS_DB_PREFIX
     value: yourls_
   - name: YOURLS_SITE
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: YOURLS_USER
     value: admin
   - name: YOURLS_PASS
@@ -101,7 +101,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/user
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []

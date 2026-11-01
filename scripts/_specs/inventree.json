@@ -35,7 +35,7 @@
     },
     {
       "name": "INVENTREE_SITE_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "INVENTREE_ALLOWED_HOSTS",
@@ -43,7 +43,7 @@
     },
     {
       "name": "INVENTREE_TRUSTED_ORIGINS",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "INVENTREE_DEBUG",

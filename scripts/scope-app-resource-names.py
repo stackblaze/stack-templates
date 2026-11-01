@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scope app-owned Kubernetes resource names to {{KUBERO_APP_NAME}}."""
+"""Scope app-owned Kubernetes resource names to {{STACKBLAZE_APP_NAME}}."""
 from __future__ import annotations
 
 import re
@@ -8,7 +8,7 @@ from pathlib import Path
 
 import yaml
 
-TOKEN = "{{KUBERO_APP_NAME}}"
+TOKEN = "{{STACKBLAZE_APP_NAME}}"
 
 RESOURCE_SUFFIXES = (
     "-postgresql",

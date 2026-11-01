@@ -38,17 +38,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mariadb'
+          name: '{{STACKBLAZE_APP_NAME}}-mariadb'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mariadb-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mariadb-root'
             key: password
           database: woocommerce
           username: woocommerce
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mariadb-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mariadb-app'
             key: password
           storage:
             size: 5Gi
@@ -65,7 +65,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mariadb-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mariadb-root'
         type: Opaque
         stringData:
           password: woocommerce
@@ -73,7 +73,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mariadb-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mariadb-app'
         type: Opaque
         stringData:
           password: woocommerce
@@ -100,27 +100,27 @@ spec:
     value: define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST']); define('WP_SITEURL',
       'https://' . $_SERVER['HTTP_HOST']);
   - name: WORDPRESS_AUTH_KEY
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: WORDPRESS_SECURE_AUTH_KEY
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: WORDPRESS_LOGGED_IN_KEY
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: WORDPRESS_NONCE_KEY
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: WORDPRESS_AUTH_SALT
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: WORDPRESS_SECURE_AUTH_SALT
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: WORDPRESS_LOGGED_IN_SALT
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: WORDPRESS_NONCE_SALT
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/wp-content
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

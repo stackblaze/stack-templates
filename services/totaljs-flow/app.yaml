@@ -38,13 +38,13 @@ spec:
   - name: FLOW_TOKEN
     value: replace-with-openssl-rand-hex-32
   - name: FLOW_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /www/flow
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []

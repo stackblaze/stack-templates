@@ -32,7 +32,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -52,19 +52,19 @@ spec:
               database: plausible
               owner: plausible
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO plausible
               - GRANT CREATE ON SCHEMA public TO plausible
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO plausible
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -73,7 +73,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: plausible
@@ -88,7 +88,7 @@ spec:
         apiVersion: clickhouse.altinity.com/v1
         kind: ClickHouseInstallation
         metadata:
-          name: '{{KUBERO_APP_NAME}}-clickhouse'
+          name: '{{STACKBLAZE_APP_NAME}}-clickhouse'
         spec:
           configuration:
             users:
@@ -124,7 +124,7 @@ spec:
                     storage: 1Gi
   envVars:
   - name: BASE_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: SECRET_KEY_BASE
     value: '0000000000000000000000000000000000000000000000000000000000000000'
   - name: TOTP_VAULT_KEY
@@ -132,7 +132,7 @@ spec:
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: CLICKHOUSE_DATABASE_URL
-    value: http://admin:plausible@chi-{{KUBERO_APP_NAME}}-clickhouse-db-0-0:8123/plausible_events
+    value: http://admin:plausible@chi-{{STACKBLAZE_APP_NAME}}-clickhouse-db-0-0:8123/plausible_events
   extraVolumes: []
   cronjobs: []
   web:
@@ -160,7 +160,7 @@ spec:
     command:
     - sh
     - -c
-    - "for i in $(seq 1 90); do\n  if wget -q -O- http://chi-{{KUBERO_APP_NAME}}-clickhouse-db-0-0:8123/ping\
+    - "for i in $(seq 1 90); do\n  if wget -q -O- http://chi-{{STACKBLAZE_APP_NAME}}-clickhouse-db-0-0:8123/ping\
       \ 2>/dev/null | grep -q Ok; then break; fi\n  sleep 5\ndone\n/entrypoint.sh\
       \ db createdb && /entrypoint.sh db migrate && /entrypoint.sh run\n"
     run:

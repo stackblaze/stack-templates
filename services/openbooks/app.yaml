@@ -41,7 +41,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -61,19 +61,19 @@ spec:
               database: openbooks
               owner: openbooks
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO openbooks
               - GRANT CREATE ON SCHEMA public TO openbooks
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO openbooks
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -82,7 +82,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: openbooks
@@ -98,7 +98,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -140,7 +140,7 @@ spec:
         apiVersion: rustfs.com/v1alpha1
         kind: Tenant
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rustfs'
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs'
           annotations:
             # The operator refuses custom-repo images it cannot verify for
             # RuntimeDefault seccomp ("WorkloadSecurityIncompatible") unless the
@@ -149,7 +149,7 @@ spec:
         spec:
           image: docker.io/rustfs/rustfs:1.0.0-beta.10
           credsSecret:
-            name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+            name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
           pools:
           - name: pool-0
             servers: 1
@@ -166,11 +166,11 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
         type: Opaque
         stringData:
           accesskey: openbooks
-          secretkey: '{{KUBERO_GEN_HEX:32}}'
+          secretkey: '{{STACKBLAZE_GEN_HEX:32}}'
 
   envVars:
   - name: NODE_ENV
@@ -188,7 +188,7 @@ spec:
   # which bootstrap creates from OPENBOOKS_RUNTIME_DB_URL. Password must be
   # >= 24 characters (OpenBooks rejects shorter runtime passwords).
   - name: OPENBOOKS_APP_PASSWORD
-    value: '{{KUBERO_GEN_HEX:32}}'
+    value: '{{STACKBLAZE_GEN_HEX:32}}'
   - name: OPENBOOKS_DB_URL
     value: 'postgres://openbooks_app:$(OPENBOOKS_APP_PASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: OPENBOOKS_RUNTIME_DB_URL
@@ -198,20 +198,20 @@ spec:
   - name: OPENBOOKS_REDIS_URL
     value: 'redis://$(REDISHOST):$(REDISPORT)'
   - name: OPENBOOKS_APP_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: APP_BASE_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: OPENBOOKS_TRUST_PROXY
     value: '1'
   - name: SESSION_SECRET
-    value: '{{KUBERO_GEN_HEX:64}}'
+    value: '{{STACKBLAZE_GEN_HEX:64}}'
   - name: OPENBOOKS_DATA_KEY
-    value: '{{KUBERO_GEN_HEX:64}}'
+    value: '{{STACKBLAZE_GEN_HEX:64}}'
   - name: OPENBOOKS_INTERNAL_TOKEN
-    value: '{{KUBERO_GEN_HEX:48}}'
+    value: '{{STACKBLAZE_GEN_HEX:48}}'
   # Worker → web (same-app Service targets web pods).
   # Same-pod loopback. The Kubero Service only exposes :80 (→ container :3000);
-  # http://{{KUBERO_APP_NAME}}:3000 hangs SSR and leaves the UI on the splash.
+  # http://{{STACKBLAZE_APP_NAME}}:3000 hangs SSR and leaves the UI on the splash.
   - name: OPENBOOKS_INTERNAL_URL
     value: 'http://127.0.0.1:3000'
   - name: ORG_NAME

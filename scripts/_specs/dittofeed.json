@@ -93,7 +93,7 @@
     },
     {
       "name": "DASHBOARD_API_BASE",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     }
   ],
   "addons": [

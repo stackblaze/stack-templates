@@ -10,7 +10,7 @@
     "development",
     "utilities"
   ],
-  "installation": "LiteLLM provides a single OpenAI-compatible endpoint that proxies to any LLM provider. Set LITELLM_MASTER_KEY (must start with sk-). Add models via the /ui dashboard (login with UI_USERNAME/UI_PASSWORD) or via the /models API. The Postgres add-on persists model configs, spend logs, and keys. Connect any OpenAI SDK client to {{KUBERO_APP_URL}}/v1 with Authorization: Bearer sk-change-me.",
+  "installation": "LiteLLM provides a single OpenAI-compatible endpoint that proxies to any LLM provider. Set LITELLM_MASTER_KEY (must start with sk-). Add models via the /ui dashboard (login with UI_USERNAME/UI_PASSWORD) or via the /models API. The Postgres add-on persists model configs, spend logs, and keys. Connect any OpenAI SDK client to {{STACKBLAZE_APP_URL}}/v1 with Authorization: Bearer sk-change-me.",
   "screenshots": [],
   "links": [
     "https://docs.litellm.ai/"

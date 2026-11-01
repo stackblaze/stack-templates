@@ -33,17 +33,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: nextcloud
           username: nextcloud
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -60,7 +60,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: nextcloud
@@ -68,7 +68,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: nextcloud
@@ -78,11 +78,11 @@ spec:
   - name: NEXTCLOUD_ADMIN_PASSWORD
     value: nextcloud
   - name: NEXTCLOUD_TRUSTED_DOMAINS
-    value: localhost {{KUBERO_APP_HOST}}
+    value: localhost {{STACKBLAZE_APP_HOST}}
   - name: OVERWRITEPROTOCOL
     value: https
   - name: OVERWRITEHOST
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -91,7 +91,7 @@ spec:
     # Persist full app tree (config + apps + data) so first-boot auto-install
     # survives restarts and users never see the web setup wizard.
     mountPath: /var/www/html
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
   cronjobs: []
   web:

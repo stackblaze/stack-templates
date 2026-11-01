@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/clickhouse/icon.png
     kubero.dev/template.installation: "Change CLICKHOUSE_PASSWORD. Access the HTTP\
       \ interface at port 8123 and the Play UI at /play. Connect with any ClickHouse\
-      \ client using host={{KUBERO_APP_HOST}}, port=443, user=admin, password=<your-password>.\
+      \ client using host={{STACKBLAZE_APP_HOST}}, port=443, user=admin, password=<your-password>.\
       \ The native TCP port 9000 is not exposed externally \u2014 use the HTTP interface\
       \ or the JDBC/ODBC drivers via HTTP. Note: ClickHouse is also available as an\
       \ operator-managed add-on for higher availability."
@@ -40,7 +40,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib/clickhouse
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 20Gi
     storageClass: shared
   cronjobs: []

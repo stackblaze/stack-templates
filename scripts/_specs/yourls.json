@@ -10,7 +10,7 @@
     "productivity",
     "development"
   ],
-  "installation": "YOURLS only supports MySQL/MariaDB (no PostgreSQL), so this template ships the mariadb add-on. The admin account is bootstrapped from YOURLS_USER / YOURLS_PASS on first boot, and YOURLS_SITE is bound to the deploy URL via {{KUBERO_APP_URL}} (must be the exact public URL, no trailing slash). The admin UI lives at /admin/. Before going to production, rotate the MariaDB password, the YOURLS_PASS admin password, and the YOURLS_COOKIEKEY (openssl rand -hex 32). User-supplied plugins, custom pages, and language packs persist on the mounted volume at /var/www/html/user.",
+  "installation": "YOURLS only supports MySQL/MariaDB (no PostgreSQL), so this template ships the mariadb add-on. The admin account is bootstrapped from YOURLS_USER / YOURLS_PASS on first boot, and YOURLS_SITE is bound to the deploy URL via {{STACKBLAZE_APP_URL}} (must be the exact public URL, no trailing slash). The admin UI lives at /admin/. Before going to production, rotate the MariaDB password, the YOURLS_PASS admin password, and the YOURLS_COOKIEKEY (openssl rand -hex 32). User-supplied plugins, custom pages, and language packs persist on the mounted volume at /var/www/html/user.",
   "screenshots": [
     "https://yourls.org/images/screenshots/admin.png"
   ],
@@ -51,7 +51,7 @@
     },
     {
       "name": "YOURLS_SITE",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "YOURLS_USER",

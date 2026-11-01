@@ -29,11 +29,11 @@
   "envVars": [
     {
       "name": "OWNCLOUD_DOMAIN",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "OWNCLOUD_TRUSTED_DOMAINS",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "OWNCLOUD_DB_TYPE",

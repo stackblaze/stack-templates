@@ -29,7 +29,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -49,32 +49,32 @@ spec:
               database: cloverhr
               owner: cloverhr
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO cloverhr
               - GRANT CREATE ON SCHEMA public TO cloverhr
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO cloverhr
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: '{{KUBERO_GEN_ALNUM:32}}'
+          password: '{{STACKBLAZE_GEN_ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: cloverhr
-          password: '{{KUBERO_GEN_ALNUM:32}}'
+          password: '{{STACKBLAZE_GEN_ALNUM:32}}'
   # Platform email (see README "Email contract"). The image reads the injected
   # SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD and SMTP_FROM itself and
   # turns them into CLOVERHR_SMTP_URL and CLOVERHR_MAIL_FROM (STARTTLS on
@@ -92,7 +92,7 @@ spec:
   # The public address. Links in email, invites, password resets, passkeys and
   # single sign-on are built from it.
   - name: CLOVERHR_APP_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   # No owner is set here: on the first visit the app's setup (/setup) creates
   # the first account. For a scripted install, add OWNER_EMAIL and
   # OWNER_PASSWORD (at least 10 characters) and the container creates the
@@ -101,7 +101,7 @@ spec:
   # Encrypts bank account and identity numbers. Generated once; keep a copy
   # outside the platform and never change it after people have been added.
   - name: CLOVERHR_SECRET_ENCRYPTION_KEY
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   # One ingress sits in front of the app.
   - name: CLOVERHR_TRUSTED_PROXIES
     value: '1'
@@ -120,7 +120,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   # Scheduled jobs run inside the app (a database lock keeps two replicas from

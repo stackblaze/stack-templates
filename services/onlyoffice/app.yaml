@@ -116,7 +116,7 @@ spec:
   envVars:
   # --- Database (CloudNativePG) ---
   - name: POSTGRES_HOST
-    value: '{{KUBERO_APP_NAME}}-$(PGHOST)'
+    value: '{{STACKBLAZE_APP_NAME}}-$(PGHOST)'
   - name: POSTGRES_PORT
     value: '$(PGPORT)'
   - name: POSTGRES_DB
@@ -136,9 +136,9 @@ spec:
   - name: NEXTCLOUD_ADMIN_PASSWORD
     value: changeme-admin
   - name: NEXTCLOUD_TRUSTED_DOMAINS
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: NEXTCLOUD_PUBLIC_URL
-    value: 'https://{{KUBERO_APP_HOST}}'
+    value: 'https://{{STACKBLAZE_APP_HOST}}'
   - name: OVERWRITEPROTOCOL
     value: https
   # --- OnlyOffice connector (auto-configured by the image's startup hook) ---

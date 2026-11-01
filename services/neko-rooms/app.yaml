@@ -43,9 +43,9 @@ spec:
   - name: NEKO_ROOMS_EPR
     value: 59000-59049
   - name: NEKO_ROOMS_NAT1TO1
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: NEKO_ROOMS_INSTANCE_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: NEKO_ROOMS_INSTANCE_NETWORK
     value: neko-rooms-net
   - name: NEKO_ROOMS_TRAEFIK_ENABLED
@@ -63,7 +63,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

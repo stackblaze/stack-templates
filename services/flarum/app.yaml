@@ -14,7 +14,7 @@ metadata:
       / FLARUM_ADMIN_PASS (min 8 chars) / FLARUM_ADMIN_MAIL. ROTATE the admin password,
       the mariadb add-on credentials (db/user/password all default to 'flarum'), and
       log in to change them after setup. FORUM_URL is wired to the live app URL via
-      {{KUBERO_APP_URL}}. Persistent data (installed extensions, compiled public assets,
+      {{STACKBLAZE_APP_URL}}. Persistent data (installed extensions, compiled public assets,
       logs) lives under /flarum/app and is kept by the flarum-data volume; for production
       raise the PHP memory limit and pod size if you install many extensions.
     kubero.dev/template.links: '["https://docs.flarum.org/", "https://github.com/mondediefr/docker-flarum/blob/master/README.md"]'
@@ -39,17 +39,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: flarum
           username: flarum
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -66,7 +66,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: flarum
@@ -74,7 +74,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: flarum
@@ -92,7 +92,7 @@ spec:
   - name: DB_PREF
     value: flarum_
   - name: FORUM_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: FLARUM_ADMIN_USER
     value: admin
   - name: FLARUM_ADMIN_PASS
@@ -106,7 +106,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /flarum/app/storage
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 3Gi
     storageClass: shared
   cronjobs: []

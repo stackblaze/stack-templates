@@ -12,7 +12,7 @@ metadata:
       \ a MySQL-compatible database (the MariaDB add-on here; Castopod does NOT support\
       \ Postgres) and optionally Redis for caching, which is wired to the password-less\
       \ Valkey add-on (CP_CACHE_HANDLER=redis + CP_REDIS_HOST). The public URL is\
-      \ injected via {{KUBERO_APP_URL}} into CP_BASEURL; this MUST match the real\
+      \ injected via {{STACKBLAZE_APP_URL}} into CP_BASEURL; this MUST match the real\
       \ host or asset/feed URLs break. ROTATE before going live: CP_ANALYTICS_SALT\
       \ (set to a fresh `openssl rand -hex 32` value \u2014 it salts analytics IP\
       \ hashing and must not be the placeholder), and the MariaDB add-on credentials\
@@ -45,17 +45,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: castopod
           username: castopod
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -72,7 +72,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: castopod
@@ -80,7 +80,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: castopod
@@ -94,7 +94,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -115,7 +115,7 @@ spec:
               memory: 256Mi
   envVars:
   - name: CP_BASEURL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: CP_ANALYTICS_SALT
     value: replace-with-openssl-rand-hex-32
   - name: CP_DATABASE_HOSTNAME
@@ -147,7 +147,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/public/media
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

@@ -39,7 +39,7 @@
     },
     {
       "name": "FLOW_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     }
   ],
   "addons": [],

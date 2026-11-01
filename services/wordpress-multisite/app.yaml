@@ -12,7 +12,7 @@ metadata:
       enabled at the WordPress config layer via WORDPRESS_CONFIG_EXTRA (WP_ALLOW_MULTISITE=true).
       After the first-run install wizard completes, go to Tools > Network Setup in
       wp-admin to create the network, then add the printed wp-config.php / .htaccess
-      rules. Subdomain multisite needs a wildcard DNS record (*.{{KUBERO_APP_HOST}})
+      rules. Subdomain multisite needs a wildcard DNS record (*.{{STACKBLAZE_APP_HOST}})
       and matching ingress/TLS; subdirectory multisite needs none. Rotate WORDPRESS_AUTH_KEY/SECURE_AUTH_KEY/LOGGED_IN_KEY/NONCE_KEY
       and the four matching salts (openssl rand -base64 64) plus the MariaDB password
       before going to production. Persistent data (wp-content: uploads, plugins, themes,
@@ -40,17 +40,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: wordpress-multisite
           username: wordpress-multisite
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -67,7 +67,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: wordpress-multisite
@@ -75,7 +75,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: wordpress-multisite
@@ -91,8 +91,8 @@ spec:
   - name: WORDPRESS_TABLE_PREFIX
     value: wp_
   - name: WORDPRESS_CONFIG_EXTRA
-    value: define('WP_ALLOW_MULTISITE', true); define('WP_HOME', '{{KUBERO_APP_URL}}');
-      define('WP_SITEURL', '{{KUBERO_APP_URL}}');
+    value: define('WP_ALLOW_MULTISITE', true); define('WP_HOME', '{{STACKBLAZE_APP_URL}}');
+      define('WP_SITEURL', '{{STACKBLAZE_APP_URL}}');
   - name: WORDPRESS_AUTH_KEY
     value: replace-with-openssl-rand-base64-64
   - name: WORDPRESS_SECURE_AUTH_KEY
@@ -114,7 +114,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html/wp-content
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

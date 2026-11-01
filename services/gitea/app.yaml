@@ -31,7 +31,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -51,19 +51,19 @@ spec:
               database: gitea
               owner: gitea
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO gitea
               - GRANT CREATE ON SCHEMA public TO gitea
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO gitea
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -72,7 +72,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: gitea
@@ -97,10 +97,10 @@ spec:
   - name: GITEA__security__INSTALL_LOCK
     value: 'true'
   - name: GITEA__server__DOMAIN
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   # Public HTTPS base URL — used for clone URLs, webhooks and OAuth redirects.
   - name: GITEA__server__ROOT_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   # Built-in SSH server (in-process, runs as the gitea user — no root sshd).
   # Listens on SSH_LISTEN_PORT inside the pod; SSH_PORT/SSH_DOMAIN are what
   # Gitea advertises in the ssh:// clone URL. Reached off-cluster through the
@@ -112,7 +112,7 @@ spec:
   - name: GITEA__server__SSH_PORT
     value: '2222'
   - name: GITEA__server__SSH_DOMAIN
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   # Git SSH endpoint. Ingress is HTTP-only, so SSH needs its own L4 port: this
   # adds a containerPort + ClusterIP port and (expose) an external Service on
   # 2222. NOTE: externalPort 2222 is bound cluster-wide — only one app per
@@ -127,7 +127,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 10Gi
     storageClass: shared
   image:

@@ -32,7 +32,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-db'
+          name: '{{STACKBLAZE_APP_NAME}}-db'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -52,19 +52,19 @@ spec:
               database: linkwarden
               owner: linkwarden
               secret:
-                name: '{{KUBERO_APP_NAME}}-db-app'
+                name: '{{STACKBLAZE_APP_NAME}}-db-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO linkwarden
               - GRANT CREATE ON SCHEMA public TO linkwarden
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO linkwarden
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-db-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-db-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-db-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-db-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -73,14 +73,14 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-db-app'
+          name: '{{STACKBLAZE_APP_NAME}}-db-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: linkwarden
           password: linkwarden
   envVars:
   - name: NEXTAUTH_URL
-    value: '{{KUBERO_APP_URL}}/api/v1/auth'
+    value: '{{STACKBLAZE_APP_URL}}/api/v1/auth'
   - name: NEXTAUTH_SECRET
     value: H+KbL/OFrqbEuDy/1zX8bsPG+spXri3S
   - name: DATABASE_URL
@@ -90,7 +90,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data/data
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []

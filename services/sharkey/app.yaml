@@ -14,7 +14,7 @@ metadata:
       via .config/default.yml, not env vars alone, so BEFORE first boot you MUST drop
       a default.yml into the mounted /sharkey/.config volume - set ''url'' to your
       public https URL (it is baked into ActivityPub actor URLs and cannot be changed
-      cleanly later; {{KUBERO_APP_URL}} is provided below for reference), and set
+      cleanly later; {{STACKBLAZE_APP_URL}} is provided below for reference), and set
       db.host from PGHOST (the ProxySQL pooler / sharkey-postgresql Service, not `-rw`) / db.port=5432 / db.db=sharkey / db.user=sharkey
       / db.pass=sharkey and redis.host=rfr-sharkey-valkey-readwrite / redis.port=6379.
       The env vars below (POSTGRES_*/DATABASE_*/REDIS_*) mirror those values for the
@@ -58,7 +58,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -82,15 +82,15 @@ spec:
               - GRANT CREATE ON SCHEMA public TO sharkey
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO sharkey
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -99,7 +99,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: sharkey
@@ -114,7 +114,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -137,7 +137,7 @@ spec:
   - name: NODE_ENV
     value: production
   - name: SHARKEY_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: DATABASE_HOST
     value: '$(PGHOST)'
   - name: DATABASE_PORT
@@ -167,14 +167,14 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /sharkey/.config
-    name: '{{KUBERO_APP_NAME}}-config'
+    name: '{{STACKBLAZE_APP_NAME}}-config'
     size: 1Gi
     storageClass: shared
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /sharkey/files
-    name: '{{KUBERO_APP_NAME}}-files'
+    name: '{{STACKBLAZE_APP_NAME}}-files'
     size: 5Gi
     storageClass: shared
   cronjobs: []

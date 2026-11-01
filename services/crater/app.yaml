@@ -12,7 +12,7 @@ metadata:
       on Docker Hub (nginx + PHP 7.4 on :80), since the upstream project ships a build-from-source
       docker-compose rather than an official prebuilt image. BEFORE first boot ROTATE:
       APP_KEY (run `openssl rand -base64 32` and prefix with `base64:`, i.e. set APP_KEY=base64:<value>)
-      and the MariaDB password (default ''crater''). APP_URL is pre-filled with {{KUBERO_APP_URL}}
+      and the MariaDB password (default ''crater''). APP_URL is pre-filled with {{STACKBLAZE_APP_URL}}
       and MUST match the public URL or cookie-based auth (4.0.0+) will fail. FIRST
       RUN: browse to the app URL and complete the on-boarding wizard (admin account,
       company, currency); the wizard runs DB migrations automatically. On first boot
@@ -43,17 +43,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: crater
           username: crater
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -70,7 +70,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: crater
@@ -78,13 +78,13 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: crater
   envVars:
   - name: APP_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: APP_ENV
     value: production
   - name: APP_DEBUG
@@ -110,9 +110,9 @@ spec:
   - name: QUEUE_CONNECTION
     value: database
   - name: SANCTUM_STATEFUL_DOMAINS
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: SESSION_DOMAIN
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: TZ
     value: UTC
   cronjobs: []

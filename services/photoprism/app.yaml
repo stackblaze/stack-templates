@@ -39,17 +39,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: photoprism
           username: photoprism
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -66,7 +66,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: photoprism
@@ -74,13 +74,13 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: photoprism
   envVars:
   - name: PHOTOPRISM_SITE_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: PHOTOPRISM_ADMIN_USER
     value: admin
   - name: PHOTOPRISM_ADMIN_PASSWORD
@@ -121,7 +121,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /photoprism/storage
-    name: '{{KUBERO_APP_NAME}}-storage'
+    name: '{{STACKBLAZE_APP_NAME}}-storage'
     size: 2Gi
     storageClass: shared
   cronjobs: []

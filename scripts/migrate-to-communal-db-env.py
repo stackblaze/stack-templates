@@ -12,7 +12,7 @@ app that references the add-on:
   MariaDB          MYSQL_HOST MYSQL_PORT MYSQL_USER MYSQL_DATABASE MYSQL_PASSWORD(secretKeyRef)
   Valkey           REDISHOST REDISPORT REDIS_URL
 
-Templates that hardcode `user:pass@{{KUBERO_APP_NAME}}-postgresql-rw` dial a
+Templates that hardcode `user:pass@{{STACKBLAZE_APP_NAME}}-postgresql-rw` dial a
 Service and credentials that no longer exist. Kubernetes expands `$(NAME)`
 references in env values from variables defined earlier in the container env
 (kubero-server dependency-orders the final list), so every template env var
@@ -48,7 +48,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 SERVICES = ROOT / "services"
-TOKEN = "{{KUBERO_APP_NAME}}"
+TOKEN = "{{STACKBLAZE_APP_NAME}}"
 
 CONTRACT = {
     "pg": ["PGHOST", "PGPORT", "PGUSER", "PGDATABASE", "PGPASSWORD"],
@@ -169,7 +169,7 @@ def host_alternation(e: Engine, slug: str) -> str:
     names = {e.instance, e.instance.replace(TOKEN, slug)}
     if TOKEN not in e.instance:
         # token-less CR names get app-prefixed at deploy (uniquifyTemplate), so
-        # env literals legitimately spell them `{{KUBERO_APP_NAME}}-<name>`.
+        # env literals legitimately spell them `{{STACKBLAZE_APP_NAME}}-<name>`.
         names |= {f"{TOKEN}-{e.instance}", f"{slug}-{e.instance}"}
     alts: list[str] = []
     for n in names:

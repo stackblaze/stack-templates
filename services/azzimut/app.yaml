@@ -31,7 +31,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-db'
+          name: '{{STACKBLAZE_APP_NAME}}-db'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -51,19 +51,19 @@ spec:
               database: azimutt
               owner: azimutt
               secret:
-                name: '{{KUBERO_APP_NAME}}-db-app'
+                name: '{{STACKBLAZE_APP_NAME}}-db-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO azimutt
               - GRANT CREATE ON SCHEMA public TO azimutt
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO azimutt
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-db-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-db-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-db-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-db-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -72,7 +72,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-db-app'
+          name: '{{STACKBLAZE_APP_NAME}}-db-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: azimutt
@@ -83,11 +83,11 @@ spec:
   - name: PHX_PROTOCOL
     value: ipv4
   - name: PHX_HOST
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: PORT
     value: '4000'
   - name: SECRET_KEY_BASE
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: FILE_STORAGE_ADAPTER
@@ -103,7 +103,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/bin/uploads
-    name: '{{KUBERO_APP_NAME}}-uploads'
+    name: '{{STACKBLAZE_APP_NAME}}-uploads'
     size: 1Gi
     storageClass: shared
   cronjobs: []

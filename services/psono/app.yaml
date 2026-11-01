@@ -27,27 +27,27 @@ spec:
   deploymentstrategy: docker
   envVars:
   - name: PSONO_HOST_URL
-    value: '{{KUBERO_APP_URL}}/server'
+    value: '{{STACKBLAZE_APP_URL}}/server'
   - name: PSONO_ALLOWED_HOSTS
     value: '*'
   - name: PSONO_ALLOWED_DOMAINS
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: PSONO_WEB_CLIENT_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: PSONO_DATABASE_URL
     value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: PSONO_SECRET_KEY
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: PSONO_ACTIVATION_LINK_SECRET
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: PSONO_DB_SECRET
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: PSONO_EMAIL_SECRET_SALT
-    value: '{{KUBERO_GEN_BCRYPT_SALT}}'
+    value: '{{STACKBLAZE_GEN_BCRYPT_SALT}}'
   - name: PSONO_PRIVATE_KEY
-    value: '{{KUBERO_GEN_X25519_SK}}'
+    value: '{{STACKBLAZE_GEN_X25519_SK}}'
   - name: PSONO_PUBLIC_KEY
-    value: '{{KUBERO_GEN_X25519_PK}}'
+    value: '{{STACKBLAZE_GEN_X25519_PK}}'
   extraVolumes: []
   cronjobs: []
   addons:
@@ -61,7 +61,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -81,15 +81,15 @@ spec:
               database: psono
               owner: psono
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -98,7 +98,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: psono

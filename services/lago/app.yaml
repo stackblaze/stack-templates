@@ -49,7 +49,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -69,7 +69,7 @@ spec:
               database: lago
               owner: lago
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
               - GRANT ALL ON SCHEMA public TO lago
@@ -77,12 +77,12 @@ spec:
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO lago
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -91,7 +91,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: lago
@@ -106,7 +106,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -165,9 +165,9 @@ spec:
   - name: LAGO_RSA_PRIVATE_KEY
     value: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcFFJQkFBS0NBUUVBdkRmeEtoRnhSd2tNUXhwSlduVEhZN3k5WkxGV01GSndCSXVhbmhpOW5tWHdxT1lZVDhtTUhlbTNLcWdKDQpJRW5vaFFUMWVHbG5aRFJJWXg4SFFTYWxaSmt4TDMxSVlkSC9wSXRVelJWT1RMM0U4eVVKRXhzNldIdHN6RWc0YWdxbU12WUhISFhRDQpPdTJRbHQxeFJFZWNCakRaUW9kNldzZkw4OE8rak1WZ1ZPem04TTkwdlFoTXhiT1JaTXg0cTVkOWIzWjdWbjFCMFI3bVdVbzIxTkNsDQpDUXM3T00zMTZNbWpvcys5bGRtQWo0V1pxc3h2eFVOUXVXVVdiR1g2RkxuK1V4SnVMbzIwdXcxK1VON2pCbCtiNXFOMllhcXNHM2Y5DQpNUEY0OVg5UVpOSW1meTNldnhjV0JLN3RETTNERlhKY1owMDF2cStPYXR2bmpZaENqRXowYlFJREFRQUJBb0lCQURtd1Q4dWNFd001DQp3N2RoZkRBc2NOeWlBYzYyQi92Qm1MSGI5Q1VXNGkrRmdURFRiWW91OVRKSjZ5azQzYXMyMi96QlcxZHZ2dy9ZY29ObkJEczAxQ2EwDQpTWDRMd1Q2eU5jL0NJTmpHK2Z2Tmdtc2Y0OXNtVWtqQ2M4TmRNMlZWSkVHa1pPT1ZQS0NESmZrSG9HclVJLzlGdzZGL2tzSDJVUTNDDQo1a21SU1loZG1QNW9yMTN5MlBCVVhUR0hsUTdNK0RYRHpTVG82RHBBelZTbmpwMjNyNEtuYU83dDZueElCeW14R0ZYeVRtbXVlVkhWDQpUVjZ4RFoxYmJERFEyaDhRYTVjN3lBTEVWRTh4dC84c0Z2cXRRaDlsb3lFcUZjeUg4L1BtRlhqWWY0VGNDWnluMER5TmhuZEtFSjI4DQpFRVRwNnNWN0RtbjZZbitJK3BBNm02enplQ1VDZ1lFQThKNkl6NWNwb2trRkpHckpYdE5FN0c2dWdVczlQOW00T2cyR2d3QmxUdnM4DQoxVXhaRGZPK3ZDV1MwZzNBQzcxMFNNU0Zsb2pYaENGd3diU05NT3FRV25mamZ3aWdxc1hSc05RcFlWalFDekZsZmUvQzZUK3NRQWp0DQpWeVNyaHhLcUtpZVd4YVdaNXRpcm5ZQXY2S0ZucmdIRDBxSllnRDY3SW9qVGZEWVlXZWNDZ1lFQXlEL3RpYm51OFRSUVdmYU1aME5xDQpLMUZOR0VjWkM3b0pIdG5hNGFGVjBnZFloQ1pCVXRTZ2F2UHpSTlVPUDlEc0RRZmpsQjlSNHJhQXJnZHNYbDNJc2xOZlg0WFB5Z1pKDQpGSUJRaXM1WmV0cittUXFyOEV3K2lTWE1VYVdmcE0yZVVCMjJOWG9mRFgyTHZoS2FzVkJyRmNuR1c4VDNSaDg4dDVpQXJSdXVQSXNDDQpnWUVBNWw5Q3FVNFc1SE40NHVjQ3FURXBPaHkySXNBQWdsTlhHTzIrTFVxQnRGN0NYWTFkYmdoQ1F5ek9KeUpYRG1aeklRQld6a3R4DQoyK1dRYVVVT01SbEMzL3NNNnFFK0FvS25RdCsrUnArYmdEdm82ZXhWOXErcG9SMXE3eFlDeTYzSkVkY1plVjRWdlhrUXhoam14WmxUDQpCTHhYMmlEcER0QUFwdzNOUFkwbFAxMENnWUVBdTIzQ2luK0NtemNvNGh0M0xRd1hhbllOWCtUa0YycklNSjBlVnNPb1RRNWRGa3VzDQpKcmduY2hQbHBZNTVhTmZHcVNleUppanVmdkh0SFhhTFF3UXEzbVpVeFZhOHQwNE14dWlXK21UTHNjY2FOK3FhSmk5bTlQMXc4UmJCDQpod0tCNUdENjg3RGJNY2hKck4xQzl5WGJKU2lYeGJ0azZyaEFIMlBaUksyODlxTUNnWUVBancwRWdWOWwyOXZOSTF6OVJUWjlKREVJDQpZOUljVW5Vb1ZrTXFXc3JmWmxnZE9kWGw3YXNUWExVZkJ2Vm1sQXJNMHRhWDRCN0s1UjFDNEkrMEZhUHhFKzdjQ1h1d25jWVNtcEEzDQpNK3RrK1puS0RBYlRRSkFrZVVwQXp2M2NxV0lnd1lpc3ZGZEY4MFpCTVljM05ySnBvQW95MGRzbnVRbzRGbFB5blRGVVlyQT0KLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0=
   - name: LAGO_API_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: LAGO_FRONT_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: LAGO_PDF_URL
     value: http://lago-pdf:3000
   - name: LAGO_REDIS_CACHE_URL

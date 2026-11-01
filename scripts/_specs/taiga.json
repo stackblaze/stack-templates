@@ -57,7 +57,7 @@
     },
     {
       "name": "TAIGA_SITES_DOMAIN",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "TAIGA_SUBPATH",

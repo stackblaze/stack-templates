@@ -32,7 +32,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /pb/pb_data
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []

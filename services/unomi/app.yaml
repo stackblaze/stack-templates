@@ -41,11 +41,11 @@ spec:
   # The Elasticsearch companion app below. Sibling apps of a catalog group
   # are reached as <nameHint>-<suffix>-kuberoapp on port 80.
   - name: UNOMI_ELASTICSEARCH_ADDRESSES
-    value: unomi-elasticsearch-{{KUBERO_NAME_SUFFIX}}-kuberoapp:80
+    value: unomi-elasticsearch-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp:80
   - name: UNOMI_ELASTICSEARCH_CLUSTERNAME
     value: contextElasticSearch
   - name: UNOMI_CLUSTER_PUBLIC_ADDRESS
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: UNOMI_CLUSTER_INTERNAL_ADDRESS
     value: http://localhost:8181
   - name: UNOMI_THIRDPARTY_PROVIDER1_KEY
@@ -61,7 +61,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /opt/apache-unomi/data
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []
@@ -134,7 +134,7 @@ spec:
       - ReadWriteMany
       emptyDir: false
       mountPath: /usr/share/elasticsearch/data
-      name: '{{KUBERO_APP_NAME}}-es-data'
+      name: '{{STACKBLAZE_APP_NAME}}-es-data'
       size: 2Gi
       storageClass: shared
     healthcheck:

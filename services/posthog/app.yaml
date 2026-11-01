@@ -28,7 +28,7 @@ metadata:
 
       SECRET_KEY and ENCRYPTION_SALT_KEYS are generated at deploy. ENCRYPTION_SALT_KEYS CANNOT change after first boot or stored secrets break.
 
-      FIRST-RUN: the first start runs the migrations, which can take several minutes. Then open {{KUBERO_APP_URL}} and complete the on-screen setup wizard to create the first organization and admin user. SITE_URL is preset to your public URL and IS_BEHIND_PROXY=true / DISABLE_SECURE_SSL_REDIRECT=true are set because TLS is terminated at the Kubero ingress. NOTE: PostHog deprecated its official Helm chart - self-hosting is officially Docker-Compose-based and unsupported for high scale; PostHog Cloud is the recommended path for large workloads.
+      FIRST-RUN: the first start runs the migrations, which can take several minutes. Then open {{STACKBLAZE_APP_URL}} and complete the on-screen setup wizard to create the first organization and admin user. SITE_URL is preset to your public URL and IS_BEHIND_PROXY=true / DISABLE_SECURE_SSL_REDIRECT=true are set because TLS is terminated at the Kubero ingress. NOTE: PostHog deprecated its official Helm chart - self-hosting is officially Docker-Compose-based and unsupported for high scale; PostHog Cloud is the recommended path for large workloads.
     kubero.dev/template.links: '["https://posthog.com/docs/self-host", "https://posthog.com/docs/self-host/configure/environment-variables"]'
     kubero.dev/template.screenshots: '["https://posthog.com/images/og/default.png"]'
     kubero.dev/template.source: https://github.com/PostHog/posthog
@@ -51,7 +51,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -71,19 +71,19 @@ spec:
               database: posthog
               owner: posthog
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO posthog
               - GRANT CREATE ON SCHEMA public TO posthog
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO posthog
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -92,7 +92,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: posthog
@@ -107,7 +107,7 @@ spec:
         apiVersion: clickhouse.altinity.com/v1
         kind: ClickHouseInstallation
         metadata:
-          name: '{{KUBERO_APP_NAME}}-clickhouse'
+          name: '{{STACKBLAZE_APP_NAME}}-clickhouse'
         spec:
           configuration:
             zookeeper:
@@ -205,7 +205,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -238,7 +238,7 @@ spec:
   - name: POSTHOG_POSTGRES_PORT
     value: '$(PGPORT)'
   - name: CLICKHOUSE_HOST
-    value: clickhouse-{{KUBERO_APP_NAME}}-clickhouse
+    value: clickhouse-{{STACKBLAZE_APP_NAME}}-clickhouse
   - name: CLICKHOUSE_DATABASE
     value: '$(PGDATABASE)'
   - name: CLICKHOUSE_USER
@@ -252,18 +252,18 @@ spec:
   # The Redpanda (Kafka API) companion app below. Sibling apps of a catalog
   # group are reached as <nameHint>-<suffix>-kuberoapp on port 80.
   - name: KAFKA_HOSTS
-    value: posthog-kafka-{{KUBERO_NAME_SUFFIX}}-kuberoapp:80
+    value: posthog-kafka-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp:80
   - name: KAFKA_URL
-    value: kafka://posthog-kafka-{{KUBERO_NAME_SUFFIX}}-kuberoapp:80
+    value: kafka://posthog-kafka-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp:80
   - name: SITE_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   # Generated at deploy. The worker and Node.js companions inherit this env,
   # so every app of the group gets the same values. ENCRYPTION_SALT_KEYS must
   # be 32 characters and must not change after the first boot.
   - name: SECRET_KEY
-    value: '{{KUBERO_GEN_ALNUM:64}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: ENCRYPTION_SALT_KEYS
-    value: '{{KUBERO_GEN_ALNUM:32}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
   - name: DISABLE_SECURE_SSL_REDIRECT
     value: 'true'
   - name: IS_BEHIND_PROXY
@@ -285,7 +285,7 @@ spec:
   # The posthog-plugins companion below (Node.js CDP API, port 6738 behind
   # the group Service on 80).
   - name: CDP_API_URL
-    value: http://posthog-plugins-{{KUBERO_NAME_SUFFIX}}-kuberoapp:80
+    value: http://posthog-plugins-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp:80
   extraVolumes: []
   cronjobs: []
   resources:
@@ -345,7 +345,7 @@ spec:
       - --kafka-addr
       - internal://0.0.0.0:9092
       - --advertise-kafka-addr
-      - internal://posthog-kafka-{{KUBERO_NAME_SUFFIX}}-kuberoapp:80
+      - internal://posthog-kafka-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp:80
       - --mode
       - dev-container
       - --smp

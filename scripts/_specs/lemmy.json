@@ -35,7 +35,7 @@
     },
     {
       "name": "LEMMY_HOSTNAME",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "LEMMY_DATABASE_URL",

@@ -31,7 +31,7 @@ spec:
   addons: []
   envVars:
   - name: RELAY
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: ENCRYPTED_ONLY
     value: '1'
   - name: DB_URL
@@ -41,7 +41,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []

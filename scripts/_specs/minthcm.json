@@ -10,7 +10,7 @@
     "work",
     "productivity"
   ],
-  "installation": "MintHCM requires a companion Elasticsearch 7.10+ service for search/indexing (not an operator add-on here) - deploy one and point ELASTICSEARCH_HOST/PORT at it, or the app boots but search features stay disabled. The bundled MariaDB add-on holds all relational data; rotate the default db password (currently the slug 'minthcm') after first deploy. On first run the entrypoint installs the schema using MINT_USER/MINT_PASS (admin/minthcm) and MINT_URL ({{KUBERO_APP_URL}}) - log in and change the admin password immediately. Set INSTALL_DEMO_DATA=yes only for evaluation. Persistent app code, config and uploads live under /var/www/html.",
+  "installation": "MintHCM requires a companion Elasticsearch 7.10+ service for search/indexing (not an operator add-on here) - deploy one and point ELASTICSEARCH_HOST/PORT at it, or the app boots but search features stay disabled. The bundled MariaDB add-on holds all relational data; rotate the default db password (currently the slug 'minthcm') after first deploy. On first run the entrypoint installs the schema using MINT_USER/MINT_PASS (admin/minthcm) and MINT_URL ({{STACKBLAZE_APP_URL}}) - log in and change the admin password immediately. Set INSTALL_DEMO_DATA=yes only for evaluation. Persistent app code, config and uploads live under /var/www/html.",
   "screenshots": [],
   "links": [
     "https://minthcm.org/support/deploy-minthcm-on-docker/",
@@ -53,7 +53,7 @@
     },
     {
       "name": "MINT_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "MINT_USER",

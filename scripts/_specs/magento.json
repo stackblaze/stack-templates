@@ -10,7 +10,7 @@
     "cms",
     "work"
   ],
-  "installation": "Bitnami Magento image. The app web container is the PRIMARY service; companion services you must run alongside it: (1) a search engine - Magento 2.4+ REQUIRES Elasticsearch 7/8 or OpenSearch 2.x, which is NOT a provided operator add-on, so deploy it separately (e.g. image bitnami/opensearch or opensearchproject/opensearch) and point MAGENTO_ELASTICSEARCH_HOST/ELASTICSEARCH_HOST at it on port 9200; (2) optional but recommended cron/queue worker running the same bitnami/magento image with command 'php /opt/bitnami/magento/htdocs/bin/magento cron:run' for scheduled tasks, indexers and async order processing. MariaDB stores all catalog/order data; Valkey (Redis-compatible) is wired for page cache and session storage. First run auto-installs Magento and creates the admin user from MAGENTO_USERNAME/MAGENTO_PASSWORD/MAGENTO_EMAIL - rotate MAGENTO_PASSWORD (currently a placeholder), the MariaDB password, and admin email before exposing publicly. Admin panel lives at {{KUBERO_APP_URL}}/admin. Install is slow (several minutes) and memory-heavy; give the web pod >=2Gi RAM (PHP memory_limit). Reindex with 'bin/magento indexer:reindex' after first boot.",
+  "installation": "Bitnami Magento image. The app web container is the PRIMARY service; companion services you must run alongside it: (1) a search engine - Magento 2.4+ REQUIRES Elasticsearch 7/8 or OpenSearch 2.x, which is NOT a provided operator add-on, so deploy it separately (e.g. image bitnami/opensearch or opensearchproject/opensearch) and point MAGENTO_ELASTICSEARCH_HOST/ELASTICSEARCH_HOST at it on port 9200; (2) optional but recommended cron/queue worker running the same bitnami/magento image with command 'php /opt/bitnami/magento/htdocs/bin/magento cron:run' for scheduled tasks, indexers and async order processing. MariaDB stores all catalog/order data; Valkey (Redis-compatible) is wired for page cache and session storage. First run auto-installs Magento and creates the admin user from MAGENTO_USERNAME/MAGENTO_PASSWORD/MAGENTO_EMAIL - rotate MAGENTO_PASSWORD (currently a placeholder), the MariaDB password, and admin email before exposing publicly. Admin panel lives at {{STACKBLAZE_APP_URL}}/admin. Install is slow (several minutes) and memory-heavy; give the web pod >=2Gi RAM (PHP memory_limit). Reindex with 'bin/magento indexer:reindex' after first boot.",
   "screenshots": [],
   "links": [
     "https://experienceleague.adobe.com/docs/commerce-operations/installation-guide/overview.html",
@@ -29,7 +29,7 @@
   "envVars": [
     {
       "name": "MAGENTO_HOST",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "MAGENTO_ENABLE_HTTPS",

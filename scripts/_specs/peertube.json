@@ -31,7 +31,7 @@
   "envVars": [
     {
       "name": "PEERTUBE_WEBSERVER_HOSTNAME",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "PEERTUBE_WEBSERVER_PORT",

@@ -10,7 +10,7 @@
     "analytics",
     "data"
   ],
-  "installation": "Change CLICKHOUSE_PASSWORD. Access the HTTP interface at port 8123 and the Play UI at /play. Connect with any ClickHouse client using host={{KUBERO_APP_HOST}}, port=443, user=admin, password=<your-password>. The native TCP port 9000 is not exposed externally — use the HTTP interface or the JDBC/ODBC drivers via HTTP. Note: ClickHouse is also available as an operator-managed add-on for higher availability.",
+  "installation": "Change CLICKHOUSE_PASSWORD. Access the HTTP interface at port 8123 and the Play UI at /play. Connect with any ClickHouse client using host={{STACKBLAZE_APP_HOST}}, port=443, user=admin, password=<your-password>. The native TCP port 9000 is not exposed externally — use the HTTP interface or the JDBC/ODBC drivers via HTTP. Note: ClickHouse is also available as an operator-managed add-on for higher availability.",
   "screenshots": [],
   "links": [
     "https://clickhouse.com/docs/"

@@ -20,7 +20,7 @@ metadata:
       (3) OPTIONAL Lightning: an LND node (''btcpayserver/lnd:latest'') or Core Lightning
       (''btcpayserver/lightning:latest'') wired with BTCPAY_BTCLIGHTNING. ROTATE before
       first boot: the Postgres password (default ''btcpay'') and the BTCPAY_POSTGRES
-      connection string password to match. BTCPAY_HOST is pre-filled with {{KUBERO_APP_HOST}}
+      connection string password to match. BTCPAY_HOST is pre-filled with {{STACKBLAZE_APP_HOST}}
       and must equal the public hostname (used for cookie/URL generation); the app
       binds on 0.0.0.0:49392 via BTCPAY_BIND. TLS is terminated at the ingress so
       BTCPAY_PROTOCOL=https and the reverse-proxy headers are honored. First run:
@@ -49,7 +49,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -69,19 +69,19 @@ spec:
               database: btcpay
               owner: btcpay
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO btcpay
               - GRANT CREATE ON SCHEMA public TO btcpay
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO btcpay
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -90,7 +90,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: btcpay
@@ -99,7 +99,7 @@ spec:
   - name: DOTNET_USE_POLLING_FILE_WATCHER
     value: '1'
   - name: BTCPAY_HOST
-    value: '{{KUBERO_APP_HOST}}'
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: BTCPAY_PROTOCOL
     value: https
   - name: BTCPAY_BIND
@@ -125,7 +125,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /datadir
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []

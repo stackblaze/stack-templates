@@ -21,7 +21,7 @@ metadata:
       at /Revolt.toml (mounted here at the persistent /config volume - drop your Revolt.toml
       there or mount it at the root); the env vars below override the database/redis/rabbit
       connection URLs that Revolt.toml otherwise carries. In Revolt.toml set hosts.app
-      to your public https URL ({{KUBERO_APP_URL}}), generate the auth/file/voice
+      to your public https URL ({{STACKBLAZE_APP_URL}}), generate the auth/file/voice
       secrets, and configure the S3/MinIO file backend. ROTATE: the FerretDB postgresql.auth
       password, and ALL secrets in Revolt.toml (api keys, auth pepper, file-server
       token, vapid/push keys, livekit keys) - the defaults are placeholders. ADD-ONS
@@ -64,7 +64,7 @@ spec:
         apiVersion: application.kubero.dev/v1alpha1
         kind: KuberoFerretDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-ferretdb'
+          name: '{{STACKBLAZE_APP_NAME}}-ferretdb'
         spec:
           ferretdb:
             image:
@@ -91,7 +91,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -120,7 +120,7 @@ spec:
         apiVersion: rabbitmq.com/v1beta1
         kind: RabbitmqCluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rabbitmq'
+          name: '{{STACKBLAZE_APP_NAME}}-rabbitmq'
         spec:
           replicas: 1
           persistence:
@@ -140,11 +140,11 @@ spec:
               '
   envVars:
   - name: REVOLT__DATABASE__MONGODB
-    value: mongodb://ferretdb:changeme@{{KUBERO_APP_NAME}}-ferretdb-kuberoferretdb:27017/revolt
+    value: mongodb://ferretdb:changeme@{{STACKBLAZE_APP_NAME}}-ferretdb-kuberoferretdb:27017/revolt
   - name: REVOLT__DATABASE__REDIS
     value: 'redis://$(REDISHOST):$(REDISPORT)'
   - name: REVOLT__RABBIT__HOST
-    value: '{{KUBERO_APP_NAME}}-rabbitmq'
+    value: '{{STACKBLAZE_APP_NAME}}-rabbitmq'
   - name: REVOLT__RABBIT__PORT
     value: '5672'
   - name: REVOLT__RABBIT__USERNAME
@@ -152,11 +152,11 @@ spec:
   - name: REVOLT__RABBIT__PASSWORD
     value: revolt
   - name: REVOLT__HOSTS__APP
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: REVOLT__HOSTS__API
-    value: '{{KUBERO_APP_URL}}/api'
+    value: '{{STACKBLAZE_APP_URL}}/api'
   - name: REVOLT__HOSTS__EVENTS
-    value: '{{KUBERO_APP_URL}}/ws'
+    value: '{{STACKBLAZE_APP_URL}}/ws'
   - name: ROCKET_PORT
     value: '8000'
   extraVolumes:
@@ -164,7 +164,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /config
-    name: '{{KUBERO_APP_NAME}}-config'
+    name: '{{STACKBLAZE_APP_NAME}}-config'
     size: 1Gi
     storageClass: shared
   cronjobs: []

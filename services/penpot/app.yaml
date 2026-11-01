@@ -15,7 +15,7 @@ metadata:
       SAME version tag 2.16): (1) BACKEND -> image `penpotapp/backend` (listens on
       HTTP 6060); give it the database/redis/secret env shown below: PENPOT_DATABASE_URI=postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE),
       PENPOT_DATABASE_USERNAME=penpot, PENPOT_DATABASE_PASSWORD=penpot, PENPOT_REDIS_URI=redis://rfr-penpot-valkey-readwrite:6379/0,
-      PENPOT_SECRET_KEY=(rotate, `openssl rand -hex 32`), PENPOT_PUBLIC_URI={{KUBERO_APP_URL}},
+      PENPOT_SECRET_KEY=(rotate, `openssl rand -hex 32`), PENPOT_PUBLIC_URI={{STACKBLAZE_APP_URL}},
       PENPOT_FLAGS, and the assets-fs storage env; it must MOUNT THE SAME shared assets
       volume at /opt/data/assets as the frontend. (2) EXPORTER -> image `penpotapp/exporter`
       (HTTP 6061), set PENPOT_PUBLIC_URI=http://penpot-frontend:8080 and PENPOT_REDIS_URI
@@ -55,7 +55,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -75,19 +75,19 @@ spec:
               database: penpot
               owner: penpot
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO penpot
               - GRANT CREATE ON SCHEMA public TO penpot
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO penpot
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -96,7 +96,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: penpot
@@ -111,7 +111,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -132,7 +132,7 @@ spec:
               memory: 256Mi
   envVars:
   - name: PENPOT_PUBLIC_URI
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: PENPOT_BACKEND_URI
     value: http://penpot-backend:6060
   - name: PENPOT_EXPORTER_URI
@@ -159,7 +159,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /opt/data/assets
-    name: '{{KUBERO_APP_NAME}}-assets'
+    name: '{{STACKBLAZE_APP_NAME}}-assets'
     size: 5Gi
     storageClass: shared
   cronjobs: []

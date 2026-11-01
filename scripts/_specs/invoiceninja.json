@@ -10,7 +10,7 @@
     "work",
     "productivity"
   ],
-  "installation": "Invoice Ninja v5 is a Laravel (PHP) app backed by MySQL/MariaDB (it does NOT officially support Postgres); Valkey is wired for cache and queue. BEFORE first boot ROTATE: APP_KEY (must be a 32-char value; generate with `openssl rand -base64 32` and set APP_KEY=base64:<value>) and the MariaDB password (default 'invoiceninja'). APP_URL is pre-filled with {{KUBERO_APP_URL}} and must match the public URL. On first boot the entrypoint runs DB migrations and seeds the admin user from IN_USER_EMAIL / IN_PASSWORD (rotate IN_PASSWORD) - then log in at the app URL and change the password. PDF generation uses the bundled snappdf (headless Chromium) so no companion service is required; set PDF_GENERATOR=snappdf. REQUIRE_HTTPS=false is set because TLS is terminated at the ingress. Uploads, logos and generated PDF invoices persist under /var/www/html/public/storage on the mounted volume. SMTP for mail and optional S3 for storage are configured later via env vars or the Settings UI.",
+  "installation": "Invoice Ninja v5 is a Laravel (PHP) app backed by MySQL/MariaDB (it does NOT officially support Postgres); Valkey is wired for cache and queue. BEFORE first boot ROTATE: APP_KEY (must be a 32-char value; generate with `openssl rand -base64 32` and set APP_KEY=base64:<value>) and the MariaDB password (default 'invoiceninja'). APP_URL is pre-filled with {{STACKBLAZE_APP_URL}} and must match the public URL. On first boot the entrypoint runs DB migrations and seeds the admin user from IN_USER_EMAIL / IN_PASSWORD (rotate IN_PASSWORD) - then log in at the app URL and change the password. PDF generation uses the bundled snappdf (headless Chromium) so no companion service is required; set PDF_GENERATOR=snappdf. REQUIRE_HTTPS=false is set because TLS is terminated at the ingress. Uploads, logos and generated PDF invoices persist under /var/www/html/public/storage on the mounted volume. SMTP for mail and optional S3 for storage are configured later via env vars or the Settings UI.",
   "screenshots": [
     "https://www.invoiceninja.com/wp-content/uploads/2021/01/dashboard.png"
   ],
@@ -31,7 +31,7 @@
   "envVars": [
     {
       "name": "APP_URL",
-      "value": "{{KUBERO_APP_URL}}"
+      "value": "{{STACKBLAZE_APP_URL}}"
     },
     {
       "name": "APP_ENV",

@@ -48,7 +48,7 @@
     },
     {
       "name": "SEAFILE_SERVER_HOSTNAME",
-      "value": "{{KUBERO_APP_HOST}}"
+      "value": "{{STACKBLAZE_APP_HOST}}"
     },
     {
       "name": "SEAFILE_SERVER_LETSENCRYPT",

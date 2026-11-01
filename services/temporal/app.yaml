@@ -21,7 +21,7 @@ metadata:
       (set ENABLE_ES=true + ES_SEEDS) which is NOT provisioned here. COMPANION SERVICES
       to deploy as their own Kubero apps: (1) WEB UI -> image `temporalio/ui:latest`
       (listens on HTTP 8080), set TEMPORAL_ADDRESS=temporal-<pod/service>:7233 and
-      TEMPORAL_CORS_ORIGINS={{KUBERO_APP_URL}}; this is the human-facing dashboard.
+      TEMPORAL_CORS_ORIGINS={{STACKBLAZE_APP_URL}}; this is the human-facing dashboard.
       (2) ADMIN/CLI -> image `temporalio/admin-tools:latest` for running `tctl`/`temporal`
       operator commands and manual schema upgrades. (3) Your own WORKERS are separate
       apps built from your code with the Temporal SDK, pointed at this server''s 7233
@@ -50,7 +50,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -70,7 +70,7 @@ spec:
               database: temporal
               owner: temporal
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO temporal
               - GRANT CREATE ON SCHEMA public TO temporal
@@ -80,12 +80,12 @@ spec:
               - ALTER ROLE temporal CREATEDB
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -94,7 +94,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: temporal

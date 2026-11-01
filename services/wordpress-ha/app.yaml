@@ -26,15 +26,15 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mariadb'
+          name: '{{STACKBLAZE_APP_NAME}}-mariadb'
         spec:
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mariadb-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mariadb-root'
             key: password
           database: wordpress
           username: wordpress
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mariadb-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mariadb-app'
             key: password
           storage:
             size: 5Gi
@@ -53,7 +53,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mariadb-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mariadb-root'
         type: Opaque
         stringData:
           password: wordpress
@@ -61,7 +61,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mariadb-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mariadb-app'
         type: Opaque
         stringData:
           password: wordpress
@@ -82,7 +82,7 @@ spec:
     storageClass: shared
     emptyDir: false
     mountPath: /var/www/html
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 1Gi
   image:
     containerPort: '80'

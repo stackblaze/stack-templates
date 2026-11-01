@@ -37,7 +37,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -57,19 +57,19 @@ spec:
               database: plane
               owner: plane
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO plane
               - GRANT CREATE ON SCHEMA public TO plane
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO plane
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
@@ -78,7 +78,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: plane
@@ -93,7 +93,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{KUBERO_APP_NAME}}-valkey'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -152,7 +152,7 @@ spec:
         apiVersion: rustfs.com/v1alpha1
         kind: Tenant
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rustfs'
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs'
           annotations:
             # The operator refuses custom-repo images it cannot verify for
             # RuntimeDefault seccomp ("WorkloadSecurityIncompatible") unless the
@@ -161,7 +161,7 @@ spec:
         spec:
           image: docker.io/rustfs/rustfs:1.0.0-beta.10
           credsSecret:
-            name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+            name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
           pools:
           - name: pool-0
             servers: 1
@@ -178,11 +178,11 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rustfs-credentials'
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
         type: Opaque
         stringData:
           accesskey: plane
-          secretkey: '{{KUBERO_GEN_HEX:32}}'
+          secretkey: '{{STACKBLAZE_GEN_HEX:32}}'
   - displayName: RabbitMQ
     env: []
     icon: /img/addons/rabbitmq.svg
@@ -193,7 +193,7 @@ spec:
         apiVersion: rabbitmq.com/v1beta1
         kind: RabbitmqCluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-rabbitmq'
+          name: '{{STACKBLAZE_APP_NAME}}-rabbitmq'
         spec:
           replicas: 1
           persistence:
@@ -211,9 +211,9 @@ spec:
   envVars:
 
   - name: WEB_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: CORS_ALLOWED_ORIGINS
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   # Seeded on first API boot (no /god-mode). Sign in with these, then use the app.
   - name: ADMIN_EMAIL
     value: admin@example.com
@@ -239,15 +239,15 @@ spec:
   - name: CELERY_RESULT_BACKEND
     value: 'redis://$(REDISHOST):$(REDISPORT)/0'
   - name: AMQP_URL
-    value: amqp://plane:plane@{{KUBERO_APP_NAME}}-rabbitmq:5672/plane
+    value: amqp://plane:plane@{{STACKBLAZE_APP_NAME}}-rabbitmq:5672/plane
   - name: RABBITMQ_HOST
-    value: '{{KUBERO_APP_NAME}}-rabbitmq'
+    value: '{{STACKBLAZE_APP_NAME}}-rabbitmq'
   - name: RABBITMQ_PORT
     value: '5672'
   - name: SECRET_KEY
-    value: '{{KUBERO_GEN_ALNUM:50}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:50}}'
   - name: LIVE_SERVER_SECRET_KEY
-    value: '{{KUBERO_GEN_ALNUM:32}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
   - name: USE_MINIO
     value: '1'
   - name: AWS_S3_ENDPOINT_URL
@@ -341,7 +341,7 @@ spec:
       containerPort: '3000'
     envVars:
     - name: WEB_URL
-      value: '{{KUBERO_APP_URL}}'
+      value: '{{STACKBLAZE_APP_URL}}'
     healthcheck:
       enabled: true
       path: /
@@ -355,7 +355,7 @@ spec:
       containerPort: '3000'
     envVars:
     - name: WEB_URL
-      value: '{{KUBERO_APP_URL}}'
+      value: '{{STACKBLAZE_APP_URL}}'
     healthcheck:
       enabled: false
   - id: live
@@ -371,7 +371,7 @@ spec:
     - name: API_BASE_URL
       value: http://api:8000
     - name: WEB_URL
-      value: '{{KUBERO_APP_URL}}'
+      value: '{{STACKBLAZE_APP_URL}}'
     healthcheck:
       enabled: false
   - id: proxy

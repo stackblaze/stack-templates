@@ -53,35 +53,35 @@
     },
     {
       "name": "WORDPRESS_AUTH_KEY",
-      "value": "{{KUBERO_GEN_ALNUM:64}}"
+      "value": "{{STACKBLAZE_GEN_ALNUM:64}}"
     },
     {
       "name": "WORDPRESS_SECURE_AUTH_KEY",
-      "value": "{{KUBERO_GEN_ALNUM:64}}"
+      "value": "{{STACKBLAZE_GEN_ALNUM:64}}"
     },
     {
       "name": "WORDPRESS_LOGGED_IN_KEY",
-      "value": "{{KUBERO_GEN_ALNUM:64}}"
+      "value": "{{STACKBLAZE_GEN_ALNUM:64}}"
     },
     {
       "name": "WORDPRESS_NONCE_KEY",
-      "value": "{{KUBERO_GEN_ALNUM:64}}"
+      "value": "{{STACKBLAZE_GEN_ALNUM:64}}"
     },
     {
       "name": "WORDPRESS_AUTH_SALT",
-      "value": "{{KUBERO_GEN_ALNUM:64}}"
+      "value": "{{STACKBLAZE_GEN_ALNUM:64}}"
     },
     {
       "name": "WORDPRESS_SECURE_AUTH_SALT",
-      "value": "{{KUBERO_GEN_ALNUM:64}}"
+      "value": "{{STACKBLAZE_GEN_ALNUM:64}}"
     },
     {
       "name": "WORDPRESS_LOGGED_IN_SALT",
-      "value": "{{KUBERO_GEN_ALNUM:64}}"
+      "value": "{{STACKBLAZE_GEN_ALNUM:64}}"
     },
     {
       "name": "WORDPRESS_NONCE_SALT",
-      "value": "{{KUBERO_GEN_ALNUM:64}}"
+      "value": "{{STACKBLAZE_GEN_ALNUM:64}}"
     }
   ],
   "addons": [

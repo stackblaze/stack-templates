@@ -143,7 +143,7 @@ MIGRATIONS: dict[str, dict] = {
             "After deploy, create a user with headscale users create <name> "
             "(exec into the container or use the gRPC API). Generate a pre-auth key "
             "with headscale preauthkeys create --user <name> --reusable, then use it "
-            "with the Tailscale client: tailscale up --login-server={{KUBERO_APP_URL}}."
+            "with the Tailscale client: tailscale up --login-server={{STACKBLAZE_APP_URL}}."
         ),
     },
     "openobserve": {

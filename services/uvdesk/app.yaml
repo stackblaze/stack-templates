@@ -8,7 +8,7 @@ metadata:
       ticketing system with email piping, knowledgebase, and multi-channel agent workflows.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uvdesk/icon.png
     kubero.dev/template.installation: 'UVdesk is wizard-driven: on first load complete
-      the web installer at {{KUBERO_APP_URL}}/install. When prompted for the database,
+      the web installer at {{STACKBLAZE_APP_URL}}/install. When prompted for the database,
       use host ''uvdesk-mysql'', port 3306, database/user/password ''uvdesk'' (matching
       the mariadb add-on below) and create your super-admin account there. There is
       no separate root step needed for an external DB. UVdesk requires MySQL/MariaDB
@@ -39,17 +39,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
             key: password
           database: uvdesk
           username: uvdesk
           passwordSecretKeyRef:
-            name: '{{KUBERO_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
             key: password
           storage:
             size: 5Gi
@@ -66,7 +66,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
         type: Opaque
         stringData:
           password: uvdesk
@@ -74,7 +74,7 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
         type: Opaque
         stringData:
           password: uvdesk
@@ -82,13 +82,13 @@ spec:
   - name: MYSQL_ROOT_PASSWORD
     value: '$(MYSQL_PASSWORD)'
   - name: SITE_URL
-    value: '{{KUBERO_APP_URL}}'
+    value: '{{STACKBLAZE_APP_URL}}'
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/uvdesk/public/assets
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 2Gi
     storageClass: shared
   cronjobs: []

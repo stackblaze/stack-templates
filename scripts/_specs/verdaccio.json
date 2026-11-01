@@ -10,7 +10,7 @@
     "utilities",
     "devops"
   ],
-  "installation": "Configure your npm client: npm set registry {{KUBERO_APP_URL}}. Add users with npm adduser --registry {{KUBERO_APP_URL}}. Publish packages with npm publish --registry {{KUBERO_APP_URL}}. By default Verdaccio proxies missing packages from npmjs.org. Configure auth, package access rules, and proxy uplinks by mounting a custom config.yaml to /verdaccio/conf/config.yaml via the conf volume.",
+  "installation": "Configure your npm client: npm set registry {{STACKBLAZE_APP_URL}}. Add users with npm adduser --registry {{STACKBLAZE_APP_URL}}. Publish packages with npm publish --registry {{STACKBLAZE_APP_URL}}. By default Verdaccio proxies missing packages from npmjs.org. Configure auth, package access rules, and proxy uplinks by mounting a custom config.yaml to /verdaccio/conf/config.yaml via the conf volume.",
   "screenshots": [],
   "links": [
     "https://verdaccio.org/docs/installation/"
