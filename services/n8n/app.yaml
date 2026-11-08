@@ -261,6 +261,16 @@ spec:
       - n8n
       - worker
     inheritEnvFrom: primary
+    # The inherited {{STACKBLAZE_APP_URL}}/{{STACKBLAZE_APP_HOST}} resolve to the
+    # worker's own address, and the worker has none, so n8n got WEBHOOK_URL="" and
+    # every execution failed with "Invalid URL". Point them at the web app instead.
+    envVars:
+    - name: WEBHOOK_URL
+      value: '${{ {{STACKBLAZE_APP_NAME}}.STACKBLAZE_PUBLIC_URL }}'
+    - name: N8N_EDITOR_BASE_URL
+      value: '${{ {{STACKBLAZE_APP_NAME}}.STACKBLAZE_PUBLIC_URL }}'
+    - name: N8N_HOST
+      value: '${{ {{STACKBLAZE_APP_NAME}}.STACKBLAZE_PUBLIC_DOMAIN }}'
     healthcheck:
       enabled: true
       path: /healthz
