@@ -240,6 +240,16 @@ spec:
       nginx.ingress.kubernetes.io/proxy-read-timeout: '3600'
       nginx.ingress.kubernetes.io/proxy-send-timeout: '3600'
       nginx.ingress.kubernetes.io/proxy-buffering: 'off'
+  # First boot runs n8n's database migrations before the editor answers; at a
+  # 0.5 vCPU cap that takes longer than the platform's 90 s start-up default,
+  # so the probe restarted it mid-migration (exit 143) until the rollout gave
+  # up. Five minutes covers a cold first boot.
+  healthcheck:
+    enabled: true
+    path: /
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
   name: n8n
   web:
     replicaCount: 1
