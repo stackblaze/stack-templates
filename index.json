@@ -248,7 +248,7 @@
    "description": "Build and manage websites, blogs, and content experiences with the world's most popular CMS.\nA flexible alternative to Wix and Squarespace.",
    "source": "https://github.com/WordPress/WordPress",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/icon.png",
-   "website": "https://github.com/benbusby/whoogle-search",
+   "website": "https://wordpress.org",
    "installation": "",
    "architecture": [],
    "categories": [
