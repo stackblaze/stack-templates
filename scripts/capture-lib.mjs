@@ -99,6 +99,15 @@ export async function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+/** Expand `${NAME}` from the environment so specs never hold real credentials. */
+export function expandEnv(value) {
+  return String(value).replace(/\$\{([A-Z0-9_]+)\}/g, (_m, name) => {
+    const v = process.env[name];
+    if (v === undefined) throw new Error(`capture spec needs env ${name}`);
+    return v;
+  });
+}
+
 export async function runSteps(page, steps) {
   for (const step of steps || []) {
     if (step.sleep) await sleep(step.sleep);
@@ -107,7 +116,7 @@ export async function runSteps(page, steps) {
     }
     if (step.fill) {
       for (const [selector, value] of Object.entries(step.fill)) {
-        await page.locator(selector).first().fill(String(value));
+        await page.locator(selector).first().fill(expandEnv(value));
       }
     }
     if (step.click) {

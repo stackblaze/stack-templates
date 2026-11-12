@@ -13731,7 +13731,11 @@
     "development",
     "utilities"
    ],
-   "screenshots": [],
+   "screenshots": [
+     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/screenshot-agent-flow.png",
+     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/screenshot-rag-flow.png",
+     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/screenshot-flows.png"
+    ],
    "links": [
     "https://docs.langflow.org/"
    ],
