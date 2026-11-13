@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: Visual builder for AI agents and RAG workflows.
       Drag components onto a canvas, connect any LLM or vector store, and serve
       each flow as an API.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/icon.png
     kubero.dev/template.installation: 'Sign in as the user in LANGFLOW_SUPERUSER
       with the password generated in LANGFLOW_SUPERUSER_PASSWORD (both under Variables).
       The first start runs database migrations and can take 2-3 minutes. Add your
@@ -15,7 +15,7 @@ metadata:
       they are stored encrypted with LANGFLOW_SECRET_KEY, so do not change that
       key after first use.'
     kubero.dev/template.links: '["https://docs.langflow.org/"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/screenshot-agent-flow.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/screenshot-rag-flow.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/screenshot-flows.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-agent-flow.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-rag-flow.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-flows.png"]'
     kubero.dev/template.source: https://github.com/langflow-ai/langflow
     kubero.dev/template.categories: '[ "ai", "development", "utilities" ]'
     kubero.dev/template.title: Langflow
