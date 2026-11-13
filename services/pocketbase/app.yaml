@@ -63,6 +63,11 @@ spec:
   # Settings > Application URL (links in emails), set while still the default.
   - name: PB_APP_URL
     value: '{{STACKBLAZE_APP_URL}}'
+  # SQLite has one writer. On a shared RWX volume the default RollingUpdate
+  # runs the old and new pod together; when they land on different nodes,
+  # acknowledged writes are lost (measured on dev). Recreate stops the old
+  # pod first. Needs kubero-server #2297 + the kubero-operator change.
+  rolloutStrategy: Recreate
   extraVolumes:
   - accessModes:
     - ReadWriteMany
