@@ -32,5 +32,10 @@ VOLUME /pb/pb_data
 
 # --encryptionEnv: settings (SMTP password, OAuth2 secrets, S3 keys) are stored
 # AES-256 encrypted with the 32-character key in PB_ENCRYPTION_KEY.
+# --automigrate=false: upstream's release binary writes a JS migration file to
+# pb_migrations on every schema change made in the dashboard (meant for
+# committing to a repo during development). Here there is no repo, and the
+# directory is read-only, so each change logged "failed to create migration
+# dir". The schema lives in data.db either way.
 ENTRYPOINT ["/pb/pocketbase"]
-CMD ["serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data", "--hooksDir=/pb/pb_hooks", "--encryptionEnv=PB_ENCRYPTION_KEY"]
+CMD ["serve", "--http=0.0.0.0:8090", "--dir=/pb/pb_data", "--hooksDir=/pb/pb_hooks", "--encryptionEnv=PB_ENCRYPTION_KEY", "--automigrate=false"]
