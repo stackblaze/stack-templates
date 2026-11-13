@@ -58,6 +58,11 @@ export const plugins: Plugin[] = [
     fields: {
       payment: false,
     },
+    // StackBlaze: the Email add-on only sends from this app's own mail domain, so a
+    // form's "Email From" (the seed uses demo@payloadcms.com) would be refused.
+    // Send from the default sender and keep the form's From as the reply-to address.
+    beforeEmail: (emails) =>
+      emails.map((email) => ({ ...email, replyTo: email.replyTo || email.from, from: '' })),
     formOverrides: {
       fields: ({ defaultFields }) => {
         return defaultFields.map((field) => {
