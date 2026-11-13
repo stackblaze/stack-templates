@@ -5,15 +5,28 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: "Understand traffic, campaigns, and visitor behavior through fast, privacy-friendly analytics.\nA lightweight alternative to Google Analytics and Plausible."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/umami/icon.png
-    kubero.dev/template.installation: ''
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://umami.is/images/languages.png"]'
+    kubero.dev/template.installation: 'Sign in as admin with the password generated
+      in ADMIN_PASSWORD (under Variables). Upstream ships the account as admin/umami;
+      this template replaces that password on the first start, before the app
+      serves any request. Change it later under Settings > Profile (ADMIN_PASSWORD
+      is only applied while the default password is still set). Add a website
+      under Settings > Websites, then copy its tracking code into your site''s
+      <head>. To serve the tracker under another name (ad blockers block
+      script.js), set TRACKER_SCRIPT_NAME, for example stats.js, and
+      COLLECT_API_ENDPOINT, for example /api/collect. Do not change APP_SECRET
+      after first use: it signs logins and derives the visitor hashes.'
+    kubero.dev/template.links: '["https://umami.is/docs"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/umami/screenshot-overview.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/umami/screenshot-realtime.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/umami/screenshot-tracking-code.png"]'
     kubero.dev/template.source: https://github.com/umami-software/umami
     kubero.dev/template.categories: '["data", "utilities"]'
     kubero.dev/template.title: "Umami Analytics"
     kubero.dev/template.website: https://umami.is/
+  labels:
+    manager: kubero
   name: umami
 spec:
+  name: umami
+  deploymentstrategy: docker
   addons:
   - displayName: PostgreSQL (CloudNativePG)
     env: []
@@ -61,7 +74,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: umami
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -70,26 +83,103 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: umami
-          password: umami
-  cronjobs: []
-  deploymentstrategy: docker
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
   envVars:
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
-  - name: DATABASE_TYPE
-    value: postgresql
-  - name: HASH_SALT
-    value: replace-me-with-a-random-string
+  # Signs login tokens and derives the daily visitor-hash salt
+  # (src/lib/app-secret.ts, src/lib/crypto.ts). Upstream: openssl rand -hex 32.
+  - name: APP_SECRET
+    value: '{{STACKBLAZE_GEN_HEX:64}}'
+  # AES-256-GCM key for two-factor secrets; must be exactly 64 hex chars
+  # (src/lib/two-factor/crypto.ts), otherwise 2FA setup is refused.
+  - name: TWO_FACTOR_ENCRYPTION_KEY
+    value: '{{STACKBLAZE_GEN_HEX:64}}'
+  # Replaces upstream's default admin/umami password on the first start (see
+  # the start command). Only applied while the default password is still set.
+  - name: ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  - name: DISABLE_TELEMETRY
+    value: '1'
+  # Umami trusts CDN geo headers (cf-ipcountry, x-vercel-ip-country, ...) when
+  # present (src/lib/detect.ts). The platform edge sets none, so any visitor
+  # could fake their country. Locate visitors from the client IP (bundled
+  # GeoLite2 database) instead; the edge supplies that IP and overwrites
+  # client-sent X-Forwarded-For / X-Real-IP.
+  - name: SKIP_LOCATION_HEADERS
+    value: '1'
   extraVolumes: []
-  image:
-    containerPort: '3000'
-    repository: ghcr.io/umami-software/umami
-    tag: postgresql-latest
-    run:
-      securityContext:
-        readOnlyRootFilesystem: false
-  name: umami
+  cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /api/heartbeat
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '3000'
+    pullPolicy: IfNotPresent
+    repository: docker.io/umamisoftware/umami
+    tag: 3.5.0
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      export PATH="$PWD/node_modules/.bin:$PATH"
+      # On a fresh deploy Postgres (and the operator-created app user) can come
+      # up after the app. Wait for a real login, not just an open port.
+      node --input-type=module <<'JS'
+      import { PrismaPg } from '@prisma/adapter-pg';
+      import { PrismaClient } from './generated/prisma/client.js';
+      for (let i = 1; ; i++) {
+        const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
+        try { await prisma.$queryRaw`select 1`; await prisma.$disconnect(); break; }
+        catch (e) {
+          await prisma.$disconnect().catch(() => {});
+          if (i >= 150) { console.error('database not reachable:', e.message); process.exit(1); }
+          console.log('waiting for the database');
+          await new Promise(r => setTimeout(r, 2000));
+        }
+      }
+      JS
+      # Upstream start (scripts/start-docker.sh): check and migrate the DB.
+      node scripts/check-db.js
+      # Migration 01_init creates admin/umami (that exact bcrypt hash). Replace
+      # it before the server starts, and only while it is still the default.
+      # The image has no bcrypt package (it is bundled into Next's chunks), so
+      # hash in Postgres with pgcrypto (a trusted extension the database owner
+      # may create; its $2a$ hashes verify with Umami's bcryptjs).
+      node --input-type=module <<'JS'
+      import { PrismaPg } from '@prisma/adapter-pg';
+      import { PrismaClient } from './generated/prisma/client.js';
+      const pw = process.env.ADMIN_PASSWORD || '';
+      const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
+      await prisma.$executeRawUnsafe('create extension if not exists pgcrypto');
+      const rows = await prisma.$queryRaw`select user_id from "user" where username = 'admin' and deleted_at is null and password = '$2b$10$BUli0c.muyCW1ErNJc3jL.vFRFtFJWrT8/GcR4A.sUdCznaXiqFXa'`;
+      if (rows.length) {
+        if (pw.length < 12) { console.error('ADMIN_PASSWORD missing or too short; refusing to start with admin/umami'); process.exit(1); }
+        await prisma.$executeRaw`update "user" set password = crypt(${pw}, gen_salt('bf', 10)), updated_at = now() where user_id = ${rows[0].user_id}::uuid`;
+        console.log('Replaced the default admin password with ADMIN_PASSWORD.');
+      }
+      await prisma.$disconnect();
+      JS
+      node scripts/update-tracker.js
+      export HOSTNAME=0.0.0.0
+      exec node server.js
+    run:
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+        readOnlyRootFilesystem: false
