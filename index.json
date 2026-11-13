@@ -5098,40 +5098,46 @@
   },
   {
    "name": "chatwoot",
-   "description": "Open-source customer engagement platform \u00e2\u20ac\u201d an alternative to Intercom and Zendesk.",
+   "description": "Open-source customer engagement platform with live chat, a shared team inbox, and a help center. A self-hosted alternative to Intercom and Zendesk.",
    "source": "https://github.com/chatwoot/chatwoot",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/icon.png",
    "website": "https://www.chatwoot.com/",
-   "installation": "Replace SECRET_KEY_BASE before production use.",
-   "architecture": [],
+   "installation": "Open the app URL and complete the one-time setup to create the first account and its super admin. Public sign-up is off (ENABLE_ACCOUNT_SIGNUP=false); invite agents from Settings. A Sidekiq worker runs alongside the web app; email goes through the platform Email add-on; uploads persist on the shared volume.",
+   "architecture": [
+    "linux/amd64",
+    "linux/arm64"
+   ],
    "categories": [
     "communication",
     "work",
     "helpdesk"
    ],
    "screenshots": [
-    "https://media.stackblaze.cloud/templates/chatwoot/demo.mp4",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/dashboard.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/screenshot-conversation.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/screenshot-contacts.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/screenshot-inbox-widget.png"
    ],
    "links": [
-    "https://www.chatwoot.com/docs/"
+    "https://www.chatwoot.com/docs/self-hosted",
+    "https://www.chatwoot.com/docs/self-hosted/configuration/environment-variables"
    ],
    "addons": [
     "Cluster",
-    "Valkey"
+    "Valkey",
+    "Smtp"
    ],
-   "stars": 25000,
-   "forks": 2500,
-   "watchers": 25000,
-   "issues": 0,
-   "last_updated": "2026-06-11T00:00:00Z",
-   "last_pushed": "2026-06-11T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 0,
-   "language": "TypeScript",
+   "stars": 39786,
+   "forks": 9667,
+   "watchers": 293,
+   "issues": 1599,
+   "last_updated": "2026-11-13T14:37:26Z",
+   "last_pushed": "2026-11-13T13:03:19Z",
+   "created_at": "2019-08-14T06:50:51Z",
+   "size": 307764,
+   "language": "Ruby",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/app.yaml",
-   "status": "unsupported",
+   "status": "active",
    "license": "Other",
    "spdx_id": "NOASSERTION",
    "dirname": "chatwoot",
