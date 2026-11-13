@@ -26,6 +26,9 @@ metadata:
 spec:
   name: code-server
   deploymentstrategy: docker
+  # Kata micro-VM: users get a shell, so the workload gets its own kernel
+  # (brief section 1, Dean 2026-11-13).
+  runtimeClass: kata-qemu-runtime-rs
   addons: []
   envVars:
   # Login password. code-server reads PASSWORD at start and removes it from
