@@ -1,0 +1,92 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: code-server
+  annotations:
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+    kubero.dev/template.description: VS Code in the browser. Edit code, run a
+      terminal and install extensions from any device, with your home directory
+      and projects kept on a persistent volume.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/code-server/icon.png
+    kubero.dev/template.installation: 'Open the app URL and sign in with the password
+      generated in PASSWORD (under Variables). Your home directory /home/coder is
+      on a persistent volume, so projects, settings and extensions survive redeploys;
+      the editor opens /home/coder/project. The terminal runs as the unprivileged
+      user coder (uid 1000) without sudo, so install tools into your home directory.
+      PORT is 8080 (code-server itself), so run dev servers on another port, e.g.
+      PORT=3000 npm start, and open them at <app URL>/proxy/3000/.'
+    kubero.dev/template.links: '["https://coder.com/docs/code-server"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/code-server/screenshot-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/code-server/screenshot-run.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/code-server/screenshot-source-control.png"]'
+    kubero.dev/template.source: https://github.com/coder/code-server
+    kubero.dev/template.categories: '["development", "utilities"]'
+    kubero.dev/template.title: code-server
+    kubero.dev/template.website: https://coder.com/docs/code-server
+  labels:
+    manager: kubero
+spec:
+  name: code-server
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  # Login password. code-server reads PASSWORD at start and removes it from
+  # the environment before it spawns terminals or extensions.
+  - name: PASSWORD
+    value: '{{KUBERO_GEN_ALNUM:24}}'
+  extraVolumes:
+  # The whole home directory: ~/.config/code-server (config.yaml),
+  # ~/.local/share/code-server (extensions, settings, workspace state) and
+  # ~/project (the folder the editor opens). Paths and uid 1000 come from
+  # upstream ci/release-image/Dockerfile (adduser coder, USER 1000,
+  # WORKDIR /home/coder).
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /home/coder
+    name: '{{KUBERO_APP_NAME}}-home'
+    size: 10Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: IfNotPresent
+    repository: docker.io/codercom/code-server
+    tag: '4.145.2'
+    # Upstream entrypoint with the default bind address, plus telemetry and
+    # update checks off (flags only, no env switch) and ~/project as the
+    # opened folder. The fresh volume hides the image's /home/coder, so
+    # restore the shell dotfiles from /etc/skel on first start.
+    command:
+    - /bin/sh
+    - -c
+    - '[ -f "$HOME/.bashrc" ] || cp -r /etc/skel/. "$HOME/"; mkdir -p "$HOME/project";
+      exec /usr/bin/entrypoint.sh --bind-addr 0.0.0.0:8080 --disable-telemetry
+      --disable-update-check "$HOME/project"'
+    run:
+      # The platform default is uid 0; upstream runs as coder (1000), which
+      # sets HOME=/home/coder so data lands on the volume.
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
+        readOnlyRootFilesystem: false
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /healthz
+    startupSeconds: 180
+    timeoutSeconds: 5
+    periodSeconds: 10
