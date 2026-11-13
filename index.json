@@ -12954,7 +12954,7 @@
   },
   {
    "name": "strapi",
-   "description": "Most popular open-source headless CMS \u2014 REST and GraphQL APIs, role-based access, media library, and a customisable admin panel.",
+   "description": "Open-source headless CMS. Edit content in a clean admin panel and serve it to any frontend over REST and GraphQL, with a media library and role-based access.",
    "source": "https://github.com/strapi/strapi",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/icon.png",
    "website": "https://strapi.io",
@@ -12965,24 +12965,23 @@
     "development",
     "data"
    ],
-   "screenshots": [
-    "https://delicate-dawn-ac25646e6d.media.strapiapp.com/HP_meta_b32f546a40.png"
-   ],
+   "screenshots": [],
    "links": [
     "https://docs.strapi.io/"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
-   "stars": 65000,
-   "forks": 0,
-   "watchers": 65000,
-   "issues": 0,
-   "last_updated": "2026-06-13T00:00:00Z",
-   "last_pushed": "2026-06-13T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 1000,
-   "language": "JavaScript",
+   "stars": 73480,
+   "forks": 10025,
+   "watchers": 647,
+   "issues": 641,
+   "last_updated": "2026-11-13T17:31:09Z",
+   "last_pushed": "2026-11-13T17:45:45Z",
+   "created_at": "2015-09-30T15:34:48Z",
+   "size": 779217,
+   "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/app.yaml",
    "status": "active",
