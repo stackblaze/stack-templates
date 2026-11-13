@@ -1,0 +1,25 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/admin/login",
+    "steps": [
+      { "waitForSelector": "input[type=email]", "timeout": 60000 },
+      { "fill": { "input[type=email]": "${DIRECTUS_EMAIL}" } },
+      { "fill": { "input[type=password]": "${DIRECTUS_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForURL": "**/admin/content**", "timeout": 30000 },
+      { "optionalClick": "role=button[name=/^Skip$/]", "timeout": 5000 },
+      { "optionalClick": "role=button[name=/Remind Later/]", "timeout": 5000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "posts", "path": "/admin/content/posts", "waitFor": "text=Ridge walks for a long weekend", "waitMs": 2500,
+      "steps": [{ "optionalClick": "role=button[name=/^Skip$/]", "timeout": 3000 }, { "optionalClick": "role=button[name=/Remind Later/]", "timeout": 3000 }, { "sleep": 1000 }] },
+    { "name": "post-editor", "path": "/admin/content/posts/1", "waitFor": "text=Reading Time", "waitMs": 2500,
+      "steps": [{ "optionalClick": "role=button[name=/^Skip$/]", "timeout": 3000 }, { "optionalClick": "role=button[name=/Remind Later/]", "timeout": 3000 }, { "sleep": 1000 }] },
+    { "name": "data-model", "path": "/admin/settings/data-model/posts", "waitFor": "text=Create Field", "waitMs": 2500,
+      "steps": [{ "optionalClick": "role=button[name=/^Skip$/]", "timeout": 3000 }, { "optionalClick": "role=button[name=/Remind Later/]", "timeout": 3000 }, { "sleep": 1000 }] }
+  ]
+}
