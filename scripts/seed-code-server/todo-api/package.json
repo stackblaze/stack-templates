@@ -1,0 +1,11 @@
+{
+  "name": "todo-api",
+  "version": "1.0.0",
+  "description": "A tiny JSON API with no dependencies",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
