@@ -4,14 +4,33 @@ metadata:
   name: postiz
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Schedule social media posts, measure them, exchange
-      with other members and get a lot of help from AI
+    kubero.dev/template.description: Schedule social media posts on a calendar, preview
+      them per network, and publish to Bluesky, Mastodon, LinkedIn, X and 30 more
+      from one place.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/postiz/icon.png
-    kubero.dev/template.installation: ''
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://private-user-images.githubusercontent.com/100117126/363204406-a27ee220-beb7-4c7e-8c1b-2c44301f82ef.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzIxMDU4NDEsIm5iZiI6MTczMjEwNTU0MSwicGF0aCI6Ii8xMDAxMTcxMjYvMzYzMjA0NDA2LWEyN2VlMjIwLWJlYjctNGM3ZS04YzFiLTJjNDQzMDFmODJlZi5naWY_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQxMTIwJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MTEyMFQxMjI1NDFaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1mMDI1NTI1YTM0NTBhZTEwZWRjNmMwNDdhMWQzMDdlZjNhNTdjMTdjYzM4YWVmOThjYmQyNDkwYjUzMGNlNGY0JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.uqwvPkAVLFnwySvFdZp8IbQNGkLiM_w2_X3bB9ufz7E"]'
+    kubero.dev/template.installation: 'Sign in at the app URL with the email in POSTIZ_ADMIN_EMAIL
+      (admin@example.com unless you changed it before deploying) and the generated
+      password in POSTIZ_ADMIN_PASSWORD (app Variables). The account is created on
+      the first start, and public sign-up is closed (DISABLE_REGISTRATION=true), so
+      nobody else can open an account on your instance. Postiz has no way to change
+      an account email later, so set POSTIZ_ADMIN_EMAIL to your own address before
+      the first deploy if you want password resets and notifications by mail. To add
+      a teammate: set DISABLE_REGISTRATION to false, send the invite from Settings,
+      Team, let them sign up through the invite link, then set it back to true.
+      Posts are published by Postiz''s workflow worker, which runs on the bundled
+      Temporal server (postiz-temporal); keep both running. Connecting a channel
+      needs that network''s own developer app (keys go in the app Variables, for
+      example LINKEDIN_CLIENT_ID / LINKEDIN_CLIENT_SECRET, X_API_KEY / X_API_SECRET,
+      MASTODON_CLIENT_ID / MASTODON_CLIENT_SECRET); Bluesky, Nostr, Lemmy, Dev.to,
+      Hashnode, WordPress and Listmonk connect with just an account login or API
+      key entered in Postiz. Uploads are stored on the app volume at /uploads and
+      served at /uploads. Mail (account activation, password reset, invites, notifications)
+      goes through the Email add-on.'
+    kubero.dev/template.links: '["https://docs.postiz.com/installation/docker-compose",
+      "https://docs.postiz.com/configuration/reference", "https://docs.postiz.com/providers/x"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/postiz/screenshot-calendar.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/postiz/screenshot-composer.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/postiz/screenshot-channels.png"]'
     kubero.dev/template.source: https://github.com/gitroomhq/postiz-app
-    kubero.dev/template.categories: '["social", "utilities"]'
+    kubero.dev/template.categories: '["social", "marketing", "automation"]'
     kubero.dev/template.title: Postiz
     kubero.dev/template.website: https://postiz.com/
   labels:
@@ -20,41 +39,112 @@ spec:
   name: postiz
   deploymentstrategy: docker
   envVars:
+  # Public URLs (all read at runtime; the image's Next.js layouts pass
+  # NEXT_PUBLIC_BACKEND_URL to the browser, so no rebuild is needed).
   - name: MAIN_URL
     value: '{{STACKBLAZE_APP_URL}}'
   - name: FRONTEND_URL
     value: '{{STACKBLAZE_APP_URL}}'
-  - name: JWT_SECRET
-    value: random string that is unique to every install - just type random characters
-      here!
-  - name: DATABASE_URL
-    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
-  - name: IS_GENERAL
-    value: 'true'
-  - name: STORAGE_PROVIDER
-    value: local
-  - name: UPLOAD_DIRECTORY
-    value: /upload
-  - name: NEXT_PUBLIC_UPLOAD_DIRECTORY
-    value: /upload
   - name: NEXT_PUBLIC_BACKEND_URL
     value: '{{STACKBLAZE_APP_URL}}/api'
   - name: BACKEND_INTERNAL_URL
     value: http://localhost:3000
+  # Signs every session and invite/activation link (AuthService.signJWT).
+  - name: JWT_SECRET
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
+  - name: DATABASE_URL
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  # Workflow engine: the postiz-temporal companion below (gRPC 7233 behind
+  # its Service port 80).
+  - name: TEMPORAL_ADDRESS
+    value: 'postiz-temporal-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp:80'
+  - name: TEMPORAL_NAMESPACE
+    value: default
+  - name: IS_GENERAL
+    value: 'true'
+  # Only the very first account can sign up (AuthService.canRegister); the
+  # start command creates it.
+  - name: DISABLE_REGISTRATION
+    value: 'true'
+  - name: POSTIZ_ADMIN_EMAIL
+    value: admin@example.com
+  - name: POSTIZ_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Local uploads; nginx in the image serves /uploads/ from this directory.
+  - name: STORAGE_PROVIDER
+    value: local
+  - name: UPLOAD_DIRECTORY
+    value: /uploads
+  - name: NEXT_PUBLIC_UPLOAD_DIRECTORY
+    value: /uploads
+  - name: API_LIMIT
+    value: '30'
+  - name: NX_ADD_PLUGINS
+    value: 'false'
+  # Social network apps: fill in the ones you use (docs.postiz.com/providers).
+  - name: X_API_KEY
+    value: ''
+  - name: X_API_SECRET
+    value: ''
+  - name: LINKEDIN_CLIENT_ID
+    value: ''
+  - name: LINKEDIN_CLIENT_SECRET
+    value: ''
+  - name: MASTODON_URL
+    value: https://mastodon.social
+  - name: MASTODON_CLIENT_ID
+    value: ''
+  - name: MASTODON_CLIENT_SECRET
+    value: ''
+  - name: THREADS_APP_ID
+    value: ''
+  - name: THREADS_APP_SECRET
+    value: ''
+  - name: FACEBOOK_APP_ID
+    value: ''
+  - name: FACEBOOK_APP_SECRET
+    value: ''
+  - name: YOUTUBE_CLIENT_ID
+    value: ''
+  - name: YOUTUBE_CLIENT_SECRET
+    value: ''
+  - name: TIKTOK_CLIENT_ID
+    value: ''
+  - name: TIKTOK_CLIENT_SECRET
+    value: ''
+  - name: PINTEREST_CLIENT_ID
+    value: ''
+  - name: PINTEREST_CLIENT_SECRET
+    value: ''
+  - name: REDDIT_CLIENT_ID
+    value: ''
+  - name: REDDIT_CLIENT_SECRET
+    value: ''
+  - name: DISCORD_CLIENT_ID
+    value: ''
+  - name: DISCORD_CLIENT_SECRET
+    value: ''
+  - name: DISCORD_BOT_TOKEN_ID
+    value: ''
+  - name: SLACK_ID
+    value: ''
+  - name: SLACK_SECRET
+    value: ''
+  - name: SLACK_SIGNING_SECRET
+    value: ''
+  - name: TELEGRAM_TOKEN
+    value: ''
+  - name: TELEGRAM_BOT_NAME
+    value: ''
+  - name: OPENAI_API_KEY
+    value: ''
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
-    mountPath: /upload
-    name: postiz-upload-volume
-    size: 1Gi
-    storageClass: shared
-  - accessModes:
-    - ReadWriteMany
-    emptyDir: false
-    mountPath: /config
-    name: '{{STACKBLAZE_APP_NAME}}-config-volume'
-    size: 1Gi
+    mountPath: /uploads
+    name: '{{STACKBLAZE_APP_NAME}}-uploads'
+    size: 10Gi
     storageClass: shared
   cronjobs: []
   addons:
@@ -71,7 +161,7 @@ spec:
           name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
-          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          imageName: ghcr.io/cloudnative-pg/postgresql:17
           primaryUpdateStrategy: unsupervised
           storage:
             storageClass: smart
@@ -93,6 +183,10 @@ spec:
               - GRANT ALL ON SCHEMA public TO postiz
               - GRANT CREATE ON SCHEMA public TO postiz
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO postiz
+              # The Temporal companion creates its own temporal and
+              # temporal_visibility databases as this user.
+              postInitSQL:
+              - ALTER ROLE postiz CREATEDB
           enableSuperuserAccess: true
           superuserSecret:
             name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
@@ -104,7 +198,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: postiz
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -113,7 +207,11 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postiz
-          password: postiz
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Redis: request throttling, upload and integration locks, post preview
+  # cache (libraries/nestjs-libraries/src/redis/redis.service.ts). Without
+  # REDIS_URL Postiz falls back to an in-process mock that the three
+  # processes (backend, frontend, orchestrator) can't share.
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -143,28 +241,197 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  # Platform email (README "Email contract"). Postiz's nodemailer provider
+  # (libraries/nestjs-libraries/src/emails/node.mailer.provider.ts) sends
+  # account activation, password reset, team invites and notifications.
+  # EMAIL_PROVIDER is set only while the add-on is live: without it Postiz
+  # skips activation and sends nothing. Port 587 is STARTTLS, so
+  # EMAIL_SECURE stays false. The start command strips a display name from
+  # SMTP_FROM, because Postiz builds "EMAIL_FROM_NAME <EMAIL_FROM_ADDRESS>".
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: EMAIL_PROVIDER
+      value: nodemailer
+    - name: EMAIL_HOST
+      value: '$(SMTP_HOST)'
+    - name: EMAIL_PORT
+      value: '$(SMTP_PORT)'
+    - name: EMAIL_SECURE
+      value: 'false'
+    - name: EMAIL_USER
+      value: '$(SMTP_USER)'
+    - name: EMAIL_PASS
+      value: '$(SMTP_PASSWORD)'
+    - name: EMAIL_FROM_ADDRESS
+      value: '$(SMTP_FROM)'
+    - name: EMAIL_FROM_NAME
+      value: Postiz
+    resourceDefinitions: {}
+  # Postiz 2.x runs every post, retry and email as a Temporal workflow
+  # (apps/orchestrator). Temporal keeps its temporal and temporal_visibility
+  # databases on the Postiz Postgres add-on (SQL visibility, no
+  # Elasticsearch). auto-setup creates the schema and the default namespace
+  # on first start; Postiz registers its own search attributes
+  # (temporal.register.ts). Private: reachable only inside the project.
+  templateServices:
+  - id: temporal
+    nameHint: postiz-temporal
+    serviceType: web
+    exposeInternet: false
+    usePrimaryAddons: true
+    image:
+      repository: docker.io/temporalio/auto-setup
+      tag: 1.29.7
+      containerPort: '7233'
+    envVars:
+    - name: DB
+      value: postgres12
+    - name: DB_PORT
+      value: '$(PGPORT)'
+    - name: POSTGRES_SEEDS
+      value: '$(PGHOST)'
+    - name: POSTGRES_USER
+      value: '$(PGUSER)'
+    - name: POSTGRES_PWD
+      value: '$(PGPASSWORD)'
+    - name: DBNAME
+      value: temporal
+    - name: VISIBILITY_DBNAME
+      value: temporal_visibility
+    - name: ENABLE_ES
+      value: 'false'
+    - name: DEFAULT_NAMESPACE
+      value: default
+    # SQL visibility allows only 3 Text search attributes per namespace, and
+    # Postiz adds 2 (organizationId, postId, as Text). auto-setup's sample
+    # Custom*Field attributes would take one of the slots, and Postiz's
+    # backend then fails to start ("cannot have more than 3 search
+    # attribute of type Text").
+    - name: SKIP_ADD_CUSTOM_SEARCH_ATTRIBUTES
+      value: 'true'
+    - name: BIND_ON_IP
+      value: 0.0.0.0
+    healthcheck:
+      enabled: false
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
   image:
     containerPort: '5000'
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     repository: ghcr.io/gitroomhq/postiz-app
-    tag: latest
+    tag: v2.26.0
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      cd /app
+      # The platform sets PORT to the container port (5000, nginx), but the
+      # backend listens on $PORT (apps/backend/src/main.ts) and nginx proxies
+      # /api/ to 3000. A PORT variable in the template would move the
+      # container port instead, so it is set here.
+      export PORT=3000
+      # Host-only cookies. Postiz scopes its auth cookie to the registrable
+      # domain of FRONTEND_URL (tldts); stackblaze.app is not on the Public
+      # Suffix List, so that would be .stackblaze.app, shared with every
+      # other app on the platform.
+      grep -q proxy_cookie_domain /etc/nginx/nginx.conf || sed -i 's|^http {$|http {\n    proxy_cookie_domain ~.+ $host;|' /etc/nginx/nginx.conf
+      # Postiz adds its own display name, so keep only the address.
+      case "${EMAIL_FROM_ADDRESS:-}" in
+        *"<"*) EMAIL_FROM_ADDRESS=`printf '%s' "$EMAIL_FROM_ADDRESS" | sed 's/.*<//; s/>.*//'`; export EMAIL_FROM_ADDRESS ;;
+      esac
+      cat > /tmp/sb-wait.js <<'JS'
+      const net = require('net');
+      const [host, port, label] = process.argv.slice(2);
+      let n = 0;
+      (function attempt() {
+        const s = net.connect(+port, host);
+        s.setTimeout(2000);
+        s.on('connect', () => { s.end(); process.exit(0); });
+        const retry = () => { s.destroy(); if (++n >= 150) { console.error(label + ' not reachable'); process.exit(1); } console.log('waiting for ' + label); setTimeout(attempt, 2000); };
+        s.on('error', retry); s.on('timeout', retry);
+      })();
+      JS
+      node /tmp/sb-wait.js "$PGHOST" "$PGPORT" Postgres
+      node /tmp/sb-wait.js "${TEMPORAL_ADDRESS%:*}" "${TEMPORAL_ADDRESS##*:}" Temporal
+      # Schema (upstream's pm2-run does the same); retried until the
+      # database accepts the login.
+      i=0
+      until pnpm run prisma-db-push; do
+        i=$((i + 1)); [ "$i" -ge 30 ] && exit 1
+        echo "database not ready, retrying"; sleep 5
+      done
+      # First start: create the owner account with the generated password,
+      # on a backend started without mail so the account needs no activation
+      # email. Later sign-ups stay closed (DISABLE_REGISTRATION).
+      MARK=/uploads/.stackblaze-owner-created
+      if [ ! -f "$MARK" ] && [ -n "${POSTIZ_ADMIN_EMAIL:-}" ] && [ -n "${POSTIZ_ADMIN_PASSWORD:-}" ]; then
+        cd /app/apps/backend
+        env -u EMAIL_PROVIDER node --experimental-require-module ./dist/apps/backend/src/main.js > /tmp/sb-bootstrap.log 2>&1 &
+        BOOT_PID=$!
+        cd /app
+        cat > /tmp/sb-owner.js <<'JS'
+      const base = 'http://127.0.0.1:3000';
+      const email = process.env.POSTIZ_ADMIN_EMAIL, password = process.env.POSTIZ_ADMIN_PASSWORD;
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      (async () => {
+        for (let i = 0; i < 120; i++) {
+          try { const r = await fetch(base + '/auth/can-register'); if (r.ok) {
+            const { register } = await r.json();
+            if (register) {
+              const reg = await fetch(base + '/auth/register', { method: 'POST', headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ email, password, company: 'My company', provider: 'LOCAL' }) });
+              if (!reg.ok) { console.error('owner sign-up failed: ' + reg.status + ' ' + (await reg.text())); process.exit(1); }
+            }
+            const login = await fetch(base + '/auth/login', { method: 'POST', headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({ email, password, provider: 'LOCAL' }) });
+            if (register && !login.ok) { console.error('owner login failed: ' + login.status); process.exit(1); }
+            // The placeholder address can't receive mail: turn the owner's
+            // post notifications off so they don't bounce.
+            if (register && email.endsWith('@example.com')) {
+              const auth = (login.headers.get('set-cookie') || '').match(/auth=([^;]+)/);
+              if (auth) await fetch(base + '/user/email-notifications', { method: 'POST',
+                headers: { 'content-type': 'application/json', auth: auth[1], cookie: 'auth=' + auth[1] },
+                body: JSON.stringify({ sendSuccessEmails: false, sendFailureEmails: false, sendStreakEmails: false }) });
+            }
+            console.log(register ? 'owner account created: ' + email : 'an account already exists, owner not created');
+            process.exit(0);
+          } } catch (e) {}
+          await sleep(2000);
+        }
+        console.error('backend did not start for the owner sign-up'); process.exit(1);
+      })();
+      JS
+        if node /tmp/sb-owner.js; then touch "$MARK"; else tail -n 40 /tmp/sb-bootstrap.log; fi
+        rm -f /tmp/sb-bootstrap.log
+        kill "$BOOT_PID" 2>/dev/null || true
+        wait "$BOOT_PID" 2>/dev/null || true
+      fi
+      pm2 delete all || true
+      pnpm run --parallel pm2
+      # Open the port once the backend answers, so the start-up probe isn't
+      # logged as upstream errors while it boots.
+      node /tmp/sb-wait.js 127.0.0.1 3000 backend
+      nginx
+      exec pm2 logs
     run:
       securityContext:
         readOnlyRootFilesystem: false
   resources:
     requests:
-      cpu: 500m
+      cpu: 250m
       memory: 1Gi
     limits:
-      cpu: '1'
-      memory: 2Gi
+      cpu: '2'
+      memory: 3Gi
   healthcheck:
     enabled: true
-    path: /
-    startupSeconds: 300
+    path: /api/
+    startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
