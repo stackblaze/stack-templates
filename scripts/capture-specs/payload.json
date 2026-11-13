@@ -1,0 +1,30 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/admin/login",
+    "steps": [
+      { "waitForSelector": "input[name=email]", "timeout": 60000 },
+      { "fill": { "input[name=email]": "${PAYLOAD_ADMIN_EMAIL}" } },
+      { "fill": { "input[name=password]": "${PAYLOAD_ADMIN_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForURL": "**/admin", "timeout": 60000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    {
+      "name": "editor",
+      "path": "/admin/collections/posts",
+      "waitFor": "text=Digital Horizons",
+      "waitMs": 1000,
+      "steps": [
+        { "click": "text=Digital Horizons: A Glimpse into Tomorrow" },
+        { "waitForSelector": "text=Hero Image", "timeout": 30000 },
+        { "sleep": 6000 }
+      ]
+    },
+    { "name": "website", "path": "/", "waitFor": "text=Payload Website Template", "waitMs": 1500 },
+    { "name": "post", "path": "/posts/digital-horizons", "waitFor": "h1", "waitMs": 1500 }
+  ]
+}
