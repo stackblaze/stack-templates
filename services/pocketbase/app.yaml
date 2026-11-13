@@ -3,19 +3,25 @@ kind: KuberoApp
 metadata:
   name: pocketbase
   annotations:
-    kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Open-source Firebase alternative \u2014 realtime\
-      \ subscriptions, auth, file storage, and admin UI, all in a single Go binary\
-      \ backed by SQLite."
+    kubero.dev/template.architecture: '["linux/amd64"]'
+    kubero.dev/template.description: Open source backend in one file. A realtime
+      database, user auth, file storage and an admin dashboard, with a REST API and
+      JavaScript and Dart SDKs.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pocketbase/icon.png
-    kubero.dev/template.installation: "PocketBase runs as a single binary with SQLite\
-      \ \u2014 no external database needed. Access the Admin UI at /_/ and create\
-      \ the admin account on first visit. Define collections (tables), set up auth\
-      \ providers, and configure file storage rules in the Admin UI. Use the JS/TypeScript\
-      \ SDK or REST API to build your frontend. All data is stored in the pocketbase-data\
-      \ volume."
+    kubero.dev/template.installation: 'Open /_/ and sign in with the email in
+      PB_ADMIN_EMAIL and the password generated in PB_ADMIN_PASSWORD (both under
+      Variables). The template creates this superuser on the first start, so the
+      install link is never needed. Change the email and password in the dashboard
+      afterwards; the template never resets them. Your data (SQLite database and
+      uploaded files) lives on the pocketbase-data volume at /pb/pb_data. Mail
+      (verification, password reset, OTP and alerts) is sent through the Email
+      add-on: its relay settings are applied on every start, so leave Settings >
+      Mail settings to the add-on. Settings are stored encrypted with
+      PB_ENCRYPTION_KEY, so never change or remove that key. If you add a custom
+      domain, set Settings > Application URL to it so links in emails point there.
+      Run a single instance only: SQLite has one writer.'
     kubero.dev/template.links: '["https://pocketbase.io/docs/"]'
-    kubero.dev/template.screenshots: '["https://pocketbase.io/images/og.png"]'
+    kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/pocketbase/pocketbase
     kubero.dev/template.categories: '["development", "utilities", "data"]'
     kubero.dev/template.title: PocketBase
@@ -25,8 +31,38 @@ metadata:
 spec:
   name: pocketbase
   deploymentstrategy: docker
-  addons: []
-  envVars: []
+  # Dependency check (upstream v0.40.6):
+  # - Database: none. Embedded SQLite in --dir (core/db_connect.go).
+  # - Cache: none.
+  # - Volume: yes, pb_data (data.db, auxiliary.db, storage/ uploads, backups/).
+  # - S3: no. File storage and backups use the volume by default; S3 is an
+  #   optional admin-UI setting (core/settings_model.go S3Config), no env.
+  # - SMTP: yes. Verification, password reset, OTP and alert mails; without
+  #   SMTP settings PocketBase falls back to a sendmail binary the image lacks
+  #   (core/base.go NewMailClient). PocketBase has no mail env vars, so the
+  #   image's boot hook (image/pb_hooks/stackblaze.pb.js) reads the injected
+  #   SMTP_* and is inert while the add-on is absent: env: [].
+  addons:
+  - displayName: Email
+    env: []
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    resourceDefinitions: {}
+  envVars:
+  # First superuser, created by the boot hook while none exists.
+  - name: PB_ADMIN_EMAIL
+    value: admin@example.com
+  - name: PB_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # AES-256 key for stored settings (SMTP password, OAuth2 secrets, S3 keys):
+  # exactly 32 bytes (tools/security/encrypt.go). Changing it later makes the
+  # stored settings unreadable.
+  - name: PB_ENCRYPTION_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  # Settings > Application URL (links in emails), set while still the default.
+  - name: PB_APP_URL
+    value: '{{STACKBLAZE_APP_URL}}'
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -50,14 +86,16 @@ spec:
   healthcheck:
     enabled: true
     path: /api/health
-    startupSeconds: 60
+    startupSeconds: 120
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '8090'
-    pullPolicy: Always
-    repository: ghcr.io/muchobien/pocketbase
-    tag: latest
+    pullPolicy: IfNotPresent
+    repository: ghcr.io/stackblaze/stack-templates/pocketbase
+    tag: 0.40.6
     run:
       securityContext:
         readOnlyRootFilesystem: false
+        runAsUser: 1000
+        runAsGroup: 1000
