@@ -2682,27 +2682,31 @@
    "source": "https://github.com/umami-software/umami",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/umami/icon.png",
    "website": "https://umami.is/",
-   "installation": "",
+   "installation": "Sign in as admin with the password generated in ADMIN_PASSWORD (under Variables). Upstream ships the account as admin/umami; this template replaces that password on the first start, before the app serves any request. Change it later under Settings > Profile (ADMIN_PASSWORD is only applied while the default password is still set). Add a website under Settings > Websites, then copy its tracking code into your site's <head>. To serve the tracker under another name (ad blockers block script.js), set TRACKER_SCRIPT_NAME, for example stats.js, and COLLECT_API_ENDPOINT, for example /api/collect. Do not change APP_SECRET after first use: it signs logins and derives the visitor hashes.",
    "architecture": [],
    "categories": [
     "data",
     "utilities"
    ],
    "screenshots": [
-    "https://umami.is/images/languages.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/umami/screenshot-overview.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/umami/screenshot-realtime.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/umami/screenshot-tracking-code.png"
    ],
-   "links": [],
+   "links": [
+    "https://umami.is/docs"
+   ],
    "addons": [
     "Cluster"
    ],
-   "stars": 36589,
-   "forks": 7079,
-   "watchers": 36589,
-   "issues": 147,
-   "last_updated": "2026-05-11T12:49:14Z",
-   "last_pushed": "2026-05-09T08:23:22Z",
+   "stars": 40120,
+   "forks": 8542,
+   "watchers": 40120,
+   "issues": 124,
+   "last_updated": "2026-11-13T19:18:21Z",
+   "last_pushed": "2026-11-12T23:12:03Z",
    "created_at": "2020-07-17T07:59:00Z",
-   "size": 28059,
+   "size": 33572,
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/umami/app.yaml",
