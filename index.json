@@ -13717,6 +13717,56 @@
      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/app.yaml"
     }
    ]
+  },
+  {
+   "name": "Instatic",
+   "description": "Self-hosted visual CMS and website builder. Design pages on a canvas, manage content, media, users and forms, and publish clean static HTML and CSS without editor code.",
+   "source": "https://github.com/CoreBunch/Instatic",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/icon.png",
+   "website": "https://instatic.com/",
+   "installation": "Open the app URL and sign in at /admin as admin@example.com (INSTATIC_ADMIN_EMAIL) with the password generated in INSTATIC_ADMIN_PASSWORD (both under Variables). The template completes the first-run setup for you on the first start, so nobody else can claim the site; change the email in your profile afterwards. Content lives in PostgreSQL; uploads, fonts, plugin packages and published files persist on the shared volume at /app/uploads. INSTATIC_SECRET_KEY encrypts AI provider keys, plugin secrets and MFA seeds and is generated once: do not change it. The AI assistant is optional and uses your own provider key (Anthropic, OpenAI, OpenRouter, Ollama). Instatic sends no email: add users and set their passwords under Users. It runs as a single replica. Instatic is pre-1.0 (MIT), so read the release notes before you move to a new image tag.",
+   "architecture": [
+    "linux/amd64"
+   ],
+   "categories": [
+    "cms",
+    "development"
+   ],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/screenshot-editor.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/screenshot-content.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/screenshot-dashboard.png"
+   ],
+   "links": [
+    "https://github.com/CoreBunch/Instatic/tree/main/docs",
+    "https://github.com/CoreBunch/Instatic/blob/main/docs/deployment/docker-image.md"
+   ],
+   "addons": [
+    "Cluster"
+   ],
+   "stars": 9113,
+   "forks": 873,
+   "watchers": 9113,
+   "issues": 213,
+   "last_updated": "2026-11-13T16:26:44Z",
+   "last_pushed": "2026-11-13T11:58:54Z",
+   "created_at": "2026-04-30T15:48:54Z",
+   "size": 195149,
+   "language": "TypeScript",
+   "gitops": false,
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/app.yaml",
+   "status": "active",
+   "license": "MIT",
+   "spdx_id": "MIT",
+   "dirname": "instatic",
+   "deploymentTypes": [
+    {
+     "id": "standard",
+     "label": "Standard",
+     "default": true,
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/app.yaml"
+    }
+   ]
   }
  ],
  "categories": {
