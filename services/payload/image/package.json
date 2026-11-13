@@ -6,7 +6,6 @@
   "type": "module",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
-    "postbuild": "next-sitemap --config next-sitemap.config.cjs",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
@@ -24,6 +23,7 @@
   "dependencies": {
     "@payloadcms/admin-bar": "3.93.0",
     "@payloadcms/db-postgres": "3.93.0",
+    "@payloadcms/email-nodemailer": "3.93.0",
     "@payloadcms/live-preview-react": "3.93.0",
     "@payloadcms/next": "3.93.0",
     "@payloadcms/plugin-form-builder": "3.93.0",
