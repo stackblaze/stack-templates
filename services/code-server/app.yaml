@@ -34,7 +34,7 @@ spec:
   # Login password. code-server reads PASSWORD at start and removes it from
   # the environment before it spawns terminals or extensions.
   - name: PASSWORD
-    value: '{{KUBERO_GEN_ALNUM:24}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
   extraVolumes:
   # The whole home directory: ~/.config/code-server (config.yaml),
   # ~/.local/share/code-server (extensions, settings, workspace state) and
@@ -45,7 +45,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /home/coder
-    name: '{{KUBERO_APP_NAME}}-home'
+    name: '{{STACKBLAZE_APP_NAME}}-home'
     size: 10Gi
     storageClass: shared
   cronjobs: []
