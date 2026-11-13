@@ -5,16 +5,31 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: "Build and manage websites, blogs, and content experiences with the world's most popular CMS.\nA flexible alternative to Wix and Squarespace."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/icon.png
-    kubero.dev/template.installation: ''
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://wordpress.org/documentation/files/2021/07/test-widgets_v2-1-1024x643.jpeg","https://user-images.githubusercontent.com/12400734/168248949-f19a1a73-2c02-4eab-84d1-faaff57dbd07.png","https://wordpress.org/documentation/files/2021/06/menu-add-items-1024x557.png"]'
+    kubero.dev/template.installation: 'WordPress is installed on the first start,
+      so there is no public setup wizard to race for. Sign in at /wp-admin as the
+      user in WORDPRESS_ADMIN_USER with the password generated in WORDPRESS_ADMIN_PASSWORD
+      (both under Variables), then set your own email under Users > Profile and
+      the site title under Settings > General. Changing those variables after the
+      first start has no effect: manage users in wp-admin. Email (password resets,
+      comment notices, form plugins) goes through the platform Email add-on via
+      the must-use plugin "StackBlaze Email". Scheduled posts and other WP-Cron
+      jobs run every minute in the background, not on page views. WordPress, plugins,
+      themes and media live on the volume at /var/www/html, so updates from the
+      dashboard persist. Uploads are limited to 64 MB.'
+    kubero.dev/template.links: '["https://wordpress.org/documentation/", "https://hub.docker.com/_/wordpress"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/screenshot-site.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/screenshot-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/screenshot-styles.png"]'
     kubero.dev/template.source: https://github.com/WordPress/WordPress
     kubero.dev/template.categories: '["cms"]'
     kubero.dev/template.title: "WordPress CMS"
     kubero.dev/template.website: https://wordpress.org
+  labels:
+    manager: kubero
   name: wordpress
 spec:
+  name: wordpress
+  deploymentstrategy: docker
   addons:
+  # WordPress only supports MySQL/MariaDB.
   - displayName: MariaDB
     env: []
     icon: /img/addons/mysql.svg
@@ -55,7 +70,7 @@ spec:
           name: '{{STACKBLAZE_APP_NAME}}-mariadb-root'
         type: Opaque
         stringData:
-          password: wordpress
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appSecret:
         apiVersion: v1
         kind: Secret
@@ -63,11 +78,12 @@ spec:
           name: '{{STACKBLAZE_APP_NAME}}-mariadb-app'
         type: Opaque
         stringData:
-          password: wordpress
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
   # Platform email (see README "Email contract"). WordPress has no SMTP
-  # setting of its own: the must-use plugin written by image.command reads
-  # the injected SMTP_* directly, so no mapping is needed here. Unlinked
-  # (trial), SMTP_HOST is absent and the plugin does nothing.
+  # setting of its own (wp_mail() defaults to PHP mail(), and the image has
+  # no sendmail): the must-use plugin written by image.command reads the
+  # injected SMTP_* directly, so no mapping is needed here. Without
+  # SMTP_HOST the plugin does nothing.
   - displayName: Email
     env: []
     icon: /img/addons/email.svg
@@ -75,7 +91,6 @@ spec:
     kind: Smtp
     resourceDefinitions: {}
   cronjobs: []
-  deploymentstrategy: docker
   envVars:
   - name: WORDPRESS_DB_HOST
     value: '$(MYSQL_HOST)'
@@ -85,9 +100,34 @@ spec:
     value: '$(MYSQL_PASSWORD)'
   - name: WORDPRESS_DB_NAME
     value: '$(MYSQL_DATABASE)'
+  # Site URL follows the request host, so custom domains work without
+  # editing the database. WP-Cron runs from the background loop in
+  # image.command instead of on page views (which miss scheduled posts on
+  # quiet sites and cost every visitor a loopback request).
   - name: WORDPRESS_CONFIG_EXTRA
-    value: define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST']); define('WP_SITEURL',
-      'https://' . $_SERVER['HTTP_HOST']);
+    value: |
+      if (!empty($_SERVER['HTTP_HOST'])) {
+        define('WP_HOME', 'https://' . $_SERVER['HTTP_HOST']);
+        define('WP_SITEURL', 'https://' . $_SERVER['HTTP_HOST']);
+      }
+      define('DISABLE_WP_CRON', true);
+  # First-start install (image.command). Changing these later does nothing.
+  - name: WORDPRESS_ADMIN_USER
+    value: admin
+  - name: WORDPRESS_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  - name: WORDPRESS_ADMIN_EMAIL
+    value: admin@example.com
+  - name: WORDPRESS_SITE_TITLE
+    value: My WordPress Site
+  # The app's public URL, stored as the site address at install (used by
+  # WP-Cron and other non-web runs). Also makes the platform inject
+  # STACKBLAZE_PUBLIC_URL, which it only does when something references it.
+  - name: WORDPRESS_SITE_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # Cookie keys and salts (fixed per deploy so sessions survive restarts and
+  # replicas), and the Secrets API key (WordPress 7.2+; never change it once
+  # secrets are stored).
   - name: WORDPRESS_AUTH_KEY
     value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: WORDPRESS_SECURE_AUTH_KEY
@@ -104,67 +144,162 @@ spec:
     value: '{{STACKBLAZE_GEN_ALNUM:64}}'
   - name: WORDPRESS_NONCE_SALT
     value: '{{STACKBLAZE_GEN_ALNUM:64}}'
+  - name: WORDPRESS_SECRETS_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
+  # The image's own VOLUME: WordPress core, wp-config.php, plugins, themes
+  # and uploads. Core lives here too so updates made from wp-admin (and
+  # WordPress's automatic security releases) survive a restart.
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     storageClass: shared
     emptyDir: false
-    mountPath: /var/www/html/wp-content
+    mountPath: /var/www/html
     name: '{{STACKBLAZE_APP_NAME}}-data'
-    size: 1Gi
+    size: 10Gi
   image:
     containerPort: '80'
     pullPolicy: IfNotPresent
-    # docker.io/library so zone nodes mirror through the regional zot
-    # (registry.<region>/v2/docker). Not registry.stackblaze.cloud (sfo, 503).
-    # Pinned patch tag, not :latest.
+    # docker.io/library so zone nodes mirror through the regional zot.
+    # Pinned patch tag (PHP 8.3 is upstream's default variant), not :latest.
     repository: docker.io/library/wordpress
-    tag: 7.1.0-php8.3-apache
-    # Drop a must-use plugin that routes wp_mail() through the platform
-    # Email add-on, then hand over to the image entrypoint. Rewritten on
-    # every start (wp-content is the persistent volume), inert without
-    # SMTP_HOST. The From address is forced to SMTP_FROM: SES rejects any
-    # other sender for the pipeline's login.
+    tag: 7.1.4-php8.3-apache
+    # 1. PHP limits for media uploads (the php image defaults to 2 MB).
+    # 2. Wait for MariaDB, then copy WordPress onto the volume (first start
+    #    only) and write wp-config.php: the image's docker-ensure-installed.sh.
+    # 3. Write the must-use plugin that sends wp_mail() through the Email
+    #    add-on (rewritten on every start, inert without SMTP_HOST).
+    # 4. Install WordPress with the WORDPRESS_ADMIN_* user if it isn't yet.
+    # 5. Run WP-Cron every minute as www-data, then start Apache.
     command:
     - sh
     - -c
     - |
-      mkdir -p /var/www/html/wp-content/mu-plugins
-      cat > /var/www/html/wp-content/mu-plugins/stackblaze-email.php <<'PHP'
+      set -e
+      cat > /usr/local/etc/php/conf.d/stackblaze.ini <<'INI'
+      upload_max_filesize = 64M
+      post_max_size = 64M
+      memory_limit = 256M
+      max_execution_time = 300
+      INI
+      # A real login, not just the port: the operator creates the user and
+      # its grant a few seconds after MariaDB starts listening.
+      until php -r 'mysqli_report(MYSQLI_REPORT_OFF); exit(@mysqli_connect(getenv("WORDPRESS_DB_HOST"), getenv("WORDPRESS_DB_USER"), getenv("WORDPRESS_DB_PASSWORD"), getenv("WORDPRESS_DB_NAME")) ? 0 : 1);'; do
+        echo "waiting for database at $WORDPRESS_DB_HOST"; sleep 2
+      done
+      cd /var/www/html
+      docker-ensure-installed.sh
+      mkdir -p wp-content/mu-plugins
+      cat > wp-content/mu-plugins/stackblaze-email.php <<'PHP'
       <?php
       /**
-       * Plugin Name: Stackblaze Email
-       * Description: Sends wp_mail() through the platform Email add-on (SMTP_* environment). Managed by the template — rewritten on every restart.
+       * Plugin Name: StackBlaze Email
+       * Description: Sends wp_mail() through the platform Email add-on (SMTP_* environment). Managed by the template and rewritten on every restart.
        */
       if (!getenv('SMTP_HOST')) {
           return;
       }
+      // SMTP_FROM is "address" or "Name <address>"; WordPress wants them apart.
+      function stackblaze_smtp_from() {
+          $from = trim((string) getenv('SMTP_FROM'));
+          if (preg_match('/^\s*"?([^"<]*?)"?\s*<([^>]+)>\s*$/', $from, $m)) {
+              return array(trim($m[2]), trim($m[1]));
+          }
+          return array($from, '');
+      }
       add_action('phpmailer_init', function ($phpmailer) {
+          $port = (int) (getenv('SMTP_PORT') ?: 587);
           $phpmailer->isSMTP();
-          $phpmailer->Host       = getenv('SMTP_HOST');
-          $phpmailer->Port       = (int) (getenv('SMTP_PORT') ?: 587);
-          $phpmailer->SMTPAuth   = true;
-          $phpmailer->Username   = getenv('SMTP_USER');
-          $phpmailer->Password   = getenv('SMTP_PASSWORD');
-          $phpmailer->SMTPSecure = 'tls'; // STARTTLS on 587
+          $phpmailer->Host = getenv('SMTP_HOST');
+          $phpmailer->Port = $port;
+          $phpmailer->SMTPSecure = $port === 465 ? 'ssl' : 'tls';
+          if (getenv('SMTP_USER')) {
+              $phpmailer->SMTPAuth = true;
+              $phpmailer->Username = getenv('SMTP_USER');
+              $phpmailer->Password = getenv('SMTP_PASSWORD');
+          }
       });
-      add_filter('wp_mail_from', function () {
-          return getenv('SMTP_FROM');
+      // The relay only accepts its own sender address.
+      add_filter('wp_mail_from', function ($address) {
+          list($from) = stackblaze_smtp_from();
+          return $from !== '' ? $from : $address;
+      }, 99);
+      add_filter('wp_mail_from_name', function ($name) {
+          list(, $from_name) = stackblaze_smtp_from();
+          if ($from_name !== '') {
+              return $from_name;
+          }
+          return $name === 'WordPress' ? wp_specialchars_decode(get_bloginfo('name'), ENT_QUOTES) : $name;
+      }, 99);
+      add_action('wp_mail_failed', function ($error) {
+          error_log('StackBlaze Email: wp_mail failed: ' . $error->get_error_message());
       });
       PHP
-      # Wait for MariaDB (its image may still be pulling) so the first start
-      # doesn't answer 500s and get restarted by the liveness check.
-      until php -r '[$h,$p]=array_pad(explode(":",getenv("WORDPRESS_DB_HOST"),2),2,3306); exit(@fsockopen($h,(int)$p,$n,$s,2)?0:1);'; do
-        echo "waiting for database at $WORDPRESS_DB_HOST"; sleep 2
+      chown -R www-data:www-data wp-content/mu-plugins
+      cat > /usr/local/bin/stackblaze-install.php <<'PHP'
+      <?php
+      // Installs WordPress with the WORDPRESS_ADMIN_* user on first start,
+      // so the public install.php wizard is never left open to strangers.
+      // Without a host WordPress would store an empty site address, and an
+      // empty siteurl makes every later page load fail with a database error.
+      $host = parse_url((string) getenv('WORDPRESS_SITE_URL'), PHP_URL_HOST);
+      if (!$host) {
+          echo "stackblaze: no WORDPRESS_SITE_URL yet\n";
+          exit(1);
+      }
+      $_SERVER['HTTP_HOST'] = $host;
+      $_SERVER['HTTPS'] = 'on';
+      define('WP_INSTALLING', true);
+      require '/var/www/html/wp-load.php';
+      if (is_blog_installed()) {
+          echo "stackblaze: wordpress installed\n";
+          exit(0);
+      }
+      $password = (string) getenv('WORDPRESS_ADMIN_PASSWORD');
+      if ($password === '') {
+          echo "stackblaze: WORDPRESS_ADMIN_PASSWORD is empty, leaving the install wizard\n";
+          echo "stackblaze: wordpress installed\n";
+          exit(0);
+      }
+      // No "your new site" mail to the placeholder address.
+      function wp_new_blog_notification() {}
+      require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+      wp_install(
+          getenv('WORDPRESS_SITE_TITLE') ?: 'My WordPress Site',
+          getenv('WORDPRESS_ADMIN_USER') ?: 'admin',
+          getenv('WORDPRESS_ADMIN_EMAIL') ?: 'admin@example.com',
+          true,
+          '',
+          $password
+      );
+      update_option('permalink_structure', '/%postname%/');
+      flush_rewrite_rules(false);
+      // DB errors are silent while installing: only report what is true.
+      wp_cache_flush();
+      if (!is_blog_installed() || !username_exists(getenv('WORDPRESS_ADMIN_USER') ?: 'admin')) {
+          echo "stackblaze: install did not complete\n";
+          exit(1);
+      }
+      echo "stackblaze: wordpress installed\n";
+      PHP
+      as_www() { setpriv --reuid=www-data --regid=www-data --init-groups "$@"; }
+      until as_www php /usr/local/bin/stackblaze-install.php 2>&1 | grep -q '^stackblaze: wordpress installed'; do
+        echo "waiting to install WordPress"; sleep 5
       done
+      ( while sleep 60; do as_www php /var/www/html/wp-cron.php >/dev/null 2>&1 || echo "wp-cron run failed"; done ) &
       exec docker-entrypoint.sh apache2-foreground
     run:
       securityContext:
         readOnlyRootFilesystem: false
-  name: wordpress
-  # Probe a static file Apache serves without PHP or the database: the
-  # operator's liveness check runs every 3 s, and probing / made WordPress
-  # query MariaDB (missing tables before the install wizard) on every tick.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  # A static file Apache serves without PHP or the database: probing / made
+  # WordPress query MariaDB on every liveness tick.
   healthcheck:
     enabled: true
     path: /wp-includes/images/blank.gif
