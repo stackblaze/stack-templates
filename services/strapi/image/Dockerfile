@@ -33,5 +33,5 @@ ENV NODE_ENV=production \
     STRAPI_TELEMETRY_DISABLED=true \
     STRAPI_DISABLE_UPDATE_NOTIFICATION=true
 EXPOSE 1337
-ENTRYPOINT ["/usr/bin/tini", "--"]
+ENTRYPOINT ["/usr/bin/tini", "--", "/opt/app/docker-entrypoint.sh"]
 CMD ["/opt/app/node_modules/.bin/strapi", "start"]
