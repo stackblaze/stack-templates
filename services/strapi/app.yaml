@@ -20,7 +20,7 @@ metadata:
       user confirmations) goes through the Email add-on. Keep APP_KEYS, the JWT secrets
       and ENCRYPTION_KEY unchanged after first use.'
     kubero.dev/template.links: '["https://docs.strapi.io/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/screenshot-articles.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/screenshot-entry.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/screenshot-media.png"]'
     kubero.dev/template.source: https://github.com/strapi/strapi
     kubero.dev/template.categories: '["cms", "development", "data"]'
     kubero.dev/template.title: Strapi

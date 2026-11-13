@@ -12965,7 +12965,11 @@
     "development",
     "data"
    ],
-   "screenshots": [],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/screenshot-articles.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/screenshot-entry.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/screenshot-media.png"
+   ],
    "links": [
     "https://docs.strapi.io/"
    ],
