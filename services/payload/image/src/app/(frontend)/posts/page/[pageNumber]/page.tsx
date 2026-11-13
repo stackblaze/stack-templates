@@ -9,7 +9,9 @@ import React from 'react'
 import PageClient from './page.client'
 import { notFound } from 'next/navigation'
 
-export const revalidate = 600
+// StackBlaze: render from the running database on every request (the image is built
+// once, without a database, for every deploy), so edits show on the site at once.
+export const dynamic = 'force-dynamic'
 
 type Args = {
   params: Promise<{
@@ -67,22 +69,4 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   return {
     title: `Payload Website Template Posts Page ${pageNumber || ''}`,
   }
-}
-
-export async function generateStaticParams() {
-  const payload = await getPayload({ config: configPromise })
-  const { totalDocs } = await payload.count({
-    collection: 'posts',
-    overrideAccess: false,
-  })
-
-  const totalPages = Math.ceil(totalDocs / 10)
-
-  const pages: { pageNumber: string }[] = []
-
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push({ pageNumber: String(i) })
-  }
-
-  return pages
 }
