@@ -164,7 +164,7 @@ export async function runLogin(page, login, baseUrl, context) {
     if (login.waitAfterMs) await sleep(login.waitAfterMs);
     return;
   }
-  const loginUrl = login.url || `${baseUrl}${login.path || '/login'}`;
+  const loginUrl = login.url ? expandEnv(login.url) : `${baseUrl}${login.path || '/login'}`;
   await page.goto(loginUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
   await runSteps(page, login.steps);
   if (login.waitAfterMs) await sleep(login.waitAfterMs);
