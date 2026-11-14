@@ -1,0 +1,23 @@
+{
+  "_note": "Activepieces 0.93.0. Seed first with three no-auth demo flows (Lead intake: score and store; Daily exchange-rate digest; Shop order webhook) and a few runs: scripts/seed-activepieces-demo.py <vars.json> <url> (flows imported via POST /api/v1/flows/:id IMPORT_FLOW, then LOCK_AND_PUBLISH, then webhook calls). Sign in through the form as ${ADMIN_EMAIL} / ${ADMIN_PASSWORD}. Theme: localStorage 'vite-ui-theme' = light | dark before load. The builder and run shots open the 'Score the lead' Code step by clicking its card (click by coordinates: the canvas intercepts locator clicks).",
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/sign-in",
+    "steps": [
+      { "waitForSelector": "input[type=email]", "timeout": 60000 },
+      { "fill": { "input[type=email]": "${ADMIN_EMAIL}" } },
+      { "fill": { "input[type=password]": "${ADMIN_PASSWORD}" } },
+      { "press": "Enter" },
+      { "waitForSelector": "text=Personal Project", "timeout": 60000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "automations", "path": "/projects/<project id>/automations", "waitFor": "text=Lead intake: score and store", "waitMs": 1500 },
+    { "name": "builder", "path": "/projects/<project id>/flows/<lead intake flow id>", "waitFor": "text=Score the lead", "waitMs": 1500,
+      "steps": [{ "click": "text=Score the lead" }, { "sleep": 1500 }] },
+    { "name": "run", "path": "/projects/<project id>/runs/<a succeeded lead intake run id>", "waitFor": "text=Score the lead", "waitMs": 1500,
+      "steps": [{ "click": "text=Score the lead" }, { "sleep": 1500 }] }
+  ]
+}
