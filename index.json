@@ -13569,11 +13569,11 @@
   },
   {
    "name": "payload",
-   "description": "Headless CMS and application framework built with TypeScript, Node.js and React \u2014 an auto-generated admin UI, REST & GraphQL APIs, authentication, and a flexible code-first content model.",
+   "description": "Open-source TypeScript headless CMS and website builder on Next.js. Edit pages and posts in the Payload admin with live preview, drafts and scheduled publishing, and serve them on the built-in website or over REST and GraphQL.",
    "source": "https://github.com/payloadcms/payload",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/icon.png",
    "website": "https://payloadcms.com",
-   "installation": "",
+   "installation": "Sign in at /admin as admin@example.com (PAYLOAD_ADMIN_EMAIL) with the password generated in PAYLOAD_ADMIN_PASSWORD (both under Variables). The image creates this admin on the first start, so nobody else can register the first user; change the email and password in the admin afterwards. The first start runs the database migrations. On an empty site, the dashboard's Seed your database button loads Payload's demo pages and posts. Collections and config are code: edit services/payload/image (or your own create-payload-app project), run npm run payload migrate:create, build the image and point the app at it.",
    "architecture": [],
    "categories": [
     "cms",
@@ -13581,20 +13581,25 @@
     "data"
    ],
    "screenshots": [
-    "https://payloadcms.com/images/og-image.jpg"
-   ],
+     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-editor.png",
+     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-website.png",
+     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-post.png"
+    ],
    "links": [
     "https://payloadcms.com/docs"
    ],
-   "addons": [],
-   "stars": 28000,
-   "forks": 0,
-   "watchers": 28000,
-   "issues": 0,
-   "last_updated": "2026-06-14T00:00:00Z",
-   "last_pushed": "2026-06-14T00:00:00Z",
-   "created_at": "2018-01-01T00:00:00Z",
-   "size": 1000,
+   "addons": [
+    "Cluster",
+    "Smtp"
+   ],
+   "stars": 45804,
+   "forks": 4429,
+   "watchers": 45804,
+   "issues": 1606,
+   "last_updated": "2026-11-13T16:14:41Z",
+   "last_pushed": "2026-11-13T18:52:14Z",
+   "created_at": "2021-01-05T18:49:45Z",
+   "size": 243155,
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/app.yaml",
