@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: LLM gateway with one OpenAI-compatible API
       for 100+ model providers. Virtual keys, budgets, rate limits, spend tracking
       and an admin UI.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/icon.png
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/icon.png
     kubero.dev/template.installation: 'Open the app URL (it redirects to /ui) and
       sign in as admin with the password generated in UI_PASSWORD (under Variables).
       Every API call needs a key: the master key in LITELLM_MASTER_KEY, or a virtual
@@ -23,7 +23,7 @@ metadata:
       turn on email alerting in Settings. Enterprise features (SSO for more than
       5 users, audit logs, guardrail add-ons) need a LiteLLM licence.'
     kubero.dev/template.links: '["https://docs.litellm.ai/"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/screenshot-keys.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/screenshot-logs.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/screenshot-models.png"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-keys.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-logs.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-models.png"]'
     kubero.dev/template.source: https://github.com/BerriAI/litellm
     kubero.dev/template.categories: '["ai", "development", "utilities"]'
     kubero.dev/template.title: LiteLLM
