@@ -1,0 +1,49 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      { "waitForSelector": "#email", "timeout": 60000 },
+      { "fill": { "#email": "${LIBRECHAT_ADMIN_EMAIL}" } },
+      { "fill": { "#password": "${LIBRECHAT_ADMIN_PASSWORD}" } },
+      { "click": "[data-testid=login-button]" },
+      { "waitForURL": "**/c/**", "timeout": 60000 }
+    ],
+    "waitAfterMs": 3000
+  },
+  "pages": [
+    {
+      "name": "chat",
+      "path": "/c/new",
+      "waitFor": "[data-testid=text-input]",
+      "waitMs": 1500,
+      "steps": [
+        { "click": "text=/Release Notes/" },
+        { "waitForSelector": ".markdown", "timeout": 30000 },
+        { "sleep": 2500 }
+      ]
+    },
+    {
+      "name": "code",
+      "path": "/c/new",
+      "waitFor": "[data-testid=text-input]",
+      "waitMs": 1500,
+      "steps": [
+        { "click": "text=/Mutex vs Semaphore/" },
+        { "waitForSelector": "pre", "timeout": 30000 },
+        { "sleep": 2500 }
+      ]
+    },
+    {
+      "name": "models",
+      "path": "/c/new",
+      "waitFor": "[data-testid=text-input]",
+      "waitMs": 1500,
+      "steps": [
+        { "click": "button:has-text(\"qwen2.5\")" },
+        { "sleep": 1500 }
+      ]
+    }
+  ]
+}
