@@ -189,6 +189,18 @@ spec:
     pullPolicy: IfNotPresent
     repository: ghcr.io/open-webui/open-webui
     tag: v0.13.3-slim
+    # Open WebUI exits when Postgres refuses the first connection (the add-on
+    # often comes up after the app), so wait for a real login first, then run
+    # the image's own start script (Dockerfile CMD, WORKDIR /app/backend).
+    command:
+    - bash
+    - -c
+    - |
+      for i in $(seq 1 150); do
+        python3 -c 'import os, psycopg2; psycopg2.connect(os.environ["DATABASE_URL"], connect_timeout=3).close()' 2>/dev/null && break
+        echo "waiting for Postgres ($i)"; sleep 2
+      done
+      cd /app/backend && exec bash start.sh
     run:
       securityContext:
         readOnlyRootFilesystem: false
