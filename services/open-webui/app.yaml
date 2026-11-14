@@ -129,6 +129,13 @@ spec:
     value: ollama
   - name: RAG_EMBEDDING_MODEL
     value: nomic-embed-text
+  # Search attached files and knowledge bases on every message and add the
+  # passages to the prompt ("legacy" function calling). Upstream's default
+  # ("native") leaves it to the model to call a search tool, which small
+  # Ollama models don't do, so their answers ignore your documents. First-run
+  # default; change it in Admin Panel > Settings > Models.
+  - name: DEFAULT_MODEL_PARAMS
+    value: '{"function_calling": "legacy"}'
   # Lockdown: hard switches, read only from the environment. No admin- or
   # user-written Python (Tools, Functions) runs in the pod, nothing is pip
   # installed at runtime, no model repo code is imported.
