@@ -357,7 +357,8 @@
    ],
    "links": [],
    "addons": [
-    "MariaDB"
+    "KuberoMySQL",
+    "Smtp"
    ],
    "stars": 52784,
    "forks": 11542,
