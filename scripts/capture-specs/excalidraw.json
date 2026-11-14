@@ -6,9 +6,10 @@
     {
       "name": "board",
       "path": "/",
-      "waitMs": 3000,
+      "waitFor": ".excalidraw",
+      "waitMs": 2000,
       "fullPage": false
     }
   ],
-  "notes": "Prefer scripts/seed-excalidraw-and-capture.mjs — injects a demo board into localStorage then captures multiple zooms/themes."
+  "notes": "No accounts. The catalog stills (board, live collaboration, export; light and dark) come from scripts/seed-excalidraw-and-capture.mjs <app url> <outdir>, which seeds a diagram with the app's own Mermaid converter and joins a room from a second browser."
 }
