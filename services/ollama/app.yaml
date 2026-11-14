@@ -4,17 +4,26 @@ metadata:
   name: ollama
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Run large language models locally — Llama 3,
-      Mistral, Gemma, Phi, and 100+ models via a simple OpenAI-compatible REST API.
+    kubero.dev/template.description: Run open models like Llama, Qwen, Gemma and
+      Mistral on your own server, with Ollama's REST API and an OpenAI-compatible
+      endpoint. Private to your project, for your other apps to use.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/icon.png
-    kubero.dev/template.installation: 'Ollama runs a local LLM inference server. After
-      deploy, pull a model: POST /api/pull with {"model":"llama3.2"}. Then chat at
-      POST /api/chat or use the OpenAI-compatible endpoint at /v1. GPU is unavailable
-      on CPU nodes — use quantised models (llama3.2:3b, phi3:mini) for acceptable
-      speed. Increase the volume before pulling large models (7B ~4GB, 70B ~40GB).
-      Pair with Open WebUI for a browser chat interface.'
-    kubero.dev/template.links: '["https://github.com/ollama/ollama", "https://ollama.com/library"]'
-    kubero.dev/template.screenshots: '["https://ollama.com/public/og.png"]'
+    kubero.dev/template.installation: 'Ollama''s API has no authentication, so this
+      template gives it no public URL. Other apps in the same project reach it at
+      http://ollama (port 80; the Ollama API and the OpenAI-compatible /v1 endpoint),
+      for example OLLAMA_BASE_URL=http://ollama in Open WebUI or Langflow. On first
+      start it pulls the models listed in MODELS_TO_PULL (comma separated, default
+      qwen2.5:1.5b, about 1 GB); clear it to pull nothing. Pull more from the app''s
+      console with "ollama pull <model>" or from a connected app. Models are kept on
+      the /root/.ollama volume (20 GiB; grow it before pulling large models). CPU
+      only: small quantised models (1.5B to 3B) answer in seconds, 7B models are
+      slow. Do not turn on "Expose to the internet" for this app: anyone with the
+      URL could use and delete your models. To call it from outside the project,
+      put an app with its own login (Open WebUI) or an API gateway in front.'
+    kubero.dev/template.links: '["https://github.com/ollama/ollama", "https://docs.ollama.com",
+      "https://ollama.com/library"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/screenshot-chat.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/screenshot-openai.png",
+      "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/screenshot-private.png"]'
     kubero.dev/template.source: https://github.com/ollama/ollama
     kubero.dev/template.categories: '["ai", "utilities", "development"]'
     kubero.dev/template.title: Ollama
@@ -26,21 +35,34 @@ spec:
   deploymentstrategy: docker
   addons: []
   envVars:
+  # Listen on the pod address so other apps in the project can connect. The
+  # API has no authentication (docs/api/authentication.mdx), so it must never
+  # get a public Ingress: see exposeInternet / ingress below.
   - name: OLLAMA_HOST
-    value: 0.0.0.0
-  - name: OLLAMA_ORIGINS
-    value: '*'
+    value: 0.0.0.0:11434
   - name: OLLAMA_KEEP_ALIVE
     value: 5m
+  # Local-only mode: no ollama.com cloud models, web search or web fetch
+  # proxied through this server (docs/faq.mdx "disable Ollama's cloud features").
+  - name: OLLAMA_NO_CLOUD
+    value: '1'
+  # Pulled in the background on every start (a no-op once on the volume).
+  - name: MODELS_TO_PULL
+    value: qwen2.5:1.5b
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /root/.ollama
-    name: ollama-models
+    name: '{{STACKBLAZE_APP_NAME}}-models'
     size: 20Gi
     storageClass: shared
   cronjobs: []
+  # No public URL. The dashboard reads exposeInternet; the API/CLI path reads
+  # ingress.enabled. Both are needed.
+  exposeInternet: false
+  ingress:
+    enabled: false
   web:
     replicaCount: 1
   worker:
@@ -55,14 +77,30 @@ spec:
   healthcheck:
     enabled: true
     path: /
-    startupSeconds: 60
+    startupSeconds: 120
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '11434'
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     repository: docker.io/ollama/ollama
-    tag: latest
+    tag: 0.40.16
+    command:
+    - /bin/sh
+    - -c
+    - |
+      /bin/ollama serve &
+      pid=$!
+      trap 'kill -TERM "$pid"' TERM INT
+      if [ -n "$MODELS_TO_PULL" ]; then
+        (
+          for i in $(seq 1 60); do /bin/ollama list >/dev/null 2>&1 && break; sleep 1; done
+          for m in $(echo "$MODELS_TO_PULL" | tr ',' ' '); do
+            /bin/ollama pull "$m" >/dev/null 2>&1 && echo "pulled $m" || echo "pull of $m failed"
+          done
+        ) &
+      fi
+      wait "$pid"
     run:
       securityContext:
         readOnlyRootFilesystem: false
