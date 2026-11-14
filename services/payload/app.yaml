@@ -9,10 +9,13 @@ metadata:
       drafts and scheduled publishing, and serve them on the built-in website or over
       REST and GraphQL.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/icon.png
-    kubero.dev/template.installation: 'Open /admin and create the first admin user
-      (there is no default admin; the first person to open /admin creates it, so do
-      it right after the deploy). The first start runs the database migrations. The
-      image is Payload 3.93.0 built from Payload''s website starter (create-payload-app
+    kubero.dev/template.installation: 'Open the app URL and sign in at /admin as admin@example.com
+      (PAYLOAD_ADMIN_EMAIL) with the password generated in PAYLOAD_ADMIN_PASSWORD (both
+      under Variables). The image creates this admin on the first start, before the
+      site serves anything, so nobody else can register the first user; change the
+      email and password in the admin afterwards (changing the variables later has
+      no effect once a user exists). The first start runs the database migrations.
+      The image is Payload 3.93.0 built from Payload''s website starter (create-payload-app
       -t website with Postgres): pages, posts, media, categories, forms, search, redirects
       and SEO, with the website at / and the API at /api and /api/graphql. On an empty
       site, the dashboard''s Seed your database button loads Payload''s demo pages
@@ -114,6 +117,13 @@ spec:
   # Signs the draft preview links (/next/preview) the admin opens.
   - name: PREVIEW_SECRET
     value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  # Read by the image's onInit (src/utilities/createFirstAdmin.ts): while the
+  # users collection is empty it creates this admin, so no visitor can claim
+  # the site through /admin's create-first-user form. Ignored once a user exists.
+  - name: PAYLOAD_ADMIN_EMAIL
+    value: admin@example.com
+  - name: PAYLOAD_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
   - name: NEXT_TELEMETRY_DISABLED
     value: '1'
   extraVolumes:
@@ -147,7 +157,7 @@ spec:
     pullPolicy: IfNotPresent
     # Built from services/payload/image by .github/workflows/build-payload.yaml.
     repository: ghcr.io/stackblaze/stack-templates/payload
-    tag: '3.93.0'
+    tag: '3.93.0-1'
     run:
       securityContext:
         readOnlyRootFilesystem: false

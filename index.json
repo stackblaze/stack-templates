@@ -13539,7 +13539,7 @@
    "source": "https://github.com/payloadcms/payload",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/icon.png",
    "website": "https://payloadcms.com",
-   "installation": "Open /admin and create the first admin user (there is no default admin; the first person to open /admin creates it, so do it right after the deploy). The first start runs the database migrations. On an empty site, the dashboard's Seed your database button loads Payload's demo pages and posts. Collections and config are code: edit services/payload/image (or your own create-payload-app project), run npm run payload migrate:create, build the image and point the app at it.",
+   "installation": "Sign in at /admin as admin@example.com (PAYLOAD_ADMIN_EMAIL) with the password generated in PAYLOAD_ADMIN_PASSWORD (both under Variables). The image creates this admin on the first start, so nobody else can register the first user; change the email and password in the admin afterwards. The first start runs the database migrations. On an empty site, the dashboard's Seed your database button loads Payload's demo pages and posts. Collections and config are code: edit services/payload/image (or your own create-payload-app project), run npm run payload migrate:create, build the image and point the app at it.",
    "architecture": [],
    "categories": [
     "cms",
