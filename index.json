@@ -803,11 +803,11 @@
   },
   {
    "name": "nocodb",
-   "description": "The Open Source Airtable Alternative. Turns any MySQL, PostgreSQL, SQL Server, SQLite & MariaDB into a smart-spreadsheet.",
+   "description": "Build databases as spreadsheets: tables with typed fields, grid, kanban, gallery, form and calendar views, and a REST API for every table. An open source Airtable alternative on your own Postgres.",
    "source": "https://github.com/nocodb/nocodb",
-   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/icon.png",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/icon.png",
    "website": "https://www.nocodb.com",
-   "installation": "",
+   "installation": "Sign in with NC_ADMIN_EMAIL and the password generated in NC_ADMIN_PASSWORD (under Variables). The super admin is created before the first request and sign-up is invite-only, so nobody can claim the instance.",
    "architecture": [],
    "categories": [
     "data",
@@ -815,23 +815,26 @@
     "work"
    ],
    "screenshots": [
-    "https://media.stackblaze.cloud/templates/nocodb/demo.mp4",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/dashboard.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/screenshot-customers.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/screenshot-pipeline.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/screenshot-grid.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/screenshot-kanban.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/screenshot-form.png"
    ],
-   "links": [],
+   "links": [
+    "https://nocodb.com/docs/self-hosting",
+    "https://nocodb.com/docs/product-docs"
+   ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
-   "stars": 63004,
-   "forks": 4766,
-   "watchers": 63004,
-   "issues": 698,
-   "last_updated": "2026-05-11T12:10:59Z",
-   "last_pushed": "2026-05-11T12:17:25Z",
+   "stars": 65522,
+   "forks": 5138,
+   "watchers": 65522,
+   "issues": 577,
+   "last_updated": "2026-11-13T21:13:56Z",
+   "last_pushed": "2026-11-13T18:51:15Z",
    "created_at": "2017-10-29T18:51:48Z",
-   "size": 1428730,
+   "size": 1521393,
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/app.yaml",
