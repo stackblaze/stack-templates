@@ -12540,11 +12540,11 @@
   },
   {
    "name": "litellm",
-   "description": "LLM proxy and gateway \u2014 unified OpenAI-compatible API for 100+ providers including OpenAI, Anthropic, Gemini, Ollama, and Bedrock with cost tracking and rate limiting.",
+   "description": "LLM gateway with one OpenAI-compatible API for 100+ model providers. Virtual keys, budgets, rate limits, spend tracking and an admin UI.",
    "source": "https://github.com/BerriAI/litellm",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/icon.png",
-   "website": "https://litellm.ai",
-   "installation": "",
+   "website": "https://www.litellm.ai/",
+   "installation": "Open the app URL and sign in as admin with the password generated in UI_PASSWORD (under Variables). Every API call needs the master key in LITELLM_MASTER_KEY or a virtual key; nothing is open without one. Provider keys are stored encrypted with LITELLM_SALT_KEY, so never change it after adding a model.",
    "architecture": [],
    "categories": [
     "ai",
@@ -12552,22 +12552,25 @@
     "utilities"
    ],
    "screenshots": [
-    "https://framerusercontent.com/images/DbFHR1t71NpmaSxIqej1LKWzD4.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/screenshot-keys.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/screenshot-logs.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/screenshot-models.png"
    ],
    "links": [
     "https://docs.litellm.ai/"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
-   "stars": 24000,
-   "forks": 0,
-   "watchers": 24000,
-   "issues": 0,
-   "last_updated": "2026-06-13T00:00:00Z",
-   "last_pushed": "2026-06-13T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 1000,
+   "stars": 63221,
+   "forks": 13269,
+   "watchers": 63221,
+   "issues": 5193,
+   "last_updated": "2026-11-14T00:30:39Z",
+   "last_pushed": "2026-11-14T01:19:18Z",
+   "created_at": "2023-07-27T00:09:52Z",
+   "size": 2966389,
    "language": "Python",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/app.yaml",
