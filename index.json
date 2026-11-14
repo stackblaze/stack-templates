@@ -1830,7 +1830,7 @@
    "name": "outline",
    "description": "Team knowledge base and wiki: fast, real-time collaborative Markdown documents organized in collections, with search, comments, sharing and passkey or email sign-in, backed by Postgres.",
    "source": "https://github.com/outline/outline",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b0536b10e8144903a70f0269e6da255d9f6409e/services/outline/icon.png",
    "website": "https://www.getoutline.com",
    "installation": "Outline has no passwords: people sign in with a link or code sent by email (through the StackBlaze Email add-on) or, once signed in, with a passkey. Before deploying, set OUTLINE_ADMIN_EMAIL (Variables) to your own email address. The first start creates the workspace (OUTLINE_WORKSPACE_NAME) and its admin with that address before the app is reachable, so nobody can claim a fresh instance. Open the app, choose Continue with email, enter that address and use the link or code you receive. If you deployed with the wrong address, change OUTLINE_ADMIN_EMAIL and redeploy: the admin's address follows the variable until the admin signs in for the first time. Sign-up is invite only: invite people under Settings > Members. Add a passkey under Settings > Account for sign-in without email. Uploads and images are stored on the data volume. Outline is licensed under the Business Source License 1.1: you may run it for your own organization, but not sell it to others as a document service.",
    "architecture": [
@@ -1843,9 +1843,9 @@
     "documentation"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/screenshot-doc.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/screenshot-comments.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/screenshot-search.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b0536b10e8144903a70f0269e6da255d9f6409e/services/outline/screenshot-doc.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b0536b10e8144903a70f0269e6da255d9f6409e/services/outline/screenshot-comments.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b0536b10e8144903a70f0269e6da255d9f6409e/services/outline/screenshot-search.png"
    ],
    "links": [
     "https://docs.getoutline.com/s/hosting",
