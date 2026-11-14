@@ -131,6 +131,10 @@ export async function runSteps(page, steps) {
     if (step.waitForURL) {
       await page.waitForURL(step.waitForURL, { timeout: step.timeout || 30000 });
     }
+    if (step.mouseMove) {
+      // e.g. park the pointer off the content so hover tooltips close
+      await page.mouse.move(step.mouseMove.x, step.mouseMove.y);
+    }
     if (step.waitForNavigation) {
       await page.waitForLoadState('networkidle', { timeout: step.timeout || 45000 }).catch(() => {});
     }
