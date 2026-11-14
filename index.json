@@ -3446,7 +3446,7 @@
    "name": "Vaultwarden Passwords",
    "description": "Keep passwords, secure notes, and logins organized across all your devices.\nA lightweight alternative to 1Password and LastPass.",
    "source": "https://github.com/dani-garcia/vaultwarden",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@d8123f94fb779ed065b5274ba5edfd8e8890c391/services/vaultwarden/icon.png",
    "website": "https://github.com/dani-garcia/vaultwarden",
    "installation": "Sign-up is closed: nobody can create an account on their own. Open /admin on your app URL and sign in with the token in ADMIN_PANEL_TOKEN (under Variables; it is hashed with Argon2id at start, so the running server never holds it in plain text). Under Users, invite your own email address; the invitation arrives through the Email add-on and its link lets you create your account and master password. Your master password never leaves your device, so nobody (StackBlaze included) can reset it. Then sign in with the web vault or any Bitwarden app or browser extension: choose \"self-hosted\" and enter your app URL. Organizations, collections, Sends and attachments work out of the box; mobile push notifications need a free installation id from bitwarden.com/host (PUSH_* variables). Settings you save in /admin are written to /data/config.json and then override the variables.",
    "architecture": [],
@@ -3455,9 +3455,9 @@
     "utilities"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-vault.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-item.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-generator.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@d8123f94fb779ed065b5274ba5edfd8e8890c391/services/vaultwarden/screenshot-vault.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@d8123f94fb779ed065b5274ba5edfd8e8890c391/services/vaultwarden/screenshot-item.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@d8123f94fb779ed065b5274ba5edfd8e8890c391/services/vaultwarden/screenshot-generator.png"
    ],
    "links": [
     "https://github.com/dani-garcia/vaultwarden/wiki"
