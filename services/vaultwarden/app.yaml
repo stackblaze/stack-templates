@@ -19,7 +19,7 @@ metadata:
       you save in /admin are written to /data/config.json and then override the
       variables.'
     kubero.dev/template.links: '["https://github.com/dani-garcia/vaultwarden/wiki"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-vault.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-item.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-generator.png"]'
     kubero.dev/template.source: https://github.com/dani-garcia/vaultwarden
     kubero.dev/template.categories: '["security", "utilities"]'
     kubero.dev/template.title: "Vaultwarden Passwords"
