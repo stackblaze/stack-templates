@@ -225,6 +225,9 @@ spec:
         export AP_SMTP_SENDER_NAME="${n:-Activepieces}"
       fi
       cd /usr/src/app
+      # pieces/code build cache (rebuilt after a restart); the worker logs an
+      # error at boot if it doesn't exist yet
+      mkdir -p cache
       users=$(node -e '
       const { Client } = require("./packages/server/api/node_modules/pg");
       const e = process.env;
