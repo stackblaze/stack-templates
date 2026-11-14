@@ -11362,7 +11362,7 @@
    "source": "https://github.com/searxng/searxng",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/icon.png",
    "website": "https://docs.searxng.org",
-   "installation": "SearXNG is a stateless metasearch engine: it stores no user search history and needs no SQL database. It does use the bundled Valkey (Redis-compatible) add-on for the optional limiter/bot-detection and caching, wired in via the SEARXNG_REDIS_URL env var (passwordless in-cluster). IMPORTANT: rotate SEARXNG_SECRET to a unique random value before going live (e.g. `openssl rand -hex 32`); the placeholder here must not be used in production. SEARXNG_BASE_URL is auto-filled with this app's public URL so generated links and OpenSearch descriptions are correct. Mount /etc/searxng to persist settings.yml (engines, theme, limiter, UI), which the image generates on first start; edit it there to enable/disable search engines, turn on the limiter (limiter.toml), or restrict instance access. No SMTP, S3, or external Elasticsearch is required.",
+   "installation": "SearXNG has no accounts and no sign-in: open the app URL and search. It keeps no search history and needs no SQL database. The instance is public, so the template turns on the limiter (bot detection and per-IP rate limits) with the bundled Valkey add-on: scripts and scrapers get HTTP 429, which keeps the search engines from blocking your instance. SEARXNG_SECRET is generated at deploy and signs the image proxy links (images in results load through your instance). SEARXNG_CONTACT_URL starts as the app URL; Wikipedia, Wikidata and OpenStreetMap require a contact, so set it to your own mailto: address or contact page. Settings live on the volume at /etc/searxng: edit settings.yml from the app console to choose engines, the default theme or language, or to turn on the JSON API (search.formats), then redeploy. limiter.toml there trusts the platform ingress for the client address. Set SEARXNG_PUBLIC_INSTANCE=true for the stricter public instance mode (link token check). Individual engines may rate-limit or ask for a CAPTCHA; SearXNG skips them and answers from the others. No SMTP or S3 is needed.",
    "architecture": [],
    "categories": [
     "utilities",
@@ -11372,19 +11372,20 @@
    "screenshots": [],
    "links": [
     "https://docs.searxng.org/admin/installation-docker.html",
-    "https://docs.searxng.org/admin/settings/index.html"
+    "https://docs.searxng.org/admin/settings/index.html",
+    "https://docs.searxng.org/admin/searx.limiter.html"
    ],
    "addons": [
     "Valkey"
    ],
-   "stars": 19000,
-   "forks": 1900,
-   "watchers": 19000,
-   "issues": 0,
-   "last_updated": "2026-06-13T00:00:00Z",
-   "last_pushed": "2026-06-13T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 0,
+   "stars": 39529,
+   "forks": 3612,
+   "watchers": 183,
+   "issues": 214,
+   "last_updated": "2026-11-14T00:26:41Z",
+   "last_pushed": "2026-11-13T13:16:16Z",
+   "created_at": "2021-04-12T15:18:15Z",
+   "size": 126940,
    "language": "Python",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/app.yaml",

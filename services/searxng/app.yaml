@@ -8,19 +8,23 @@ metadata:
       engine that aggregates results from 70+ search services without tracking or
       profiling users.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/icon.png
-    kubero.dev/template.installation: 'SearXNG is a stateless metasearch engine: it
-      stores no user search history and needs no SQL database. It does use the bundled
-      Valkey (Redis-compatible) add-on for the optional limiter/bot-detection and
-      caching, wired in via the SEARXNG_REDIS_URL env var (passwordless in-cluster).
-      IMPORTANT: rotate SEARXNG_SECRET to a unique random value before going live
-      (e.g. `openssl rand -hex 32`); the placeholder here must not be used in production.
-      SEARXNG_BASE_URL is auto-filled with this app''s public URL so generated links
-      and OpenSearch descriptions are correct. Mount /etc/searxng to persist settings.yml
-      (engines, theme, limiter, UI), which the image generates on first start; edit
-      it there to enable/disable search engines, turn on the limiter (limiter.toml),
-      or restrict instance access. No SMTP, S3, or external Elasticsearch is required.'
+    kubero.dev/template.installation: 'SearXNG has no accounts and no sign-in: open
+      the app URL and search. It keeps no search history and needs no SQL database.
+      The instance is public, so the template turns on the limiter (bot detection
+      and per-IP rate limits) with the bundled Valkey add-on: scripts and scrapers
+      get HTTP 429, which keeps the search engines from blocking your instance. SEARXNG_SECRET
+      is generated at deploy and signs the image proxy links (images in results
+      load through your instance). SEARXNG_CONTACT_URL starts as the app URL; Wikipedia,
+      Wikidata and OpenStreetMap require a contact, so set it to your own mailto:
+      address or contact page. Settings live on the volume at /etc/searxng: edit
+      settings.yml from the app console to choose engines, the default theme or
+      language, or to turn on the JSON API (search.formats), then redeploy. limiter.toml
+      there trusts the platform ingress for the client address. Set SEARXNG_PUBLIC_INSTANCE=true
+      for the stricter public instance mode (link token check). Individual engines
+      may rate-limit or ask for a CAPTCHA; SearXNG skips them and answers from the
+      others. No SMTP or S3 is needed.'
     kubero.dev/template.links: '["https://docs.searxng.org/admin/installation-docker.html",
-      "https://docs.searxng.org/admin/settings/index.html"]'
+      "https://docs.searxng.org/admin/settings/index.html", "https://docs.searxng.org/admin/searx.limiter.html"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/searxng/searxng
     kubero.dev/template.categories: '["utilities", "productivity", "security"]'
@@ -32,6 +36,9 @@ spec:
   name: searxng
   deploymentstrategy: docker
   addons:
+  # Limiter state: per-IP request counters and the bot-detection lists
+  # (searx/limiter.py, searx/botdetection/). Without Valkey the limiter
+  # silently stays off (searx/limiter.py initialize()).
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -64,16 +71,26 @@ spec:
   envVars:
   - name: SEARXNG_BASE_URL
     value: '{{STACKBLAZE_APP_URL}}'
+  # server.secret_key: HMAC key for image proxy links and the limiter's link
+  # token (searx/webapp.py image_proxy, searx/botdetection/link_token.py).
+  # A known key lets anyone sign image proxy URLs, so it is generated.
   - name: SEARXNG_SECRET
-    value: replace-with-openssl-rand-hex-32
-  - name: SEARXNG_REDIS_URL
-    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
-  - name: SEARXNG_PORT
-    value: '8080'
-  - name: SEARXNG_BIND_ADDRESS
+    value: '{{STACKBLAZE_GEN_HEX:64}}'
+  # The instance is reachable by anyone with the URL: rate-limit and block bots.
+  - name: SEARXNG_LIMITER
+    value: 'true'
+  - name: SEARXNG_VALKEY_URL
+    value: 'valkey://$(REDISHOST):$(REDISPORT)/0'
+  - name: SEARXNG_IMAGE_PROXY
+    value: 'true'
+  # general.contact_url: Wikipedia, Wikidata and OpenStreetMap refuse to load
+  # without it (Wikimedia user-agent policy, searx/engines/wikipedia.py).
+  # Defaults to this instance's URL; set it to your own mailto: or web form.
+  - name: SEARXNG_CONTACT_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # The image listens on "::"; bind IPv4 explicitly (pods may lack IPv6).
+  - name: GRANIAN_HOST
     value: 0.0.0.0
-  - name: INSTANCE_NAME
-    value: SearXNG
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -87,11 +104,77 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /healthz
+    startupSeconds: 360
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '8080'
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     repository: docker.io/searxng/searxng
-    tag: latest
+    # SearXNG publishes no releases; every master build is tagged
+    # <date>-<commit>. Pinned, never :latest.
+    tag: 2026.11.13-219b63b20
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      # The limiter reads the client IP from X-Forwarded-For only when the
+      # connection comes from a trusted proxy (searx/botdetection/trusted_proxies.py).
+      # The platform ingress connects from private addresses and sets the
+      # header itself. Written once; edits on the volume are kept.
+      if [ ! -f /etc/searxng/limiter.toml ]; then
+        cat > /etc/searxng/limiter.toml <<'TOML'
+      [botdetection]
+      trusted_proxies = [
+        '127.0.0.0/8',
+        '::1',
+        '10.0.0.0/8',
+        '172.16.0.0/12',
+        '192.168.0.0/16',
+        'fd00::/8',
+      ]
+      TOML
+        echo 'Wrote /etc/searxng/limiter.toml'
+      fi
+      # First start: settings.yml on top of upstream's defaults. The two Tor
+      # (.onion) engines fail to load without a Tor proxy, so drop them.
+      if [ ! -f /etc/searxng/settings.yml ]; then
+        cat > /etc/searxng/settings.yml <<'YML'
+      # https://docs.searxng.org/admin/settings/
+      # Secret, base URL, limiter and Valkey come from SEARXNG_* variables.
+      use_default_settings:
+        engines:
+          remove:
+            - ahmia
+            - torch
+      server:
+        image_proxy: true
+      YML
+        echo 'Wrote /etc/searxng/settings.yml'
+      fi
+      # SearXNG checks Valkey once at start and runs without the limiter if it
+      # is not reachable yet. Wait for a real PING first.
+      i=0
+      until /usr/local/searxng/.venv/bin/python -c 'import os, valkey; valkey.Valkey.from_url(os.environ["SEARXNG_VALKEY_URL"], socket_timeout=3, socket_connect_timeout=3).ping()' 2>/dev/null; do
+        i=$((i+1))
+        if [ "$i" -ge 150 ]; then echo 'Valkey not reachable, refusing to start without the limiter'; exit 1; fi
+        echo 'waiting for Valkey'
+        sleep 2
+      done
+      exec /usr/local/searxng/entrypoint.sh
     run:
       securityContext:
+        runAsUser: 977
+        runAsGroup: 977
         readOnlyRootFilesystem: false
