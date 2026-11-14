@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.description: Edit, convert, sign and secure PDFs in your
       browser. Merge, split, compress, OCR, redact and 50+ more tools, with every
       file processed on your own server.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7db1514b2a0ade65ece2463a4d20d45d884bd0b7/services/stirling-pdf/icon.png
     kubero.dev/template.installation: 'Sign in as admin (SECURITY_INITIALLOGIN_USERNAME)
       with the password generated in SECURITY_INITIALLOGIN_PASSWORD (both under
       Variables). Login is on from the first start, so the tools and the API are
@@ -22,7 +22,7 @@ metadata:
       /customFiles. The AI assistant is off; it needs your own model API key.
       First start takes 1 to 3 minutes while Java and LibreOffice warm up.'
     kubero.dev/template.links: '["https://docs.stirlingpdf.com/", "https://docs.stirlingpdf.com/Configuration/System%20and%20Security/"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/screenshot-files.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/screenshot-merge.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/screenshot-watermark.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7db1514b2a0ade65ece2463a4d20d45d884bd0b7/services/stirling-pdf/screenshot-files.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7db1514b2a0ade65ece2463a4d20d45d884bd0b7/services/stirling-pdf/screenshot-merge.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7db1514b2a0ade65ece2463a4d20d45d884bd0b7/services/stirling-pdf/screenshot-watermark.png"]'
     kubero.dev/template.source: https://github.com/Stirling-Tools/Stirling-PDF
     kubero.dev/template.categories: '["productivity", "utilities", "work"]'
     kubero.dev/template.title: Stirling PDF

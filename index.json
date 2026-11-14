@@ -1258,7 +1258,7 @@
    "name": "stirling-pdf",
    "description": "Edit, convert, sign and secure PDFs in your browser. Merge, split, compress, OCR, redact and 50+ more tools, with every file processed on your own server.",
    "source": "https://github.com/Stirling-Tools/Stirling-PDF",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7db1514b2a0ade65ece2463a4d20d45d884bd0b7/services/stirling-pdf/icon.png",
    "website": "https://www.stirlingpdf.com",
    "installation": "Sign in as admin with the password in SECURITY_INITIALLOGIN_PASSWORD (Variables). Login is on from the first start. The free self-hosted tier allows up to 5 users; more users, SSO and an external database need a Stirling PDF licence.",
    "architecture": [
@@ -1271,9 +1271,9 @@
     "work"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/screenshot-files.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/screenshot-merge.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/screenshot-watermark.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7db1514b2a0ade65ece2463a4d20d45d884bd0b7/services/stirling-pdf/screenshot-files.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7db1514b2a0ade65ece2463a4d20d45d884bd0b7/services/stirling-pdf/screenshot-merge.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7db1514b2a0ade65ece2463a4d20d45d884bd0b7/services/stirling-pdf/screenshot-watermark.png"
    ],
    "links": [
     "https://docs.stirlingpdf.com/"
@@ -1309,7 +1309,7 @@
    "name": "sterlingpdf",
    "description": "Stirling PDF is a hosted web application that allows you to perform various operations on PDF files, such as splitting and adding images.",
    "source": "https://github.com/Frooodle/Stirling-PDF",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7db1514b2a0ade65ece2463a4d20d45d884bd0b7/services/stirling-pdf/icon.png",
    "website": "https://docs.stirlingpdf.com/",
    "installation": "First boot may take several minutes while Java starts and optional assets download.",
    "architecture": [
@@ -1667,7 +1667,7 @@
    "name": "excalidraw",
    "description": "Virtual whiteboard for sketching hand-drawn style diagrams, with live collaboration and shareable links that are end-to-end encrypted and stored on your own instance.",
    "source": "https://github.com/excalidraw/excalidraw",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e425b1bcd4aa3e76eef3ff2ece32e38fd1ade9f5/services/excalidraw/icon.png",
    "website": "https://excalidraw.com/",
    "installation": "Excalidraw has no accounts and no sign-in: anyone with the app URL can open the whiteboard. Drawings stay in each visitor's browser until shared. Live collaboration rooms and shareable links run on your instance, encrypted in the browser; the key stays in the link.",
    "architecture": [],
@@ -1677,9 +1677,9 @@
     "collaboration"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-board.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-collab.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-export.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e425b1bcd4aa3e76eef3ff2ece32e38fd1ade9f5/services/excalidraw/screenshot-board.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e425b1bcd4aa3e76eef3ff2ece32e38fd1ade9f5/services/excalidraw/screenshot-collab.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e425b1bcd4aa3e76eef3ff2ece32e38fd1ade9f5/services/excalidraw/screenshot-export.png"
    ],
    "links": [
     "https://docs.excalidraw.com",
@@ -1840,7 +1840,7 @@
    "name": "outline",
    "description": "Team knowledge base and wiki: fast, real-time collaborative Markdown documents organized in collections, with search, comments, sharing and passkey or email sign-in, backed by Postgres.",
    "source": "https://github.com/outline/outline",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b0536b10e8144903a70f0269e6da255d9f6409e/services/outline/icon.png",
    "website": "https://www.getoutline.com",
    "installation": "Outline has no passwords: people sign in with a link or code sent by email (through the StackBlaze Email add-on) or, once signed in, with a passkey. Before deploying, set OUTLINE_ADMIN_EMAIL (Variables) to your own email address. The first start creates the workspace (OUTLINE_WORKSPACE_NAME) and its admin with that address before the app is reachable, so nobody can claim a fresh instance. Open the app, choose Continue with email, enter that address and use the link or code you receive. If you deployed with the wrong address, change OUTLINE_ADMIN_EMAIL and redeploy: the admin's address follows the variable until the admin signs in for the first time. Sign-up is invite only: invite people under Settings > Members. Add a passkey under Settings > Account for sign-in without email. Uploads and images are stored on the data volume. Outline is licensed under the Business Source License 1.1: you may run it for your own organization, but not sell it to others as a document service.",
    "architecture": [
@@ -1853,9 +1853,9 @@
     "documentation"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/screenshot-doc.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/screenshot-comments.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/screenshot-search.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b0536b10e8144903a70f0269e6da255d9f6409e/services/outline/screenshot-doc.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b0536b10e8144903a70f0269e6da255d9f6409e/services/outline/screenshot-comments.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b0536b10e8144903a70f0269e6da255d9f6409e/services/outline/screenshot-search.png"
    ],
    "links": [
     "https://docs.getoutline.com/s/hosting",
@@ -2117,7 +2117,7 @@
    "name": "Cal.com",
    "description": "Open-source scheduling: share booking pages, set your availability once, and let people pick a time. Bookings, reschedules and cancellations send email confirmations, with webhooks and embeds for your site.",
    "source": "https://github.com/calcom/cal.diy",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/calcom/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2a01bb6598e650610b50543dfa421f6051452408/services/calcom/icon.png",
    "website": "https://cal.com/",
    "installation": "The first start creates the admin account before the app is reachable, so Cal.com's setup wizard is never open to visitors. Sign in at /auth/login with the email in CALCOM_ADMIN_EMAIL (admin@example.com) and the generated password in CALCOM_ADMIN_PASSWORD (Variables). Change the email to your own first (Settings > My account > General, then confirm the link Cal.com mails to the new address), because booking notifications go to it. The first sign-in opens Cal.com's short onboarding (name, time zone, availability); your booking page is then /<username>. Public sign-up is off (the disable-signup feature flag); Cal.com unlocks its admin settings only after the admin turns on two-factor authentication (Settings > Security), and Settings > Admin > Features then lets you open sign-up. Email (confirmations, reschedules, cancellations, password resets) goes out through the Email add-on. CALENDSO_ENCRYPTION_KEY encrypts stored calendar credentials and 2FA secrets: keep it. This is Cal.com's open-source AGPLv3 edition without a license key: teams and round-robin, organizations, workflows, routing forms, insights, API keys, SSO/SAML and admin user management are enterprise features and stay locked. Give every event type a location (a meeting link, phone or address): Cal Video, Cal.com's default, needs a Daily.co API key, and a booking without a location only sends you an \"[Action Required]\" mail instead of the confirmations. Google Calendar, Google Meet and Zoom also need your own accounts with those providers; CalDAV and Apple Calendar work without one.",
    "architecture": [],
@@ -2126,9 +2126,9 @@
     "utilities"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/calcom/screenshot-booking-page.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/calcom/screenshot-event-types.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/calcom/screenshot-bookings.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2a01bb6598e650610b50543dfa421f6051452408/services/calcom/screenshot-booking-page.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2a01bb6598e650610b50543dfa421f6051452408/services/calcom/screenshot-event-types.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2a01bb6598e650610b50543dfa421f6051452408/services/calcom/screenshot-bookings.png"
    ],
    "links": [
     "https://cal.com/docs/self-hosting/installation",
@@ -2559,7 +2559,7 @@
    "name": "memos",
    "description": "Open-source, self-hosted note taking: a private timeline of quick Markdown notes with tags, tasks, attachments and sharing, backed by Postgres.",
    "source": "https://github.com/usememos/memos",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/memos/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fcadd80dae23dff51d36b128e5c0bd14391a7cb3/services/memos/icon.png",
    "website": "https://usememos.com",
    "installation": "First start creates the admin account before the app is reachable, so nobody can claim a fresh instance. Sign in with the username admin and the generated password in MEMOS_ADMIN_PASSWORD (Variables); change it under Settings > My Account. Public sign-up is off: add people under Settings > Members, or allow registration under Settings > System. The instance starts Private: visitors see only the sign-in page and memo share links until you switch Settings > System > Instance access to Public. Attachments are stored on the data volume. Email notifications (comments, mentions, Space invitations) use the StackBlaze Email add-on, set up on the first start; you can change them under Settings > Notifications.",
    "architecture": [],
@@ -2569,9 +2569,9 @@
     "work"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/memos/screenshot-timeline.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/memos/screenshot-tag.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/memos/screenshot-dev.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fcadd80dae23dff51d36b128e5c0bd14391a7cb3/services/memos/screenshot-timeline.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fcadd80dae23dff51d36b128e5c0bd14391a7cb3/services/memos/screenshot-tag.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fcadd80dae23dff51d36b128e5c0bd14391a7cb3/services/memos/screenshot-dev.png"
    ],
    "links": [
     "https://usememos.com/docs",
@@ -5419,7 +5419,7 @@
    "name": "infisical",
    "description": "Open-source secrets manager: store, version and sync app secrets across projects and environments, with machine identities for CI and servers, an internal PKI and audit logs.",
    "source": "https://github.com/Infisical/infisical",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@a4698436bdbd1e6fd4a83f478818a5dfc49a5890/services/infisical/icon.png",
    "website": "https://infisical.com/",
    "installation": "The first start creates the instance admin before the app is reachable, so the admin sign-up page is never open to visitors. Sign in with the email in INFISICAL_ADMIN_EMAIL (admin@example.com) and the generated password in INFISICAL_ADMIN_PASSWORD (Variables), then change the email to your own under Personal Settings. The first sign-in opens a short setup (your name, organization name; invite-only sign-up and email login are preselected). Public sign-up is closed: add people from Organization > Access Control, and invitation mail goes out through the Email add-on. Anonymous secret sharing is off (DISABLE_PUBLIC_SECRET_SHARING); signed-in users can still share secrets. Secrets are encrypted with the generated ENCRYPTION_KEY: keep it, because data encrypted with it cannot be read without it. This is the free self-hosted edition (MIT core): SAML/OIDC SSO, custom roles, audit logs, approvals, secret rotation and dynamic secrets need an Infisical license key (LICENSE_KEY).",
    "architecture": [],
@@ -5429,9 +5429,9 @@
     "work"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/screenshot-secrets.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/screenshot-overview.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/screenshot-identities.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@a4698436bdbd1e6fd4a83f478818a5dfc49a5890/services/infisical/screenshot-secrets.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@a4698436bdbd1e6fd4a83f478818a5dfc49a5890/services/infisical/screenshot-overview.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@a4698436bdbd1e6fd4a83f478818a5dfc49a5890/services/infisical/screenshot-identities.png"
    ],
    "links": [
     "https://infisical.com/docs/self-hosting/overview",
@@ -12810,7 +12810,7 @@
    "name": "keycloak",
    "description": "Open source identity and access management. Single sign-on for your apps over OpenID Connect and SAML, user federation with LDAP and Active Directory, social login, multi-factor authentication and an admin console for realms, clients and users.",
    "source": "https://github.com/keycloak/keycloak",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0d35748992e600e15f5cee58191a665473b7afba/services/keycloak/icon.png",
    "website": "https://www.keycloak.org",
    "installation": "Sign in to the Administration Console as admin (ADMIN_USERNAME) with the password generated in ADMIN_PASSWORD (both under Variables). The template creates this permanent admin on the first start and removes Keycloak's temporary bootstrap admin, so the instance is never unclaimed. Realms without an email server get the platform Email add-on on each start.",
    "architecture": [],
@@ -12820,9 +12820,9 @@
     "work"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/screenshot-users.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/screenshot-clients.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/screenshot-login.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0d35748992e600e15f5cee58191a665473b7afba/services/keycloak/screenshot-users.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0d35748992e600e15f5cee58191a665473b7afba/services/keycloak/screenshot-clients.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0d35748992e600e15f5cee58191a665473b7afba/services/keycloak/screenshot-login.png"
    ],
    "links": [
     "https://www.keycloak.org/documentation"
@@ -12905,7 +12905,7 @@
    "name": "baserow",
    "description": "Open-source no-code database: build relational tables in a spreadsheet-like grid, with forms, gallery views, a REST API and real-time collaboration, backed by Postgres.",
    "source": "https://github.com/baserow/baserow",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7096de1af6a18d2d03866242bb6d2705fbdec057/services/baserow/icon.png",
    "website": "https://baserow.io",
    "installation": "First start creates the instance admin before the app is reachable, so nobody can claim a fresh instance. Sign in with admin@example.com (BASEROW_ADMIN_EMAIL) and the generated password in BASEROW_ADMIN_PASSWORD (both under Variables), then change the email and password under My settings. Public sign-up is off: invite people to a workspace (invited people can still create their account), or allow sign-up under Admin > Settings. Uploaded files are stored on the data volume. With a custom domain, set BASEROW_PUBLIC_URL to it and redeploy: Baserow serves its API only on that address. Emails (workspace invites, password resets, notifications) go through the StackBlaze Email add-on. This is the free self-hosted edition: Premium and Enterprise features (for example Kanban and Calendar views, the AI assistant) stay locked until you add a Baserow licence under Admin > Licenses; the Enterprise code step for automations is switched off by BASEROW_ENTERPRISE_CODE_RUNNER_DEFAULT_TYPE.",
    "architecture": [],
@@ -12915,9 +12915,9 @@
     "work"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/screenshot-grid.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/screenshot-gallery.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/screenshot-record.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7096de1af6a18d2d03866242bb6d2705fbdec057/services/baserow/screenshot-grid.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7096de1af6a18d2d03866242bb6d2705fbdec057/services/baserow/screenshot-gallery.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7096de1af6a18d2d03866242bb6d2705fbdec057/services/baserow/screenshot-record.png"
    ],
    "links": [
     "https://baserow.io/docs/index",
