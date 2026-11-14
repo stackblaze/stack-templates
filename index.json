@@ -1349,37 +1349,41 @@
   },
   {
    "name": "documenso",
-   "description": "The Open Source DocuSign Alternative.",
+   "description": "Send documents for e-signature, sign them in the browser and keep a digitally signed PDF with a full audit trail. Open source alternative to DocuSign.",
    "source": "https://github.com/documenso/documenso",
-   "icon": "https://avatars.githubusercontent.com/u/127681099",
-   "website": "https://www.documenso.com/",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/icon.png",
+   "website": "https://documenso.com/",
    "installation": "",
    "architecture": [
     "linux/amd64",
     "linux/arm64/v8"
    ],
    "categories": [
-    "security",
     "work",
-    "productivity"
+    "productivity",
+    "security"
    ],
    "screenshots": [
-    "https://framerusercontent.com/images/x66EcGbzu3IQEriNXuRmOBonGyo.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-documents.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-signing.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-completed.png"
    ],
    "links": [
-    "https://docs.documenso.com/"
+    "https://docs.documenso.com/docs/self-hosting"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Tenant",
+    "Smtp"
    ],
-   "stars": 12835,
-   "forks": 2594,
-   "watchers": 12835,
-   "issues": 190,
-   "last_updated": "2026-05-11T10:10:36Z",
-   "last_pushed": "2026-05-11T11:04:16Z",
+   "stars": 15760,
+   "forks": 3477,
+   "watchers": 15760,
+   "issues": 276,
+   "last_updated": "2026-11-14T01:22:55Z",
+   "last_pushed": "2026-11-14T02:06:53Z",
    "created_at": "2023-03-12T16:28:56Z",
-   "size": 256357,
+   "size": 294464,
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/app.yaml",
