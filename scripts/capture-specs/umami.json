@@ -1,0 +1,41 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      { "waitForSelector": "input[name=username]", "timeout": 60000 },
+      { "fill": { "input[name=username]": "admin" } },
+      { "fill": { "input[name=password]": "${UMAMI_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForURL": "**/websites**", "timeout": 30000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "overview", "path": "/websites", "waitFor": "text=Demo SaaS", "waitMs": 1500,
+      "steps": [
+        { "click": "a:has-text(\"Demo SaaS\")" },
+        { "waitForSelector": "text=Visit duration", "timeout": 30000 },
+        { "click": "text=Last 24 hours" },
+        { "click": "text=Last 30 days" },
+        { "sleep": 4000 }
+      ] },
+    { "name": "realtime", "path": "/websites", "waitFor": "text=Demo SaaS", "waitMs": 1500,
+      "steps": [
+        { "click": "a:has-text(\"Demo SaaS\")" },
+        { "waitForSelector": "text=Visit duration", "timeout": 30000 },
+        { "click": "a:has-text(\"Realtime\")" },
+        { "waitForSelector": "text=Activity", "timeout": 30000 },
+        { "sleep": 4000 }
+      ] },
+    { "name": "tracking-code", "path": "/websites", "waitFor": "text=Demo SaaS", "waitMs": 1500,
+      "steps": [
+        { "click": "a:has-text(\"Demo SaaS\")" },
+        { "waitForSelector": "text=Visit duration", "timeout": 30000 },
+        { "click": "a:has-text(\"Edit\")" },
+        { "waitForSelector": "text=Tracking code", "timeout": 30000 },
+        { "sleep": 2500 }
+      ] }
+  ]
+}
