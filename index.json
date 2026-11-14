@@ -13929,7 +13929,7 @@
    "name": "SillyTavern",
    "description": "Self-hosted chat and roleplay front end for LLMs. Bring your own model (OpenAI, Claude, OpenRouter, Ollama and more), with characters, group chats, lorebooks and per-user accounts.",
    "source": "https://github.com/SillyTavern/SillyTavern",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/icon.png",
    "website": "https://sillytavern.app",
    "installation": "Sign in with the user handle default-user and the password generated in ST_ADMIN_PASSWORD (under Variables). There is no public sign-up: the admin adds users in User Settings > Manage users. Add your model API keys in the API Connections panel.",
    "architecture": [],
@@ -13938,9 +13938,9 @@
     "utilities"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/screenshot-chat.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/screenshot-connections.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/screenshot-users.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/screenshot-chat.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/screenshot-connections.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/screenshot-users.png"
    ],
    "links": [
     "https://docs.sillytavern.app/"
