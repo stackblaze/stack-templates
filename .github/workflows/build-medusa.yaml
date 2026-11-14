@@ -1,22 +1,42 @@
-name: Build Medusa Kubero image
+name: Build Medusa image
 
+# Medusa has no official runtime image (a Medusa store is a project you
+# build), so the catalog template runs this one: services/medusa/image, the
+# backend of upstream's starter (medusajs/dtc-starter) at a pinned commit.
+# main/staging pushes publish the release tag the template uses; any other
+# branch publishes only <version>-<sha> for pre-merge testing.
 on:
   workflow_dispatch:
   push:
-    branches: [main]
     paths:
-      - 'services/medusa/**'
+      - 'services/medusa/image/**'
       - '.github/workflows/build-medusa.yaml'
 
 permissions:
   contents: read
   packages: write
 
+env:
+  IMAGE: ghcr.io/stackblaze/stack-templates/medusa
+  VERSION: 2.22.7
+
 jobs:
   build:
-    runs-on: [self-hosted, Linux, X64]
+    # GitHub-hosted: the org's self-hosted runners are not visible to this
+    # repo (jobs sit queued until they are cancelled).
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Tags
+        id: tags
+        run: |
+          short="${GITHUB_SHA::7}"
+          tags="${IMAGE}:${VERSION}-${short}"
+          if [ "$GITHUB_REF" = refs/heads/main ] || [ "$GITHUB_REF" = refs/heads/staging ]; then
+            tags="${tags},${IMAGE}:${VERSION}"
+          fi
+          echo "tags=${tags}" >> "$GITHUB_OUTPUT"
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -31,8 +51,11 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: services/medusa
+          context: services/medusa/image
+          platforms: linux/amd64
           push: true
-          tags: |
-            ghcr.io/stackblaze/stack-templates/medusa:2.21.0
-            ghcr.io/stackblaze/stack-templates/medusa:latest
+          tags: ${{ steps.tags.outputs.tags }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/stackblaze/stack-templates
+            org.opencontainers.image.description=Medusa ${{ env.VERSION }} (dtc-starter backend) for the StackBlaze catalog
+            org.opencontainers.image.licenses=MIT AND LicenseRef-Medusa-Enterprise
