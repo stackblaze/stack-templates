@@ -15,6 +15,7 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { createFirstAdmin } from './utilities/createFirstAdmin'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -113,6 +114,9 @@ export default buildConfig({
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins,
+  // StackBlaze: create the first admin from PAYLOAD_ADMIN_EMAIL / PAYLOAD_ADMIN_PASSWORD
+  // while the users collection is empty, so no visitor can claim the site.
+  onInit: createFirstAdmin,
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {

@@ -18,7 +18,7 @@ permissions:
 
 env:
   IMAGE: ghcr.io/stackblaze/stack-templates/payload
-  VERSION: 3.93.0
+  VERSION: 3.93.0-1
 
 jobs:
   build:
