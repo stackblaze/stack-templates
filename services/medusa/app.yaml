@@ -187,7 +187,3 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         readOnlyRootFilesystem: false
-  # The admin lives at /app; GET / would be Express "Cannot GET /".
-  ingress:
-    annotations:
-      nginx.ingress.kubernetes.io/app-root: /app

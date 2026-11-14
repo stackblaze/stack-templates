@@ -3,7 +3,8 @@
 # app only) at a pinned commit, built the way upstream's deployment guide
 # says (`medusa build`, then `npm install` in .medusa/server), with a
 # StackBlaze medusa-config.ts (Valkey modules, local files on the volume) and
-# one extra migration script that creates the first admin user.
+# one extra migration script that creates the first admin user, and a
+# redirect from / to the admin (/app).
 ARG NODE_IMAGE=docker.io/library/node:22.23.5-bookworm-slim
 
 FROM ${NODE_IMAGE} AS builder
@@ -23,6 +24,7 @@ RUN git init -q . \
 
 COPY medusa-config.ts apps/backend/medusa-config.ts
 COPY src/migration-scripts/stackblaze-admin.ts apps/backend/src/migration-scripts/stackblaze-admin.ts
+COPY src/api/route.ts apps/backend/src/api/route.ts
 
 ENV MEDUSA_DISABLE_TELEMETRY=true
 RUN corepack enable \
