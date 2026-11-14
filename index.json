@@ -13750,7 +13750,11 @@
     "development",
     "work"
    ],
-   "screenshots": [],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/screenshot-orders.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/screenshot-order.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/screenshot-product.png"
+   ],
    "links": [
     "https://docs.medusajs.com/learn/deployment/general",
     "https://docs.medusajs.com/",
