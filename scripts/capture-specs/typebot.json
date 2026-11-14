@@ -1,18 +1,10 @@
 {
+  "_note": "Typebot signs in by emailed code only (no password form), so captures use scripts/seed-typebot-and-capture.mjs with a session cookie and an API token instead of a login step. Pages below are what that script captures (light and dark via the user's preferredAppAppearance).",
   "viewport": { "width": 1920, "height": 1080 },
   "deviceScaleFactor": 2,
-  "login": {
-    "path": "/signin",
-    "steps": [
-      { "fill": { "input[name=email], input[type=email]": "${TYPEBOT_EMAIL}" } },
-      { "click": "button[type=submit]" },
-      { "sleep": 2000 }
-    ],
-    "waitAfterMs": 2000
-  },
   "pages": [
-    { "name": "typebots", "path": "/typebots", "waitMs": 3500 },
-    { "name": "editor", "path": "/typebots", "waitMs": 2000 },
-    { "name": "share", "path": "/typebots", "waitMs": 2000 }
+    { "name": "typebots", "path": "/typebots", "waitForSelector": "text=Lead Generation" },
+    { "name": "editor", "path": "/typebots/<lead-gen id>/edit", "waitForSelector": "text=Welcome" },
+    { "name": "results", "path": "/typebots/<nps id>/results", "waitForSelector": "table" }
   ]
 }
