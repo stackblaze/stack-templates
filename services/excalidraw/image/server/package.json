@@ -1,0 +1,9 @@
+{
+  "name": "stackblaze-excalidraw-server",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "dependencies": {
+    "socket.io": "4.8.4"
+  }
+}
