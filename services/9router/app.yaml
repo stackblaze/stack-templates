@@ -1,0 +1,96 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: 9router
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: AI gateway with one OpenAI-compatible endpoint
+      for many LLM providers. Add your provider keys once, hand out API keys, and
+      route, combine and fall back between models from a dashboard.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/9router/icon.png
+    kubero.dev/template.installation: 'Open the app URL and sign in with the password
+      generated in INITIAL_PASSWORD (under Variables; there is no username). Change
+      it under Profile once you are in. Add a provider (an API key for OpenAI, Anthropic,
+      OpenRouter, a local Ollama, ...) under Providers, then create an API key under
+      Endpoint. Clients call <app URL>/v1 with that key as a Bearer token; requests
+      without a valid key get 401. Data (SQLite database, settings, provider credentials)
+      lives on the volume at /app/data. The dashboard loads Google Analytics from
+      upstream''s code and cannot be switched off by a setting.'
+    kubero.dev/template.links: '["https://github.com/decolua/9router/blob/master/DOCKER.md",
+      "https://github.com/decolua/9router#readme"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/decolua/9router
+    kubero.dev/template.categories: '[ "ai", "development", "utilities" ]'
+    kubero.dev/template.title: 9Router
+    kubero.dev/template.website: https://github.com/decolua/9router
+  labels:
+    manager: kubero
+spec:
+  name: 9router
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  - name: DATA_DIR
+    value: /app/data
+  - name: PORT
+    value: '20128'
+  - name: HOSTNAME
+    value: 0.0.0.0
+  # Dashboard password. Without it 9Router accepts the public default "123456"
+  # (locally) and refuses remote logins until someone changes it from localhost.
+  - name: INITIAL_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Signs dashboard session cookies (HS256). Otherwise generated into DATA_DIR.
+  - name: JWT_SECRET
+    value: '{{STACKBLAZE_GEN_HEX:64}}'
+  # HMAC for the checksum inside generated API keys; upstream's default is a
+  # public string.
+  - name: API_KEY_SECRET
+    value: '{{STACKBLAZE_GEN_HEX:64}}'
+  - name: AUTH_COOKIE_SECURE
+    value: 'true'
+  # Public origin for OIDC / SAML sign-in callbacks.
+  - name: BASE_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  - name: NEXT_TELEMETRY_DISABLED
+    value: '1'
+  # 9Router keeps everything in SQLite (WAL) under /app/data. On the shared
+  # JuiceFS volume a RollingUpdate runs old and new pods on different nodes at
+  # once, and on dev that corrupted the database ("database disk image is
+  # malformed"). Recreate stops the old pod first. Needs kubero-server #2297
+  # (merged on dev) plus the kubero-operator change (not merged yet).
+  rolloutStrategy: Recreate
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /app/data
+    name: '{{STACKBLAZE_APP_NAME}}-data'
+    size: 2Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '20128'
+    pullPolicy: IfNotPresent
+    repository: docker.io/decolua/9router
+    tag: '0.5.116'
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /api/health
+    startupSeconds: 180
+    timeoutSeconds: 5
+    periodSeconds: 10
