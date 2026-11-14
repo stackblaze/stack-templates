@@ -13763,7 +13763,7 @@
    "source": "https://github.com/decolua/9router",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/9router/icon.png",
    "website": "https://github.com/decolua/9router",
-   "installation": "Sign in with the password generated in INITIAL_PASSWORD (under Variables; there is no username). Add a provider under Providers, create an API key under Endpoint, and call <app URL>/v1 with it as a Bearer token.",
+   "installation": "An API gateway for your own provider API keys. Sign in with the password generated in INITIAL_PASSWORD (under Variables; there is no username). Add a provider with its API key under Providers, create an API key under Endpoint, and call <app URL>/v1 with it as a Bearer token. Use provider API keys only; subscription logins, browser-cookie providers and proxy pools are not supported.",
    "architecture": [],
    "categories": [
     "ai",

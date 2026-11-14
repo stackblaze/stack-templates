@@ -8,14 +8,17 @@ metadata:
       for many LLM providers. Add your provider keys once, hand out API keys, and
       route, combine and fall back between models from a dashboard.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/9router/icon.png
-    kubero.dev/template.installation: 'Open the app URL and sign in with the password
-      generated in INITIAL_PASSWORD (under Variables; there is no username). Change
-      it under Profile once you are in. Add a provider (an API key for OpenAI, Anthropic,
-      OpenRouter, a local Ollama, ...) under Providers, then create an API key under
-      Endpoint. Clients call <app URL>/v1 with that key as a Bearer token; requests
-      without a valid key get 401. Data (SQLite database, settings, provider credentials)
-      lives on the volume at /app/data. The dashboard loads Google Analytics from
-      upstream''s code and cannot be switched off by a setting.'
+    kubero.dev/template.installation: 'An API gateway for your own provider API keys.
+      Open the app URL and sign in with the password generated in INITIAL_PASSWORD
+      (under Variables; there is no username), then change it under Profile. Add a
+      provider with its API key (OpenAI, Anthropic, OpenRouter, Groq, Mistral, an Ollama
+      in the same project, ...) under Providers, then create an API key under Endpoint.
+      Clients call <app URL>/v1 with that key as a Bearer token; requests without a
+      valid key get 401. Use provider API keys only: the upstream app also lists consumer
+      subscription logins, browser-cookie providers and proxy pools, which this template
+      does not support and which may break those services'' terms. Data (SQLite database,
+      settings, provider keys) lives on the volume at /app/data. The dashboard loads
+      Google Analytics from upstream''s code; there is no setting to switch it off.'
     kubero.dev/template.links: '["https://github.com/decolua/9router/blob/master/DOCKER.md",
       "https://github.com/decolua/9router#readme"]'
     kubero.dev/template.screenshots: '[]'
@@ -54,6 +57,11 @@ spec:
     value: '{{STACKBLAZE_APP_URL}}'
   - name: NEXT_TELEMETRY_DISABLED
     value: '1'
+  # Bring-your-own-API-key template: don't keep consumer subscription (OAuth)
+  # sessions alive in the background. Upstream has no switch that removes those
+  # providers; on-demand refresh still runs if a user adds one anyway.
+  - name: DISABLE_BACKGROUND_TOKEN_REFRESH
+    value: 'true'
   # 9Router keeps everything in SQLite (WAL) under /app/data. On the shared
   # JuiceFS volume a RollingUpdate runs old and new pods on different nodes at
   # once, and on dev that corrupted the database ("database disk image is
