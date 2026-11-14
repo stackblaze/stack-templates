@@ -1,0 +1,265 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: "Self-hosted AI chat for your team: OpenAI, Anthropic, Google and any OpenAI-compatible model in one interface, with agents, artifacts, presets and conversation history.\nBring your own API keys."
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/icon.png
+    kubero.dev/template.installation: 'An admin account is created on the first start,
+      and public registration is closed, so nobody can claim the instance by opening
+      it first. Sign in with the email in LIBRECHAT_ADMIN_EMAIL and the password generated
+      in LIBRECHAT_ADMIN_PASSWORD (both under Variables; set the email before the
+      first deploy if you want password resets to reach you). Changing those variables
+      later has no effect. Models: each user enters their own OpenAI, Anthropic or
+      Google API key in the model menu (keys are stored encrypted with CREDS_KEY).
+      To add other providers or an OpenAI-compatible server (a self-hosted Ollama,
+      a gateway), edit the librechat.yaml in the LIBRECHAT_YAML variable and redeploy.
+      To let teammates sign up, set ALLOW_REGISTRATION to true, have them register,
+      then set it back to false; the first account is the admin. Password reset mail
+      goes through the platform Email add-on; without it, password reset is off.
+      Code execution (the hosted Code Interpreter) and file search (which needs a
+      separate RAG API) are switched off in LIBRECHAT_YAML; conversation search (Meilisearch)
+      is not included. Uploads and generated images live on the volume at /app/data.'
+    kubero.dev/template.links: '["https://www.librechat.ai/docs", "https://www.librechat.ai/docs/configuration/librechat_yaml"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/screenshot-chat.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/screenshot-code.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/screenshot-models.png"]'
+    kubero.dev/template.source: https://github.com/LibreChat-AI/LibreChat
+    kubero.dev/template.categories: '["ai", "communication"]'
+    kubero.dev/template.title: "LibreChat"
+    kubero.dev/template.website: https://www.librechat.ai
+  labels:
+    manager: kubero
+  name: librechat
+spec:
+  name: librechat
+  deploymentstrategy: docker
+  addons:
+  - displayName: MongoDB
+    env: []
+    icon: /img/addons/mongo.svg
+    id: kubero-operator
+    kind: KuberoMongoDB
+    resourceDefinitions:
+      KuberoMongoDB:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoMongoDB
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-mongodb'
+        spec:
+          mongodb:
+            image:
+              tag: '8.0'
+            auth:
+              username: mongoadmin
+              password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+              database: LibreChat
+            persistence:
+              enabled: true
+              size: 2Gi
+              storageClass: smart
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                cpu: '1'
+                memory: 1Gi
+  # LibreChat's own mail settings. Applied only while the Email add-on is live,
+  # because password reset without mail hands the reset link to whoever asks.
+  - displayName: Email
+    env:
+    - name: EMAIL_HOST
+      value: '$(SMTP_HOST)'
+    - name: EMAIL_PORT
+      value: '$(SMTP_PORT)'
+    - name: EMAIL_USERNAME
+      value: '$(SMTP_USER)'
+    - name: EMAIL_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: EMAIL_FROM
+      value: '$(SMTP_FROM)'
+    - name: EMAIL_FROM_NAME
+      value: LibreChat
+    - name: EMAIL_ENCRYPTION
+      value: starttls
+    - name: ALLOW_PASSWORD_RESET
+      value: 'true'
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    resourceDefinitions: {}
+  cronjobs: []
+  envVars:
+  - name: HOST
+    value: 0.0.0.0
+  - name: PORT
+    value: '3080'
+  # MONGODB_URI is injected by the MongoDB add-on (root user, authSource=admin,
+  # database LibreChat).
+  - name: MONGO_URI
+    value: '$(MONGODB_URI)'
+  - name: DOMAIN_CLIENT
+    value: '{{STACKBLAZE_APP_URL}}'
+  - name: DOMAIN_SERVER
+    value: '{{STACKBLAZE_APP_URL}}'
+  # AES-256-CBC for stored user API keys: 32-byte key, 16-byte IV, both hex.
+  - name: CREDS_KEY
+    value: '{{STACKBLAZE_GEN_HEX:64}}'
+  - name: CREDS_IV
+    value: '{{STACKBLAZE_GEN_HEX:32}}'
+  - name: JWT_SECRET
+    value: '{{STACKBLAZE_GEN_HEX:64}}'
+  - name: JWT_REFRESH_SECRET
+    value: '{{STACKBLAZE_GEN_HEX:64}}'
+  - name: LIBRECHAT_ADMIN_EMAIL
+    value: admin@example.com
+  - name: LIBRECHAT_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  - name: ALLOW_REGISTRATION
+    value: 'false'
+  - name: ALLOW_EMAIL_LOGIN
+    value: 'true'
+  - name: ALLOW_SOCIAL_LOGIN
+    value: 'false'
+  - name: ALLOW_SOCIAL_REGISTRATION
+    value: 'false'
+  - name: ALLOW_UNVERIFIED_EMAIL_LOGIN
+    value: 'true'
+  # Each user enters their own key in the model menu.
+  - name: OPENAI_API_KEY
+    value: user_provided
+  - name: ANTHROPIC_API_KEY
+    value: user_provided
+  - name: GOOGLE_KEY
+    value: user_provided
+  # Conversation search needs Meilisearch, which this template does not include.
+  - name: SEARCH
+    value: 'false'
+  - name: APP_TITLE
+    value: LibreChat
+  - name: NO_INDEX
+    value: 'true'
+  - name: TRUST_PROXY
+    value: '1'
+  - name: DEBUG_LOGGING
+    value: 'false'
+  # One web replica and no Redis. Scheduled chats stay off (interface default),
+  # this only lets the schedule engine settle its own state instead of refusing.
+  - name: SCHEDULES_SINGLE_PROCESS
+    value: 'true'
+  # Written to /app/librechat.yaml on every start. Reference:
+  # https://www.librechat.ai/docs/configuration/librechat_yaml
+  - name: LIBRECHAT_YAML
+    value: |
+      version: 1.3.17
+      cache: true
+      fileStrategy: local
+      interface:
+        # No "Run Code" on code blocks: it sends code to LibreChat's hosted Code
+        # Interpreter (a paid account), see execute_code below.
+        runCode: false
+        # File search needs a separate RAG API, which this template does not include.
+        fileSearch: false
+        marketplace:
+          use: false
+      registration:
+        socialLogins: []
+      endpoints:
+        agents:
+          # Upstream's default list without execute_code (runs code on LibreChat's
+          # hosted Code Interpreter service, a paid account) and file_search (RAG API).
+          capabilities: ["deferred_tools", "web_search", "artifacts", "subagents", "actions", "context", "skills", "memory", "ask_user_question", "tools", "chain", "ocr"]
+        # Add an OpenAI-compatible provider, for example an app named "ollama"
+        # in the same project (apps reach each other by name on port 80):
+        # custom:
+        #   - name: 'Ollama'
+        #     apiKey: 'ollama'
+        #     baseURL: 'http://ollama/v1/'
+        #     models:
+        #       default: ['qwen2.5:1.5b']
+        #       fetch: true
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    storageClass: shared
+    emptyDir: false
+    mountPath: /app/data
+    name: '{{STACKBLAZE_APP_NAME}}-data'
+    size: 5Gi
+  image:
+    containerPort: '3080'
+    pullPolicy: IfNotPresent
+    repository: docker.io/librechat/librechat
+    tag: v0.8.8
+    command:
+    - sh
+    - -c
+    - |
+      set -e
+      cd /app
+      printf '%s\n' "$LIBRECHAT_YAML" > /app/librechat.yaml
+      # Uploads and generated images on the volume.
+      mkdir -p /app/data/uploads /app/data/images
+      for pair in /app/data/uploads:/app/uploads /app/data/images:/app/client/public/images; do
+        src=${pair%%:*}; dst=${pair#*:}
+        if [ ! -L "$dst" ]; then rm -rf "$dst"; ln -s "$src" "$dst"; fi
+      done
+      # The platform's sender can be "Name <address>"; LibreChat adds its own name.
+      case "${EMAIL_FROM:-}" in
+        *'<'*'>'*) EMAIL_FROM=$(printf '%s' "$EMAIL_FROM" | sed 's/.*<\([^>]*\)>.*/\1/'); export EMAIL_FROM ;;
+      esac
+      # users: exit 0 = some, 10 = none, 1 = MongoDB not reachable yet.
+      count_users() {
+        node -e '
+          const mongoose = require("mongoose");
+          mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 5000 })
+            .then(async () => {
+              const n = await mongoose.connection.db.collection("users").countDocuments();
+              process.exit(n === 0 ? 10 : 0);
+            })
+            .catch((e) => { console.log("stackblaze: waiting for MongoDB: " + e.message); process.exit(1); });
+        '
+      }
+      rc=1
+      while [ "$rc" = 1 ]; do rc=0; count_users || rc=$?; [ "$rc" = 1 ] && sleep 3; done
+      # Start the server first: on an empty database it records its key
+      # fingerprints, which it skips once a user exists.
+      NODE_ENV=production node api/server/index.js &
+      pid=$!
+      trap 'kill -TERM "$pid"; wait "$pid"; exit 0' TERM INT
+      # Then create the admin while there are no users (the first user is the
+      # admin). Registration is closed, so nobody can claim the instance first.
+      if [ "$rc" = 10 ]; then
+        until node -e 'fetch("http://127.0.0.1:3080/health").then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))'; do
+          kill -0 "$pid" 2>/dev/null || exit 1
+          sleep 2
+        done
+        rc=0; count_users || rc=$?
+        if [ "$rc" = 10 ]; then
+          echo "stackblaze: creating the admin account $LIBRECHAT_ADMIN_EMAIL"
+          node config/create-user.js "$LIBRECHAT_ADMIN_EMAIL" Admin admin "$LIBRECHAT_ADMIN_PASSWORD" --email-verified=true \
+            2>&1 | grep -v -i password || true
+        fi
+      fi
+      wait "$pid"
+    run:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        readOnlyRootFilesystem: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /health
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

@@ -344,7 +344,7 @@
    "name": "ghost",
    "description": "Ghost is a powerful app for new-media creators to publish, share, and grow a business around their content.",
    "source": "https://github.com/TryGhost/Ghost",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghost/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@560f0107df61bbb5dfb820054ba2688eac8d1697/services/ghost/icon.png",
    "website": "https://ghost.org/",
    "installation": "",
    "architecture": [],
@@ -353,11 +353,14 @@
     "work"
    ],
    "screenshots": [
-    "https://user-images.githubusercontent.com/353959/169805900-66be5b89-0859-4816-8da9-528ed7534704.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@560f0107df61bbb5dfb820054ba2688eac8d1697/services/ghost/screenshot-site.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@560f0107df61bbb5dfb820054ba2688eac8d1697/services/ghost/screenshot-editor.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@560f0107df61bbb5dfb820054ba2688eac8d1697/services/ghost/screenshot-posts.png"
    ],
    "links": [],
    "addons": [
-    "MariaDB"
+    "KuberoMySQL",
+    "Smtp"
    ],
    "stars": 52784,
    "forks": 11542,
@@ -425,33 +428,35 @@
   },
   {
    "name": "uptime-kuma",
-   "description": "Self-hosted monitoring tool like \"Uptime Robot\".",
+   "description": "Self-hosted uptime monitoring. Check websites, APIs, ports, DNS and more on your own schedule, get alerts in 90+ notification services, and publish public status pages.",
    "source": "https://github.com/louislam/uptime-kuma",
-   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/icon.png",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uptime-kuma/icon.png",
    "website": "https://uptime.kuma.pet",
-   "installation": "",
+   "installation": "Sign in as admin (ADMIN_USERNAME) with the password generated in ADMIN_PASSWORD (both under Variables). The template creates this account on the first start, before the app is reachable, so nobody else can claim the instance through the setup page. Email alerts: open Settings > Notifications > Email (StackBlaze) and enter your address.",
    "architecture": [],
    "categories": [
     "monitoring"
    ],
    "screenshots": [
-    "https://media.stackblaze.cloud/templates/uptime-kuma/demo.mp4",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/dashboard.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/screenshot-monitor-detail.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/screenshot-status-page.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uptime-kuma/screenshot-dashboard.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uptime-kuma/screenshot-status-page.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uptime-kuma/screenshot-add-monitor.png"
    ],
-   "links": [],
+   "links": [
+    "https://github.com/louislam/uptime-kuma/wiki"
+   ],
    "addons": [
-    "MariaDB"
+    "MariaDB",
+    "Smtp"
    ],
-   "stars": 86543,
-   "forks": 7815,
-   "watchers": 86543,
-   "issues": 740,
-   "last_updated": "2026-05-11T12:44:16Z",
-   "last_pushed": "2026-05-11T12:43:15Z",
+   "stars": 93863,
+   "forks": 8722,
+   "watchers": 93863,
+   "issues": 853,
+   "last_updated": "2026-11-14T00:55:33Z",
+   "last_pushed": "2026-11-14T00:04:41Z",
    "created_at": "2021-07-03T01:02:42Z",
-   "size": 36814,
+   "size": 39782,
    "language": "JavaScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uptime-kuma/app.yaml",
@@ -801,11 +806,11 @@
   },
   {
    "name": "nocodb",
-   "description": "The Open Source Airtable Alternative. Turns any MySQL, PostgreSQL, SQL Server, SQLite & MariaDB into a smart-spreadsheet.",
+   "description": "Build databases as spreadsheets: tables with typed fields, grid, kanban, gallery, form and calendar views, and a REST API for every table. An open source Airtable alternative on your own Postgres.",
    "source": "https://github.com/nocodb/nocodb",
-   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/icon.png",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/icon.png",
    "website": "https://www.nocodb.com",
-   "installation": "",
+   "installation": "Sign in with NC_ADMIN_EMAIL and the password generated in NC_ADMIN_PASSWORD (under Variables). The super admin is created before the first request and sign-up is invite-only, so nobody can claim the instance.",
    "architecture": [],
    "categories": [
     "data",
@@ -813,23 +818,26 @@
     "work"
    ],
    "screenshots": [
-    "https://media.stackblaze.cloud/templates/nocodb/demo.mp4",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/dashboard.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/screenshot-customers.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/screenshot-pipeline.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/screenshot-grid.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/screenshot-kanban.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/screenshot-form.png"
    ],
-   "links": [],
+   "links": [
+    "https://nocodb.com/docs/self-hosting",
+    "https://nocodb.com/docs/product-docs"
+   ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
-   "stars": 63004,
-   "forks": 4766,
-   "watchers": 63004,
-   "issues": 698,
-   "last_updated": "2026-05-11T12:10:59Z",
-   "last_pushed": "2026-05-11T12:17:25Z",
+   "stars": 65522,
+   "forks": 5138,
+   "watchers": 65522,
+   "issues": 577,
+   "last_updated": "2026-11-13T21:13:56Z",
+   "last_pushed": "2026-11-13T18:51:15Z",
    "created_at": "2017-10-29T18:51:48Z",
-   "size": 1428730,
+   "size": 1521393,
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/app.yaml",
@@ -939,32 +947,35 @@
   {
    "name": "DocuSeal eSign",
    "description": "Create, send, complete, and sign business documents from one streamlined workspace.\nA cost-effective alternative to DocuSign and Dropbox Sign.",
-   "source": "https://github.com/stackblaze/docuseal",
+   "source": "https://github.com/docusealco/docuseal",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docuseal/icon.png",
    "website": "https://www.docuseal.com/",
-   "installation": "",
+   "installation": "Sign in as admin@example.com (DOCUSEAL_ADMIN_EMAIL) with the password generated in DOCUSEAL_ADMIN_PASSWORD (both under Variables). The template completes the first-run setup on the first start, so nobody else can claim the instance. Change the email and company name under Settings afterwards. Signature requests go out through the Email add-on; documents are kept on the data volume.",
    "architecture": [],
    "categories": [
     "work",
     "security"
    ],
    "screenshots": [
-    "https://www.docuseal.com/packs/static/images/resources/quick-start-1-216aeed1da1db5b3e718.jpg"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docuseal/screenshot-builder.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docuseal/screenshot-signing.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docuseal/screenshot-completed.png"
    ],
-   "links": [],
+   "links": [
+    "https://www.docuseal.com/docs"
+   ],
    "addons": [
     "Cluster",
-    "Tenant",
     "Smtp"
    ],
-   "stars": 16314,
-   "forks": 1481,
-   "watchers": 16314,
-   "issues": 116,
-   "last_updated": "2026-05-11T11:56:09Z",
-   "last_pushed": "2026-05-11T11:51:58Z",
+   "stars": 19048,
+   "forks": 1949,
+   "watchers": 19048,
+   "issues": 134,
+   "last_updated": "2026-11-13T18:58:18Z",
+   "last_pushed": "2026-11-09T14:00:29Z",
    "created_at": "2023-07-03T19:54:54Z",
-   "size": 6656,
+   "size": 8145,
    "language": "Ruby",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docuseal/app.yaml",
@@ -1338,37 +1349,41 @@
   },
   {
    "name": "documenso",
-   "description": "The Open Source DocuSign Alternative.",
+   "description": "Send documents for e-signature, sign them in the browser and keep a digitally signed PDF with a full audit trail. Open source alternative to DocuSign.",
    "source": "https://github.com/documenso/documenso",
-   "icon": "https://avatars.githubusercontent.com/u/127681099",
-   "website": "https://www.documenso.com/",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/icon.png",
+   "website": "https://documenso.com/",
    "installation": "",
    "architecture": [
     "linux/amd64",
     "linux/arm64/v8"
    ],
    "categories": [
-    "security",
     "work",
-    "productivity"
+    "productivity",
+    "security"
    ],
    "screenshots": [
-    "https://framerusercontent.com/images/x66EcGbzu3IQEriNXuRmOBonGyo.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-documents.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-signing.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-completed.png"
    ],
    "links": [
-    "https://docs.documenso.com/"
+    "https://docs.documenso.com/docs/self-hosting"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Tenant",
+    "Smtp"
    ],
-   "stars": 12835,
-   "forks": 2594,
-   "watchers": 12835,
-   "issues": 190,
-   "last_updated": "2026-05-11T10:10:36Z",
-   "last_pushed": "2026-05-11T11:04:16Z",
+   "stars": 15760,
+   "forks": 3477,
+   "watchers": 15760,
+   "issues": 276,
+   "last_updated": "2026-11-14T01:22:55Z",
+   "last_pushed": "2026-11-14T02:06:53Z",
    "created_at": "2023-03-12T16:28:56Z",
-   "size": 256357,
+   "size": 294464,
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/app.yaml",
@@ -3435,34 +3450,34 @@
    "name": "Vaultwarden Passwords",
    "description": "Keep passwords, secure notes, and logins organized across all your devices.\nA lightweight alternative to 1Password and LastPass.",
    "source": "https://github.com/dani-garcia/vaultwarden",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@d8123f94fb779ed065b5274ba5edfd8e8890c391/services/vaultwarden/icon.png",
    "website": "https://github.com/dani-garcia/vaultwarden",
-   "installation": "",
+   "installation": "Sign-up is closed: nobody can create an account on their own. Open /admin on your app URL and sign in with the token in ADMIN_PANEL_TOKEN (under Variables; it is hashed with Argon2id at start, so the running server never holds it in plain text). Under Users, invite your own email address; the invitation arrives through the Email add-on and its link lets you create your account and master password. Your master password never leaves your device, so nobody (StackBlaze included) can reset it. Then sign in with the web vault or any Bitwarden app or browser extension: choose \"self-hosted\" and enter your app URL. Organizations, collections, Sends and attachments work out of the box; mobile push notifications need a free installation id from bitwarden.com/host (PUSH_* variables). Settings you save in /admin are written to /data/config.json and then override the variables.",
    "architecture": [],
    "categories": [
     "security",
     "utilities"
    ],
    "screenshots": [
-    "https://media.stackblaze.cloud/templates/vaultwarden/demo.mp4",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/dashboard.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/screenshot-login.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/screenshot-generator.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@d8123f94fb779ed065b5274ba5edfd8e8890c391/services/vaultwarden/screenshot-vault.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@d8123f94fb779ed065b5274ba5edfd8e8890c391/services/vaultwarden/screenshot-item.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@d8123f94fb779ed065b5274ba5edfd8e8890c391/services/vaultwarden/screenshot-generator.png"
    ],
-   "links": [],
+   "links": [
+    "https://github.com/dani-garcia/vaultwarden/wiki"
+   ],
    "addons": [
     "Cluster",
-    "Tenant",
     "Smtp"
    ],
-   "stars": 60104,
-   "forks": 2781,
-   "watchers": 60104,
-   "issues": 47,
-   "last_updated": "2026-05-11T12:24:29Z",
-   "last_pushed": "2026-05-03T12:22:39Z",
+   "stars": 70705,
+   "forks": 3449,
+   "watchers": 70705,
+   "issues": 87,
+   "last_updated": "2026-11-14T01:36:04Z",
+   "last_pushed": "2026-11-13T23:14:56Z",
    "created_at": "2018-02-17T22:40:20Z",
-   "size": 12285,
+   "size": 13822,
    "language": "Rust",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/app.yaml",
@@ -8121,6 +8136,54 @@
    ]
   },
   {
+   "name": "librechat",
+   "description": "Self-hosted AI chat for your team: OpenAI, Anthropic, Google and any OpenAI-compatible model in one interface, with agents, artifacts and conversation history. Bring your own API keys.",
+   "source": "https://github.com/LibreChat-AI/LibreChat",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/icon.png",
+   "website": "https://www.librechat.ai",
+   "installation": "",
+   "architecture": [],
+   "categories": [
+    "ai",
+    "communication"
+   ],
+   "screenshots": [
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/screenshot-chat.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/screenshot-code.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/screenshot-models.png"
+   ],
+   "links": [
+    "https://www.librechat.ai/docs"
+   ],
+   "addons": [
+    "KuberoMongoDB",
+    "Smtp"
+   ],
+   "stars": 47106,
+   "forks": 9692,
+   "watchers": 217,
+   "issues": 1088,
+   "last_updated": "2026-11-14T00:09:00Z",
+   "last_pushed": "2026-11-14T01:07:58Z",
+   "created_at": "2023-02-12T01:06:52Z",
+   "size": 303835,
+   "language": "TypeScript",
+   "gitops": false,
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/librechat/app.yaml",
+   "status": "active",
+   "license": "MIT",
+   "spdx_id": "MIT",
+   "dirname": "librechat",
+   "deploymentTypes": [
+    {
+     "id": "standard",
+     "label": "Standard",
+     "default": true,
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/librechat/app.yaml"
+    }
+   ]
+  },
+  {
    "name": "fugu",
    "description": "Free, privacy-friendly, simple, open-source and self-hostable product analytics.",
    "source": "https://github.com/shafy/fugu",
@@ -11363,29 +11426,34 @@
    "source": "https://github.com/searxng/searxng",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/icon.png",
    "website": "https://docs.searxng.org",
-   "installation": "SearXNG is a stateless metasearch engine: it stores no user search history and needs no SQL database. It does use the bundled Valkey (Redis-compatible) add-on for the optional limiter/bot-detection and caching, wired in via the SEARXNG_REDIS_URL env var (passwordless in-cluster). IMPORTANT: rotate SEARXNG_SECRET to a unique random value before going live (e.g. `openssl rand -hex 32`); the placeholder here must not be used in production. SEARXNG_BASE_URL is auto-filled with this app's public URL so generated links and OpenSearch descriptions are correct. Mount /etc/searxng to persist settings.yml (engines, theme, limiter, UI), which the image generates on first start; edit it there to enable/disable search engines, turn on the limiter (limiter.toml), or restrict instance access. No SMTP, S3, or external Elasticsearch is required.",
+   "installation": "SearXNG has no accounts and no sign-in: open the app URL and search. It keeps no search history and needs no SQL database. The instance is public, so the template turns on the limiter (bot detection and per-IP rate limits) with the bundled Valkey add-on: scripts and scrapers get HTTP 429, which keeps the search engines from blocking your instance. SEARXNG_SECRET is generated at deploy and signs the image proxy links (images in results load through your instance). SEARXNG_CONTACT_URL starts as the app URL; Wikipedia, Wikidata and OpenStreetMap require a contact, so set it to your own mailto: address or contact page. Settings live on the volume at /etc/searxng: edit settings.yml from the app console to choose engines, the default theme or language, or to turn on the JSON API (search.formats), then redeploy. limiter.toml there trusts the platform ingress for the client address. Set SEARXNG_PUBLIC_INSTANCE=true for the stricter public instance mode (link token check). Individual engines may rate-limit or ask for a CAPTCHA; SearXNG skips them and answers from the others. No SMTP or S3 is needed.",
    "architecture": [],
    "categories": [
     "utilities",
     "productivity",
     "security"
    ],
-   "screenshots": [],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/screenshot-results.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/screenshot-images.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/screenshot-preferences.png"
+   ],
    "links": [
     "https://docs.searxng.org/admin/installation-docker.html",
-    "https://docs.searxng.org/admin/settings/index.html"
+    "https://docs.searxng.org/admin/settings/index.html",
+    "https://docs.searxng.org/admin/searx.limiter.html"
    ],
    "addons": [
     "Valkey"
    ],
-   "stars": 19000,
-   "forks": 1900,
-   "watchers": 19000,
-   "issues": 0,
-   "last_updated": "2026-06-13T00:00:00Z",
-   "last_pushed": "2026-06-13T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 0,
+   "stars": 39529,
+   "forks": 3612,
+   "watchers": 183,
+   "issues": 214,
+   "last_updated": "2026-11-14T00:26:41Z",
+   "last_pushed": "2026-11-13T13:16:16Z",
+   "created_at": "2021-04-12T15:18:15Z",
+   "size": 126940,
    "language": "Python",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/app.yaml",
@@ -12480,11 +12548,11 @@
   },
   {
    "name": "litellm",
-   "description": "LLM proxy and gateway \u2014 unified OpenAI-compatible API for 100+ providers including OpenAI, Anthropic, Gemini, Ollama, and Bedrock with cost tracking and rate limiting.",
+   "description": "LLM gateway with one OpenAI-compatible API for 100+ model providers. Virtual keys, budgets, rate limits, spend tracking and an admin UI.",
    "source": "https://github.com/BerriAI/litellm",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/icon.png",
-   "website": "https://litellm.ai",
-   "installation": "",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/icon.png",
+   "website": "https://www.litellm.ai/",
+   "installation": "Open the app URL and sign in as admin with the password generated in UI_PASSWORD (under Variables). Every API call needs the master key in LITELLM_MASTER_KEY or a virtual key; nothing is open without one. Provider keys are stored encrypted with LITELLM_SALT_KEY, so never change it after adding a model.",
    "architecture": [],
    "categories": [
     "ai",
@@ -12492,22 +12560,25 @@
     "utilities"
    ],
    "screenshots": [
-    "https://framerusercontent.com/images/DbFHR1t71NpmaSxIqej1LKWzD4.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-keys.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-logs.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-models.png"
    ],
    "links": [
     "https://docs.litellm.ai/"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
-   "stars": 24000,
-   "forks": 0,
-   "watchers": 24000,
-   "issues": 0,
-   "last_updated": "2026-06-13T00:00:00Z",
-   "last_pushed": "2026-06-13T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 1000,
+   "stars": 63221,
+   "forks": 13269,
+   "watchers": 63221,
+   "issues": 5193,
+   "last_updated": "2026-11-14T00:30:39Z",
+   "last_pushed": "2026-11-14T01:19:18Z",
+   "created_at": "2023-07-27T00:09:52Z",
+   "size": 2966389,
    "language": "Python",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/app.yaml",
@@ -13299,11 +13370,11 @@
   },
   {
    "name": "Listmonk Email Marketing",
-   "description": "Send high-volume campaigns and manage subscriber lists with powerful segmentation and analytics.\nA performance-focused alternative to Mailchimp and Brevo.",
+   "description": "Self-hosted newsletter and mailing list manager: subscriber lists, campaigns, templates, analytics and a transactional mail API, backed by Postgres.",
    "source": "https://github.com/knadh/listmonk",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/icon.png",
    "website": "https://listmonk.app",
-   "installation": "",
+   "installation": "First start installs the database and creates the Super Admin, so the setup page is never open to visitors. Sign in at /admin with the username in LISTMONK_ADMIN_USER (admin) and the generated password in LISTMONK_ADMIN_PASSWORD (Variables). The Root URL (Settings > General) is set to the app URL on first start. Listmonk sends campaigns through an SMTP server you add under Settings > SMTP: use a provider that allows bulk or marketing mail on your own sending domain. The StackBlaze Email add-on is for transactional mail and is not wired into this template. Media uploads are stored on the uploads volume.",
    "architecture": [],
    "categories": [
     "email",
@@ -13311,23 +13382,26 @@
     "communication"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/dashboard.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/screenshot-dashboard.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/screenshot-campaigns.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/screenshot-editor.png"
    ],
    "links": [
-    "https://listmonk.app/docs/"
+    "https://listmonk.app/docs/",
+    "https://listmonk.app/docs/configuration/",
+    "https://listmonk.app/docs/apis/apis/"
    ],
    "addons": [
-    "Cluster",
-    "Smtp"
+    "Cluster"
    ],
-   "stars": 16000,
-   "forks": 0,
-   "watchers": 16000,
-   "issues": 0,
-   "last_updated": "2026-06-13T00:00:00Z",
-   "last_pushed": "2026-06-13T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 1000,
+   "stars": 24289,
+   "forks": 2792,
+   "watchers": 141,
+   "issues": 63,
+   "last_updated": "2026-11-14T00:33:47Z",
+   "last_pushed": "2026-11-12T02:15:42Z",
+   "created_at": "2019-06-26T05:08:39Z",
+   "size": 55411,
    "language": "Go",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/app.yaml",
@@ -13570,11 +13644,11 @@
   },
   {
    "name": "payload",
-   "description": "Headless CMS and application framework built with TypeScript, Node.js and React \u2014 an auto-generated admin UI, REST & GraphQL APIs, authentication, and a flexible code-first content model.",
+   "description": "Open-source TypeScript headless CMS and website builder on Next.js. Edit pages and posts in the Payload admin with live preview, drafts and scheduled publishing, and serve them on the built-in website or over REST and GraphQL.",
    "source": "https://github.com/payloadcms/payload",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/icon.png",
    "website": "https://payloadcms.com",
-   "installation": "",
+   "installation": "Sign in at /admin as admin@example.com (PAYLOAD_ADMIN_EMAIL) with the password generated in PAYLOAD_ADMIN_PASSWORD (both under Variables). The image creates this admin on the first start, so nobody else can register the first user; change the email and password in the admin afterwards. The first start runs the database migrations. On an empty site, the dashboard's Seed your database button loads Payload's demo pages and posts. Collections and config are code: edit services/payload/image (or your own create-payload-app project), run npm run payload migrate:create, build the image and point the app at it.",
    "architecture": [],
    "categories": [
     "cms",
@@ -13582,20 +13656,25 @@
     "data"
    ],
    "screenshots": [
-    "https://payloadcms.com/images/og-image.jpg"
-   ],
+     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-editor.png",
+     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-website.png",
+     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-post.png"
+    ],
    "links": [
     "https://payloadcms.com/docs"
    ],
-   "addons": [],
-   "stars": 28000,
-   "forks": 0,
-   "watchers": 28000,
-   "issues": 0,
-   "last_updated": "2026-06-14T00:00:00Z",
-   "last_pushed": "2026-06-14T00:00:00Z",
-   "created_at": "2018-01-01T00:00:00Z",
-   "size": 1000,
+   "addons": [
+    "Cluster",
+    "Smtp"
+   ],
+   "stars": 45804,
+   "forks": 4429,
+   "watchers": 45804,
+   "issues": 1606,
+   "last_updated": "2026-11-13T16:14:41Z",
+   "last_pushed": "2026-11-13T18:52:14Z",
+   "created_at": "2021-01-05T18:49:45Z",
+   "size": 243155,
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/app.yaml",
@@ -13807,7 +13886,7 @@
    "source": "https://github.com/CoreBunch/Instatic",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/icon.png",
    "website": "https://instatic.com/",
-   "installation": "Open the app URL and sign in at /admin as admin@example.com (INSTATIC_ADMIN_EMAIL) with the password generated in INSTATIC_ADMIN_PASSWORD (both under Variables). The template completes the first-run setup for you on the first start, so nobody else can claim the site; change the email in your profile afterwards. Content lives in PostgreSQL; uploads, fonts, plugin packages and published files persist on the shared volume at /app/uploads. INSTATIC_SECRET_KEY encrypts AI provider keys, plugin secrets and MFA seeds and is generated once: do not change it. The AI assistant is optional and uses your own provider key (Anthropic, OpenAI, OpenRouter, Ollama). Instatic sends no email: add users and set their passwords under Users. It runs as a single replica. Instatic is pre-1.0 (MIT), so read the release notes before you move to a new image tag.",
+   "installation": "Open the app URL and sign in at /admin as admin@example.com (INSTATIC_ADMIN_EMAIL) with the password generated in INSTATIC_ADMIN_PASSWORD (both under Variables). The template completes the first-run setup for you on the first start, so nobody else can claim the site; change the email in your profile afterwards. It also publishes a starter home page (the site name and an Open the editor link) so the app URL shows a page right away; edit it on the canvas and publish to replace it. Content lives in PostgreSQL; uploads, fonts, plugin packages and published files persist on the shared volume at /app/uploads. INSTATIC_SECRET_KEY encrypts AI provider keys, plugin secrets and MFA seeds and is generated once: do not change it. The AI assistant is optional and uses your own provider key (Anthropic, OpenAI, OpenRouter, Ollama). Instatic sends no email: add users and set their passwords under Users. It runs as a single replica. Instatic is pre-1.0 (MIT), so read the release notes before you move to a new image tag.",
    "architecture": [
     "linux/amd64"
    ],
@@ -13848,6 +13927,51 @@
      "label": "Standard",
      "default": true,
      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/app.yaml"
+    }
+   ]
+  },
+  {
+   "name": "SillyTavern",
+   "description": "Self-hosted chat and roleplay front end for LLMs. Bring your own model (OpenAI, Claude, OpenRouter, Ollama and more), with characters, group chats, lorebooks and per-user accounts.",
+   "source": "https://github.com/SillyTavern/SillyTavern",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/icon.png",
+   "website": "https://sillytavern.app",
+   "installation": "Sign in with the user handle default-user and the password generated in ST_ADMIN_PASSWORD (under Variables). There is no public sign-up: the admin adds users in User Settings > Manage users. Add your model API keys in the API Connections panel.",
+   "architecture": [],
+   "categories": [
+    "ai",
+    "utilities"
+   ],
+   "screenshots": [
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/screenshot-chat.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/screenshot-connections.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/screenshot-users.png"
+   ],
+   "links": [
+    "https://docs.sillytavern.app/"
+   ],
+   "addons": [],
+   "stars": 35602,
+   "forks": 6705,
+   "watchers": 35602,
+   "issues": 711,
+   "last_updated": "2026-11-14T01:43:19Z",
+   "last_pushed": "2026-10-02T22:05:54Z",
+   "created_at": "2023-02-09T10:19:24Z",
+   "size": 215670,
+   "language": "JavaScript",
+   "gitops": false,
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/app.yaml",
+   "status": "active",
+   "license": "AGPL-3.0",
+   "spdx_id": "AGPL-3.0",
+   "dirname": "sillytavern",
+   "deploymentTypes": [
+    {
+     "id": "standard",
+     "label": "Standard",
+     "default": true,
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/app.yaml"
     }
    ]
   }

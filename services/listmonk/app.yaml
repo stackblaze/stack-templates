@@ -4,16 +4,11 @@ metadata:
   name: listmonk
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Send high-volume campaigns and manage subscriber lists with powerful segmentation and analytics.\nA performance-focused alternative to Mailchimp and Brevo."
+    kubero.dev/template.description: "Self-hosted newsletter and mailing list manager: subscriber lists, campaigns, templates, analytics and a transactional mail API, backed by Postgres."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/icon.png
-    kubero.dev/template.installation: "On first boot, listmonk runs database migrations\
-      \ automatically. Open /admin and complete the one-time Super Admin setup (email,\
-      \ username, password). Do not set legacy admin_username/admin_password in config\
-      \ or env \u2014 listmonk v6 manages users in Admin > Settings > Users. Configure\
-      \ SMTP under Settings > SMTP to send campaigns. Import subscribers via CSV or\
-      \ the API."
-    kubero.dev/template.links: '["https://listmonk.app/docs/"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/dashboard.png"]'
+    kubero.dev/template.installation: "First start installs the database and creates the Super Admin, so the setup page is never open to visitors. Sign in at /admin with the username in LISTMONK_ADMIN_USER (admin) and the generated password in LISTMONK_ADMIN_PASSWORD (Variables). The Root URL (Settings > General) is set to the app URL on first start. Listmonk sends campaigns through an SMTP server you add under Settings > SMTP: use a provider that allows bulk or marketing mail on your own sending domain. The StackBlaze Email add-on is for transactional mail and is not wired into this template. Media uploads are stored on the uploads volume."
+    kubero.dev/template.links: '["https://listmonk.app/docs/", "https://listmonk.app/docs/configuration/", "https://listmonk.app/docs/apis/apis/"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/screenshot-dashboard.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/screenshot-campaigns.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/screenshot-editor.png"]'
     kubero.dev/template.source: https://github.com/knadh/listmonk
     kubero.dev/template.categories: '["email", "marketing", "communication"]'
     kubero.dev/template.title: "Listmonk Email Marketing"
@@ -70,7 +65,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: listmonk
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -79,15 +74,11 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: listmonk
-          password: listmonk
-  # Platform email (see README "Email contract"). Listmonk stores SMTP in
-  # Settings → SMTP (DB); SMTP_* is injected while Email is live for that form.
-  - displayName: Email
-    icon: /img/addons/email.svg
-    id: kubero-smtp
-    kind: Smtp
-    env: []
-    resourceDefinitions: {}
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # No Email (Smtp) add-on: listmonk is a bulk mailer and keeps its SMTP
+  # servers in the database (Settings > SMTP), not in environment variables.
+  # The platform Email add-on covers transactional mail only, so campaigns go
+  # through the customer's own bulk-capable provider.
   envVars:
   - name: LISTMONK_db__host
     value: '$(PGHOST)'
@@ -103,6 +94,19 @@ spec:
     value: disable
   - name: LISTMONK_app__address
     value: 0.0.0.0:9000
+  # Read by `listmonk --install` on the first start: creates the Super Admin,
+  # so the public first-visitor setup page never opens.
+  - name: LISTMONK_ADMIN_USER
+    value: admin
+  - name: LISTMONK_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Read only by the start command: written to Settings > General > Root URL
+  # while it is still upstream's http://localhost:9000 (unsubscribe, tracking
+  # and media links in every email are built from it).
+  - name: LISTMONK_PUBLIC_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  - name: TZ
+    value: Etc/UTC
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -112,6 +116,7 @@ spec:
     size: 5Gi
     storageClass: shared
   cronjobs: []
+  # Campaign sending runs inside the web process; one replica.
   web:
     replicaCount: 1
   worker:
@@ -126,19 +131,75 @@ spec:
   healthcheck:
     enabled: true
     path: /health
-    startupSeconds: 180
+    startupSeconds: 300
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '9000'
-    pullPolicy: Always
-    repository: ghcr.io/knadh/listmonk
-    tag: v6.1.0
+    pullPolicy: IfNotPresent
+    repository: docker.io/listmonk/listmonk
+    tag: v6.2.0
     command:
-    - sh
+    - /bin/sh
     - -c
-    - ./listmonk --install --idempotent --yes --config '' && ./listmonk --upgrade
-      --yes --config '' && exec ./listmonk --config ''
+    - |
+      set -e
+      cd /listmonk
+      # listmonk exits when Postgres refuses the connection (the add-on can
+      # start late), so retry the idempotent install until the login works.
+      i=0
+      until ./listmonk --install --idempotent --yes --config ''; do
+        i=$((i+1))
+        [ "$i" -ge 100 ] && { echo "[stackblaze] database not reachable"; exit 1; }
+        echo "[stackblaze] waiting for the database ($i)"
+        sleep 3
+      done
+      ./listmonk --upgrade --yes --config ''
+      ./listmonk --config '' &
+      pid=$!
+      trap 'kill -TERM "$pid" 2>/dev/null' TERM INT
+      # Plain HTTP/1.0 to the local server (the image has busybox nc, no curl).
+      req() {
+        { printf '%s %s HTTP/1.0\r\nHost: localhost\r\n' "$1" "$2"
+          [ -n "$3" ] && printf 'Content-Type: %s\r\n' "$3"
+          [ -n "$4" ] && printf 'Cookie: %s\r\n' "$4"
+          printf 'Content-Length: %s\r\n\r\n%s' "${#5}" "$5"
+        } | nc -w 15 127.0.0.1 9000 2>/dev/null || true
+      }
+      firstrun() {
+        n=0
+        until req GET /health | grep -q '200 OK'; do
+          n=$((n+1)); [ "$n" -ge 120 ] && { echo "[stackblaze] server not healthy"; return 0; }
+          sleep 1
+        done
+        form="username=$LISTMONK_ADMIN_USER&password=$LISTMONK_ADMIN_PASSWORD"
+        # Check the install's result: if it stopped before creating the Super
+        # Admin, the public setup page is open. Claim it here, before any visitor.
+        if req GET /admin/login | grep -q 'password2'; then
+          req POST /admin/login application/x-www-form-urlencoded '' \
+            "email=$LISTMONK_ADMIN_USER%40listmonk&$form&password2=$LISTMONK_ADMIN_PASSWORD&next=%2Fadmin" >/dev/null
+          if req GET /admin/login | grep -q 'password2'; then
+            echo "[stackblaze] could not create the Super Admin; stopping"; kill -TERM "$pid"; return 0
+          fi
+          echo "[stackblaze] Super Admin created by the start command"
+        fi
+        ck=$(req POST /admin/login application/x-www-form-urlencoded '' "$form&next=%2Fadmin" \
+          | sed -n 's/^[Ss]et-[Cc]ookie: *\(session=[^;]*\).*/\1/p' | tr -d '\r' | head -n 1)
+        [ -n "$ck" ] || { echo "[stackblaze] first-run settings skipped (admin password changed)"; return 0; }
+        if req GET /api/settings '' "$ck" | grep -q '"app.root_url":"http://localhost:9000"'; then
+          req PUT /api/settings/app.root_url application/json "$ck" "\"${LISTMONK_PUBLIC_URL%/}\"" | head -n 1
+          echo "[stackblaze] root URL set to the app URL"
+        fi
+        req POST /api/logout '' "$ck" >/dev/null
+      }
+      firstrun || true
+      set +e
+      wait "$pid"; st=$?
+      # A forwarded TERM interrupts the first wait; wait for listmonk to finish.
+      [ "$st" -gt 128 ] && { wait "$pid"; st=$?; }
+      exit "$st"
     run:
       securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
         readOnlyRootFilesystem: false

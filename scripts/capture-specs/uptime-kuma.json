@@ -4,34 +4,22 @@
   "login": {
     "path": "/dashboard",
     "steps": [
-      { "fill": { "#floatingInput, input[placeholder='Username']": "admin" } },
-      { "fill": { "#floatingPassword, input[placeholder='Password']": "changeme123" } },
-      { "click": "button[type='submit'], button:has-text('Login'), button:has-text('Log in')" },
-      { "waitForNavigation": true }
+      { "waitForSelector": "#floatingInput", "timeout": 60000 },
+      { "fill": { "#floatingInput": "admin" } },
+      { "fill": { "#floatingPassword": "${UPTIME_KUMA_ADMIN_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForSelector": ".monitor-list .item", "timeout": 30000 }
     ],
-    "waitAfterMs": 2000,
-    "skipIfUrlIncludes": "/dashboard"
+    "waitAfterMs": 2000
   },
   "pages": [
-    {
-      "name": "dashboard",
-      "path": "/dashboard",
-      "waitMs": 6000
-    },
-    {
-      "name": "monitor-detail",
-      "path": "/dashboard/1",
-      "waitMs": 3500
-    },
-    {
-      "name": "status-page",
-      "path": "/status/stackblaze",
-      "waitMs": 3500
-    },
-    {
-      "name": "add-monitor",
-      "path": "/add",
-      "waitMs": 2500
-    }
+    { "name": "dashboard-app", "path": "/dashboard", "waitFor": ".monitor-list .item", "waitMs": 1500,
+      "steps": [
+        { "click": ".monitor-list a:has-text(\"StackBlaze website\")" },
+        { "waitForSelector": "[data-testid=monitor-status]", "timeout": 30000 },
+        { "sleep": 2500 }
+      ] },
+    { "name": "status-page", "path": "/status/status", "waitFor": "text=All Systems Operational", "waitMs": 2500 },
+    { "name": "add-monitor", "path": "/add", "waitFor": "#type", "waitMs": 2000 }
   ]
 }

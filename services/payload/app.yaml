@@ -1,0 +1,165 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: payload
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open-source TypeScript headless CMS and website
+      builder on Next.js. Edit pages and posts in the Payload admin with live preview,
+      drafts and scheduled publishing, and serve them on the built-in website or over
+      REST and GraphQL.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/icon.png
+    kubero.dev/template.installation: 'Open the app URL and sign in at /admin as admin@example.com
+      (PAYLOAD_ADMIN_EMAIL) with the password generated in PAYLOAD_ADMIN_PASSWORD (both
+      under Variables). The image creates this admin on the first start, before the
+      site serves anything, so nobody else can register the first user; change the
+      email and password in the admin afterwards (changing the variables later has
+      no effect once a user exists). The first start runs the database migrations.
+      The image is Payload 3.93.0 built from Payload''s website starter (create-payload-app
+      -t website with Postgres): pages, posts, media, categories, forms, search, redirects
+      and SEO, with the website at / and the API at /api and /api/graphql. On an empty
+      site, the dashboard''s Seed your database button loads Payload''s demo pages
+      and posts (it replaces existing content). Collections and config are code: to
+      change them, edit services/payload/image in stackblaze/stack-templates (or your
+      own create-payload-app project), run npm run payload migrate:create, build the
+      image and point this app at it; migrations run on every start. Media uploads
+      go to the media volume. Email (password reset, form notifications) goes through
+      the Email add-on. Keep PAYLOAD_SECRET unchanged after first use: it signs logins
+      and encrypts API keys.'
+    kubero.dev/template.links: '["https://payloadcms.com/docs"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-website.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-post.png"]'
+    kubero.dev/template.source: https://github.com/payloadcms/payload
+    kubero.dev/template.categories: '["cms", "development", "data"]'
+    kubero.dev/template.title: Payload
+    kubero.dev/template.website: https://payloadcms.com
+  labels:
+    manager: kubero
+spec:
+  name: payload
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: smart
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: payload
+              owner: payload
+              secret:
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO payload
+              - GRANT CREATE ON SCHEMA public TO payload
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO payload
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: payload
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # The image reads SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD and
+  # SMTP_FROM natively (src/payload.config.ts switches to the nodemailer
+  # adapter when SMTP_HOST is set), so the Email add-on needs no mapping.
+  - displayName: Email
+    env: []
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    resourceDefinitions: {}
+  envVars:
+  - name: DATABASE_URL
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  # Read at runtime (the image is built without it): absolute links, SEO and
+  # Open Graph URLs, CORS and robots.txt.
+  - name: NEXT_PUBLIC_SERVER_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # Any string works: Payload hashes it (SHA-256) into the key that signs login
+  # tokens and encrypts API keys. create-payload-app generates 24 hex chars.
+  - name: PAYLOAD_SECRET
+    value: '{{STACKBLAZE_GEN_HEX:48}}'
+  # Signs the draft preview links (/next/preview) the admin opens.
+  - name: PREVIEW_SECRET
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  # Read by the image's onInit (src/utilities/createFirstAdmin.ts): while the
+  # users collection is empty it creates this admin, so no visitor can claim
+  # the site through /admin's create-first-user form. Ignored once a user exists.
+  - name: PAYLOAD_ADMIN_EMAIL
+    value: admin@example.com
+  - name: PAYLOAD_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  - name: NEXT_TELEMETRY_DISABLED
+    value: '1'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /app/public/media
+    name: '{{STACKBLAZE_APP_NAME}}-media'
+    size: 10Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /api/health
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '3000'
+    pullPolicy: IfNotPresent
+    # Built from services/payload/image by .github/workflows/build-payload.yaml.
+    repository: ghcr.io/stackblaze/stack-templates/payload
+    tag: '3.93.0-1'
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+        runAsUser: 1000
+        runAsGroup: 1000
