@@ -23,7 +23,7 @@ metadata:
       Site administration: the Moodle code ships in the template image, and new
       Moodle versions arrive as a new image, upgraded automatically on start.'
     kubero.dev/template.links: '["https://docs.moodle.org/503/en/Main_page", "https://github.com/stackblaze/stack-templates/tree/main/services/moodle/image"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodle/screenshot-course.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodle/screenshot-quiz.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodle/screenshot-dashboard.png"]'
     kubero.dev/template.source: https://github.com/moodle/moodle
     kubero.dev/template.categories: '["school", "collaboration", "productivity"]'
     kubero.dev/template.title: Moodle

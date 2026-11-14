@@ -9729,7 +9729,11 @@
     "collaboration",
     "productivity"
    ],
-   "screenshots": [],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodle/screenshot-course.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodle/screenshot-quiz.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodle/screenshot-dashboard.png"
+   ],
    "links": [
     "https://docs.moodle.org/503/en/Main_page",
     "https://github.com/stackblaze/stack-templates/tree/main/services/moodle/image"
