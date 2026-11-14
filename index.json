@@ -12540,10 +12540,9 @@
     "utilities"
    ],
    "screenshots": [
-    "https://media.stackblaze.cloud/templates/open-webui/demo.mp4",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@bddd2bdc0792a05092319696827e99fea190b35d/services/open-webui/dashboard.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@bddd2bdc0792a05092319696827e99fea190b35d/services/open-webui/screenshot-login.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@bddd2bdc0792a05092319696827e99fea190b35d/services/open-webui/screenshot-connections.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/open-webui/screenshot-chat.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/open-webui/screenshot-rag.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/open-webui/screenshot-admin.png"
    ],
    "links": [
     "https://docs.openwebui.com/",
