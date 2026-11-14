@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: Self-hosted chat and roleplay front end for
       LLMs. Bring your own model (OpenAI, Claude, OpenRouter, Ollama and more), with
       characters, group chats, lorebooks and per-user accounts.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/icon.png
     kubero.dev/template.installation: 'Sign in with the user handle default-user
       and the password generated in ST_ADMIN_PASSWORD (under Variables). The login
       page does not list accounts, so type the handle. User accounts are always on
@@ -19,7 +19,7 @@ metadata:
       off. Settings come from the SILLYTAVERN_* variables; config.yaml is rebuilt on
       every start.'
     kubero.dev/template.links: '["https://docs.sillytavern.app/"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/screenshot-chat.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/screenshot-connections.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/screenshot-users.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/screenshot-chat.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/screenshot-connections.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/screenshot-users.png"]'
     kubero.dev/template.source: https://github.com/SillyTavern/SillyTavern
     kubero.dev/template.categories: '[ "ai", "utilities" ]'
     kubero.dev/template.title: SillyTavern
