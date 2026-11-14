@@ -8,7 +8,7 @@ metadata:
       Single sign-on for your apps over OpenID Connect and SAML, user federation
       with LDAP and Active Directory, social login, multi-factor authentication
       and an admin console for realms, clients and users.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0d35748992e600e15f5cee58191a665473b7afba/services/keycloak/icon.png
     kubero.dev/template.installation: 'Open the app URL and go to the Administration
       Console. Sign in as admin (ADMIN_USERNAME) with the password generated in
       ADMIN_PASSWORD (both under Variables). Keycloak creates a temporary bootstrap
@@ -26,7 +26,7 @@ metadata:
       management port 9000 and are not public. Single replica with a local cache;
       user sessions are kept in Postgres and survive restarts.'
     kubero.dev/template.links: '["https://www.keycloak.org/documentation", "https://www.keycloak.org/server/all-config"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/screenshot-users.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/screenshot-clients.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/screenshot-login.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0d35748992e600e15f5cee58191a665473b7afba/services/keycloak/screenshot-users.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0d35748992e600e15f5cee58191a665473b7afba/services/keycloak/screenshot-clients.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0d35748992e600e15f5cee58191a665473b7afba/services/keycloak/screenshot-login.png"]'
     kubero.dev/template.source: https://github.com/keycloak/keycloak
     kubero.dev/template.categories: '["security", "development", "work"]'
     kubero.dev/template.title: Keycloak

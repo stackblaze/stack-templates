@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: Virtual whiteboard for sketching hand-drawn
       style diagrams, with live collaboration and shareable links that are end-to-end
       encrypted and stored on your own instance.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e425b1bcd4aa3e76eef3ff2ece32e38fd1ade9f5/services/excalidraw/icon.png
     kubero.dev/template.installation: 'Excalidraw has no accounts and no sign-in:
       anyone with the app URL can open the whiteboard. Drawings live in each visitor''s
       browser until they share them. Share > Live collaboration starts a room on this
@@ -24,7 +24,7 @@ metadata:
       do not work on a self-hosted instance. No database, SMTP or S3 is needed.'
     kubero.dev/template.links: '["https://docs.excalidraw.com", "https://github.com/excalidraw/excalidraw",
       "https://github.com/stackblaze/stack-templates/tree/main/services/excalidraw/image"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-board.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-collab.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-export.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e425b1bcd4aa3e76eef3ff2ece32e38fd1ade9f5/services/excalidraw/screenshot-board.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e425b1bcd4aa3e76eef3ff2ece32e38fd1ade9f5/services/excalidraw/screenshot-collab.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e425b1bcd4aa3e76eef3ff2ece32e38fd1ade9f5/services/excalidraw/screenshot-export.png"]'
     kubero.dev/template.source: https://github.com/excalidraw/excalidraw
     kubero.dev/template.categories: '["documentation", "work", "collaboration"]'
     kubero.dev/template.title: Excalidraw
