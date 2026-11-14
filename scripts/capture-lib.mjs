@@ -111,6 +111,8 @@ export function expandEnv(value) {
 export async function runSteps(page, steps) {
   for (const step of steps || []) {
     if (step.sleep) await sleep(step.sleep);
+    // hash-routed apps (Keycloak's admin console) ignore a goto that only changes the hash
+    if (step.reload) await page.reload({ waitUntil: 'networkidle', timeout: step.timeout || 60000 });
     if (step.waitForSelector) {
       await page.waitForSelector(step.waitForSelector, { timeout: step.timeout || 30000 });
     }

@@ -1,0 +1,65 @@
+{
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/admin/master/console/",
+    "steps": [
+      {
+        "waitForSelector": "#username",
+        "timeout": 60000
+      },
+      {
+        "fill": {
+          "#username": "${ADMIN_USERNAME}",
+          "#password": "${ADMIN_PASSWORD}"
+        }
+      },
+      {
+        "click": "#kc-login"
+      },
+      {
+        "sleep": 4000
+      }
+    ],
+    "waitAfterMs": 1000
+  },
+  "pages": [
+    {
+      "name": "users",
+      "path": "/admin/master/console/#/northwind/users",
+      "waitMs": 1500,
+      "steps": [
+        {
+          "reload": true
+        },
+        {
+          "waitForSelector": "text=amara.okafor",
+          "timeout": 30000
+        }
+      ]
+    },
+    {
+      "name": "clients",
+      "path": "/admin/master/console/#/northwind/clients",
+      "waitMs": 1500,
+      "steps": [
+        {
+          "reload": true
+        },
+        {
+          "waitForSelector": "text=northwind-web",
+          "timeout": 30000
+        }
+      ]
+    },
+    {
+      "name": "login",
+      "path": "/realms/northwind/account",
+      "waitFor": "#username",
+      "waitMs": 1000
+    }
+  ]
+}
