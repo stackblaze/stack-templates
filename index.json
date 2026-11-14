@@ -13770,7 +13770,11 @@
     "development",
     "utilities"
    ],
-   "screenshots": [],
+   "screenshots": [
+     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/9router/screenshot-endpoint.png",
+     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/9router/screenshot-combos.png",
+     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/9router/screenshot-usage.png"
+    ],
    "links": [
     "https://github.com/decolua/9router/blob/master/DOCKER.md"
    ],

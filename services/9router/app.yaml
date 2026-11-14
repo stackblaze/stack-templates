@@ -17,11 +17,15 @@ metadata:
       valid key get 401. Use provider API keys only: the upstream app also lists consumer
       subscription logins, browser-cookie providers and proxy pools, which this template
       does not support and which may break those services'' terms. Data (SQLite database,
-      settings, provider keys) lives on the volume at /app/data. The dashboard loads
-      Google Analytics from upstream''s code; there is no setting to switch it off.'
+      settings, provider keys) lives on the volume at /app/data. Upstream defaults
+      to review after sign-in: the no-key "OpenCode Free" provider is always available
+      to every API key, and the Vision and Audio adapters (Combo & Vision Adapter) send
+      image and audio requests to it unless you switch them off or add your own model.
+      The dashboard loads Google Analytics from upstream''s code; there is no setting
+      to switch it off.'
     kubero.dev/template.links: '["https://github.com/decolua/9router/blob/master/DOCKER.md",
       "https://github.com/decolua/9router#readme"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/9router/screenshot-endpoint.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/9router/screenshot-combos.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/9router/screenshot-usage.png"]'
     kubero.dev/template.source: https://github.com/decolua/9router
     kubero.dev/template.categories: '[ "ai", "development", "utilities" ]'
     kubero.dev/template.title: 9Router

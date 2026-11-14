@@ -1,0 +1,19 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      { "waitForSelector": "input[placeholder=\"Enter password\"]", "timeout": 60000 },
+      { "fill": { "input[placeholder=\"Enter password\"]": "${NINEROUTER_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForSelector": "text=Endpoint", "timeout": 30000 }
+    ],
+    "waitAfterMs": 3000
+  },
+  "pages": [
+    { "name": "endpoint", "path": "/dashboard", "waitFor": "text=API Keys", "waitMs": 2500 },
+    { "name": "combos", "path": "/dashboard/combos", "waitFor": "text=Vision Adapter", "waitMs": 2500 },
+    { "name": "usage", "path": "/dashboard/usage", "waitFor": "text=Recent Requests", "waitMs": 3000 }
+  ]
+}
