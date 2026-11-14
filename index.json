@@ -5191,7 +5191,11 @@
     "marketing",
     "work"
    ],
-   "screenshots": [],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typebot/screenshot-editor.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typebot/screenshot-typebots.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typebot/screenshot-results.png"
+   ],
    "links": [
     "https://docs.typebot.io/self-hosting/configuration"
    ],
