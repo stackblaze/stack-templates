@@ -4,13 +4,11 @@ metadata:
   name: infisical
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Open-source secrets management and internal PKI
-      platform for developers and teams.
+    kubero.dev/template.description: "Open-source secrets manager: store, version and sync app secrets across projects and environments, with machine identities for CI and servers, an internal PKI and audit logs."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/icon.png
-    kubero.dev/template.installation: ENCRYPTION_KEY and AUTH_SECRET are generated
-      per deploy. Sign-up is open on first boot; create the admin in the UI.
-    kubero.dev/template.links: '["https://infisical.com/docs/"]'
-    kubero.dev/template.screenshots: '["https://infisical.com/images/og-image.png"]'
+    kubero.dev/template.installation: "The first start creates the instance admin before the app is reachable, so the admin sign-up page is never open to visitors. Sign in with the email in INFISICAL_ADMIN_EMAIL (admin@example.com) and the generated password in INFISICAL_ADMIN_PASSWORD (Variables), then change the email to your own under Personal Settings. The first sign-in opens a short setup (your name, organization name; invite-only sign-up and email login are preselected). Public sign-up is closed: add people from Organization > Access Control, and invitation mail goes out through the Email add-on. Anonymous secret sharing is off (DISABLE_PUBLIC_SECRET_SHARING); signed-in users can still share secrets. Secrets are encrypted with the generated ENCRYPTION_KEY: keep it, because data encrypted with it cannot be read without it. This is the free self-hosted edition (MIT core): SAML/OIDC SSO, custom roles, audit logs, approvals, secret rotation and dynamic secrets need an Infisical license key (LICENSE_KEY)."
+    kubero.dev/template.links: '["https://infisical.com/docs/self-hosting/overview", "https://infisical.com/docs/self-hosting/configuration/envars", "https://infisical.com/docs/cli/overview"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/screenshot-secrets.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/screenshot-overview.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/screenshot-identities.png"]'
     kubero.dev/template.source: https://github.com/Infisical/infisical
     kubero.dev/template.categories: '["security", "development", "work"]'
     kubero.dev/template.title: Infisical
@@ -67,7 +65,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: infisical
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -76,7 +74,9 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: infisical
-          password: infisical
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Required: Infisical's job queues (BullMQ: audit logs, secret syncs,
+  # reminders, rotations) and its cache live in Redis. Injects REDIS_URL.
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -106,8 +106,12 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
-  # Platform email. Infisical already reads SMTP_HOST, SMTP_PORT, and
-  # SMTP_PASSWORD. Map the names that differ. STARTTLS on 587 is the default.
+  # Platform email (README "Email contract"): invitations, email
+  # verification, password resets, new-device and approval notices.
+  # Infisical reads SMTP_HOST, SMTP_PORT and SMTP_PASSWORD as injected; the
+  # sender address is split out of SMTP_FROM by the start command, because
+  # Infisical builds `"SMTP_FROM_NAME" <SMTP_FROM_ADDRESS>` itself. STARTTLS
+  # on 587 (SMTP_REQUIRE_TLS defaults to true).
   - displayName: Email
     icon: /img/addons/email.svg
     id: kubero-smtp
@@ -115,52 +119,149 @@ spec:
     env:
     - name: SMTP_USERNAME
       value: '$(SMTP_USER)'
-    - name: SMTP_FROM_ADDRESS
-      value: '$(SMTP_FROM)'
-    - name: SMTP_FROM_NAME
-      value: Infisical
     resourceDefinitions: {}
   envVars:
+  # Public URL: links in invitation and reset mails, OAuth callbacks.
   - name: SITE_URL
     value: '{{STACKBLAZE_APP_URL}}'
-  - name: NODE_ENV
-    value: production
-  - name: TELEMETRY_ENABLED
-    value: 'false'
   - name: DB_CONNECTION_URI
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
-  # 16-byte hex (openssl rand -hex 16). 32-byte base64 (openssl rand -base64 32).
+  # Root key for the platform's KMS: every secret is encrypted under keys
+  # wrapped by it. 16 random bytes as 32 hex characters (upstream:
+  # `openssl rand -hex 16`). Losing it makes the stored secrets unreadable.
   - name: ENCRYPTION_KEY
     value: '{{STACKBLAZE_GEN_HEX:32}}'
+  # Signs session and machine-identity JWTs (any string; upstream suggests
+  # `openssl rand -base64 32`).
   - name: AUTH_SECRET
-    value: '{{STACKBLAZE_GEN_ALNUM:43}}='
+    value: '{{STACKBLAZE_GEN_ALNUM:48}}'
+  # The instance admin, created by the start command on the first start
+  # through Infisical's own bootstrap API (see the command below).
+  - name: INFISICAL_ADMIN_EMAIL
+    value: admin@example.com
+  - name: INFISICAL_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  - name: INFISICAL_ADMIN_ORGANIZATION
+    value: My Organization
+  # The image defaults telemetry on; the update check only reads the
+  # latest version tag from upstream.
+  - name: TELEMETRY_ENABLED
+    value: 'false'
+  # Anonymous "share a secret" links (POST /api/v1/secret-sharing/shared/public)
+  # would let anyone on the internet store data on this instance. Signed-in
+  # users can still share secrets with links.
+  - name: DISABLE_PUBLIC_SECRET_SHARING
+    value: 'true'
+  # Fits the container's memory limit (the image sets 2048 MB).
+  - name: NODE_OPTIONS
+    value: --max-old-space-size=1024
   extraVolumes: []
   cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
-  # Community standalone image. Docker Hub publishes it as
-  # infisical/infisical (there is no infisical/community repository).
-  # HOST=0.0.0.0 and PORT=8080 are baked into the image. Valkey injects REDIS_URL.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 1536Mi
+  healthcheck:
+    enabled: true
+    path: /api/status
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
+  # Official standalone image (API + web UI on 8080), pinned release.
+  # Debian with bash, curl and node; runs as uid 1001 and keeps no files:
+  # all state is in Postgres and Redis, so there is no volume.
   image:
     containerPort: '8080'
     pullPolicy: IfNotPresent
     repository: docker.io/infisical/infisical
-    tag: v0.165.16
+    tag: v0.167.10
+    command:
+    - /bin/bash
+    - -c
+    - |
+      set -euo pipefail
+      cd /backend
+      log() { echo "[stackblaze] $*"; }
+      # Infisical wants a bare sender address; the platform's SMTP_FROM can
+      # be `Name <addr>`.
+      if [ -z "${SMTP_FROM_ADDRESS:-}" ] && [ -n "${SMTP_FROM:-}" ]; then
+        case "$SMTP_FROM" in
+          *"<"*">"*) SMTP_FROM_ADDRESS=$(printf '%s' "$SMTP_FROM" | sed 's/.*<//; s/>.*//') ;;
+          *) SMTP_FROM_ADDRESS=$SMTP_FROM ;;
+        esac
+        export SMTP_FROM_ADDRESS
+      fi
+      case "${SITE_URL:-}" in http://*|https://*) ;; *) unset SITE_URL ;; esac
+      update-ca-certificates >/dev/null 2>&1 || true
+      # Is the instance set up? Ask Postgres directly (a real login, so this
+      # also waits for the database add-on). "no" until the first admin exists.
+      state() {
+        node -e '
+          const { Client } = require("pg");
+          const c = new Client({ connectionString: process.env.DB_CONNECTION_URI, connectionTimeoutMillis: 5000 });
+          c.connect()
+            .then(() => c.query("SELECT initialized FROM super_admin WHERE id = $1", ["00000000-0000-0000-0000-000000000000"]))
+            .then((r) => { console.log(r.rows[0] && r.rows[0].initialized ? "yes" : "no"); return c.end(); })
+            .catch((e) => { console.log(e.code === "42P01" ? "no" : "wait"); process.exit(0); });'
+      }
+      i=0
+      while :; do
+        s=$(state)
+        [ "$s" != wait ] && break
+        i=$((i+1)); [ "$i" -ge 200 ] && { log "database not reachable"; exit 1; }
+        log "waiting for the database ($i)"; sleep 3
+      done
+      if [ "$s" = no ]; then
+        # First start: the admin sign-up page is open to whoever comes first.
+        # Run the server on localhost only (probes and the edge cannot reach
+        # it), create the admin through the bootstrap API, then restart it on
+        # all interfaces. Bootstrap also closes public sign-up.
+        log "first start: creating the instance admin"
+        HOST=127.0.0.1 node --enable-source-maps dist/main.mjs &
+        pid=$!
+        trap 'kill -TERM "$pid" 2>/dev/null' TERM INT
+        api=http://127.0.0.1:8080/api
+        n=0
+        until curl -fsS -o /dev/null "$api/status"; do
+          kill -0 "$pid" 2>/dev/null || { log "server exited during first start"; exit 1; }
+          n=$((n+1)); [ "$n" -ge 540 ] && { log "server not up"; kill -TERM "$pid"; exit 1; }
+          sleep 1
+        done
+        body=$(node -e 'console.log(JSON.stringify({ email: process.env.INFISICAL_ADMIN_EMAIL, password: process.env.INFISICAL_ADMIN_PASSWORD, organization: process.env.INFISICAL_ADMIN_ORGANIZATION || "My Organization" }))')
+        out=$(curl -sS -X POST -H 'Content-Type: application/json' --data-binary @- "$api/v1/admin/bootstrap" <<<"$body" || true)
+        tok=$(node -e 'let d="";process.stdin.on("data",(c)=>d+=c).on("end",()=>{try{console.log(JSON.parse(d).identity.credentials.token)}catch(e){}})' <<<"$out")
+        if [ -n "$tok" ]; then
+          # Email login only: the Google, GitHub and GitLab buttons need OAuth
+          # apps this deploy doesn't have (Admin > Authentication turns them on).
+          curl -fsS -o /dev/null -X PATCH -H "Authorization: Bearer $tok" -H 'Content-Type: application/json' \
+            --data-binary '{"enabledLoginMethods":["email"]}' "$api/v1/admin/config" \
+            || log "could not limit login methods to email"
+          # Revoke the never-expiring machine-identity token bootstrap returns;
+          # nothing stores it. The identity stays (Access Control) for later use.
+          curl -fsS -o /dev/null -X POST -H 'Content-Type: application/json' \
+            --data-binary @- "$api/v1/auth/token/revoke" <<<"{\"accessToken\":\"$tok\"}" \
+            || log "could not revoke the bootstrap token"
+        fi
+        unset out tok body
+        kill -TERM "$pid" 2>/dev/null || true
+        wait "$pid" || true
+        trap - TERM INT
+        if [ "$(state)" != yes ]; then
+          log "could not create the instance admin; not starting"; exit 1
+        fi
+        log "instance admin created"
+      fi
+      unset INFISICAL_ADMIN_PASSWORD
+      exec node --enable-source-maps dist/main.mjs
     run:
       securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
         readOnlyRootFilesystem: false
-  resources:
-    requests:
-      cpu: 500m
-      memory: 1Gi
-    limits:
-      cpu: '1'
-      memory: 2Gi
-  healthcheck:
-    enabled: true
-    path: /api/status
-    startupSeconds: 300
-    timeoutSeconds: 5
-    periodSeconds: 10
