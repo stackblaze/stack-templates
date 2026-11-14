@@ -5394,11 +5394,11 @@
   },
   {
    "name": "infisical",
-   "description": "Open-source secrets management and internal PKI platform for developers and teams.",
+   "description": "Open-source secrets manager: store, version and sync app secrets across projects and environments, with machine identities for CI and servers, an internal PKI and audit logs.",
    "source": "https://github.com/Infisical/infisical",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@a4698436bdbd1e6fd4a83f478818a5dfc49a5890/services/infisical/icon.png",
    "website": "https://infisical.com/",
-   "installation": "ENCRYPTION_KEY and AUTH_SECRET are generated per deploy. Sign-up is open on first boot; create the admin in the UI.",
+   "installation": "The first start creates the instance admin before the app is reachable, so the admin sign-up page is never open to visitors. Sign in with the email in INFISICAL_ADMIN_EMAIL (admin@example.com) and the generated password in INFISICAL_ADMIN_PASSWORD (Variables), then change the email to your own under Personal Settings. The first sign-in opens a short setup (your name, organization name; invite-only sign-up and email login are preselected). Public sign-up is closed: add people from Organization > Access Control, and invitation mail goes out through the Email add-on. Anonymous secret sharing is off (DISABLE_PUBLIC_SECRET_SHARING); signed-in users can still share secrets. Secrets are encrypted with the generated ENCRYPTION_KEY: keep it, because data encrypted with it cannot be read without it. This is the free self-hosted edition (MIT core): SAML/OIDC SSO, custom roles, audit logs, approvals, secret rotation and dynamic secrets need an Infisical license key (LICENSE_KEY).",
    "architecture": [],
    "categories": [
     "security",
@@ -5406,24 +5406,28 @@
     "work"
    ],
    "screenshots": [
-    "https://infisical.com/images/og-image.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@a4698436bdbd1e6fd4a83f478818a5dfc49a5890/services/infisical/screenshot-secrets.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@a4698436bdbd1e6fd4a83f478818a5dfc49a5890/services/infisical/screenshot-overview.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@a4698436bdbd1e6fd4a83f478818a5dfc49a5890/services/infisical/screenshot-identities.png"
    ],
    "links": [
-    "https://infisical.com/docs/"
+    "https://infisical.com/docs/self-hosting/overview",
+    "https://infisical.com/docs/self-hosting/configuration/envars",
+    "https://infisical.com/docs/cli/overview"
    ],
    "addons": [
     "Cluster",
     "Valkey",
     "Smtp"
    ],
-   "stars": 20000,
-   "forks": 2000,
-   "watchers": 20000,
-   "issues": 0,
-   "last_updated": "2026-06-11T00:00:00Z",
-   "last_pushed": "2026-06-11T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 0,
+   "stars": 30502,
+   "forks": 2424,
+   "watchers": 71,
+   "issues": 903,
+   "last_updated": "2026-11-14T04:08:10Z",
+   "last_pushed": "2026-11-14T04:36:01Z",
+   "created_at": "2022-08-05T13:50:00Z",
+   "size": 2070704,
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/infisical/app.yaml",
