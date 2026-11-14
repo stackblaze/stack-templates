@@ -3,14 +3,23 @@ kind: KuberoApp
 metadata:
   name: metabase
   annotations:
-    kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Metabase is the easy, open-source way for everyone
-      in your company to ask questions and learn from data.
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+    kubero.dev/template.description: Open source business intelligence. Connect a
+      database, ask questions without SQL or with it, and share dashboards, alerts
+      and email subscriptions with your team.
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/icon.png
-    kubero.dev/template.installation: First boot can take several minutes while Metabase
-      initializes its application database.
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/metabase/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/screenshot-question.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/screenshot-metric.png"]'
+    kubero.dev/template.installation: 'Sign in with the email in MB_ADMIN_EMAIL and
+      the password generated in MB_ADMIN_PASSWORD (both under Variables). The template
+      creates this admin on the first start, so the public setup page is never
+      open. The first start runs the application database migrations and takes
+      about 3-4 minutes; later restarts take about a minute. The Sample Database
+      is preloaded; add your own databases in Admin > Databases. Database
+      credentials you save are encrypted with MB_ENCRYPTION_SECRET_KEY, so never
+      change or remove that key. Email (invites, password resets, alerts and
+      dashboard subscriptions) is sent through the Email add-on. If you add a
+      custom domain, set MB_SITE_URL to it so links in emails point there.'
+    kubero.dev/template.links: '["https://www.metabase.com/docs/latest/"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase/screenshot-dashboard.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase/screenshot-question.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase/screenshot-sql.png"]'
     kubero.dev/template.source: https://github.com/metabase/metabase
     kubero.dev/template.categories: '[ "data", "work" ]'
     kubero.dev/template.title: Metabase
@@ -21,6 +30,9 @@ spec:
   name: metabase
   deploymentstrategy: docker
   addons:
+  # Application database (questions, dashboards, users, settings, cached
+  # results). Upstream: "Avoid using [the default H2] database in production"
+  # (docs/installation-and-operation/configuring-application-database.md).
   - displayName: PostgreSQL (CloudNativePG)
     env: []
     icon: /img/addons/pgsql.svg
@@ -67,7 +79,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: metabase
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -76,22 +88,68 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: metabase
-          password: metabase
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Platform email (README "Email contract"): invites, password resets,
+  # question alerts and dashboard subscriptions
+  # (src/metabase/channel/settings.clj, MB_EMAIL_SMTP_*). SMTP_FROM can be
+  # `Name <addr>`; the start command splits it into MB_EMAIL_FROM_ADDRESS and
+  # MB_EMAIL_FROM_NAME, and picks MB_EMAIL_SMTP_SECURITY from the port.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: MB_EMAIL_SMTP_HOST
+      value: '$(SMTP_HOST)'
+    - name: MB_EMAIL_SMTP_PORT
+      value: '$(SMTP_PORT)'
+    - name: MB_EMAIL_SMTP_USERNAME
+      value: '$(SMTP_USER)'
+    - name: MB_EMAIL_SMTP_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: MB_EMAIL_FROM_ADDRESS
+      value: '$(SMTP_FROM)'
+    resourceDefinitions: {}
   envVars:
   - name: MB_DB_TYPE
     value: postgres
-  - name: MB_DB_DBNAME
-    value: '$(PGDATABASE)'
+  - name: MB_DB_HOST
+    value: '$(PGHOST)'
   - name: MB_DB_PORT
     value: '$(PGPORT)'
+  - name: MB_DB_DBNAME
+    value: '$(PGDATABASE)'
   - name: MB_DB_USER
     value: '$(PGUSER)'
   - name: MB_DB_PASS
     value: '$(PGPASSWORD)'
-  - name: MB_DB_HOST
-    value: '$(PGHOST)'
+  # Encrypts saved database credentials and secret settings in the app DB.
+  # Any string of 16+ characters (src/metabase/util/encryption.clj, hashed
+  # with PBKDF2). Changing it later makes those values unreadable.
+  - name: MB_ENCRYPTION_SECRET_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:48}}'
+  # Links in emails, auth redirects and embeds.
+  - name: MB_SITE_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # First admin, created by the start command through /api/setup while
+  # Metabase only listens on 127.0.0.1, so the setup page is never public.
+  # Hex: Metabase's default password rule needs at least one digit.
+  - name: MB_ADMIN_EMAIL
+    value: admin@example.com
+  - name: MB_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_HEX:32}}'
+  # Signs session keys stored in the app DB (new in 0.65; 16+ characters).
+  # Changing it signs everyone out.
+  - name: MB_SESSION_SECRET_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:48}}'
+  - name: MB_ANON_TRACKING_ENABLED
+    value: 'false'
+  # Heap = 70% of the container's memory limit; the rest is metaspace,
+  # threads and buffers. The platform can raise the limit to the plan's
+  # size, so the start command caps the heap at 3 GiB unless JAVA_OPTS
+  # already sets -Xmx.
   - name: JAVA_OPTS
-    value: -XX:MaxRAMPercentage=75.0
+    value: -XX:MaxRAMPercentage=70.0
   extraVolumes: []
   cronjobs: []
   web:
@@ -100,22 +158,119 @@ spec:
     replicaCount: 0
   image:
     containerPort: '3000'
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     repository: docker.io/metabase/metabase
-    tag: latest
+    tag: v0.65.4.3
+    command:
+    - /bin/bash
+    - -c
+    - |
+      set -e
+      # HOME is / for uid 2000; fontconfig (charts in emails) needs a cache dir.
+      export XDG_CACHE_HOME="${XDG_CACHE_HOME:-/tmp/.cache}"
+      # Sender: SMTP_FROM may carry a display name ("Name <addr>").
+      if [ -n "${MB_EMAIL_FROM_ADDRESS:-}" ]; then
+        case "$MB_EMAIL_FROM_ADDRESS" in
+          *"<"*)
+            name="${MB_EMAIL_FROM_ADDRESS%%<*}"
+            addr="${MB_EMAIL_FROM_ADDRESS##*<}"
+            export MB_EMAIL_FROM_ADDRESS="${addr%%>*}"
+            name="$(printf '%s' "$name" | sed 's/^[ "]*//; s/[ "]*$//')"
+            # Metabase refuses ()<>[]:;@/\,." in the sender name.
+            case "$name" in
+              *[\(\)\<\>\[\]:\;@/\\,.\"]*|"") ;;
+              *) export MB_EMAIL_FROM_NAME="${MB_EMAIL_FROM_NAME:-$name}" ;;
+            esac
+            ;;
+        esac
+        export MB_EMAIL_FROM_NAME="${MB_EMAIL_FROM_NAME:-Metabase}"
+        if [ -z "${MB_EMAIL_SMTP_SECURITY:-}" ]; then
+          case "${MB_EMAIL_SMTP_PORT:-}" in
+            465) export MB_EMAIL_SMTP_SECURITY=ssl ;;
+            *) export MB_EMAIL_SMTP_SECURITY=starttls ;;
+          esac
+        fi
+      fi
+      # Heap cap (see JAVA_OPTS).
+      case "${JAVA_OPTS:-}" in
+        *-Xmx*) ;;
+        *)
+          lim="$(cat /sys/fs/cgroup/memory.max 2>/dev/null || echo max)"
+          if [ "$lim" != "max" ] && [ "$((lim / 1048576 * 70 / 100))" -gt 3072 ]; then
+            export JAVA_OPTS="${JAVA_OPTS:-} -Xmx3g"
+          fi
+          ;;
+      esac
+      # Wait for a real database login, then see whether an admin exists.
+      cat > /tmp/mb-state.clj <<'CLJ'
+      (Class/forName "org.postgresql.Driver")
+      (let [e #(System/getenv %)
+            url (str "jdbc:postgresql://" (e "MB_DB_HOST") ":" (e "MB_DB_PORT") "/" (e "MB_DB_DBNAME"))]
+        (loop [i 0]
+          (let [r (try
+                    (with-open [c (java.sql.DriverManager/getConnection url (e "MB_DB_USER") (e "MB_DB_PASS"))]
+                      (try
+                        (with-open [s (.createStatement c)
+                                    rs (.executeQuery s "select count(*) from core_user where id <> 13371338")]
+                          (.next rs)
+                          (if (pos? (.getLong rs 1)) "ready" "empty"))
+                        (catch java.sql.SQLException _ "empty")))
+                    (catch Exception x
+                      (binding [*out* *err*] (println "waiting for the database:" (.getMessage x)))
+                      nil))]
+            (cond
+              r (do (println r) (System/exit 0))
+              (> i 150) (System/exit 2)
+              :else (do (Thread/sleep 2000) (recur (inc i)))))))
+      CLJ
+      state="$(java -cp /app/metabase.jar clojure.main /tmp/mb-state.clj)"
+      if [ "$state" = "empty" ]; then
+        echo "First start: creating the admin on 127.0.0.1 before Metabase listens publicly"
+        MB_JETTY_HOST=127.0.0.1 /app/run_metabase.sh &
+        pid=$!
+        until curl -sf http://127.0.0.1:3000/api/health >/dev/null; do
+          kill -0 "$pid" 2>/dev/null || { echo "Metabase exited during first start"; exit 1; }
+          sleep 2
+        done
+        token="$(curl -sf http://127.0.0.1:3000/api/session/properties | sed -n 's/.*"setup-token":"\([^"]*\)".*/\1/p')"
+        [ -n "$token" ] || { echo "No setup token"; kill "$pid"; exit 1; }
+        printf '{"token":"%s","user":{"email":"%s","password":"%s","first_name":"Admin","last_name":"User"},"prefs":{"site_name":"Metabase","site_locale":"en"}}' \
+          "$token" "$MB_ADMIN_EMAIL" "$MB_ADMIN_PASSWORD" > /tmp/mb-setup.json
+        code="$(curl -s -o /tmp/mb-setup.out -w '%{http_code}' -H 'Content-Type: application/json' \
+          --data @/tmp/mb-setup.json http://127.0.0.1:3000/api/setup)"
+        rm -f /tmp/mb-setup.json
+        curl -sf http://127.0.0.1:3000/api/session/properties | grep -q '"has-user-setup":true' \
+          || { echo "Admin setup failed (HTTP $code): $(head -c 300 /tmp/mb-setup.out)"; kill "$pid"; exit 1; }
+        rm -f /tmp/mb-setup.out
+        echo "Admin created; restarting Metabase on all interfaces"
+        kill "$pid"
+        wait "$pid" || true
+      fi
+      exec /app/run_metabase.sh
     run:
+      # Upstream's entrypoint runs Metabase as uid 2000 when started as
+      # root; start as 2000 directly (its non-root branch).
       securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
         readOnlyRootFilesystem: false
+        runAsGroup: 2000
+        runAsNonRoot: true
+        runAsUser: 2000
+  # Measured on dev (0.65.4.3): ~1.6 GiB RSS after start, ~1.9 GiB after
+  # syncing the Sample Database and rendering dashboards.
   resources:
     requests:
       cpu: 500m
-      memory: 1Gi
-    limits:
-      cpu: '1'
       memory: 2Gi
+    limits:
+      cpu: '2'
+      memory: 4Gi
   healthcheck:
     enabled: true
-    path: /
-    startupSeconds: 300
+    path: /api/health
+    startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
