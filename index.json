@@ -11369,7 +11369,11 @@
     "productivity",
     "security"
    ],
-   "screenshots": [],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/screenshot-results.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/screenshot-images.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/screenshot-preferences.png"
+   ],
    "links": [
     "https://docs.searxng.org/admin/installation-docker.html",
     "https://docs.searxng.org/admin/settings/index.html",
