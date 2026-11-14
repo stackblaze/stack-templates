@@ -13835,7 +13835,7 @@
    "name": "Supabase",
    "description": "The open-source Postgres development platform: database, Auth, instant APIs, Realtime, Storage and Edge Functions, managed from Studio.",
    "source": "https://github.com/supabase/supabase",
-   "icon": "https://avatars.githubusercontent.com/u/54469796?s=200",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/icon.png",
    "website": "https://supabase.com/",
    "installation": "Deploys Supabase as one group of services: the Kong gateway (the public URL), Studio, Auth, PostgREST (plus a read-replica twin), Realtime, Storage, postgres-meta, Edge Functions and imgproxy, with its own PostgreSQL, a RustFS bucket and the Email add-on. Open the gateway URL and sign in to Studio as DASHBOARD_USERNAME (supabase) with DASHBOARD_PASSWORD, generated per deploy (on the gateway and Studio cards). Every secret is generated per deploy: JWT_SECRET (on every card), the database passwords, the sb_publishable_ / sb_secret_ API keys and the Realtime and pg-meta keys. The legacy anon and service_role keys are signed from JWT_SECRET when the services start; Studio shows them under Project Settings > API Keys. Keep the secret and service_role keys server-side: they bypass Row Level Security. Edge Functions run in a Kata micro-VM. Data API reads (GET/HEAD on /rest/v1) are served from the Postgres replicas; set KONG_REST_READ_REPLICAS=off on the gateway to keep every read on the primary. New users confirm their email through the Email add-on (GOTRUE_MAILER_AUTOCONFIRM=false on the Auth card).",
    "architecture": [],
@@ -13843,7 +13843,11 @@
     "development",
     "data"
    ],
-   "screenshots": [],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/screenshot-table.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/screenshot-auth.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/screenshot-storage.png"
+   ],
    "links": [
     "https://supabase.com/docs/guides/self-hosting/docker"
    ],
