@@ -12816,7 +12816,7 @@
    "name": "baserow",
    "description": "Open-source no-code database: build relational tables in a spreadsheet-like grid, with forms, gallery views, a REST API and real-time collaboration, backed by Postgres.",
    "source": "https://github.com/baserow/baserow",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7096de1af6a18d2d03866242bb6d2705fbdec057/services/baserow/icon.png",
    "website": "https://baserow.io",
    "installation": "First start creates the instance admin before the app is reachable, so nobody can claim a fresh instance. Sign in with admin@example.com (BASEROW_ADMIN_EMAIL) and the generated password in BASEROW_ADMIN_PASSWORD (both under Variables), then change the email and password under My settings. Public sign-up is off: invite people to a workspace (invited people can still create their account), or allow sign-up under Admin > Settings. Uploaded files are stored on the data volume. With a custom domain, set BASEROW_PUBLIC_URL to it and redeploy: Baserow serves its API only on that address. Emails (workspace invites, password resets, notifications) go through the StackBlaze Email add-on. This is the free self-hosted edition: Premium and Enterprise features (for example Kanban and Calendar views, the AI assistant) stay locked until you add a Baserow licence under Admin > Licenses; the Enterprise code step for automations is switched off by BASEROW_ENTERPRISE_CODE_RUNNER_DEFAULT_TYPE.",
    "architecture": [],
@@ -12826,9 +12826,9 @@
     "work"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/screenshot-grid.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/screenshot-gallery.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/screenshot-record.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7096de1af6a18d2d03866242bb6d2705fbdec057/services/baserow/screenshot-grid.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7096de1af6a18d2d03866242bb6d2705fbdec057/services/baserow/screenshot-gallery.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7096de1af6a18d2d03866242bb6d2705fbdec057/services/baserow/screenshot-record.png"
    ],
    "links": [
     "https://baserow.io/docs/index",
