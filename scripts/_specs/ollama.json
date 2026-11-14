@@ -4,7 +4,7 @@
   "description": "Run large language models locally — Llama 3, Mistral, Gemma, Phi, and 100+ models via a simple OpenAI-compatible REST API.",
   "source": "https://github.com/ollama/ollama",
   "website": "https://ollama.com",
-  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/icon.png",
+  "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/76f697806c6548f32b1a865832cbe1bb95ae0394/services/ollama/icon.png",
   "categories": [
     "ai",
     "utilities",

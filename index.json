@@ -1346,37 +1346,41 @@
   },
   {
    "name": "documenso",
-   "description": "The Open Source DocuSign Alternative.",
+   "description": "Send documents for e-signature, sign them in the browser and keep a digitally signed PDF with a full audit trail. Open source alternative to DocuSign.",
    "source": "https://github.com/documenso/documenso",
-   "icon": "https://avatars.githubusercontent.com/u/127681099",
-   "website": "https://www.documenso.com/",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/icon.png",
+   "website": "https://documenso.com/",
    "installation": "",
    "architecture": [
     "linux/amd64",
     "linux/arm64/v8"
    ],
    "categories": [
-    "security",
     "work",
-    "productivity"
+    "productivity",
+    "security"
    ],
    "screenshots": [
-    "https://framerusercontent.com/images/x66EcGbzu3IQEriNXuRmOBonGyo.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-documents.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-signing.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-completed.png"
    ],
    "links": [
-    "https://docs.documenso.com/"
+    "https://docs.documenso.com/docs/self-hosting"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Tenant",
+    "Smtp"
    ],
-   "stars": 12835,
-   "forks": 2594,
-   "watchers": 12835,
-   "issues": 190,
-   "last_updated": "2026-05-11T10:10:36Z",
-   "last_pushed": "2026-05-11T11:04:16Z",
+   "stars": 15760,
+   "forks": 3477,
+   "watchers": 15760,
+   "issues": 276,
+   "last_updated": "2026-11-14T01:22:55Z",
+   "last_pushed": "2026-11-14T02:06:53Z",
    "created_at": "2023-03-12T16:28:56Z",
-   "size": 256357,
+   "size": 294464,
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/app.yaml",
@@ -5302,24 +5306,23 @@
   },
   {
    "name": "Plane Project Management",
-   "description": "Plan projects, prioritize issues, and deliver work through cycles, modules, and roadmaps.\nA streamlined alternative to Jira and Linear.",
+   "description": "Plan projects, track issues and ship work through cycles, modules and pages. Open source project management with LDAP, OIDC and SAML sign-in, time tracking and workflows included.",
    "source": "https://github.com/stackblaze/plane",
-   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/icon.png",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/af050105511720bddc3c0b909b1725cd93411ce5/services/plane/icon.png",
    "website": "https://plane.so/",
-   "installation": "Deploys the stackblaze/plane fork as a multi-service group (api, worker, beat, web, space, live, proxy) with communal PostgreSQL, Valkey, RustFS, and Platform Email. Images are ghcr.io/stackblaze/plane-*:latest. The instance is configured from env on every API boot (ADMIN_EMAIL / ADMIN_PASSWORD / WORKSPACE_NAME, ENABLE_*, EMAIL_*); the /god-mode admin app is not deployed. Sign in at the proxy URL with those credentials. With Platform Email connected, users sign in with an emailed code, no password needed. Rotate ADMIN_PASSWORD, SECRET_KEY, LIVE_SERVER_SECRET_KEY, and RustFS credentials.",
-   "architecture": [],
+   "installation": "Seven services (api, worker, beat, web, space, live and the public proxy) from github.com/stackblaze/plane, Plane v1.4.3, with PostgreSQL, Valkey, an S3 bucket and Email. Open the proxy URL and sign in with ADMIN_EMAIL and the generated ADMIN_PASSWORD (Variables on the api service); the admin and a first workspace are created on the first start. Sign-up is closed: invite members from Workspace settings, and they sign in with an emailed code. Instance settings (sign-in methods, SMTP, LDAP/OIDC/SAML) are read from the api environment on every start; there is no /god-mode app. Telemetry is off.",
+   "architecture": [
+    "linux/amd64"
+   ],
    "categories": [
     "productivity",
     "work",
     "collaboration"
    ],
    "screenshots": [
-    "https://media.stackblaze.cloud/templates/plane/demo.mp4",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/dashboard.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-all-projects.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-home.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-analytics.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-settings.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/af050105511720bddc3c0b909b1725cd93411ce5/services/plane/screenshot-board.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/af050105511720bddc3c0b909b1725cd93411ce5/services/plane/screenshot-cycles.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/af050105511720bddc3c0b909b1725cd93411ce5/services/plane/screenshot-page.png"
    ],
    "links": [
     "https://developers.plane.so/"
@@ -5327,18 +5330,17 @@
    "addons": [
     "Cluster",
     "Valkey",
-    "RabbitmqCluster",
     "Tenant",
     "Smtp"
    ],
-   "stars": 47000,
-   "forks": 4700,
-   "watchers": 47000,
-   "issues": 0,
-   "last_updated": "2026-06-11T00:00:00Z",
-   "last_pushed": "2026-06-11T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 0,
+   "stars": 62420,
+   "forks": 6395,
+   "watchers": 187,
+   "issues": 1152,
+   "last_updated": "2026-11-13T23:07:24Z",
+   "last_pushed": "2026-11-13T13:05:26Z",
+   "created_at": "2022-11-19T12:55:01Z",
+   "size": 219817,
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/app.yaml",
@@ -8109,7 +8111,7 @@
    "source": "https://github.com/stackblaze/libredesk",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/libredesk/icon.png",
    "website": "https://libredesk.io",
-   "installation": "Image ghcr.io/stackblaze/libredesk (Stackblaze fork of LibreDesk). First boot installs the schema and creates the System user. Sign in with email System and the password in LIBREDESK_SYSTEM_USER_PASSWORD (generated once at create; change it after login). Then set the public URL in Admin settings — app.root_url defaults to http://localhost:9000, which breaks links and the chat widget. The encryption key is generated once; do not change it after data exists. Uploads persist on the shared volume. Notification email is stored in Admin → Settings: copy SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, and SMTP_FROM (STARTTLS on 587). Customer inboxes are added in the LibreDesk admin.",
+   "installation": "Image ghcr.io/stackblaze/libredesk (Stackblaze fork of LibreDesk). First boot installs the schema and creates the System user. Sign in with email System and the password in LIBREDESK_SYSTEM_USER_PASSWORD (generated once at create; change it after login). Then set the public URL in Admin settings \u2014 app.root_url defaults to http://localhost:9000, which breaks links and the chat widget. The encryption key is generated once; do not change it after data exists. Uploads persist on the shared volume. Notification email is stored in Admin \u2192 Settings: copy SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD, and SMTP_FROM (STARTTLS on 587). Customer inboxes are added in the LibreDesk admin.",
    "architecture": [
     "linux/amd64"
    ],
@@ -12425,9 +12427,9 @@
   },
   {
    "name": "ollama",
-   "description": "Run large language models locally \u2014 Llama 3, Mistral, Gemma, Phi, and 100+ models via a simple OpenAI-compatible REST API.",
+   "description": "Run open models like Llama, Qwen, Gemma and Mistral on your own server, with Ollama's REST API and an OpenAI-compatible endpoint. Private to your project, for your other apps to use.",
    "source": "https://github.com/ollama/ollama",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/icon.png",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/76f697806c6548f32b1a865832cbe1bb95ae0394/services/ollama/icon.png",
    "website": "https://ollama.com",
    "installation": "",
    "architecture": [],
@@ -12437,21 +12439,24 @@
     "development"
    ],
    "screenshots": [
-    "https://ollama.com/public/og.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/76f697806c6548f32b1a865832cbe1bb95ae0394/services/ollama/screenshot-chat.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/76f697806c6548f32b1a865832cbe1bb95ae0394/services/ollama/screenshot-openai.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/76f697806c6548f32b1a865832cbe1bb95ae0394/services/ollama/screenshot-private.png"
    ],
    "links": [
     "https://github.com/ollama/ollama",
+    "https://docs.ollama.com",
     "https://ollama.com/library"
    ],
    "addons": [],
-   "stars": 120000,
-   "forks": 0,
-   "watchers": 120000,
-   "issues": 0,
-   "last_updated": "2026-06-13T00:00:00Z",
-   "last_pushed": "2026-06-13T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 1000,
+   "stars": 186899,
+   "forks": 19070,
+   "watchers": 186899,
+   "issues": 4651,
+   "last_updated": "2026-11-14T00:00:10Z",
+   "last_pushed": "2026-11-14T00:00:10Z",
+   "created_at": "2023-06-26T19:39:32Z",
+   "size": 97750,
    "language": "Go",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/app.yaml",
@@ -12518,11 +12523,11 @@
   },
   {
    "name": "litellm",
-   "description": "LLM proxy and gateway \u2014 unified OpenAI-compatible API for 100+ providers including OpenAI, Anthropic, Gemini, Ollama, and Bedrock with cost tracking and rate limiting.",
+   "description": "LLM gateway with one OpenAI-compatible API for 100+ model providers. Virtual keys, budgets, rate limits, spend tracking and an admin UI.",
    "source": "https://github.com/BerriAI/litellm",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/icon.png",
-   "website": "https://litellm.ai",
-   "installation": "",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/icon.png",
+   "website": "https://www.litellm.ai/",
+   "installation": "Open the app URL and sign in as admin with the password generated in UI_PASSWORD (under Variables). Every API call needs the master key in LITELLM_MASTER_KEY or a virtual key; nothing is open without one. Provider keys are stored encrypted with LITELLM_SALT_KEY, so never change it after adding a model.",
    "architecture": [],
    "categories": [
     "ai",
@@ -12530,22 +12535,25 @@
     "utilities"
    ],
    "screenshots": [
-    "https://framerusercontent.com/images/DbFHR1t71NpmaSxIqej1LKWzD4.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-keys.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-logs.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-models.png"
    ],
    "links": [
     "https://docs.litellm.ai/"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
-   "stars": 24000,
-   "forks": 0,
-   "watchers": 24000,
-   "issues": 0,
-   "last_updated": "2026-06-13T00:00:00Z",
-   "last_pushed": "2026-06-13T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 1000,
+   "stars": 63221,
+   "forks": 13269,
+   "watchers": 63221,
+   "issues": 5193,
+   "last_updated": "2026-11-14T00:30:39Z",
+   "last_pushed": "2026-11-14T01:19:18Z",
+   "created_at": "2023-07-27T00:09:52Z",
+   "size": 2966389,
    "language": "Python",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/app.yaml",
@@ -13631,10 +13639,10 @@
     "data"
    ],
    "screenshots": [
-     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-editor.png",
-     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-website.png",
-     "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-post.png"
-    ],
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-editor.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-website.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/screenshot-post.png"
+   ],
    "links": [
     "https://payloadcms.com/docs"
    ],
@@ -13821,10 +13829,10 @@
     "utilities"
    ],
    "screenshots": [
-     "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-agent-flow.png",
-     "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-rag-flow.png",
-     "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-flows.png"
-    ],
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-agent-flow.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-rag-flow.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-flows.png"
+   ],
    "links": [
     "https://docs.langflow.org/"
    ],
@@ -13902,6 +13910,51 @@
      "label": "Standard",
      "default": true,
      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/app.yaml"
+    }
+   ]
+  },
+  {
+   "name": "SillyTavern",
+   "description": "Self-hosted chat and roleplay front end for LLMs. Bring your own model (OpenAI, Claude, OpenRouter, Ollama and more), with characters, group chats, lorebooks and per-user accounts.",
+   "source": "https://github.com/SillyTavern/SillyTavern",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/icon.png",
+   "website": "https://sillytavern.app",
+   "installation": "Sign in with the user handle default-user and the password generated in ST_ADMIN_PASSWORD (under Variables). There is no public sign-up: the admin adds users in User Settings > Manage users. Add your model API keys in the API Connections panel.",
+   "architecture": [],
+   "categories": [
+    "ai",
+    "utilities"
+   ],
+   "screenshots": [
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/screenshot-chat.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/screenshot-connections.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/screenshot-users.png"
+   ],
+   "links": [
+    "https://docs.sillytavern.app/"
+   ],
+   "addons": [],
+   "stars": 35602,
+   "forks": 6705,
+   "watchers": 35602,
+   "issues": 711,
+   "last_updated": "2026-11-14T01:43:19Z",
+   "last_pushed": "2026-10-02T22:05:54Z",
+   "created_at": "2023-02-09T10:19:24Z",
+   "size": 215670,
+   "language": "JavaScript",
+   "gitops": false,
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/app.yaml",
+   "status": "active",
+   "license": "AGPL-3.0",
+   "spdx_id": "AGPL-3.0",
+   "dirname": "sillytavern",
+   "deploymentTypes": [
+    {
+     "id": "standard",
+     "label": "Standard",
+     "default": true,
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/app.yaml"
     }
    ]
   }
