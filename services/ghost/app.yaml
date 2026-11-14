@@ -6,7 +6,7 @@ metadata:
     kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
     kubero.dev/template.description: Ghost is a powerful app for new-media creators
       to publish, share, and grow a business around their content.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghost/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@560f0107df61bbb5dfb820054ba2688eac8d1697/services/ghost/icon.png
     kubero.dev/template.installation: 'Sign in at /ghost with the email in GHOST_ADMIN_EMAIL
       and the password generated in GHOST_ADMIN_PASSWORD (both under Variables).
       The template creates this owner on the first start while Ghost only listens
@@ -21,7 +21,7 @@ metadata:
       in Settings > Newsletters; the Email add-on does not send them. If you add
       a custom domain, set url to it.'
     kubero.dev/template.links: '["https://ghost.org/docs/", "https://ghost.org/docs/config/"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghost/screenshot-site.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghost/screenshot-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghost/screenshot-posts.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@560f0107df61bbb5dfb820054ba2688eac8d1697/services/ghost/screenshot-site.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@560f0107df61bbb5dfb820054ba2688eac8d1697/services/ghost/screenshot-editor.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@560f0107df61bbb5dfb820054ba2688eac8d1697/services/ghost/screenshot-posts.png"]'
     kubero.dev/template.source: https://github.com/TryGhost/Ghost
     kubero.dev/template.categories: '["cms", "work"]'
     kubero.dev/template.title: Ghost
