@@ -1,0 +1,38 @@
+#!/bin/bash
+# StackBlaze: start Moodle.
+#   web (default): wait for the database, install or upgrade Moodle from the
+#     command line, then start Apache. Apache never starts on a half-installed
+#     site, so the web installer is never reachable.
+#   worker (PROC_TYPE=worker): run Moodle's cron every minute (scheduled and
+#     background tasks: forum and notification mail, completion, cleanup).
+set -euo pipefail
+
+as_www() { setpriv --reuid=www-data --regid=www-data --init-groups "$@"; }
+
+# The volume may arrive root-owned.
+if [ "$(stat -c %U /var/www/moodledata)" != "www-data" ]; then
+  chown www-data:www-data /var/www/moodledata
+fi
+
+as_www php /usr/local/lib/stackblaze/install.php wait
+
+if [ "${PROC_TYPE:-web}" = "worker" ]; then
+  until as_www php /usr/local/lib/stackblaze/install.php ready; do
+    echo "[stackblaze] cron: waiting for the web pod to finish installing Moodle"
+    sleep 15
+  done
+  echo "[stackblaze] cron: running admin/cli/cron.php every minute"
+  trap 'exit 0' TERM INT
+  while true; do
+    start=$(date +%s)
+    as_www php /var/www/moodle/admin/cli/cron.php --keep-alive=0 > /tmp/cron.log 2>&1 \
+      || { echo "[stackblaze] cron run failed:"; tail -n 20 /tmp/cron.log; }
+    # Error lines only; the full log of the last run is /tmp/cron.log.
+    grep -E 'Exception|Fatal|Error' /tmp/cron.log | head -n 5 || true
+    left=$(( 60 - ($(date +%s) - start) ))
+    if [ "$left" -gt 0 ]; then sleep "$left" & wait $! || true; fi
+  done
+fi
+
+as_www php /usr/local/lib/stackblaze/install.php install
+exec apache2-foreground
