@@ -1,0 +1,38 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/auth/login",
+    "steps": [
+      { "waitForSelector": "input[name=email]", "timeout": 60000 },
+      { "fill": { "input[name=email]": "${POSTIZ_ADMIN_EMAIL}" } },
+      { "fill": { "input[name=password]": "${POSTIZ_ADMIN_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForURL": "**/launches**", "timeout": 60000 }
+    ],
+    "waitAfterMs": 3000
+  },
+  "pages": [
+    {
+      "name": "calendar",
+      "path": "/launches",
+      "waitFor": "text=Create Post",
+      "waitMs": 3000,
+      "steps": [{ "click": "text=Month" }, { "sleep": 2000 }]
+    },
+    {
+      "name": "composer",
+      "path": "/launches",
+      "waitFor": "text=Create Post",
+      "waitMs": 3000,
+      "steps": [{ "click": "text=Month" }, { "sleep": 1500 }, { "click": "text=/Every oat latte/" }, { "waitForSelector": "text=Post Preview", "timeout": 30000 }, { "sleep": 3000 }]
+    },
+    {
+      "name": "channels",
+      "path": "/launches",
+      "waitFor": "text=Create Post",
+      "waitMs": 3000,
+      "steps": [{ "click": "text=Add Channel" }, { "waitForSelector": "text=ListMonk", "timeout": 30000 }, { "sleep": 2000 }]
+    }
+  ]
+}
