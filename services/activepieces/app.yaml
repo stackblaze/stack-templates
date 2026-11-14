@@ -1,24 +1,34 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  name: activepieces
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Your friendliest open source all-in-one automation\
-      \ tool \u2728 Workflow automation tool 100+ integration / Enterprise automation\
-      \ tool / Zapier Alternative"
+    kubero.dev/template.description: "Open-source automation platform: build flows and AI agents from hundreds of pieces (integrations), webhooks, schedules and your own code steps. Runs in a Kata micro-VM."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/activepieces/icon.png
-    kubero.dev/template.installation: ''
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://github.com/activepieces/activepieces/assets/1812998/e75616ce-7801-45b7-b3fa-eba778bebde3"]'
+    kubero.dev/template.installation: "Sign in at the app URL with ADMIN_EMAIL (admin@example.com unless you changed it) and the password generated in ADMIN_PASSWORD (under Variables). This owner account is created on first start, before the app takes any traffic, so nobody can claim the instance first; sign-up is closed afterwards and other people join by invitation (Platform admin > Users > Invite); invitations are emailed through the Email add-on. ADMIN_EMAIL/ADMIN_PASSWORD are only used on the very first start. The Community Edition has no password-reset email, so keep ADMIN_PASSWORD or change it in your profile. Flows, runs, connections and uploaded files are stored in the Postgres add-on (connections encrypted with AP_ENCRYPTION_KEY: never change it after the first start); the Valkey add-on holds the job queue. Code steps run unsandboxed (AP_EXECUTION_MODE=UNSANDBOXED, so they can use npm packages and the network) inside the app's own Kata micro-VM: anyone who can edit flows can run code in the app, so only invite people you trust. Webhook URLs use AP_FRONTEND_URL. Telemetry is off. Licence: MIT (Community Edition; enterprise features such as SSO, project roles and audit logs need an Activepieces licence). Activepieces 0.93.0."
+    kubero.dev/template.links: '["https://www.activepieces.com/docs", "https://github.com/activepieces/activepieces"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/activepieces/screenshot-automations.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/activepieces/screenshot-builder.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/activepieces/screenshot-run.png"]'
     kubero.dev/template.source: https://github.com/activepieces/activepieces
-    kubero.dev/template.categories: '["productivity", "development", "work"]'
+    kubero.dev/template.categories: '["automation", "productivity", "ai"]'
     kubero.dev/template.title: Activepieces
     kubero.dev/template.website: https://www.activepieces.com/
   labels:
     manager: kubero
-  name: activepieces
 spec:
+  name: activepieces
+  deploymentstrategy: docker
+  # Kata micro-VM (Dean, 2026-11-14): Activepieces runs flow code (Code steps,
+  # pieces, custom pieces the admin installs) in an engine process forked as
+  # root in this container, unsandboxed. The VM keeps that code off the shared
+  # node kernel. Under Kata the limits below are the VM's size.
+  runtimeClass: kata-qemu-runtime-rs
+  exposeInternet: true
   addons:
+  # Postgres holds everything: users, flows, runs, encrypted connections and
+  # files (AP_FILE_STORAGE_LOCATION defaults to DB). `vector` is created here as
+  # the superuser; the app's boot-time knowledge-base check then finds it
+  # (without it the knowledge base is disabled with a warning).
   - displayName: PostgreSQL (CloudNativePG)
     env: []
     icon: /img/addons/pgsql.svg
@@ -46,12 +56,12 @@ spec:
               memory: 1Gi
           bootstrap:
             initdb:
-              database: postgresql
+              database: activepieces
               owner: activepieces
               secret:
                 name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
-              - CREATE EXTENSION IF NOT EXISTS vector;
+              - CREATE EXTENSION IF NOT EXISTS vector
           enableSuperuserAccess: true
           superuserSecret:
             name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
@@ -63,7 +73,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: activepieces
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -72,7 +82,8 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: activepieces
-          password: activepieces
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Job queue (BullMQ), locks and caches. Required. REDIS_URL is injected.
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -102,67 +113,169 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  # Platform email (see README "Email contract"): invitations. The sender
+  # (AP_SMTP_SENDER_EMAIL / _NAME) is derived from SMTP_FROM by the start
+  # command, because Activepieces writes "<name> <<email>>" itself. Without the
+  # add-on, invitations show a link to copy instead.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: AP_SMTP_HOST
+      value: '$(SMTP_HOST)'
+    - name: AP_SMTP_PORT
+      value: '$(SMTP_PORT)'
+    - name: AP_SMTP_USERNAME
+      value: '$(SMTP_USER)'
+    - name: AP_SMTP_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    resourceDefinitions: {}
   cronjobs: []
-  deploymentstrategy: docker
   envVars:
-  - name: AP_POSTGRES_DATABASE
-    value: '$(PGDATABASE)'
-  - name: AP_POSTGRES_PASSWORD
-    value: '$(PGPASSWORD)'
-  - name: AP_POSTGRES_USERNAME
-    value: '$(PGUSER)'
-  - name: AP_ENGINE_EXECUTABLE_PATH
-    value: dist/packages/engine/main.js
-  - name: AP_JWT_SECRET
-    value: secret
-  - name: AP_ENVIRONMENT
-    value: prod
-  - name: AP_FRONTEND_URL
-    value: http://activepieces.lacolhost.com
-  - name: AP_WEBHOOK_TIMEOUT_SECONDS
-    value: '30'
-  - name: AP_TRIGGER_DEFAULT_POLL_INTERVAL
-    value: '5'
-  - name: AP_REDIS_HOST
-    value: '$(REDISHOST)'
-  - name: AP_REDIS_PORT
-    value: '$(REDISPORT)'
-  - name: AP_SANDBOX_RUN_TIME_SECONDS
-    value: '600'
-  - name: AP_TELEMETRY_ENABLED
-    value: 'true'
-  - name: AP_TEMPLATES_SOURCE_URL
-    value: https://cloud.activepieces.com/api/v1/flow-templates
   - name: AP_POSTGRES_HOST
     value: '$(PGHOST)'
   - name: AP_POSTGRES_PORT
     value: '$(PGPORT)'
-  - name: AP_REDIS_PASSWORD
-    value: activepieces
+  - name: AP_POSTGRES_DATABASE
+    value: '$(PGDATABASE)'
+  - name: AP_POSTGRES_USERNAME
+    value: '$(PGUSER)'
+  - name: AP_POSTGRES_PASSWORD
+    value: '$(PGPASSWORD)'
+  - name: AP_REDIS_URL
+    value: '$(REDIS_URL)'
+  # 32 characters (upstream: `openssl rand -hex 16`); encrypts every stored
+  # connection. Never change it after the first start.
   - name: AP_ENCRYPTION_KEY
-    value: 0123456789abcdef0123456789abcdef
+    value: '{{STACKBLAZE_GEN_HEX:32}}'
+  # Signs user and worker tokens (the image derives AP_WORKER_TOKEN from it).
+  - name: AP_JWT_SECRET
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
+  - name: AP_FRONTEND_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  - name: AP_ENVIRONMENT
+    value: prod
+  - name: AP_TELEMETRY_ENABLED
+    value: 'false'
+  # Upstream default. Code steps keep npm packages and the network; the Kata VM
+  # is the boundary (SANDBOX_PROCESS would need a privileged container).
+  - name: AP_EXECUTION_MODE
+    value: UNSANDBOXED
+  - name: AP_NETWORK_MODE
+    value: UNRESTRICTED
+  # Two flow runs at a time: each run's engine may use up to 1 GiB
+  # (AP_SANDBOX_MEMORY_LIMIT), and the VM has 4 GiB.
+  - name: AP_WORKER_CONCURRENCY
+    value: '2'
+  - name: AP_WEBHOOK_TIMEOUT_SECONDS
+    value: '30'
+  - name: AP_TRIGGER_DEFAULT_POLL_INTERVAL
+    value: '5'
+  # Owner account, created by the start command on the first start (before the
+  # pod is Ready), so the first visitor can't claim the instance.
+  - name: ADMIN_EMAIL
+    value: admin@example.com
+  - name: ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
   extraVolumes: []
-  image:
-    containerPort: '80'
-    pullPolicy: Always
-    repository: ghcr.io/activepieces/activepieces
-    run:
-      command: node index.js
-      readOnlyAppStorage: true
-      repository: docker.io/library/node
-      securityContext:
-        allowPrivilegeEscalation: false
-        capabilities:
-          add: []
-          drop: []
-        readOnlyRootFilesystem: false
-        runAsGroup: 0
-        runAsNonRoot: false
-        runAsUser: 0
-      tag: latest
-    tag: latest
-  name: activepieces
   web:
     replicaCount: 1
+  # The API and the worker run in the same container (upstream's default
+  # AP_CONTAINER_TYPE=WORKER_AND_APP), so no separate worker pod.
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: '2'
+      memory: 4Gi
+  healthcheck:
+    enabled: true
+    path: /api/v1/health
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '80'
+    pullPolicy: IfNotPresent
+    repository: docker.io/activepieces/activepieces
+    tag: 0.93.0
+    # Owner bootstrap. On the first start (no user in Postgres yet) the app is
+    # started once on an internal port that the Service and probes don't use,
+    # the owner is created through its API, and that run is stopped. Only then
+    # does the app listen on :80, so the instance is never reachable unclaimed.
+    # Later starts skip straight to the image's own entrypoint (run without
+    # arguments, so it still generates AP_WORKER_TOKEN).
+    command:
+    - tini
+    - -s
+    - --
+    - /bin/sh
+    - -c
+    - |
+      if [ -n "${SMTP_FROM:-}" ]; then
+        case "$SMTP_FROM" in
+          *"<"*) a=${SMTP_FROM##*<}; export AP_SMTP_SENDER_EMAIL=${a%%>*}
+                 n=$(printf '%s' "${SMTP_FROM%%<*}" | sed 's/^[ "]*//; s/[ "]*$//') ;;
+          *) export AP_SMTP_SENDER_EMAIL=$SMTP_FROM; n= ;;
+        esac
+        export AP_SMTP_SENDER_NAME="${n:-Activepieces}"
+      fi
+      cd /usr/src/app
+      # pieces/code build cache (rebuilt after a restart); the worker logs an
+      # error at boot if it doesn't exist yet
+      mkdir -p cache
+      users=$(node -e '
+      const { Client } = require("./packages/server/api/node_modules/pg");
+      const e = process.env;
+      (async () => {
+        for (let i = 0; i < 150; i++) {
+          const c = new Client({ host: e.AP_POSTGRES_HOST, port: +e.AP_POSTGRES_PORT, user: e.AP_POSTGRES_USERNAME,
+            password: e.AP_POSTGRES_PASSWORD, database: e.AP_POSTGRES_DATABASE, connectionTimeoutMillis: 3000 });
+          try {
+            await c.connect();
+            const r = await c.query("SELECT count(*)::int AS n FROM \"user\"").catch((x) => { if (x.code === "42P01") return { rows: [{ n: 0 }] }; throw x; });
+            await c.end(); console.log(r.rows[0].n); return;
+          } catch (x) { console.error("[bootstrap] waiting for Postgres:", x.message); await c.end().catch(() => {}); }
+          await new Promise((r) => setTimeout(r, 2000));
+        }
+        console.log("unknown");
+      })();
+      ')
+      if [ "$users" = "unknown" ]; then echo "[bootstrap] Postgres not reachable" >&2; exit 1; fi
+      if [ "$users" = "0" ]; then
+        echo "[bootstrap] first start: creating the owner account on an internal port"
+        AP_PORT=3999 ./docker-entrypoint.sh &
+        boot=$!
+        AP_PORT=3999 node -e '
+        const base = "http://127.0.0.1:" + process.env.AP_PORT + "/api/v1";
+        const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+        (async () => {
+          for (let i = 0; i < 1200; i++) {
+            try { if ((await fetch(base + "/health")).ok) break; } catch {}
+            await sleep(500);
+          }
+          const r = await fetch(base + "/authentication/sign-up", {
+            method: "POST", headers: { "content-type": "application/json" },
+            body: JSON.stringify({ email: process.env.ADMIN_EMAIL, password: process.env.ADMIN_PASSWORD,
+              firstName: "Admin", lastName: "User", trackEvents: false, newsLetter: false }),
+          });
+          console.log("[bootstrap] owner sign-up", r.status, r.ok ? "created" : (await r.text()).slice(0, 300));
+          process.exit(r.ok ? 0 : 1);
+        })().catch((x) => { console.log("[bootstrap] failed", x.message); process.exit(1); });
+        '
+        ok=$?
+        kill -TERM $boot 2>/dev/null; wait $boot 2>/dev/null
+        sleep 3
+        if [ $ok -ne 0 ]; then echo "[bootstrap] owner not created; refusing to serve an unclaimed instance" >&2; exit 1; fi
+      fi
+      ./docker-entrypoint.sh &
+      app=$!
+      trap 'kill -TERM $app 2>/dev/null; wait $app' TERM INT
+      wait $app
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
