@@ -54,6 +54,10 @@ COPY --chown=node:node docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 USER node
+# Telemetry off: MEDUSA_DISABLE_TELEMETRY stops the events; the stored opt-out
+# (what `medusa telemetry --disable` writes) also stops the startup banner.
+RUN mkdir -p /home/node/.config/medusa \
+  && echo '{"telemetry":{"enabled":false}}' > /home/node/.config/medusa/config.json
 ENV NODE_ENV=production \
     PORT=9000 \
     MEDUSA_DISABLE_TELEMETRY=true
