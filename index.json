@@ -12788,11 +12788,11 @@
   },
   {
    "name": "keycloak",
-   "description": "Enterprise-grade open-source identity and access management \u2014 SSO, OAuth2, SAML, LDAP federation, MFA, and user management.",
+   "description": "Open source identity and access management. Single sign-on for your apps over OpenID Connect and SAML, user federation with LDAP and Active Directory, social login, multi-factor authentication and an admin console for realms, clients and users.",
    "source": "https://github.com/keycloak/keycloak",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/icon.png",
    "website": "https://www.keycloak.org",
-   "installation": "",
+   "installation": "Sign in to the Administration Console as admin (ADMIN_USERNAME) with the password generated in ADMIN_PASSWORD (both under Variables). The template creates this permanent admin on the first start and removes Keycloak's temporary bootstrap admin, so the instance is never unclaimed. Realms without an email server get the platform Email add-on on each start.",
    "architecture": [],
    "categories": [
     "security",
@@ -12800,27 +12800,30 @@
     "work"
    ],
    "screenshots": [
-    "https://www.keycloak.org/preview/index.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/screenshot-users.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/screenshot-clients.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/screenshot-login.png"
    ],
    "links": [
     "https://www.keycloak.org/documentation"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
-   "stars": 24000,
-   "forks": 0,
-   "watchers": 24000,
-   "issues": 0,
-   "last_updated": "2026-06-13T00:00:00Z",
-   "last_pushed": "2026-06-13T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 1000,
+   "stars": 37862,
+   "forks": 9189,
+   "watchers": 37862,
+   "issues": 3556,
+   "last_updated": "2026-11-14T04:06:09Z",
+   "last_pushed": "2026-11-14T04:45:08Z",
+   "created_at": "2013-07-02T13:38:51Z",
+   "size": 630153,
    "language": "Java",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/app.yaml",
    "status": "active",
-   "license": "Apache-2.0",
+   "license": "Apache License 2.0",
    "spdx_id": "Apache-2.0",
    "dirname": "keycloak",
    "deploymentTypes": [
