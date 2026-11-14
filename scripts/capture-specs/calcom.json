@@ -1,0 +1,40 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/auth/login",
+    "steps": [
+      { "waitForSelector": "input[name=email]", "timeout": 60000 },
+      { "sleep": 800 },
+      { "fill": { "input[name=email]": "${CALCOM_ADMIN_EMAIL}" } },
+      { "fill": { "input[name=password]": "${CALCOM_ADMIN_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForURL": "**/event-types**", "timeout": 60000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    {
+      "name": "booking-page",
+      "path": "/alex/product-demo",
+      "waitFor": "[data-testid=time]",
+      "waitMs": 1500,
+      "steps": [
+        { "click": "[data-testid=day]:not([disabled]) >> nth=2" },
+        { "sleep": 2500 }
+      ]
+    },
+    {
+      "name": "event-types",
+      "path": "/event-types",
+      "waitFor": "[data-testid=preview-link-button]",
+      "waitMs": 2500
+    },
+    {
+      "name": "bookings",
+      "path": "/bookings/upcoming",
+      "waitFor": "text=/Product demo between/",
+      "waitMs": 2500
+    }
+  ]
+}
