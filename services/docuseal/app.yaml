@@ -6,10 +6,21 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: "Create, send, complete, and sign business documents from one streamlined workspace.\nA cost-effective alternative to DocuSign and Dropbox Sign."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docuseal/icon.png
-    kubero.dev/template.installation: ''
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://www.docuseal.com/packs/static/images/resources/quick-start-1-216aeed1da1db5b3e718.jpg"]'
-    kubero.dev/template.source: https://github.com/stackblaze/docuseal
+    kubero.dev/template.installation: 'Open the app URL and sign in as admin@example.com
+      (DOCUSEAL_ADMIN_EMAIL) with the password generated in DOCUSEAL_ADMIN_PASSWORD (both
+      under Variables). The template completes DocuSeal''s first-run setup on the first
+      start, before the app serves any request, so nobody else can claim the instance
+      through the setup page. Change the email to your own and the company name under
+      Settings afterwards, so signers see who sent the request (changing the variables
+      later has no effect once a user exists). Upload a PDF, place
+      signature and text fields, then send it: signature requests, reminders and the
+      signed copies go out through the Email add-on. Uploaded and signed documents are
+      kept on the data volume, with the database in Postgres. Each completed document
+      is signed with a certificate generated for this instance. Keep SECRET_KEY_BASE
+      unchanged after first use: it encrypts the stored settings and certificates.'
+    kubero.dev/template.links: '["https://www.docuseal.com/docs"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docuseal/screenshot-builder.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docuseal/screenshot-signing.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docuseal/screenshot-completed.png"]'
+    kubero.dev/template.source: https://github.com/docusealco/docuseal
     kubero.dev/template.categories: '["work", "security"]'
     kubero.dev/template.title: "DocuSeal eSign"
     kubero.dev/template.website: https://www.docuseal.com/
@@ -18,29 +29,9 @@ metadata:
 spec:
   name: docuseal
   deploymentstrategy: docker
-  envVars:
-  - name: DATABASE_URL
-    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
-  # CDN terminates TLS at the edge and talks HTTP to the pod. DocuSeal
-  # defaults DEFAULT_URL_OPTIONS / cookies to http unless FORCE_SSL is set;
-  # that yields "Not Secure" share links and CSRF 422s (Origin https vs
-  # base_url http). FORCE_SSL enables assume_ssl + https URL generation.
-  - name: HOST
-    value: '{{STACKBLAZE_APP_HOST}}'
-  - name: FORCE_SSL
-    value: 'true'
-  - name: S3_ATTACHMENTS_BUCKET
-    value: '$(S3_BUCKET)'
-  extraVolumes:
-  - accessModes:
-    - ReadWriteMany
-    emptyDir: false
-    mountPath: /data
-    name: '{{STACKBLAZE_APP_NAME}}-data'
-    size: 2Gi
-    storageClass: shared
-  cronjobs: []
   addons:
+  # The only database DocuSeal needs (config/database.yml: DATABASE_URL
+  # postgres://...). Upstream's compose runs Postgres 18.
   - displayName: PostgreSQL (CloudNativePG)
     env: []
     icon: /img/addons/pgsql.svg
@@ -87,7 +78,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: docuseal
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -96,9 +87,12 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: docuseal
-          password: docuseal
-  # Platform email (see README "Email contract"). DocuSeal ActionMailer
-  # SMTP_* env (STARTTLS on 587 — do not enable implicit SSL/TLS).
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Platform email (README "Email contract"). DocuSeal's ActionMailer reads
+  # SMTP_ADDRESS, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD (production.rb) and
+  # the sender from SMTP_FROM (lib/action_mailer_configs_interceptor.rb), which
+  # the platform injects under that name. STARTTLS on 587, no implicit TLS.
+  # Without SMTP_ADDRESS DocuSeal falls back to the SMTP form under Settings.
   - displayName: Email
     icon: /img/addons/email.svg
     id: kubero-smtp
@@ -106,79 +100,64 @@ spec:
     env:
     - name: SMTP_ADDRESS
       value: '$(SMTP_HOST)'
-    - name: SMTP_PORT
-      value: '$(SMTP_PORT)'
     - name: SMTP_USERNAME
       value: '$(SMTP_USER)'
-    - name: SMTP_PASSWORD
-      value: '$(SMTP_PASSWORD)'
     - name: SMTP_AUTHENTICATION
       value: plain
     - name: SMTP_ENABLE_STARTTLS
       value: 'true'
-    - name: SMTP_ENABLE_SSL
-      value: 'false'
-    - name: SMTP_ENABLE_TLS
-      value: 'false'
     resourceDefinitions: {}
-  # Platform object storage (RustFS Tenant → communal-s3 logical bucket
-  # on shared). Injects S3_*/AWS_*; map bucket for Active Storage.
-
-  - displayName: RustFS
-    env: []
-    icon: /img/addons/rustfs.svg
-    id: kubero-operator
-    kind: Tenant
-    resourceDefinitions:
-      Tenant:
-        apiVersion: rustfs.com/v1alpha1
-        kind: Tenant
-        metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-rustfs'
-          annotations:
-            # The operator refuses custom-repo images it cannot verify for
-            # RuntimeDefault seccomp ("WorkloadSecurityIncompatible") unless the
-            # exact reference is acknowledged. Keep in sync with spec.image.
-            operator.rustfs.com/runtime-default-image-ack: docker.io/rustfs/rustfs:1.0.0-beta.10
-        spec:
-          image: docker.io/rustfs/rustfs:1.0.0-beta.10
-          credsSecret:
-            name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
-          pools:
-          - name: pool-0
-            servers: 1
-            persistence:
-              volumesPerServer: 4
-              volumeClaimTemplate:
-                accessModes:
-                - ReadWriteOnce
-                resources:
-                  requests:
-                    storage: 2Gi
-                storageClassName: slow
-      credsSecret:
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
-        type: Opaque
-        stringData:
-          accesskey: docuseal
-          secretkey: '{{STACKBLAZE_GEN_HEX:32}}'
-
+  envVars:
+  - name: DATABASE_URL
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  # Rails secret. Upstream generates SecureRandom.hex(64) (config/dotenv.rb)
+  # when it is unset; set here so it never lands in a file on the volume.
+  # ENCRYPTION_SECRET is derived from it (production.rb) and encrypts the
+  # stored settings and the signing certificates.
+  - name: SECRET_KEY_BASE
+    value: '{{STACKBLAZE_GEN_HEX:128}}'
+  # The edge terminates TLS. FORCE_SSL turns on assume_ssl / force_ssl, so
+  # links, cookies and CSRF origin checks use https.
+  - name: FORCE_SSL
+    value: 'true'
+  # Read only by the start command below, on the very first start: it
+  # completes /setup with these, so the first visitor cannot claim the
+  # instance. Ignored once any user exists.
+  - name: DOCUSEAL_ADMIN_EMAIL
+    value: admin@example.com
+  - name: DOCUSEAL_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Stored as the app URL setting (Settings > Account, editable there), used
+  # for the links in signature request emails.
+  - name: DOCUSEAL_APP_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # Uploaded documents, signatures and signed PDFs go to the Disk service at
+  # $WORKDIR/attachments (config/storage.yml), and the embedded Redis that
+  # runs DocuSeal's Sidekiq jobs keeps its dump there too. WORKDIR is the
+  # image's /data/docuseal (upstream compose mounts the same path).
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /data/docuseal
+    name: '{{STACKBLAZE_APP_NAME}}-data'
+    size: 10Gi
+    storageClass: shared
+  cronjobs: []
+  # Sidekiq (emails, webhooks, PDF processing) and Redis run inside the web
+  # process (puma plugins sidekiq_embed and redis_server), so no worker.
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
-  # Postgres comes up after the web pod on a fresh deploy. DocuSeal exits
-  # immediately if the database refuses the connection, and that restart is
-  # what the platform records as a startup-probe SLO breach. Wait here so
-  # the process never crashes.
-  #
-  # Probe /up, not /. FORCE_SSL makes / return 302 to the public https URL.
-  # kubelet follows that redirect out through the CDN and records
-  # "Probe terminated redirects" as a cluster networking failure.
-  # Rails /up is 200 with no redirect.
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  # Rails /up: 200 without the FORCE_SSL redirect that / returns.
   healthcheck:
     enabled: true
     path: /up
@@ -188,34 +167,63 @@ spec:
   image:
     containerPort: '3000'
     pullPolicy: IfNotPresent
-    # Published by stackblaze/docuseal on push to fork-updates
-    # (ghcr.io/stackblaze/docuseal). Anonymous read, no pull secret.
-    # Pinned to the short SHA of that build, not :latest.
-    repository: ghcr.io/stackblaze/docuseal
-    tag: sha-75dd8d7
-    # Communal S3 is only reachable inside the cluster. DocuSeal puts
-    # blob.url (a presigned S3 URL) in the builder JSON, so the browser
-    # requests the in-cluster host and the canvas stays blank. Serve those
-    # URLs through the app's blob proxy instead.
+    repository: docker.io/docuseal/docuseal
+    tag: 3.3.6
+    # 1. Wait for a real Postgres login (DocuSeal exits on a refused
+    #    connection, and the operator creates the user after the port opens).
+    # 2. First start only: run the migrations and complete the setup page
+    #    (account, admin, app URL, signing certificates), the same records
+    #    SetupController#create writes, then check the admin exists.
+    # 3. Start puma, which also runs Sidekiq and Redis.
     command:
     - /bin/sh
     - -c
     - |
-      ruby -e 'require "socket"; h=ENV.fetch("PGHOST"); p=ENV.fetch("PGPORT","5432").to_i; 90.times { begin; TCPSocket.new(h,p).close; exit 0; rescue; sleep 2; end }; abort("postgres not ready")'
-      cat > /app/config/initializers/proxy_s3_urls.rb <<'RUBY'
-      # frozen_string_literal: true
-
-      ActiveSupport.on_load(:active_storage_blob) do
-        def url(...)
-          if service.name.to_sym == :aws_s3
-            ActiveStorage::Blob.proxy_url(self, expires_at: 4.hours.from_now)
-          else
-            super
+      set -e
+      cd /app
+      /app/bin/bundle exec ruby -e '
+        require "pg"
+        150.times do |i|
+          begin
+            PG.connect(ENV.fetch("DATABASE_URL")).close
+            exit 0
+          rescue PG::Error => e
+            puts "Waiting for Postgres (#{e.message.lines.first.to_s.strip})" if (i % 10).zero?
+            sleep 2
           end
         end
+        abort "Postgres did not accept a login in 300 s"
+      '
+      cat > /tmp/docuseal-bootstrap.rb <<'RUBY'
+      if User.exists?
+        puts 'DocuSeal bootstrap: a user exists, setup is already complete.'
+      else
+        email = ENV['DOCUSEAL_ADMIN_EMAIL'].to_s.strip
+        password = ENV['DOCUSEAL_ADMIN_PASSWORD'].to_s
+        app_url = ENV['DOCUSEAL_APP_URL'].to_s.strip
+        abort 'DocuSeal bootstrap: DOCUSEAL_ADMIN_PASSWORD is missing or shorter than 12 characters; refusing to start with the setup page open.' if password.length < 12
+        abort 'DocuSeal bootstrap: DOCUSEAL_ADMIN_EMAIL is not a valid email.' unless email.match?(User::VALIDATE_EMAIL_REGEXP)
+        abort 'DocuSeal bootstrap: DOCUSEAL_APP_URL is not an http(s) URL.' unless URI.parse(app_url).is_a?(URI::HTTP)
+        ActiveRecord::Base.transaction do
+          account = Account.create!(name: 'DocuSeal', timezone: 'UTC', locale: 'en-US')
+          account.users.create!(first_name: 'Admin', last_name: '', email: email, password: password,
+                                role: User::ADMIN_ROLE)
+          account.encrypted_configs.create!([
+            { key: EncryptedConfig::APP_URL_KEY, value: app_url },
+            { key: EncryptedConfig::ESIGN_CERTS_KEY, value: GenerateCertificate.call.transform_values(&:to_pem) }
+          ])
+          account.account_configs.create!(key: :fulltext_search, value: true) if SearchEntry.table_exists?
+        end
+        user = User.find_by(email: email)
+        abort 'DocuSeal bootstrap: the admin was not created.' unless user&.valid_password?(password)
+        puts 'DocuSeal bootstrap: created the admin from DOCUSEAL_ADMIN_EMAIL / DOCUSEAL_ADMIN_PASSWORD.'
       end
       RUBY
+      /app/bin/rails runner /tmp/docuseal-bootstrap.rb
+      rm -f /tmp/docuseal-bootstrap.rb
       exec /app/bin/bundle exec puma -C /app/config/puma.rb --dir /app
     run:
       securityContext:
         readOnlyRootFilesystem: false
+        runAsUser: 2000
+        runAsGroup: 2000
