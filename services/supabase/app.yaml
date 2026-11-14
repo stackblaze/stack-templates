@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: "The open-source Postgres development platform: database, Auth, instant APIs, Realtime, Storage and Edge Functions, managed from Studio."
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@268692363407166c1de7320910eee41a92ca474e/services/supabase/icon.png
     kubero.dev/template.installation: |
-      Deploys Supabase as one group of services: the Kong gateway (the public URL), Studio, Auth, PostgREST (plus a read-replica twin), Realtime, Storage, postgres-meta, Edge Functions and imgproxy, with its own PostgreSQL, a RustFS bucket and the Email add-on. Open the gateway URL and sign in to Studio as DASHBOARD_USERNAME (supabase) with DASHBOARD_PASSWORD, generated per deploy (on the gateway and Studio cards). Every secret is generated per deploy: JWT_SECRET (on every card), the database passwords, the sb_publishable_ / sb_secret_ API keys and the Realtime and pg-meta keys. The legacy anon and service_role keys are signed from JWT_SECRET when the services start; Studio shows them under Project Settings > API Keys. Keep the secret and service_role keys server-side: they bypass Row Level Security. Edge Functions run in a Kata micro-VM. Data API reads (GET/HEAD on /rest/v1) are served from the Postgres replicas; set KONG_REST_READ_REPLICAS=off on the gateway to keep every read on the primary. New users confirm their email through the Email add-on (GOTRUE_MAILER_AUTOCONFIRM=false on the Auth card).
+      Deploys Supabase as one group of services: the Kong gateway (the public URL), Studio, Auth, PostgREST (plus a read-replica twin), Realtime, Storage, postgres-meta, Edge Functions, imgproxy and RustFS, with its own PostgreSQL, a private RustFS S3 server for Storage's files (on a 20 GiB app volume, cluster internal) and the Email add-on. Open the gateway URL and sign in to Studio as DASHBOARD_USERNAME (supabase) with DASHBOARD_PASSWORD, generated per deploy (on the gateway and Studio cards). Every secret is generated per deploy: JWT_SECRET (on every card), the database passwords, the sb_publishable_ / sb_secret_ API keys and the Realtime and pg-meta keys. The legacy anon and service_role keys are signed from JWT_SECRET when the services start; Studio shows them under Project Settings > API Keys. Keep the secret and service_role keys server-side: they bypass Row Level Security. Edge Functions run in a Kata micro-VM. Data API reads (GET/HEAD on /rest/v1) are served from the Postgres replicas; set KONG_REST_READ_REPLICAS=off on the gateway to keep every read on the primary. New users confirm their email through the Email add-on (GOTRUE_MAILER_AUTOCONFIRM=false on the Auth card).
     kubero.dev/template.links: '["https://supabase.com/docs/guides/self-hosting/docker"]'
     kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@268692363407166c1de7320910eee41a92ca474e/services/supabase/screenshot-table.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@268692363407166c1de7320910eee41a92ca474e/services/supabase/screenshot-auth.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@268692363407166c1de7320910eee41a92ca474e/services/supabase/screenshot-storage.png"]'
     kubero.dev/template.source: https://github.com/supabase/supabase
@@ -277,44 +277,6 @@ spec:
     kind: Smtp
     env: []
     resourceDefinitions: {}
-  - displayName: RustFS
-    env: []
-    icon: /img/addons/rustfs.svg
-    id: kubero-operator
-    kind: Tenant
-    resourceDefinitions:
-      Tenant:
-        apiVersion: rustfs.com/v1alpha1
-        kind: Tenant
-        metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-rustfs'
-          annotations:
-            operator.rustfs.com/runtime-default-image-ack: docker.io/rustfs/rustfs:1.0.0-beta.10
-        spec:
-          image: docker.io/rustfs/rustfs:1.0.0-beta.10
-          credsSecret:
-            name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
-          pools:
-          - name: pool-0
-            servers: 1
-            persistence:
-              volumesPerServer: 4
-              volumeClaimTemplate:
-                accessModes:
-                - ReadWriteOnce
-                resources:
-                  requests:
-                    storage: 2Gi
-                storageClassName: slow
-      credsSecret:
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
-        type: Opaque
-        stringData:
-          accesskey: '{{STACKBLAZE_GEN_ALNUM:20}}'
-          secretkey: '{{STACKBLAZE_GEN_HEX:40}}'
   envVars:
   - name: KONG_DATABASE
     value: 'off'
@@ -1403,6 +1365,23 @@ spec:
         ANON_KEY=$(sb_jwt anon)
         SERVICE_KEY=$(sb_jwt service_role)
         export ANON_KEY SERVICE_KEY
+        # The bucket on this deployment's own RustFS: created once, idempotently,
+        # waiting for RustFS to answer (it may start after Storage).
+        node -e '
+        const { S3Client, CreateBucketCommand, HeadBucketCommand } = require("@aws-sdk/client-s3");
+        const c = new S3Client({ endpoint: process.env.GLOBAL_S3_ENDPOINT, region: process.env.AWS_DEFAULT_REGION, forcePathStyle: true });
+        const B = process.env.GLOBAL_S3_BUCKET;
+        (async () => {
+          for (let i = 0; i < 90; i++) {
+            try { await c.send(new HeadBucketCommand({ Bucket: B })); console.log("bucket ready:", B); return }
+            catch (e) {
+              try { await c.send(new CreateBucketCommand({ Bucket: B })); console.log("bucket created:", B); return }
+              catch (e2) { if (/BucketAlready/.test(e2.name)) return; console.log("waiting for RustFS:", e2.name || e2.message) }
+            }
+            await new Promise((r) => setTimeout(r, 2000))
+          }
+          process.exit(1)
+        })()'
         exec node dist/start/server.js
     envVars:
     # This deployment's JWT signing secret: one value per deployment, shared
@@ -1420,10 +1399,21 @@ spec:
       value: stub
     - name: REGION
       value: us-east-1
+    # Files live on this deployment's own RustFS (the rustfs service, cluster
+    # internal), which keeps each object's Content-Type and Cache-Control.
+    # Same RUSTFS_* names as the rustfs card: one generated value per name.
+    - name: RUSTFS_ACCESS_KEY
+      value: '{{STACKBLAZE_GEN_ALNUM:20}}'
+    - name: RUSTFS_SECRET_KEY
+      value: '{{STACKBLAZE_GEN_ALNUM:40}}'
+    - name: AWS_ACCESS_KEY_ID
+      value: '$(RUSTFS_ACCESS_KEY)'
+    - name: AWS_SECRET_ACCESS_KEY
+      value: '$(RUSTFS_SECRET_KEY)'
     - name: GLOBAL_S3_BUCKET
-      value: '$(S3_BUCKET)'
+      value: supabase-storage
     - name: GLOBAL_S3_ENDPOINT
-      value: '$(S3_ENDPOINT)'
+      value: http://supabase-rustfs-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: GLOBAL_S3_FORCE_PATH_STYLE
       value: 'true'
     - name: AWS_DEFAULT_REGION
@@ -1640,7 +1630,7 @@ spec:
         // StackBlaze: what user functions see. The container env minus the platform's
         // own wiring (database, bucket and mail credentials, the JWT signing secret);
         // SUPABASE_DB_URL and function secrets set in Studio stay.
-        const HIDDEN_ENV = /^(JWT_SECRET|PG[A-Z_]*|SUPABASE_DB_[A-Z_]*_USER|S3_[A-Z_]*|AWS_[A-Z_]*|SMTP_[A-Z_]*|KUBERO_[A-Z_]*|STACKBLAZE_[A-Z_]*|KUBERNETES_[A-Z_]*)$/
+        const HIDDEN_ENV = /^(JWT_SECRET|PG[A-Z_]*|SUPABASE_DB_[A-Z_]*_USER|S3_[A-Z_]*|AWS_[A-Z_]*|RUSTFS_[A-Z_]*|SMTP_[A-Z_]*|KUBERO_[A-Z_]*|STACKBLAZE_[A-Z_]*|KUBERNETES_[A-Z_]*)$/
         function userEnv(): Record<string, string> {
           const out: Record<string, string> = {}
           for (const [k, v] of Object.entries(Deno.env.toObject())) if (!HIDDEN_ENV.test(k)) out[k] = v
@@ -2112,3 +2102,45 @@ spec:
       enabled: true
       path: /health
       startupSeconds: 60
+  # Storage's files: a private S3 server for this deployment, on one app volume.
+  # The platform's shared bucket gateway doesn't keep object metadata, so files
+  # came back as application/octet-stream; RustFS keeps Content-Type and
+  # Cache-Control. Cluster internal only (no public route, never behind Kong),
+  # console off, one replica that stops before its replacement starts.
+  - id: rustfs
+    nameHint: supabase-rustfs
+    exposeInternet: false
+    # Recreate, not a rolling update: two RustFS processes must never serve the
+    # same data directory, and app volumes are shared (RWX).
+    rolloutStrategy: Recreate
+    image:
+      repository: docker.io/rustfs/rustfs
+      # Upstream Supabase's RustFS (docker-compose.rustfs.yml). The catalog's
+      # bucket add-on pins 1.0.0-beta.10, whose GetObject drops Cache-Control.
+      tag: 1.0.4
+      containerPort: '9000'
+    extraVolumes:
+    - name: '{{STACKBLAZE_APP_NAME}}-data'
+      mountPath: /data
+      emptyDir: false
+      storageClass: shared
+      # Storage's files. Grow it from the app's Volumes as uploads grow; the
+      # plan's storage limit applies.
+      size: 20Gi
+      accessModes:
+      - ReadWriteMany
+    envVars:
+    - name: RUSTFS_ACCESS_KEY
+      value: '{{STACKBLAZE_GEN_ALNUM:20}}'
+    - name: RUSTFS_SECRET_KEY
+      value: '{{STACKBLAZE_GEN_ALNUM:40}}'
+    - name: RUSTFS_VOLUMES
+      value: /data
+    - name: RUSTFS_ADDRESS
+      value: ':9000'
+    - name: RUSTFS_CONSOLE_ENABLE
+      value: 'false'
+    healthcheck:
+      enabled: true
+      path: /health
+      startupSeconds: 120
