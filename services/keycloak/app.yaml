@@ -4,17 +4,29 @@ metadata:
   name: keycloak
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Enterprise-grade open-source identity and access\
-      \ management \u2014 SSO, OAuth2, SAML, LDAP federation, MFA, and user management."
+    kubero.dev/template.description: Open source identity and access management.
+      Single sign-on for your apps over OpenID Connect and SAML, user federation
+      with LDAP and Active Directory, social login, multi-factor authentication
+      and an admin console for realms, clients and users.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/icon.png
-    kubero.dev/template.installation: "Change KC_BOOTSTRAP_ADMIN_PASSWORD before first\
-      \ deploy. start-dev mode is used here for simplicity \u2014 for production replace\
-      \ with 'start' and configure proper TLS/hostname. Access the Admin Console at\
-      \ /admin. KC_PROXY_HEADERS=xforwarded enables proxy header trust (required when\
-      \ running behind the kubero ingress). Create realms, clients, and users in the\
-      \ Admin Console."
-    kubero.dev/template.links: '["https://www.keycloak.org/documentation"]'
-    kubero.dev/template.screenshots: '["https://www.keycloak.org/preview/index.png"]'
+    kubero.dev/template.installation: 'Open the app URL and go to the Administration
+      Console. Sign in as admin (ADMIN_USERNAME) with the password generated in
+      ADMIN_PASSWORD (both under Variables). Keycloak creates a temporary bootstrap
+      admin on the very first start; the start command then creates the permanent
+      admin account with that password and deletes the temporary one, so there is no
+      unclaimed welcome page and no temporary admin warning. Change the password
+      later under the admin user''s Credentials tab (ADMIN_PASSWORD is not read
+      again once you do). Create a realm for your own users and apps; keep master
+      for administrators. Keycloak runs in production mode behind the platform''s
+      HTTPS edge (hostname set to the app URL, X-Forwarded headers trusted). All
+      data lives in Postgres. Email: on every start, while ADMIN_PASSWORD still
+      signs in, realms without an email server get the platform Email add-on
+      (password reset, email verification, admin actions); realms you point at your
+      own SMTP server are left alone. Health and metrics stay on the internal
+      management port 9000 and are not public. Single replica with a local cache;
+      user sessions are kept in Postgres and survive restarts.'
+    kubero.dev/template.links: '["https://www.keycloak.org/documentation", "https://www.keycloak.org/server/all-config"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/screenshot-users.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/screenshot-clients.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keycloak/screenshot-login.png"]'
     kubero.dev/template.source: https://github.com/keycloak/keycloak
     kubero.dev/template.categories: '["security", "development", "work"]'
     kubero.dev/template.title: Keycloak
@@ -25,6 +37,8 @@ spec:
   name: keycloak
   deploymentstrategy: docker
   addons:
+  # Keycloak stores realms, users, clients, sessions and events in a relational
+  # database (KC_DB). Postgres is upstream's first-listed production database.
   - displayName: PostgreSQL (CloudNativePG)
     env: []
     icon: /img/addons/pgsql.svg
@@ -71,7 +85,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: keycloak
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -80,7 +94,19 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: keycloak
-          password: keycloak
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Platform email (README "Email contract"). Keycloak has no SMTP environment
+  # variables: each realm keeps its own email server (Realm settings > Email)
+  # in the database. The start command writes the injected SMTP_* into realms
+  # that have no email server yet (or still use the platform relay), so password
+  # reset and email verification work. Inert without SMTP_HOST.
+  - displayName: Email
+    env: []
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    resourceDefinitions: {}
+  cronjobs: []
   envVars:
   - name: KC_DB
     value: postgres
@@ -90,47 +116,156 @@ spec:
     value: '$(PGUSER)'
   - name: KC_DB_PASSWORD
     value: '$(PGPASSWORD)'
+  # Production mode (kc.sh start) behind the platform's HTTPS edge: TLS ends
+  # at the edge, Keycloak serves HTTP inside the cluster, builds every URL from
+  # the app URL and trusts the edge's X-Forwarded-* headers (the edge
+  # overwrites client-sent ones).
   - name: KC_HOSTNAME
     value: '{{STACKBLAZE_APP_URL}}'
+  - name: KC_HTTP_ENABLED
+    value: 'true'
   - name: KC_PROXY_HEADERS
     value: xforwarded
-  - name: KC_HTTP_ENABLED
-    value: true
+  # Health checks on the management port 9000 only (upstream: do not expose
+  # /health or /metrics through the proxy). The platform probe uses the
+  # master realm's discovery path on 8080 instead.
   - name: KC_HEALTH_ENABLED
-    value: true
-  - name: KC_HTTP_MANAGEMENT_HEALTH_ENABLED
-    value: false
-  - name: KC_BOOTSTRAP_ADMIN_USERNAME
+    value: 'true'
+  # One replica: a local cache instead of a JGroups cluster. User sessions are
+  # persisted in the database (default since Keycloak 26).
+  - name: KC_CACHE
+    value: local
+  # The admin you sign in with. Created by the start command on the first
+  # start (from the temporary bootstrap admin below, which it then deletes).
+  - name: ADMIN_USERNAME
     value: admin
+  - name: ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Keycloak's own bootstrap: a temporary admin, created only when the master
+  # realm does not exist yet (first start), never again.
+  - name: KC_BOOTSTRAP_ADMIN_USERNAME
+    value: temp-admin
   - name: KC_BOOTSTRAP_ADMIN_PASSWORD
-    value: change-me
+    value: '$(ADMIN_PASSWORD)'
   extraVolumes: []
-  cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
   resources:
     requests:
-      cpu: 500m
+      cpu: 250m
       memory: 1Gi
     limits:
       cpu: '2'
       memory: 2Gi
   healthcheck:
     enabled: true
-    path: /health/ready
-    startupSeconds: 300
+    # Served from the database-backed realm cache on the public port; the
+    # /health endpoints are on the private management port 9000.
+    path: /realms/master/.well-known/openid-configuration
+    # First start runs the database migrations and an automatic build of the
+    # server configuration.
+    startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '8080'
-    pullPolicy: Always
-    repository: quay.io/keycloak/keycloak
-    tag: latest
+    pullPolicy: IfNotPresent
+    repository: docker.io/keycloak/keycloak
+    tag: 26.8.2
+    # 1. Start Keycloak in production mode (upstream entrypoint, kc.sh start).
+    # 2. Once /health/ready answers on the management port, sign in to the
+    #    admin API on localhost with kcadm.sh (password from the environment,
+    #    never on the command line):
+    #    - first start: create the permanent ADMIN_USERNAME with ADMIN_PASSWORD,
+    #      give it the master realm's admin role, check that it signs in, then
+    #      delete the temporary bootstrap admin;
+    #    - every start: give realms without an email server (or still on the
+    #      platform relay) the injected SMTP_* settings.
+    # Keycloak is exec'd as the container's main process (signals reach it).
     command:
-    - /opt/keycloak/bin/kc.sh
-    - start-dev
+    - /bin/bash
+    - -c
+    - |
+      set -u
+      setup() {
+      ready() {
+        local line=""
+        { printf 'GET /health/ready HTTP/1.0\r\nHost: localhost\r\n\r\n' >&3
+          read -r -t 5 line <&3; } 3<>/dev/tcp/127.0.0.1/9000 || return 1
+        [[ "$line" == *" 200 "* ]]
+      }
+      for ((i = 0; i < 300; i++)); do
+        sleep 3
+        ready 2>/dev/null && break
+      done
+      KCADM=/opt/keycloak/bin/kcadm.sh
+      CFG=/tmp/stackblaze-kcadm.config
+      SERVER=http://127.0.0.1:8080
+      adm() { "$KCADM" "$@" --config "$CFG"; }
+      signin() {
+        KC_CLI_PASSWORD="$ADMIN_PASSWORD" adm config credentials --server "$SERVER" --realm master --user "$1" >/dev/null 2>&1
+      }
+      user_id() {
+        adm get users -r master -q exact=true -q "username=$1" --fields id --format csv --noquotes 2>/dev/null | head -n 1
+      }
+      bootstrap="${KC_BOOTSTRAP_ADMIN_USERNAME:-temp-admin}"
+      admin_ok=0
+      if signin "$ADMIN_USERNAME"; then
+        admin_ok=1
+      elif signin "$bootstrap"; then
+        echo "[stackblaze] first start: creating the permanent admin $ADMIN_USERNAME"
+        if [ -z "$(user_id "$ADMIN_USERNAME")" ]; then
+          adm create users -r master -f - <<JSON
+      {"username": "$ADMIN_USERNAME", "enabled": true, "firstName": "Keycloak", "lastName": "Admin",
+       "credentials": [{"type": "password", "value": "$ADMIN_PASSWORD", "temporary": false}]}
+      JSON
+        fi
+        adm add-roles -r master --uusername "$ADMIN_USERNAME" --rolename admin
+        if signin "$ADMIN_USERNAME"; then
+          tid=$(user_id "$bootstrap")
+          if [ -n "$tid" ] && adm delete "users/$tid" -r master; then
+            echo "[stackblaze] permanent admin ready, temporary admin $bootstrap deleted"
+          fi
+          admin_ok=1
+        else
+          echo "[stackblaze] could not sign in as $ADMIN_USERNAME; the temporary admin is kept" >&2
+        fi
+      else
+        echo "[stackblaze] ADMIN_PASSWORD no longer signs in (changed in Keycloak): skipping admin and email setup"
+      fi
+      if [ "$admin_ok" = 1 ]; then
+        tid=$(user_id "$bootstrap")
+        if [ -n "$tid" ]; then
+          adm delete "users/$tid" -r master && echo "[stackblaze] temporary admin $bootstrap deleted"
+        fi
+      fi
+      host="${SMTP_HOST:-}"
+      if [ "$admin_ok" = 1 ] && [ -n "$host" ] && [[ "$host" != *'$('* ]]; then
+        from="${SMTP_FROM:-}" name=""
+        if [[ "$from" =~ ^[[:space:]]*\"?([^\"\<]*[^\"\<[:space:]])?\"?[[:space:]]*\<([^\>]+)\>[[:space:]]*$ ]]; then
+          name="${BASH_REMATCH[1]}" from="${BASH_REMATCH[2]}"
+        fi
+        realms=$(adm get realms --fields realm --format csv --noquotes 2>/dev/null)
+        for r in $realms; do
+          cur=$(adm get "realms/$r" --fields 'smtpServer(host)' --format csv --noquotes 2>/dev/null)
+          [ -z "$cur" ] || [ "$cur" = "$host" ] || continue
+          if adm update "realms/$r" -f - <<JSON
+      {"smtpServer": {"host": "$host", "port": "${SMTP_PORT:-587}", "starttls": "true", "ssl": "false",
+       "auth": "true", "user": "${SMTP_USER:-}", "password": "${SMTP_PASSWORD:-}",
+       "from": "$from", "fromDisplayName": "${name:-Keycloak}"}}
+      JSON
+          then echo "[stackblaze] realm $r: platform email settings applied"; fi
+        done
+      fi
+      rm -f "$CFG"
+      }
+      # The setup runs beside the server; Keycloak itself stays PID 1.
+      setup &
+      exec /opt/keycloak/bin/kc.sh start
     run:
       securityContext:
+        runAsUser: 1000
+        runAsGroup: 0
         readOnlyRootFilesystem: false
