@@ -4,21 +4,18 @@
   "login": {
     "path": "/app/login",
     "steps": [
+      { "waitForSelector": "input[name=email_address]", "timeout": 60000 },
       { "fill": { "input[name=email_address]": "${CHATWOOT_EMAIL}" } },
       { "fill": { "input[name=password]": "${CHATWOOT_PASSWORD}" } },
       { "click": "button[type=submit]" },
-      { "waitForNavigation": true },
-      { "sleep": 3000 },
-      { "optionalClick": "button:has-text(\"Continue\")" },
-      { "optionalClick": "button:has-text(\"Skip\")" },
-      { "optionalClick": "button:has-text(\"Close\")" }
+      { "waitForURL": "**/app/accounts/**", "timeout": 60000 },
+      { "sleep": 3000 }
     ],
     "waitAfterMs": 2000
   },
   "pages": [
-    { "name": "conversations", "path": "/app/accounts/1/conversations", "waitMs": 3500 },
-    { "name": "conversation", "path": "/app/accounts/1/conversations/4", "waitMs": 3500 },
-    { "name": "contacts", "path": "/app/accounts/1/contacts", "waitMs": 3000 },
-    { "name": "dashboard", "path": "/app/accounts/1/dashboard", "waitMs": 3500 }
+    { "name": "conversation", "path": "/app/accounts/1/conversations/3", "waitFor": "text=Omar Haddad", "waitMs": 3500 },
+    { "name": "contacts", "path": "/app/accounts/1/contacts", "waitFor": "text=Maya Lindqvist", "waitMs": 3000 },
+    { "name": "inbox-widget", "path": "/app/accounts/1/settings/inboxes/1", "waitFor": "text=Website Name", "waitMs": 3500 }
   ]
 }
