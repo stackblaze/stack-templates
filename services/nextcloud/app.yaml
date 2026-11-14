@@ -4,15 +4,11 @@ metadata:
   name: nextcloud
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Nextcloud is a self-hosted file sync and collaboration
-      platform.
-    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/icon.png
-    kubero.dev/template.installation: Auto-installs on first boot against the bundled
-      MariaDB add-on when NEXTCLOUD_ADMIN_USER / NEXTCLOUD_ADMIN_PASSWORD and MYSQL_*
-      are set (no web setup wizard). Default login is admin / nextcloud — rotate the
-      password after first login. NEXTCLOUD_TRUSTED_DOMAINS is wired to the app host.
-    kubero.dev/template.links: '["https://docs.nextcloud.com/"]'
-    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/nextcloud/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/screenshot-files.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/screenshot-documents.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/screenshot-photos.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@6ee4357571945104337fbb75a7852dd0af0b8c4b/services/nextcloud/screenshot-dashboard.png"]'
+    kubero.dev/template.description: "Self-hosted file sync and sharing: upload, organise and share files and photos from the browser, desktop and phone apps, with Calendar and Contacts, backed by Postgres and Valkey."
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nextcloud/icon.png
+    kubero.dev/template.installation: "Nextcloud installs itself on the first start, before the web server is reachable, so there is no setup wizard for a visitor to claim. Sign in with the username admin and the generated password in NEXTCLOUD_ADMIN_PASSWORD (Variables), then change it under Personal settings > Security. Add people under Accounts; there is no public sign-up. Files live on the data volume (/srv/nextcloud/data), the database on Postgres, file locking and caching on Valkey. Background jobs run every 5 minutes in the worker. The app store is switched off, so admins can enable or disable the bundled apps but can't install new PHP apps from the marketplace; Calendar and Contacts are installed on the first start and updated on each redeploy. Mail (password resets, share notifications) goes through the StackBlaze Email add-on and is set by the template. To serve Nextcloud on your own domain as well, add it to TRUSTED_DOMAINS (space separated) and redeploy."
+    kubero.dev/template.links: '["https://docs.nextcloud.com/server/latest/admin_manual/", "https://docs.nextcloud.com/server/latest/user_manual/", "https://github.com/nextcloud/docker"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nextcloud/screenshot-files.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nextcloud/screenshot-folder.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nextcloud/screenshot-calendar.png"]'
     kubero.dev/template.source: https://github.com/nextcloud/server
     kubero.dev/template.categories: '["storage", "work", "collaboration"]'
     kubero.dev/template.title: Nextcloud
@@ -23,32 +19,24 @@ spec:
   name: nextcloud
   deploymentstrategy: docker
   addons:
-  - displayName: MariaDB
+  - displayName: PostgreSQL (CloudNativePG)
     env: []
-    icon: /img/addons/mysql.svg
+    icon: /img/addons/pgsql.svg
     id: kubero-operator
-    kind: MariaDB
+    kind: Cluster
     resourceDefinitions:
-      MariaDB:
-        apiVersion: k8s.mariadb.com/v1alpha1
-        kind: MariaDB
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
-          metrics:
-            enabled: true
-          rootPasswordSecretKeyRef:
-            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
-            key: password
-          database: nextcloud
-          username: nextcloud
-          passwordSecretKeyRef:
-            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
-            key: password
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:17
+          primaryUpdateStrategy: unsupervised
           storage:
+            storageClass: smart
             size: 5Gi
-            storageClassName: fast
-          replicas: 1
           resources:
             requests:
               cpu: 100m
@@ -56,53 +44,321 @@ spec:
             limits:
               cpu: '1'
               memory: 1Gi
-      rootSecret:
+          bootstrap:
+            initdb:
+              database: nextcloud
+              owner: nextcloud
+              secret:
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO nextcloud
+              - GRANT CREATE ON SCHEMA public TO nextcloud
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO nextcloud
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
+      superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
-        type: Opaque
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
+        type: kubernetes.io/basic-auth
         stringData:
-          password: nextcloud
-      appSecret:
+          username: postgres
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+      appUserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
-        type: Opaque
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
+        type: kubernetes.io/basic-auth
         stringData:
-          password: nextcloud
+          username: nextcloud
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Transactional file locking, the distributed cache and PHP sessions.
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  # Platform email (README "Email contract"). The start command maps the
+  # injected SMTP_* onto the image's variables (SMTP_NAME, MAIL_FROM_ADDRESS,
+  # MAIL_DOMAIN) only while they are present.
+  - displayName: Email
+    env: []
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    resourceDefinitions: {}
+  cronjobs: []
   envVars:
   - name: NEXTCLOUD_ADMIN_USER
     value: admin
   - name: NEXTCLOUD_ADMIN_PASSWORD
-    value: nextcloud
-  - name: NEXTCLOUD_TRUSTED_DOMAINS
-    value: localhost {{STACKBLAZE_APP_HOST}}
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  - name: POSTGRES_HOST
+    value: '$(PGHOST)'
+  - name: POSTGRES_DB
+    value: '$(PGDATABASE)'
+  - name: POSTGRES_USER
+    value: '$(PGUSER)'
+  - name: POSTGRES_PASSWORD
+    value: '$(PGPASSWORD)'
+  - name: REDIS_HOST
+    value: '$(REDISHOST)'
+  - name: REDIS_HOST_PORT
+    value: '$(REDISPORT)'
+  # Host names Nextcloud answers on (space separated). Add your own domain
+  # here and redeploy.
+  - name: TRUSTED_DOMAINS
+    value: '{{STACKBLAZE_APP_HOST}}'
   - name: OVERWRITEPROTOCOL
     value: https
-  - name: OVERWRITEHOST
-    value: '{{STACKBLAZE_APP_HOST}}'
+  # The platform edge (and Apache's remoteip from X-Real-IP) sit in front:
+  # trust forwarded headers only from private addresses.
+  - name: TRUSTED_PROXIES
+    value: 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
+  - name: OVERWRITECLIURL
+    value: '{{STACKBLAZE_APP_URL}}'
+  - name: PHP_MEMORY_LIMIT
+    value: 512M
+  - name: PHP_UPLOAD_LIMIT
+    value: 1G
+  - name: TZ
+    value: Etc/UTC
+  # Everything that must persist: config/ (config.php: instance id, secrets,
+  # database settings), custom_apps/ (Calendar, Contacts) and data/ (users'
+  # files, previews, logs). The Nextcloud code itself runs from the image, so
+  # a start or an upgrade never copies 30,000 files onto the network volume.
   extraVolumes:
   - accessModes:
     - ReadWriteMany
-    storageClass: shared
     emptyDir: false
-    # Persist full app tree (config + apps + data) so first-boot auto-install
-    # survives restarts and users never see the web setup wizard.
-    mountPath: /var/www/html
+    mountPath: /srv/nextcloud
     name: '{{STACKBLAZE_APP_NAME}}-data'
-    size: 5Gi
-  cronjobs: []
+    size: 10Gi
+    storageClass: shared
+  # One image, two processes: the web pod installs/upgrades Nextcloud and runs
+  # Apache (PROC_TYPE=web); the worker runs Nextcloud's background jobs
+  # (cron.php every 5 minutes, PROC_TYPE=worker). Both mount the same volume.
   web:
     replicaCount: 1
   worker:
-    replicaCount: 0
+    replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 384Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /status.php
+    startupSeconds: 900
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '80'
     pullPolicy: IfNotPresent
     repository: docker.io/library/nextcloud
-    tag: apache
+    tag: 35.0.3-apache
+    # Replaces the image's entrypoint (which keeps the whole code tree on the
+    # volume). Code runs from /usr/src/nextcloud in the image; config/ and
+    # custom_apps/ are links into the volume. The web pod installs Nextcloud
+    # with a generated admin password before Apache starts, so there is never a
+    # setup wizard on the public URL; an install that stopped half way is
+    # dropped and redone. A newer image runs `occ upgrade` on the next start.
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -eu
+      N=/usr/src/nextcloud V=/srv/nextcloud L=/usr/local/lib/stackblaze
+      occ() { setpriv --reuid=33 --regid=33 --clear-groups php $N/occ "$@"; }
+      occstore() { STACKBLAZE_NC_APPSTORE=1 timeout 600 setpriv --reuid=33 --regid=33 --clear-groups php $N/occ "$@"; }
+      newer() { [ "$1" != "$2" ] && [ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | tail -n 1)" = "$1" ]; }
+      mkdir -p $L $V/config $V/custom_apps $V/data
+      chown www-data:www-data $V/config $V/custom_apps $V/data
+      chmod 750 $V/data
+
+      # Mail: the image's smtp.config.php wants the sender as local part + domain.
+      if [ -n "${SMTP_HOST:-}" ] && [ -n "${SMTP_FROM:-}" ]; then
+        addr="$SMTP_FROM"
+        case "$addr" in *'<'*'>'*) addr="${addr##*<}"; addr="${addr%%>*}" ;; esac
+        export MAIL_FROM_ADDRESS="${addr%@*}" MAIL_DOMAIN="${addr#*@}" SMTP_NAME="${SMTP_USER:-}"
+        if [ "${SMTP_PORT:-587}" = 465 ]; then export SMTP_SECURE=ssl; fi
+      fi
+
+      # Template settings, read on every request (web, cron and occ). Only the
+      # web pod writes config files (a worker writing the same files at the same
+      # time fails on the network volume); each file is swapped in atomically.
+      if [ "${PROC_TYPE:-web}" != worker ]; then
+      cat > $V/config/.stackblaze.config.php.tmp <<'EOF'
+      <?php
+      // StackBlaze template settings. Rewritten on every start.
+      $CONFIG = array(
+        // App store off: admins can't install PHP apps from the marketplace.
+        // Only the template's start script turns it on, for its own occ calls.
+        'appstoreenabled' => getenv('STACKBLAZE_NC_APPSTORE') === '1',
+        'maintenance_window_start' => 1,
+        // Snowflake ids: one id per PHP server (web pod 1, worker 2).
+        'serverid' => (int) (getenv('STACKBLAZE_NC_SERVERID') ?: 1),
+      );
+      $sbDomains = trim((string) getenv('TRUSTED_DOMAINS'));
+      if ($sbDomains !== '') {
+        $CONFIG['trusted_domains'] = array_values(array_unique(array_merge(array('localhost'), preg_split('/[\s,]+/', $sbDomains))));
+      }
+      EOF
+      # The image's own config files (Valkey, APCu, mail, proxy, pretty URLs,
+      # web updater off), refreshed from the image on every start.
+      mv -f $V/config/.stackblaze.config.php.tmp $V/config/stackblaze.config.php
+      for f in $N/config/*.config.php; do
+        cp "$f" "$V/config/.$(basename "$f").tmp" && mv -f "$V/config/.$(basename "$f").tmp" "$V/config/$(basename "$f")"
+      done
+      chown www-data:www-data $V/config/*.config.php
+      fi
+
+      # Code from the image, state on the volume.
+      rm -rf $N/config $N/custom_apps $N/data
+      ln -s $V/config $N/config
+      ln -s $V/custom_apps $N/custom_apps
+      touch $N/.htaccess && chown www-data $N/.htaccess
+      echo '*/5 * * * * php -f /usr/src/nextcloud/cron.php' > /var/spool/cron/crontabs/www-data
+
+      # PHP sessions in Valkey.
+      printf 'session.save_handler = redis\nsession.save_path = "tcp://%s:%s"\nredis.session.locking_enabled = 1\nredis.session.lock_retries = -1\nredis.session.lock_wait_time = 10000\n' \
+        "$REDIS_HOST" "${REDIS_HOST_PORT:-6379}" > /usr/local/etc/php/conf.d/redis-session.ini
+
+      if [ "${PROC_TYPE:-web}" = worker ]; then
+        export STACKBLAZE_NC_SERVERID=2
+        echo "[stackblaze] background jobs: waiting for the web pod to install or upgrade Nextcloud"
+        until occ status --output=json 2>/dev/null | grep -q '"installed":true.*"needsDbUpgrade":false'; do sleep 15; done
+        echo "[stackblaze] background jobs: cron.php every 5 minutes"
+        exec /cron.sh
+      fi
+
+      cat > $L/wait.php <<'EOF'
+      <?php
+      for ($i = 0; $i < 200; $i++) {
+        try {
+          new PDO('pgsql:host=' . getenv('POSTGRES_HOST') . ';dbname=' . getenv('POSTGRES_DB'), getenv('POSTGRES_USER'), getenv('POSTGRES_PASSWORD'));
+          $r = @fsockopen(getenv('REDIS_HOST'), (int) (getenv('REDIS_HOST_PORT') ?: 6379), $en, $es, 3);
+          if ($r) { exit(0); }
+          echo "[stackblaze] waiting for Valkey\n";
+        } catch (Exception $e) {
+          echo "[stackblaze] waiting for the database\n";
+        }
+        sleep(3);
+      }
+      echo "[stackblaze] database or Valkey not reachable\n";
+      exit(1);
+      EOF
+      cat > $L/reset.php <<'EOF'
+      <?php
+      $db = new PDO('pgsql:host=' . getenv('POSTGRES_HOST') . ';dbname=' . getenv('POSTGRES_DB'), getenv('POSTGRES_USER'), getenv('POSTGRES_PASSWORD'));
+      $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      $t = $db->query("SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename LIKE 'oc\\_%'")->fetchAll(PDO::FETCH_COLUMN);
+      foreach ($t as $name) { $db->exec('DROP TABLE IF EXISTS "' . $name . '" CASCADE'); }
+      if (count($t)) { echo "[stackblaze] dropped " . count($t) . " tables of an unfinished install\n"; }
+      EOF
+      cat > $L/installed.php <<'EOF'
+      <?php
+      $CONFIG = array();
+      if (is_file('/srv/nextcloud/config/config.php')) { include '/srv/nextcloud/config/config.php'; }
+      echo empty($CONFIG['installed']) ? 'none' : ($CONFIG['version'] ?? '0');
+      EOF
+
+      php $L/wait.php
+      img=$(php -r 'require "/usr/src/nextcloud/version.php"; echo implode(".", $OC_Version);')
+      have=$(php $L/installed.php)
+      if [ "$have" = none ]; then
+        echo "[stackblaze] installing Nextcloud $img"
+        # Nothing is installed: clear what an unfinished install left behind
+        # (its tables; its data directory is kept aside, never deleted).
+        rm -f $V/config/config.php
+        php $L/reset.php
+        if [ -n "$(ls -A $V/data)" ]; then
+          old=$V/data.unfinished-$(date +%Y%m%d%H%M%S)
+          mv $V/data "$old" && mkdir $V/data && chown www-data:www-data $V/data && chmod 750 $V/data
+          echo "[stackblaze] moved the files of an unfinished install to $old"
+        fi
+        occ maintenance:install -n --database pgsql --database-host "$POSTGRES_HOST" --database-name "$POSTGRES_DB" \
+          --database-user "$POSTGRES_USER" --database-pass "$POSTGRES_PASSWORD" \
+          --admin-user "$NEXTCLOUD_ADMIN_USER" --admin-pass "$NEXTCLOUD_ADMIN_PASSWORD" --data-dir $V/data
+        if [ "$(php $L/installed.php)" = none ]; then echo "[stackblaze] install did not finish"; exit 1; fi
+        occ background:cron
+        occ app:disable survey_client || true
+        occ app:disable app_api || true
+        for id in $(occ background-job:list --limit 1000 | awk -F'|' '/AppAPI/ {gsub(/ /, "", $2); print $2}'); do
+          occ background-job:delete "$id" >/dev/null || true
+        done
+        occ db:add-missing-indices || true
+        occ maintenance:repair --include-expensive >/dev/null || true
+        echo "[stackblaze] installed"
+      elif newer "$have" "$img"; then
+        echo "[stackblaze] data is from Nextcloud $have, newer than this image ($img): not starting"; exit 1
+      elif newer "$img" "$have"; then
+        if [ "${img%%.*}" -gt "$((${have%%.*} + 1))" ]; then
+          echo "[stackblaze] Nextcloud upgrades one major version at a time ($have to $img is not possible)"; exit 1
+        fi
+        echo "[stackblaze] upgrading Nextcloud $have to $img"
+        occ upgrade
+        occ db:add-missing-indices || true
+        occ maintenance:repair --include-expensive >/dev/null || true
+      fi
+
+      # Every start: pretty URLs, cron mode, Calendar and Contacts present and
+      # up to date (the only time the app store is reachable).
+      occ maintenance:update:htaccess >/dev/null
+      occ background:cron >/dev/null
+      enabled=$(occ app:list --output=json | php -r '$j = json_decode(stream_get_contents(STDIN), true); echo implode(" ", array_keys($j["enabled"] ?? []));')
+      for app in calendar contacts; do
+        case " $enabled " in *" $app "*) continue ;; esac
+        if [ -d $V/custom_apps/$app ]; then occ app:enable "$app" || true
+        else occstore app:install "$app" || echo "[stackblaze] could not install $app now; retried on the next start"; fi
+      done
+      occstore app:update --all || echo "[stackblaze] app updates skipped"
+      occ db:add-missing-indices >/dev/null || true
+      if ! occ status --output=json | grep -q '"installed":true.*"needsDbUpgrade":false'; then
+        echo "[stackblaze] Nextcloud is not ready; not starting the web server"; exit 1
+      fi
+      # Apache serves the code straight from the image.
+      sed -i 's#/var/www/html#/usr/src/nextcloud#' /etc/apache2/sites-available/000-default.conf
+      cat > /etc/apache2/conf-enabled/stackblaze.conf <<'EOF'
+      <Directory /usr/src/nextcloud/>
+        Options FollowSymLinks
+        AllowOverride All
+        Require all granted
+      </Directory>
+      Header always set Strict-Transport-Security "max-age=15552000"
+      EOF
+      echo "[stackblaze] starting Apache"
+      exec apache2-foreground
     run:
       securityContext:
         readOnlyRootFilesystem: false
