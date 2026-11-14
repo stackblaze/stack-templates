@@ -1,0 +1,24 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      { "waitForSelector": "input[type=password]", "timeout": 60000 },
+      { "sleep": 1500 },
+      { "fill": { "input[type=email]": "${BASEROW_ADMIN_EMAIL}" } },
+      { "fill": { "input[type=password]": "${BASEROW_ADMIN_PASSWORD}" } },
+      { "press": { "selector": "input[type=password]", "key": "Enter" } },
+      { "waitForSelector": "text=Trail Club", "timeout": 30000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "grid", "path": "/", "waitFor": "text=Hiking Guide", "waitMs": 1500,
+      "steps": [ { "click": "text=/^Hiking Guide$/" }, { "click": "text=/^Trails$/" }, { "sleep": 3000 } ] },
+    { "name": "gallery", "path": "/", "waitFor": "text=Hiking Guide", "waitMs": 1500,
+      "steps": [ { "click": "text=/^Hiking Guide$/" }, { "click": "text=/^Parks$/" }, { "sleep": 2500 }, { "click": ".header__filter-item--grids .header__filter-link" }, { "click": "text=/^Parks gallery$/" }, { "sleep": 3000 } ] },
+    { "name": "record", "path": "/", "waitFor": "text=Hiking Guide", "waitMs": 1500,
+      "steps": [ { "click": "text=/^Hiking Guide$/" }, { "click": "text=/^Parks$/" }, { "sleep": 2500 }, { "click": ".header__filter-item--grids .header__filter-link" }, { "click": "text=/^Parks gallery$/" }, { "sleep": 3000 }, { "click": ".gallery-view__card:has-text(\"Yellowstone\")" }, { "sleep": 2500 } ] }
+  ]
+}
