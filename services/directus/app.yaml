@@ -3,76 +3,38 @@ kind: KuberoApp
 metadata:
   name: directus
   annotations:
-    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
     kubero.dev/template.description: The flexible backend for all your projects. Turn
-      your DB into a headless CMS, admin panels, or apps with a custom UI, instant
-      APIs, auth & more.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/15967950
-    kubero.dev/template.installation: Set ADMIN_EMAIL and ADMIN_PASSWORD before first
-      login. Rotate SECRET to a random value for production. Valkey is used for API
-      caching (and multi-instance sync in HA). Connects at rfr-<app>-valkey-readwrite:6379.
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://framerusercontent.com/images/wDMzR3oV9R51pVCPoOz6PGTRs54.png"]'
+      your database into a headless CMS, admin panels, or apps with a custom UI, instant
+      REST and GraphQL APIs, auth and more.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/directus/icon.png
+    kubero.dev/template.installation: 'Open the app URL and sign in to the Data Studio
+      as admin@example.com (ADMIN_EMAIL) with the password generated in ADMIN_PASSWORD
+      (both under Variables). Change the email to your own in your user profile so
+      password resets reach you. The first start installs the system tables and can
+      take a minute. Uploads and extensions persist on shared volumes (/directus/uploads,
+      /directus/extensions). Valkey holds the API cache, rate-limiter counters, the
+      WebSocket message bus and scheduled-job locks. Mail (invites, password resets,
+      flows) goes through the platform Email add-on (EMAIL_SMTP_* are mapped from it).
+      SECRET signs sessions and tokens and is generated once; do not change it. Without
+      a license key Directus runs on its free Core tier (3 Studio users, 25 collections,
+      5 flows, no custom permission rules or SSO; see directus.com/license). On first
+      sign-in the Studio asks for a license key and a project owner: Skip and Remind
+      Later keep the Core tier.'
+    kubero.dev/template.links: '["https://directus.com/docs", "https://directus.com/docs/configuration/general"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/directus/screenshot-posts.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/directus/screenshot-post-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/directus/screenshot-data-model.png"]'
     kubero.dev/template.source: https://github.com/directus/directus
-    kubero.dev/template.categories: '["database", "cms", "api"]'
+    kubero.dev/template.categories: '["cms", "database", "api"]'
     kubero.dev/template.title: Directus
-    kubero.dev/template.website: https://directus.io/
+    kubero.dev/template.website: https://directus.com/
   labels:
     manager: kubero
 spec:
   name: directus
   deploymentstrategy: docker
-  envVars:
-  - name: ADMIN_EMAIL
-    value: admin@example.com
-  - name: ADMIN_PASSWORD
-    value: example
-  - name: WEBSOCKETS_ENABLED
-    value: 'true'
-  - name: DB_CLIENT
-    value: pg
-  - name: DB_HOST
-    value: '$(PGHOST)'
-  - name: DB_PORT
-    value: '$(PGPORT)'
-  - name: DB_DATABASE
-    value: '$(PGDATABASE)'
-  - name: DB_USER
-    value: '$(PGUSER)'
-  - name: DB_PASSWORD
-    value: '$(PGPASSWORD)'
-  - name: CACHE_ENABLED
-    value: 'true'
-  - name: CACHE_AUTO_PURGE
-    value: 'true'
-  - name: CACHE_STORE
-    value: redis
-  - name: REDIS
-    value: 'redis://$(REDISHOST):$(REDISPORT)'
-  extraVolumes:
-  - accessModes:
-    - ReadWriteMany
-    emptyDir: false
-    mountPath: /directus/uploads
-    name: '{{STACKBLAZE_APP_NAME}}-uploads-volume'
-    size: 1Gi
-    storageClass: shared
-  - accessModes:
-    - ReadWriteMany
-    emptyDir: false
-    mountPath: /directus/extensions
-    name: directus-extensions-volume
-    size: 1Gi
-    storageClass: shared
-  - accessModes:
-    - ReadWriteMany
-    emptyDir: false
-    mountPath: /directus/templates
-    name: directus-templates-volume
-    size: 1Gi
-    storageClass: shared
-  cronjobs: []
   addons:
+  # Postgres. Directus reads DB_CLIENT/DB_HOST/... (docs: configuration/database);
+  # they are built from the injected PG* contract below.
   - displayName: PostgreSQL (CloudNativePG)
     env: []
     icon: /img/addons/pgsql.svg
@@ -119,7 +81,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: directus
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -128,7 +90,12 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: directus
-          password: directus
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Valkey (Redis protocol). With REDIS set, Directus uses it for the message
+  # bus (WebSockets, collaborative editing), locks, counters and the
+  # permissions cache (api/src/redis); CACHE_STORE, RATE_LIMITER_STORE and
+  # SYNCHRONIZATION_STORE below move the data cache, rate limiters and
+  # scheduled-job sync there too, so the app can scale past one replica.
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -158,13 +125,120 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  # Platform email (README "Email contract"). Directus's mailer
+  # (api/src/mailer.ts) reads EMAIL_TRANSPORT and EMAIL_SMTP_*; used for user
+  # invites, password resets and the flows "Send Email" operation. The relay
+  # is STARTTLS on 587, so EMAIL_SMTP_SECURE stays false. Directus sends as
+  # { name: <project name>, address: EMAIL_FROM }, so EMAIL_FROM must be a
+  # bare address: the start command strips a display name from SMTP_FROM.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: EMAIL_TRANSPORT
+      value: smtp
+    - name: EMAIL_SMTP_HOST
+      value: '$(SMTP_HOST)'
+    - name: EMAIL_SMTP_PORT
+      value: '$(SMTP_PORT)'
+    - name: EMAIL_SMTP_USER
+      value: '$(SMTP_USER)'
+    - name: EMAIL_SMTP_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: EMAIL_SMTP_SECURE
+      value: 'false'
+    - name: EMAIL_FROM
+      value: '$(SMTP_FROM)'
+    resourceDefinitions: {}
+  envVars:
+  # Signs access/refresh tokens and sessions. Must be >= 32 bytes
+  # (api/src/app.ts warns below that).
+  - name: SECRET
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
+  # Used for password-reset and invite links, OAuth redirects and licensing.
+  - name: PUBLIC_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # First admin, created by `directus bootstrap` on the first start only
+  # (api/src/utils/create-admin.ts).
+  - name: ADMIN_EMAIL
+    value: admin@example.com
+  - name: ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  - name: DB_CLIENT
+    value: pg
+  - name: DB_HOST
+    value: '$(PGHOST)'
+  - name: DB_PORT
+    value: '$(PGPORT)'
+  - name: DB_DATABASE
+    value: '$(PGDATABASE)'
+  - name: DB_USER
+    value: '$(PGUSER)'
+  - name: DB_PASSWORD
+    value: '$(PGPASSWORD)'
+  - name: REDIS
+    value: 'redis://$(REDISHOST):$(REDISPORT)'
+  - name: CACHE_ENABLED
+    value: 'true'
+  - name: CACHE_STORE
+    value: redis
+  - name: CACHE_AUTO_PURGE
+    value: 'true'
+  # The per-IP API limiter stays off (upstream default; the Studio bursts
+  # requests). The registration, email and MCP limiters are on by default and
+  # use this store.
+  - name: RATE_LIMITER_STORE
+    value: redis
+  - name: SYNCHRONIZATION_STORE
+    value: redis
+  # Realtime (REST/GraphQL subscriptions) and collaborative editing.
+  - name: WEBSOCKETS_ENABLED
+    value: 'true'
+  # TLS ends at the platform ingress; trust its X-Forwarded-* headers so
+  # rate limits and activity logs see the client IP, and cookies are Secure.
+  - name: IP_TRUST_PROXY
+    value: 'true'
+  - name: SESSION_COOKIE_SECURE
+    value: 'true'
+  - name: REFRESH_TOKEN_COOKIE_SECURE
+    value: 'true'
+  # Usage reports. Honoured with a license; the Core tier always reports
+  # (docs: licensing/telemetry).
+  - name: TELEMETRY
+    value: 'false'
+  - name: PROJECT_NAME
+    value: Directus
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /directus/uploads
+    name: '{{STACKBLAZE_APP_NAME}}-uploads'
+    size: 5Gi
+    storageClass: shared
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /directus/extensions
+    name: '{{STACKBLAZE_APP_NAME}}-extensions'
+    size: 1Gi
+    storageClass: shared
+  cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 2Gi
   healthcheck:
     enabled: true
-    path: /admin
+    path: /server/ping
     startupSeconds: 300
     timeoutSeconds: 5
     periodSeconds: 10
@@ -172,7 +246,35 @@ spec:
     containerPort: '8055'
     pullPolicy: Always
     repository: docker.io/directus/directus
-    tag: '11'
+    tag: 12.6.1
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      # Directus sends as { name: <project name>, address: EMAIL_FROM }; a
+      # display name inside the address would be mangled, so keep the address.
+      case "${EMAIL_FROM:-}" in
+        *"<"*)
+          EMAIL_FROM=$(printf '%s' "$EMAIL_FROM" | sed 's/.*<//; s/>.*//')
+          export EMAIL_FROM
+          ;;
+      esac
+      # On a fresh deploy the add-ons can come up after the app; bootstrap
+      # then exits on ECONNREFUSED and the pod restarts. Wait for both.
+      for target in "$PGHOST:$PGPORT" "$REDISHOST:$REDISPORT"; do
+        i=0
+        until nc -z -w 2 "${target%:*}" "${target##*:}"; do
+          i=$((i + 1))
+          if [ "$i" -ge 150 ]; then echo "$target not reachable" >&2; exit 1; fi
+          echo "waiting for $target"
+          sleep 2
+        done
+      done
+      # Upstream CMD: bootstrap (install or migrate, first admin), then pm2.
+      exec node docker-entrypoint.cjs
     run:
       securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
         readOnlyRootFilesystem: false
