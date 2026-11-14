@@ -1054,9 +1054,10 @@ spec:
       # sign-in page, Edge Function deploy/delete from the UI, and the screens
       # backed by the hosting platform (backups, branching, GitHub, merge
       # requests, members, Auth settings, function secrets, service versions).
-      # sha-63fa6e3: the fork synced with upstream master (stackblaze/supabase#31).
+      # sha-29b6bc5: test tag of stackblaze/supabase#31 (fork synced with
+      # upstream, sign-in redirect fix); re-pin to its master build once merged.
       repository: ghcr.io/stackblaze/supabase-studio
-      tag: sha-63fa6e3
+      tag: sha-29b6bc5
       containerPort: '3000'
       command:
       - /bin/sh
