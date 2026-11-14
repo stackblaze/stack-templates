@@ -1,0 +1,13 @@
+{
+  "window.autoDetectColorScheme": true,
+  "workbench.preferredDarkColorTheme": "Default Dark Modern",
+  "workbench.preferredLightColorTheme": "Default Light Modern",
+  "workbench.startupEditor": "none",
+  "workbench.secondarySideBar.defaultVisibility": "hidden",
+  "security.workspace.trust.enabled": false,
+  "chat.disableAIFeatures": true,
+  "editor.fontSize": 15,
+  "editor.minimap.enabled": false,
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.gpuAcceleration": "off"
+}
