@@ -15,8 +15,8 @@
     "waitAfterMs": 2000
   },
   "pages": [
-    { "name": "files", "path": "/apps/files/files?dir=/Projects/Website%20relaunch", "waitMs": 3500 },
-    { "name": "photos", "path": "/apps/files/files?dir=/Projects/Autumn%20campaign", "waitMs": 3500 },
-    { "name": "calendar", "path": "/apps/calendar/timeGridWeek/now", "waitMs": 3500 }
+    {"name": "files", "path": "/apps/files/files?dir=/", "waitMs": 3500},
+    {"name": "folder", "path": "/apps/files/files?dir=/Projects/Website%20relaunch", "waitMs": 3500},
+    {"name": "calendar", "path": "/apps/calendar/timeGridWeek/now", "waitMs": 3500}
   ]
 }
