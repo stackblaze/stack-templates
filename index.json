@@ -5219,7 +5219,7 @@
    "name": "typebot",
    "description": "Build chatbots and conversational forms in a visual editor, then publish them as a link, an embed or a chat bubble. Results, file uploads and email sign-in included.",
    "source": "https://github.com/baptisteArno/typebot.io",
-   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@45afbcf915e2937f16515a4a5b41352ac48cf714/services/typebot/icon.png",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/e5a34d2192c34ebbc42dac44c5d29acb56535f9b/services/typebot/icon.png",
    "website": "https://typebot.io/",
    "installation": "Builder and viewer services. Set ADMIN_EMAIL to your email before you deploy, then sign in with the code sent to it. Sign-up is closed; invite people from Settings > Members. Runs in Kata micro-VMs.",
    "architecture": [
@@ -5232,9 +5232,9 @@
     "work"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typebot/screenshot-editor.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typebot/screenshot-typebots.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typebot/screenshot-results.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/e5a34d2192c34ebbc42dac44c5d29acb56535f9b/services/typebot/screenshot-editor.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/e5a34d2192c34ebbc42dac44c5d29acb56535f9b/services/typebot/screenshot-typebots.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/e5a34d2192c34ebbc42dac44c5d29acb56535f9b/services/typebot/screenshot-results.png"
    ],
    "links": [
     "https://docs.typebot.io/self-hosting/configuration"
