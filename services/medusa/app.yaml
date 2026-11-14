@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: "Build custom shopping experiences with modular commerce APIs, product management, carts, and checkout.\nA developer-first alternative to Shopify Plus and commercetools."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/icon.png
     kubero.dev/template.homepage: /app
-    kubero.dev/template.installation: "Deploys the Medusa 2 server with its admin dashboard (the app URL opens /app), the Store API, Postgres and Valkey. The first start runs the migrations, seeds upstream's starter store (a Europe region, a warehouse, shipping options, four sample products and a publishable API key) and creates the admin user before the app is reachable. Sign in with admin@example.com (MEDUSA_ADMIN_EMAIL) and the generated password in MEDUSA_ADMIN_PASSWORD (Variables). To use your own address, invite it under Settings > Users (copy the invite link), accept it, then delete the first user. There is no storefront in this template: build one from upstream's starter (github.com/medusajs/dtc-starter, apps/storefront) with the publishable key from Settings > Publishable API Keys, and add its URL to STORE_CORS and AUTH_CORS. Product images upload to the data volume and are served from /static. Medusa sends no email on its own: password resets and invites need a notification module in your own build. RBAC roles and SSO are Medusa Enterprise features that need a licence key; the template runs without them."
+    kubero.dev/template.installation: "Builds on deploy: StackBlaze publishes no Medusa image. Your project builds the Medusa 2.22.7 server from upstream's starter (medusajs/dtc-starter, pinned commit) with the Dockerfile in this template's folder (stackblaze/stack-templates, services/medusa/image), so the first deploy takes about 8 minutes (about 6 for the build). Changing a variable rebuilds the image too: about 6 minutes on a cold build node, about 1 minute warm; restarts and scaling reuse the built image. Deploys the Medusa 2 server with its admin dashboard (the app URL opens /app), the Store API, Postgres and Valkey. The first start runs the migrations, seeds upstream's starter store (a Europe region, a warehouse, shipping options, four sample products and a publishable API key) and creates the admin user before the app is reachable. Sign in with admin@example.com (MEDUSA_ADMIN_EMAIL) and the generated password in MEDUSA_ADMIN_PASSWORD (Variables). To use your own address, invite it under Settings > Users (copy the invite link), accept it, then delete the first user. There is no storefront in this template: build one from upstream's starter (github.com/medusajs/dtc-starter, apps/storefront) with the publishable key from Settings > Publishable API Keys, and add its URL to STORE_CORS and AUTH_CORS. Product images upload to the data volume and are served from /static. Medusa sends no email on its own: password resets and invites need a notification module in your own build. Licence: Medusa is MIT except its Enterprise materials (RBAC roles, SSO/OIDC), which ship inside Medusa's npm packages: your build fetches them from npm, and they stay inert without a Medusa licence key. The template runs without them."
     kubero.dev/template.links: '["https://docs.medusajs.com/learn/deployment/general", "https://docs.medusajs.com/", "https://github.com/medusajs/dtc-starter"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/screenshot-orders.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/screenshot-order.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/screenshot-product.png"]'
     kubero.dev/template.source: https://github.com/medusajs/medusa
@@ -18,7 +18,17 @@ metadata:
     manager: kubero
 spec:
   name: medusa
-  deploymentstrategy: docker
+  # Build on deploy (Railway-style): no published image. Each deploy clones
+  # this repo at the pinned commit and builds services/medusa/image (the
+  # Dockerfile: upstream's starter at a pinned commit, npm packages fetched
+  # by the deploying project's own build). `branch` is a commit SHA, so a
+  # push to this repo never rebuilds anyone's app.
+  deploymentstrategy: git
+  buildstrategy: dockerfile
+  gitrepo:
+    clone_url: https://github.com/stackblaze/stack-templates.git
+  branch: 75af11fffa1cb21a95f778ecb7a6f7d6c639e340
+  buildContext: services/medusa/image
   addons:
   - displayName: PostgreSQL (CloudNativePG)
     env: []
@@ -178,10 +188,9 @@ spec:
   image:
     containerPort: '9000'
     pullPolicy: IfNotPresent
-    # Built from services/medusa/image by .github/workflows/build-medusa.yaml
-    # (upstream publishes no runtime image). Anonymous pull.
-    repository: ghcr.io/stackblaze/stack-templates/medusa
-    tag: '2.22.7'
+    # Set by the build (the project's own registry); nothing to pull before.
+    repository: ''
+    tag: ''
     run:
       securityContext:
         runAsUser: 1000
