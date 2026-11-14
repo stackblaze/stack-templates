@@ -272,7 +272,7 @@ spec:
     pullPolicy: IfNotPresent
     # stackblaze/plane (Plane v1.4.3 + fork commits), built by its image.yml.
     repository: ghcr.io/stackblaze/plane-backend
-    tag: sha-02e631a
+    tag: sha-fb066de
     run:
       securityContext:
         readOnlyRootFilesystem: false
@@ -286,7 +286,7 @@ spec:
     exposeInternet: false
     image:
       repository: ghcr.io/stackblaze/plane-backend
-      tag: sha-02e631a
+      tag: sha-fb066de
       pullPolicy: IfNotPresent
       containerPort: '8000'
       command:
@@ -299,7 +299,7 @@ spec:
     exposeInternet: false
     image:
       repository: ghcr.io/stackblaze/plane-backend
-      tag: sha-02e631a
+      tag: sha-fb066de
       pullPolicy: IfNotPresent
       containerPort: '8000'
       command:
@@ -313,7 +313,7 @@ spec:
     exposeInternet: false
     image:
       repository: ghcr.io/stackblaze/plane-frontend
-      tag: sha-02e631a
+      tag: sha-fb066de
       pullPolicy: IfNotPresent
       containerPort: '3000'
     healthcheck:
@@ -324,7 +324,7 @@ spec:
     exposeInternet: false
     image:
       repository: ghcr.io/stackblaze/plane-space
-      tag: sha-02e631a
+      tag: sha-fb066de
       pullPolicy: IfNotPresent
       containerPort: '3000'
     healthcheck:
@@ -336,7 +336,7 @@ spec:
     inheritEnvFrom: primary
     image:
       repository: ghcr.io/stackblaze/plane-live
-      tag: sha-02e631a
+      tag: sha-fb066de
       pullPolicy: IfNotPresent
       containerPort: '3000'
     healthcheck:
@@ -349,7 +349,7 @@ spec:
     usePrimaryAddons: true
     image:
       repository: ghcr.io/stackblaze/plane-proxy
-      tag: sha-02e631a
+      tag: sha-fb066de
       pullPolicy: IfNotPresent
       containerPort: '80'
     envVars:
