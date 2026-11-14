@@ -12462,7 +12462,9 @@
     "development"
    ],
    "screenshots": [
-    "https://ollama.com/public/og.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/screenshot-chat.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/screenshot-openai.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ollama/screenshot-private.png"
    ],
    "links": [
     "https://github.com/ollama/ollama",
