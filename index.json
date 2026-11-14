@@ -13717,6 +13717,54 @@
      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/app.yaml"
     }
    ]
+  },
+  {
+   "name": "Langflow",
+   "description": "Visual builder for AI agents and RAG workflows. Drag components onto a canvas, connect any LLM or vector store, and serve each flow as an API.",
+   "source": "https://github.com/langflow-ai/langflow",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/icon.png",
+   "website": "https://www.langflow.org/",
+   "installation": "Sign in as the user in LANGFLOW_SUPERUSER with the password generated in LANGFLOW_SUPERUSER_PASSWORD (both under Variables). The first start runs database migrations and can take 2-3 minutes.",
+   "architecture": [],
+   "categories": [
+    "ai",
+    "development",
+    "utilities"
+   ],
+   "screenshots": [
+     "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-agent-flow.png",
+     "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-rag-flow.png",
+     "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-flows.png"
+    ],
+   "links": [
+    "https://docs.langflow.org/"
+   ],
+   "addons": [
+    "Cluster"
+   ],
+   "stars": 156575,
+   "forks": 10396,
+   "watchers": 156575,
+   "issues": 1315,
+   "last_updated": "2026-11-12T20:00:57Z",
+   "last_pushed": "2026-11-12T20:21:20Z",
+   "created_at": "2023-02-08T22:28:03Z",
+   "size": 1723093,
+   "language": "Python",
+   "gitops": false,
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/app.yaml",
+   "status": "active",
+   "license": "MIT",
+   "spdx_id": "MIT",
+   "dirname": "langflow",
+   "deploymentTypes": [
+    {
+     "id": "standard",
+     "label": "Standard",
+     "default": true,
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/app.yaml"
+    }
+   ]
   }
  ],
  "categories": {
