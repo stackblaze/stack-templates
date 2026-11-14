@@ -4,7 +4,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: "Keep passwords, secure notes, and logins organized across all your devices.\nA lightweight alternative to 1Password and LastPass."
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@d8123f94fb779ed065b5274ba5edfd8e8890c391/services/vaultwarden/icon.png
     kubero.dev/template.installation: 'Sign-up is closed: nobody can create an account
       on their own. Open /admin on your app URL and sign in with the token in
       ADMIN_PANEL_TOKEN (under Variables; it is hashed with Argon2id at start, so
@@ -19,7 +19,7 @@ metadata:
       you save in /admin are written to /data/config.json and then override the
       variables.'
     kubero.dev/template.links: '["https://github.com/dani-garcia/vaultwarden/wiki"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-vault.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-item.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-generator.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@d8123f94fb779ed065b5274ba5edfd8e8890c391/services/vaultwarden/screenshot-vault.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@d8123f94fb779ed065b5274ba5edfd8e8890c391/services/vaultwarden/screenshot-item.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@d8123f94fb779ed065b5274ba5edfd8e8890c391/services/vaultwarden/screenshot-generator.png"]'
     kubero.dev/template.source: https://github.com/dani-garcia/vaultwarden
     kubero.dev/template.categories: '["security", "utilities"]'
     kubero.dev/template.title: "Vaultwarden Passwords"
