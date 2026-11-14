@@ -51,6 +51,10 @@ spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
           primaryUpdateStrategy: unsupervised
+          postgresql:
+            parameters:
+              # Realtime's Postgres Changes decode the WAL with wal2json.
+              output_plugin_libraries: wal2json
           storage:
             storageClass: smart
             size: 8Gi
@@ -87,7 +91,8 @@ spec:
 
                 -- This tenant's login users, all on the tenant Secret password.
                 DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_admin') THEN CREATE ROLE "supabase_admin" LOGIN; END IF; END $do$;
-                ALTER ROLE "supabase_admin" WITH LOGIN INHERIT BYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD '{{STACKBLAZE_GEN_SHARED:SB_DB_PASSWORD:ALNUM:32}}';
+                -- REPLICATION: Realtime's Postgres Changes read the WAL through a logical replication slot.
+                ALTER ROLE "supabase_admin" WITH LOGIN INHERIT BYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE REPLICATION PASSWORD '{{STACKBLAZE_GEN_SHARED:SB_DB_PASSWORD:ALNUM:32}}';
                 DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_auth') THEN CREATE ROLE "supabase_auth" LOGIN; END IF; END $do$;
                 ALTER ROLE "supabase_auth" WITH LOGIN NOINHERIT NOBYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD '{{STACKBLAZE_GEN_SHARED:SB_DB_PASSWORD:ALNUM:32}}';
                 DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_storage') THEN CREATE ROLE "supabase_storage" LOGIN; END IF; END $do$;
@@ -240,7 +245,9 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: '{{STACKBLAZE_GEN_ALNUM:32}}'
+          # The platform hands every service this password as PGPASSWORD, and the
+          # per-tenant users above log in with it (one generated value).
+          password: '{{STACKBLAZE_GEN_SHARED:SB_DB_PASSWORD:ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -249,7 +256,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: supabase
-          # The same value as the per-tenant users' password in the init SQL above.
+          # The same generated value as the superuser and the per-tenant users.
           password: '{{STACKBLAZE_GEN_SHARED:SB_DB_PASSWORD:ALNUM:32}}'
   - displayName: Email
     icon: /img/addons/email.svg
@@ -1076,6 +1083,10 @@ spec:
       accessModes:
       - ReadWriteMany
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: HOSTNAME
       value: '::'
     - name: STUDIO_PORT
@@ -1109,10 +1120,8 @@ spec:
       value: '1000'
     - name: PGRST_DB_EXTRA_SEARCH_PATH
       value: public
-    - name: JWT_SECRET
-      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: AUTH_JWT_SECRET
-      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
+      value: '$(JWT_SECRET)'
     - name: SUPABASE_PUBLISHABLE_KEY
       value: 'sb_publishable_{{STACKBLAZE_GEN_ALNUM:32}}'
     - name: SUPABASE_SECRET_KEY
@@ -1171,6 +1180,10 @@ spec:
       tag: v2.197.0
       containerPort: '9999'
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: GOTRUE_API_HOST
       value: 0.0.0.0
     - name: GOTRUE_API_PORT
@@ -1186,7 +1199,7 @@ spec:
     - name: GOTRUE_DISABLE_SIGNUP
       value: 'false'
     - name: GOTRUE_JWT_SECRET
-      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
+      value: '$(JWT_SECRET)'
     - name: GOTRUE_JWT_EXP
       value: '3600'
     - name: GOTRUE_JWT_DEFAULT_GROUP_NAME
@@ -1234,6 +1247,10 @@ spec:
       tag: v14.18
       containerPort: '3000'
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: PGRST_DB_URI
       value: 'postgres://$(SUPABASE_DB_AUTHENTICATOR_USER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
     - name: PGRST_DB_SCHEMAS
@@ -1245,7 +1262,7 @@ spec:
     - name: PGRST_DB_ANON_ROLE
       value: anon
     - name: PGRST_JWT_SECRET
-      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
+      value: '$(JWT_SECRET)'
     - name: PGRST_DB_USE_LEGACY_GUCS
       value: 'false'
     - name: PGRST_APP_SETTINGS_JWT_EXP
@@ -1264,6 +1281,10 @@ spec:
       tag: v14.18
       containerPort: '3000'
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: PGRST_DB_URI
       # Replica first, primary second: libpq opens the pool on the first host
       # that answers, PostgREST's schema-reload listener insists on a
@@ -1279,7 +1300,7 @@ spec:
     - name: PGRST_DB_ANON_ROLE
       value: anon
     - name: PGRST_JWT_SECRET
-      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
+      value: '$(JWT_SECRET)'
     - name: PGRST_DB_USE_LEGACY_GUCS
       value: 'false'
     - name: PGRST_APP_SETTINGS_JWT_EXP
@@ -1297,6 +1318,10 @@ spec:
       tag: v2.148.3
       containerPort: '4000'
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: PORT
       value: '4000'
     - name: DB_HOST
@@ -1317,9 +1342,9 @@ spec:
     - name: DB_ENC_KEY
       value: '{{STACKBLAZE_GEN_ALNUM:16}}'
     - name: API_JWT_SECRET
-      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
+      value: '$(JWT_SECRET)'
     - name: METRICS_JWT_SECRET
-      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
+      value: '$(JWT_SECRET)'
     - name: SECRET_KEY_BASE
       value: '{{STACKBLAZE_GEN_ALNUM:64}}'
     - name: ERL_AFLAGS
@@ -1365,6 +1390,10 @@ spec:
         export ANON_KEY SERVICE_KEY
         exec node dist/start/server.js
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: STORAGE_BACKEND
       value: s3
     # Keep Kong's /storage/v1 prefix in resumable-upload (TUS) URLs.
@@ -1398,12 +1427,10 @@ spec:
       value: 'true'
     - name: IMGPROXY_URL
       value: http://supabase-imgproxy-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
-    - name: JWT_SECRET
-      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: PGRST_JWT_SECRET
-      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
+      value: '$(JWT_SECRET)'
     - name: AUTH_JWT_SECRET
-      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
+      value: '$(JWT_SECRET)'
     healthcheck:
       enabled: true
       path: /status
@@ -1417,6 +1444,9 @@ spec:
       tag: v0.100.0
       containerPort: '8080'
     envVars:
+    # Shared with the Studio card by its name.
+    - name: PG_META_CRYPTO_KEY
+      value: '{{STACKBLAZE_GEN_SHARED:SB_PG_META_CRYPTO_KEY:ALNUM:32}}'
     - name: PG_META_PORT
       value: '8080'
     - name: PG_META_DB_HOST
@@ -1430,7 +1460,7 @@ spec:
     - name: PG_META_DB_PASSWORD
       value: '$(PGPASSWORD)'
     - name: CRYPTO_KEY
-      value: '{{STACKBLAZE_GEN_SHARED:SB_PG_META_CRYPTO_KEY:ALNUM:32}}'
+      value: '$(PG_META_CRYPTO_KEY)'
     healthcheck:
       enabled: true
       path: /health
@@ -2016,6 +2046,10 @@ spec:
       accessModes:
       - ReadWriteMany
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     # Read by @supabase/server (withSupabase auth: publishable / secret),
     # which Studio's function templates use.
     - name: SUPABASE_PUBLISHABLE_KEY
@@ -2033,12 +2067,12 @@ spec:
       value: http://supabase-api-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: SUPABASE_PUBLIC_URL
       value: '{{STACKBLAZE_APP_URL}}'
+    # As this deployment's admin user (BYPASSRLS, not a superuser), like
+    # upstream's postgres role.
     - name: SUPABASE_DB_URL
-      value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+      value: 'postgresql://$(SUPABASE_DB_ADMIN_USER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
     # Signs the legacy keys in the router and checks JWTs when VERIFY_JWT is
     # on. Not passed on to functions.
-    - name: JWT_SECRET
-      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     healthcheck:
       enabled: false
   - id: imgproxy
@@ -2051,8 +2085,8 @@ spec:
     envVars:
     - name: IMGPROXY_BIND
       value: ':5001'
-    - name: IMGPROXY_LOCAL_FILESYSTEM_ROOT
-      value: /
+    # No IMGPROXY_LOCAL_FILESYSTEM_ROOT: Storage hands imgproxy presigned
+    # bucket URLs, so the container's own files are never a source.
     - name: IMGPROXY_USE_ETAG
       value: 'true'
     - name: IMGPROXY_AUTO_WEBP
