@@ -1657,7 +1657,7 @@
    "name": "excalidraw",
    "description": "Virtual whiteboard for sketching hand-drawn style diagrams, with live collaboration and shareable links that are end-to-end encrypted and stored on your own instance.",
    "source": "https://github.com/excalidraw/excalidraw",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e425b1bcd4aa3e76eef3ff2ece32e38fd1ade9f5/services/excalidraw/icon.png",
    "website": "https://excalidraw.com/",
    "installation": "Excalidraw has no accounts and no sign-in: anyone with the app URL can open the whiteboard. Drawings stay in each visitor's browser until shared. Live collaboration rooms and shareable links run on your instance, encrypted in the browser; the key stays in the link.",
    "architecture": [],
@@ -1667,9 +1667,9 @@
     "collaboration"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-board.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-collab.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/excalidraw/screenshot-export.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e425b1bcd4aa3e76eef3ff2ece32e38fd1ade9f5/services/excalidraw/screenshot-board.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e425b1bcd4aa3e76eef3ff2ece32e38fd1ade9f5/services/excalidraw/screenshot-collab.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e425b1bcd4aa3e76eef3ff2ece32e38fd1ade9f5/services/excalidraw/screenshot-export.png"
    ],
    "links": [
     "https://docs.excalidraw.com",
