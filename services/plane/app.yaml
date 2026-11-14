@@ -3,29 +3,52 @@ kind: KuberoApp
 metadata:
   name: plane
   annotations:
-    kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Plan projects, prioritize issues, and deliver work through cycles, modules, and roadmaps.\nA streamlined alternative to Jira and Linear."
+    kubero.dev/template.architecture: '["linux/amd64"]'
+    kubero.dev/template.description: Plan projects, track issues and ship work through
+      cycles, modules and pages. Open source project management with LDAP, OIDC and
+      SAML sign-in, time tracking and workflows included.
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/icon.png
-    kubero.dev/template.installation: |
-      Deploys the stackblaze/plane fork as a multi-service group: api + worker + beat (ghcr.io/stackblaze/plane-backend:latest), web/space/live frontends, and plane-proxy as the public entrypoint. Shared add-ons (PostgreSQL, Valkey, RabbitMQ, RustFS) attach to the api service; invites and magic-code login use Platform Email while that add-on is connected. Uploads go to the platform object-storage add-on (a communal S3 bucket on shared zones). The instance is configured from env on every API boot (ADMIN_EMAIL / ADMIN_PASSWORD / WORKSPACE_NAME, ENABLE_* and EMAIL_*); the /god-mode admin app is not deployed. Open the proxy URL and sign in with ADMIN_EMAIL/ADMIN_PASSWORD. With Platform Email connected, everyone else signs in with a code sent to their email — no password to remember. Rotate ADMIN_PASSWORD, SECRET_KEY, LIVE_SERVER_SECRET_KEY, and RustFS credentials before production use.
+    kubero.dev/template.installation: 'Open the URL of the plane-proxy service and
+      sign in with the email in ADMIN_EMAIL and the password generated in
+      ADMIN_PASSWORD (both under Variables on the api service). The template creates
+      this admin and a first workspace on the first start, so there is no setup
+      page, and later starts never reset the password. Sign-up is closed: invite
+      people from Workspace settings > Members (invites are sent through the Email
+      add-on, and invited members can sign in with a code sent by email). Uploads
+      (attachments, covers, avatars) are stored in the S3 bucket add-on
+      and served through the proxy. Instance settings such as sign-in methods,
+      SMTP and LDAP/OIDC/SAML are read from the api environment on every start
+      (ENABLE_*, EMAIL_*, LDAP_*, OIDC_*, SAML_*); there is no /god-mode admin
+      app. The first start runs the database migrations and takes a few minutes.
+      Telemetry is off (ENABLE_TELEMETRY=0). Built from github.com/stackblaze/plane,
+      Plane v1.4.3.'
     kubero.dev/template.links: '["https://developers.plane.so/"]'
-    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/plane/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-all-projects.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-home.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-analytics.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-settings.png"]'
+    kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/stackblaze/plane
     kubero.dev/template.categories: '["productivity", "work", "collaboration"]'
-    kubero.dev/template.title: "Plane Project Management"
+    kubero.dev/template.title: Plane
     kubero.dev/template.website: https://plane.so/
   labels:
     manager: kubero
 spec:
   name: plane
   deploymentstrategy: docker
-  # Synthetic monorepo key — Architecture groups siblings by clone_url (+ branch).
+  # Synthetic monorepo key: the canvas groups siblings by clone_url (+ branch).
   gitrepo:
     admin: false
     clone_url: https://github.com/stackblaze/plane.git
     default_branch: preview
     private: false
     ssh_url: ''
+  # Dependency check (Plane v1.4.3 + stackblaze/plane fork):
+  # - Database: Postgres (DATABASE_URL, apps/api/plane/settings/common.py).
+  # - Cache/queue: Valkey. Django cache via the injected REDIS_URL; Celery broker
+  #   via CELERY_BROKER_URL (fork: RabbitMQ is only the Celery broker and the
+  #   platform injects no RabbitMQ credentials, so no RabbitMQ add-on).
+  # - Volume: none. Uploads go to S3.
+  # - S3: S3 bucket add-on (attachments, covers, avatars), served through the
+  #   proxy at /<bucket>/ (USE_MINIO=1; the proxy dials S3_HOST:S3_PORT).
+  # - SMTP: invites, sign-in codes, notifications (Email add-on env below).
   addons:
   - displayName: PostgreSQL (CloudNativePG)
     env: []
@@ -73,7 +96,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: plane
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -82,7 +105,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: plane
-          password: plane
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -112,8 +135,8 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
-  # Platform email (see README "Email contract"). Plane reads EMAIL_* from
-  # env (and Instance Admin); map from injected SMTP_*.
+  # Platform email (README "Email contract"). Plane reads EMAIL_* as instance
+  # configuration from the environment on every api start.
   - displayName: Email
     icon: /img/addons/email.svg
     id: kubero-smtp
@@ -138,11 +161,9 @@ spec:
     - name: ENABLE_MAGIC_LINK_LOGIN
       value: '1'
     resourceDefinitions: {}
-  # Platform object storage (RustFS Tenant → communal-s3 logical bucket
-  # on shared). Plane natively reads AWS_*; map endpoint/bucket from the
-  # injected S3_* contract (access keys arrive as AWS_ACCESS_KEY_ID /
-  # AWS_SECRET_ACCESS_KEY from the Tenant secret).
-  - displayName: RustFS
+  # S3 bucket add-on (Tenant). Plane serves files through its proxy at
+  # /<bucket>/, so the in-cluster endpoint is never sent to the browser.
+  - displayName: S3 bucket
     env: []
     icon: /img/addons/rustfs.svg
     id: kubero-operator
@@ -154,9 +175,6 @@ spec:
         metadata:
           name: '{{STACKBLAZE_APP_NAME}}-rustfs'
           annotations:
-            # The operator refuses custom-repo images it cannot verify for
-            # RuntimeDefault seccomp ("WorkloadSecurityIncompatible") unless the
-            # exact reference is acknowledged. Keep in sync with spec.image.
             operator.rustfs.com/runtime-default-image-ack: docker.io/rustfs/rustfs:1.0.0-beta.10
         spec:
           image: docker.io/rustfs/rustfs:1.0.0-beta.10
@@ -183,43 +201,18 @@ spec:
         stringData:
           accesskey: plane
           secretkey: '{{STACKBLAZE_GEN_HEX:32}}'
-  - displayName: RabbitMQ
-    env: []
-    icon: /img/addons/rabbitmq.svg
-    id: kubero-operator
-    kind: RabbitmqCluster
-    resourceDefinitions:
-      RabbitmqCluster:
-        apiVersion: rabbitmq.com/v1beta1
-        kind: RabbitmqCluster
-        metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-rabbitmq'
-        spec:
-          replicas: 1
-          persistence:
-            storageClassName: lite
-            storage: 1Gi
-          resources:
-            requests:
-              cpu: 100m
-              memory: 512Mi
-            limits:
-              memory: 1Gi
-          rabbitmq:
-            additionalConfig: "default_user = plane\ndefault_pass = plane\ndefault_vhost\
-              \ = plane\n"
   envVars:
-
+  # Public URL: the proxy's. The primary (api) is not exposed, so the dashboard
+  # fills WEB_URL and CORS_ALLOWED_ORIGINS from the proxy's host after deploy.
   - name: WEB_URL
     value: '{{STACKBLAZE_APP_URL}}'
   - name: CORS_ALLOWED_ORIGINS
     value: '{{STACKBLAZE_APP_URL}}'
-  # Seeded on first API boot (no /god-mode). Sign in with these, then use the app.
+  # First admin + workspace, created on the first api start (seed_from_env).
   - name: ADMIN_EMAIL
     value: admin@example.com
   - name: ADMIN_PASSWORD
-    # Fixed so catalog e2e can sign in; rotate for production.
-    value: KuberoQaPlaneAdmin1!
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
   - name: ADMIN_FIRST_NAME
     value: Admin
   - name: INSTANCE_NAME
@@ -228,22 +221,17 @@ spec:
     value: Plane
   - name: WORKSPACE_SLUG
     value: plane
+  # Closed: the URL is public. Members join by invite.
   - name: ENABLE_SIGNUP
-    value: '1'
+    value: '0'
   - name: ENABLE_EMAIL_PASSWORD
     value: '1'
+  - name: ENABLE_TELEMETRY
+    value: '0'
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: CELERY_BROKER_URL
-    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
-  - name: CELERY_RESULT_BACKEND
-    value: 'redis://$(REDISHOST):$(REDISPORT)/0'
-  - name: AMQP_URL
-    value: amqp://plane:plane@{{STACKBLAZE_APP_NAME}}-rabbitmq:5672/plane
-  - name: RABBITMQ_HOST
-    value: '{{STACKBLAZE_APP_NAME}}-rabbitmq'
-  - name: RABBITMQ_PORT
-    value: '5672'
+    value: '$(REDIS_URL)'
   - name: SECRET_KEY
     value: '{{STACKBLAZE_GEN_ALNUM:50}}'
   - name: LIVE_SERVER_SECRET_KEY
@@ -254,20 +242,12 @@ spec:
     value: '$(S3_ENDPOINT)'
   - name: AWS_S3_BUCKET_NAME
     value: '$(S3_BUCKET)'
-  - name: AWS_REGION
-    value: '$(AWS_REGION)'
-  # Also on primary so inheritEnvFrom copies them even if a dashboard
-  # build still replaces companion env instead of merging it.
   - name: API_BASE_URL
     value: http://api:8000
-  - name: SITE_ADDRESS
-    value: ':80'
   - name: FILE_SIZE_LIMIT
     value: '5242880'
-  - name: BUCKET_NAME
-    value: '$(S3_BUCKET)'
   - name: GUNICORN_WORKERS
-    value: '1'
+    value: '2'
   extraVolumes: []
   cronjobs: []
   web:
@@ -276,42 +256,38 @@ spec:
     replicaCount: 0
   resources:
     requests:
-      cpu: '1'
-      memory: 2Gi
+      cpu: 250m
+      memory: 768Mi
     limits:
       cpu: '2'
-      memory: 3Gi
+      memory: 2Gi
   healthcheck:
     enabled: true
     path: /
-    startupSeconds: 900
+    startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '8000'
-    pullPolicy: Always
-    # Published by stackblaze/plane on every push to preview
-    # (ghcr.io/stackblaze/plane-*:latest). Anonymous read, no pull secret.
+    pullPolicy: IfNotPresent
+    # stackblaze/plane (Plane v1.4.3 + fork commits), built by its image.yml.
     repository: ghcr.io/stackblaze/plane-backend
-    tag: latest
+    tag: sha-d67e897
     run:
       securityContext:
         readOnlyRootFilesystem: false
-  # The api is internal: the proxy below is the group's public entry. Read by
-  # dashboards from stack-templates#138 on; older ones keep the api internal
-  # because of the proxy's own flags.
+  # The api is internal: the proxy below is the group's public entry.
   exposeInternet: false
-  # Catalog-only (not written to the KuberoApp CR). Dashboard expands these into
-  # docker multi-app cards; addons stay on the primary api card above.
-  # exposeInternet:false → web replicas, no Ingress (proxy is the public entry).
+  # Catalog-only (not written to the KuberoApp CR). The dashboard expands these
+  # into sibling apps; add-ons stay on the api.
   templateServices:
   - id: worker
     nameHint: plane-worker
     exposeInternet: false
     image:
       repository: ghcr.io/stackblaze/plane-backend
-      tag: latest
-      pullPolicy: Always
+      tag: sha-d67e897
+      pullPolicy: IfNotPresent
       containerPort: '8000'
       command:
       - ./bin/docker-entrypoint-worker.sh
@@ -323,25 +299,23 @@ spec:
     exposeInternet: false
     image:
       repository: ghcr.io/stackblaze/plane-backend
-      tag: latest
-      pullPolicy: Always
+      tag: sha-d67e897
+      pullPolicy: IfNotPresent
       containerPort: '8000'
       command:
       - ./bin/docker-entrypoint-beat.sh
     inheritEnvFrom: primary
     healthcheck:
       enabled: false
+  # web and space are static builds (nginx); their URLs are same-origin.
   - id: web
     nameHint: plane-web
     exposeInternet: false
     image:
       repository: ghcr.io/stackblaze/plane-frontend
-      tag: latest
-      pullPolicy: Always
+      tag: sha-d67e897
+      pullPolicy: IfNotPresent
       containerPort: '3000'
-    envVars:
-    - name: WEB_URL
-      value: '{{STACKBLAZE_APP_URL}}'
     healthcheck:
       enabled: true
       path: /
@@ -350,48 +324,34 @@ spec:
     exposeInternet: false
     image:
       repository: ghcr.io/stackblaze/plane-space
-      tag: latest
-      pullPolicy: Always
+      tag: sha-d67e897
+      pullPolicy: IfNotPresent
       containerPort: '3000'
-    envVars:
-    - name: WEB_URL
-      value: '{{STACKBLAZE_APP_URL}}'
     healthcheck:
-      enabled: false
+      enabled: true
+      path: /spaces/
   - id: live
     nameHint: plane-live
     exposeInternet: false
     inheritEnvFrom: primary
     image:
       repository: ghcr.io/stackblaze/plane-live
-      tag: latest
-      pullPolicy: Always
+      tag: sha-d67e897
+      pullPolicy: IfNotPresent
       containerPort: '3000'
-    envVars:
-    - name: API_BASE_URL
-      value: http://api:8000
-    - name: WEB_URL
-      value: '{{STACKBLAZE_APP_URL}}'
     healthcheck:
       enabled: false
   - id: proxy
     nameHint: plane-proxy
     exposeInternet: true
     publicUrlSource: true
-    inheritEnvFrom: primary
+    # Add-on env only (S3_BUCKET for the Caddyfile), not the api's secrets.
+    usePrimaryAddons: true
     image:
       repository: ghcr.io/stackblaze/plane-proxy
-      tag: latest
-      pullPolicy: Always
+      tag: sha-d67e897
+      pullPolicy: IfNotPresent
       containerPort: '80'
-      command:
-      - /bin/sh
-      - -c
-      - |
-        export SITE_ADDRESS="${SITE_ADDRESS:-:80}"
-        export FILE_SIZE_LIMIT="${FILE_SIZE_LIMIT:-5242880}"
-        export BUCKET_NAME="${BUCKET_NAME:-$S3_BUCKET}"
-        exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
     envVars:
     - name: BUCKET_NAME
       value: '$(S3_BUCKET)'
@@ -402,8 +362,9 @@ spec:
     healthcheck:
       enabled: true
       path: /
-  # Alias Services the plane-proxy Caddyfile expects (created post-install /
-  # by the deploy helper). Selectors use KuberoApp instance labels.
+  # Services the plane-proxy Caddyfile dials (apps/proxy/Caddyfile.ce). The
+  # bucket path goes to the S3 add-on's injected S3_HOST:S3_PORT, so there is
+  # no plane-minio alias.
   templateServiceAliases:
   - name: api
     port: 8000
@@ -417,6 +378,3 @@ spec:
   - name: live
     port: 3000
     targetRole: live
-  - name: plane-minio
-    port: 9000
-    externalNameRole: rustfs-io
