@@ -5314,7 +5314,7 @@
    "name": "Plane Project Management",
    "description": "Plan projects, track issues and ship work through cycles, modules and pages. Open source project management with LDAP, OIDC and SAML sign-in, time tracking and workflows included.",
    "source": "https://github.com/stackblaze/plane",
-   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/icon.png",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/af050105511720bddc3c0b909b1725cd93411ce5/services/plane/icon.png",
    "website": "https://plane.so/",
    "installation": "Seven services (api, worker, beat, web, space, live and the public proxy) from github.com/stackblaze/plane, Plane v1.4.3, with PostgreSQL, Valkey, an S3 bucket and Email. Open the proxy URL and sign in with ADMIN_EMAIL and the generated ADMIN_PASSWORD (Variables on the api service); the admin and a first workspace are created on the first start. Sign-up is closed: invite members from Workspace settings, and they sign in with an emailed code. Instance settings (sign-in methods, SMTP, LDAP/OIDC/SAML) are read from the api environment on every start; there is no /god-mode app. Telemetry is off.",
    "architecture": [
@@ -5326,9 +5326,9 @@
     "collaboration"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/screenshot-board.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/screenshot-cycles.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/screenshot-page.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/af050105511720bddc3c0b909b1725cd93411ce5/services/plane/screenshot-board.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/af050105511720bddc3c0b909b1725cd93411ce5/services/plane/screenshot-cycles.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/af050105511720bddc3c0b909b1725cd93411ce5/services/plane/screenshot-page.png"
    ],
    "links": [
     "https://developers.plane.so/"
