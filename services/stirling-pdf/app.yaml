@@ -3,57 +3,147 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
-    kubero.dev/template.description: Stirling PDF is a hosted web application that
-      allows you to perform various operations on PDF files, such as splitting and
-      adding images.
-    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/icon.png
-    kubero.dev/template.installation: First boot may take several minutes while Java
-      starts and optional assets download. Config and OCR data persist under /configs
-      and /usr/share/tessdata when volumes are attached.
-    kubero.dev/template.links: '["https://docs.stirlingpdf.com/"]'
-    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/stirling-pdf/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/screenshot-login.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/screenshot-watermark.png"]'
-    kubero.dev/template.source: https://github.com/Frooodle/Stirling-PDF
+    kubero.dev/template.description: Edit, convert, sign and secure PDFs in your
+      browser. Merge, split, compress, OCR, redact and 50+ more tools, with every
+      file processed on your own server.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/icon.png
+    kubero.dev/template.installation: 'Sign in as admin (SECURITY_INITIALLOGIN_USERNAME)
+      with the password generated in SECURITY_INITIALLOGIN_PASSWORD (both under
+      Variables). Login is on from the first start, so the tools and the API are
+      not open to the public; the default admin/stirling account is never
+      created. Change the password under Settings > Account (the variable is only
+      used while no account exists). Five wrong passwords lock that account for two
+      hours; a redeploy clears the lock. Add people under Settings > People; with the
+      Email add-on connected, Stirling PDF can email them an invite link. The free
+      self-hosted tier allows up to 5 user accounts; more users, SSO and an
+      external database need a Stirling PDF licence (premium key). Settings, the
+      user database (H2), signing keys and files saved in the app persist on the
+      shared volume at /configs; saved signatures and custom branding at
+      /customFiles. The AI assistant is off; it needs your own model API key.
+      First start takes 1 to 3 minutes while Java and LibreOffice warm up.'
+    kubero.dev/template.links: '["https://docs.stirlingpdf.com/", "https://docs.stirlingpdf.com/Configuration/System%20and%20Security/"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/screenshot-files.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/screenshot-merge.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/screenshot-watermark.png"]'
+    kubero.dev/template.source: https://github.com/Stirling-Tools/Stirling-PDF
     kubero.dev/template.categories: '["productivity", "utilities", "work"]'
     kubero.dev/template.title: Stirling PDF
-    kubero.dev/template.website: https://docs.stirlingpdf.com/
+    kubero.dev/template.website: https://www.stirlingpdf.com
   labels:
     manager: kubero
   name: stirling-pdf
 spec:
-  addons: []
-  cronjobs: []
+  name: stirling-pdf
   deploymentstrategy: docker
-  # Stirling-PDF is a heavy Spring app: default JVM metaspace exhausts at the
-  # small pod size (QA repro: java.lang.OutOfMemoryError: Metaspace).
+  addons:
+  # Platform email (README "Email contract"). Stirling PDF sends user invites
+  # (Settings > People, "send invite by email"), the welcome mail with a
+  # temporary password and password-changed notices through its mail.* block
+  # (ApplicationProperties.Mail, proprietary EmailService). STARTTLS on 587.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: MAIL_ENABLED
+      value: 'true'
+    - name: MAIL_ENABLEINVITES
+      value: 'true'
+    - name: MAIL_HOST
+      value: '$(SMTP_HOST)'
+    - name: MAIL_PORT
+      value: '$(SMTP_PORT)'
+    - name: MAIL_USERNAME
+      value: '$(SMTP_USER)'
+    - name: MAIL_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: MAIL_FROM
+      value: '$(SMTP_FROM)'
+    - name: MAIL_STARTTLSENABLE
+      value: 'true'
+    resourceDefinitions: {}
   envVars:
-  - name: JAVA_TOOL_OPTIONS
-    value: '-XX:MaxMetaspaceSize=1g -XX:MaxRAMPercentage=75'
+  # Login on from the first start. With both initial-login values set,
+  # InitialSecuritySetup creates this admin (firstLogin=false) instead of the
+  # well-known admin/stirling account, before the port opens. Only read while
+  # the user table is empty.
+  - name: SECURITY_ENABLELOGIN
+    value: 'true'
+  - name: SECURITY_INITIALLOGIN_USERNAME
+    value: admin
+  - name: SECURITY_INITIALLOGIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Public URL for invite links, share links and the mobile QR upload.
+  - name: SYSTEM_FRONTENDURL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # An empty list means "allow every origin with credentials" (settings
+  # template note), so pin CORS to the app's own URL.
+  - name: SYSTEM_CORSALLOWEDORIGINS
+    value: '{{STACKBLAZE_APP_URL}}'
+  # Telemetry off: no PostHog, no Scarf pixel, no first-launch prompt.
+  - name: SYSTEM_ENABLEANALYTICS
+    value: 'false'
+  - name: SYSTEM_DEFAULTLOCALE
+    value: en-US
+  # The AI assistant runs a model-driven agent (engine/) and needs the
+  # customer's own model API key; keep it off by default.
+  - name: AIENGINE_ENABLED
+    value: 'false'
+  # Files saved in the app (server-side storage, on by default with login)
+  # go next to the database on the persistent volume instead of /storage.
+  - name: STORAGE_LOCAL_BASEPATH
+    value: /configs/storage
   - name: TZ
     value: Etc/UTC
-  extraVolumes: []
+  # settings.yml, the H2 user database, JWT signing keys, backups and saved
+  # files (/configs/storage); the external database is a licensed feature
+  # (DatabaseLicenseGuard), so H2 on the volume is the free-tier store.
+  # The image starts as root, chowns these to uid 1000 and drops privileges
+  # itself (LibreOffice runs as a second, sandboxed user), so no runAsUser.
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /configs
+    name: '{{STACKBLAZE_APP_NAME}}-configs'
+    size: 5Gi
+    storageClass: shared
+  # Saved signatures (customFiles/signatures) and custom branding.
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /customFiles
+    name: '{{STACKBLAZE_APP_NAME}}-custom'
+    size: 1Gi
+    storageClass: shared
+  # H2 holds an exclusive file lock on /configs/stirling-pdf-DB-*.mv.db. With
+  # RollingUpdate the new pod crash-loops on "Database may be already in use"
+  # while the old one keeps the lock, so every redeploy hangs (seen on dev).
+  # Stop the old pod first (kubero-server #2297 + the kuberoapp chart).
+  rolloutStrategy: Recreate
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  # Upstream sizes the standard image at 4 GB (docker/README.md): Java plus a
+  # LibreOffice (unoserver) process for Office conversions.
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1536Mi
+    limits:
+      cpu: '2'
+      memory: 4Gi
   healthcheck:
     enabled: true
-    path: /actuator/health
+    path: /api/v1/info/status
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '8080'
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     repository: docker.io/stirlingtools/stirling-pdf
-    tag: latest
+    tag: 3.3.0
     run:
       securityContext:
         readOnlyRootFilesystem: false
-  resources:
-    requests:
-      cpu: 250m
-      memory: 1Gi
-    limits:
-      cpu: '1'
-      memory: 2Gi
-  name: stirling-pdf
-  web:
-    replicaCount: 1
-  worker:
-    replicaCount: 0
