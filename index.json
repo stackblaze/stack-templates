@@ -13741,34 +13741,32 @@
    "name": "Medusa Commerce",
    "description": "Build custom shopping experiences with modular commerce APIs, product management, carts, and checkout.\nA developer-first alternative to Shopify Plus and commercetools.",
    "source": "https://github.com/medusajs/medusa",
-   "icon": "https://avatars.githubusercontent.com/u/62591822?s=200&v=4",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/icon.png",
    "website": "https://medusajs.com",
-   "installation": "Deploys the Medusa 2 backend and admin (at /app) with PostgreSQL and Valkey add-ons. First boot runs migrations and creates the admin user from MEDUSA_ADMIN_EMAIL / MEDUSA_ADMIN_PASSWORD (default admin@example.com / changeme \u2014 rotate immediately). JWT_SECRET and COOKIE_SECRET are generated per deploy. After login, create a publishable API key under Settings > API Key Management if you attach a Next.js storefront (official starter: github.com/medusajs/dtc-starter apps/storefront) and set STORE_CORS to that storefront URL. Product images persist on the uploads volume.",
+   "installation": "Deploys the Medusa 2 server with its admin dashboard (the app URL opens /app), the Store API, Postgres and Valkey. The first start runs the migrations, seeds upstream's starter store (a Europe region, a warehouse, shipping options, four sample products and a publishable API key) and creates the admin user before the app is reachable. Sign in with admin@example.com (MEDUSA_ADMIN_EMAIL) and the generated password in MEDUSA_ADMIN_PASSWORD (Variables). To use your own address, invite it under Settings > Users (copy the invite link), accept it, then delete the first user. There is no storefront in this template: build one from upstream's starter (github.com/medusajs/dtc-starter, apps/storefront) with the publishable key from Settings > Publishable API Keys, and add its URL to STORE_CORS and AUTH_CORS. Product images upload to the data volume and are served from /static. Medusa sends no email on its own: password resets and invites need a notification module in your own build. RBAC roles and SSO are Medusa Enterprise features that need a licence key; the template runs without them.",
    "architecture": [],
    "categories": [
     "e-commerce",
     "development",
     "work"
    ],
-   "screenshots": [
-    "https://medusajs.com/images/og.jpg"
-   ],
+   "screenshots": [],
    "links": [
     "https://docs.medusajs.com/learn/deployment/general",
-    "https://docs.medusajs.com/"
+    "https://docs.medusajs.com/",
+    "https://github.com/medusajs/dtc-starter"
    ],
    "addons": [
     "Cluster",
-    "Valkey",
-    "Smtp"
+    "Valkey"
    ],
-   "stars": 36333,
-   "forks": 5253,
-   "watchers": 36333,
-   "issues": 0,
-   "last_updated": "2026-09-16T00:00:00Z",
-   "last_pushed": "2026-09-16T00:00:00Z",
-   "created_at": "2021-03-08T00:00:00Z",
+   "stars": 37232,
+   "forks": 5520,
+   "watchers": 37232,
+   "issues": 111,
+   "last_updated": "2026-11-13T12:27:45Z",
+   "last_pushed": "2026-11-13T16:02:37Z",
+   "created_at": "2020-01-18T13:39:04Z",
    "size": 0,
    "language": "TypeScript",
    "gitops": false,
