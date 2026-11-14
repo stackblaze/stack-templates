@@ -30,8 +30,11 @@ RUN corepack enable \
   && pnpm install --frozen-lockfile --filter @dtc/backend... \
   && pnpm --filter @dtc/backend build
 
+# --force: the starter pins @medusajs/ui 4.2.9 while @medusajs/draft-order
+# 2.22.7 asks for 4.2.14 as an optional peer (ERESOLVE). The UI package only
+# matters for building the admin, which is already built at this point.
 WORKDIR /src/apps/backend/.medusa/server
-RUN npm install --omit=dev --no-audit --no-fund \
+RUN npm install --omit=dev --no-audit --no-fund --force \
   && npm cache clean --force
 
 FROM ${NODE_IMAGE}
