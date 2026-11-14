@@ -4,17 +4,23 @@ metadata:
   name: strapi
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Most popular open-source headless CMS \u2014\
-      \ REST and GraphQL APIs, role-based access, media library, and a customisable\
-      \ admin panel."
+    kubero.dev/template.description: Open-source headless CMS. Edit content in a clean
+      admin panel and serve it to any frontend over REST and GraphQL, with a media
+      library and role-based access.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/icon.png
-    kubero.dev/template.installation: Change JWT_SECRET, ADMIN_JWT_SECRET, APP_KEYS,
-      API_TOKEN_SALT, and TRANSFER_TOKEN_SALT to unique random values. Access the
-      Admin Panel at /admin and create the first admin user. Define Content-Types
-      in the Content-Type Builder, then query them via REST at /api/<collection> or
-      GraphQL at /graphql. Media uploads go to the strapi-uploads volume.
+    kubero.dev/template.installation: 'Open /admin and register the first administrator
+      (there is no default admin). The first start creates the database schema and
+      can take a minute. The image is Strapi 5.62.0 built from create-strapi-app with
+      Strapi''s example blog model (Article, Author, Category, About, Global). The Content-Type
+      Builder is read-only in production: to add your own content types, build them
+      locally with npm run develop from services/strapi/image in stackblaze/stack-templates,
+      build the image and point this app at it. To expose content over REST, grant
+      the Public role find/findOne in Settings > Users & Permissions, or create an
+      API token; GraphQL is served at /graphql. Media uploads go to the uploads volume. Email (admin password reset,
+      user confirmations) goes through the Email add-on. Keep APP_KEYS, the JWT secrets
+      and ENCRYPTION_KEY unchanged after first use.'
     kubero.dev/template.links: '["https://docs.strapi.io/"]'
-    kubero.dev/template.screenshots: '["https://delicate-dawn-ac25646e6d.media.strapiapp.com/HP_meta_b32f546a40.png"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/screenshot-articles.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/screenshot-entry.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/screenshot-media.png"]'
     kubero.dev/template.source: https://github.com/strapi/strapi
     kubero.dev/template.categories: '["cms", "development", "data"]'
     kubero.dev/template.title: Strapi
@@ -71,7 +77,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: strapi
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -80,7 +86,16 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: strapi
-          password: strapi
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # The image reads SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASSWORD and
+  # SMTP_FROM natively (config/plugins.ts switches to the nodemailer
+  # provider when SMTP_HOST is set), so the Email add-on needs no mapping.
+  - displayName: Email
+    env: []
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    resourceDefinitions: {}
   envVars:
   - name: DATABASE_CLIENT
     value: postgres
@@ -96,20 +111,28 @@ spec:
     value: '$(PGPASSWORD)'
   - name: DATABASE_SSL
     value: 'false'
-  - name: ENCRYPTION_KEY
-    value: change-me-encryption-key
-  - name: JWT_SECRET
-    value: change-me-jwt-secret
-  - name: ADMIN_JWT_SECRET
-    value: change-me-admin-jwt-secret
+  - name: PUBLIC_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # Strapi's own generator (create-strapi-app) makes each secret 16 random
+  # bytes in base64; any string works (JWT HMAC keys, Keygrip keys, salts,
+  # and ENCRYPTION_KEY is SHA-256 hashed into the AES-256-GCM key).
+  # APP_KEYS is a comma-separated list; each token expands independently.
   - name: APP_KEYS
-    value: key1,key2,key3,key4
+    value: '{{STACKBLAZE_GEN_ALNUM:32}},{{STACKBLAZE_GEN_ALNUM:32}},{{STACKBLAZE_GEN_ALNUM:32}},{{STACKBLAZE_GEN_ALNUM:32}}'
   - name: API_TOKEN_SALT
-    value: change-me-token-salt
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  - name: ADMIN_JWT_SECRET
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
   - name: TRANSFER_TOKEN_SALT
-    value: change-me-transfer-salt
-  - name: NODE_ENV
-    value: production
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  - name: JWT_SECRET
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  - name: ENCRYPTION_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  - name: STRAPI_TELEMETRY_DISABLED
+    value: 'true'
+  - name: STRAPI_DISABLE_UPDATE_NOTIFICATION
+    value: 'true'
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -138,9 +161,12 @@ spec:
     periodSeconds: 10
   image:
     containerPort: '1337'
-    pullPolicy: Always
-    repository: docker.io/kubekanvas/strapi
-    tag: 5.30.2
+    pullPolicy: IfNotPresent
+    # Built from services/strapi/image by .github/workflows/build-strapi.yaml.
+    repository: ghcr.io/stackblaze/stack-templates/strapi
+    tag: '5.62.0'
     run:
       securityContext:
         readOnlyRootFilesystem: false
+        runAsUser: 1000
+        runAsGroup: 1000
