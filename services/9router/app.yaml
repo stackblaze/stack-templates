@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/9router/icon.png
     kubero.dev/template.installation: 'An API gateway for your own provider API keys.
       Open the app URL and sign in with the password generated in INITIAL_PASSWORD
-      (under Variables; there is no username), then change it under Profile. Add a
+      (under Variables; there is no username), then change it under Settings. Add a
       provider with its API key (OpenAI, Anthropic, OpenRouter, Groq, Mistral, an Ollama
       in the same project, ...) under Providers, then create an API key under Endpoint.
       Clients call <app URL>/v1 with that key as a Bearer token; requests without a
