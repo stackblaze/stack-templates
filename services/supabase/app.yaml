@@ -1133,7 +1133,7 @@ spec:
     - name: KUBERO_API_URL
       value: '{{STACKBLAZE_API_URL}}'
     - name: KUBERO_APP_TOKEN
-      value: '{{STACKBLAZE_APP_TOKEN:backups,branches,project}}'
+      value: '{{STACKBLAZE_APP_TOKEN:backups,branches,project,ai}}'
     - name: KUBERO_PIPELINE
       value: '{{STACKBLAZE_PIPELINE}}'
     - name: KUBERO_PHASE
