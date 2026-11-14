@@ -1,0 +1,207 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: instatic
+  annotations:
+    kubero.dev/template.architecture: '["linux/amd64"]'
+    kubero.dev/template.description: Self-hosted visual CMS and website builder. Design
+      pages on a canvas, manage content, media, users and forms, and publish clean static
+      HTML and CSS without editor code.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/icon.png
+    kubero.dev/template.installation: 'Open the app URL and sign in at /admin as admin@example.com
+      (INSTATIC_ADMIN_EMAIL) with the password generated in INSTATIC_ADMIN_PASSWORD (both
+      under Variables). The template completes the first-run setup for you on the first
+      start, so nobody else can claim the site; change the email in your profile afterwards.
+      Content lives in PostgreSQL; uploads, fonts, plugin packages and published files persist
+      on the shared volume at /app/uploads. INSTATIC_SECRET_KEY encrypts AI provider keys,
+      plugin secrets and MFA seeds and is generated once: do not change it. The AI assistant
+      is optional and uses your own provider key (Anthropic, OpenAI, OpenRouter, Ollama).
+      Instatic sends no email: add users and set their passwords under Users. It runs as
+      a single replica. Instatic is pre-1.0 (MIT), so read the release notes before you
+      move to a new image tag.'
+    kubero.dev/template.links: '["https://github.com/CoreBunch/Instatic/tree/main/docs", "https://github.com/CoreBunch/Instatic/blob/main/docs/deployment/docker-image.md"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/screenshot-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/screenshot-content.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/screenshot-dashboard.png"]'
+    kubero.dev/template.source: https://github.com/CoreBunch/Instatic
+    kubero.dev/template.categories: '["cms", "development"]'
+    kubero.dev/template.title: Instatic
+    kubero.dev/template.website: https://instatic.com/
+  labels:
+    manager: kubero
+spec:
+  name: instatic
+  deploymentstrategy: docker
+  addons:
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: smart
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: instatic
+              owner: instatic
+              secret:
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO instatic
+              - GRANT CREATE ON SCHEMA public TO instatic
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO instatic
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: instatic
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  envVars:
+  - name: DATABASE_URL
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  - name: PORT
+    value: '3001'
+  - name: STATIC_DIR
+    value: /app/dist
+  - name: UPLOADS_DIR
+    value: /app/uploads
+  # Public origin for Instatic's CSRF check (TLS ends at the platform edge).
+  - name: PUBLIC_ORIGIN
+    value: '{{STACKBLAZE_APP_URL}}'
+  # The platform ingress reaches the pod from private addresses; trust its
+  # X-Forwarded-For so audit logs and per-IP login limits see the real client
+  # (without this every visitor shares the ingress IP). Client IP only, not CSRF.
+  - name: TRUSTED_PROXY_CIDRS
+    value: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+  # Base64 AES-256 key: must decode to exactly 32 bytes. 43 alphanumeric
+  # characters decode to 32 bytes (forgiving base64); 44+ would not.
+  - name: INSTATIC_SECRET_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:43}}'
+  # Read only by this template's start command, which completes Instatic's
+  # public first-run setup on first boot so no visitor can claim the site.
+  - name: INSTATIC_ADMIN_EMAIL
+    value: admin@example.com
+  - name: INSTATIC_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  - name: INSTATIC_SITE_NAME
+    value: My Instatic site
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /app/uploads
+    name: '{{STACKBLAZE_APP_NAME}}-uploads'
+    size: 5Gi
+    storageClass: shared
+  cronjobs: []
+  # The collaboration relay and render caches live in the process: one replica.
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  healthcheck:
+    enabled: true
+    path: /health
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '3001'
+    pullPolicy: IfNotPresent
+    repository: ghcr.io/corebunch/instatic
+    tag: 0.0.21
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      # Migrations run at import time and the server exits if Postgres
+      # refuses the connection, which happens when the add-on starts late.
+      bun -e '
+        const net = require("node:net")
+        const host = process.env.PGHOST, port = Number(process.env.PGPORT)
+        for (let i = 0; i < 150; i++) {
+          const up = await new Promise((done) => {
+            const s = net.connect(port, host)
+            s.setTimeout(2000)
+            s.on("connect", () => { s.destroy(); done(true) })
+            s.on("error", () => done(false))
+            s.on("timeout", () => { s.destroy(); done(false) })
+          })
+          if (up) process.exit(0)
+          console.log(`[stackblaze] waiting for ${host}:${port}`)
+          await Bun.sleep(2000)
+        }
+        console.error("[stackblaze] database not reachable")
+        process.exit(1)
+      '
+      # Upstream CMD, in the background so the first-run setup can be claimed.
+      bun run server/index.ts &
+      pid=$!
+      trap 'kill -TERM "$pid" 2>/dev/null' TERM INT
+      bun -e '
+        const base = `http://127.0.0.1:${process.env.PORT || "3001"}`
+        let ready = false
+        for (let i = 0; i < 300 && !ready; i++) {
+          try { ready = (await fetch(`${base}/health`)).ok } catch {}
+          if (!ready) await Bun.sleep(1000)
+        }
+        if (!ready) { console.error("[stackblaze] server did not become healthy"); process.exit(0) }
+        const status = await (await fetch(`${base}/admin/api/cms/setup/status`)).json()
+        if (!status.needsSetup) { console.log("[stackblaze] first-run setup already complete"); process.exit(0) }
+        const res = await fetch(`${base}/admin/api/cms/setup`, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            siteName: process.env.INSTATIC_SITE_NAME,
+            email: process.env.INSTATIC_ADMIN_EMAIL,
+            password: process.env.INSTATIC_ADMIN_PASSWORD,
+            displayName: "Admin",
+          }),
+        })
+        console.log(`[stackblaze] first-run setup: HTTP ${res.status}`)
+      ' || true
+      wait "$pid"
+    run:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        readOnlyRootFilesystem: false

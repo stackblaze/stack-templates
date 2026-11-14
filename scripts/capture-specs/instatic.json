@@ -1,0 +1,26 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/admin",
+    "steps": [
+      { "waitForSelector": "input[type=email]", "timeout": 60000 },
+      { "fill": { "input[type=email]": "${INSTATIC_EMAIL}" } },
+      { "fill": { "input[type=password]": "${INSTATIC_PASSWORD}" } },
+      { "press": { "selector": "input[type=password]", "key": "Enter" } },
+      { "waitForURL": "**/admin/dashboard", "timeout": 30000 }
+    ],
+    "waitAfterMs": 3000
+  },
+  "pages": [
+    { "name": "editor", "path": "/admin/site", "waitFor": "button[aria-label=\"Publish site\"]", "waitMs": 4000 },
+    {
+      "name": "content",
+      "path": "/admin/content?table=posts",
+      "waitFor": "text=Featured media",
+      "waitMs": 2000,
+      "steps": [{ "click": "text=Meet our new Huila single origin" }, { "sleep": 3000 }]
+    },
+    { "name": "dashboard", "path": "/admin/dashboard", "waitFor": "text=Overview", "waitMs": 3000 }
+  ]
+}
