@@ -271,7 +271,7 @@ spec:
       value: '${{typebot-api-{{STACKBLAZE_NAME_SUFFIX}}.STACKBLAZE_PUBLIC_URL}}'
     healthcheck:
       enabled: true
-      path: /api/v1/healthz
+      path: /api/healthz
       startupSeconds: 300
       timeoutSeconds: 5
       periodSeconds: 10
