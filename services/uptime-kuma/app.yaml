@@ -1,20 +1,37 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  name: uptime-kuma
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Self-hosted monitoring tool like "Uptime Robot".
-    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/icon.png
-    kubero.dev/template.installation: ''
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/uptime-kuma/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/screenshot-monitor-detail.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@3664d86/services/uptime-kuma/screenshot-status-page.png"]'
+    kubero.dev/template.description: Self-hosted uptime monitoring. Check websites,
+      APIs, ports, DNS and more on your own schedule, get alerts in 90+ notification
+      services, and publish public status pages.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uptime-kuma/icon.png
+    kubero.dev/template.installation: 'Sign in as admin (ADMIN_USERNAME) with the
+      password generated in ADMIN_PASSWORD (both under Variables). The template
+      creates this account on the first start, before the app is reachable, so
+      nobody else can claim the instance through the setup page. Change the
+      password later under Settings > Security (ADMIN_PASSWORD is only used while
+      no account exists). Monitors, history and settings live in MariaDB; uploaded
+      status page logos and browser monitor screenshots persist on the shared volume
+      at /app/data. Email alerts: the template adds an "Email (StackBlaze)"
+      notification wired to the platform Email add-on; open Settings > Notifications,
+      enter your address in To, and tick it on your monitors. Uptime Kuma runs as a
+      single replica.'
+    kubero.dev/template.links: '["https://github.com/louislam/uptime-kuma/wiki", "https://github.com/louislam/uptime-kuma/wiki/Environment-Variables"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uptime-kuma/screenshot-dashboard.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uptime-kuma/screenshot-status-page.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uptime-kuma/screenshot-add-monitor.png"]'
     kubero.dev/template.source: https://github.com/louislam/uptime-kuma
     kubero.dev/template.categories: '["monitoring"]'
     kubero.dev/template.title: Uptime Kuma
     kubero.dev/template.website: https://uptime.kuma.pet
-  name: uptime-kuma
 spec:
+  name: uptime-kuma
+  deploymentstrategy: docker
   addons:
+  # Uptime Kuma 2 stores everything in SQLite or MariaDB/MySQL. SQLite is not
+  # supported on network file systems (upstream wiki), and our volumes are
+  # shared RWX, so the template uses an external MariaDB.
   - displayName: MariaDB
     env: []
     icon: /img/addons/mysql.svg
@@ -25,17 +42,17 @@ spec:
         apiVersion: k8s.mariadb.com/v1alpha1
         kind: MariaDB
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-mariadb'
         spec:
           metrics:
             enabled: true
           rootPasswordSecretKeyRef:
-            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
+            name: '{{STACKBLAZE_APP_NAME}}-mariadb-root'
             key: password
           database: uptimekuma
           username: uptimekuma
           passwordSecretKeyRef:
-            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
+            name: '{{STACKBLAZE_APP_NAME}}-mariadb-app'
             key: password
           storage:
             size: 5Gi
@@ -52,43 +69,238 @@ spec:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
+          name: '{{STACKBLAZE_APP_NAME}}-mariadb-root'
         type: Opaque
         stringData:
-          password: uptimekuma
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-mariadb-app'
         type: Opaque
         stringData:
-          password: uptimekuma
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Platform email (README "Email contract"). Uptime Kuma has no SMTP
+  # environment variables: mail is a notification configured in the app. The
+  # start command keeps an "Email (StackBlaze)" notification in sync with the
+  # injected SMTP_* while the add-on is live (inert without SMTP_HOST).
+  - displayName: Email
+    env: []
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    resourceDefinitions: {}
   cronjobs: []
-  deploymentstrategy: docker
   envVars:
-  - name: DB_TYPE
+  # Skips the public "set up database" page and writes data/db-config.json
+  # from these on every start (server/setup-database.js).
+  - name: UPTIME_KUMA_DB_TYPE
     value: mariadb
-  - name: DB_MYSQL_HOST
+  - name: UPTIME_KUMA_DB_HOSTNAME
     value: '$(MYSQL_HOST)'
-  - name: DB_MYSQL_PORT
+  - name: UPTIME_KUMA_DB_PORT
     value: '$(MYSQL_PORT)'
-  - name: DB_MYSQL_USER
-    value: '$(MYSQL_USER)'
-  - name: DB_MYSQL_PASSWORD
-    value: '$(MYSQL_PASSWORD)'
-  - name: DB_MYSQL_DATABASE
+  - name: UPTIME_KUMA_DB_NAME
     value: '$(MYSQL_DATABASE)'
-  extraVolumes: []
-  image:
-    containerPort: '3001'
-    repository: docker.io/louislam/uptime-kuma
-    tag: latest
-    run:
-      securityContext:
-        readOnlyRootFilesystem: false
-  name: uptime-kuma
+  - name: UPTIME_KUMA_DB_USERNAME
+    value: '$(MYSQL_USER)'
+  - name: UPTIME_KUMA_DB_PASSWORD
+    value: '$(MYSQL_PASSWORD)'
+  # The first account, created by the start command before the app listens on
+  # the pod network (upstream has no admin variables; its setup page lets the
+  # first visitor create the admin). Only used while no account exists.
+  - name: ADMIN_USERNAME
+    value: admin
+  - name: ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Stored once as Settings > General > Primary Base URL, so alerts link back
+  # to the monitor. Also makes the platform inject STACKBLAZE_PUBLIC_URL.
+  - name: STACKBLAZE_KUMA_BASE_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # Status page logos (data/upload), browser monitor screenshots
+  # (data/screenshots), Docker host TLS files and db-config.json.
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /app/data
+    name: '{{STACKBLAZE_APP_NAME}}-data'
+    size: 5Gi
+    storageClass: shared
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    # Reads a setting from MariaDB (server/routers/api-router.js).
+    path: /api/entry-page
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '3001'
+    pullPolicy: IfNotPresent
+    # Upstream's rootless build (USER node, uid 1000), with Chromium for
+    # browser monitors. Pinned release, not the floating "2" tag.
+    repository: docker.io/louislam/uptime-kuma
+    tag: 2.5.11-rootless
+    # 1. Wait for a real MariaDB login (the operator creates the user a few
+    #    seconds after the port opens) and look for an existing account.
+    # 2. No account yet: run the server on 127.0.0.1 only, create the admin
+    #    through the setup call, check that it can sign in, stop the server,
+    #    and store the base URL and trust-proxy settings.
+    # 3. Keep the "Email (StackBlaze)" notification in sync with SMTP_*.
+    # 4. Start the server (upstream CMD).
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      # data/db-config.json holds the database password: keep files private.
+      umask 077
+      cd /app
+      set +e
+      node - <<'JS'
+      const mysql = require("mysql2/promise");
+      const cfg = {
+        host: process.env.UPTIME_KUMA_DB_HOSTNAME,
+        port: Number(process.env.UPTIME_KUMA_DB_PORT || 3306),
+        user: process.env.UPTIME_KUMA_DB_USERNAME,
+        password: process.env.UPTIME_KUMA_DB_PASSWORD,
+        database: process.env.UPTIME_KUMA_DB_NAME,
+        connectTimeout: 5000,
+      };
+      (async () => {
+        for (let i = 1; i <= 150; i++) {
+          let db;
+          try {
+            db = await mysql.createConnection(cfg);
+            const [t] = await db.query(
+              "SELECT COUNT(*) AS n FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'user'");
+            let users = 0;
+            if (t[0].n > 0) users = (await db.query("SELECT COUNT(*) AS n FROM `user`"))[0][0].n;
+            await db.end();
+            console.log(`[stackblaze] database ready, ${users} account(s)`);
+            process.exit(users > 0 ? 0 : 3);
+          } catch (e) {
+            if (db) await db.end().catch(() => {});
+            console.log(`[stackblaze] waiting for MariaDB at ${cfg.host}:${cfg.port} (${e.code || e.message})`);
+            await new Promise((r) => setTimeout(r, 2000));
+          }
+        }
+        console.error("[stackblaze] MariaDB login failed");
+        process.exit(1);
+      })();
+      JS
+      state=$?
+      set -e
+      [ "$state" = 0 ] || [ "$state" = 3 ] || exit 1
+      if [ "$state" = 3 ]; then
+        echo "[stackblaze] no account yet: creating $ADMIN_USERNAME before the app is reachable"
+        UPTIME_KUMA_HOST=127.0.0.1 node server/server.js &
+        pid=$!
+        if ! node - <<'JS'
+      const { io } = require("socket.io-client");
+      const port = process.env.UPTIME_KUMA_PORT || process.env.PORT || 3001;
+      const user = process.env.ADMIN_USERNAME, pass = process.env.ADMIN_PASSWORD;
+      if (!user || !pass) { console.error("[stackblaze] ADMIN_USERNAME / ADMIN_PASSWORD missing"); process.exit(1); }
+      const socket = io(`http://127.0.0.1:${port}`, { transports: ["websocket"], reconnectionDelay: 1000 });
+      const call = (ev, ...args) => new Promise((done, fail) =>
+        socket.timeout(15000).emit(ev, ...args, (err, res) => (err ? fail(new Error(`${ev}: no reply`)) : done(res))));
+      const timer = setTimeout(() => { console.error("[stackblaze] server did not come up"); process.exit(1); }, 280000);
+      // The server registers its event handlers only after an async step in
+      // its connection handler and then announces "setup" to the client;
+      // anything emitted before that is dropped. So start on that event.
+      socket.once("setup", () => setImmediate(async () => {
+        let setup;
+        try { setup = await call("setup", user, pass); }
+        catch (e) { console.error(`[stackblaze] ${e.message}`); process.exit(1); }
+        console.log(`[stackblaze] setup: ${setup.ok ? "admin created" : setup.msg}`);
+        let login;
+        try { login = await call("login", { username: user, password: pass, token: "" }); }
+        catch (e) { console.error(`[stackblaze] ${e.message}`); process.exit(1); }
+        if (!login.ok) { console.error(`[stackblaze] admin sign-in failed: ${login.msg}`); process.exit(1); }
+        console.log("[stackblaze] admin sign-in verified");
+        clearTimeout(timer);
+        socket.close();
+        process.exit(0);
+      }));
+      JS
+        then
+          kill -TERM "$pid" 2>/dev/null || true
+          wait "$pid" || true
+          exit 1
+        fi
+        kill -TERM "$pid"
+        wait "$pid" || true
+        export STACKBLAZE_FIRST_START=1
+      fi
+      node - <<'JS'
+      const mysql = require("mysql2/promise");
+      (async () => {
+        const db = await mysql.createConnection({
+          host: process.env.UPTIME_KUMA_DB_HOSTNAME,
+          port: Number(process.env.UPTIME_KUMA_DB_PORT || 3306),
+          user: process.env.UPTIME_KUMA_DB_USERNAME,
+          password: process.env.UPTIME_KUMA_DB_PASSWORD,
+          database: process.env.UPTIME_KUMA_DB_NAME,
+        });
+        const get = async (k) => {
+          const [r] = await db.query("SELECT value FROM setting WHERE `key` = ?", [k]);
+          return r.length ? r[0].value : undefined;
+        };
+        const add = (k, v, type) =>
+          db.query("INSERT IGNORE INTO setting (`key`, value, type) VALUES (?, ?, ?)", [k, JSON.stringify(v), type]);
+        if (process.env.STACKBLAZE_FIRST_START === "1") {
+          // The edge sets X-Forwarded-* and overwrites client-sent ones.
+          await add("trustProxy", true, "general");
+          const base = (process.env.STACKBLAZE_KUMA_BASE_URL || "").replace(/\/+$/, "");
+          if (/^https?:\/\//.test(base)) await add("primaryBaseURL", base, "general");
+          console.log("[stackblaze] stored base URL and trust-proxy settings");
+        }
+        if (process.env.SMTP_HOST) {
+          const smtp = {
+            smtpHost: process.env.SMTP_HOST,
+            smtpPort: Number(process.env.SMTP_PORT || 587),
+            smtpSecure: false,
+            smtpUsername: process.env.SMTP_USER,
+            smtpPassword: process.env.SMTP_PASSWORD,
+            smtpFrom: process.env.SMTP_FROM,
+          };
+          const known = await get("stackblazeEmailNotificationId");
+          if (known === undefined) {
+            const [u] = await db.query("SELECT id FROM `user` ORDER BY id LIMIT 1");
+            const name = "Email (StackBlaze)";
+            const config = { name, type: "smtp", isDefault: false, applyExisting: false, smtpTo: "", ...smtp };
+            const [res] = await db.query(
+              "INSERT INTO notification (name, active, user_id, is_default, config) VALUES (?, 1, ?, 0, ?)",
+              [name, u[0].id, JSON.stringify(config)]);
+            await add("stackblazeEmailNotificationId", res.insertId, "stackblaze");
+            console.log("[stackblaze] added the Email (StackBlaze) notification");
+          } else {
+            const [r] = await db.query("SELECT config FROM notification WHERE id = ?", [JSON.parse(known)]);
+            if (r.length) {
+              const config = { ...JSON.parse(r[0].config || "{}"), ...smtp };
+              await db.query("UPDATE notification SET config = ? WHERE id = ?", [JSON.stringify(config), JSON.parse(known)]);
+              console.log("[stackblaze] Email (StackBlaze) notification synced");
+            }
+          }
+        }
+        await db.end();
+      })().catch((e) => { console.error(`[stackblaze] settings step failed: ${e.message}`); process.exit(1); });
+      JS
+      exec node server/server.js
+    run:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        readOnlyRootFilesystem: false
