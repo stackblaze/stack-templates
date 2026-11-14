@@ -8226,7 +8226,7 @@
    "name": "evolution-api",
    "description": "Connect WhatsApp numbers by QR code and send and receive messages over a REST API, with webhooks for incoming events and a built-in manager to run your instances.",
    "source": "https://github.com/evolution-foundation/evolution-api",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/icon.png",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/24d96ff6516797eca037fffa01aa15467033ac4b/services/evolution-api/icon.png",
    "website": "https://evolutionfoundation.com.br",
    "installation": "",
    "architecture": [
@@ -8239,9 +8239,9 @@
     "development"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/screenshot-instances.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/screenshot-qr.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/screenshot-webhook.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/24d96ff6516797eca037fffa01aa15467033ac4b/services/evolution-api/screenshot-instances.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/24d96ff6516797eca037fffa01aa15467033ac4b/services/evolution-api/screenshot-qr.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/24d96ff6516797eca037fffa01aa15467033ac4b/services/evolution-api/screenshot-webhook.png"
    ],
    "links": [
     "https://doc.evolution-api.com/v2/en/get-started/introduction"

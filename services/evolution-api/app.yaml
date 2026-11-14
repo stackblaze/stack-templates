@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: Connect WhatsApp numbers by QR code and send
       and receive messages over a REST API, with webhooks for incoming events and
       a built-in manager to run your instances.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/icon.png
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/24d96ff6516797eca037fffa01aa15467033ac4b/services/evolution-api/icon.png
     kubero.dev/template.installation: 'Open your app URL followed by /manager and
       sign in with the app URL and the global API key generated in
       AUTHENTICATION_API_KEY (under Variables). Every API call needs that key (or
@@ -22,10 +22,10 @@ metadata:
       redeploy. This uses the unofficial WhatsApp Web protocol (Baileys): use a
       number you are allowed to automate and follow WhatsApp''s terms. Licence:
       Apache-2.0 with extra conditions (keep the Evolution API logo and copyright
-      in the manager; say in your product that it uses Evolution API).
-      Evolution API 2.3.7.'
+      in the manager; say in your product that it uses Evolution API). Available
+      on paid plans. Evolution API 2.3.7.'
     kubero.dev/template.links: '["https://doc.evolution-api.com/v2/en/get-started/introduction"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/screenshot-instances.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/screenshot-qr.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/screenshot-webhook.png"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/24d96ff6516797eca037fffa01aa15467033ac4b/services/evolution-api/screenshot-instances.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/24d96ff6516797eca037fffa01aa15467033ac4b/services/evolution-api/screenshot-qr.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/24d96ff6516797eca037fffa01aa15467033ac4b/services/evolution-api/screenshot-webhook.png"]'
     kubero.dev/template.source: https://github.com/evolution-foundation/evolution-api
     kubero.dev/template.categories: '["communication", "automation", "development"]'
     kubero.dev/template.title: Evolution API
