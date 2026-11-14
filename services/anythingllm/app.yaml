@@ -4,17 +4,11 @@ metadata:
   name: anythingllm
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "All-in-one private AI workspace \u2014 RAG,\
-      \ multi-user chat, web browsing, custom agents, and 100+ LLM integrations with\
-      \ a clean browser UI."
+    kubero.dev/template.description: "Private AI workspace: chat with your documents (RAG), AI agents that browse and scrape the web, and any LLM (Ollama, OpenAI-compatible and more). Postgres with pgvector, locked down and run in a Kata micro-VM."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/icon.png
-    kubero.dev/template.installation: Change JWT_SECRET, SIG_KEY, and SIG_SALT to
-      random strings before use. On first load, set up the admin account. Connect
-      your LLM in Settings (supports Ollama, OpenAI, Anthropic, and more). Upload
-      documents to workspaces for RAG. PostgreSQL is provisioned via the bundled add-on;
-      file storage persists in the volume.
-    kubero.dev/template.links: '["https://docs.anythingllm.com/"]'
-    kubero.dev/template.screenshots: '["https://framerusercontent.com/images/KeWFVMJLQ2ELKB9kQFScp7c.png"]'
+    kubero.dev/template.installation: "Open the app URL and sign in with the password generated in AUTH_TOKEN (under Variables). The password is set before the app serves its first request, so nobody can claim the instance first. To change it, edit AUTH_TOKEN and redeploy (a password changed in the app's settings goes back to AUTH_TOKEN on the next restart). After signing in, pick your LLM in Settings (the wrench, bottom left) > AI Providers > LLM: deploy the Ollama template in the same project and choose Ollama with the base URL http://ollama (port 80, no :11434), or any OpenAI-compatible API. Documents are embedded by the built-in embedder by default (no account needed; its model downloads on first use). New workspaces use the Automatic chat mode, which hands each question to the agent; small local models (for example qwen2.5:1.5b) answer document questions much better in Chat mode (workspace settings > Chat Settings > Chat mode). You can turn on multi-user mode in Settings > Security and add people there; there is no email, so the admin sets their passwords. Settings you make in the app are kept in /app/server/storage/.env on the volume. Workspaces, users and chats are stored in the Postgres add-on, and document vectors in pgvector on the same database (VECTOR_DB=pgvector); documents and models on the storage volume. Locked down: Community Hub skill downloads (custom JavaScript agent skills) are off, and no MCP servers are configured. Telemetry and the API docs page are off. Runs in a Kata micro-VM. Never change JWT_SECRET, SIG_KEY or SIG_SALT after the first start. Licence: MIT. AnythingLLM 1.19.0."
+    kubero.dev/template.links: '["https://docs.anythingllm.com/", "https://github.com/Mintplex-Labs/anything-llm"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/screenshot-chat.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/screenshot-documents.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/screenshot-settings.png"]'
     kubero.dev/template.source: https://github.com/Mintplex-Labs/anything-llm
     kubero.dev/template.categories: '["ai", "utilities", "documentation"]'
     kubero.dev/template.title: AnythingLLM
@@ -24,7 +18,18 @@ metadata:
 spec:
   name: anythingllm
   deploymentstrategy: docker
+  # Kata micro-VM (Dean, 2026-11-14): AnythingLLM's agents browse and scrape the
+  # web on the model's choice (Chromium renders untrusted pages), and custom
+  # agent skills / stdio MCP servers would run code in the server process. Those
+  # are off below, but the tenant can switch them back on, so the VM is the hard
+  # boundary. Under Kata the limits below are the VM's size.
+  runtimeClass: kata-qemu-runtime-rs
+  exposeInternet: true
   addons:
+  # Postgres holds workspaces, users, chats and settings (DATABASE_URL; the
+  # pg-<version> image's Prisma schema is postgresql) and the document vectors
+  # (VECTOR_DB=pgvector, same database). `vector` is not a trusted extension, so
+  # it is created here as the superuser at bootstrap.
   - displayName: PostgreSQL (CloudNativePG)
     env: []
     icon: /img/addons/pgsql.svg
@@ -57,6 +62,7 @@ spec:
               secret:
                 name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
+              - CREATE EXTENSION IF NOT EXISTS vector
               - GRANT ALL ON SCHEMA public TO anythingllm
               - GRANT CREATE ON SCHEMA public TO anythingllm
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO anythingllm
@@ -71,7 +77,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: anythingllm
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -80,22 +86,48 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: anythingllm
-          password: anythingllm
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
   envVars:
-  - name: STORAGE_DIR
-    value: /app/server/storage
-  - name: JWT_SECRET
-    value: change-me-to-random-secret
-  - name: SIG_KEY
-    value: change-me-to-32char-string
-  - name: SIG_SALT
-    value: change-me-to-32char-string
-  - name: SERVER_PORT
-    value: 3001
-  - name: DISABLE_TELEMETRY
-    value: true
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  - name: VECTOR_DB
+    value: pgvector
+  - name: PGVECTOR_CONNECTION_STRING
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  # Single-user password mode from the first request: without AUTH_TOKEN the
+  # app has no login at all, and whoever opens the URL first owns it.
+  - name: AUTH_TOKEN
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Signs session JWTs (multi-user sessions are only as safe as this secret).
+  # Generated per deploy; never change it afterwards (everyone is signed out).
+  - name: JWT_SECRET
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
+  # Encrypt stored secrets and the password claim (scrypt key, >= 32 chars).
+  # Never change them after the first start.
+  - name: SIG_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
+  - name: SIG_SALT
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
+  - name: STORAGE_DIR
+    value: /app/server/storage
+  - name: SERVER_PORT
+    value: '3001'
+  # Telemetry off (PostHog is on unless this is the string "true"); no public
+  # API docs page.
+  - name: DISABLE_TELEMETRY
+    value: 'true'
+  - name: DISABLE_SWAGGER_DOCS
+    value: 'true'
+  # Lockdown (nothing to set): Community Hub downloads of agent skills (custom
+  # JavaScript run in the server process) stay off while
+  # COMMUNITY_HUB_BUNDLE_DOWNLOADS_ENABLED is absent; no MCP server file is
+  # shipped (stdio MCP would spawn processes); COLLECTOR_ALLOW_ANY_IP and
+  # ENABLE_BUILT_IN_LLM stay unset.
+  #
+  # storage/: documents, embedder models, the collector's signing key and the
+  # agent's file folder. No database file lives here (Postgres + pgvector). The
+  # start command links the app's settings file (.env) into it so settings
+  # survive a redeploy.
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -112,21 +144,40 @@ spec:
   resources:
     requests:
       cpu: 250m
-      memory: 512Mi
+      memory: 1Gi
     limits:
       cpu: '2'
-      memory: 2Gi
+      memory: 4Gi
   healthcheck:
     enabled: true
     path: /api/ping
-    startupSeconds: 120
+    startupSeconds: 300
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '3001'
-    pullPolicy: Always
-    repository: ghcr.io/stackblaze/stack-templates/anythingllm
-    tag: latest
+    pullPolicy: IfNotPresent
+    repository: docker.io/mintplexlabs/anythingllm
+    tag: pg-1.19.0
+    # 1. Keep the app's settings file on the volume: AnythingLLM writes every
+    #    setting made in the UI (LLM provider, keys, ...) to /app/server/.env.
+    # 2. Wait for a real Postgres login: the image's entrypoint runs
+    #    `prisma migrate deploy` once and exits if the database isn't up yet.
+    # 3. Run the image's own entrypoint (server + document collector).
+    command:
+    - bash
+    - -c
+    - |
+      [ -f /app/server/storage/.env ] || cp /app/server/.env /app/server/storage/.env
+      ln -sf /app/server/storage/.env /app/server/.env
+      cd /app/server
+      for i in $(seq 1 150); do
+        node -e 'const c=new (require("pg").Client)({connectionString:process.env.DATABASE_URL,connectionTimeoutMillis:3000});c.connect().then(()=>c.end()).then(()=>process.exit(0),()=>process.exit(1))' 2>/dev/null && break
+        echo "waiting for Postgres ($i)"; sleep 2
+      done
+      exec bash /usr/local/bin/docker-entrypoint.sh
     run:
       securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
         readOnlyRootFilesystem: false
