@@ -5177,41 +5177,44 @@
   },
   {
    "name": "typebot",
-   "description": "Open-source conversational form builder \u00e2\u20ac\u201d a Typeform alternative you can self-host.",
+   "description": "Build chatbots and conversational forms in a visual editor, then publish them as a link, an embed or a chat bubble. Results, file uploads and email sign-in included.",
    "source": "https://github.com/baptisteArno/typebot.io",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@45afbcf915e2937f16515a4a5b41352ac48cf714/services/typebot/icon.png",
    "website": "https://typebot.io/",
-   "installation": "Deploy typebot-viewer separately for published bots in production.",
-   "architecture": [],
+   "installation": "Builder and viewer services. Set ADMIN_EMAIL to your email before you deploy, then sign in with the code sent to it. Sign-up is closed; invite people from Settings > Members. Runs in Kata micro-VMs.",
+   "architecture": [
+    "linux/amd64",
+    "linux/arm64"
+   ],
    "categories": [
     "automation",
-    "utilities",
+    "marketing",
     "work"
    ],
-   "screenshots": [
-    "https://media.stackblaze.cloud/templates/typebot/demo.mp4",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@45afbcf915e2937f16515a4a5b41352ac48cf714/services/typebot/dashboard.png"
-   ],
+   "screenshots": [],
    "links": [
-    "https://docs.typebot.io/"
+    "https://docs.typebot.io/self-hosting/configuration"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Valkey",
+    "Tenant",
+    "Smtp"
    ],
-   "stars": 10000,
-   "forks": 1000,
-   "watchers": 10000,
-   "issues": 0,
-   "last_updated": "2026-06-11T00:00:00Z",
-   "last_pushed": "2026-06-11T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 0,
+   "stars": 10626,
+   "forks": 3246,
+   "watchers": 64,
+   "issues": 16,
+   "last_updated": "2026-11-13T22:19:51Z",
+   "last_pushed": "2026-11-07T10:19:56Z",
+   "created_at": "2021-11-19T09:15:31Z",
+   "size": 404036,
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/typebot/app.yaml",
    "status": "active",
-   "license": "Other",
-   "spdx_id": "NOASSERTION",
+   "license": "Functional Source License, Version 1.1, Apache 2.0 Future License",
+   "spdx_id": "FSL-1.1-Apache-2.0",
    "dirname": "typebot",
    "deploymentTypes": [
     {

@@ -3,17 +3,14 @@ kind: KuberoApp
 metadata:
   name: typebot
   annotations:
-    kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Open-source conversational form builder \u2014\
-      \ a Typeform alternative you can self-host."
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+    kubero.dev/template.description: Build chatbots and conversational forms in a visual editor, then publish them as a link, an embed or a chat bubble. Results, file uploads and email sign-in included.
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@45afbcf915e2937f16515a4a5b41352ac48cf714/services/typebot/icon.png
-    kubero.dev/template.installation: This template deploys the Typebot builder. Set
-      NEXT_PUBLIC_VIEWER_URL to your public viewer URL. For production, deploy baptistearno/typebot-viewer
-      with the same DATABASE_URL and ENCRYPTION_SECRET in the same pipeline phase.
-    kubero.dev/template.links: '["https://docs.typebot.io/"]'
-    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/typebot/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@45afbcf915e2937f16515a4a5b41352ac48cf714/services/typebot/dashboard.png"]'
+    kubero.dev/template.installation: 'Two services: the builder (typebot-api, where you build bots) and the viewer (typebot-viewer, where published bots run). Before you deploy, set ADMIN_EMAIL on the builder to your own email address. Then open the builder URL, enter that address and type the 6-digit code from the email (or click its link). Typebot has no passwords: sign-in is by emailed code, sent through the Email add-on. Sign-up is closed (DISABLE_SIGNUP=true): only ADMIN_EMAIL and people you invite from Settings > Members can create an account. To change the admin later, edit ADMIN_EMAIL and redeploy the builder. Uploads (images, avatars, files from file-upload blocks) are stored in the S3 bucket add-on. Valkey rate-limits sign-in emails per IP. Both services run in Kata micro-VMs because Typebot runs bot authors'' JavaScript (Set variable and Script blocks) on the server. Licence: FSL-1.1-Apache-2.0 (each release becomes Apache-2.0 after two years); you may not offer it as a competing hosted service. Typebot 3.19.1.'
+    kubero.dev/template.links: '["https://docs.typebot.io/self-hosting/configuration"]'
+    kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/baptisteArno/typebot.io
-    kubero.dev/template.categories: '["automation", "utilities", "work"]'
+    kubero.dev/template.categories: '["automation", "marketing", "work"]'
     kubero.dev/template.title: Typebot
     kubero.dev/template.website: https://typebot.io/
   labels:
@@ -21,6 +18,11 @@ metadata:
 spec:
   name: typebot
   deploymentstrategy: docker
+  # Typebot runs bot authors' JavaScript on the server (Set variable "Custom"
+  # code, Script blocks set to run on the server) in isolated-vm. Both
+  # services run in a Kata micro-VM; the limits below are the VM's size.
+  runtimeClass: kata-qemu-runtime-rs
+  exposeInternet: true
   addons:
   - displayName: PostgreSQL (CloudNativePG)
     env: []
@@ -68,7 +70,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: typebot
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -77,24 +79,104 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: typebot
-          password: typebot
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  - displayName: S3 bucket
+    env: []
+    icon: /img/addons/rustfs.svg
+    id: kubero-operator
+    kind: Tenant
+    resourceDefinitions:
+      Tenant:
+        apiVersion: rustfs.com/v1alpha1
+        kind: Tenant
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs'
+          annotations:
+            operator.rustfs.com/runtime-default-image-ack: docker.io/rustfs/rustfs:1.0.0-beta.10
+        spec:
+          image: docker.io/rustfs/rustfs:1.0.0-beta.10
+          credsSecret:
+            name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
+          pools:
+          - name: pool-0
+            servers: 1
+            persistence:
+              volumesPerServer: 4
+              volumeClaimTemplate:
+                accessModes:
+                - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 2Gi
+                storageClassName: slow
+      credsSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
+        type: Opaque
+        stringData:
+          accesskey: typebot
+          secretkey: '{{STACKBLAZE_GEN_HEX:32}}'
+  # Sign-in codes (the only sign-in without an OAuth app) and invitations.
+  # 587 STARTTLS, so SMTP_SECURE stays false.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: SMTP_USERNAME
+      value: $(SMTP_USER)
+    - name: NEXT_PUBLIC_SMTP_FROM
+      value: $(SMTP_FROM)
+    resourceDefinitions: {}
   envVars:
   - name: DATABASE_URL
-    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+    value: postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)
+  # Auth.js secret and the key for stored credentials: exactly 32 characters.
+  - name: ENCRYPTION_SECRET
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
   - name: NEXTAUTH_URL
     value: '{{STACKBLAZE_APP_URL}}'
-  - name: NEXT_PUBLIC_VIEWER_URL
+  # The viewer's public URL. The platform fills it once the viewer has its
+  # host (the viewer is the group's publicUrlSource).
+  - name: WEB_URL
     value: '{{STACKBLAZE_APP_URL}}'
-  - name: NEXTAUTH_SECRET
-    value: H+KbL/OFrqbEuDy/1zX8bsPG+spXri3S
-  - name: ENCRYPTION_SECRET
-    value: do+UspMmB/rewbX2K/rskFmtgGSSZ8Ta
-  - name: NODE_OPTIONS
-    value: --no-node-snapshot
+  - name: NEXT_PUBLIC_VIEWER_URL
+    value: $(WEB_URL)
   - name: ADMIN_EMAIL
     value: admin@example.com
   - name: DISABLE_SIGNUP
-    value: 'false'
+    value: 'true'
   extraVolumes: []
   cronjobs: []
   web:
@@ -103,22 +185,93 @@ spec:
     replicaCount: 0
   resources:
     requests:
-      cpu: 500m
-      memory: 1Gi
+      cpu: 250m
+      memory: 512Mi
     limits:
       cpu: '1'
       memory: 2Gi
   healthcheck:
     enabled: true
-    path: /
+    path: /signin
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '3000'
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     repository: docker.io/baptistearno/typebot-builder
-    tag: latest
+    tag: 3.19.1
+    # Typebot's S3 client takes a bare host, port and SSL flag, and hands
+    # browsers links on that same endpoint, so it uses the bucket's public
+    # endpoint (the injected S3_ENDPOINT is the in-cluster http URL).
+    command:
+    - /bin/sh
+    - -c
+    - |
+      p="${S3_PUBLIC_ENDPOINT:-}"
+      if [ -n "$p" ]; then
+        h="${p#*://}"; h="${h%%/*}"
+        case "$p" in https://*) export S3_SSL=true d=443 ;; *) export S3_SSL=false d=80 ;; esac
+        export S3_ENDPOINT="${h%%:*}"
+        if [ "$h" != "${h#*:}" ]; then export S3_PORT="${h#*:}"; else export S3_PORT="$d"; fi
+      elif [ -n "${S3_HOST:-}" ]; then
+        export S3_ENDPOINT="$S3_HOST" S3_SSL=false
+      fi
+      [ -n "${AWS_REGION:-}" ] && export S3_REGION="$AWS_REGION"
+      exec ./builder-entrypoint.sh
     run:
       securityContext:
         readOnlyRootFilesystem: false
+  templateServices:
+  - id: viewer
+    nameHint: typebot-viewer
+    exposeInternet: true
+    publicUrlSource: true
+    inheritEnvFrom: primary
+    runtimeClass: kata-qemu-runtime-rs
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: '1'
+        memory: 2Gi
+    image:
+      repository: docker.io/baptistearno/typebot-viewer
+      tag: 3.19.1
+      pullPolicy: IfNotPresent
+      containerPort: '3000'
+      # Same S3 mapping as the builder. The Email add-on's mapping only
+      # reaches the builder, so the viewer maps the injected SMTP_* itself
+      # (Send email blocks), and only when the add-on is live.
+      command:
+      - /bin/sh
+      - -c
+      - |
+        p="${S3_PUBLIC_ENDPOINT:-}"
+        if [ -n "$p" ]; then
+          h="${p#*://}"; h="${h%%/*}"
+          case "$p" in https://*) export S3_SSL=true d=443 ;; *) export S3_SSL=false d=80 ;; esac
+          export S3_ENDPOINT="${h%%:*}"
+          if [ "$h" != "${h#*:}" ]; then export S3_PORT="${h#*:}"; else export S3_PORT="$d"; fi
+        elif [ -n "${S3_HOST:-}" ]; then
+          export S3_ENDPOINT="$S3_HOST" S3_SSL=false
+        fi
+        [ -n "${AWS_REGION:-}" ] && export S3_REGION="$AWS_REGION"
+        if [ -n "${SMTP_HOST:-}" ]; then
+          export SMTP_USERNAME="$SMTP_USER" NEXT_PUBLIC_SMTP_FROM="$SMTP_FROM"
+        fi
+        exec ./viewer-entrypoint.sh
+    envVars:
+    # The viewer's own URL, and the builder's URL for NEXTAUTH_URL (the
+    # viewer derives NEXT_PUBLIC_BUILDER_ORIGIN from it).
+    - name: NEXT_PUBLIC_VIEWER_URL
+      value: '{{STACKBLAZE_APP_URL}}'
+    - name: NEXTAUTH_URL
+      value: '${{typebot-api-{{STACKBLAZE_NAME_SUFFIX}}.STACKBLAZE_PUBLIC_URL}}'
+    healthcheck:
+      enabled: true
+      path: /api/v1/healthz
+      startupSeconds: 300
+      timeoutSeconds: 5
+      periodSeconds: 10
