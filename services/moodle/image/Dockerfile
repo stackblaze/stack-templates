@@ -44,6 +44,15 @@ RUN set -eux; \
   mkdir -p /var/www/moodledata /var/cache/moodle; \
   chown www-data:www-data /var/www/moodledata /var/cache/moodle
 
+# Moodle's own libraries ship in public/lib; upstream also expects the
+# Composer runtime dependencies (vendor/, outside the web root) installed from
+# its composer.lock, without the developer packages.
+COPY --from=docker.io/library/composer:2.11.2 /usr/bin/composer /usr/local/bin/composer
+RUN set -eux; \
+  cd /var/www/moodle; \
+  COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --classmap-authoritative --no-interaction --no-progress; \
+  rm -rf /usr/local/bin/composer /root/.composer /root/.cache
+
 COPY config.php /var/www/moodle/config.php
 COPY php.ini /usr/local/etc/php/conf.d/moodle.ini
 COPY apache.conf /etc/apache2/sites-available/000-default.conf

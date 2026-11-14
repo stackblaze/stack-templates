@@ -1,0 +1,39 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login/index.php",
+    "steps": [
+      { "waitForSelector": "#username", "timeout": 60000 },
+      { "fill": { "#username": "student" } },
+      { "fill": { "#password": "${MOODLE_STUDENT_PASSWORD}" } },
+      { "click": "#loginbtn" },
+      { "waitForURL": "**/my/**", "timeout": 60000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    {
+      "name": "course",
+      "path": "/course/search.php?search=ASTRO101",
+      "waitFor": "text=Astronomy 101: The Night Sky",
+      "steps": [
+        { "click": "a:has-text('Astronomy 101: The Night Sky')" },
+        { "waitForSelector": "text=Night sky quiz", "timeout": 30000 },
+        { "sleep": 1500 }
+      ]
+    },
+    { "name": "dashboard-courses", "path": "/my/courses.php", "waitFor": "text=Creative Writing Workshop", "waitMs": 2000 },
+    {
+      "name": "lesson",
+      "path": "/course/search.php?search=ASTRO101",
+      "waitFor": "text=Astronomy 101: The Night Sky",
+      "steps": [
+        { "click": "a:has-text('Astronomy 101: The Night Sky')" },
+        { "click": "a:has-text('Phases of the Moon')" },
+        { "waitForSelector": "text=The Moon shines by reflected light", "timeout": 30000 },
+        { "sleep": 1000 }
+      ]
+    }
+  ]
+}
