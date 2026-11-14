@@ -1,0 +1,41 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/wp-login.php",
+    "steps": [
+      { "waitForSelector": "#user_login", "timeout": 60000 },
+      { "fill": { "#user_login": "${WORDPRESS_ADMIN_USER}" } },
+      { "fill": { "#user_pass": "${WORDPRESS_ADMIN_PASSWORD}" } },
+      { "click": "#wp-submit" },
+      { "waitForURL": "**/wp-admin/**", "timeout": 60000 }
+    ],
+    "waitAfterMs": 1000
+  },
+  "pages": [
+    { "name": "site", "path": "/", "waitFor": "text=From the journal", "waitMs": 2500 },
+    {
+      "name": "editor",
+      "path": "/wp-admin/edit.php?post_status=draft&post_type=post",
+      "waitFor": "a.row-title",
+      "steps": [
+        { "click": "a.row-title" },
+        { "waitForSelector": "iframe[name=editor-canvas]", "timeout": 60000 },
+        { "sleep": 4000 },
+        { "click": "iframe[name=editor-canvas] >> internal:control=enter-frame >> .wp-block-post-title" },
+        { "optionalClick": "role=tab[name=\"Post\"]" },
+        { "sleep": 1500 }
+      ]
+    },
+    {
+      "name": "styles",
+      "path": "/wp-admin/site-editor.php?p=%2Fstyles",
+      "waitFor": "iframe[name=editor-canvas]",
+      "waitMs": 4000,
+      "steps": [
+        { "click": "role=button[name=\"Browse styles\"]" },
+        { "sleep": 5000 }
+      ]
+    }
+  ]
+}
