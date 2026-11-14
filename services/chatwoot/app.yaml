@@ -3,15 +3,12 @@ kind: KuberoApp
 metadata:
   name: chatwoot
   annotations:
-    kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Open-source customer engagement platform \u2014\
-      \ an alternative to Intercom and Zendesk."
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+    kubero.dev/template.description: "Open-source customer engagement platform with live chat, a shared team inbox, and a help center.\nA self-hosted alternative to Intercom and Zendesk."
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/icon.png
-    kubero.dev/template.installation: Background jobs run inline in this minimal template.
-      For production throughput, deploy a dedicated Sidekiq worker using the same
-      image and env with `bundle exec sidekiq -C config/sidekiq.yml`.
-    kubero.dev/template.links: '["https://www.chatwoot.com/docs/"]'
-    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/chatwoot/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/dashboard.png"]'
+    kubero.dev/template.installation: 'Open the app URL and complete the one-time setup (name, company, email, password): that creates the first account and its super admin. Public sign-up stays off (ENABLE_ACCOUNT_SIGNUP=false); invite agents from Settings → Agents, or set ENABLE_ACCOUNT_SIGNUP=true. The web and the background worker (Sidekiq) run from the same image: the worker delivers messages, live updates and email. Mail goes through the platform Email add-on (SMTP_ADDRESS, SMTP_USERNAME, MAILER_SENDER_EMAIL are mapped from it). Customer replies by email need inbound email: set MAILER_INBOUND_EMAIL_DOMAIN and RAILS_INBOUND_EMAIL_SERVICE (Chatwoot docs); until then the reply-to domain defaults to the sender domain, which does not receive mail. Uploads persist on the shared volume at /app/storage. SECRET_KEY_BASE and the ACTIVE_RECORD_ENCRYPTION_* keys are generated once at deploy; do not change them after data exists.'
+    kubero.dev/template.links: '["https://www.chatwoot.com/docs/self-hosted", "https://www.chatwoot.com/docs/self-hosted/configuration/environment-variables"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/screenshot-conversation.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/screenshot-contacts.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/screenshot-inbox-widget.png"]'
     kubero.dev/template.source: https://github.com/chatwoot/chatwoot
     kubero.dev/template.categories: '["communication", "work", "helpdesk"]'
     kubero.dev/template.title: Chatwoot
@@ -22,6 +19,11 @@ spec:
   name: chatwoot
   deploymentstrategy: docker
   addons:
+  # Postgres with pgvector. db/schema.rb at v4.19.1 enables vector,
+  # pg_stat_statements, pg_trgm and pgcrypto; vector and pg_stat_statements are
+  # not trusted extensions, so the app user cannot create them. They are
+  # created here as the superuser at bootstrap, and the schema load's
+  # `enable_extension` (IF NOT EXISTS) is then a no-op.
   - displayName: PostgreSQL (CloudNativePG)
     env: []
     icon: /img/addons/pgsql.svg
@@ -32,7 +34,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-db'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -52,9 +54,10 @@ spec:
               database: chatwoot
               owner: chatwoot
               secret:
-                name: '{{STACKBLAZE_APP_NAME}}-db-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - CREATE EXTENSION IF NOT EXISTS vector
+              - CREATE EXTENSION IF NOT EXISTS pg_stat_statements
               - CREATE EXTENSION IF NOT EXISTS pgcrypto
               - CREATE EXTENSION IF NOT EXISTS pg_trgm
               - GRANT ALL ON SCHEMA public TO chatwoot
@@ -62,25 +65,27 @@ spec:
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO chatwoot
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{STACKBLAZE_APP_NAME}}-db-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-db-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: chatwoot
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-db-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: chatwoot
-          password: chatwoot
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Sidekiq queues, ActionCable (live updates) and the install-onboarding flag.
+  # REDIS_URL is injected under the name Chatwoot reads (lib/redis/config.rb).
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -91,7 +96,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-cache'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -110,9 +115,42 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  # Platform email (README "Email contract"). Chatwoot's mailer
+  # (config/initializers/mailer.rb) reads SMTP_ADDRESS, SMTP_PORT,
+  # SMTP_USERNAME, SMTP_PASSWORD; SMTP_PORT and SMTP_PASSWORD are injected
+  # under those names already. Used for agent invites, password resets,
+  # notifications, and agent replies emailed to website visitors who left.
+  # SMTP_FROM can already carry a display name (`Name <addr>`), so it is
+  # passed as is; the start command adds "Chatwoot" only to a bare address.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: SMTP_ADDRESS
+      value: '$(SMTP_HOST)'
+    - name: SMTP_USERNAME
+      value: '$(SMTP_USER)'
+    - name: SMTP_AUTHENTICATION
+      value: login
+    - name: SMTP_ENABLE_STARTTLS_AUTO
+      value: 'true'
+    - name: MAILER_SENDER_EMAIL
+      value: '$(SMTP_FROM)'
+    resourceDefinitions: {}
   envVars:
   - name: FRONTEND_URL
     value: '{{STACKBLAZE_APP_URL}}'
+  - name: SECRET_KEY_BASE
+    value: '{{STACKBLAZE_GEN_HEX:128}}'
+  # Rails Active Record encryption (MFA, encrypted inbox credentials).
+  # `rails db:encryption:init` emits 32-character alphanumeric keys.
+  - name: ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  - name: ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  - name: ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
   - name: POSTGRES_HOST
     value: '$(PGHOST)'
   - name: POSTGRES_PORT
@@ -123,61 +161,104 @@ spec:
     value: '$(PGUSER)'
   - name: POSTGRES_PASSWORD
     value: '$(PGPASSWORD)'
-  - name: SECRET_KEY_BASE
-    value: '0000000000000000000000000000000000000000000000000000000000000000'
   - name: RAILS_ENV
     value: production
   - name: NODE_ENV
     value: production
-  - name: FORCE_SSL
-    value: 'false'
   - name: INSTALLATION_ENV
     value: docker
+  - name: RAILS_LOG_TO_STDOUT
+    value: 'true'
+  - name: LOG_LEVEL
+    value: info
+  # TLS ends at the platform ingress; FORCE_SSL would redirect the plain-HTTP
+  # health probe.
+  - name: FORCE_SSL
+    value: 'false'
+  - name: ENABLE_ACCOUNT_SIGNUP
+    value: 'false'
   - name: ACTIVE_STORAGE_SERVICE
     value: local
+  - name: DISABLE_TELEMETRY
+    value: 'true'
+  - name: RAILS_MAX_THREADS
+    value: '5'
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/storage
     name: '{{STACKBLAZE_APP_NAME}}-storage'
-    size: 2Gi
+    size: 5Gi
     storageClass: shared
   cronjobs: []
+  # One image, two processes, as upstream's docker-compose.production.yaml:
+  # the web pod runs Rails (PROC_TYPE=web), the worker pod runs Sidekiq
+  # (PROC_TYPE=worker). Both mount the storage volume.
   web:
     replicaCount: 1
   worker:
-    replicaCount: 0
+    replicaCount: 1
   resources:
     requests:
-      cpu: 500m
-      memory: 1Gi
+      cpu: 250m
+      memory: 768Mi
     limits:
       cpu: '1'
-      memory: 2Gi
+      memory: 1536Mi
   healthcheck:
     enabled: true
-    path: /
-    startupSeconds: 900
+    path: /health
+    startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '3000'
     pullPolicy: Always
     repository: docker.io/chatwoot/chatwoot
-    tag: latest
+    tag: v4.19.1
     command:
-    - sh
+    - /bin/sh
     - -c
-    - 'sed -i ''s/enable_extension "pg_stat_statements"/# enable_extension "pg_stat_statements"/''
-      /app/db/schema.rb /app/db/migrate/20230426130150_init_schema.rb 2>/dev/null
-      || true
-
+    - |
+      set -e
+      # Sender: add the "Chatwoot" display name to a bare address.
+      case "${MAILER_SENDER_EMAIL:-}" in
+        *"<"*|"") ;;
+        *) export MAILER_SENDER_EMAIL="Chatwoot <$MAILER_SENDER_EMAIL>" ;;
+      esac
+      # Reply emails to visitors need a mail domain for their Message-ID
+      # (ConversationReplyMailer raises "Channel email domain not present"
+      # without one). Default it to the sender's domain; set
+      # MAILER_INBOUND_EMAIL_DOMAIN yourself when you set up inbound email.
+      if [ -z "${MAILER_INBOUND_EMAIL_DOMAIN:-}" ] && [ -n "${MAILER_SENDER_EMAIL:-}" ]; then
+        MAILER_INBOUND_EMAIL_DOMAIN=$(printf '%s' "$MAILER_SENDER_EMAIL" | sed 's/.*@//; s/>.*//')
+        export MAILER_INBOUND_EMAIL_DOMAIN
+      fi
+      if [ "$PROC_TYPE" = "worker" ]; then
+        # Start once the web pod has loaded the schema (first boot) and the
+        # seeds (installation configs).
+        until psql -h "$PGHOST" -p "$PGPORT" -U "$PGUSER" -d "$PGDATABASE" -tAc 'SELECT 1 FROM installation_configs LIMIT 1' 2>/dev/null | grep -q 1; do
+          echo "waiting for the database schema"
+          sleep 5
+        done
+        exec docker/entrypoints/rails.sh bundle exec sidekiq -C config/sidekiq.yml
+      fi
+      # The first boot's db:seed writes the setup flag to Valkey; if Valkey is
+      # not up yet the seed fails after the schema load, and later boots skip
+      # it. Wait for Valkey first.
+      i=0
+      until nc -z -w 2 "$REDISHOST" "$REDISPORT"; do
+        i=$((i + 1))
+        if [ "$i" -ge 90 ]; then echo "Valkey not reachable" >&2; exit 1; fi
+        echo "waiting for Valkey"
+        sleep 2
+      done
       docker/entrypoints/rails.sh bundle exec rails db:chatwoot_prepare
-
+      # Re-arm the one-time setup page while no user exists, so an interrupted
+      # first boot (or a Valkey wipe before setup) can't lock the install.
+      bundle exec rails runner 'Redis::Alfred.set(Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING, true) if User.none?'
       exec docker/entrypoints/rails.sh bundle exec rails s -p 3000 -b 0.0.0.0
-
-      '
     run:
       securityContext:
         readOnlyRootFilesystem: false

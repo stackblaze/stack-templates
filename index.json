@@ -249,35 +249,38 @@
    "source": "https://github.com/WordPress/WordPress",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/icon.png",
    "website": "https://wordpress.org",
-   "installation": "",
+   "installation": "WordPress is installed on the first start, so there is no public setup wizard to race for. Sign in at /wp-admin as the user in WORDPRESS_ADMIN_USER with the password generated in WORDPRESS_ADMIN_PASSWORD (both under Variables), then set your own email under Users > Profile and the site title under Settings > General. Changing those variables after the first start has no effect: manage users in wp-admin. Email (password resets, comment notices, form plugins) goes through the platform Email add-on via the must-use plugin \"StackBlaze Email\". Scheduled posts and other WP-Cron jobs run every minute in the background, not on page views. WordPress, plugins, themes and media live on the volume at /var/www/html, so updates from the dashboard persist. Uploads are limited to 64 MB.",
    "architecture": [],
    "categories": [
     "cms"
    ],
    "screenshots": [
-    "https://wordpress.org/documentation/files/2021/07/test-widgets_v2-1-1024x643.jpeg",
-    "https://user-images.githubusercontent.com/12400734/168248949-f19a1a73-2c02-4eab-84d1-faaff57dbd07.png",
-    "https://wordpress.org/documentation/files/2021/06/menu-add-items-1024x557.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/screenshot-site.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/screenshot-editor.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/screenshot-styles.png"
    ],
-   "links": [],
+   "links": [
+    "https://wordpress.org/documentation/",
+    "https://hub.docker.com/_/wordpress"
+   ],
    "addons": [
     "MariaDB",
     "Smtp"
    ],
-   "stars": 21103,
-   "forks": 12937,
-   "watchers": 21103,
+   "stars": 21540,
+   "forks": 13038,
+   "watchers": 21540,
    "issues": 3,
-   "last_updated": "2026-05-11T12:48:48Z",
-   "last_pushed": "2026-05-11T12:48:07Z",
+   "last_updated": "2026-11-13T13:25:50Z",
+   "last_pushed": "2026-11-13T16:59:07Z",
    "created_at": "2011-12-01T07:05:17Z",
-   "size": 635398,
+   "size": 773573,
    "language": "PHP",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/app.yaml",
    "status": "active",
-   "license": "Other",
-   "spdx_id": "NOASSERTION",
+   "license": "GNU General Public License v2.0 or later",
+   "spdx_id": "GPL-2.0-or-later",
    "dirname": "wordpress",
    "deploymentTypes": [
     {
@@ -552,33 +555,42 @@
   },
   {
    "name": "directus",
-   "description": "The flexible backend for all your projects. Turn your DB into a headless CMS, admin panels, or apps with a custom UI, instant APIs, auth & more.",
+   "description": "The flexible backend for all your projects. Turn your database into a headless CMS, admin panels, or apps with a custom UI, instant REST and GraphQL APIs, auth and more.",
    "source": "https://github.com/directus/directus",
-   "icon": "https://avatars.githubusercontent.com/u/15967950",
-   "website": "https://directus.io/",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/directus/icon.png",
+   "website": "https://directus.com/",
    "installation": "",
-   "architecture": [],
+   "architecture": [
+    "linux/amd64",
+    "linux/arm64"
+   ],
    "categories": [
-    "database",
     "cms",
+    "database",
     "api"
    ],
    "screenshots": [
-    "https://framerusercontent.com/images/wDMzR3oV9R51pVCPoOz6PGTRs54.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/directus/screenshot-posts.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/directus/screenshot-post-editor.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/directus/screenshot-data-model.png"
    ],
-   "links": [],
+   "links": [
+    "https://directus.com/docs",
+    "https://directus.com/docs/configuration/general"
+   ],
    "addons": [
     "Cluster",
-    "Valkey"
+    "Valkey",
+    "Smtp"
    ],
-   "stars": 35456,
-   "forks": 4760,
-   "watchers": 35456,
-   "issues": 399,
-   "last_updated": "2026-05-11T12:30:20Z",
-   "last_pushed": "2026-05-11T12:32:00Z",
+   "stars": 38711,
+   "forks": 4994,
+   "watchers": 38711,
+   "issues": 363,
+   "last_updated": "2026-11-13T15:27:54Z",
+   "last_pushed": "2026-11-13T17:35:32Z",
    "created_at": "2012-12-12T01:35:36Z",
-   "size": 441403,
+   "size": 456612,
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/directus/app.yaml",
@@ -5098,40 +5110,46 @@
   },
   {
    "name": "chatwoot",
-   "description": "Open-source customer engagement platform \u00e2\u20ac\u201d an alternative to Intercom and Zendesk.",
+   "description": "Open-source customer engagement platform with live chat, a shared team inbox, and a help center. A self-hosted alternative to Intercom and Zendesk.",
    "source": "https://github.com/chatwoot/chatwoot",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/icon.png",
    "website": "https://www.chatwoot.com/",
-   "installation": "Replace SECRET_KEY_BASE before production use.",
-   "architecture": [],
+   "installation": "Open the app URL and complete the one-time setup to create the first account and its super admin. Public sign-up is off (ENABLE_ACCOUNT_SIGNUP=false); invite agents from Settings. A Sidekiq worker runs alongside the web app; email goes through the platform Email add-on; uploads persist on the shared volume.",
+   "architecture": [
+    "linux/amd64",
+    "linux/arm64"
+   ],
    "categories": [
     "communication",
     "work",
     "helpdesk"
    ],
    "screenshots": [
-    "https://media.stackblaze.cloud/templates/chatwoot/demo.mp4",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/dashboard.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/screenshot-conversation.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/screenshot-contacts.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/screenshot-inbox-widget.png"
    ],
    "links": [
-    "https://www.chatwoot.com/docs/"
+    "https://www.chatwoot.com/docs/self-hosted",
+    "https://www.chatwoot.com/docs/self-hosted/configuration/environment-variables"
    ],
    "addons": [
     "Cluster",
-    "Valkey"
+    "Valkey",
+    "Smtp"
    ],
-   "stars": 25000,
-   "forks": 2500,
-   "watchers": 25000,
-   "issues": 0,
-   "last_updated": "2026-06-11T00:00:00Z",
-   "last_pushed": "2026-06-11T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 0,
-   "language": "TypeScript",
+   "stars": 39786,
+   "forks": 9667,
+   "watchers": 293,
+   "issues": 1599,
+   "last_updated": "2026-11-13T14:37:26Z",
+   "last_pushed": "2026-11-13T13:03:19Z",
+   "created_at": "2019-08-14T06:50:51Z",
+   "size": 307764,
+   "language": "Ruby",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chatwoot/app.yaml",
-   "status": "unsupported",
+   "status": "active",
    "license": "Other",
    "spdx_id": "NOASSERTION",
    "dirname": "chatwoot",
@@ -12954,7 +12972,7 @@
   },
   {
    "name": "strapi",
-   "description": "Most popular open-source headless CMS \u2014 REST and GraphQL APIs, role-based access, media library, and a customisable admin panel.",
+   "description": "Open-source headless CMS. Edit content in a clean admin panel and serve it to any frontend over REST and GraphQL, with a media library and role-based access.",
    "source": "https://github.com/strapi/strapi",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/icon.png",
    "website": "https://strapi.io",
@@ -12966,23 +12984,26 @@
     "data"
    ],
    "screenshots": [
-    "https://delicate-dawn-ac25646e6d.media.strapiapp.com/HP_meta_b32f546a40.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/screenshot-articles.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/screenshot-entry.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/screenshot-media.png"
    ],
    "links": [
     "https://docs.strapi.io/"
    ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
-   "stars": 65000,
-   "forks": 0,
-   "watchers": 65000,
-   "issues": 0,
-   "last_updated": "2026-06-13T00:00:00Z",
-   "last_pushed": "2026-06-13T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 1000,
-   "language": "JavaScript",
+   "stars": 73480,
+   "forks": 10025,
+   "watchers": 647,
+   "issues": 641,
+   "last_updated": "2026-11-13T17:31:09Z",
+   "last_pushed": "2026-11-13T17:45:45Z",
+   "created_at": "2015-09-30T15:34:48Z",
+   "size": 779217,
+   "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/app.yaml",
    "status": "active",
@@ -13715,6 +13736,54 @@
      "label": "Standard",
      "default": true,
      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/app.yaml"
+    }
+   ]
+  },
+  {
+   "name": "Langflow",
+   "description": "Visual builder for AI agents and RAG workflows. Drag components onto a canvas, connect any LLM or vector store, and serve each flow as an API.",
+   "source": "https://github.com/langflow-ai/langflow",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/icon.png",
+   "website": "https://www.langflow.org/",
+   "installation": "Sign in as the user in LANGFLOW_SUPERUSER with the password generated in LANGFLOW_SUPERUSER_PASSWORD (both under Variables). The first start runs database migrations and can take 2-3 minutes.",
+   "architecture": [],
+   "categories": [
+    "ai",
+    "development",
+    "utilities"
+   ],
+   "screenshots": [
+     "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-agent-flow.png",
+     "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-rag-flow.png",
+     "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-flows.png"
+    ],
+   "links": [
+    "https://docs.langflow.org/"
+   ],
+   "addons": [
+    "Cluster"
+   ],
+   "stars": 156575,
+   "forks": 10396,
+   "watchers": 156575,
+   "issues": 1315,
+   "last_updated": "2026-11-12T20:00:57Z",
+   "last_pushed": "2026-11-12T20:21:20Z",
+   "created_at": "2023-02-08T22:28:03Z",
+   "size": 1723093,
+   "language": "Python",
+   "gitops": false,
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/app.yaml",
+   "status": "active",
+   "license": "MIT",
+   "spdx_id": "MIT",
+   "dirname": "langflow",
+   "deploymentTypes": [
+    {
+     "id": "standard",
+     "label": "Standard",
+     "default": true,
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/app.yaml"
     }
    ]
   },

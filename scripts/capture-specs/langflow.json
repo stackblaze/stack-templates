@@ -1,0 +1,42 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      { "waitForSelector": "input[name=username]", "timeout": 60000 },
+      { "fill": { "input[name=username]": "${LANGFLOW_USER}" } },
+      { "fill": { "input[type=password]": "${LANGFLOW_PASSWORD}" } },
+      { "click": "button:has-text(\"Sign In\")" },
+      { "waitForNavigation": true }
+    ],
+    "waitAfterMs": 3000
+  },
+  "pages": [
+    { "name": "flows", "path": "/", "waitFor": "text=Vector Store RAG", "waitMs": 3000 },
+    {
+      "name": "rag-flow",
+      "path": "/",
+      "waitFor": "text=Vector Store RAG",
+      "waitMs": 2000,
+      "steps": [
+        { "click": "role=button[name=/Vector Store RAG/]" },
+        { "waitForURL": "**/flow/**", "timeout": 30000 },
+        { "waitForSelector": ".react-flow__node .generic-node-div, .react-flow__node [data-testid^=title-]", "timeout": 45000 },
+        { "sleep": 4000 }
+      ]
+    },
+    {
+      "name": "agent-flow",
+      "path": "/",
+      "waitFor": "text=Simple Agent",
+      "waitMs": 2000,
+      "steps": [
+        { "click": "role=button[name=/Simple Agent/]" },
+        { "waitForURL": "**/flow/**", "timeout": 30000 },
+        { "waitForSelector": ".react-flow__node .generic-node-div, .react-flow__node [data-testid^=title-]", "timeout": 45000 },
+        { "sleep": 4000 }
+      ]
+    }
+  ]
+}
