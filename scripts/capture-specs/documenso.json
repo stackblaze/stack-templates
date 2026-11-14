@@ -1,0 +1,46 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/signin",
+    "steps": [
+      { "waitForSelector": "input[name=email]", "timeout": 60000 },
+      { "sleep": 800 },
+      { "fill": { "input[name=email]": "${ADMIN_EMAIL}" } },
+      { "fill": { "input[name=password]": "${ADMIN_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForURL": "**/documents**", "timeout": 60000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    {
+      "name": "documents",
+      "path": "/",
+      "waitFor": "text=/Upload Document/",
+      "waitMs": 2000
+    },
+    {
+      "name": "completed",
+      "path": "/",
+      "waitFor": "text=/Upload Document/",
+      "waitMs": 1500,
+      "steps": [
+        { "click": "text=/Consulting Services Agreement/" },
+        { "waitForSelector": "text=/Document completed/", "timeout": 30000 },
+        { "sleep": 2500 }
+      ]
+    },
+    {
+      "name": "editor",
+      "path": "/",
+      "waitFor": "text=/Upload Document/",
+      "waitMs": 1500,
+      "steps": [
+        { "click": "a:has-text(\"Edit\")" },
+        { "waitForSelector": "text=/Document Editor/", "timeout": 30000 },
+        { "sleep": 2500 }
+      ]
+    }
+  ]
+}
