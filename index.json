@@ -619,7 +619,7 @@
   },
   {
    "name": "activepieces",
-   "description": "Open-source Zapier alternative: build automations and AI agents from 600+ pieces (integrations), webhooks, schedules and your own code steps. Runs in a Kata micro-VM.",
+   "description": "Open-source automation platform: build flows and AI agents from hundreds of pieces (integrations), webhooks, schedules and your own code steps. Runs in a Kata micro-VM.",
    "source": "https://github.com/activepieces/activepieces",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/activepieces/icon.png",
    "website": "https://www.activepieces.com/",
