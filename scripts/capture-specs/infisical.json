@@ -1,0 +1,92 @@
+{
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      {
+        "waitForSelector": "input[type=email]",
+        "timeout": 60000
+      },
+      {
+        "fill": {
+          "input[type=email]": "${INFISICAL_ADMIN_EMAIL}",
+          "input[type=password]": "${INFISICAL_ADMIN_PASSWORD}"
+        }
+      },
+      {
+        "click": "role=button[name=/Continue with Email/]"
+      },
+      {
+        "sleep": 5000
+      }
+    ],
+    "waitAfterMs": 1000
+  },
+  "pages": [
+    {
+      "name": "overview",
+      "path": "/",
+      "waitFor": "text=Organization Overview",
+      "waitMs": 2000
+    },
+    {
+      "name": "secrets",
+      "path": "/",
+      "waitFor": "text=Organization Overview",
+      "waitMs": 1000,
+      "steps": [
+        {
+          "click": "a:has-text(\"Secrets Management\")"
+        },
+        {
+          "click": "text=Storefront API"
+        },
+        {
+          "sleep": 2500
+        },
+        {
+          "click": "text=Development"
+        },
+        {
+          "sleep": 600
+        },
+        {
+          "click": "text=Production >> nth=-1"
+        },
+        {
+          "sleep": 2000
+        },
+        {
+          "click": "text=Reveal All"
+        },
+        {
+          "sleep": 1500
+        }
+      ]
+    },
+    {
+      "name": "identities",
+      "path": "/",
+      "waitFor": "text=Organization Overview",
+      "waitMs": 1000,
+      "steps": [
+        {
+          "click": "a:has-text(\"Access Control\")"
+        },
+        {
+          "sleep": 2500
+        },
+        {
+          "click": "role=tab[name=/Machine Identities/]"
+        },
+        {
+          "sleep": 2500
+        }
+      ]
+    }
+  ]
+}
