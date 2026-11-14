@@ -23,7 +23,7 @@ metadata:
       Telemetry is off (ENABLE_TELEMETRY=0). Built from github.com/stackblaze/plane,
       Plane v1.4.3.'
     kubero.dev/template.links: '["https://developers.plane.so/"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/screenshot-board.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/screenshot-cycles.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/screenshot-page.png"]'
     kubero.dev/template.source: https://github.com/stackblaze/plane
     kubero.dev/template.categories: '["productivity", "work", "collaboration"]'
     kubero.dev/template.title: Plane

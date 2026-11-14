@@ -5301,12 +5301,9 @@
     "collaboration"
    ],
    "screenshots": [
-    "https://media.stackblaze.cloud/templates/plane/demo.mp4",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/dashboard.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-all-projects.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-home.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-analytics.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/screenshot-settings.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/screenshot-board.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/screenshot-cycles.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/screenshot-page.png"
    ],
    "links": [
     "https://developers.plane.so/"
