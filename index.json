@@ -12490,7 +12490,11 @@
     "development",
     "utilities"
    ],
-   "screenshots": [],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/screenshot-keys.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/screenshot-logs.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/screenshot-models.png"
+   ],
    "links": [
     "https://docs.litellm.ai/"
    ],

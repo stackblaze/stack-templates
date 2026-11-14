@@ -1,0 +1,44 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/ui/login",
+    "steps": [
+      { "waitForSelector": "input[name=username]", "timeout": 60000 },
+      { "fill": { "input[name=username]": "${LITELLM_UI_USER}" } },
+      { "fill": { "input[name=password]": "${LITELLM_UI_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForSelector": "text=Virtual Keys", "timeout": 60000 }
+    ],
+    "waitAfterMs": 3000
+  },
+  "pages": [
+    {
+      "name": "keys",
+      "path": "/ui/",
+      "steps": [
+        { "click": "text=\"Virtual Keys\"" },
+        { "waitForSelector": "text=support-bot", "timeout": 45000 },
+        { "sleep": 2500 }
+      ]
+    },
+    {
+      "name": "models",
+      "path": "/ui/",
+      "steps": [
+        { "click": "text=\"Models + Endpoints\"" },
+        { "waitForSelector": "text=support-assistant", "timeout": 45000 },
+        { "sleep": 2500 }
+      ]
+    },
+    {
+      "name": "logs",
+      "path": "/ui/",
+      "steps": [
+        { "click": "text=\"Logs\"" },
+        { "waitForSelector": "text=support-bot", "timeout": 45000 },
+        { "sleep": 2500 }
+      ]
+    }
+  ]
+}
