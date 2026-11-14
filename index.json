@@ -12735,7 +12735,11 @@
     "utilities",
     "documentation"
    ],
-   "screenshots": [],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/screenshot-chat.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/screenshot-documents.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/anythingllm/screenshot-settings.png"
+   ],
    "links": [
     "https://docs.anythingllm.com/",
     "https://github.com/Mintplex-Labs/anything-llm"

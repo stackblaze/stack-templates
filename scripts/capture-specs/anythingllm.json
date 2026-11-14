@@ -1,0 +1,32 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/",
+    "steps": [
+      { "waitForSelector": "input[name=\"password\"]", "timeout": 60000 },
+      { "sleep": 2000 },
+      { "fill": { "input[name=\"password\"]": "${AUTH_TOKEN}" } },
+      { "click": "button[type=submit]" },
+      { "waitForSelector": "text=Support handbook", "timeout": 60000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    {
+      "name": "chat",
+      "path": "/workspace/support-handbook",
+      "waitFor": "#primary-prompt-input",
+      "waitMs": 1500,
+      "steps": [{ "click": "text=/What codeword/" }, { "sleep": 2500 }, { "click": "role=button[name=/Sources/]" }, { "sleep": 1200 }]
+    },
+    {
+      "name": "documents",
+      "path": "/workspace/support-handbook",
+      "waitFor": "#primary-prompt-input",
+      "waitMs": 1500,
+      "steps": [{ "click": "[data-tooltip-id=upload-workspace] >> nth=2" }, { "sleep": 3000 }]
+    },
+    { "name": "settings", "path": "/settings/llm-preference", "waitMs": 2500, "steps": [{ "optionalClick": "text=Show advanced settings" }, { "sleep": 800 }] }
+  ]
+}
