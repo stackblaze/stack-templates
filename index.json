@@ -4965,7 +4965,11 @@
     "work",
     "collaboration"
    ],
-   "screenshots": [],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nextcloud/screenshot-files.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nextcloud/screenshot-folder.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nextcloud/screenshot-calendar.png"
+   ],
    "links": [
     "https://docs.nextcloud.com/server/latest/admin_manual/",
     "https://docs.nextcloud.com/server/latest/user_manual/",
