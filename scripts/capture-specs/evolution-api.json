@@ -42,7 +42,7 @@
         { "waitForURL": "**/dashboard", "timeout": 30000 },
         { "click": "text=Events" },
         { "click": "text=Webhook" },
-        { "waitForSelector": "input[value*='hooks.example.com']", "timeout": 30000 },
+        { "waitForSelector": "input[name=url][value*='hooks.example.com']", "timeout": 60000 },
         { "sleep": 1500 }
       ]
     }
