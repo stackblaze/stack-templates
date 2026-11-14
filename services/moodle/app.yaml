@@ -8,28 +8,24 @@ metadata:
       learning management system (LMS) for building online courses, classrooms and
       e-learning.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodle/icon.png
-    kubero.dev/template.installation: 'Moodle requires MySQL/MariaDB (the maintained
-      container images target MariaDB, not PostgreSQL), so this template ships the
-      mariadb add-on. The image is elestio/moodle, an actively-rebuilt Verified Publisher
-      image tracking current Moodle releases (Bitnami''s moodle image moved behind
-      a paywall in 2025 and is no longer freely pullable). On first boot the container
-      runs the Moodle installer against the database using the MOODLE_DATABASE_* env
-      vars and provisions the admin account from MOODLE_USERNAME/MOODLE_PASSWORD/MOODLE_EMAIL;
-      MOODLE_HOST and MOODLE_REVERSEPROXY are set so generated links resolve to the
-      public HTTPS URL behind the ingress. After deploy, log in with the seeded admin
-      and ROTATE: the MOODLE_PASSWORD env value, the MariaDB add-on password, and
-      configure real SMTP under Site administration > Server > Email. Two persistent
-      volumes are mounted: /bitnami/moodle holds the Moodle code plus config.php,
-      and /bitnami/moodledata holds uploaded course files, caches and sessions. For
-      production raise the app pod size (Moodle/PHP needs >=1Gi) and PHP memory_limit,
-      and schedule the Moodle cron (admin/cli/cron.php) every minute. Optional companions:
-      deploy the memcached add-on and point Moodle''s MUC application cache at it
-      for performance, and add an external Solr/Elasticsearch only if you enable global
-      search (neither is required for a base install).'
-    kubero.dev/template.links: '["https://docs.moodle.org/en/Installation", "https://hub.docker.com/r/elestio/moodle"]'
-    kubero.dev/template.screenshots: '["https://moodle.org/theme/moodleorg/pix/moodle_logo_tm.png"]'
+    kubero.dev/template.installation: 'Moodle is installed from the command line on
+      the first start (a few minutes), so its web installer is never open to the
+      first visitor. Sign in at /login as the user in MOODLE_ADMIN_USER (admin) with
+      the password generated in MOODLE_ADMIN_PASSWORD (both under Variables), then
+      set your own email under your profile and the site name under Site administration.
+      Changing those variables after the first start has no effect: manage users in
+      Moodle. The site address is MOODLE_URL (the app URL); change it when you add a
+      custom domain. Course files and uploads live on the volume at /var/www/moodledata;
+      the database is PostgreSQL 17. A worker runs Moodle''s cron every minute (forum
+      and notification email, completion, cleanup). Email (password resets, enrolment
+      and forum notifications) goes through the platform Email add-on and is always
+      sent from its address. For safety, plugins cannot be installed or updated from
+      Site administration: the Moodle code ships in the template image, and new
+      Moodle versions arrive as a new image, upgraded automatically on start.'
+    kubero.dev/template.links: '["https://docs.moodle.org/503/en/Main_page", "https://github.com/stackblaze/stack-templates/tree/main/services/moodle/image"]'
+    kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/moodle/moodle
-    kubero.dev/template.categories: '["productivity", "collaboration", "work"]'
+    kubero.dev/template.categories: '["school", "collaboration", "productivity"]'
     kubero.dev/template.title: Moodle
     kubero.dev/template.website: https://moodle.org/
   labels:
@@ -38,32 +34,25 @@ spec:
   name: moodle
   deploymentstrategy: docker
   addons:
-  - displayName: MariaDB
+  # Moodle 5.3 needs PostgreSQL 17+ (public/admin/environment.xml).
+  - displayName: PostgreSQL (CloudNativePG)
     env: []
-    icon: /img/addons/mysql.svg
+    icon: /img/addons/pgsql.svg
     id: kubero-operator
-    kind: MariaDB
+    kind: Cluster
     resourceDefinitions:
-      MariaDB:
-        apiVersion: k8s.mariadb.com/v1alpha1
-        kind: MariaDB
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-mysql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
-          metrics:
-            enabled: true
-          rootPasswordSecretKeyRef:
-            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
-            key: password
-          database: moodle
-          username: moodle
-          passwordSecretKeyRef:
-            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
-            key: password
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:17
+          primaryUpdateStrategy: unsupervised
           storage:
+            storageClass: smart
             size: 5Gi
-            storageClassName: fast
-          replicas: 1
           resources:
             requests:
               cpu: 100m
@@ -71,74 +60,112 @@ spec:
             limits:
               cpu: '1'
               memory: 1Gi
-      rootSecret:
+          bootstrap:
+            initdb:
+              database: moodle
+              owner: moodle
+              secret:
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO moodle
+              - GRANT CREATE ON SCHEMA public TO moodle
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO moodle
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
+      superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
-        type: Opaque
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
+        type: kubernetes.io/basic-auth
         stringData:
-          password: moodle
-      appSecret:
+          username: postgres
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+      appUserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
-        type: Opaque
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
+        type: kubernetes.io/basic-auth
         stringData:
-          password: moodle
+          username: moodle
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Platform email (README "Email contract"): password resets, enrolment,
+  # forum and assignment notifications. Moodle has no email environment
+  # variables of its own; the image's config.php reads the injected SMTP_*
+  # (smtphosts, smtpuser, smtppass, noreplyaddress) and does nothing without
+  # SMTP_HOST, so no mapping is needed here.
+  - displayName: Email
+    env: []
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    resourceDefinitions: {}
   envVars:
-  - name: MOODLE_DATABASE_TYPE
-    value: mariadb
-  - name: MOODLE_DATABASE_HOST
-    value: '$(MYSQL_HOST)'
-  - name: MOODLE_DATABASE_PORT_NUMBER
-    value: '$(MYSQL_PORT)'
-  - name: MOODLE_DATABASE_NAME
-    value: '$(MYSQL_DATABASE)'
-  - name: MOODLE_DATABASE_USER
-    value: '$(MYSQL_USER)'
-  - name: MOODLE_DATABASE_PASSWORD
-    value: '$(MYSQL_PASSWORD)'
-  - name: MOODLE_USERNAME
-    value: admin
-  - name: MOODLE_PASSWORD
-    value: replace-with-openssl-rand-base64-32
-  - name: MOODLE_EMAIL
-    value: admin@example.com
-  - name: MOODLE_HOST
+  - name: MOODLE_DB_HOST
+    value: '$(PGHOST)'
+  - name: MOODLE_DB_PORT
+    value: '$(PGPORT)'
+  - name: MOODLE_DB_NAME
+    value: '$(PGDATABASE)'
+  - name: MOODLE_DB_USER
+    value: '$(PGUSER)'
+  - name: MOODLE_DB_PASSWORD
+    value: '$(PGPASSWORD)'
+  # The site address ($CFG->wwwroot).
+  - name: MOODLE_URL
     value: '{{STACKBLAZE_APP_URL}}'
-  - name: MOODLE_REVERSEPROXY
-    value: 'yes'
-  - name: MOODLE_SSLPROXY
-    value: 'yes'
-  - name: PHP_MEMORY_LIMIT
-    value: 512M
+  # First-start install (moodle-start). Changing these later does nothing.
+  - name: MOODLE_ADMIN_USER
+    value: admin
+  - name: MOODLE_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  - name: MOODLE_ADMIN_EMAIL
+    value: admin@example.com
+  - name: MOODLE_SITE_NAME
+    value: My Moodle site
+  - name: MOODLE_SITE_SHORTNAME
+    value: moodle
+  # moodledata: course files, uploads, submissions, backups, language packs and
+  # the shared cache. Not served by Apache (only public/ is).
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
-    mountPath: /bitnami/moodle
-    name: moodle-app
-    size: 5Gi
-    storageClass: shared
-  - accessModes:
-    - ReadWriteMany
-    emptyDir: false
-    mountPath: /bitnami/moodledata
-    name: '{{STACKBLAZE_APP_NAME}}-data'
-    size: 5Gi
+    mountPath: /var/www/moodledata
+    name: '{{STACKBLAZE_APP_NAME}}-moodledata'
+    size: 10Gi
     storageClass: shared
   cronjobs: []
+  # One image, two processes: the web pod serves Moodle (PROC_TYPE=web), the
+  # worker runs admin/cli/cron.php every minute (PROC_TYPE=worker). Both mount
+  # moodledata.
   web:
     replicaCount: 1
   worker:
-    replicaCount: 0
+    replicaCount: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 384Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  # A static file Apache serves without PHP or the database.
+  healthcheck:
+    enabled: true
+    path: /pix/moodlelogo.svg
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
   image:
     containerPort: '80'
-    pullPolicy: Always
-    repository: docker.io/elestio/moodle
-    tag: latest
+    pullPolicy: IfNotPresent
+    # Built by .github/workflows/build-moodle.yaml from services/moodle/image:
+    # Moodle 5.3.1 (official package, checksum-pinned) on php:8.4-apache.
+    repository: ghcr.io/stackblaze/stack-templates/moodle
+    tag: 5.3.1-1
     run:
       securityContext:
         readOnlyRootFilesystem: false
