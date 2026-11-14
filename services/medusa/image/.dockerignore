@@ -4,3 +4,4 @@
 !docker-entrypoint.sh
 !wait-for-services.js
 !src/migration-scripts/stackblaze-admin.ts
+!src/api/route.ts
