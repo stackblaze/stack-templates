@@ -12549,7 +12549,7 @@
    "name": "litellm",
    "description": "LLM gateway with one OpenAI-compatible API for 100+ model providers. Virtual keys, budgets, rate limits, spend tracking and an admin UI.",
    "source": "https://github.com/BerriAI/litellm",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/icon.png",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/icon.png",
    "website": "https://www.litellm.ai/",
    "installation": "Open the app URL and sign in as admin with the password generated in UI_PASSWORD (under Variables). Every API call needs the master key in LITELLM_MASTER_KEY or a virtual key; nothing is open without one. Provider keys are stored encrypted with LITELLM_SALT_KEY, so never change it after adding a model.",
    "architecture": [],
@@ -12559,9 +12559,9 @@
     "utilities"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/screenshot-keys.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/screenshot-logs.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/screenshot-models.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-keys.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-logs.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-models.png"
    ],
    "links": [
     "https://docs.litellm.ai/"
