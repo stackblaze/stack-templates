@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: Visual builder for AI agents and RAG workflows.
       Drag components onto a canvas, connect any LLM or vector store, and serve
       each flow as an API.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/icon.png
     kubero.dev/template.installation: 'Sign in as the user in LANGFLOW_SUPERUSER
       with the password generated in LANGFLOW_SUPERUSER_PASSWORD (both under Variables).
       The first start runs database migrations and can take 2-3 minutes. Add your
@@ -15,7 +15,7 @@ metadata:
       they are stored encrypted with LANGFLOW_SECRET_KEY, so do not change that
       key after first use.'
     kubero.dev/template.links: '["https://docs.langflow.org/"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/screenshot-agent-flow.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/screenshot-rag-flow.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langflow/screenshot-flows.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-agent-flow.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-rag-flow.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-flows.png"]'
     kubero.dev/template.source: https://github.com/langflow-ai/langflow
     kubero.dev/template.categories: '[ "ai", "development", "utilities" ]'
     kubero.dev/template.title: Langflow
@@ -36,7 +36,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -56,32 +56,32 @@ spec:
               database: langflow
               owner: langflow
               secret:
-                name: '{{KUBERO_APP_NAME}}-postgresql-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO langflow
               - GRANT CREATE ON SCHEMA public TO langflow
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO langflow
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: '{{KUBERO_GEN_ALNUM:24}}'
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{KUBERO_APP_NAME}}-postgresql-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: langflow
-          password: '{{KUBERO_GEN_ALNUM:24}}'
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
   envVars:
   - name: LANGFLOW_DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
@@ -92,12 +92,12 @@ spec:
   - name: LANGFLOW_SUPERUSER
     value: admin
   - name: LANGFLOW_SUPERUSER_PASSWORD
-    value: '{{KUBERO_GEN_ALNUM:24}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
   # Exactly 43 chars: Langflow treats a key of 32+ chars as url-safe base64
   # and Fernet needs it to decode to exactly 32 bytes (43 chars + padding).
   # 48 chars decodes to 36 bytes and every encrypted variable save fails.
   - name: LANGFLOW_SECRET_KEY
-    value: '{{KUBERO_GEN_ALNUM:43}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:43}}'
   - name: LANGFLOW_WORKERS
     value: '1'
   - name: LANGFLOW_LOG_LEVEL
@@ -109,7 +109,7 @@ spec:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/langflow
-    name: '{{KUBERO_APP_NAME}}-data'
+    name: '{{STACKBLAZE_APP_NAME}}-data'
     size: 5Gi
     storageClass: shared
   cronjobs: []
