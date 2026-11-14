@@ -1,0 +1,158 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: sillytavern
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted chat and roleplay front end for
+      LLMs. Bring your own model (OpenAI, Claude, OpenRouter, Ollama and more), with
+      characters, group chats, lorebooks and per-user accounts.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/icon.png
+    kubero.dev/template.installation: 'Sign in with the user handle default-user
+      and the password generated in ST_ADMIN_PASSWORD (under Variables). The login
+      page does not list accounts, so type the handle. User accounts are always on
+      and there is no public sign-up: the admin adds people in User Settings > Manage
+      users (give every account a password; SillyTavern refuses to start while an
+      admin account has none). Add your model provider API keys in the API Connections
+      panel; they are stored per user on the data volume. To use an Ollama app in
+      the same project, connect to http://ollama (port 80). Server plugins are switched
+      off. Settings come from the SILLYTAVERN_* variables; config.yaml is rebuilt on
+      every start.'
+    kubero.dev/template.links: '["https://docs.sillytavern.app/"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/screenshot-chat.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/screenshot-connections.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/screenshot-users.png"]'
+    kubero.dev/template.source: https://github.com/SillyTavern/SillyTavern
+    kubero.dev/template.categories: '[ "ai", "utilities" ]'
+    kubero.dev/template.title: SillyTavern
+    kubero.dev/template.website: https://sillytavern.app
+  labels:
+    manager: kubero
+spec:
+  name: sillytavern
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  # Admin password for the built-in account `default-user`. The start command
+  # sets it on first start (and whenever that account has no password); it never
+  # overwrites a password changed in the app.
+  - name: ST_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Every config.yaml key can be set as SILLYTAVERN_<KEY> (src/util.js keyToEnv);
+  # the environment wins over config.yaml.
+  - name: SILLYTAVERN_LISTEN
+    value: 'true'
+  # Multi-user accounts are the access control. The IP whitelist only knows the
+  # ingress's address behind the edge, and basic auth would be a second shared
+  # password on top of the accounts.
+  - name: SILLYTAVERN_ENABLEUSERACCOUNTS
+    value: 'true'
+  - name: SILLYTAVERN_WHITELISTMODE
+    value: 'false'
+  - name: SILLYTAVERN_BASICAUTHMODE
+    value: 'false'
+  # Login page asks for the handle instead of listing every account.
+  - name: SILLYTAVERN_ENABLEDISCREETLOGIN
+    value: 'true'
+  # No server-side code: server plugins (Node modules loaded into the server)
+  # stay off, and so does their git auto-update.
+  - name: SILLYTAVERN_ENABLESERVERPLUGINS
+    value: 'false'
+  - name: SILLYTAVERN_ENABLESERVERPLUGINSAUTOUPDATE
+    value: 'false'
+  - name: SILLYTAVERN_ENABLECORSPROXY
+    value: 'false'
+  - name: SILLYTAVERN_ALLOWKEYSEXPOSURE
+    value: 'false'
+  - name: SILLYTAVERN_SECURITYOVERRIDE
+    value: 'false'
+  - name: SILLYTAVERN_BROWSERLAUNCH_ENABLED
+    value: 'false'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /home/node/app/data
+    name: '{{STACKBLAZE_APP_NAME}}-data'
+    size: 5Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  image:
+    containerPort: '8000'
+    pullPolicy: IfNotPresent
+    repository: ghcr.io/sillytavern/sillytavern
+    tag: 1.19.0
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      cd /home/node/app
+      # Global extensions (installed by an admin for everyone) live in the image
+      # by default and would vanish on every redeploy: keep them on the volume.
+      mkdir -p data/_global-extensions
+      if [ ! -L public/scripts/extensions/third-party ]; then
+        rm -rf public/scripts/extensions/third-party
+        ln -s /home/node/app/data/_global-extensions public/scripts/extensions/third-party
+      fi
+      [ -e config/config.yaml ] || cp default/config.yaml config/config.yaml
+      # Give the built-in admin account its password before the server starts,
+      # so the first visitor never finds an open admin (with accounts on,
+      # SillyTavern logs a passwordless single account in automatically).
+      cat > sb-admin.mjs <<'JS'
+      import { setConfigFilePath } from './src/util.js';
+      setConfigFilePath('./config.yaml');
+      const { initUserStorage, getPasswordSalt, getPasswordHash, toKey } = await import('./src/users.js');
+      const storage = (await import('node-persist')).default;
+      await initUserStorage('./data');
+      const user = await storage.getItem(toKey('default-user'));
+      if (!user) {
+        console.log('stackblaze: no default-user account, leaving accounts unchanged');
+      } else if (user.password) {
+        console.log('stackblaze: default-user already has a password');
+      } else {
+        const pw = process.env.ST_ADMIN_PASSWORD || '';
+        if (pw.length < 12) {
+          console.error('stackblaze: ST_ADMIN_PASSWORD is missing or shorter than 12 characters; not starting with an open admin account');
+          process.exit(1);
+        }
+        const salt = getPasswordSalt();
+        user.password = getPasswordHash(pw, salt);
+        user.salt = salt;
+        user.enabled = true;
+        await storage.setItem(toKey('default-user'), user);
+        console.log('stackblaze: password set for default-user from ST_ADMIN_PASSWORD');
+      }
+      JS
+      node sb-admin.mjs
+      rm -f sb-admin.mjs
+      exec tini -- ./docker-entrypoint.sh
+    run:
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
+        readOnlyRootFilesystem: false
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 2Gi
+  # Creating a user copies ~16 MB of default content (themes, backgrounds,
+  # presets) synchronously, which blocks the server for ~30 s on the shared
+  # volume. With a 5 s timeout the liveness probe (every 3 s, 3 failures)
+  # restarted the pod mid-copy; 30 s tolerates ~90 s.
+  healthcheck:
+    enabled: true
+    path: /login
+    startupSeconds: 180
+    timeoutSeconds: 30
+    periodSeconds: 10
