@@ -8,17 +8,19 @@ metadata:
       pages on a canvas, manage content, media, users and forms, and publish clean static
       HTML and CSS without editor code.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/icon.png
-    kubero.dev/template.installation: 'Open the app URL and sign in at /admin as admin@example.com
-      (INSTATIC_ADMIN_EMAIL) with the password generated in INSTATIC_ADMIN_PASSWORD (both
-      under Variables). The template completes the first-run setup for you on the first
-      start, so nobody else can claim the site; change the email in your profile afterwards.
-      Content lives in PostgreSQL; uploads, fonts, plugin packages and published files persist
-      on the shared volume at /app/uploads. INSTATIC_SECRET_KEY encrypts AI provider keys,
-      plugin secrets and MFA seeds and is generated once: do not change it. The AI assistant
-      is optional and uses your own provider key (Anthropic, OpenAI, OpenRouter, Ollama).
-      Instatic sends no email: add users and set their passwords under Users. It runs as
-      a single replica. Instatic is pre-1.0 (MIT), so read the release notes before you
-      move to a new image tag.'
+    kubero.dev/template.installation: 'Open the app URL and sign in at /admin as admin@example.com (INSTATIC_ADMIN_EMAIL)
+      with the password generated in INSTATIC_ADMIN_PASSWORD (both under Variables). The
+      template completes the first-run setup for you on the first start, so nobody else can
+      claim the site; change the email in your profile afterwards. It also publishes a
+      starter home page (the site name and an Open the editor link) so the app URL shows a
+      page right away; edit it on the canvas and publish to replace it. Content lives in
+      PostgreSQL; uploads, fonts, plugin packages and published files persist on the shared
+      volume at /app/uploads. INSTATIC_SECRET_KEY encrypts AI provider keys, plugin secrets
+      and MFA seeds and is generated once: do not change it. The AI assistant is optional
+      and uses your own provider key (Anthropic, OpenAI, OpenRouter, Ollama). Instatic sends
+      no email: add users and set their passwords under Users. It runs as a single replica.
+      Instatic is pre-1.0 (MIT), so read the release notes before you move to a new image
+      tag.'
     kubero.dev/template.links: '["https://github.com/CoreBunch/Instatic/tree/main/docs", "https://github.com/CoreBunch/Instatic/blob/main/docs/deployment/docker-image.md"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/screenshot-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/screenshot-content.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/screenshot-dashboard.png"]'
     kubero.dev/template.source: https://github.com/CoreBunch/Instatic
@@ -187,17 +189,71 @@ spec:
         if (!ready) { console.error("[stackblaze] server did not become healthy"); process.exit(0) }
         const status = await (await fetch(`${base}/admin/api/cms/setup/status`)).json()
         if (!status.needsSetup) { console.log("[stackblaze] first-run setup already complete"); process.exit(0) }
+        const email = process.env.INSTATIC_ADMIN_EMAIL, password = process.env.INSTATIC_ADMIN_PASSWORD
         const res = await fetch(`${base}/admin/api/cms/setup`, {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            siteName: process.env.INSTATIC_SITE_NAME,
-            email: process.env.INSTATIC_ADMIN_EMAIL,
-            password: process.env.INSTATIC_ADMIN_PASSWORD,
-            displayName: "Admin",
-          }),
+          body: JSON.stringify({ siteName: process.env.INSTATIC_SITE_NAME, email, password, displayName: "Admin" }),
         })
         console.log(`[stackblaze] first-run setup: HTTP ${res.status}`)
+        if (res.status !== 201) process.exit(0)
+        // Setup seeds an empty, unpublished Home page, so the site root answers
+        // {"error":"Not found"}. In this same first boot only (we just set the
+        // password, so sign-in succeeds and no failed attempt is ever recorded),
+        // fill Home with a starter page through the editor API and publish it.
+        // Skipped if anything is already published or Home was edited; the
+        // incremental save is seq-checked, so it never overwrites a newer edit.
+        let cookie = ""
+        const api = async (path, method = "GET", body) => {
+          const r = await fetch(base + path, {
+            method,
+            headers: { ...(body ? { "content-type": "application/json" } : {}), ...(cookie ? { cookie } : {}) },
+            body: body ? JSON.stringify(body) : undefined,
+          })
+          for (const c of r.headers.getSetCookie()) if (c.startsWith("instatic_admin_session=")) cookie = c.split(";")[0]
+          const json = await r.json().catch(() => null)
+          if (!r.ok) throw new Error(`${method} ${path}: HTTP ${r.status}`)
+          return json
+        }
+        try {
+          await api("/admin/api/cms/login", "POST", { email, password })
+          try {
+            const pub = await api("/admin/api/cms/publish/status")
+            const { site, seq } = await api("/admin/api/cms/site")
+            const { rows } = await api("/admin/api/cms/pages")
+            const home = rows.length === 1 && rows[0].slug === "index" ? rows[0] : null
+            const tree = home?.cells?.body
+            const root = tree?.nodes?.[tree.rootNodeId]
+            if (pub.hasPublishedVersion || !root || Object.keys(tree.nodes).length !== 1 || root.children.length) {
+              console.log("[stackblaze] starter page: site already has content, skipped")
+            } else {
+              const node = (moduleId, props) => ({
+                id: crypto.randomUUID(), moduleId, props: { htmlAttributes: {}, ...props },
+                breakpointOverrides: {}, children: [], classIds: [], parentId: root.id,
+              })
+              const kids = [
+                node("base.text", { tag: "h1", text: site.name || process.env.INSTATIC_SITE_NAME }),
+                node("base.text", { tag: "p", text: "Your Instatic site is running." }),
+                node("base.link", { href: "/admin", text: "Open the editor", target: "_self" }),
+              ]
+              const nodes = { [root.id]: { ...root, children: kids.map((k) => k.id) } }
+              for (const k of kids) nodes[k.id] = k
+              await api("/admin/api/cms/site-document", "PUT", {
+                mode: "incremental", site,
+                changedPages: [{ id: home.id, title: home.cells.title || "Home", slug: home.slug, nodes, rootNodeId: root.id }],
+                deletedPageIds: [], changedComponents: [], deletedComponentIds: [], changedLayouts: [], deletedLayoutIds: [],
+                baseSeqs: { [home.id]: home.seq ?? 0 }, shellBaseSeq: seq,
+              })
+              await api("/admin/api/cms/auth/step-up", "POST", { password })
+              await api("/admin/api/cms/publish", "POST", {})
+              console.log("[stackblaze] starter page: published Home")
+            }
+          } finally {
+            await api("/admin/api/cms/logout", "POST", {}).catch(() => {})
+          }
+        } catch (e) {
+          console.error(`[stackblaze] starter page not published: ${e.message}`)
+        }
       ' || true
       wait "$pid"
     run:
