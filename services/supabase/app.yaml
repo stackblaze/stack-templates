@@ -147,6 +147,16 @@ spec:
                 ALTER DEFAULT PRIVILEGES FOR ROLE "supabase" IN SCHEMA public GRANT ALL ON TABLES TO postgres, anon, authenticated, service_role;
                 ALTER DEFAULT PRIVILEGES FOR ROLE "supabase" IN SCHEMA public GRANT ALL ON FUNCTIONS TO postgres, anon, authenticated, service_role;
                 ALTER DEFAULT PRIVILEGES FOR ROLE "supabase" IN SCHEMA public GRANT ALL ON SEQUENCES TO postgres, anon, authenticated, service_role;
+                -- Objects the superuser creates (the platform's branch merge applies migrations as it)
+                -- are reachable through the API as well, as upstream's defaults for its postgres role.
+                ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA public GRANT ALL ON TABLES TO anon, authenticated, service_role, "supabase_admin";
+                ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA public GRANT ALL ON FUNCTIONS TO anon, authenticated, service_role, "supabase_admin";
+                ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA public GRANT ALL ON SEQUENCES TO anon, authenticated, service_role, "supabase_admin";
+                -- Migration history (Studio's Migrations page, branch merges): owned by the admin user,
+                -- readable and writable whoever records a migration.
+                CREATE SCHEMA IF NOT EXISTS supabase_migrations AUTHORIZATION "supabase_admin";
+                GRANT USAGE, CREATE ON SCHEMA supabase_migrations TO "supabase_admin";
+                ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA supabase_migrations GRANT ALL ON TABLES TO "supabase_admin";
                 GRANT ALL ON ALL TABLES IN SCHEMA public TO anon, authenticated, service_role;
                 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated, service_role;
                 GRANT ALL ON ALL FUNCTIONS IN SCHEMA public TO anon, authenticated, service_role;
