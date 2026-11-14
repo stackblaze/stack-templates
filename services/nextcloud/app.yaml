@@ -214,8 +214,11 @@ spec:
         if [ "${SMTP_PORT:-587}" = 465 ]; then export SMTP_SECURE=ssl; fi
       fi
 
-      # Template settings, read on every request (web, cron and occ).
-      cat > $V/config/stackblaze.config.php <<'EOF'
+      # Template settings, read on every request (web, cron and occ). Only the
+      # web pod writes config files (a worker writing the same files at the same
+      # time fails on the network volume); each file is swapped in atomically.
+      if [ "${PROC_TYPE:-web}" != worker ]; then
+      cat > $V/config/.stackblaze.config.php.tmp <<'EOF'
       <?php
       // StackBlaze template settings. Rewritten on every start.
       $CONFIG = array(
@@ -233,8 +236,12 @@ spec:
       EOF
       # The image's own config files (Valkey, APCu, mail, proxy, pretty URLs,
       # web updater off), refreshed from the image on every start.
-      for f in $N/config/*.config.php; do cp "$f" $V/config/; done
+      mv -f $V/config/.stackblaze.config.php.tmp $V/config/stackblaze.config.php
+      for f in $N/config/*.config.php; do
+        cp "$f" "$V/config/.$(basename "$f").tmp" && mv -f "$V/config/.$(basename "$f").tmp" "$V/config/$(basename "$f")"
+      done
       chown www-data:www-data $V/config/*.config.php
+      fi
 
       # Code from the image, state on the volume.
       rm -rf $N/config $N/custom_apps $N/data
