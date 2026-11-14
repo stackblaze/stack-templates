@@ -13298,11 +13298,11 @@
   },
   {
    "name": "Listmonk Email Marketing",
-   "description": "Send high-volume campaigns and manage subscriber lists with powerful segmentation and analytics.\nA performance-focused alternative to Mailchimp and Brevo.",
+   "description": "Self-hosted newsletter and mailing list manager: subscriber lists, campaigns, templates, analytics and a transactional mail API, backed by Postgres.",
    "source": "https://github.com/knadh/listmonk",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/icon.png",
    "website": "https://listmonk.app",
-   "installation": "",
+   "installation": "First start installs the database and creates the Super Admin, so the setup page is never open to visitors. Sign in at /admin with the username in LISTMONK_ADMIN_USER (admin) and the generated password in LISTMONK_ADMIN_PASSWORD (Variables). The Root URL (Settings > General) is set to the app URL on first start. Listmonk sends campaigns through an SMTP server you add under Settings > SMTP: use a provider that allows bulk or marketing mail on your own sending domain. The StackBlaze Email add-on is for transactional mail and is not wired into this template. Media uploads are stored on the uploads volume.",
    "architecture": [],
    "categories": [
     "email",
@@ -13310,23 +13310,26 @@
     "communication"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/dashboard.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/screenshot-dashboard.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/screenshot-campaigns.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/screenshot-editor.png"
    ],
    "links": [
-    "https://listmonk.app/docs/"
+    "https://listmonk.app/docs/",
+    "https://listmonk.app/docs/configuration/",
+    "https://listmonk.app/docs/apis/apis/"
    ],
    "addons": [
-    "Cluster",
-    "Smtp"
+    "Cluster"
    ],
-   "stars": 16000,
-   "forks": 0,
-   "watchers": 16000,
-   "issues": 0,
-   "last_updated": "2026-06-13T00:00:00Z",
-   "last_pushed": "2026-06-13T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 1000,
+   "stars": 24289,
+   "forks": 2792,
+   "watchers": 141,
+   "issues": 63,
+   "last_updated": "2026-11-14T00:33:47Z",
+   "last_pushed": "2026-11-12T02:15:42Z",
+   "created_at": "2019-06-26T05:08:39Z",
+   "size": 55411,
    "language": "Go",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/app.yaml",
