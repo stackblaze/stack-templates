@@ -1,0 +1,22 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/app/login",
+    "steps": [
+      { "waitForSelector": "input[name=email]", "timeout": 60000 },
+      { "fill": { "input[name=email]": "${MEDUSA_ADMIN_EMAIL}" } },
+      { "fill": { "input[name=password]": "${MEDUSA_ADMIN_PASSWORD}" } },
+      { "press": { "selector": "input[name=password]", "key": "Enter" } },
+      { "waitForSelector": "tbody tr", "timeout": 30000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "orders", "path": "/app/orders", "waitFor": "tbody tr", "waitMs": 2500 },
+    { "name": "order", "path": "/app/orders", "waitFor": "tbody tr", "waitMs": 1500,
+      "steps": [ { "click": "tbody tr >> nth=0" }, { "sleep": 3000 } ] },
+    { "name": "product", "path": "/app/products", "waitFor": "tbody tr", "waitMs": 1500,
+      "steps": [ { "click": "text=Medusa T-Shirt" }, { "sleep": 3000 } ] }
+  ]
+}

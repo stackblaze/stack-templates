@@ -5,20 +5,11 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: "Build custom shopping experiences with modular commerce APIs, product management, carts, and checkout.\nA developer-first alternative to Shopify Plus and commercetools."
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/62591822?s=200&v=4
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/icon.png
     kubero.dev/template.homepage: /app
-    kubero.dev/template.installation: 'Deploys the Medusa 2 backend and admin (at /app)
-      with PostgreSQL and Valkey add-ons. Open /app — the root URL has no storefront.
-      First boot runs migrations and creates the admin user from MEDUSA_ADMIN_EMAIL /
-      MEDUSA_ADMIN_PASSWORD (default admin@example.com / changeme — rotate immediately).
-      JWT_SECRET and COOKIE_SECRET are generated per deploy. After login, create a
-      publishable API key under Settings > API Key Management if you attach a Next.js
-      storefront (official starter: github.com/medusajs/dtc-starter apps/storefront)
-      and set STORE_CORS to that storefront URL. Product images persist on the uploads
-      volume.'
-    kubero.dev/template.links: '["https://docs.medusajs.com/learn/deployment/general",
-      "https://docs.medusajs.com/"]'
-    kubero.dev/template.screenshots: '["https://medusajs.com/images/og.jpg"]'
+    kubero.dev/template.installation: "Builds on deploy: StackBlaze publishes no Medusa image. Your project builds the Medusa 2.22.7 server from upstream's starter (medusajs/dtc-starter, pinned commit) with the Dockerfile in this template's folder (stackblaze/stack-templates, services/medusa/image), so the first deploy takes about 8 minutes (about 6 for the build). Changing a variable rebuilds the image too: about 6 minutes on a cold build node, about 1 minute warm; restarts and scaling reuse the built image. Deploys the Medusa 2 server with its admin dashboard (the app URL opens /app), the Store API, Postgres and Valkey. The first start runs the migrations, seeds upstream's starter store (a Europe region, a warehouse, shipping options, four sample products and a publishable API key) and creates the admin user before the app is reachable. Sign in with admin@example.com (MEDUSA_ADMIN_EMAIL) and the generated password in MEDUSA_ADMIN_PASSWORD (Variables). To use your own address, invite it under Settings > Users (copy the invite link), accept it, then delete the first user. There is no storefront in this template: build one from upstream's starter (github.com/medusajs/dtc-starter, apps/storefront) with the publishable key from Settings > Publishable API Keys, and add its URL to STORE_CORS and AUTH_CORS. Product images upload to the data volume and are served from /static. Medusa sends no email on its own: password resets and invites need a notification module in your own build. Licence: Medusa is MIT except its Enterprise materials (RBAC roles, SSO/OIDC), which ship inside Medusa's npm packages: your build fetches them from npm, and they stay inert without a Medusa licence key. The template runs without them."
+    kubero.dev/template.links: '["https://docs.medusajs.com/learn/deployment/general", "https://docs.medusajs.com/", "https://github.com/medusajs/dtc-starter"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/screenshot-orders.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/screenshot-order.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/medusa/screenshot-product.png"]'
     kubero.dev/template.source: https://github.com/medusajs/medusa
     kubero.dev/template.categories: '["e-commerce", "development", "work"]'
     kubero.dev/template.title: "Medusa Commerce"
@@ -27,7 +18,17 @@ metadata:
     manager: kubero
 spec:
   name: medusa
-  deploymentstrategy: docker
+  # Build on deploy (Railway-style): no published image. Each deploy clones
+  # this repo at the pinned commit and builds services/medusa/image (the
+  # Dockerfile: upstream's starter at a pinned commit, npm packages fetched
+  # by the deploying project's own build). `branch` is a commit SHA, so a
+  # push to this repo never rebuilds anyone's app.
+  deploymentstrategy: git
+  buildstrategy: dockerfile
+  gitrepo:
+    clone_url: https://github.com/stackblaze/stack-templates.git
+  branch: 75af11fffa1cb21a95f778ecb7a6f7d6c639e340
+  buildContext: services/medusa/image
   addons:
   - displayName: PostgreSQL (CloudNativePG)
     env: []
@@ -75,7 +76,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: medusa
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -84,7 +85,11 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: medusa
-          password: medusa
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Valkey: REDIS_URL is injected. Upstream's production guide replaces the
+  # in-memory development modules with Redis ones: admin sessions, the event
+  # bus (subscribers such as the product search index), the workflow engine
+  # (scheduled jobs, long-running workflows), the cache and locking.
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -114,42 +119,47 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
-  # Platform email (see README "Email contract"). Medusa notifications are
-  # module-based; SMTP_* is injected while Email is live for a future
-  # notification provider / admin mail settings.
-  - displayName: Email
-    icon: /img/addons/email.svg
-    id: kubero-smtp
-    kind: Smtp
-    env: []
-    resourceDefinitions: {}
+  cronjobs: []
   envVars:
   - name: NODE_ENV
     value: production
   - name: PORT
     value: '9000'
+  # No sslmode: Medusa then connects with TLS (rejectUnauthorized false) to a
+  # non-local host (load-module-database-config.ts).
   - name: DATABASE_URL
-    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  # One process serves the API and the admin and runs subscribers and
+  # scheduled jobs (upstream's "shared" worker mode).
   - name: MEDUSA_WORKER_MODE
     value: shared
   - name: DISABLE_MEDUSA_ADMIN
     value: 'false'
   - name: JWT_SECRET
-    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:48}}'
   - name: COOKIE_SECRET
-    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+    value: '{{STACKBLAZE_GEN_ALNUM:48}}'
+  # The app's own URL: public links of uploaded files (/static/…).
+  - name: MEDUSA_BACKEND_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # Add your storefront's URL to STORE_CORS and AUTH_CORS (comma-separated).
   - name: STORE_CORS
     value: '{{STACKBLAZE_APP_URL}}'
   - name: ADMIN_CORS
     value: '{{STACKBLAZE_APP_URL}}'
   - name: AUTH_CORS
     value: '{{STACKBLAZE_APP_URL}}'
-  - name: MEDUSA_BACKEND_URL
-    value: '{{STACKBLAZE_APP_URL}}'
+  # The first admin user, created by a one-time migration script on a new
+  # database (services/medusa/image). Changing these later changes nothing.
   - name: MEDUSA_ADMIN_EMAIL
     value: admin@example.com
   - name: MEDUSA_ADMIN_PASSWORD
-    value: changeme
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  - name: MEDUSA_DISABLE_TELEMETRY
+    value: 'true'
+  # Product images and other uploads (Medusa's local file provider, served at
+  # /static). Private files (product exports) land here too, as upstream's
+  # local provider has no private store.
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -158,37 +168,31 @@ spec:
     name: '{{STACKBLAZE_APP_NAME}}-uploads'
     size: 5Gi
     storageClass: shared
-  cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
   resources:
     requests:
-      cpu: 500m
-      memory: 1Gi
+      cpu: 250m
+      memory: 768Mi
     limits:
       cpu: '2'
-      memory: 3Gi
+      memory: 2Gi
   healthcheck:
     enabled: true
     path: /health
-    startupSeconds: 900
+    startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '9000'
     pullPolicy: IfNotPresent
-    # Referenced as ghcr.io on purpose: zone nodes mirror ghcr.io through
-    # the regional registry (containerd hosts.d -> registry.<region>/v2/ghcr,
-    # the zot in each services cluster, on-demand sync, ghcr.io fallback).
-    # Anonymous read on the LAN, no pull secret. Pinned tag, not :latest.
-    repository: ghcr.io/stackblaze/stack-templates/medusa
-    tag: '2.21.0'
+    # Set by the build (the project's own registry); nothing to pull before.
+    repository: ''
+    tag: ''
     run:
       securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
         readOnlyRootFilesystem: false
-  # Medusa 2 serves admin at /app. Without this, GET / is Express "Cannot GET /".
-  ingress:
-    annotations:
-      nginx.ingress.kubernetes.io/app-root: /app
