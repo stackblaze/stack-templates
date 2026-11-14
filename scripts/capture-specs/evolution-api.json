@@ -28,7 +28,7 @@
         { "click": ":text-is('sales-team') >> xpath=ancestor::div[.//button][1] >> button" },
         { "waitForURL": "**/dashboard", "timeout": 30000 },
         { "click": "role=button[name=/Get QR Code/]" },
-        { "waitForSelector": "[role=dialog] svg[viewBox] path", "timeout": 60000 },
+        { "waitForSelector": "[role=dialog] svg[height='256'] path", "timeout": 60000 },
         { "sleep": 1500 }
       ]
     },
