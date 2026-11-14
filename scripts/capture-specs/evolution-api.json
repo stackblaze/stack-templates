@@ -1,0 +1,51 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/manager/login",
+    "steps": [
+      { "waitForSelector": "input[type=password]", "timeout": 60000 },
+      { "sleep": 800 },
+      { "fill": { "input[type=password]": "${AUTHENTICATION_API_KEY}" } },
+      { "click": "button[type=submit]" },
+      { "waitForSelector": "text=/support-desk/", "timeout": 60000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    {
+      "name": "instances",
+      "path": "/manager/",
+      "waitFor": "text=/support-desk/",
+      "waitMs": 1500
+    },
+    {
+      "name": "qr",
+      "path": "/manager/",
+      "waitFor": "text=/sales-team/",
+      "waitMs": 1000,
+      "steps": [
+        { "click": ":text-is('sales-team') >> xpath=ancestor::div[.//button][1] >> button" },
+        { "waitForURL": "**/dashboard", "timeout": 30000 },
+        { "click": "role=button[name=/Get QR Code/]" },
+        { "waitForSelector": "[role=dialog] svg[viewBox] path", "timeout": 60000 },
+        { "sleep": 1500 }
+      ]
+    },
+    {
+      "name": "webhook",
+      "path": "/manager/",
+      "waitFor": "text=/support-desk/",
+      "waitMs": 1000,
+      "steps": [
+        { "click": ":text-is('support-desk') >> xpath=ancestor::div[.//button][1] >> button" },
+        { "waitForURL": "**/dashboard", "timeout": 30000 },
+        { "click": "text=Events" },
+        { "click": "text=Webhook" },
+        { "waitForSelector": "input[value*='hooks.example.com']", "timeout": 30000 },
+        { "sleep": 1500 }
+      ]
+    }
+  ],
+  "_notes": "Seed first: three instances (support-desk, order-updates, sales-team) with settings and a webhook (see the run log, prompts/runs/2026-11-14-evolution-api.md). The server URL field on the login page is prefilled with the page origin. The published stills were taken with a Playwright script that signs in through the manager's localStorage (apiUrl, token, version) and opens instances by clicking their card, which is what this spec does through the login form."
+}
