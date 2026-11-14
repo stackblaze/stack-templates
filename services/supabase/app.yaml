@@ -49,7 +49,8 @@ spec:
             kubero.dev/supabase-init: "true"
         spec:
           instances: 1
-          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          # CloudNativePG's PostgreSQL 16 plus wal2json for Realtime (postgres-image/).
+          imageName: ghcr.io/stackblaze/stack-templates/supabase-postgres:16.15-wal2json-28917df
           primaryUpdateStrategy: unsupervised
           postgresql:
             parameters:
@@ -86,6 +87,8 @@ spec:
                 DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'authenticated') THEN CREATE ROLE authenticated NOLOGIN NOINHERIT; END IF; END $do$;
                 DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'service_role') THEN CREATE ROLE service_role NOLOGIN NOINHERIT BYPASSRLS; END IF; END $do$;
                 DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_realtime_admin') THEN CREATE ROLE supabase_realtime_admin NOLOGIN NOINHERIT; END IF; END $do$;
+                -- Realtime's tenant migrations revoke from it (upstream's Studio role).
+                DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'dashboard_user') THEN CREATE ROLE dashboard_user NOLOGIN NOINHERIT; END IF; END $do$;
                 ALTER ROLE anon SET statement_timeout = '3s';
                 ALTER ROLE authenticated SET statement_timeout = '8s';
 
