@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: Plan projects, track issues and ship work through
       cycles, modules and pages. Open source project management with LDAP, OIDC and
       SAML sign-in, time tracking and workflows included.
-    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4f5f2b23abb891e030a3800ce263a27c1ed93170/services/plane/icon.png
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/af050105511720bddc3c0b909b1725cd93411ce5/services/plane/icon.png
     kubero.dev/template.installation: 'Open the URL of the plane-proxy service and
       sign in with the email in ADMIN_EMAIL and the password generated in
       ADMIN_PASSWORD (both under Variables on the api service). The template creates
@@ -23,7 +23,7 @@ metadata:
       Telemetry is off (ENABLE_TELEMETRY=0). Built from github.com/stackblaze/plane,
       Plane v1.4.3.'
     kubero.dev/template.links: '["https://developers.plane.so/"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/screenshot-board.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/screenshot-cycles.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/plane/screenshot-page.png"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/af050105511720bddc3c0b909b1725cd93411ce5/services/plane/screenshot-board.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/af050105511720bddc3c0b909b1725cd93411ce5/services/plane/screenshot-cycles.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/af050105511720bddc3c0b909b1725cd93411ce5/services/plane/screenshot-page.png"]'
     kubero.dev/template.source: https://github.com/stackblaze/plane
     kubero.dev/template.categories: '["productivity", "work", "collaboration"]'
     kubero.dev/template.title: Plane
