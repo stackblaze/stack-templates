@@ -1,19 +1,119 @@
 {
-  "viewport": { "width": 1920, "height": 1080 },
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
   "deviceScaleFactor": 2,
   "login": {
-    "path": "/signin/",
+    "path": "/signin",
     "steps": [
-      { "fill": { "input[type=email]": "${NOCODB_EMAIL}" } },
-      { "fill": { "input[type=password]": "${NOCODB_PASSWORD}" } },
-      { "click": "button:has-text(\"Sign In\"), button[type=submit]" },
-      { "waitForNavigation": true },
-      { "click": "text=Skip" }
+      {
+        "waitForSelector": "input[type=email]",
+        "timeout": 60000
+      },
+      {
+        "fill": {
+          "input[type=email]": "${NC_ADMIN_EMAIL}"
+        }
+      },
+      {
+        "fill": {
+          "input[type=password]": "${NC_ADMIN_PASSWORD}"
+        }
+      },
+      {
+        "click": "button:has-text(\"Sign in\")"
+      },
+      {
+        "sleep": 5000
+      }
     ],
-    "waitAfterMs": 2500
+    "waitAfterMs": 2000
   },
   "pages": [
-    { "name": "workspace", "path": "/", "waitMs": 2500 },
-    { "name": "customers", "path": "/", "waitMs": 2500 }
+    {
+      "name": "grid",
+      "path": "/",
+      "waitMs": 3000,
+      "steps": [
+        {
+          "click": "text=Product Launch"
+        },
+        {
+          "click": "text=Launch tasks"
+        },
+        {
+          "mouseMove": {
+            "x": 1900,
+            "y": 1060
+          }
+        },
+        {
+          "sleep": 4000
+        }
+      ]
+    },
+    {
+      "name": "kanban",
+      "path": "/",
+      "waitMs": 3000,
+      "steps": [
+        {
+          "click": "text=Product Launch"
+        },
+        {
+          "sleep": 2500
+        },
+        {
+          "click": "text=Launch tasks"
+        },
+        {
+          "sleep": 2500
+        },
+        {
+          "click": "text=Board"
+        },
+        {
+          "mouseMove": {
+            "x": 1900,
+            "y": 1060
+          }
+        },
+        {
+          "sleep": 4000
+        }
+      ]
+    },
+    {
+      "name": "form",
+      "path": "/",
+      "waitMs": 3000,
+      "steps": [
+        {
+          "click": "text=Product Launch"
+        },
+        {
+          "sleep": 2500
+        },
+        {
+          "click": "text=Launch tasks"
+        },
+        {
+          "sleep": 2500
+        },
+        {
+          "click": "text=Request a task"
+        },
+        {
+          "mouseMove": {
+            "x": 1900,
+            "y": 1060
+          }
+        },
+        {
+          "sleep": 4000
+        }
+      ]
+    }
   ]
 }

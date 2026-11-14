@@ -3,18 +3,33 @@ kind: KuberoApp
 metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: The Open Source Airtable Alternative. Turns any
-      MySQL, PostgreSQL, SQL Server, SQLite & MariaDB into a smart-spreadsheet.
-    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/icon.png
-    kubero.dev/template.installation: ''
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/nocodb/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/screenshot-customers.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c44450bb24e2439a4c573aeaf2ee793575f02054/services/nocodb/screenshot-pipeline.png"]'
+    kubero.dev/template.description: "Build databases as spreadsheets: tables with typed fields, grid, kanban, gallery, form and calendar views, and a REST API for every table.\nAn open source Airtable alternative on your own Postgres."
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/icon.png
+    kubero.dev/template.installation: 'Sign in with the email in NC_ADMIN_EMAIL (admin@example.com)
+      and the password generated in NC_ADMIN_PASSWORD (both under Variables). The template
+      creates this super admin before the app serves its first request, so nobody can claim
+      the instance through the first sign-up, and it switches on invite-only sign-up on the
+      first start (Account settings > Settings), so new people join only through your
+      invites. NocoDB applies NC_ADMIN_EMAIL and NC_ADMIN_PASSWORD on every start: change
+      them in Variables and redeploy, because a password changed in the app is reset on the
+      next restart. Attachments are stored on the app''s volume (/usr/app/data). Invites and
+      password resets are sent through the platform Email add-on. Do not change
+      NC_AUTH_JWT_SECRET after first use: it signs sessions and encrypts saved data source
+      credentials. NocoDB is under the Sustainable Use License: free for your own internal
+      business or personal use. Scripts, workflows and other paid NocoDB features stay locked
+      unless you activate your own NocoDB license.'
+    kubero.dev/template.links: '["https://nocodb.com/docs/self-hosting", "https://nocodb.com/docs/product-docs"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/screenshot-grid.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/screenshot-kanban.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/screenshot-form.png"]'
     kubero.dev/template.source: https://github.com/nocodb/nocodb
     kubero.dev/template.categories: '["data", "development", "work"]'
     kubero.dev/template.title: NocoDB
     kubero.dev/template.website: https://www.nocodb.com
+  labels:
+    manager: kubero
   name: nocodb
 spec:
+  name: nocodb
+  deploymentstrategy: docker
   addons:
   - displayName: PostgreSQL (CloudNativePG)
     env: []
@@ -62,7 +77,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: nocodb
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -71,41 +86,151 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: nocodb
-          password: nocodb
-  cronjobs: []
-  deploymentstrategy: docker
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Platform email (README "Email contract"). NocoDB sends invites, password
+  # resets and notifications through its SMTP plugin; on every start
+  # NcPluginMgrv2 activates that plugin from NC_SMTP_* when NC_SMTP_FROM,
+  # NC_SMTP_HOST and NC_SMTP_PORT are all set. Port 587 is STARTTLS, so
+  # NC_SMTP_SECURE (implicit TLS) stays false.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: NC_SMTP_HOST
+      value: '$(SMTP_HOST)'
+    - name: NC_SMTP_PORT
+      value: '$(SMTP_PORT)'
+    - name: NC_SMTP_USERNAME
+      value: '$(SMTP_USER)'
+    - name: NC_SMTP_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: NC_SMTP_FROM
+      value: '$(SMTP_FROM)'
+    - name: NC_SMTP_SECURE
+      value: 'false'
+    - name: NC_SMTP_REJECT_UNAUTHORIZED
+      value: 'true'
+    resourceDefinitions: {}
   envVars:
-  - name: NODE_OPTIONS
-    value: --max-old-space-size=1536
-  # NocoDB expects a connection URL in NC_DB (not "pg" + split host vars).
-  # Format: pg://host:port?u=user&p=password&d=database
+  # Metadata and the tables you create both live in this database. Format:
+  # pg://host:port?u=user&p=password&d=database (generated passwords are
+  # alphanumeric, so they are safe in the URL).
   - name: NC_DB
     value: 'pg://$(PGHOST):$(PGPORT)?u=$(PGUSER)&p=$(PGPASSWORD)&d=$(PGDATABASE)'
-  - name: PORT
-    value: '8080'
-  extraVolumes: []
-  image:
-    containerPort: '8080'
-    repository: docker.io/nocodb/nocodb
-    run:
-      securityContext:
-        readOnlyRootFilesystem: false
-    tag: latest
+  # Signs sessions and encrypts saved data source credentials
+  # (utils/nc-config/NcConfig.ts, upgrader 0225002_ncDatasourceDecrypt).
+  - name: NC_AUTH_JWT_SECRET
+    value: '{{STACKBLAZE_GEN_ALNUM:48}}'
+  # Super admin created before the first request (helpers/initAdminFromEnv.ts),
+  # so the first visitor cannot claim the instance through sign-up. NocoDB
+  # re-applies both on every start.
+  - name: NC_ADMIN_EMAIL
+    value: admin@example.com
+  - name: NC_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Public URL used in invite, reset and attachment links (utils/envs.ts).
+  - name: NC_PUBLIC_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  - name: NC_SITE_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # Attachments are served only through signed, expiring URLs (upstream's
+  # docker.env examples set this too).
+  - name: NC_SECURE_ATTACHMENTS
+    value: 'true'
+  # Upstream's compose examples all set this.
+  - name: NC_DISABLE_MUX
+    value: 'true'
+  # Refuse data source SSL settings that point at files on the server
+  # (helpers/validateDbConnectionHost.ts): no file probing from the UI.
+  - name: NC_DISABLE_DB_SSL_FILE_PATHS
+    value: 'true'
+  - name: NC_DISABLE_TELE
+    value: 'true'
+  - name: NC_DISABLE_ERR_REPORTS
+    value: 'true'
+  - name: NODE_OPTIONS
+    value: --max-old-space-size=1536
+  extraVolumes:
+  # NC_TOOL_DIR (image default /usr/app/data): local attachment storage
+  # (nc/uploads) and thumbnails. Upstream's compose mounts the same path.
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /usr/app/data
+    name: '{{STACKBLAZE_APP_NAME}}-data'
+    size: 5Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
   resources:
     requests:
-      cpu: 500m
-      memory: 1Gi
+      cpu: 250m
+      memory: 512Mi
     limits:
       cpu: '1'
       memory: 2Gi
   healthcheck:
     enabled: true
-    path: /
+    path: /api/v1/health
     startupSeconds: 300
     timeoutSeconds: 5
     periodSeconds: 10
-  name: nocodb
-  web:
-    replicaCount: 1
-  worker:
-    replicaCount: 0
+  image:
+    containerPort: '8080'
+    pullPolicy: IfNotPresent
+    repository: docker.io/nocodb/nocodb
+    tag: 2026.10.1
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      # On a fresh deploy Postgres (and the operator-created app user) can come
+      # up after the app. Wait for a real login, not just an open port.
+      node -e '
+        const { Client } = require("pg");
+        (async () => {
+          for (let i = 1; ; i++) {
+            const c = new Client({ host: process.env.PGHOST, port: +process.env.PGPORT, user: process.env.PGUSER, password: process.env.PGPASSWORD, database: process.env.PGDATABASE });
+            try { await c.connect(); await c.query("select 1"); await c.end(); return; }
+            catch (e) {
+              await c.end().catch(() => {});
+              if (i >= 150) { console.error("database not reachable:", e.message); process.exit(1); }
+              console.log("waiting for the database");
+              await new Promise(r => setTimeout(r, 2000));
+            }
+          }
+        })();
+      '
+      # Close open sign-up once, on the first start: after the super admin,
+      # NocoDB lets anyone register (as an org viewer) unless invite-only
+      # sign-up is on, and no variable sets it. The marker on the volume keeps
+      # a later choice by the admin (Account settings > Settings).
+      marker=/usr/app/data/.stackblaze-invite-only
+      if [ ! -f "$marker" ]; then
+        (
+          for i in $(seq 1 150); do
+            curl -fsS -o /dev/null http://127.0.0.1:8080/api/v1/health 2>/dev/null && break
+            sleep 2
+          done
+          body=$(jq -n --arg e "$NC_ADMIN_EMAIL" --arg p "$NC_ADMIN_PASSWORD" '{email:$e,password:$p}')
+          token=$(curl -fsS -H 'Content-Type: application/json' -d "$body" http://127.0.0.1:8080/api/v1/auth/user/signin | jq -r '.token // empty')
+          if [ -n "$token" ] &&
+             curl -fsS -o /dev/null -H "xc-auth: $token" -H 'Content-Type: application/json' \
+               -d '{"invite_only_signup":true}' http://127.0.0.1:8080/api/v1/app-settings &&
+             [ "$(curl -fsS -H "xc-auth: $token" http://127.0.0.1:8080/api/v1/app-settings | jq -r .invite_only_signup)" = true ]; then
+            touch "$marker"
+            echo 'StackBlaze: invite-only sign-up switched on.'
+          else
+            echo 'StackBlaze: could not switch on invite-only sign-up; retrying on the next start.' >&2
+          fi
+        ) &
+      fi
+      exec /usr/src/appEntry/start.sh
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
