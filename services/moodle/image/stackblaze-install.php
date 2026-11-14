@@ -123,6 +123,9 @@ if ($state === 'none') {
         say('install finished but the site or the admin login is missing');
         exit(1);
     }
+    // Let people pick light or dark mode (Boost colour modes, off upstream).
+    // A first-install default only: admins can switch it off again.
+    run('php ' . escapeshellarg("$dir/admin/cli/cfg.php") . ' --component=theme_boost --name=enablecolourmodes --set=1 > /dev/null');
     say("Moodle installed; sign in as '$user' with MOODLE_ADMIN_PASSWORD");
 } else {
     // A newer image: run the upgrade before serving pages.

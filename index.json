@@ -9714,31 +9714,30 @@
    "source": "https://github.com/moodle/moodle",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodle/icon.png",
    "website": "https://moodle.org/",
-   "installation": "Moodle requires MySQL/MariaDB (the maintained container images target MariaDB, not PostgreSQL), so this template ships the mariadb add-on. The image is elestio/moodle, an actively-rebuilt Verified Publisher image tracking current Moodle releases (Bitnami's moodle image moved behind a paywall in 2025 and is no longer freely pullable). On first boot the container runs the Moodle installer against the database using the MOODLE_DATABASE_* env vars and provisions the admin account from MOODLE_USERNAME/MOODLE_PASSWORD/MOODLE_EMAIL; MOODLE_HOST and MOODLE_REVERSEPROXY are set so generated links resolve to the public HTTPS URL behind the ingress. After deploy, log in with the seeded admin and ROTATE: the MOODLE_PASSWORD env value, the MariaDB add-on password, and configure real SMTP under Site administration > Server > Email. Two persistent volumes are mounted: /bitnami/moodle holds the Moodle code plus config.php, and /bitnami/moodledata holds uploaded course files, caches and sessions. For production raise the app pod size (Moodle/PHP needs >=1Gi) and PHP memory_limit, and schedule the Moodle cron (admin/cli/cron.php) every minute. Optional companions: deploy the memcached add-on and point Moodle's MUC application cache at it for performance, and add an external Solr/Elasticsearch only if you enable global search (neither is required for a base install).",
+   "installation": "Moodle is installed from the command line on the first start (a few minutes), so its web installer is never open to the first visitor. Sign in at /login as the user in MOODLE_ADMIN_USER (admin) with the password generated in MOODLE_ADMIN_PASSWORD (both under Variables), then set your own email under your profile and the site name under Site administration. Changing those variables after the first start has no effect: manage users in Moodle. The site address is MOODLE_URL (the app URL); change it when you add a custom domain. Course files and uploads live on the volume at /var/www/moodledata; the database is PostgreSQL 17. A worker runs Moodle's cron every minute (forum and notification email, completion, cleanup). Email (password resets, enrolment and forum notifications) goes through the platform Email add-on and is always sent from its address. For safety, plugins cannot be installed or updated from Site administration: the Moodle code ships in the template image, and new Moodle versions arrive as a new image, upgraded automatically on start.",
    "architecture": [],
    "categories": [
-    "productivity",
+    "school",
     "collaboration",
-    "work"
+    "productivity"
    ],
-   "screenshots": [
-    "https://moodle.org/theme/moodleorg/pix/moodle_logo_tm.png"
-   ],
+   "screenshots": [],
    "links": [
-    "https://docs.moodle.org/en/Installation",
-    "https://hub.docker.com/r/elestio/moodle"
+    "https://docs.moodle.org/503/en/Main_page",
+    "https://github.com/stackblaze/stack-templates/tree/main/services/moodle/image"
    ],
    "addons": [
-    "MariaDB"
+    "Cluster",
+    "Smtp"
    ],
-   "stars": 6200,
-   "forks": 620,
-   "watchers": 6200,
-   "issues": 0,
-   "last_updated": "2026-06-13T00:00:00Z",
-   "last_pushed": "2026-06-13T00:00:00Z",
-   "created_at": "2020-01-01T00:00:00Z",
-   "size": 0,
+   "stars": 7613,
+   "forks": 7714,
+   "watchers": 432,
+   "issues": 1,
+   "last_updated": "2026-11-12T03:19:57Z",
+   "last_pushed": "2026-11-12T03:19:57Z",
+   "created_at": "2009-12-16T23:01:23Z",
+   "size": 986322,
    "language": "PHP",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodle/app.yaml",
