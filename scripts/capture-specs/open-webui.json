@@ -2,20 +2,32 @@
   "viewport": { "width": 1920, "height": 1080 },
   "deviceScaleFactor": 2,
   "login": {
-    "path": "/auth?redirect=%2F",
+    "path": "/auth",
     "steps": [
-      { "fill": { "#email": "${OPEN_WEBUI_EMAIL}" } },
-      { "fill": { "#password": "${OPEN_WEBUI_PASSWORD}" } },
+      { "evaluate": "localStorage.version = '0.13.3'; localStorage.sidebar = 'true'" },
+      { "waitForSelector": "#email", "timeout": 60000 },
+      { "fill": { "#email": "${WEBUI_ADMIN_EMAIL}" } },
+      { "fill": { "#password": "${WEBUI_ADMIN_PASSWORD}" } },
       { "evaluate": "document.querySelector('button[type=\"submit\"]')?.click()" },
-      { "waitForNavigation": true },
-      { "click": "button:has-text(\"Okay, Let's Go!\")" }
+      { "waitForSelector": "#chat-input", "timeout": 60000 }
     ],
     "waitAfterMs": 2000
   },
   "pages": [
-    { "name": "home", "path": "/", "waitMs": 2500 },
-    { "name": "models", "path": "/workspace/models", "waitMs": 2500 },
-    { "name": "admin", "path": "/admin/users/overview", "waitMs": 2500 },
-    { "name": "connections", "path": "/admin/settings/connections", "waitMs": 2500 }
+    {
+      "name": "chat",
+      "path": "/",
+      "waitFor": "#chat-input",
+      "waitMs": 1500,
+      "steps": [{ "click": "text=/Welcome/" }, { "sleep": 3000 }]
+    },
+    {
+      "name": "rag",
+      "path": "/",
+      "waitFor": "#chat-input",
+      "waitMs": 1500,
+      "steps": [{ "click": "text=/Priority 1/" }, { "sleep": 3000 }]
+    },
+    { "name": "admin", "path": "/admin/users/overview", "waitMs": 3000 }
   ]
 }
