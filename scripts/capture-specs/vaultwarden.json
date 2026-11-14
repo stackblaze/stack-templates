@@ -1,29 +1,112 @@
 {
-  "viewport": { "width": 1920, "height": 1080 },
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
   "deviceScaleFactor": 2,
   "login": {
     "path": "/#/login",
     "steps": [
-      { "fill": { "input[type=email]": "${VAULTWARDEN_EMAIL}" } },
-      { "click": "button:has-text(\"Continue\")" },
-      { "waitFor": "input[type=password]" },
-      { "fill": { "input[type=password]": "${VAULTWARDEN_PASSWORD}" } },
-      { "click": "button:has-text(\"Log in with master password\")" },
-      { "waitForNavigation": true },
       {
-        "evaluate": "(() => { const b = [...document.querySelectorAll('button')].find(el => /add it later/i.test(el.textContent||'')); b?.click(); })()"
+        "waitForSelector": "input[type=email]",
+        "timeout": 60000
       },
-      { "waitFor": "vault-add-extension-later-dialog" },
-      { "click": "vault-add-extension-later-dialog a:has-text(\"Skip to web app\")" },
-      { "waitForNavigation": true },
-      { "press": "Escape" }
+      {
+        "fill": {
+          "input[type=email]": "${VAULTWARDEN_EMAIL}"
+        }
+      },
+      {
+        "click": "button:has-text(\"Continue\")"
+      },
+      {
+        "waitForSelector": "input[type=password]",
+        "timeout": 30000
+      },
+      {
+        "fill": {
+          "input[type=password]": "${VAULTWARDEN_PASSWORD}"
+        }
+      },
+      {
+        "click": "role=button[name=/^Log in$/]"
+      },
+      {
+        "waitForSelector": "text=Add it later",
+        "timeout": 30000
+      },
+      {
+        "click": "text=Add it later"
+      },
+      {
+        "waitForSelector": "text=Skip to web app",
+        "timeout": 15000
+      },
+      {
+        "click": "text=Skip to web app"
+      },
+      {
+        "sleep": 3000
+      },
+      {
+        "optionalClick": "role=button[name=/^\\s*Skip\\s*$/]",
+        "timeout": 4000
+      },
+      {
+        "optionalClick": "[data-testid=bit-banner-close-btn]"
+      },
+      {
+        "optionalClick": "bit-callout button[aria-label=Close]"
+      }
     ],
     "waitAfterMs": 2000
   },
   "pages": [
-    { "name": "vault", "path": "/#/vault", "waitMs": 2500 },
-    { "name": "generator", "path": "/#/tools/generator", "waitMs": 2500 },
-    { "name": "send", "path": "/#/send", "waitMs": 2000 },
-    { "name": "settings", "path": "/#/settings", "waitMs": 2000 }
+    {
+      "name": "vault",
+      "path": "/#/vault",
+      "waitMs": 3500,
+      "steps": [
+        {
+          "sleep": 1500
+        },
+        {
+          "optionalClick": "role=button[name=/^\\s*Skip\\s*$/]",
+          "timeout": 4000
+        },
+        {
+          "optionalClick": "[data-testid=bit-banner-close-btn]"
+        },
+        {
+          "optionalClick": "bit-callout button[aria-label=Close]"
+        },
+        {
+          "sleep": 1500
+        }
+      ]
+    },
+    {
+      "name": "generator",
+      "path": "/#/tools/generator",
+      "waitMs": 2500,
+      "steps": [
+        {
+          "sleep": 1500
+        },
+        {
+          "optionalClick": "role=button[name=/^\\s*Skip\\s*$/]",
+          "timeout": 4000
+        },
+        {
+          "optionalClick": "[data-testid=bit-banner-close-btn]"
+        },
+        {
+          "optionalClick": "bit-callout button[aria-label=Close]"
+        },
+        {
+          "sleep": 1500
+        }
+      ]
+    }
   ]
 }
