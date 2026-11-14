@@ -18,6 +18,13 @@ metadata:
     manager: kubero
 spec:
   name: supabase
+  # Restores triggered from Supabase Studio (its app token) replace the live
+  # database, like the Supabase platform: the group stops, pg_restore runs
+  # over it, the group starts again. Everyone else (dashboard, API) keeps the
+  # platform's restore-into-a-new-database. Read from the catalog only
+  # (kubero-server #2356).
+  backups:
+    restore: in-place
   deploymentstrategy: docker
   ingress:
     annotations:
