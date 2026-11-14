@@ -4,12 +4,12 @@ metadata:
   name: supabase
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Build a Postgres backend with auth, storage, and a dashboard from one project.\nAn open-source alternative to Firebase."
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/54469796?s=200
+    kubero.dev/template.description: "The open-source Postgres development platform: database, Auth, instant APIs, Realtime, Storage and Edge Functions, managed from Studio."
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/icon.png
     kubero.dev/template.installation: |
-      Deploys Supabase as a multi-service group (Kong gateway, Studio, Auth, PostgREST, Realtime, Storage, Meta, Edge Functions, imgproxy). PostgreSQL and object storage are platform add-ons: on shared zones they are a communal logical database and a communal-s3 bucket. Kong is the public URL and proxies Studio at /. Data API reads (GET/HEAD on /rest/v1) are served from the Postgres replicas by a second PostgREST; set KONG_REST_READ_REPLICAS=off on the gateway to keep every read on the primary. Sign in to Studio with DASHBOARD_USERNAME (supabase) and DASHBOARD_PASSWORD (generated per deploy; the gateway and Studio cards carry the same value). The anon and service_role keys are the upstream demo JWTs — rotate JWT_SECRET and those keys before production use. A zone should run one Supabase against communal Postgres; the Auth and Storage roles are cluster-wide.
+      Deploys Supabase as one group of services: the Kong gateway (the public URL), Studio, Auth, PostgREST (plus a read-replica twin), Realtime, Storage, postgres-meta, Edge Functions and imgproxy, with its own PostgreSQL, a RustFS bucket and the Email add-on. Open the gateway URL and sign in to Studio as DASHBOARD_USERNAME (supabase) with DASHBOARD_PASSWORD, generated per deploy (on the gateway and Studio cards). Every secret is generated per deploy: JWT_SECRET (on every card), the database passwords, the sb_publishable_ / sb_secret_ API keys and the Realtime and pg-meta keys. The legacy anon and service_role keys are signed from JWT_SECRET when the services start; Studio shows them under Project Settings > API Keys. Keep the secret and service_role keys server-side: they bypass Row Level Security. Edge Functions run in a Kata micro-VM. Data API reads (GET/HEAD on /rest/v1) are served from the Postgres replicas; set KONG_REST_READ_REPLICAS=off on the gateway to keep every read on the primary. New users confirm their email through the Email add-on (GOTRUE_MAILER_AUTOCONFIRM=false on the Auth card).
     kubero.dev/template.links: '["https://supabase.com/docs/guides/self-hosting/docker"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/screenshot-table.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/screenshot-auth.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/supabase/screenshot-storage.png"]'
     kubero.dev/template.source: https://github.com/supabase/supabase
     kubero.dev/template.categories: '["development", "data"]'
     kubero.dev/template.title: Supabase
@@ -49,8 +49,13 @@ spec:
             kubero.dev/supabase-init: "true"
         spec:
           instances: 1
-          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          # CloudNativePG's PostgreSQL 16 plus wal2json for Realtime (postgres-image/).
+          imageName: ghcr.io/stackblaze/stack-templates/supabase-postgres:16.15-wal2json-28917df
           primaryUpdateStrategy: unsupervised
+          postgresql:
+            parameters:
+              # Realtime's Postgres Changes decode the WAL with wal2json.
+              output_plugin_libraries: wal2json
           storage:
             storageClass: smart
             size: 8Gi
@@ -69,31 +74,36 @@ spec:
                 name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               # Dedicated zones. The same per-tenant login users the communal init
               # creates (kubero-server supabase-communal-init.ts, generated for
-              # owner/password "supabase"), run in the supabase database. CNPG
+              # owner "supabase" and this deployment's generated password), run in the supabase database. CNPG
               # executes this over a plain connection, so no psql meta-commands.
+              # Named dollar quotes only ($do$, $fn$): the platform turns "$$" into "$"
+              # in add-on definitions (reported 2026-11-14).
               postInitApplicationSQL:
               - |
                 -- Shared, passwordless labels. Server-wide, like every Postgres role, and safe
                 -- to share: what they may touch is granted per database.
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'postgres') THEN CREATE ROLE postgres NOLOGIN; END IF; END $$;
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'anon') THEN CREATE ROLE anon NOLOGIN NOINHERIT; END IF; END $$;
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'authenticated') THEN CREATE ROLE authenticated NOLOGIN NOINHERIT; END IF; END $$;
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'service_role') THEN CREATE ROLE service_role NOLOGIN NOINHERIT BYPASSRLS; END IF; END $$;
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_realtime_admin') THEN CREATE ROLE supabase_realtime_admin NOLOGIN NOINHERIT; END IF; END $$;
+                DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'postgres') THEN CREATE ROLE postgres NOLOGIN; END IF; END $do$;
+                DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'anon') THEN CREATE ROLE anon NOLOGIN NOINHERIT; END IF; END $do$;
+                DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'authenticated') THEN CREATE ROLE authenticated NOLOGIN NOINHERIT; END IF; END $do$;
+                DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'service_role') THEN CREATE ROLE service_role NOLOGIN NOINHERIT BYPASSRLS; END IF; END $do$;
+                DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_realtime_admin') THEN CREATE ROLE supabase_realtime_admin NOLOGIN NOINHERIT; END IF; END $do$;
+                -- Realtime's tenant migrations revoke from it (upstream's Studio role).
+                DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'dashboard_user') THEN CREATE ROLE dashboard_user NOLOGIN NOINHERIT; END IF; END $do$;
                 ALTER ROLE anon SET statement_timeout = '3s';
                 ALTER ROLE authenticated SET statement_timeout = '8s';
 
                 -- This tenant's login users, all on the tenant Secret password.
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_admin') THEN CREATE ROLE "supabase_admin" LOGIN; END IF; END $$;
-                ALTER ROLE "supabase_admin" WITH LOGIN INHERIT BYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD $sbpw$supabase$sbpw$;
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_auth') THEN CREATE ROLE "supabase_auth" LOGIN; END IF; END $$;
-                ALTER ROLE "supabase_auth" WITH LOGIN NOINHERIT NOBYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD $sbpw$supabase$sbpw$;
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_storage') THEN CREATE ROLE "supabase_storage" LOGIN; END IF; END $$;
-                ALTER ROLE "supabase_storage" WITH LOGIN NOINHERIT NOBYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD $sbpw$supabase$sbpw$;
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_authenticator') THEN CREATE ROLE "supabase_authenticator" LOGIN; END IF; END $$;
-                ALTER ROLE "supabase_authenticator" WITH LOGIN NOINHERIT NOBYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD $sbpw$supabase$sbpw$;
-                DO $$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_readonly') THEN CREATE ROLE "supabase_readonly" LOGIN; END IF; END $$;
-                ALTER ROLE "supabase_readonly" WITH LOGIN INHERIT BYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD $sbpw$supabase$sbpw$;
+                DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_admin') THEN CREATE ROLE "supabase_admin" LOGIN; END IF; END $do$;
+                -- REPLICATION: Realtime's Postgres Changes read the WAL through a logical replication slot.
+                ALTER ROLE "supabase_admin" WITH LOGIN INHERIT BYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE REPLICATION PASSWORD '{{STACKBLAZE_GEN_SHARED:SB_DB_PASSWORD:ALNUM:32}}';
+                DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_auth') THEN CREATE ROLE "supabase_auth" LOGIN; END IF; END $do$;
+                ALTER ROLE "supabase_auth" WITH LOGIN NOINHERIT NOBYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD '{{STACKBLAZE_GEN_SHARED:SB_DB_PASSWORD:ALNUM:32}}';
+                DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_storage') THEN CREATE ROLE "supabase_storage" LOGIN; END IF; END $do$;
+                ALTER ROLE "supabase_storage" WITH LOGIN NOINHERIT NOBYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD '{{STACKBLAZE_GEN_SHARED:SB_DB_PASSWORD:ALNUM:32}}';
+                DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_authenticator') THEN CREATE ROLE "supabase_authenticator" LOGIN; END IF; END $do$;
+                ALTER ROLE "supabase_authenticator" WITH LOGIN NOINHERIT NOBYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD '{{STACKBLAZE_GEN_SHARED:SB_DB_PASSWORD:ALNUM:32}}';
+                DO $do$ BEGIN IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'supabase_readonly') THEN CREATE ROLE "supabase_readonly" LOGIN; END IF; END $do$;
+                ALTER ROLE "supabase_readonly" WITH LOGIN INHERIT BYPASSRLS NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD '{{STACKBLAZE_GEN_SHARED:SB_DB_PASSWORD:ALNUM:32}}';
                 GRANT "supabase" TO "supabase_admin";
                 -- Studio's read-only mode (POSTGRES_USER_READ_ONLY) sees what admin sees;
                 -- its sessions start read-only. Studio connects as this user on request.
@@ -115,11 +125,11 @@ spec:
                 GRANT CONNECT ON DATABASE "supabase" TO "supabase_authenticator", "supabase_readonly";
                 -- Deployments from before per-tenant users still connect as the old
                 -- server-wide roles; keep them working until they are redeployed.
-                DO $$ DECLARE r text; BEGIN
+                DO $do$ DECLARE r text; BEGIN
                   FOREACH r IN ARRAY ARRAY['supabase_admin', 'supabase_auth_admin', 'supabase_storage_admin', 'authenticator'] LOOP
                     IF EXISTS (SELECT FROM pg_roles WHERE rolname = r) THEN EXECUTE format('GRANT CONNECT ON DATABASE %I TO %I', 'supabase', r); END IF;
                   END LOOP;
-                END $$;
+                END $do$;
 
                 -- Extensions + public schema
                 CREATE SCHEMA IF NOT EXISTS extensions;
@@ -143,41 +153,41 @@ spec:
 
                 -- Auth (GoTrue connects as supabase_auth)
                 CREATE SCHEMA IF NOT EXISTS auth;
-                DO $$ BEGIN IF (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = 'auth') = current_user THEN EXECUTE format('ALTER SCHEMA auth OWNER TO %I', 'supabase_auth'); END IF; END $$;
+                DO $do$ BEGIN IF (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = 'auth') = current_user THEN EXECUTE format('ALTER SCHEMA auth OWNER TO %I', 'supabase_auth'); END IF; END $do$;
                 GRANT USAGE ON SCHEMA auth TO anon, authenticated, service_role;
                 -- Same bodies GoTrue's own migrations install (they read request.jwt.claims,
                 -- which PostgREST sets). CREATE OR REPLACE keeps an existing owner; a function
                 -- we just created belongs to the superuser and is handed to the auth user, so
                 -- GoTrue can replace it later.
-                CREATE OR REPLACE FUNCTION auth.uid() RETURNS uuid AS $$
+                CREATE OR REPLACE FUNCTION auth.uid() RETURNS uuid AS $fn$
                   SELECT coalesce(
                     nullif(current_setting('request.jwt.claim.sub', true), ''),
                     (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')
                   )::uuid;
-                $$ LANGUAGE sql STABLE;
-                CREATE OR REPLACE FUNCTION auth.role() RETURNS text AS $$
+                $fn$ LANGUAGE sql STABLE;
+                CREATE OR REPLACE FUNCTION auth.role() RETURNS text AS $fn$
                   SELECT coalesce(
                     nullif(current_setting('request.jwt.claim.role', true), ''),
                     (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'role')
                   )::text;
-                $$ LANGUAGE sql STABLE;
-                CREATE OR REPLACE FUNCTION auth.email() RETURNS text AS $$
+                $fn$ LANGUAGE sql STABLE;
+                CREATE OR REPLACE FUNCTION auth.email() RETURNS text AS $fn$
                   SELECT coalesce(
                     nullif(current_setting('request.jwt.claim.email', true), ''),
                     (nullif(current_setting('request.jwt.claims', true), '')::jsonb ->> 'email')
                   )::text;
-                $$ LANGUAGE sql STABLE;
-                DO $$ DECLARE f text; BEGIN
+                $fn$ LANGUAGE sql STABLE;
+                DO $do$ DECLARE f text; BEGIN
                   FOREACH f IN ARRAY ARRAY['auth.uid()', 'auth.role()', 'auth.email()'] LOOP
                     IF (SELECT pg_get_userbyid(proowner) FROM pg_proc WHERE oid = f::regprocedure) = current_user THEN
                       EXECUTE format('ALTER FUNCTION %s OWNER TO %I', f, 'supabase_auth');
                     END IF;
                   END LOOP;
-                END $$;
+                END $do$;
 
                 -- Storage (storage-api connects as supabase_storage)
                 CREATE SCHEMA IF NOT EXISTS storage;
-                DO $$ BEGIN IF (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = 'storage') = current_user THEN EXECUTE format('ALTER SCHEMA storage OWNER TO %I', 'supabase_storage'); END IF; END $$;
+                DO $do$ BEGIN IF (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = 'storage') = current_user THEN EXECUTE format('ALTER SCHEMA storage OWNER TO %I', 'supabase_storage'); END IF; END $do$;
                 GRANT USAGE ON SCHEMA storage TO postgres, anon, authenticated, service_role;
                 GRANT ALL ON SCHEMA storage TO "supabase_storage" WITH GRANT OPTION;
                 ALTER DEFAULT PRIVILEGES FOR ROLE "supabase_storage" IN SCHEMA storage GRANT ALL ON TABLES TO postgres, anon, authenticated, service_role;
@@ -186,21 +196,21 @@ spec:
 
                 -- Realtime (connects as supabase_admin; its tenant migrations expect these)
                 CREATE SCHEMA IF NOT EXISTS _realtime;
-                DO $$ BEGIN IF (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = '_realtime') = current_user THEN EXECUTE format('ALTER SCHEMA _realtime OWNER TO %I', 'supabase_admin'); END IF; END $$;
+                DO $do$ BEGIN IF (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = '_realtime') = current_user THEN EXECUTE format('ALTER SCHEMA _realtime OWNER TO %I', 'supabase_admin'); END IF; END $do$;
                 CREATE SCHEMA IF NOT EXISTS realtime;
-                DO $$ BEGIN IF (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = 'realtime') = current_user THEN EXECUTE format('ALTER SCHEMA realtime OWNER TO %I', 'supabase_admin'); END IF; END $$;
+                DO $do$ BEGIN IF (SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname = 'realtime') = current_user THEN EXECUTE format('ALTER SCHEMA realtime OWNER TO %I', 'supabase_admin'); END IF; END $do$;
                 CREATE SCHEMA IF NOT EXISTS graphql_public;
                 GRANT USAGE ON SCHEMA graphql_public TO anon, authenticated, service_role;
                 GRANT ALL ON SCHEMA graphql_public TO "supabase_admin";
-                DO $$ BEGIN
+                DO $do$ BEGIN
                   IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime') THEN
                     CREATE PUBLICATION supabase_realtime;
                   END IF;
-                END $$;
+                END $do$;
                 ALTER PUBLICATION supabase_realtime OWNER TO "supabase_admin";
                 -- PostgREST schema reload on DDL (upstream pgrst_ddl_watch / pgrst_drop_watch).
                 -- Without these a table made in Studio is a 404 on the Data API until a reload.
-                CREATE OR REPLACE FUNCTION extensions.pgrst_ddl_watch() RETURNS event_trigger LANGUAGE plpgsql AS $$
+                CREATE OR REPLACE FUNCTION extensions.pgrst_ddl_watch() RETURNS event_trigger LANGUAGE plpgsql AS $fn$
                 DECLARE cmd record;
                 BEGIN
                   FOR cmd IN SELECT * FROM pg_event_trigger_ddl_commands() LOOP
@@ -212,8 +222,8 @@ spec:
                       NOTIFY pgrst, 'reload schema';
                     END IF;
                   END LOOP;
-                END $$;
-                CREATE OR REPLACE FUNCTION extensions.pgrst_drop_watch() RETURNS event_trigger LANGUAGE plpgsql AS $$
+                END $fn$;
+                CREATE OR REPLACE FUNCTION extensions.pgrst_drop_watch() RETURNS event_trigger LANGUAGE plpgsql AS $fn$
                 DECLARE obj record;
                 BEGIN
                   FOR obj IN SELECT * FROM pg_event_trigger_dropped_objects() LOOP
@@ -222,7 +232,7 @@ spec:
                       NOTIFY pgrst, 'reload schema';
                     END IF;
                   END LOOP;
-                END $$;
+                END $fn$;
                 DROP EVENT TRIGGER IF EXISTS pgrst_ddl_watch;
                 CREATE EVENT TRIGGER pgrst_ddl_watch ON ddl_command_end EXECUTE PROCEDURE extensions.pgrst_ddl_watch();
                 DROP EVENT TRIGGER IF EXISTS pgrst_drop_watch;
@@ -238,7 +248,9 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: supabase
+          # The platform hands every service this password as PGPASSWORD, and the
+          # per-tenant users above log in with it (one generated value).
+          password: '{{STACKBLAZE_GEN_SHARED:SB_DB_PASSWORD:ALNUM:32}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -247,7 +259,8 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: supabase
-          password: supabase
+          # The same generated value as the superuser and the per-tenant users.
+          password: '{{STACKBLAZE_GEN_SHARED:SB_DB_PASSWORD:ALNUM:32}}'
   - displayName: Email
     icon: /img/addons/email.svg
     id: kubero-smtp
@@ -290,8 +303,8 @@ spec:
           name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
         type: Opaque
         stringData:
-          accesskey: supabase
-          secretkey: '{{STACKBLAZE_GEN_HEX:32}}'
+          accesskey: '{{STACKBLAZE_GEN_ALNUM:20}}'
+          secretkey: '{{STACKBLAZE_GEN_HEX:40}}'
   envVars:
   - name: KONG_DATABASE
     value: 'off'
@@ -301,12 +314,18 @@ spec:
     value: LAST,A,CNAME
   - name: KONG_DNS_NOT_FOUND_TTL
     value: '1'
+  - name: KONG_DNS_VALID_TTL
+    value: '5'
   - name: KONG_PLUGINS
-    value: request-transformer,cors,key-auth,acl,basic-auth,request-termination,ip-restriction,pre-function,post-function
+    value: request-transformer,cors,key-auth,acl,basic-auth,request-termination,ip-restriction,post-function
   - name: KONG_ROUTER_FLAVOR
     value: expressions
   - name: KONG_NGINX_WORKER_PROCESSES
     value: '2'
+  - name: KONG_NGINX_PROXY_PROXY_BUFFER_SIZE
+    value: 160k
+  - name: KONG_NGINX_PROXY_PROXY_BUFFERS
+    value: 64 160k
   - name: KONG_PROXY_LISTEN
     value: 0.0.0.0:8000
   - name: KONG_LOG_LEVEL
@@ -324,21 +343,21 @@ spec:
       sb_json escape=json '{"client":"$remote_addr","country":"$http_cf_ipcountry","cdn_country":"$http_cdn_requestcountrycode","method":"$request_method","uri":"$request_uri","protocol":"$server_protocol","status":$status,"bytes_out":$body_bytes_sent,"bytes_in":$request_length,"request_time":$request_time,"host":"$host","referer":"$http_referer","agent":"$http_user_agent","cache_status":"$upstream_http_cf_cache_status","error_code":"$upstream_http_x_sb_error_code"}'
   - name: KONG_PROXY_ACCESS_LOG
     value: /dev/stdout sb_json
-  - name: SUPABASE_ANON_KEY
-    value: &anonKey eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE
-  - name: SUPABASE_SERVICE_KEY
-    value: &serviceKey eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJzZXJ2aWNlX3JvbGUiLAogICAgImlzcyI6ICJzdXBhYmFzZS1kZW1vIiwKICAgICJpYXQiOiAxNjQxNzY5MjAwLAogICAgImV4cCI6IDE3OTk1MzU2MDAKfQ.DaYlNEoUrrEn2Ig7tqibS-PHK5vgusbcbo7X36XVt4Q
-  # New-style API keys (sb_publishable_/sb_secret_), one pair per deployment,
-  # shared by name with the functions and Studio cards. Kong accepts them and
-  # forwards the legacy JWT of the matching role to the services behind it.
+  # This deployment's JWT signing secret, generated at deploy and shared by
+  # every Supabase service (one value per deployment). The legacy anon and
+  # service_role keys are HS256 JWTs signed with it when each service starts;
+  # they are never stored as variables. Studio shows them under Project
+  # Settings > API Keys.
+  - name: JWT_SECRET
+    value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
+  # API keys (sb_publishable_ / sb_secret_), one pair per deployment, shared
+  # by name with the Studio and functions cards. The publishable key is safe
+  # in a browser (RLS applies); the secret key bypasses RLS: keep it server-side.
   - name: SUPABASE_PUBLISHABLE_KEY
     value: 'sb_publishable_{{STACKBLAZE_GEN_ALNUM:32}}'
   - name: SUPABASE_SECRET_KEY
     value: 'sb_secret_{{STACKBLAZE_GEN_ALNUM:40}}'
-  - name: ANON_KEY_ASYMMETRIC
-    value: *anonKey
-  - name: SERVICE_ROLE_KEY_ASYMMETRIC
-    value: *serviceKey
+  # Studio sign-in (on the Studio card too: one generated value per name).
   - name: DASHBOARD_USERNAME
     value: supabase
   - name: DASHBOARD_PASSWORD
@@ -347,6 +366,9 @@ spec:
   # Postgres replicas; 'off' sends them to the primary like writes.
   - name: KONG_REST_READ_REPLICAS
     value: 'on'
+  # How the gateway finds this group's services (supabase-<role>-<suffix>-kuberoapp).
+  - name: SB_NAME_SUFFIX
+    value: '{{STACKBLAZE_NAME_SUFFIX}}'
   extraVolumes: []
   cronjobs: []
   web:
@@ -366,7 +388,9 @@ spec:
     containerPort: '8000'
     pullPolicy: IfNotPresent
     repository: docker.io/kong/kong
-    tag: '3.9.1'
+    tag: '3.9.3'
+    # kong.yml and kong-entrypoint.sh next to this file are the same text,
+    # for reading and diffing.
     command:
     - /bin/bash
     - -c
@@ -380,15 +404,14 @@ spec:
       ### Consumers / Users
       ###
       consumers:
-        - username: DASHBOARD
         - username: anon
           keyauth_credentials:
-            - key: ${SUPABASE_ANON_KEY}
-            - key: ${SUPABASE_PUBLISHABLE_KEY}
+            - key: $SUPABASE_ANON_KEY
+            - key: $SUPABASE_PUBLISHABLE_KEY
         - username: service_role
           keyauth_credentials:
-            - key: ${SUPABASE_SERVICE_KEY}
-            - key: ${SUPABASE_SECRET_KEY}
+            - key: $SUPABASE_SERVICE_KEY
+            - key: $SUPABASE_SECRET_KEY
 
       ###
       ### Access Control List
@@ -398,14 +421,6 @@ spec:
           group: anon
         - consumer: service_role
           group: admin
-
-      ###
-      ### Dashboard credentials
-      ###
-      basicauth_credentials:
-        - consumer: DASHBOARD
-          username: '${DASHBOARD_USERNAME}'
-          password: '${DASHBOARD_PASSWORD}'
 
       ###
       ### API Routes
@@ -452,6 +467,26 @@ spec:
                 - /auth/v1/.well-known/jwks.json
           plugins:
             - name: cors
+        - name: auth-v1-open-well-known-oauth
+          _comment: 'Auth: /auth/v1/.well-known/oauth-authorization-server -> http://auth:9999/.well-known/oauth-authorization-server'
+          url: http://auth:9999/.well-known/oauth-authorization-server
+          routes:
+            - name: auth-v1-open-well-known-oauth
+              strip_path: true
+              paths:
+                - /auth/v1/.well-known/oauth-authorization-server
+          plugins:
+            - name: cors
+        - name: auth-v1-open-well-known-openid
+          _comment: 'Auth: /auth/v1/.well-known/openid-configuration -> http://auth:9999/.well-known/openid-configuration'
+          url: http://auth:9999/.well-known/openid-configuration
+          routes:
+            - name: auth-v1-open-well-known-openid
+              strip_path: true
+              paths:
+                - /auth/v1/.well-known/openid-configuration
+          plugins:
+            - name: cors
 
         - name: auth-v1-open-sso-acs
           url: "http://auth:9999/sso/saml/acs"
@@ -491,10 +526,10 @@ spec:
               config:
                 add:
                   headers:
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
                 replace:
                   headers:
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
             - name: acl
               config:
                 hide_groups_header: true
@@ -519,19 +554,19 @@ spec:
               config:
                 add:
                   headers:
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
                 replace:
                   headers:
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
             - name: acl
               config:
                 hide_groups_header: true
                 allow:
                   - admin
 
-        ## PostgREST reads: GET/HEAD on /rest/v1/* go to the replica-backed instance.
-        ## Writes and RPC POSTs stay on rest-v1 (primary). KONG_REST_READ_REPLICAS=off
-        ## points this at the primary PostgREST instead (see kong-entrypoint.sh).
+        ## PostgREST reads (StackBlaze): GET/HEAD on /rest/v1/* go to the instance on the
+        ## Postgres replicas. Writes and RPC POSTs stay on rest-v1 (primary).
+        ## KONG_REST_READ_REPLICAS=off points this at the primary instance instead.
         - name: rest-v1-ro
           _comment: 'PostgREST reads: GET/HEAD /rest/v1/* -> http://rest-ro:3000/*'
           url: http://rest-ro:3000/
@@ -552,10 +587,10 @@ spec:
               config:
                 add:
                   headers:
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
                 replace:
                   headers:
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
             - name: acl
               config:
                 hide_groups_header: true
@@ -581,10 +616,10 @@ spec:
               config:
                 add:
                   headers:
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
                 replace:
                   headers:
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
             - name: acl
               config:
                 hide_groups_header: true
@@ -611,10 +646,10 @@ spec:
                 add:
                   headers:
                     - "Content-Profile: graphql_public"
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
                 replace:
                   headers:
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
             - name: acl
               config:
                 hide_groups_header: true
@@ -641,10 +676,10 @@ spec:
               config:
                 add:
                   headers:
-                    - "x-api-key:${LUA_RT_WS_EXPR}"
+                    - "x-api-key:$LUA_RT_WS_EXPR"
                 replace:
                   querystring:
-                    - "apikey:${LUA_RT_WS_EXPR}"
+                    - "apikey:$LUA_RT_WS_EXPR"
             - name: acl
               config:
                 hide_groups_header: true
@@ -702,10 +737,10 @@ spec:
               config:
                 add:
                   headers:
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
                 replace:
                   headers:
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
             - name: acl
               config:
                 hide_groups_header: true
@@ -736,10 +771,10 @@ spec:
               config:
                 add:
                   headers:
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
                 replace:
                   headers:
-                    - "Authorization: ${LUA_AUTH_EXPR}"
+                    - "Authorization: $LUA_AUTH_EXPR"
             - name: post-function
               config:
                 access:
@@ -750,27 +785,61 @@ spec:
                     end
 
         ## Edge Functions routes
+        ##
+        ## Functions header handling: opaque sb_ keys are translated to the pre-signed
+        ## internal asymmetric JWT and injected as a raw `sb-api-key` header (no
+        ## `Bearer` prefix), while `Authorization` is left untouched so user-session
+        ## JWTs and legacy bearers flow through to the runtime.
+        ##
+        ## No `key-auth`: Functions is a passthrough that does NOT validate keys. Kong
+        ## cannot reject an invalid key while still letting unauthenticated requests
+        ## through (key-auth's `anonymous` fallback accepts missing AND invalid keys
+        ## alike), so unknown/invalid keys simply pass to the runtime, which handles
+        ## verify_jwt itself.
+        ##
+        ## The request-transformer strips any client-supplied `sb-api-key` (anti-spoof)
+        ## and re-adds the translated value; on no match the Lua expression yields nil
+        ## (an empty header) which the post-function then removes.
+        ##
+        ## No `cors`: functions handle CORS themselves, as on the platform. Preflights
+        ## reach the function and its responses pass through unchanged.
         - name: functions-v1
           _comment: 'Edge Functions: /functions/v1/* -> http://functions:9000/*'
           url: http://functions:9000/
-          read_timeout: 150000
+          # Limit inactivity between reads, leaving 10s for the runtime's 150s idle timeout.
+          read_timeout: 160000
           routes:
             - name: functions-v1-all
               strip_path: true
               paths:
                 - /functions/v1/
           plugins:
-            - name: cors
+            - name: request-transformer
+              config:
+                remove:
+                  headers:
+                    - "sb-api-key"
+                add:
+                  headers:
+                    - "sb-api-key:$LUA_FUNCTIONS_EXPR"
+            - name: post-function
+              config:
+                access:
+                  - |
+                    local v = kong.request.get_header("sb-api-key")
+                    if v == nil or v == "" or v:find("^%s*$") then
+                      kong.service.request.clear_header("sb-api-key")
+                    end
 
         ## OAuth 2.0 Authorization Server Metadata (RFC 8414)
         - name: well-known-oauth
-          _comment: 'Auth: /.well-known/oauth-authorization-server -> http://auth:9999/.well-known/oauth-authorization-server'
+          _comment: 'Auth: /.well-known/oauth-authorization-server/auth/v1 -> http://auth:9999/.well-known/oauth-authorization-server'
           url: http://auth:9999/.well-known/oauth-authorization-server
           routes:
             - name: well-known-oauth
               strip_path: true
               paths:
-                - /.well-known/oauth-authorization-server
+                - /.well-known/oauth-authorization-server/auth/v1
           plugins:
             - name: cors
 
@@ -871,51 +940,91 @@ spec:
                 - /
           plugins:
             - name: cors
-            # Sign-in is Studio's own page (STUDIO_SELF_HOSTED_LOGIN on the Studio
-            # card); the gateway passes / through. API prefixes are separate routes
-            # and stay on apikey auth.
+            # No basic-auth (StackBlaze): Studio's own sign-in page
+            # (STUDIO_SELF_HOSTED_LOGIN) protects / and Studio's API routes.
       ENDKONG
       cat > /tmp/kong-entrypoint.sh << 'ENDENTRY'
       #!/bin/bash
-      # Render the declarative Kong config, then start the gateway.
-      # Placeholders in kong.yml are ${NAME}. Empty key lines (unset publishable
-      # keys) are dropped so Kong does not reject the file.
+      # Supabase API gateway (Kong) entrypoint for StackBlaze. Upstream's
+      # docker/volumes/api/kong-entrypoint.sh (supabase/supabase master 33c8ab1)
+      # plus two StackBlaze steps: the legacy anon / service_role keys are signed
+      # here from this deployment's JWT_SECRET (they are never stored as variables),
+      # and the compose service names are rewritten to this group's Kubero Services.
+      # This copy is for reading and diffing; app.yaml embeds the same text.
       set -euo pipefail
 
+      # --- Legacy API keys: HS256 JWTs signed with JWT_SECRET ---------------------
+      # Every Supabase service of this deployment derives the same two keys from the
+      # same secret, with the same fixed claims (Studio, Storage and the functions
+      # router do it in their own start commands).
+      b64url() { base64 -w0 | tr '+/' '-_' | tr -d '='; }
+      hmac_sha256() {
+        # stdin: data; $1: key. Kong's image has no openssl CLI everywhere, so fall
+        # back to OpenResty's lua-resty-openssl, which Kong itself ships.
+        if command -v openssl > /dev/null 2>&1; then
+          openssl dgst -sha256 -hmac "$1" -binary
+        else
+          { printf '%s\n' "$1"; cat; } | resty -e '
+            local key = io.read("*l")
+            local data = io.read("*a")
+            local hmac = assert(require("resty.openssl.hmac").new(key, "sha256"))
+            io.write(assert(hmac:final(data)))'
+        fi
+      }
+      sb_jwt() {
+        local h p s
+        h=$(printf '%s' '{"alg":"HS256","typ":"JWT"}' | b64url)
+        p=$(printf '{"role":"%s","iss":"supabase","iat":1763078400,"exp":2078438400}' "$1" | b64url)
+        s=$(printf '%s' "$h.$p" | hmac_sha256 "$JWT_SECRET" | b64url)
+        printf '%s.%s.%s' "$h" "$p" "$s"
+      }
+      if [ "${#JWT_SECRET}" -lt 32 ]; then
+        echo "JWT_SECRET must be at least 32 characters" >&2
+        exit 1
+      fi
+      SUPABASE_ANON_KEY=$(sb_jwt anon)
+      SUPABASE_SERVICE_KEY=$(sb_jwt service_role)
+      # The internal JWTs the opaque sb_ keys are translated to (upstream: the
+      # asymmetric keys; here the same HS256 keys).
+      ANON_KEY_ASYMMETRIC=$SUPABASE_ANON_KEY
+      SERVICE_ROLE_KEY_ASYMMETRIC=$SUPABASE_SERVICE_KEY
+      export SUPABASE_ANON_KEY SUPABASE_SERVICE_KEY ANON_KEY_ASYMMETRIC SERVICE_ROLE_KEY_ASYMMETRIC
+
+      # --- Upstream: Lua expressions for request-transformer ----------------------
       if [ -n "${SUPABASE_SECRET_KEY:-}" ] && [ -n "${SUPABASE_PUBLISHABLE_KEY:-}" ]; then
-        export LUA_AUTH_EXPR="\$((headers.authorization ~= nil and headers.authorization:sub(1, 10) ~= 'Bearer sb_' and headers.authorization) or (headers.apikey == '${SUPABASE_SECRET_KEY}' and 'Bearer ${SERVICE_ROLE_KEY_ASYMMETRIC}') or (headers.apikey == '${SUPABASE_PUBLISHABLE_KEY}' and 'Bearer ${ANON_KEY_ASYMMETRIC}') or headers.apikey)"
-        export LUA_RT_WS_EXPR="\$((query_params.apikey == '${SUPABASE_SECRET_KEY}' and '${SERVICE_ROLE_KEY_ASYMMETRIC}') or (query_params.apikey == '${SUPABASE_PUBLISHABLE_KEY}' and '${ANON_KEY_ASYMMETRIC}') or query_params.apikey)"
+        export LUA_AUTH_EXPR="\$((headers.authorization ~= nil and headers.authorization:sub(1, 10) ~= 'Bearer sb_' and headers.authorization) or (headers.apikey == '$SUPABASE_SECRET_KEY' and 'Bearer $SERVICE_ROLE_KEY_ASYMMETRIC') or (headers.apikey == '$SUPABASE_PUBLISHABLE_KEY' and 'Bearer $ANON_KEY_ASYMMETRIC') or headers.apikey)"
+        export LUA_RT_WS_EXPR="\$((query_params.apikey == '$SUPABASE_SECRET_KEY' and '$SERVICE_ROLE_KEY_ASYMMETRIC') or (query_params.apikey == '$SUPABASE_PUBLISHABLE_KEY' and '$ANON_KEY_ASYMMETRIC') or query_params.apikey)"
+        export LUA_FUNCTIONS_EXPR="\$((headers.apikey == '$SUPABASE_SECRET_KEY' and '$SERVICE_ROLE_KEY_ASYMMETRIC') or (headers.apikey == '$SUPABASE_PUBLISHABLE_KEY' and '$ANON_KEY_ASYMMETRIC') or (headers.authorization == 'Bearer $SUPABASE_SECRET_KEY' and '$SERVICE_ROLE_KEY_ASYMMETRIC') or (headers.authorization == 'Bearer $SUPABASE_PUBLISHABLE_KEY' and '$ANON_KEY_ASYMMETRIC') or nil)"
       else
         export LUA_AUTH_EXPR="\$((headers.authorization ~= nil and headers.authorization:sub(1, 10) ~= 'Bearer sb_' and headers.authorization) or headers.apikey)"
         export LUA_RT_WS_EXPR="\$(query_params.apikey)"
+        export LUA_FUNCTIONS_EXPR="\$(nil)"
       fi
 
-      sed \
-        -e "s|\${SUPABASE_ANON_KEY}|${SUPABASE_ANON_KEY}|" \
-        -e "s|\${SUPABASE_SERVICE_KEY}|${SUPABASE_SERVICE_KEY}|" \
-        -e "s|\${SUPABASE_PUBLISHABLE_KEY}|${SUPABASE_PUBLISHABLE_KEY:-}|" \
-        -e "s|\${SUPABASE_SECRET_KEY}|${SUPABASE_SECRET_KEY:-}|" \
-        -e "s|\${ANON_KEY_ASYMMETRIC}|${ANON_KEY_ASYMMETRIC:-}|" \
-        -e "s|\${SERVICE_ROLE_KEY_ASYMMETRIC}|${SERVICE_ROLE_KEY_ASYMMETRIC:-}|" \
-        -e "s|\${LUA_AUTH_EXPR}|${LUA_AUTH_EXPR}|" \
-        -e "s|\${LUA_RT_WS_EXPR}|${LUA_RT_WS_EXPR}|" \
-        -e "s|\${DASHBOARD_USERNAME}|${DASHBOARD_USERNAME}|" \
-        -e "s|\${DASHBOARD_PASSWORD}|${DASHBOARD_PASSWORD}|" \
-        /usr/local/kong/template.yml \
-        > /usr/local/kong/kong.yml
+      # --- Upstream: substitute $NAME in the declarative config -------------------
+      awk '{
+        result = ""
+        rest = $0
+        while (match(rest, /\$[A-Za-z_][A-Za-z_0-9]*/)) {
+          varname = substr(rest, RSTART + 1, RLENGTH - 1)
+          if (varname in ENVIRON) {
+            result = result substr(rest, 1, RSTART - 1) ENVIRON[varname]
+          } else {
+            result = result substr(rest, 1, RSTART + RLENGTH - 1)
+          }
+          rest = substr(rest, RSTART + RLENGTH)
+        }
+        print result rest
+      }' /usr/local/kong/template.yml > "$KONG_DECLARATIVE_CONFIG"
+      sed -i '/^[[:space:]]*- key:[[:space:]]*$/d' "$KONG_DECLARATIVE_CONFIG"
 
-      sed -i '/^[[:space:]]*- key:[[:space:]]*$/d' /usr/local/kong/kong.yml
-
-      # Catalog companions are Kubero Services named
-      # supabase-<role>-<suffix>-kuberoapp (port 80 → the container port).
-      # This pod is supabase-api-<suffix>-kuberoapp-web-…. Short compose names
-      # (storage:5000, studio:3000) are not created with the apps, and Kong
-      # caches the miss.
-      self="${HOSTNAME%%-kuberoapp-*}"
-      suffix="${self#supabase-api-}"
+      # --- StackBlaze: dial this group's Kubero Services --------------------------
+      # Catalog companions are Kubero Services named supabase-<role>-<suffix>-kuberoapp
+      # (port 80 → the container port), reachable by their install names.
+      # SB_NAME_SUFFIX: the group's suffix (set on this card at deploy);
+      # <hint>-<suffix>-kuberoapp is each service's alias by its install name.
+      suffix="${SB_NAME_SUFFIX:?SB_NAME_SUFFIX is not set}"
       sb_svc() { printf 'supabase-%s-%s-kuberoapp' "$1" "$suffix"; }
-      # GET/HEAD on the Data API read from the replica-backed PostgREST unless the
-      # deployment opts out (then they go to the primary instance like everything else).
       if [ "${KONG_REST_READ_REPLICAS:-on}" = "off" ]; then rest_ro=$(sb_svc rest); else rest_ro=$(sb_svc rest-ro); fi
       sed -i \
         -e "s|http://auth:9999|http://$(sb_svc auth)|g" \
@@ -926,7 +1035,7 @@ spec:
         -e "s|http://functions:9000|http://$(sb_svc functions)|g" \
         -e "s|http://meta:8080|http://$(sb_svc meta)|g" \
         -e "s|http://studio:3000|http://$(sb_svc studio)|g" \
-        /usr/local/kong/kong.yml
+        "$KONG_DECLARATIVE_CONFIG"
 
       exec /entrypoint.sh kong docker-start
       ENDENTRY
@@ -941,20 +1050,31 @@ spec:
     exposeInternet: false
     usePrimaryAddons: true
     image:
-      # stackblaze/supabase fork: self-hosted sign-in page and Edge Function
-      # deploy/delete from the UI (upstream gates both behind IS_PLATFORM).
+      # stackblaze/supabase fork (github.com/stackblaze/supabase): Studio's own
+      # sign-in page, Edge Function deploy/delete from the UI, and the screens
+      # backed by the hosting platform (backups, branching, GitHub, merge
+      # requests, members, Auth settings, function secrets, service versions).
+      # sha-29b6bc5: test tag of stackblaze/supabase#31 (fork synced with
+      # upstream, sign-in redirect fix); re-pin to its master build once merged.
       repository: ghcr.io/stackblaze/supabase-studio
-      tag: sha-5d490df
+      tag: sha-29b6bc5
       containerPort: '3000'
-      # Studio 500s on the Edge Functions page unless its management folders
-      # exist; the image does not ship them.
       command:
       - /bin/sh
       - -c
       - |
-        # No-op on the mounted volume; keeps the page working where the
-        # volume is not attached.
+        set -eu
+        # Studio 500s on the Edge Functions page unless its management folders
+        # exist; a no-op on the mounted volume.
         mkdir -p /app/edge-functions /tmp/snippets
+        # The legacy anon / service_role keys: HS256 JWTs signed from
+        # JWT_SECRET with the same fixed claims as the gateway.
+        sb_jwt() {
+          node -e 'const c=require("crypto"),b=x=>Buffer.from(x).toString("base64url"),h=b(`{"alg":"HS256","typ":"JWT"}`),p=b(`{"role":"${process.argv[1]}","iss":"supabase","iat":1763078400,"exp":2078438400}`);process.stdout.write(`${h}.${p}.${c.createHmac("sha256",process.env.JWT_SECRET).update(`${h}.${p}`).digest("base64url")}`)' "$1"
+        }
+        SUPABASE_ANON_KEY=$(sb_jwt anon)
+        SUPABASE_SERVICE_KEY=$(sb_jwt service_role)
+        export SUPABASE_ANON_KEY SUPABASE_SERVICE_KEY
         exec docker-entrypoint.sh node apps/studio/server.js
     # Function code lives on one volume: Studio owns the claim and lists it,
     # the functions service mounts the same claim and serves it.
@@ -968,6 +1088,10 @@ spec:
       accessModes:
       - ReadWriteMany
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: HOSTNAME
       value: '::'
     - name: STUDIO_PORT
@@ -992,16 +1116,21 @@ spec:
       value: '$(SUPABASE_DB_ADMIN_USER)'
     - name: POSTGRES_USER_READ_ONLY
       value: '$(SUPABASE_DB_READONLY_USER)'
-    - name: SUPABASE_ANON_KEY
-      value: *anonKey
-    - name: SUPABASE_SERVICE_KEY
-      value: *serviceKey
+    # Encrypts the connection strings Studio hands pg-meta (same value on meta).
+    - name: PG_META_CRYPTO_KEY
+      value: '{{STACKBLAZE_GEN_SHARED:SB_PG_META_CRYPTO_KEY:ALNUM:32}}'
+    - name: PGRST_DB_SCHEMAS
+      value: public,storage,graphql_public
+    - name: PGRST_DB_MAX_ROWS
+      value: '1000'
+    - name: PGRST_DB_EXTRA_SEARCH_PATH
+      value: public
+    - name: AUTH_JWT_SECRET
+      value: '$(JWT_SECRET)'
     - name: SUPABASE_PUBLISHABLE_KEY
       value: 'sb_publishable_{{STACKBLAZE_GEN_ALNUM:32}}'
     - name: SUPABASE_SECRET_KEY
       value: 'sb_secret_{{STACKBLAZE_GEN_ALNUM:40}}'
-    - name: AUTH_JWT_SECRET
-      value: your-super-secret-jwt-token-with-at-least-32-characters-long
     - name: DEFAULT_ORGANIZATION_NAME
       value: Default Organization
     - name: DEFAULT_PROJECT_NAME
@@ -1018,13 +1147,14 @@ spec:
       value: supabase
     - name: DASHBOARD_PASSWORD
       value: '{{STACKBLAZE_GEN_ALNUM:24}}'
-    # Database > Backups in Studio shows the platform's backups of this
-    # database. The platform mints an app-scoped token at deploy (it may only
-    # call this environment's backup routes) and fills in where the app lives.
+    # The screens backed by the hosting platform. The platform mints an
+    # app-scoped token at deploy: it may only call this environment's backup
+    # routes and this deployment's own group (branches, GitHub connection,
+    # members, settings, function secrets), never the account.
     - name: KUBERO_API_URL
       value: '{{STACKBLAZE_API_URL}}'
     - name: KUBERO_APP_TOKEN
-      value: '{{STACKBLAZE_APP_TOKEN:backups,branches}}'
+      value: '{{STACKBLAZE_APP_TOKEN:backups,branches,project}}'
     - name: KUBERO_PIPELINE
       value: '{{STACKBLAZE_PIPELINE}}'
     - name: KUBERO_PHASE
@@ -1040,6 +1170,8 @@ spec:
       value: '{{STACKBLAZE_LOGFLARE_TOKEN}}'
     - name: ENABLED_FEATURES_LOGS_ALL
       value: '{{STACKBLAZE_LOGFLARE_ENABLED}}'
+    - name: NEXT_TELEMETRY_DISABLED
+      value: '1'
     healthcheck:
       enabled: true
       path: /
@@ -1050,23 +1182,29 @@ spec:
     usePrimaryAddons: true
     image:
       repository: docker.io/supabase/gotrue
-      tag: v2.186.0
+      tag: v2.197.0
       containerPort: '9999'
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: GOTRUE_API_HOST
       value: 0.0.0.0
     - name: GOTRUE_API_PORT
       value: '9999'
+    # The public URL (the dashboard sets it once the gateway has a host).
     - name: API_EXTERNAL_URL
       value: http://supabase-api-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: GOTRUE_SITE_URL
       value: http://supabase-api-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
+    # Extra redirect URLs your apps may send users back to (comma separated).
     - name: GOTRUE_URI_ALLOW_LIST
-      value: '*'
+      value: ''
     - name: GOTRUE_DISABLE_SIGNUP
       value: 'false'
     - name: GOTRUE_JWT_SECRET
-      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+      value: '$(JWT_SECRET)'
     - name: GOTRUE_JWT_EXP
       value: '3600'
     - name: GOTRUE_JWT_DEFAULT_GROUP_NAME
@@ -1075,22 +1213,19 @@ spec:
       value: service_role
     - name: GOTRUE_JWT_AUD
       value: authenticated
+    - name: GOTRUE_JWT_ISSUER
+      value: '$(API_EXTERNAL_URL)/auth/v1'
     - name: GOTRUE_EXTERNAL_EMAIL_ENABLED
       value: 'true'
+    - name: GOTRUE_EXTERNAL_ANONYMOUS_USERS_ENABLED
+      value: 'false'
+    # Sign-ups confirm their email address through the Email add-on.
     - name: GOTRUE_MAILER_AUTOCONFIRM
-      value: 'true'
-    - name: GOTRUE_SMTP_HOST
-      value: '$(SMTP_HOST)'
-    - name: GOTRUE_SMTP_PORT
-      value: '$(SMTP_PORT)'
-    - name: GOTRUE_SMTP_USER
-      value: '$(SMTP_USER)'
-    - name: GOTRUE_SMTP_PASS
-      value: '$(SMTP_PASSWORD)'
-    - name: GOTRUE_SMTP_ADMIN_EMAIL
-      value: '$(SMTP_FROM)'
-    - name: GOTRUE_SMTP_SENDER_NAME
-      value: Supabase
+      value: 'false'
+    - name: GOTRUE_EXTERNAL_PHONE_ENABLED
+      value: 'false'
+    - name: GOTRUE_SMS_AUTOCONFIRM
+      value: 'false'
     - name: GOTRUE_MAILER_URLPATHS_INVITE
       value: /auth/v1/verify
     - name: GOTRUE_MAILER_URLPATHS_CONFIRMATION
@@ -1114,19 +1249,29 @@ spec:
     usePrimaryAddons: true
     image:
       repository: docker.io/postgrest/postgrest
-      tag: v14.8
+      tag: v14.18
       containerPort: '3000'
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: PGRST_DB_URI
       value: 'postgres://$(SUPABASE_DB_AUTHENTICATOR_USER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
     - name: PGRST_DB_SCHEMAS
       value: public,storage,graphql_public
+    - name: PGRST_DB_MAX_ROWS
+      value: '1000'
+    - name: PGRST_DB_EXTRA_SEARCH_PATH
+      value: public
     - name: PGRST_DB_ANON_ROLE
       value: anon
     - name: PGRST_JWT_SECRET
-      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+      value: '$(JWT_SECRET)'
     - name: PGRST_DB_USE_LEGACY_GUCS
       value: 'false'
+    - name: PGRST_APP_SETTINGS_JWT_EXP
+      value: '3600'
     healthcheck:
       enabled: true
       path: /
@@ -1138,9 +1283,13 @@ spec:
     usePrimaryAddons: true
     image:
       repository: docker.io/postgrest/postgrest
-      tag: v14.8
+      tag: v14.18
       containerPort: '3000'
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: PGRST_DB_URI
       # Replica first, primary second: libpq opens the pool on the first host
       # that answers, PostgREST's schema-reload listener insists on a
@@ -1149,12 +1298,18 @@ spec:
       value: 'postgres://$(SUPABASE_DB_AUTHENTICATOR_USER):$(PGPASSWORD)@$(PGHOST_RO):$(PGPORT_RO),$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
     - name: PGRST_DB_SCHEMAS
       value: public,storage,graphql_public
+    - name: PGRST_DB_MAX_ROWS
+      value: '1000'
+    - name: PGRST_DB_EXTRA_SEARCH_PATH
+      value: public
     - name: PGRST_DB_ANON_ROLE
       value: anon
     - name: PGRST_JWT_SECRET
-      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+      value: '$(JWT_SECRET)'
     - name: PGRST_DB_USE_LEGACY_GUCS
       value: 'false'
+    - name: PGRST_APP_SETTINGS_JWT_EXP
+      value: '3600'
     healthcheck:
       enabled: true
       path: /
@@ -1165,9 +1320,13 @@ spec:
     usePrimaryAddons: true
     image:
       repository: docker.io/supabase/realtime
-      tag: v2.76.5
+      tag: v2.148.3
       containerPort: '4000'
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: PORT
       value: '4000'
     - name: DB_HOST
@@ -1184,16 +1343,21 @@ spec:
       value: 'false'
     - name: DB_AFTER_CONNECT_QUERY
       value: SET search_path TO _realtime
+    # Encrypts the tenant's database password in Realtime's own tables: 16 characters.
     - name: DB_ENC_KEY
-      value: supabaserealtime
+      value: '{{STACKBLAZE_GEN_ALNUM:16}}'
     - name: API_JWT_SECRET
-      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+      value: '$(JWT_SECRET)'
+    - name: METRICS_JWT_SECRET
+      value: '$(JWT_SECRET)'
     - name: SECRET_KEY_BASE
-      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+      value: '{{STACKBLAZE_GEN_ALNUM:64}}'
     - name: ERL_AFLAGS
       value: -proto_dist inet_tcp
     - name: DNS_NODES
       value: "''"
+    - name: RLIMIT_NOFILE
+      value: '10000'
     - name: APP_NAME
       value: realtime
     - name: SEED_SELF_HOST
@@ -1204,6 +1368,8 @@ spec:
       value: supabase-realtime-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: RUN_JANITOR
       value: 'true'
+    - name: DISABLE_HEALTHCHECK_LOGGING
+      value: 'true'
     healthcheck:
       enabled: false
   - id: storage
@@ -1212,9 +1378,27 @@ spec:
     usePrimaryAddons: true
     image:
       repository: docker.io/supabase/storage-api
-      tag: v1.48.26
+      tag: v1.89.12
       containerPort: '5000'
+      command:
+      - /bin/sh
+      - -c
+      - |
+        set -eu
+        # The legacy anon / service_role keys: HS256 JWTs signed from
+        # JWT_SECRET with the same fixed claims as the gateway.
+        sb_jwt() {
+          node -e 'const c=require("crypto"),b=x=>Buffer.from(x).toString("base64url"),h=b(`{"alg":"HS256","typ":"JWT"}`),p=b(`{"role":"${process.argv[1]}","iss":"supabase","iat":1763078400,"exp":2078438400}`);process.stdout.write(`${h}.${p}.${c.createHmac("sha256",process.env.JWT_SECRET).update(`${h}.${p}`).digest("base64url")}`)' "$1"
+        }
+        ANON_KEY=$(sb_jwt anon)
+        SERVICE_KEY=$(sb_jwt service_role)
+        export ANON_KEY SERVICE_KEY
+        exec node dist/start/server.js
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     - name: STORAGE_BACKEND
       value: s3
     # Keep Kong's /storage/v1 prefix in resumable-upload (TUS) URLs.
@@ -1228,22 +1412,18 @@ spec:
       value: us-east-1
     - name: GLOBAL_S3_BUCKET
       value: '$(S3_BUCKET)'
-    - name: STORAGE_S3_BUCKET
-      value: '$(S3_BUCKET)'
     - name: GLOBAL_S3_ENDPOINT
-      value: '$(S3_ENDPOINT)'
-    - name: STORAGE_S3_ENDPOINT
       value: '$(S3_ENDPOINT)'
     - name: GLOBAL_S3_FORCE_PATH_STYLE
       value: 'true'
-    - name: STORAGE_S3_FORCE_PATH_STYLE
-      value: 'true'
     - name: AWS_DEFAULT_REGION
       value: us-east-1
+    # Keys for Storage's own S3-compatible endpoint (/storage/v1/s3), generated
+    # per deploy; separate from the bucket's credentials.
     - name: S3_PROTOCOL_ACCESS_KEY_ID
-      value: '$(AWS_ACCESS_KEY_ID)'
+      value: '{{STACKBLAZE_GEN_HEX:32}}'
     - name: S3_PROTOCOL_ACCESS_KEY_SECRET
-      value: '$(AWS_SECRET_ACCESS_KEY)'
+      value: '{{STACKBLAZE_GEN_HEX:64}}'
     - name: DATABASE_URL
       value: 'postgres://$(SUPABASE_DB_STORAGE_USER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
     - name: POSTGREST_URL
@@ -1253,13 +1433,9 @@ spec:
     - name: IMGPROXY_URL
       value: http://supabase-imgproxy-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: PGRST_JWT_SECRET
-      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+      value: '$(JWT_SECRET)'
     - name: AUTH_JWT_SECRET
-      value: your-super-secret-jwt-token-with-at-least-32-characters-long
-    - name: ANON_KEY
-      value: *anonKey
-    - name: SERVICE_KEY
-      value: *serviceKey
+      value: '$(JWT_SECRET)'
     healthcheck:
       enabled: true
       path: /status
@@ -1270,9 +1446,12 @@ spec:
     usePrimaryAddons: true
     image:
       repository: docker.io/supabase/postgres-meta
-      tag: v0.96.3
+      tag: v0.100.0
       containerPort: '8080'
     envVars:
+    # Shared with the Studio card by its name.
+    - name: PG_META_CRYPTO_KEY
+      value: '{{STACKBLAZE_GEN_SHARED:SB_PG_META_CRYPTO_KEY:ALNUM:32}}'
     - name: PG_META_PORT
       value: '8080'
     - name: PG_META_DB_HOST
@@ -1285,6 +1464,8 @@ spec:
       value: '$(SUPABASE_DB_ADMIN_USER)'
     - name: PG_META_DB_PASSWORD
       value: '$(PGPASSWORD)'
+    - name: CRYPTO_KEY
+      value: '$(PG_META_CRYPTO_KEY)'
     healthcheck:
       enabled: true
       path: /health
@@ -1293,9 +1474,21 @@ spec:
     nameHint: supabase-functions
     exposeInternet: false
     usePrimaryAddons: true
+    # Edge Functions run customers' code on the server, so this service runs in
+    # a Kata micro-VM (its own kernel), never on the node's shared kernel. The
+    # limits below are the VM's size: up to 256 MiB per function worker, idle
+    # workers reclaimed when memory runs low (upstream's 2 GiB default).
+    runtimeClass: kata-qemu-runtime-rs
+    resources:
+      requests:
+        cpu: 250m
+        memory: 512Mi
+      limits:
+        cpu: '1'
+        memory: 2Gi
     image:
       repository: docker.io/supabase/edge-runtime
-      tag: v1.71.2
+      tag: v1.77.9
       containerPort: '9000'
       command:
       - /bin/bash
@@ -1315,34 +1508,539 @@ spec:
         })
         ENDHELLO
         fi
+        if [ ! -e /home/deno/functions/deno.jsonc ]; then
+          cat > /home/deno/functions/deno.jsonc << 'ENDIMPORTS'
+        {
+          "imports": {
+            "@supabase/functions-js": "jsr:@supabase/functions-js@^2",
+            "@supabase/server": "npm:@supabase/server@^1"
+          }
+        }
+        ENDIMPORTS
+        fi
+        cat > /home/deno/main/memory-pressure.ts << 'ENDMEM'
+        const CHECK_INTERVAL_MS = 1_000
+        const PRESSURE_THRESHOLD = 0.8
+        const CLEANUP_TIMEOUT_MS = 1_000
+        const RETRY_INTERVAL_MS = 5_000
+
+        function parseBytes(value: string, minimum: number): number {
+          const bytes = Number(value)
+          if (!/^\d+$/.test(value) || !Number.isSafeInteger(bytes) || bytes < minimum) {
+            throw new Error('Invalid cgroup memory value')
+          }
+          return bytes
+        }
+
+        export function startMemoryPressureLoop(): void {
+          let errorReported = false
+          let activeReported = false
+
+          const tick = async () => {
+            let delay = CHECK_INTERVAL_MS
+            try {
+              const max = (await Deno.readTextFile('/sys/fs/cgroup/memory.max')).trim()
+              if (max === 'max') {
+                console.warn('Memory pressure monitor disabled: a finite memory limit is required')
+                return
+              }
+              const current = (await Deno.readTextFile('/sys/fs/cgroup/memory.current')).trim()
+              const stat = await Deno.readTextFile('/sys/fs/cgroup/memory.stat')
+              const limitBytes = parseBytes(max, 1)
+              const currentBytes = parseBytes(current, 0)
+              const inactiveFileBytes = parseBytes(stat.match(/^inactive_file[ \t]+(\S+)[ \t]*$/m)?.[1] ?? '', 0)
+              // Exclude inactive file cache that the kernel can reclaim under pressure.
+              const workingSetBytes = Math.max(0, currentBytes - inactiveFileBytes)
+              // Logged once so operators (and test-container-logs.sh) can confirm monitoring is on.
+              if (!activeReported) {
+                console.log(`Memory pressure monitor active (limit ${limitBytes} bytes)`)
+                activeReported = true
+              }
+
+              if (workingSetBytes / limitBytes >= PRESSURE_THRESHOLD) {
+                delay = RETRY_INTERVAL_MS
+                const acknowledged = await EdgeRuntime.userWorkers.tryCleanupIdleWorkers(CLEANUP_TIMEOUT_MS)
+                EdgeRuntime.miCollect()
+                if (acknowledged > 0) {
+                  console.warn(
+                    `Memory pressure: working set ${workingSetBytes} / ${limitBytes} bytes before cleanup; ` +
+                      `${acknowledged} worker(s) acknowledged retirement`
+                  )
+                }
+              }
+              errorReported = false
+            } catch (error) {
+              if (error instanceof Deno.errors.NotFound || error instanceof Deno.errors.PermissionDenied) {
+                console.warn(`Memory pressure monitor disabled: ${error}`)
+                return
+              }
+              delay = RETRY_INTERVAL_MS
+              if (!errorReported) {
+                console.warn(`Memory pressure monitor failed; retrying: ${error}`)
+                errorReported = true
+              }
+            }
+            // Schedule only after this cycle finishes: no overlapping work or queued ticks.
+            setTimeout(() => void tick(), delay)
+          }
+
+          setTimeout(() => void tick(), CHECK_INTERVAL_MS)
+        }
+        ENDMEM
         cat > /home/deno/main/index.ts << 'ENDFN'
-        Deno.serve(async (req: Request) => {
-          const service = new URL(req.url).pathname.split("/")[1] || ""
-          if (!service) {
-            return new Response(JSON.stringify({ msg: "missing function name in request" }), {
-              status: 400,
-              headers: { "Content-Type": "application/json" },
-            })
+        import * as jose from 'jsr:@panva/jose@6'
+        import { startMemoryPressureLoop } from './memory-pressure.ts'
+        // StackBlaze: upstream's docker/volumes/functions/main/index.ts (supabase/supabase
+        // master 33c8ab1) with the legacy keys signed here and a filtered worker env.
+
+        console.log('main function started')
+        startMemoryPressureLoop()
+
+        addEventListener('unhandledrejection', (ev) => {
+          // Without preventDefault(), a floating rejection destroys the main worker and the process exits.
+          // Sync throws inside timer callbacks are still fatal; wrap them in try/catch.
+          ev.preventDefault()
+          console.error('unhandled promise rejection in main worker', ev.reason)
+        })
+
+        const MAX_WORKER_RETRIES = 3
+
+        const JWT_SECRET = Deno.env.get('JWT_SECRET')
+        const SUPABASE_JWKS = parseJwks(Deno.env.get('SUPABASE_JWKS'))
+        const LOCAL_JWKS = SUPABASE_JWKS ? jose.createLocalJWKSet(SUPABASE_JWKS) : null
+        const VERIFY_JWT = Deno.env.get('VERIFY_JWT') === 'true'
+
+        // StackBlaze: the legacy anon / service_role keys are HS256 JWTs signed here
+        // from JWT_SECRET, with the same fixed claims as the gateway, Studio and
+        // Storage sign them with (they are never stored as variables).
+        const b64url = (bytes: Uint8Array) =>
+          btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+        async function legacyKey(role: string): Promise<string> {
+          const enc = new TextEncoder()
+          const h = b64url(enc.encode('{"alg":"HS256","typ":"JWT"}'))
+          const p = b64url(enc.encode(`{"role":"${role}","iss":"supabase","iat":1763078400,"exp":2078438400}`))
+          const key = await crypto.subtle.importKey('raw', enc.encode(JWT_SECRET ?? ''), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
+          const sig = new Uint8Array(await crypto.subtle.sign('HMAC', key, enc.encode(`${h}.${p}`)))
+          return `${h}.${p}.${b64url(sig)}`
+        }
+        const LEGACY_KEYS = JWT_SECRET
+          ? { SUPABASE_ANON_KEY: await legacyKey('anon'), SUPABASE_SERVICE_ROLE_KEY: await legacyKey('service_role') }
+          : {}
+
+        // StackBlaze: what user functions see. The container env minus the platform's
+        // own wiring (database, bucket and mail credentials, the JWT signing secret);
+        // SUPABASE_DB_URL and function secrets set in Studio stay.
+        const HIDDEN_ENV = /^(JWT_SECRET|PG[A-Z_]*|SUPABASE_DB_[A-Z_]*_USER|S3_[A-Z_]*|AWS_[A-Z_]*|SMTP_[A-Z_]*|KUBERO_[A-Z_]*|STACKBLAZE_[A-Z_]*|KUBERNETES_[A-Z_]*)$/
+        function userEnv(): Record<string, string> {
+          const out: Record<string, string> = {}
+          for (const [k, v] of Object.entries(Deno.env.toObject())) if (!HIDDEN_ENV.test(k)) out[k] = v
+          return { ...out, ...LEGACY_KEYS }
+        }
+
+        type AuthFailure = {
+          code: RequestErrors
+          message?: string
+        }
+
+        type FunctionFailure = {
+          code: RequestErrors
+          message: string
+          status: number
+        }
+
+        export enum RequestErrors {
+          InvalidLegacyJWT = 'UNAUTHORIZED_LEGACY_JWT',
+          InvalidAsymmetricJWT = 'UNAUTHORIZED_ASYMMETRIC_JWT',
+          InvalidTokenFormat = 'UNAUTHORIZED_INVALID_JWT_FORMAT',
+          UnsupportedTokenAlgorithm = 'UNAUTHORIZED_UNSUPPORTED_TOKEN_ALGORITHM',
+          MissingAuthHeader = 'UNAUTHORIZED_NO_AUTH_HEADER',
+          NotFound = 'NOT_FOUND',
+          BootError = 'BOOT_ERROR',
+          EdgeFunctionError = 'EDGE_FUNCTION_ERROR',
+          IdleTimeout = 'IDLE_TIMEOUT',
+          WorkerResourceLimit = 'WORKER_RESOURCE_LIMIT',
+          WorkerError = 'WORKER_ERROR',
+          InvalidResponseStatusCode = 'INVALID_RESPONSE_STATUS_CODE',
+        }
+
+        // Errors from this router stay readable from browsers, as on the platform.
+        // Function responses keep the function's own CORS headers.
+        const ERROR_CORS_HEADERS = {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey',
+          'Access-Control-Expose-Headers': 'sb-error-code',
+        }
+
+        function getFunctionErrorResponse({ code, message, status }: FunctionFailure): Response {
+          return Response.json(
+            { code, message },
+            {
+              status,
+              headers: {
+                ...ERROR_CORS_HEADERS,
+                'sb-error-code': code,
+              },
+            }
+          )
+        }
+
+        function onError(e: unknown): Response {
+          const ref = crypto.randomUUID()
+          console.error(`unhandled error in request handler (ref: ${ref})`, e)
+          return getFunctionErrorResponse({
+            code: RequestErrors.BootError,
+            message: `Internal Server Error (ref: ${ref})`,
+            status: 503,
+          })
+        }
+
+        function handleWorkerResponse(response: Response): Response {
+          if (response.status < 500) return response
+
+          const headers = new Headers(response.headers)
+          headers.set('sb-error-code', RequestErrors.EdgeFunctionError)
+
+          const exposedHeaders = (headers.get('Access-Control-Expose-Headers') ?? '')
+            .split(',')
+            .map((name) => name.trim())
+            .filter(Boolean)
+          if (!exposedHeaders.some((name) => name.toLowerCase() === 'sb-error-code')) {
+            exposedHeaders.push('sb-error-code')
           }
-          try {
-            const worker = await EdgeRuntime.userWorkers.create({
-              servicePath: `/home/deno/functions/${service}`,
-              memoryLimitMb: 150,
-              workerTimeoutMs: 60000,
-              noModuleCache: false,
-              importMapPath: null,
-              envVars: Object.entries(Deno.env.toObject()),
-            })
-            return await worker.fetch(req)
-          } catch (e) {
-            return new Response(JSON.stringify({ msg: String(e) }), {
+          headers.set('Access-Control-Expose-Headers', exposedHeaders.join(', '))
+
+          return new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers,
+          })
+        }
+
+        function resolveRuntimeError(e: unknown): FunctionFailure {
+          // These error classes are supplied by Edge Runtime, rather than stock Deno.
+          if (e instanceof Deno.errors.InvalidWorkerCreation) {
+            return {
+              code: RequestErrors.BootError,
+              message: 'Function failed to start (please check logs)',
+              status: 503,
+            }
+          }
+          if (e instanceof Deno.errors.WorkerRequestCancelled) {
+            return {
+              code: RequestErrors.WorkerResourceLimit,
+              message: 'Function failed due to not having enough compute resources (please check logs)',
+              status: 546,
+            }
+          }
+          if (e instanceof Deno.errors.WorkerRequestIdleTimeout) {
+            return {
+              code: RequestErrors.IdleTimeout,
+              message: 'Request idle timeout limit (150s) reached',
+              status: 504,
+            }
+          }
+          // No dedicated runtime error class exists for invalid response statuses.
+          // The Response constructor throws directly here or inside the user worker.
+          if (
+            (e instanceof RangeError || e instanceof Deno.errors.InvalidWorkerResponse) &&
+            e.message.includes('is not equal to 101 and outside the range [200, 599]')
+          ) {
+            return {
+              code: RequestErrors.InvalidResponseStatusCode,
+              message: 'Function returned an invalid HTTP status code (please check logs)',
               status: 500,
-              headers: { "Content-Type": "application/json" },
+            }
+          }
+          if (
+            e instanceof Deno.errors.WorkerAlreadyRetired ||
+            e instanceof Deno.errors.InvalidWorkerResponse
+          ) {
+            return {
+              code: RequestErrors.WorkerError,
+              message: 'Function exited due to an error (please check logs)',
+              status: 500,
+            }
+          }
+          return { code: RequestErrors.EdgeFunctionError, message: 'Internal Server Error', status: 500 }
+        }
+
+        // NOTE:(kallebysantos) We don't check for valid keys but just the bare array parsing,
+        // let this for 'jose' lib verification
+        export function parseJwks(raw: string | undefined): jose.JSONWebKeySet | null {
+          if (!raw) return null
+          try {
+            const parsed = JSON.parse(raw)
+            if (parsed?.keys && Array.isArray(parsed.keys)) {
+              return parsed as jose.JSONWebKeySet
+            }
+            return null
+          } catch {
+            return null
+          }
+        }
+
+        /**
+         * Extract JWT token from 'Authorization' header or fallback to 'sb-api-key' compatibility
+         *
+         * Parses the Authorization header to extract the Bearer token.
+         * Expects format: "Bearer <token>"
+         *
+         * @param req - The HTTP request object
+         * @returns The JWT token string or an authentication failure
+         */
+        function extractBearerToken(authHeader: string | null): string | null {
+          const tokenParts = (authHeader ?? '').trim().split(/\s+/)
+          const [bearer, token] = tokenParts
+          if (bearer.toLowerCase() !== 'bearer' || tokenParts.length !== 2 || !token) {
+            return null
+          }
+          return token
+        }
+
+        function getAuthToken(req: Request): string | AuthFailure {
+          const authHeader = req.headers.get('authorization')
+          const sbApiKeyCompatibilityToken = req.headers.get('sb-api-key')
+
+          if (!authHeader && !sbApiKeyCompatibilityToken) {
+            return {
+              code: RequestErrors.MissingAuthHeader,
+              message: 'Missing authorization header',
+            }
+          }
+
+          // NOTE:(kallebysantos) Compatibility mode is triggered when all conditions match:
+          // - API proxy mints a temp token
+          // - Original bearer is not present or is ApiKey
+          const bearerToken = extractBearerToken(authHeader)
+          const token = !bearerToken || bearerToken.startsWith('sb_')
+            ? sbApiKeyCompatibilityToken
+            : bearerToken
+
+          if (!token) {
+            return {
+              code: RequestErrors.InvalidTokenFormat,
+              message: 'Invalid JWT format',
+            }
+          }
+
+          return token
+        }
+
+        function getAuthErrorResponse({ code, message = 'Invalid JWT' }: AuthFailure) {
+          return Response.json(
+            {
+              code,
+              message,
+              // DEPRECATED: Retained for backward compatibility.
+              msg: message,
+            },
+            {
+              status: 401,
+              headers: {
+                ...ERROR_CORS_HEADERS,
+                'sb-error-code': code,
+              },
+            }
+          )
+        }
+
+        async function isValidLegacyJWT(jwt: string): Promise<AuthFailure | null> {
+          if (!JWT_SECRET) {
+            console.error('JWT_SECRET not available for HS256 token verification')
+            return { code: RequestErrors.InvalidLegacyJWT }
+          }
+
+          const encoder = new TextEncoder();
+          const secretKey = encoder.encode(JWT_SECRET);
+
+          try {
+            await jose.jwtVerify(jwt, secretKey);
+          } catch (e) {
+            console.error('Symmetric Legacy JWT verification error', e);
+            return { code: RequestErrors.InvalidLegacyJWT }
+          }
+          return null
+        }
+
+        async function isValidJWT(jwt: string): Promise<AuthFailure | null> {
+          if (!LOCAL_JWKS) {
+            console.error('JWKS not available for ES256/RS256 token verification')
+            return { code: RequestErrors.InvalidAsymmetricJWT }
+          }
+
+          try {
+            await jose.jwtVerify(jwt, LOCAL_JWKS);
+          } catch (e) {
+            console.error('Asymmetric JWT verification error', e);
+            return { code: RequestErrors.InvalidAsymmetricJWT }
+          }
+
+          return null
+        }
+
+        /**
+         * Verify JWT token, handling both legacy (HS256) and newer (ES256/RS256) algorithms
+         * 
+         * This function automatically detects the algorithm used in the token and applies
+         * the appropriate verification method:
+         * - HS256: Uses JWT_SECRET (symmetric key)
+         * - ES256/RS256: Uses JWKS endpoint (asymmetric public keys)
+         * 
+         * This fix ensures compatibility with both legacy tokens and newer asymmetric tokens,
+         * resolving the "Key for the ES256 algorithm must be of type CryptoKey" error.
+         * 
+         * @param jwt - The JWT token string to verify
+         * @returns Authentication failure details, or null when verification succeeds
+         */
+        async function isValidHybridJWT(jwt: string): Promise<AuthFailure | null> {
+          let jwtAlgorithm: string | undefined
+          try {
+            jwtAlgorithm = jose.decodeProtectedHeader(jwt).alg
+          } catch (e) {
+            console.error('JWT format error', e)
+            return {
+              code: RequestErrors.InvalidTokenFormat,
+              message: 'Invalid JWT format',
+            }
+          }
+
+          if (typeof jwtAlgorithm !== 'string' || !jwtAlgorithm) {
+            return {
+              code: RequestErrors.InvalidTokenFormat,
+              message: 'Invalid JWT format',
+            }
+          }
+
+          if (jwtAlgorithm === 'HS256') {
+            console.log(`Legacy token type detected, attempting ${jwtAlgorithm} verification.`)
+
+            return await isValidLegacyJWT(jwt)
+          }
+
+          if (jwtAlgorithm === 'ES256' || jwtAlgorithm === 'RS256') {
+            return await isValidJWT(jwt)
+          }
+
+          return {
+            code: RequestErrors.UnsupportedTokenAlgorithm,
+            message: `Unsupported JWT algorithm ${jwtAlgorithm}`,
+          }
+        }
+
+        Deno.serve({ onError }, async (req: Request) => {
+          if (req.method !== 'OPTIONS' && VERIFY_JWT) {
+            const token = getAuthToken(req)
+            if (typeof token !== 'string') {
+              return getAuthErrorResponse(token)
+            }
+            const authFailure = await isValidHybridJWT(token)
+            if (authFailure) {
+              return getAuthErrorResponse(authFailure)
+            }
+          }
+
+          const url = new URL(req.url)
+          const { pathname } = url
+          const path_parts = pathname.split('/')
+          const service_name = path_parts[1]
+
+          if (!service_name || service_name === '') {
+            return getFunctionErrorResponse({
+              code: RequestErrors.NotFound,
+              message: 'Requested function was not found',
+              status: 404,
             })
           }
+
+          if (service_name === 'main' || service_name.startsWith('.')) {
+            return getFunctionErrorResponse({
+              code: RequestErrors.NotFound,
+              message: 'Requested function was not found',
+              status: 404,
+            })
+          }
+          const servicePath = `/home/deno/functions/${service_name}`
+          console.error(`serving the request with ${servicePath}`)
+
+          try {
+            const serviceInfo = await Deno.stat(servicePath)
+            if (!serviceInfo.isDirectory) {
+              return getFunctionErrorResponse({
+                code: RequestErrors.NotFound,
+                message: 'Requested function was not found',
+                status: 404,
+              })
+            }
+          } catch (e) {
+            if (e instanceof Deno.errors.NotFound) {
+              return getFunctionErrorResponse({
+                code: RequestErrors.NotFound,
+                message: 'Requested function was not found',
+                status: 404,
+              })
+            }
+            console.error(e)
+            return getFunctionErrorResponse({
+              code: RequestErrors.BootError,
+              message: 'Function failed to start (please check logs)',
+              status: 503,
+            })
+          }
+
+          const memoryLimitMb = 256
+          // Keep the wall clock above the 150s request idle timeout configured in Compose.
+          const workerTimeoutMs = 400_000
+          const requestAbsentTimeoutMs = 60_000
+          const noModuleCache = false
+          // Using a common Import Map for all functions 
+          // to use a scope 'deno.json' it must be dinamically resolved base on the 'service_name'
+          const importMapPath = `/home/deno/functions/deno.jsonc`
+          // SUPABASE_FUNCTION_SLUG is listed after the container env snapshot so
+          // nothing in it can shadow the value, and it is per-request because only this
+          // worker knows which function the request resolved to.
+          const envVarsObj = { ...userEnv(), SUPABASE_FUNCTION_SLUG: service_name }
+          const envVars = Object.keys(envVarsObj).map((k) => [k, envVarsObj[k]])
+
+          const callWorker = async (req: Request, retriesLeft = MAX_WORKER_RETRIES): Promise<Response> => {
+            // Preserve the body before fetch() can consume it, even on a failed attempt.
+            // Must run before `new Request(req)` below, which takes over the body.
+            // The unread retry branch can buffer the entire body in main-worker memory,
+            // even when the first attempt succeeds.
+            const retryReq = retriesLeft > 0 ? req.clone() : null
+
+            try {
+              const worker = await EdgeRuntime.userWorkers.create({
+                servicePath,
+                memoryLimitMb,
+                workerTimeoutMs,
+                context: { supervisor: { requestAbsentTimeoutMs } },
+                noModuleCache,
+                importMapPath,
+                envVars,
+              })
+              // Gateway-minted internal JWT is for this router only; never expose it to user functions.
+              const userReq = new Request(req)
+              userReq.headers.delete('sb-api-key')
+              EdgeRuntime.applySupabaseTag(req, userReq)
+              return handleWorkerResponse(await worker.fetch(userReq))
+            } catch (e) {
+              // Retirement rejects before dispatch, so user code has not run yet.
+              if (e instanceof Deno.errors.WorkerAlreadyRetired && retryReq) {
+                console.warn(`${service_name}: worker retired before dispatch; retrying (${retriesLeft} left)`)
+                // Request.clone() does not copy the tag that connects streaming to the client.
+                EdgeRuntime.applySupabaseTag(req, retryReq)
+                return await callWorker(retryReq, retriesLeft - 1)
+              }
+
+              console.error(e)
+              return getFunctionErrorResponse(resolveRuntimeError(e))
+            }
+          }
+
+          return await callWorker(req)
         })
         ENDFN
-        exec edge-runtime start --main-service /home/deno/main
+        exec edge-runtime start --user-worker-request-idle-timeout 150000 --main-service /home/deno/main
     extraVolumes:
     - name: '{{STACKBLAZE_APP_NAME}}-functions'
       existingClaim: supabase-studio-{{STACKBLAZE_NAME_SUFFIX}}-functions
@@ -1353,24 +2051,33 @@ spec:
       accessModes:
       - ReadWriteMany
     envVars:
+    # This deployment's JWT signing secret: one value per deployment, shared
+    # with every card by its name. The settings below refer to it.
+    - name: JWT_SECRET
+      value: '{{STACKBLAZE_GEN_SHARED:SB_JWT_SECRET:ALNUM:48}}'
     # Read by @supabase/server (withSupabase auth: publishable / secret),
     # which Studio's function templates use.
     - name: SUPABASE_PUBLISHABLE_KEY
       value: 'sb_publishable_{{STACKBLAZE_GEN_ALNUM:32}}'
     - name: SUPABASE_SECRET_KEY
       value: 'sb_secret_{{STACKBLAZE_GEN_ALNUM:40}}'
+    - name: SUPABASE_PUBLISHABLE_KEYS
+      value: '{"default":"$(SUPABASE_PUBLISHABLE_KEY)"}'
+    - name: SUPABASE_SECRET_KEYS
+      value: '{"default":"$(SUPABASE_SECRET_KEY)"}'
+    # Off: each function checks its caller itself (upstream's default).
     - name: VERIFY_JWT
       value: 'false'
     - name: SUPABASE_URL
       value: http://supabase-api-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
-    - name: SUPABASE_ANON_KEY
-      value: *anonKey
-    - name: SUPABASE_SERVICE_ROLE_KEY
-      value: *serviceKey
+    - name: SUPABASE_PUBLIC_URL
+      value: '{{STACKBLAZE_APP_URL}}'
+    # As this deployment's admin user (BYPASSRLS, not a superuser), like
+    # upstream's postgres role.
     - name: SUPABASE_DB_URL
-      value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
-    - name: JWT_SECRET
-      value: your-super-secret-jwt-token-with-at-least-32-characters-long
+      value: 'postgresql://$(SUPABASE_DB_ADMIN_USER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=disable'
+    # Signs the legacy keys in the router and checks JWTs when VERIFY_JWT is
+    # on. Not passed on to functions.
     healthcheck:
       enabled: false
   - id: imgproxy
@@ -1378,14 +2085,20 @@ spec:
     exposeInternet: false
     image:
       repository: docker.io/darthsim/imgproxy
-      tag: v3.30.1
+      tag: v4.0.21
       containerPort: '5001'
     envVars:
     - name: IMGPROXY_BIND
       value: ':5001'
-    - name: IMGPROXY_LOCAL_FILESYSTEM_ROOT
-      value: /
+    # No IMGPROXY_LOCAL_FILESYSTEM_ROOT: Storage hands imgproxy presigned
+    # bucket URLs, so the container's own files are never a source.
     - name: IMGPROXY_USE_ETAG
       value: 'true'
+    - name: IMGPROXY_AUTO_WEBP
+      value: 'true'
+    - name: IMGPROXY_MAX_SRC_RESOLUTION
+      value: '16.8'
     healthcheck:
-      enabled: false
+      enabled: true
+      path: /health
+      startupSeconds: 60
