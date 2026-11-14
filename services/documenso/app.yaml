@@ -28,7 +28,7 @@ metadata:
       off (DOCUMENSO_DISABLE_TELEMETRY). Licence: AGPL-3.0 (Enterprise features need
       a Documenso licence). Documenso 2.22.0.'
     kubero.dev/template.links: '["https://docs.documenso.com/docs/self-hosting"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-documents.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-signing.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-completed.png"]'
     kubero.dev/template.source: https://github.com/documenso/documenso
     kubero.dev/template.categories: '["work", "productivity", "security"]'
     kubero.dev/template.title: Documenso

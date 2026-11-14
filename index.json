@@ -1352,7 +1352,11 @@
     "productivity",
     "security"
    ],
-   "screenshots": [],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-documents.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-signing.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-completed.png"
+   ],
    "links": [
     "https://docs.documenso.com/docs/self-hosting"
    ],
