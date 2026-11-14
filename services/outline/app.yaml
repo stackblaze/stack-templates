@@ -3,113 +3,24 @@ kind: KuberoApp
 metadata:
   name: outline
   annotations:
-    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64", "linux/arm/v7"]'
-    kubero.dev/template.description: The fastest knowledge base for growing teams.
-      Beautiful, realtime collaborative, feature packed, and markdown compatible.
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+    kubero.dev/template.description: "Team knowledge base and wiki: fast, real-time collaborative Markdown documents organized in collections, with search, comments, sharing and passkey or email sign-in, backed by Postgres."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/icon.png
-    kubero.dev/template.installation: 'Deployed from this template, Outline needs no manual
-      configuration: SECRET_KEY and UTILS_SECRET are generated as 64-char hex values and
-      URL/CDN_URL are filled in with the app''s public URL automatically.
-    
-    
-      Bundles two add-ons: **PostgreSQL 16** (CloudNativePG) and **Valkey 8.0**. Documents
-      and uploads live on the mounted volume at `/var/lib/outline/data` (FILE_STORAGE=local),
-      so keep that volume when moving or restoring the app. The app listens on port 3000.
-    
-    
-      Outline refuses to start without SECRET_KEY, UTILS_SECRET and URL: a container that
-      boots and immediately exits almost always means one of those is missing. Deploying
-      Outline from git instead of this template means setting all three yourself, plus
-      DATABASE_URL and REDIS_URL for your own datastores; that is the usual cause of a
-      crash-looping hand-rolled Outline.
-    
-    
-      The image tracks `latest`, so a newly released Outline version can require a variable
-      this template does not set yet: check the Outline release notes if a fresh deploy
-      crashes on a missing variable.
-    
-      '
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/380914/110356468-26374600-7fef-11eb-9f6a-f2cc2c8c6590.png"]'
+    kubero.dev/template.installation: "Outline has no passwords: people sign in with a link or code sent by email (through the StackBlaze Email add-on) or, once signed in, with a passkey. Before deploying, set OUTLINE_ADMIN_EMAIL (Variables) to your own email address. The first start creates the workspace (OUTLINE_WORKSPACE_NAME) and its admin with that address before the app is reachable, so nobody can claim a fresh instance. Open the app, choose Continue with email, enter that address and use the link or code you receive. If you deployed with the wrong address, change OUTLINE_ADMIN_EMAIL and redeploy: the admin's address follows the variable until the admin signs in for the first time. Sign-up is invite only: invite people under Settings > Members. Add a passkey under Settings > Account for sign-in without email. Uploads and images are stored on the data volume. Outline is licensed under the Business Source License 1.1: you may run it for your own organization, but not sell it to others as a document service."
+    kubero.dev/template.links: '["https://docs.getoutline.com/s/hosting", "https://docs.getoutline.com/s/guide", "https://www.getoutline.com/developers"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/screenshot-doc.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/screenshot-comments.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/outline/screenshot-search.png"]'
     kubero.dev/template.source: https://github.com/outline/outline
-    kubero.dev/template.categories: '["work", "utility"]'
+    kubero.dev/template.categories: '["work", "productivity", "documentation"]'
     kubero.dev/template.title: Outline
-    kubero.dev/template.website: https://www.getoutline.com/
+    kubero.dev/template.website: https://www.getoutline.com
   labels:
     manager: kubero
 spec:
   name: outline
   deploymentstrategy: docker
-  envVars:
-  - name: NODE_ENV
-    value: production
-  - name: SECRET_KEY
-    value: '{{STACKBLAZE_GEN_HEX:64}}'
-  - name: DATABASE_URL
-    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
-  - name: PGSSLMODE
-    value: disable
-  - name: FILE_STORAGE
-    value: local
-  - name: FILE_STORAGE_LOCAL_ROOT_DIR
-    value: /var/lib/outline/data
-  - name: FILE_STORAGE_UPLOAD_MAX_SIZE
-    value: '262144000'
-  - name: LOG_LEVEL
-    value: info
-  - name: DEFAULT_LANGUAGE
-    value: en_US
-  - name: UTILS_SECRET
-    value: '{{STACKBLAZE_GEN_HEX:64}}'
-  - name: URL
-    value: '{{STACKBLAZE_APP_URL}}'
-  - name: CDN_URL
-    value: '{{STACKBLAZE_APP_URL}}'
-  - name: FORCE_HTTPS
-    value: 'false'
-  - name: SLACK_CLIENT_ID
-    value: ''
-  - name: SLACK_CLIENT_SECRET
-    value: ''
-  extraVolumes:
-  - accessModes:
-    - ReadWriteMany
-    emptyDir: false
-    mountPath: /var/lib/outline/data
-    name: outline-volume
-    size: 1Gi
-    storageClass: shared
-  cronjobs: []
   addons:
-  - displayName: Valkey
-    env: []
-    icon: /img/addons/redis.svg
-    id: kubero-operator
-    kind: Valkey
-    resourceDefinitions:
-      Valkey:
-        apiVersion: rds.valkey.buf.red/v1alpha1
-        kind: Valkey
-        metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-valkey'
-        spec:
-          version: '8.0'
-          arch: replica
-          replicas:
-            shards: 1
-            replicasOfShard: 1
-          access:
-            serviceType: ClusterIP
-          storage:
-            capacity: 1Gi
-            storageClassName: fast
-          resources:
-            requests:
-              cpu: 50m
-              memory: 256Mi
-            limits:
-              cpu: 500m
-              memory: 256Mi
+  # Documents, collections, users and revisions. The search and id extensions
+  # the migrations need are created here as the superuser.
   - displayName: PostgreSQL (CloudNativePG)
     env: []
     icon: /img/addons/pgsql.svg
@@ -141,6 +52,11 @@ spec:
               owner: outline
               secret:
                 name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
+              postInitApplicationSQL:
+              - CREATE EXTENSION IF NOT EXISTS pg_trgm
+              - CREATE EXTENSION IF NOT EXISTS unaccent
+              - CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
+              - CREATE EXTENSION IF NOT EXISTS btree_gin
           enableSuperuserAccess: true
           superuserSecret:
             name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
@@ -152,7 +68,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: outline
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -161,16 +77,231 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: outline
-          password: outline
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Required: job queues (emails, imports, exports, notifications), the
+  # collaboration and websocket fan-out, locks and rate limits. Injects
+  # REDIS_URL, the name Outline reads.
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  # Platform email (README "Email contract"): sign-in links and codes (the
+  # only way to sign in before a passkey exists), invitations, mentions,
+  # comment and document notifications. Outline reads SMTP_HOST, SMTP_PORT
+  # and SMTP_PASSWORD as injected; SMTP_FROM may carry a display name, which
+  # Outline accepts. STARTTLS on 587 (SMTP_SECURE is set by the start
+  # command from the port).
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: SMTP_USERNAME
+      value: '$(SMTP_USER)'
+    - name: SMTP_FROM_EMAIL
+      value: '$(SMTP_FROM)'
+    resourceDefinitions: {}
+  cronjobs: []
+  envVars:
+  # Public URL: links in emails, OAuth/passkey origin, cookies.
+  - name: URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # 32 random bytes as hex (upstream: `openssl rand -hex 32`). Encrypts
+  # stored integration secrets and signs CSRF tokens: keep it.
+  - name: SECRET_KEY
+    value: '{{STACKBLAZE_GEN_HEX:64}}'
+  # Shared secret for the internal utility endpoints (cron).
+  - name: UTILS_SECRET
+    value: '{{STACKBLAZE_GEN_HEX:64}}'
+  # TLS to Postgres is on (Outline's production default).
+  - name: DATABASE_URL
+    value: 'postgres://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  # Uploads, images and avatars on the data volume (upstream's default for a
+  # single server). S3 is optional upstream and not needed here.
+  - name: FILE_STORAGE
+    value: local
+  - name: FILE_STORAGE_LOCAL_ROOT_DIR
+    value: /var/lib/outline/data
+  - name: FILE_STORAGE_UPLOAD_MAX_SIZE
+    value: '262144000'
+  # All services in one process. `cron` is not in upstream's default list:
+  # without it trash is never emptied and scheduled tasks never run.
+  - name: SERVICES
+    value: web,websockets,collaboration,worker,cron
+  - name: WEB_CONCURRENCY
+    value: '1'
+  # The daily update check sends the install's version to getoutline.com.
+  - name: ENABLE_UPDATES
+    value: 'false'
+  - name: DEFAULT_LANGUAGE
+    value: en_US
+  # The workspace and its admin, created by the start command on the first
+  # start through Outline's own installation API, before the app listens
+  # publicly. Set OUTLINE_ADMIN_EMAIL to your address before deploying.
+  - name: OUTLINE_ADMIN_EMAIL
+    value: admin@example.com
+  - name: OUTLINE_ADMIN_NAME
+    value: Admin
+  - name: OUTLINE_WORKSPACE_NAME
+    value: Wiki
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /var/lib/outline/data
+    name: '{{STACKBLAZE_APP_NAME}}-data'
+    size: 5Gi
+    storageClass: shared
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 1536Mi
+  # /_health checks Postgres and Redis.
+  healthcheck:
+    enabled: true
+    path: /_health
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10
+  # Official image, pinned release. Debian (node:slim) with bash; runs as
+  # uid 1001 (nodejs); `pg` is in /opt/outline/node_modules.
   image:
     containerPort: '3000'
-    pullPolicy: Always
-    repository: docker.getoutline.com/outlinewiki/outline
-    tag: latest
+    pullPolicy: IfNotPresent
+    repository: docker.io/outlinewiki/outline
+    tag: 1.12.0
+    command:
+    - /bin/bash
+    - -c
+    - |
+      set -euo pipefail
+      cd /opt/outline
+      log() { echo "[stackblaze] $*"; }
+      # The Email add-on uses STARTTLS on 587; implicit TLS only on 465.
+      if [ -n "${SMTP_HOST:-}" ] && [ -z "${SMTP_SECURE:-}" ]; then
+        if [ "${SMTP_PORT:-587}" = 465 ]; then export SMTP_SECURE=true; else export SMTP_SECURE=false; fi
+      fi
+      # Does a workspace exist? Ask Postgres directly (a real login, so this
+      # also waits for the database add-on).
+      sql() {
+        node -e '
+          const { Client } = require("pg");
+          const c = new Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false }, connectionTimeoutMillis: 5000 });
+          const mode = process.argv[1];
+          (async () => {
+            await c.connect();
+            if (mode === "state") {
+              const r = await c.query("SELECT count(*)::int AS n FROM teams");
+              console.log(r.rows[0].n > 0 ? "yes" : "no");
+            } else {
+              // The admin created at install keeps following OUTLINE_ADMIN_EMAIL
+              // until it signs in for the first time (the install itself is
+              // its only sign-in event until then).
+              const want = (process.env.OUTLINE_ADMIN_EMAIL || "").trim().toLowerCase();
+              const o = await c.query("SELECT id, email FROM users WHERE role = $1 AND \"deletedAt\" IS NULL ORDER BY \"createdAt\" LIMIT 1", ["admin"]);
+              const u = o.rows[0];
+              if (u && want.includes("@") && u.email !== want) {
+                const s = await c.query("SELECT count(*)::int AS n FROM events WHERE name = $1 AND \"userId\" = $2", ["users.signin", u.id]);
+                const taken = await c.query("SELECT 1 FROM users WHERE email = $1", [want]);
+                if (s.rows[0].n <= 1 && !taken.rows.length) {
+                  await c.query("UPDATE users SET email = $1, \"updatedAt\" = now() WHERE id = $2", [want, u.id]);
+                  console.log("admin email updated to OUTLINE_ADMIN_EMAIL");
+                } else if (s.rows[0].n > 1) {
+                  console.log("admin has signed in; OUTLINE_ADMIN_EMAIL no longer applies");
+                }
+              }
+            }
+            await c.end();
+          })().catch((e) => { console.log(mode === "state" ? (e.code === "42P01" ? "no" : "wait") : "admin email check skipped: " + e.code); process.exit(0); });' "$1"
+      }
+      i=0
+      while :; do
+        s=$(sql state)
+        [ "$s" != wait ] && break
+        i=$((i+1)); [ "$i" -ge 200 ] && { log "database not reachable"; exit 1; }
+        log "waiting for the database ($i)"; sleep 3
+      done
+      if [ "$s" = no ]; then
+        # First start: Outline shows a "create your workspace" form to the
+        # first visitor. Run the server on 127.0.0.1 only (probes and the
+        # edge cannot reach it), create the workspace and admin through that
+        # same installation API, then restart it on all interfaces. The
+        # forwarded-proto header stands in for the edge's TLS (FORCE_HTTPS
+        # answers a plain-http POST with 405).
+        log "first start: creating the workspace and its admin"
+        cat > /tmp/stackblaze-local.cjs <<'JS'
+      const net = require("net");
+      const listen = net.Server.prototype.listen;
+      net.Server.prototype.listen = function (...a) {
+        if (typeof a[0] === "number" || (typeof a[0] === "string" && /^\d+$/.test(a[0]))) {
+          const cb = a.find((x) => typeof x === "function");
+          const o = { port: Number(a[0]), host: "127.0.0.1" };
+          return cb ? listen.call(this, o, cb) : listen.call(this, o);
+        }
+        if (a[0] && typeof a[0] === "object" && a[0].port !== undefined) a[0] = Object.assign({}, a[0], { host: "127.0.0.1" });
+        return listen.apply(this, a);
+      };
+      JS
+        NODE_OPTIONS="--require /tmp/stackblaze-local.cjs" node build/server/index.js &
+        pid=$!
+        trap 'kill -TERM "$pid" 2>/dev/null' TERM INT
+        n=0
+        until node -e 'fetch("http://127.0.0.1:" + (process.env.PORT || 3000) + "/_health").then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))'; do
+          kill -0 "$pid" 2>/dev/null || { log "server exited during first start"; exit 1; }
+          n=$((n+1)); [ "$n" -ge 540 ] && { log "server not up"; kill -TERM "$pid"; exit 1; }
+          sleep 1
+        done
+        node -e '
+          const e = process.env;
+          fetch("http://127.0.0.1:" + (e.PORT || 3000) + "/api/installation.create", {
+            method: "POST", redirect: "manual", headers: { "Content-Type": "application/json", "X-Forwarded-Proto": "https" },
+            body: JSON.stringify({ teamName: e.OUTLINE_WORKSPACE_NAME || "Wiki", userName: e.OUTLINE_ADMIN_NAME || "Admin", userEmail: (e.OUTLINE_ADMIN_EMAIL || "").trim().toLowerCase() }),
+          }).then(async (r) => console.log("[stackblaze] installation.create " + r.status + (r.status >= 400 ? " " + (await r.text()).slice(0, 200) : "")), (err) => console.log("[stackblaze] installation.create failed: " + err.message));' || true
+        kill -TERM "$pid" 2>/dev/null || true
+        wait "$pid" || true
+        trap - TERM INT
+        if [ "$(sql state)" != yes ]; then
+          log "could not create the workspace; not starting"; exit 1
+        fi
+        log "workspace and admin created"
+      else
+        sql admin
+      fi
+      exec node build/server/index.js
     run:
       securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
         readOnlyRootFilesystem: false

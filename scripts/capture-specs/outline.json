@@ -1,0 +1,16 @@
+{
+  "_comment": "Outline has no passwords. Set OUTLINE_SIGNIN_LINK to a fresh emailed sign-in link (https://<app>/auth/email.callback?token=...&follow=true); it is single use and expires. Seed first (the Northwind wiki).",
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "waitAfterNavigationMs": 3000,
+  "login": {
+    "url": "${OUTLINE_SIGNIN_LINK}",
+    "steps": [{ "waitForURL": "**/home**", "timeout": 30000 }],
+    "waitAfterMs": 1500
+  },
+  "pages": [
+    { "name": "home", "path": "/home", "waitFor": "nav", "waitMs": 3000, "steps": [{ "mouseMove": { "x": 1900, "y": 1070 } }] },
+    { "name": "doc", "path": "/home", "waitMs": 2000, "steps": [{ "click": "text=Architecture overview" }, { "waitForSelector": ".ProseMirror" }, { "sleep": 3000 }, { "mouseMove": { "x": 1900, "y": 1070 } }] },
+    { "name": "search", "path": "/search?query=checkout", "waitMs": 4000, "steps": [{ "mouseMove": { "x": 1900, "y": 1070 } }] }
+  ]
+}
