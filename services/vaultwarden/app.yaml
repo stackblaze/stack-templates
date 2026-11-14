@@ -5,16 +5,36 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: "Keep passwords, secure notes, and logins organized across all your devices.\nA lightweight alternative to 1Password and LastPass."
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/icon.png
-    kubero.dev/template.installation: ''
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://media.stackblaze.cloud/templates/vaultwarden/demo.mp4", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/dashboard.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/screenshot-login.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@c696003baf067cde4a262775c42fde3a75e3d872/services/vaultwarden/screenshot-generator.png"]'
+    kubero.dev/template.installation: 'Public sign-up is off: nobody can create an
+      account on your server unless you invite them. To create your own account,
+      open /admin on your app URL and sign in with the admin token in
+      ADMIN_PASSWORD (under Variables). Under Users, invite your email address.
+      With the Email add-on connected you receive an invitation link; without it,
+      open the app URL and choose Create account with the invited address. Then
+      sign in to the web vault, or point the Bitwarden browser extension, desktop
+      or mobile app at your app URL (Self-hosted, Server URL). The master password
+      never leaves your device, so it cannot be reset by the admin: keep it safe.
+      The start command stores only an Argon2id hash of ADMIN_PASSWORD as
+      ADMIN_TOKEN. To let people sign up on their own, set SIGNUPS_ALLOWED=true,
+      or set SIGNUPS_DOMAINS_WHITELIST to your company domain (email verification
+      stays on). Settings saved in the admin panel are written to
+      /data/config.json and take precedence over these variables.'
+    kubero.dev/template.links: '["https://github.com/dani-garcia/vaultwarden/wiki"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-vault.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-generator.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vaultwarden/screenshot-admin.png"]'
     kubero.dev/template.source: https://github.com/dani-garcia/vaultwarden
     kubero.dev/template.categories: '["security", "utilities"]'
     kubero.dev/template.title: "Vaultwarden Passwords"
     kubero.dev/template.website: https://github.com/dani-garcia/vaultwarden
+  labels:
+    manager: kubero
   name: vaultwarden
 spec:
+  name: vaultwarden
+  deploymentstrategy: docker
   addons:
+  # Vaultwarden supports SQLite, MySQL/MariaDB and PostgreSQL (the official
+  # image is built with all three, docker/Dockerfile.debian `DB=`). SQLite is
+  # not safe on our shared network volumes, so the vault lives in Postgres.
   - displayName: PostgreSQL (CloudNativePG)
     env: []
     icon: /img/addons/pgsql.svg
@@ -61,7 +81,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: vaultwarden
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -70,92 +90,129 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: vaultwarden
-          password: vaultwarden
-  # Platform email (see README "Email contract"). Vaultwarden reads SMTP_*
-  # natively, so no env mapping — vars are injected only while Email is live.
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Platform email (README "Email contract"): invitations, new-device and
+  # two-step login emails, email verification, emergency access. Vaultwarden
+  # reads SMTP_HOST / SMTP_PORT / SMTP_PASSWORD / SMTP_FROM as injected; the
+  # user name is SMTP_USERNAME (src/config.rs). SMTP_FROM must be a bare
+  # address, so the start command splits a "Name <addr>" value into
+  # SMTP_FROM and SMTP_FROM_NAME.
   - displayName: Email
     icon: /img/addons/email.svg
     id: kubero-smtp
     kind: Smtp
-    env: []
+    env:
+    - name: SMTP_USERNAME
+      value: '$(SMTP_USER)'
+    - name: SMTP_SECURITY
+      value: starttls
     resourceDefinitions: {}
-  # Platform object storage (RustFS Tenant → communal-s3 logical bucket
-  # on shared). Vaultwarden OpenDAL S3 via DATA_FOLDER; AWS_* creds
-  # are injected. TMP must stay on the local volume.
-
-  - displayName: RustFS
-    env: []
-    icon: /img/addons/rustfs.svg
-    id: kubero-operator
-    kind: Tenant
-    resourceDefinitions:
-      Tenant:
-        apiVersion: rustfs.com/v1alpha1
-        kind: Tenant
-        metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-rustfs'
-          annotations:
-            # The operator refuses custom-repo images it cannot verify for
-            # RuntimeDefault seccomp ("WorkloadSecurityIncompatible") unless the
-            # exact reference is acknowledged. Keep in sync with spec.image.
-            operator.rustfs.com/runtime-default-image-ack: docker.io/rustfs/rustfs:1.0.0-beta.10
-        spec:
-          image: docker.io/rustfs/rustfs:1.0.0-beta.10
-          credsSecret:
-            name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
-          pools:
-          - name: pool-0
-            servers: 1
-            persistence:
-              volumesPerServer: 4
-              volumeClaimTemplate:
-                accessModes:
-                - ReadWriteOnce
-                resources:
-                  requests:
-                    storage: 2Gi
-                storageClassName: slow
-      credsSecret:
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
-        type: Opaque
-        stringData:
-          accesskey: vaultwarden
-          secretkey: '{{STACKBLAZE_GEN_HEX:32}}'
   cronjobs: []
-  deploymentstrategy: docker
   envVars:
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
-  - name: DATA_FOLDER
-    value: 's3://$(S3_BUCKET)?endpoint=$(S3_HOST):$(S3_PORT)&region=$(AWS_REGION)&enable_virtual_host_style=false'
-  - name: TMP_FOLDER
-    value: /data/tmp
-  - name: TEMPLATES_FOLDER
-    value: /data/templates
+  # Keep retrying the database at startup instead of exiting after 15 s
+  # (the operator creates the app user after the port opens).
+  - name: DB_CONNECTION_RETRIES
+    value: '0'
+  # Public URL: links in emails, WebAuthn/passkeys, attachment downloads.
+  - name: DOMAIN
+    value: '{{STACKBLAZE_APP_URL}}'
+  # Closed by default: no public registration. The admin invites people from
+  # /admin (by email with the Email add-on, or the invited address can then
+  # create its account). If sign-up is opened later, new accounts must
+  # verify their email address first.
+  - name: SIGNUPS_ALLOWED
+    value: 'false'
+  - name: SIGNUPS_VERIFY
+    value: 'true'
+  - name: INVITATIONS_ALLOWED
+    value: 'true'
+  # Admin panel password. The start command hashes it with Argon2id and passes
+  # only the PHC string to Vaultwarden as ADMIN_TOKEN.
+  - name: ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  # Unprivileged port, so the container can run as a non-root user.
+  - name: ROCKET_PORT
+    value: '8080'
+  # Attachments, Sends, the JWT signing key (rsa_key.pem), the website icon
+  # cache and config.json (settings saved in the admin panel).
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /data
     name: '{{STACKBLAZE_APP_NAME}}-data'
-    size: 1Gi
+    size: 5Gi
     storageClass: shared
-  image:
-    containerPort: '80'
-    pullPolicy: IfNotPresent
-    # Referenced as docker.io on purpose: zone nodes mirror docker.io through
-    # the regional registry (containerd hosts.d -> registry.<region>/v2/docker).
-    # Not registry.stackblaze.cloud (sfo zot, 503). Pinned patch tag, not :latest.
-    repository: docker.io/vaultwarden/server
-    tag: '1.37.3'
-    run:
-      securityContext:
-        readOnlyRootFilesystem: false
-  name: vaultwarden
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: '1'
+      memory: 512Mi
+  healthcheck:
+    enabled: true
+    # Takes a database connection from the pool (src/api/web.rs).
+    path: /alive
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8080'
+    pullPolicy: IfNotPresent
+    repository: docker.io/vaultwarden/server
+    tag: 1.37.5
+    # 1. Hash ADMIN_PASSWORD with Argon2id (OpenSSL 3.5 in the Debian trixie
+    #    image; Bitwarden preset m=64 MiB, t=3, p=4, as `vaultwarden hash`
+    #    uses) and export only the PHC string as ADMIN_TOKEN.
+    # 2. Split a "Name <addr>" SMTP_FROM into SMTP_FROM / SMTP_FROM_NAME.
+    # 3. Start Vaultwarden (upstream CMD).
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -eu
+      umask 077
+      if [ -n "${ADMIN_PASSWORD:-}" ]; then
+        t=$(mktemp -d)
+        openssl rand -out "$t/salt" 16
+        salt_hex=$(od -An -v -tx1 "$t/salt" | tr -d ' \n')
+        salt_b64=$(openssl base64 -A -in "$t/salt" | tr -d '=')
+        hash_b64=$(openssl kdf -keylen 32 -binary \
+          -kdfopt pass:"$ADMIN_PASSWORD" -kdfopt hexsalt:"$salt_hex" \
+          -kdfopt iter:3 -kdfopt memcost:65536 -kdfopt lanes:4 ARGON2ID \
+          | openssl base64 -A | tr -d '=')
+        rm -f "$t/salt"
+        rmdir "$t"
+        if [ ${#hash_b64} -ne 43 ]; then
+          echo "ADMIN_PASSWORD: Argon2id hashing failed" >&2
+          exit 1
+        fi
+        # Built with printf: Kubernetes turns a double dollar in a command
+        # into a single one, which broke an escaped-string version.
+        ADMIN_TOKEN=$(printf '$argon2id$v=19$m=65536,t=3,p=4$%s$%s' "$salt_b64" "$hash_b64")
+        export ADMIN_TOKEN
+      fi
+      unset ADMIN_PASSWORD
+      case "${SMTP_FROM:-}" in
+        *'<'*'>'*)
+          name=$(printf '%s' "$SMTP_FROM" | sed 's/<.*//; s/"//g; s/^ *//; s/ *$//')
+          SMTP_FROM=$(printf '%s' "$SMTP_FROM" | sed 's/.*<\([^>]*\)>.*/\1/')
+          export SMTP_FROM
+          if [ -n "$name" ] && [ -z "${SMTP_FROM_NAME:-}" ]; then
+            export SMTP_FROM_NAME="$name"
+          fi
+          ;;
+      esac
+      exec /start.sh
+    run:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        readOnlyRootFilesystem: false
