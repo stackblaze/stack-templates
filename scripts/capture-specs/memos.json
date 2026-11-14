@@ -1,0 +1,22 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/auth",
+    "steps": [
+      { "waitForSelector": "#signin-username", "timeout": 60000 },
+      { "fill": { "#signin-username": "admin" } },
+      { "fill": { "#signin-password": "${MEMOS_ADMIN_PASSWORD}" } },
+      { "press": { "selector": "#signin-password", "key": "Enter" } },
+      { "waitForSelector": "[contenteditable=true]", "timeout": 30000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "timeline", "path": "/", "waitFor": "text=This week", "waitMs": 2500 },
+    { "name": "tag", "path": "/", "waitFor": "text=This week", "waitMs": 1500,
+      "steps": [ { "click": "text=/^travel$/" }, { "sleep": 2500 } ] },
+    { "name": "dev", "path": "/", "waitFor": "text=This week", "waitMs": 1500,
+      "steps": [ { "click": "text=/^dev$/" }, { "sleep": 2500 } ] }
+  ]
+}
