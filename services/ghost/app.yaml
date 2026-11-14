@@ -1,102 +1,294 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  name: ghost
   annotations:
-    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
     kubero.dev/template.description: Ghost is a powerful app for new-media creators
       to publish, share, and grow a business around their content.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghost/icon.png
-    kubero.dev/template.installation: ''
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/353959/169805900-66be5b89-0859-4816-8da9-528ed7534704.png"]'
+    kubero.dev/template.installation: 'Sign in at /ghost with the email in GHOST_ADMIN_EMAIL
+      and the password generated in GHOST_ADMIN_PASSWORD (both under Variables).
+      The template creates this owner on the first start while Ghost only listens
+      on 127.0.0.1, so the public setup page is never open. The first start runs
+      the database migrations and takes about 2 minutes. After signing in, change
+      the owner email in your profile to a real address you read, then set
+      security__staffDeviceVerification to true: Ghost then emails a sign-in code
+      for every new device. The database is MySQL 8.4 (the MySQL add-on), the only
+      database Ghost supports in production. Images and themes are kept on the
+      content volume. The Email add-on sends staff invites, password resets and
+      member sign-in links. Newsletters (bulk email) need a Mailgun account, set
+      in Settings > Newsletters; the Email add-on does not send them. If you add
+      a custom domain, set url to it.'
+    kubero.dev/template.links: '["https://ghost.org/docs/", "https://ghost.org/docs/config/"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghost/screenshot-site.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghost/screenshot-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghost/screenshot-posts.png"]'
     kubero.dev/template.source: https://github.com/TryGhost/Ghost
     kubero.dev/template.categories: '["cms", "work"]'
     kubero.dev/template.title: Ghost
     kubero.dev/template.website: https://ghost.org/
-  name: ghost
+  labels:
+    manager: kubero
 spec:
+  name: ghost
+  deploymentstrategy: docker
   addons:
-  - displayName: MariaDB
+  # Ghost: "MySQL 8 is the only supported database in production"
+  # (docs.ghost.org/faq/supported-databases). KuberoMySQL runs the official
+  # mysql image (8.4 LTS). The platform injects MYSQL_HOST, MYSQL_PORT,
+  # MYSQL_USER, MYSQL_PASSWORD (from the add-on's Secret), MYSQL_DATABASE,
+  # MYSQL_URL and DATABASE_URL (kubero-server sql-env.ts mysqlEnv).
+  # Passwords are set here: left empty, the chart mints them with a Secret
+  # lookup, which helm-operator's dry run cannot see.
+  - displayName: MySQL
     env: []
     icon: /img/addons/mysql.svg
     id: kubero-operator
-    kind: MariaDB
+    kind: KuberoMySQL
     resourceDefinitions:
-      MariaDB:
-        apiVersion: k8s.mariadb.com/v1alpha1
-        kind: MariaDB
+      KuberoMySQL:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoMySQL
         metadata:
           name: '{{STACKBLAZE_APP_NAME}}-mysql'
         spec:
-          metrics:
-            enabled: true
-          rootPasswordSecretKeyRef:
-            name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
-            key: password
-          database: ghost
-          username: ghost
-          passwordSecretKeyRef:
-            name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
-            key: password
-          storage:
-            size: 5Gi
-            storageClassName: fast
-          replicas: 1
-          resources:
-            requests:
-              cpu: 100m
-              memory: 256Mi
-            limits:
-              cpu: '1'
-              memory: 1Gi
-      rootSecret:
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-mysql-root'
-        type: Opaque
-        stringData:
-          password: ghost
-      appSecret:
-        apiVersion: v1
-        kind: Secret
-        metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-mysql-app'
-        type: Opaque
-        stringData:
-          password: ghost
-  cronjobs: []
-  deploymentstrategy: docker
+          mysql:
+            image:
+              tag: '8.4'
+            auth:
+              username: ghost
+              database: ghost
+              password: '{{STACKBLAZE_GEN_ALNUM:32}}'
+              rootPassword: '{{STACKBLAZE_GEN_ALNUM:32}}'
+            persistence:
+              enabled: true
+              size: 5Gi
+              storageClass: smart
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                cpu: '1'
+                memory: 1Gi
+  # Platform email (README "Email contract"): staff invites, password resets,
+  # staff device verification codes and member sign-in links
+  # (docs.ghost.org/config/#mail). Bulk mail (newsletters) needs Mailgun
+  # ("Mailgun is required for bulk mail") and is not sent through this.
+  # mail__options__secure is set by the start command from the port.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: mail__transport
+      value: SMTP
+    - name: mail__from
+      value: '$(SMTP_FROM)'
+    - name: mail__options__host
+      value: '$(SMTP_HOST)'
+    - name: mail__options__port
+      value: '$(SMTP_PORT)'
+    - name: mail__options__auth__user
+      value: '$(SMTP_USER)'
+    - name: mail__options__auth__pass
+      value: '$(SMTP_PASSWORD)'
+    resourceDefinitions: {}
   envVars:
+  - name: url
+    value: '{{STACKBLAZE_APP_URL}}'
   - name: database__client
     value: mysql
   - name: database__connection__host
     value: '$(MYSQL_HOST)'
+  - name: database__connection__port
+    value: '$(MYSQL_PORT)'
   - name: database__connection__user
-    value: ghost
+    value: '$(MYSQL_USER)'
   - name: database__connection__password
-    value: ghost
+    value: '$(MYSQL_PASSWORD)'
   - name: database__connection__database
-    value: ghost
-  - name: url
-    value: http://ghost.lacolhost.com:81
+    value: '$(MYSQL_DATABASE)'
+  # The image's production config logs to files under content/logs only.
+  - name: logging__transports
+    value: '["stdout"]'
+  # Owner created on the first start (see the start command).
+  - name: GHOST_ADMIN_EMAIL
+    value: admin@example.com
+  - name: GHOST_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Ghost emails a code for every staff sign-in from a new device, to the
+  # staff member's own address. The owner starts as GHOST_ADMIN_EMAIL, which
+  # nobody reads, so this starts off; set it to true after changing the
+  # owner email to a real one.
+  - name: security__staffDeviceVerification
+    value: 'false'
   extraVolumes:
-  - accessModes:
-    - ReadWriteMany
+  # Images, media, files, themes and settings (routes.yaml). Ghost's S3
+  # storage adapters are third-party, so uploads stay on the volume.
+  - name: '{{STACKBLAZE_APP_NAME}}-content'
     emptyDir: false
     mountPath: /var/lib/ghost/content
-    name: ghost-volume
-    size: 1Gi
+    size: 5Gi
     storageClass: shared
-  image:
-    containerPort: '2368'
-    repository: docker.io/library/ghost
-    tag: latest
-    run:
-      securityContext:
-        readOnlyRootFilesystem: false
-  name: ghost
+    accessModes:
+    - ReadWriteMany
+  cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  image:
+    containerPort: '2368'
+    pullPolicy: IfNotPresent
+    repository: docker.io/library/ghost
+    tag: 6.77.0
+    command:
+    - /bin/bash
+    - -c
+    - |
+      set -e
+      case "${mail__options__port:-}" in
+        465) export mail__options__secure=true ;;
+        ?*) export mail__options__secure=false ;;
+      esac
+      # The image has node but no curl or mysql client: the owner check and
+      # setup run in node, with the mysql2 driver Ghost ships.
+      cat > /tmp/sb-ghost.js <<'JS'
+      const http = require('http');
+      const mode = process.argv[2];
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      const site = new URL(process.env.url);
+      function req(method, path, body) {
+        return new Promise((resolve, reject) => {
+          const data = body ? JSON.stringify(body) : null;
+          const r = http.request({
+            host: '127.0.0.1', port: 2368, method, path,
+            headers: {
+              Host: site.host, 'X-Forwarded-Proto': site.protocol.replace(':', ''),
+              Origin: site.origin, Accept: 'application/json',
+              ...(data ? { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(data) } : {}),
+            },
+          }, (res) => {
+            let out = '';
+            res.on('data', (c) => (out += c));
+            res.on('end', () => resolve({ status: res.statusCode, body: out }));
+          });
+          r.on('error', reject);
+          r.setTimeout(10000, () => r.destroy(new Error('timeout')));
+          if (data) r.write(data);
+          r.end();
+        });
+      }
+      function db() {
+        const mysql = require('/var/lib/ghost/current/node_modules/mysql2/promise');
+        const e = process.env;
+        return mysql.createConnection({
+          host: e.database__connection__host, port: Number(e.database__connection__port || 3306),
+          user: e.database__connection__user, password: e.database__connection__password,
+          database: e.database__connection__database,
+        });
+      }
+      async function state() {
+        for (let i = 0; i < 150; i++) {
+          let c;
+          try {
+            c = await db();
+            try {
+              const [rows] = await c.query(
+                "SELECT u.status FROM users u JOIN roles_users ru ON ru.user_id = u.id " +
+                "JOIN roles r ON r.id = ru.role_id WHERE r.name = 'Owner' LIMIT 1");
+              return rows.length && rows[0].status !== 'inactive' ? 'ready' : 'empty';
+            } catch (err) {
+              if (err.code === 'ER_NO_SUCH_TABLE') return 'empty';
+              throw err;
+            }
+          } catch (err) {
+            console.error('waiting for the database:', err.code || err.message);
+            await sleep(2000);
+          } finally {
+            if (c) await c.end().catch(() => {});
+          }
+        }
+        throw new Error('database not reachable');
+      }
+      async function setup(pid) {
+        const path = '/ghost/api/admin/authentication/setup/';
+        for (let i = 0; ; i++) {
+          try { process.kill(pid, 0); } catch { throw new Error('Ghost exited during first start'); }
+          if (i > 300) throw new Error('Ghost did not start');
+          const r = await req('GET', path).catch(() => null);
+          if (r && r.status === 200) {
+            if (JSON.parse(r.body).setup[0].status) return;
+            break;
+          }
+          await sleep(2000);
+        }
+        const e = process.env;
+        const r = await req('POST', path, { setup: [{
+          name: e.GHOST_ADMIN_NAME || 'Admin', email: e.GHOST_ADMIN_EMAIL,
+          password: e.GHOST_ADMIN_PASSWORD, blogTitle: e.GHOST_SITE_TITLE || 'Ghost',
+        }] });
+        const check = await req('GET', path);
+        if (!(check.status === 200 && JSON.parse(check.body).setup[0].status)) {
+          throw new Error('owner setup failed (HTTP ' + r.status + '): ' + r.body.slice(0, 300));
+        }
+        const c = await db();
+        // Ghost Explore: on by default, it sends the site URL, theme and
+        // social links to explore.ghost.org on every boot. Off on the first
+        // start; Settings can turn it back on.
+        await c.query("UPDATE settings SET value = 'false' WHERE `key` = 'explore_ping'");
+        // Member emails (sign-in links) default to noreply@<site host>, which
+        // the Email add-on's relay refuses. Empty means "use mail.from"
+        // (settings-helpers getMembersSupportAddress), i.e. SMTP_FROM.
+        await c.query("UPDATE settings SET value = '' WHERE `key` = 'members_support_address'");
+        await c.end();
+      }
+      (async () => {
+        if (mode === 'state') console.log(await state());
+        else await setup(Number(process.argv[3]));
+      })().catch((err) => { console.error(err.message); process.exit(1); });
+      JS
+      state="$(node /tmp/sb-ghost.js state)"
+      if [ "$state" = "empty" ]; then
+        echo "First start: creating the owner while Ghost listens on 127.0.0.1 only"
+        # No mail while bootstrapping: the welcome email would go to
+        # GHOST_ADMIN_EMAIL, which nobody reads. No Explore ping either
+        # (explore_ping is switched off below, before the real start).
+        server__host=127.0.0.1 mail__transport=stub explore__update_url= \
+          docker-entrypoint.sh node current/index.js &
+        pid=$!
+        if ! node /tmp/sb-ghost.js setup "$pid"; then
+          kill "$pid" 2>/dev/null || true
+          wait "$pid" || true
+          exit 1
+        fi
+        echo "Owner created; restarting Ghost on all interfaces"
+        kill "$pid"
+        wait "$pid" || true
+      fi
+      exec docker-entrypoint.sh node current/index.js
+    run:
+      # The image's entrypoint steps down to node (uid 1000) when started as
+      # root; start as 1000 directly. The content volume is written as 1000.
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
+        readOnlyRootFilesystem: false
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    path: /ghost/api/admin/site/
+    startupSeconds: 600
+    timeoutSeconds: 5
+    periodSeconds: 10

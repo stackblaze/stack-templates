@@ -1,0 +1,21 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/ghost/#/signin",
+    "steps": [
+      { "waitForSelector": "input[name=identification]" },
+      { "fill": { "input[name=identification]": "${GHOST_ADMIN_EMAIL}" } },
+      { "fill": { "input[name=password]": "${GHOST_ADMIN_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForSelector": "text=Posts" }
+    ],
+    "waitAfterMs": 2500
+  },
+  "pages": [
+    { "name": "site", "path": "/", "waitMs": 2000 },
+    { "name": "editor", "path": "/ghost/#/posts", "waitMs": 3000,
+      "steps": [ { "click": "text=Crossing the high pass" }, { "waitForSelector": "[data-lexical-editor=true]" } ] },
+    { "name": "posts", "path": "/ghost/#/posts", "waitMs": 3000 }
+  ]
+}
