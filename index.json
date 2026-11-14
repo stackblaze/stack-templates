@@ -1351,7 +1351,7 @@
    "name": "documenso",
    "description": "Send documents for e-signature, sign them in the browser and keep a digitally signed PDF with a full audit trail. Open source alternative to DocuSign.",
    "source": "https://github.com/documenso/documenso",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/icon.png",
    "website": "https://documenso.com/",
    "installation": "",
    "architecture": [
@@ -1364,9 +1364,9 @@
     "security"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-documents.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-signing.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-completed.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-documents.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-signing.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-completed.png"
    ],
    "links": [
     "https://docs.documenso.com/docs/self-hosting"

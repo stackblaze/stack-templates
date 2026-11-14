@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: Send documents for e-signature, sign them in
       the browser and keep a digitally signed PDF with a full audit trail. Open source
       alternative to DocuSign.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/icon.png
     kubero.dev/template.installation: 'Sign in at your app URL with the email in
       ADMIN_EMAIL and the password generated in ADMIN_PASSWORD (both under
       Variables). Set ADMIN_EMAIL to your own address before you deploy: copies of
@@ -28,7 +28,7 @@ metadata:
       off (DOCUMENSO_DISABLE_TELEMETRY). Licence: AGPL-3.0 (Enterprise features need
       a Documenso licence). Documenso 2.22.0.'
     kubero.dev/template.links: '["https://docs.documenso.com/docs/self-hosting"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-documents.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-signing.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documenso/screenshot-completed.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-documents.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-signing.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-completed.png"]'
     kubero.dev/template.source: https://github.com/documenso/documenso
     kubero.dev/template.categories: '["work", "productivity", "security"]'
     kubero.dev/template.title: Documenso
