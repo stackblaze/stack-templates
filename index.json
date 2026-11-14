@@ -2541,31 +2541,39 @@
   },
   {
    "name": "memos",
-   "description": "Memos is a simple note taking app. ",
+   "description": "Open-source, self-hosted note taking: a private timeline of quick Markdown notes with tags, tasks, attachments and sharing, backed by Postgres.",
    "source": "https://github.com/usememos/memos",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/memos/icon.png",
-   "website": "https://usememos.com/",
-   "installation": "",
+   "website": "https://usememos.com",
+   "installation": "First start creates the admin account before the app is reachable, so nobody can claim a fresh instance. Sign in with the username admin and the generated password in MEMOS_ADMIN_PASSWORD (Variables); change it under Settings > My Account. Public sign-up is off: add people under Settings > Members, or allow registration under Settings > System. The instance starts Private: visitors see only the sign-in page and memo share links until you switch Settings > System > Instance access to Public. Attachments are stored on the data volume. Email notifications (comments, mentions, Space invitations) use the StackBlaze Email add-on, set up on the first start; you can change them under Settings > Notifications.",
    "architecture": [],
    "categories": [
     "productivity",
+    "notes",
     "work"
    ],
    "screenshots": [
-    "https://usememos.com/demo.webp"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/memos/screenshot-timeline.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/memos/screenshot-tag.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/memos/screenshot-dev.png"
    ],
-   "links": [],
+   "links": [
+    "https://usememos.com/docs",
+    "https://github.com/usememos/memos/blob/main/docs/design/declarative-configuration.md",
+    "https://usememos.com/docs/api"
+   ],
    "addons": [
-    "Cluster"
+    "Cluster",
+    "Smtp"
    ],
-   "stars": 59492,
-   "forks": 4336,
-   "watchers": 59492,
-   "issues": 27,
-   "last_updated": "2026-05-11T11:56:19Z",
-   "last_pushed": "2026-05-09T15:37:05Z",
+   "stars": 64451,
+   "forks": 4958,
+   "watchers": 64451,
+   "issues": 63,
+   "last_updated": "2026-11-14T04:21:26Z",
+   "last_pushed": "2026-11-13T01:15:14Z",
    "created_at": "2021-12-08T15:30:18Z",
-   "size": 38001,
+   "size": 49890,
    "language": "Go",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/memos/app.yaml",
