@@ -8217,6 +8217,58 @@
    ]
   },
   {
+   "name": "evolution-api",
+   "description": "Connect WhatsApp numbers by QR code and send and receive messages over a REST API, with webhooks for incoming events and a built-in manager to run your instances.",
+   "source": "https://github.com/evolution-foundation/evolution-api",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/icon.png",
+   "website": "https://evolutionfoundation.com.br",
+   "installation": "",
+   "architecture": [
+    "linux/amd64",
+    "linux/arm64/v8"
+   ],
+   "categories": [
+    "communication",
+    "automation",
+    "development"
+   ],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/screenshot-instances.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/screenshot-qr.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/screenshot-webhook.png"
+   ],
+   "links": [
+    "https://doc.evolution-api.com/v2/en/get-started/introduction"
+   ],
+   "addons": [
+    "Cluster",
+    "Valkey"
+   ],
+   "stars": 10117,
+   "forks": 7460,
+   "watchers": 168,
+   "issues": 266,
+   "last_updated": "2026-11-14T10:20:46Z",
+   "last_pushed": "2026-11-12T14:22:28Z",
+   "created_at": "2023-06-09T10:46:49Z",
+   "size": 14817,
+   "language": "TypeScript",
+   "gitops": false,
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/app.yaml",
+   "status": "active",
+   "license": "Apache License 2.0 with additional conditions",
+   "spdx_id": "NOASSERTION",
+   "dirname": "evolution-api",
+   "deploymentTypes": [
+    {
+     "id": "standard",
+     "label": "Standard",
+     "default": true,
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/app.yaml"
+    }
+   ]
+  },
+  {
    "name": "fugu",
    "description": "Free, privacy-friendly, simple, open-source and self-hostable product analytics.",
    "source": "https://github.com/shafy/fugu",

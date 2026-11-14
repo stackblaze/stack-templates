@@ -1,0 +1,285 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: evolution-api
+  annotations:
+    kubero.dev/template.architecture: '["linux/amd64", "linux/arm64/v8"]'
+    kubero.dev/template.description: Connect WhatsApp numbers by QR code and send
+      and receive messages over a REST API, with webhooks for incoming events and
+      a built-in manager to run your instances.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/icon.png
+    kubero.dev/template.installation: 'Open your app URL followed by /manager and
+      sign in with the app URL and the global API key generated in
+      AUTHENTICATION_API_KEY (under Variables). Every API call needs that key (or
+      an instance''s own token) in the apikey header; without it the API answers
+      401. Create an instance, then scan its QR code from WhatsApp on your phone
+      (Linked devices) to connect the number. Instances, their settings and the
+      WhatsApp session keys are kept in PostgreSQL and Valkey, so a connected
+      number stays connected across redeploys. Telemetry is off
+      (TELEMETRY_ENABLED=false). Chatwoot, Typebot, OpenAI, Dify, n8n, Flowise,
+      EvoAI, RabbitMQ, SQS, Kafka, Pusher, websocket events and S3 media storage
+      are off; turn on the ones you use with their *_ENABLED variables and
+      redeploy. This uses the unofficial WhatsApp Web protocol (Baileys): use a
+      number you are allowed to automate and follow WhatsApp''s terms. Licence:
+      Apache-2.0 with extra conditions (keep the Evolution API logo and copyright
+      in the manager; say in your product that it uses Evolution API).
+      Evolution API 2.3.7.'
+    kubero.dev/template.links: '["https://doc.evolution-api.com/v2/en/get-started/introduction"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/screenshot-instances.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/screenshot-qr.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/evolution-api/screenshot-webhook.png"]'
+    kubero.dev/template.source: https://github.com/evolution-foundation/evolution-api
+    kubero.dev/template.categories: '["communication", "automation", "development"]'
+    kubero.dev/template.title: Evolution API
+    kubero.dev/template.website: https://evolutionfoundation.com.br
+  labels:
+    manager: kubero
+spec:
+  name: evolution-api
+  deploymentstrategy: docker
+  addons:
+  # Instances, their settings and webhooks, contacts, chats, messages and the
+  # WhatsApp session credentials ("Session" table, DATABASE_SAVE_DATA_INSTANCE).
+  # prisma/postgresql-schema.prisma reads DATABASE_CONNECTION_URI.
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: smart
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: evolution
+              owner: evolution
+              secret:
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
+              postInitApplicationSQL:
+              - GRANT ALL ON SCHEMA public TO evolution
+              - GRANT CREATE ON SCHEMA public TO evolution
+              - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO evolution
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: evolution
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # With Redis on, Baileys' signal keys (pre-keys, sessions, sender keys) are
+  # stored as Valkey hashes without a TTL (use-multi-file-auth-state-prisma.ts
+  # writeData -> cache.hSet); without it they go to files under
+  # /evolution/instances. Also group metadata and message-retry caches.
+  # Upstream's docker-compose ships Redis with persistence.
+  - displayName: Valkey
+    env: []
+    icon: /img/addons/redis.svg
+    id: kubero-operator
+    kind: Valkey
+    resourceDefinitions:
+      Valkey:
+        apiVersion: rds.valkey.buf.red/v1alpha1
+        kind: Valkey
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
+        spec:
+          version: '8.0'
+          arch: replica
+          replicas:
+            shards: 1
+            replicasOfShard: 1
+          access:
+            serviceType: ClusterIP
+          storage:
+            capacity: 1Gi
+            storageClassName: fast
+          # Append-only file, as upstream's compose (redis-server
+          # --appendonly yes): a crash loses at most a second of key updates
+          # instead of up to 10 minutes of RDB snapshots.
+          customConfigs:
+            appendonly: 'yes'
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  # The image ships .env.example as /evolution/.env and the app loads it with
+  # dotenv (src/config/env.config.ts), so every setting not set here takes
+  # upstream's example value (including a published AUTHENTICATION_API_KEY).
+  # Everything that matters is therefore set explicitly.
+  envVars:
+  - name: SERVER_TYPE
+    value: http
+  - name: SERVER_PORT
+    value: '8080'
+  # Links to stored media and the manager's default server address.
+  - name: SERVER_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # Global API key: required (apikey header) to create and list instances and
+  # for every instance route (src/api/guards/auth.guard.ts). The manager signs
+  # in with it.
+  - name: AUTHENTICATION_API_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  - name: AUTHENTICATION_EXPOSE_IN_FETCH_INSTANCES
+    value: 'true'
+  # Verify token for the WhatsApp Cloud API webhook (/webhook/meta); upstream's
+  # default is the literal "evolution".
+  - name: WA_BUSINESS_TOKEN_WEBHOOK
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  - name: DATABASE_PROVIDER
+    value: postgresql
+  - name: DATABASE_CONNECTION_URI
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  # Instances are loaded at start by this name; keep it unchanged.
+  - name: DATABASE_CONNECTION_CLIENT_NAME
+    value: evolution_exchange
+  - name: DATABASE_SAVE_DATA_INSTANCE
+    value: 'true'
+  - name: CACHE_REDIS_ENABLED
+    value: 'true'
+  - name: CACHE_REDIS_URI
+    value: '$(REDIS_URL)'
+  - name: CACHE_REDIS_PREFIX_KEY
+    value: evolution
+  - name: CACHE_REDIS_SAVE_INSTANCES
+    value: 'false'
+  - name: CACHE_LOCAL_ENABLED
+    value: 'false'
+  # Never delete instances that are not connected (the persistence of an
+  # instance waiting for its QR scan depends on it).
+  - name: DEL_INSTANCE
+    value: 'false'
+  # Phone-home: POSTs every API route name to log.evolution-api.com.
+  - name: TELEMETRY_ENABLED
+    value: 'false'
+  # Prisma CLI's update check (checkpoint.prisma.io) at every start.
+  - name: CHECKPOINT_DISABLE
+    value: '1'
+  - name: PROMETHEUS_METRICS
+    value: 'false'
+  # Integrations, all off until the user turns them on.
+  - name: CHATWOOT_ENABLED
+    value: 'false'
+  - name: TYPEBOT_ENABLED
+    value: 'false'
+  - name: OPENAI_ENABLED
+    value: 'false'
+  - name: DIFY_ENABLED
+    value: 'false'
+  - name: N8N_ENABLED
+    value: 'false'
+  - name: EVOAI_ENABLED
+    value: 'false'
+  - name: FLOWISE_ENABLED
+    value: 'false'
+  - name: RABBITMQ_ENABLED
+    value: 'false'
+  - name: SQS_ENABLED
+    value: 'false'
+  - name: KAFKA_ENABLED
+    value: 'false'
+  - name: PUSHER_ENABLED
+    value: 'false'
+  - name: WEBSOCKET_ENABLED
+    value: 'false'
+  - name: WEBHOOK_GLOBAL_ENABLED
+    value: 'false'
+  - name: S3_ENABLED
+    value: 'false'
+  - name: LOG_LEVEL
+    value: ERROR,WARN,INFO,LOG,WEBHOOKS
+  - name: LOG_COLOR
+    value: 'false'
+  - name: LANGUAGE
+    value: en
+  - name: TZ
+    value: UTC
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    # Static manager page. "/" also works but fetches web.whatsapp.com/sw.js
+    # on every call (src/api/routes/index.router.ts), so it is not used for
+    # probes.
+    path: /manager/
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8080'
+    pullPolicy: IfNotPresent
+    repository: docker.io/evoapicloud/evolution-api
+    tag: v2.3.7
+    # Replaces the image's entrypoint (Docker/scripts/deploy_database.sh, then
+    # npm run start:prod) with the same steps, plus a wait for a real database
+    # login (the entrypoint exits when the database is not up yet). The
+    # script itself is not used: it echoes $DATABASE_URL, which the platform
+    # injects with the password, into the app log.
+    command:
+    - /bin/bash
+    - -c
+    - |
+      set -eu
+      cd /evolution
+      n=0
+      until echo 'SELECT 1' | npx prisma db execute --stdin --schema ./prisma/postgresql-schema.prisma >/dev/null 2>/tmp/dbwait.err; do
+        n=$((n+1))
+        if [ "$n" -gt 60 ]; then cat /tmp/dbwait.err >&2; echo "database not reachable" >&2; exit 1; fi
+        echo "waiting for the database"; sleep 5
+      done
+      # The manager hotlinks its logo from evolution-api.com/files/evo/, which
+      # answers 404 (also on upstream main); use the copy in the image.
+      sed -i -e 's#https://evolution-api.com/files/evo/evolution-logo-white.svg#/assets/images/evolution-logo.png#g' \
+        -e 's#https://evolution-api.com/files/evo/evolution-logo.svg#/assets/images/evolution-logo.png#g' \
+        manager/dist/assets/index-*.js || echo "manager logo: not patched" >&2
+      echo "Deploying migrations for postgresql"
+      npm run db:deploy
+      npm run db:generate
+      exec node dist/main
+    # Root, as upstream's image (no USER): the entrypoint rewrites
+    # prisma/migrations and the app creates /evolution/instances/<id>.
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
