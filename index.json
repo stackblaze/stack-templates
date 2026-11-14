@@ -8134,7 +8134,7 @@
    "name": "librechat",
    "description": "Self-hosted AI chat for your team: OpenAI, Anthropic, Google and any OpenAI-compatible model in one interface, with agents, artifacts and conversation history. Bring your own API keys.",
    "source": "https://github.com/LibreChat-AI/LibreChat",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/librechat/icon.png",
+   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/icon.png",
    "website": "https://www.librechat.ai",
    "installation": "",
    "architecture": [],
@@ -8143,9 +8143,9 @@
     "communication"
    ],
    "screenshots": [
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/librechat/screenshot-chat.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/librechat/screenshot-code.png",
-    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/librechat/screenshot-models.png"
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/screenshot-chat.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/screenshot-code.png",
+    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/screenshot-models.png"
    ],
    "links": [
     "https://www.librechat.ai/docs"

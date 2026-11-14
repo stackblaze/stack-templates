@@ -4,7 +4,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: "Self-hosted AI chat for your team: OpenAI, Anthropic, Google and any OpenAI-compatible model in one interface, with agents, artifacts, presets and conversation history.\nBring your own API keys."
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/librechat/icon.png
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/icon.png
     kubero.dev/template.installation: 'An admin account is created on the first start,
       and public registration is closed, so nobody can claim the instance by opening
       it first. Sign in with the email in LIBRECHAT_ADMIN_EMAIL and the password generated
@@ -21,7 +21,7 @@ metadata:
       separate RAG API) are switched off in LIBRECHAT_YAML; conversation search (Meilisearch)
       is not included. Uploads and generated images live on the volume at /app/data.'
     kubero.dev/template.links: '["https://www.librechat.ai/docs", "https://www.librechat.ai/docs/configuration/librechat_yaml"]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/librechat/screenshot-chat.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/librechat/screenshot-code.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/librechat/screenshot-models.png"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/screenshot-chat.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/screenshot-code.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/screenshot-models.png"]'
     kubero.dev/template.source: https://github.com/LibreChat-AI/LibreChat
     kubero.dev/template.categories: '["ai", "communication"]'
     kubero.dev/template.title: "LibreChat"
