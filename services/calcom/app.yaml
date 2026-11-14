@@ -1,19 +1,23 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  name: calcom
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Turn availability into booked meetings with customizable scheduling pages and automated workflows.\nA flexible alternative to Calendly and SavvyCal."
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/calcom/icon.png
-    kubero.dev/template.installation: ''
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/8019099/176390354-f1bc7069-0341-437a-9bb8-eb41092b4016.gif"]'
-    kubero.dev/template.source: https://github.com/calcom/cal.com
+    kubero.dev/template.description: "Open-source scheduling: share booking pages, set your availability once, and let people pick a time. Bookings, reschedules and cancellations send email confirmations, with webhooks and embeds for your site."
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2a01bb6598e650610b50543dfa421f6051452408/services/calcom/icon.png
+    kubero.dev/template.installation: "The first start creates the admin account before the app is reachable, so Cal.com's setup wizard is never open to visitors. Sign in at /auth/login with the email in CALCOM_ADMIN_EMAIL (admin@example.com) and the generated password in CALCOM_ADMIN_PASSWORD (Variables). Change the email to your own first (Settings > My account > General, then confirm the link Cal.com mails to the new address), because booking notifications go to it. The first sign-in opens Cal.com's short onboarding (name, time zone, availability); your booking page is then /<username>. Public sign-up is off (the disable-signup feature flag); Cal.com unlocks its admin settings only after the admin turns on two-factor authentication (Settings > Security), and Settings > Admin > Features then lets you open sign-up. Email (confirmations, reschedules, cancellations, password resets) goes out through the Email add-on. CALENDSO_ENCRYPTION_KEY encrypts stored calendar credentials and 2FA secrets: keep it. This is Cal.com's open-source AGPLv3 edition without a license key: teams and round-robin, organizations, workflows, routing forms, insights, API keys, SSO/SAML and admin user management are enterprise features and stay locked. Give every event type a location (a meeting link, phone or address): Cal Video, Cal.com's default, needs a Daily.co API key, and a booking without a location only sends you an \"[Action Required]\" mail instead of the confirmations. Google Calendar, Google Meet and Zoom also need your own accounts with those providers; CalDAV and Apple Calendar work without one."
+    kubero.dev/template.links: '["https://cal.com/docs/self-hosting/installation", "https://cal.com/docs/self-hosting/docker", "https://github.com/calcom/cal.diy/blob/v6.2.0/.env.example"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2a01bb6598e650610b50543dfa421f6051452408/services/calcom/screenshot-booking-page.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2a01bb6598e650610b50543dfa421f6051452408/services/calcom/screenshot-event-types.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2a01bb6598e650610b50543dfa421f6051452408/services/calcom/screenshot-bookings.png"]'
+    kubero.dev/template.source: https://github.com/calcom/cal.diy
     kubero.dev/template.categories: '["work", "utilities"]'
-    kubero.dev/template.title: "Cal.com Scheduling"
+    kubero.dev/template.title: Cal.com
     kubero.dev/template.website: https://cal.com/
-  name: calcom
+  labels:
+    manager: kubero
 spec:
+  name: calcom
+  deploymentstrategy: docker
   addons:
   - displayName: PostgreSQL (CloudNativePG)
     env: []
@@ -25,7 +29,7 @@ spec:
         apiVersion: postgresql.cnpg.io/v1
         kind: Cluster
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-db'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql'
         spec:
           instances: 1
           imageName: ghcr.io/cloudnative-pg/postgresql:16
@@ -45,33 +49,38 @@ spec:
               database: calcom
               owner: calcom
               secret:
-                name: '{{STACKBLAZE_APP_NAME}}-db-app'
+                name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
               postInitApplicationSQL:
               - GRANT ALL ON SCHEMA public TO calcom
               - GRANT CREATE ON SCHEMA public TO calcom
               - ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO calcom
           enableSuperuserAccess: true
           superuserSecret:
-            name: '{{STACKBLAZE_APP_NAME}}-db-superuser'
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
       superuserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-db-superuser'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-superuser'
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: calcom
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-db-app'
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-app'
         type: kubernetes.io/basic-auth
         stringData:
           username: calcom
-          password: calcom
-  # Platform email (see README "Email contract"). Cal.com nodemailer SMTP.
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Platform email (README "Email contract"): booking confirmations,
+  # reschedules, cancellations, booking requests, password resets and email
+  # verification (nodemailer, packages/lib/serverConfig.ts). 587 = STARTTLS,
+  # 465 = TLS. Cal.com writes the sender as `EMAIL_FROM_NAME <EMAIL_FROM>`
+  # itself, so the start command splits the platform's SMTP_FROM (which can be
+  # `Name <address>`) into those two.
   - displayName: Email
     icon: /img/addons/email.svg
     id: kubero-smtp
@@ -85,56 +94,180 @@ spec:
       value: '$(SMTP_USER)'
     - name: EMAIL_SERVER_PASSWORD
       value: '$(SMTP_PASSWORD)'
-    - name: EMAIL_FROM
-      value: '$(SMTP_FROM)'
-    - name: EMAIL_FROM_NAME
-      value: Cal.com
     resourceDefinitions: {}
-  cronjobs: []
-  deploymentstrategy: docker
   envVars:
-  - name: DATABASE_URL
-    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
-  - name: DATABASE_DIRECT_URL
-    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
-  - name: DATABASE_HOST
-    value: '$(PGHOST):$(PGPORT)'
-  - name: NODE_ENV
-    value: production
-  - name: NEXT_PUBLIC_LICENSE_CONSENT
-    value: agree
+  # Public URL. The image is built for http://localhost:3000; the start
+  # command rewrites the built pages to this URL (upstream's
+  # scripts/replace-placeholder.sh). Links in emails and the booking pages
+  # use it.
   - name: NEXT_PUBLIC_WEBAPP_URL
     value: '{{STACKBLAZE_APP_URL}}'
   - name: NEXTAUTH_URL
     value: '{{STACKBLAZE_APP_URL}}'
+  # Server-side auth calls (the login page fetches /api/auth/csrf) go to the
+  # pod itself instead of out through the edge, which isn't routing yet
+  # while the startup probe runs.
+  - name: NEXTAUTH_URL_INTERNAL
+    value: http://127.0.0.1:3000
+  - name: DATABASE_URL
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  - name: DATABASE_DIRECT_URL
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  # Signs session cookies (upstream: `openssl rand -base64 32`).
   - name: NEXTAUTH_SECRET
-    value: '00000000000000000000000000000000'
+    value: '{{STACKBLAZE_GEN_ALNUM:48}}'
+  # AES-256 key for stored calendar/app credentials and 2FA secrets: exactly
+  # 32 characters (read as 32 latin1 bytes, packages/lib/crypto.ts). Losing
+  # it makes those unreadable.
   - name: CALENDSO_ENCRYPTION_KEY
-    value: '11111111111111111111111111111111'
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  # Keys for the scheduled endpoints the start command calls in-pod:
+  # /api/tasks/cron (CRON_SECRET) and /api/cron/* (CRON_API_KEY).
+  - name: CRON_SECRET
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  - name: CRON_API_KEY
+    value: '{{STACKBLAZE_GEN_HEX:32}}'
+  # The admin account, created by the start command on the first start (see
+  # below). Cal.com wants admin passwords of 15+ characters with upper and
+  # lower case and a digit: the fixed `Cal9` prefix guarantees that, the 24
+  # generated characters carry the strength.
+  - name: CALCOM_ADMIN_EMAIL
+    value: admin@example.com
+  - name: CALCOM_ADMIN_USERNAME
+    value: admin
+  - name: CALCOM_ADMIN_PASSWORD
+    value: 'Cal9{{STACKBLAZE_GEN_ALNUM:24}}'
+  - name: CALCOM_TELEMETRY_DISABLED
+    value: '1'
+  - name: NODE_ENV
+    value: production
+  # Fits the container's memory limit.
+  - name: NODE_OPTIONS
+    value: --max-old-space-size=1536
   extraVolumes: []
+  cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
   resources:
     requests:
-      cpu: 500m
+      cpu: 250m
       memory: 1Gi
     limits:
-      cpu: '1'
+      cpu: '2'
       memory: 2Gi
+  # The login page reads the users table, so it also proves the database.
+  # The first start runs ~590 migrations before the server listens.
   healthcheck:
     enabled: true
     path: /auth/login
     startupSeconds: 900
-    timeoutSeconds: 5
-    periodSeconds: 10
+    timeoutSeconds: 10
+    periodSeconds: 15
+  # Official image, last Cal.com release (v6.2.0, 2026-03-01). Upstream's repo
+  # became Cal.diy (MIT, enterprise code removed) in April 2026 and has
+  # published no image since. node:20 Debian with bash and wget, runs as root
+  # (it rewrites its own build output to the public URL at start). No volume:
+  # all state, avatars included, is in Postgres.
   image:
     containerPort: '3000'
-    pullPolicy: Always
-    repository: calcom.docker.scarf.sh/calcom/cal.com
+    pullPolicy: IfNotPresent
+    repository: docker.io/calcom/cal.com
+    tag: v6.2.0
+    command:
+    - /bin/bash
+    - -c
+    - |
+      set -euo pipefail
+      cd /calcom
+      log() { echo "[stackblaze] $*"; }
+      # Email: an add-on reference that didn't resolve stays as `$(NAME)`.
+      for v in EMAIL_SERVER_HOST EMAIL_SERVER_PORT EMAIL_SERVER_USER EMAIL_SERVER_PASSWORD; do
+        case "${!v:-}" in ''|'$('*) unset "$v" ;; esac
+      done
+      if [ -z "${EMAIL_FROM:-}" ] && [ -n "${SMTP_FROM:-}" ]; then
+        case "$SMTP_FROM" in
+          *"<"*">"*)
+            EMAIL_FROM=$(printf '%s' "$SMTP_FROM" | sed 's/.*<//; s/>.*//')
+            name=$(printf '%s' "$SMTP_FROM" | sed 's/<.*//; s/^[[:space:]"]*//; s/[[:space:]"]*$//')
+            if [ -n "$name" ] && [ -z "${EMAIL_FROM_NAME:-}" ]; then export EMAIL_FROM_NAME="$name"; fi ;;
+          *) EMAIL_FROM=$SMTP_FROM ;;
+        esac
+        export EMAIL_FROM
+      fi
+      case "${NEXT_PUBLIC_WEBAPP_URL:-}" in
+        http://*|https://*) ;;
+        *) log "NEXT_PUBLIC_WEBAPP_URL is not a URL; not starting"; exit 1 ;;
+      esac
+      export NEXT_PUBLIC_WEBAPP_URL="${NEXT_PUBLIC_WEBAPP_URL%/}" NEXTAUTH_URL="${NEXTAUTH_URL%/}"
+      log "rewriting the build for $NEXT_PUBLIC_WEBAPP_URL"
+      scripts/replace-placeholder.sh "$BUILT_NEXT_PUBLIC_WEBAPP_URL" "$NEXT_PUBLIC_WEBAPP_URL" >/dev/null
+      # Migrations double as the database wait: a real login, retried while
+      # the Postgres add-on comes up.
+      i=0
+      until npx prisma migrate deploy --schema packages/prisma/schema.prisma >/tmp/migrate.log 2>&1; do
+        i=$((i+1))
+        if [ "$i" -ge 100 ]; then cat /tmp/migrate.log; log "migrations failed; not starting"; exit 1; fi
+        log "waiting for the database ($i)"; sleep 3
+      done
+      tail -n 1 /tmp/migrate.log
+      npx ts-node --transpile-only scripts/seed-app-store.ts >/tmp/seed-app-store.log 2>&1 \
+        || { cat /tmp/seed-app-store.log; log "app store seed failed"; exit 1; }
+      # Cal.com's /auth/setup wizard lets the first visitor create the admin
+      # while the users table is empty. Create the admin here, before the
+      # server listens, the way that wizard's API does
+      # (apps/web/app/api/auth/setup/route.ts), and turn public sign-up off.
+      cat > scripts/stackblaze-admin.ts <<'TS'
+      import { hash } from "bcryptjs";
+      import prisma from "@calcom/prisma";
+      async function main() {
+        if ((await prisma.user.count()) > 0) return console.log("[stackblaze] admin exists");
+        const email = String(process.env.CALCOM_ADMIN_EMAIL || "admin@example.com").trim().toLowerCase();
+        const username = String(process.env.CALCOM_ADMIN_USERNAME || "admin").trim().toLowerCase();
+        const password = String(process.env.CALCOM_ADMIN_PASSWORD || "");
+        if (password.length < 15) throw new Error("CALCOM_ADMIN_PASSWORD is missing or shorter than 15 characters");
+        await prisma.$transaction([
+          prisma.user.create({
+            data: {
+              username, email, name: "Admin", role: "ADMIN", emailVerified: new Date(), locale: "en",
+              identityProvider: "CAL", creationSource: "WEBAPP",
+              password: { create: { hash: await hash(password, 12) } },
+            },
+          }),
+          prisma.feature.upsert({
+            where: { slug: "disable-signup" },
+            update: { enabled: true },
+            create: { slug: "disable-signup", enabled: true, description: "Enable to prevent users from signing up", type: "OPERATIONAL" },
+          }),
+        ]);
+        console.log("[stackblaze] admin created, public sign-up off");
+      }
+      main().then(() => process.exit(0), (e) => { console.error("[stackblaze] admin bootstrap failed:", e?.message || e); process.exit(1); });
+      TS
+      npx ts-node --transpile-only scripts/stackblaze-admin.ts || { log "not starting"; exit 1; }
+      rm -f scripts/stackblaze-admin.ts
+      unset CALCOM_ADMIN_PASSWORD
+      # Scheduled work (upstream runs these from Vercel cron): the task queue
+      # every minute, booking reminders and scheduled webhooks every 5
+      # minutes, task cleanup daily. Called on the pod itself.
+      (
+        sleep 90; n=0
+        while :; do
+          wget -q -O /dev/null --header "Authorization: Bearer $CRON_SECRET" http://127.0.0.1:3000/api/tasks/cron || log "cron: tasks failed"
+          if [ $((n % 5)) -eq 0 ]; then
+            wget -q -O /dev/null --post-data= "http://127.0.0.1:3000/api/cron/bookingReminder?apiKey=$CRON_API_KEY" || log "cron: bookingReminder failed"
+            wget -q -O /dev/null --post-data= "http://127.0.0.1:3000/api/cron/webhookTriggers?apiKey=$CRON_API_KEY" || log "cron: webhookTriggers failed"
+          fi
+          if [ $((n % 1440)) -eq 0 ]; then
+            wget -q -O /dev/null --header "Authorization: Bearer $CRON_SECRET" http://127.0.0.1:3000/api/tasks/cleanup || log "cron: cleanup failed"
+          fi
+          n=$((n + 1)); sleep 60
+        done
+      ) &
+      # next itself as PID 1 (`yarn start` adds two yarn processes, ~190 MB).
+      cd apps/web
+      exec /calcom/node_modules/.bin/next start --port 3000
     run:
       securityContext:
         readOnlyRootFilesystem: false
-    tag: latest
-  name: calcom

@@ -1,19 +1,23 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  name: memos
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: 'Memos is a simple note taking app. '
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/memos/icon.png
-    kubero.dev/template.installation: ''
-    kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://usememos.com/demo.webp"]'
+    kubero.dev/template.description: "Open-source, self-hosted note taking: a private timeline of quick Markdown notes with tags, tasks, attachments and sharing, backed by Postgres."
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fcadd80dae23dff51d36b128e5c0bd14391a7cb3/services/memos/icon.png
+    kubero.dev/template.installation: "First start creates the admin account before the app is reachable, so nobody can claim a fresh instance. Sign in with the username admin and the generated password in MEMOS_ADMIN_PASSWORD (Variables); change it under Settings > My Account. Public sign-up is off: add people under Settings > Members, or allow registration under Settings > System. The instance starts Private: visitors see only the sign-in page and memo share links until you switch Settings > System > Instance access to Public. Attachments are stored on the data volume. Email notifications (comments, mentions, Space invitations) use the StackBlaze Email add-on, set up on the first start; you can change them under Settings > Notifications."
+    kubero.dev/template.links: '["https://usememos.com/docs", "https://github.com/usememos/memos/blob/main/docs/design/declarative-configuration.md", "https://usememos.com/docs/api"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fcadd80dae23dff51d36b128e5c0bd14391a7cb3/services/memos/screenshot-timeline.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fcadd80dae23dff51d36b128e5c0bd14391a7cb3/services/memos/screenshot-tag.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fcadd80dae23dff51d36b128e5c0bd14391a7cb3/services/memos/screenshot-dev.png"]'
     kubero.dev/template.source: https://github.com/usememos/memos
-    kubero.dev/template.categories: '["productivity", "work"]'
+    kubero.dev/template.categories: '["productivity", "notes", "work"]'
     kubero.dev/template.title: Memos
-    kubero.dev/template.website: https://usememos.com/
-  name: memos
+    kubero.dev/template.website: https://usememos.com
+  labels:
+    manager: kubero
 spec:
+  name: memos
+  deploymentstrategy: docker
   addons:
   - displayName: PostgreSQL (CloudNativePG)
     env: []
@@ -61,7 +65,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: memos
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -70,24 +74,141 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: memos
-          password: memos
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Platform email (README "Email contract"). Memos has no SMTP environment
+  # variables: the SMTP server is the NOTIFICATION instance setting. The start
+  # command writes it from the injected SMTP_* on the first start (inert
+  # without SMTP_HOST); after that it belongs to the admin (Settings >
+  # Notifications).
+  - displayName: Email
+    env: []
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    resourceDefinitions: {}
   cronjobs: []
-  deploymentstrategy: docker
   envVars:
+  # SQLite is upstream's default, but it runs in WAL mode, which needs shared
+  # memory that a network volume (our shared RWX storage) cannot provide.
   - name: MEMOS_DRIVER
     value: postgres
   - name: MEMOS_DSN
-    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
-  extraVolumes: []
-  image:
-    containerPort: '5230'
-    repository: docker.io/neosmemo/memos
-    tag: stable
-    run:
-      securityContext:
-        readOnlyRootFilesystem: false
-  name: memos
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)?sslmode=require'
+  - name: MEMOS_PORT
+    value: '5230'
+  # Attachments (local storage, the default), upload chunks and thumbnails.
+  - name: MEMOS_DATA
+    value: /var/opt/memos
+  # Canonical URL: links in notification emails, robots.txt and the sitemap,
+  # and the allowed origin for CORS and the MCP endpoint.
+  - name: MEMOS_INSTANCE_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # Declarative configuration (upstream's "memos config"), written by the start
+  # command and applied before the server listens.
+  - name: MEMOS_CONFIG_DIR
+    value: /tmp/memos-config
+  # The admin account, declared in that configuration: created with this
+  # password on the first start only (a write-only field), so changing the
+  # password in the app sticks.
+  - name: MEMOS_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  - name: TZ
+    value: Etc/UTC
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /var/opt/memos
+    name: '{{STACKBLAZE_APP_NAME}}-data'
+    size: 5Gi
+    storageClass: shared
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: '1'
+      memory: 512Mi
+  healthcheck:
+    enabled: true
+    path: /healthz
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '5230'
+    pullPolicy: IfNotPresent
+    repository: docker.io/neosmemo/memos
+    tag: 26.11.0
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      umask 077
+      cfg="$MEMOS_CONFIG_DIR"
+      mkdir -p "$cfg"
+      # Email: the StackBlaze Email add-on, when it is live. SMTP_FROM may
+      # carry a display name ("Name <address>").
+      enabled=false host="" port=0 user="" pass='""' tls=false ssl=false
+      addr="" name="Memos"
+      if [ -n "${SMTP_HOST:-}" ]; then
+        addr="${SMTP_FROM:-}"
+        case "$addr" in
+          *'<'*'>'*)
+            n="${addr%%<*}"
+            n=$(printf '%s' "$n" | sed 's/^[ "]*//; s/[ "]*$//; s/["\\]//g')
+            [ -n "$n" ] && name="$n"
+            addr="${addr##*<}"; addr="${addr%%>*}" ;;
+        esac
+        host="$SMTP_HOST" port="${SMTP_PORT:-587}" user="${SMTP_USER:-}"
+        pass='"${env:SMTP_PASSWORD}"'
+        if [ "$port" = "465" ]; then ssl=true; else tls=true; fi
+        [ -n "$addr" ] && enabled=true
+      fi
+      # The admin account, closed sign-up and the email transport. GENERAL and
+      # NOTIFICATION are written once, when the instance is new: ignoreChanges
+      # hands every field to the admin afterwards. The admin's password is
+      # write-only (sent on create only).
+      cat > "$cfg/stackblaze.json" <<EOF
+      {
+        "users": [
+          {"name": "users/admin", "username": "admin", "role": "ADMIN", "password": "\${env:MEMOS_ADMIN_PASSWORD}"}
+        ],
+        "instanceSettings": [
+          {"name": "instance/settings/GENERAL", "generalSetting": {"disallowUserRegistration": true}},
+          {"name": "instance/settings/NOTIFICATION", "notificationSetting": {"email": {
+            "enabled": $enabled, "smtpHost": "$host", "smtpPort": $port, "smtpUsername": "$user",
+            "smtpPassword": $pass, "useTls": $tls, "useSsl": $ssl, "fromEmail": "$addr", "fromName": "$name"}}}
+        ],
+        "lifecycle": [
+          {"resource": "users/admin", "writeOnlyVersion": 1},
+          {"resource": "instance/settings/GENERAL", "ignoreChanges": ["generalSetting"]},
+          {"resource": "instance/settings/NOTIFICATION", "ignoreChanges": ["notificationSetting"]}
+        ]
+      }
+      EOF
+      # Apply it before the server listens, retrying while Postgres comes up
+      # (the add-on can start late). This runs without MEMOS_INSTANCE_URL, so
+      # a new instance starts Private: visitors see only the sign-in page.
+      i=0
+      until out=$(MEMOS_INSTANCE_URL= /usr/local/memos/memos config apply 2>&1); do
+        i=$((i+1))
+        if [ "$i" -ge 100 ]; then
+          printf '%s\n' "$out"
+          echo "[stackblaze] configuration not applied; stopping"; exit 1
+        fi
+        echo "[stackblaze] waiting for the database ($i)"
+        sleep 3
+      done
+      printf '%s\n' "$out"
+      exec /usr/local/memos/memos
+    run:
+      securityContext:
+        runAsUser: 10001
+        runAsGroup: 10001
+        readOnlyRootFilesystem: false

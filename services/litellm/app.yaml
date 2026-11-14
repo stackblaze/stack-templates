@@ -4,22 +4,30 @@ metadata:
   name: litellm
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "LLM proxy and gateway \u2014 unified OpenAI-compatible\
-      \ API for 100+ providers including OpenAI, Anthropic, Gemini, Ollama, and Bedrock\
-      \ with cost tracking and rate limiting."
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/litellm/icon.png
-    kubero.dev/template.installation: 'LiteLLM provides a single OpenAI-compatible
-      endpoint that proxies to any LLM provider. Set LITELLM_MASTER_KEY (must start
-      with sk-). Add models via the /ui dashboard (login with UI_USERNAME/UI_PASSWORD)
-      or via the /models API. The Postgres add-on persists model configs, spend logs,
-      and keys. Connect any OpenAI SDK client to {{STACKBLAZE_APP_URL}}/v1 with Authorization:
-      Bearer sk-change-me.'
+    kubero.dev/template.description: LLM gateway with one OpenAI-compatible API
+      for 100+ model providers. Virtual keys, budgets, rate limits, spend tracking
+      and an admin UI.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/icon.png
+    kubero.dev/template.installation: 'Open the app URL (it redirects to /ui) and
+      sign in as admin with the password generated in UI_PASSWORD (under Variables).
+      Every API call needs a key: the master key in LITELLM_MASTER_KEY, or a virtual
+      key you create under Virtual Keys. Nothing is open without one. LiteLLM
+      recommends then inviting yourself as an admin under Internal Users, setting
+      your own password from the invite link, and turning the shared UI_PASSWORD
+      login off with the master key (POST /config/update, general_settings
+      disable_env_credential_login true). Add models
+      and their provider keys under Models; provider keys are stored encrypted with
+      LITELLM_SALT_KEY, so never change that value after adding a model. Then call
+      {{STACKBLAZE_APP_URL}}/v1 with any OpenAI SDK. The API reference is at /docs.
+      Email (invites, key and budget alerts) goes through the Email add-on once you
+      turn on email alerting in Settings. Enterprise features (SSO for more than
+      5 users, audit logs, guardrail add-ons) need a LiteLLM licence.'
     kubero.dev/template.links: '["https://docs.litellm.ai/"]'
-    kubero.dev/template.screenshots: '["https://framerusercontent.com/images/DbFHR1t71NpmaSxIqej1LKWzD4.png"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-keys.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-logs.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/screenshot-models.png"]'
     kubero.dev/template.source: https://github.com/BerriAI/litellm
     kubero.dev/template.categories: '["ai", "development", "utilities"]'
     kubero.dev/template.title: LiteLLM
-    kubero.dev/template.website: https://litellm.ai
+    kubero.dev/template.website: https://www.litellm.ai/
   labels:
     manager: kubero
 spec:
@@ -72,7 +80,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: litellm
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -81,20 +89,49 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: litellm
-          password: litellm
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # LiteLLM reads SMTP_HOST, SMTP_PORT and SMTP_PASSWORD under the platform's own
+  # names, so only the two names that differ are mapped here.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: SMTP_USERNAME
+      value: '$(SMTP_USER)'
+    - name: SMTP_SENDER_EMAIL
+      value: '$(SMTP_FROM)'
+    - name: SMTP_TLS
+      value: 'True'
+    resourceDefinitions: {}
   envVars:
   - name: DATABASE_URL
     value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  # Admin key for the API. LiteLLM requires the sk- prefix. Every route except
+  # the health checks and the UI login needs this or a virtual key.
   - name: LITELLM_MASTER_KEY
-    value: sk-change-me
-  - name: STORE_MODEL_IN_DB
-    value: true
-  - name: LITELLM_LOG
-    value: INFO
+    value: 'sk-{{STACKBLAZE_GEN_ALNUM:48}}'
+  # Encrypts provider API keys stored in the database (sha256 of the value, so
+  # any length works). Must never change once a model has been added.
+  - name: LITELLM_SALT_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:48}}'
   - name: UI_USERNAME
     value: admin
   - name: UI_PASSWORD
-    value: change-me
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  - name: STORE_MODEL_IN_DB
+    value: 'True'
+  # Base URL for invite links and SSO redirects.
+  - name: PROXY_BASE_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # The card link lands on the admin UI; the Swagger reference moves to /docs.
+  - name: DOCS_URL
+    value: /docs
+  - name: ROOT_REDIRECT_URL
+    value: /ui
+  # DEV mode would also load a .env file from the working directory.
+  - name: LITELLM_MODE
+    value: PRODUCTION
   extraVolumes: []
   cronjobs: []
   web:
@@ -104,21 +141,21 @@ spec:
   resources:
     requests:
       cpu: 250m
-      memory: 512Mi
+      memory: 768Mi
     limits:
       cpu: '2'
       memory: 2Gi
   healthcheck:
     enabled: true
     path: /health/liveliness
-    startupSeconds: 120
+    startupSeconds: 300
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '4000'
-    pullPolicy: Always
-    repository: ghcr.io/berriai/litellm
-    tag: main-latest
+    pullPolicy: IfNotPresent
+    repository: docker.io/litellm/litellm
+    tag: v1.108.8
     run:
       securityContext:
         readOnlyRootFilesystem: false

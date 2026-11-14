@@ -111,6 +111,8 @@ export function expandEnv(value) {
 export async function runSteps(page, steps) {
   for (const step of steps || []) {
     if (step.sleep) await sleep(step.sleep);
+    // hash-routed apps (Keycloak's admin console) ignore a goto that only changes the hash
+    if (step.reload) await page.reload({ waitUntil: 'networkidle', timeout: step.timeout || 60000 });
     if (step.waitForSelector) {
       await page.waitForSelector(step.waitForSelector, { timeout: step.timeout || 30000 });
     }
@@ -130,6 +132,10 @@ export async function runSteps(page, steps) {
     }
     if (step.waitForURL) {
       await page.waitForURL(step.waitForURL, { timeout: step.timeout || 30000 });
+    }
+    if (step.mouseMove) {
+      // e.g. park the pointer off the content so hover tooltips close
+      await page.mouse.move(step.mouseMove.x, step.mouseMove.y);
     }
     if (step.waitForNavigation) {
       await page.waitForLoadState('networkidle', { timeout: step.timeout || 45000 }).catch(() => {});
@@ -158,7 +164,7 @@ export async function runLogin(page, login, baseUrl, context) {
     if (login.waitAfterMs) await sleep(login.waitAfterMs);
     return;
   }
-  const loginUrl = login.url || `${baseUrl}${login.path || '/login'}`;
+  const loginUrl = login.url ? expandEnv(login.url) : `${baseUrl}${login.path || '/login'}`;
   await page.goto(loginUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
   await runSteps(page, login.steps);
   if (login.waitAfterMs) await sleep(login.waitAfterMs);

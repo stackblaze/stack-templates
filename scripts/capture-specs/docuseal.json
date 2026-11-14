@@ -1,0 +1,26 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/sign_in",
+    "steps": [
+      { "waitForSelector": "#user_email", "timeout": 60000 },
+      { "fill": { "#user_email": "${DOCUSEAL_ADMIN_EMAIL}" } },
+      { "fill": { "#user_password": "${DOCUSEAL_ADMIN_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForSelector": "text=Document Templates", "timeout": 30000 }
+    ],
+    "waitAfterMs": 1500
+  },
+  "pages": [
+    { "name": "templates", "path": "/", "waitFor": "text=Website Redesign Agreement", "waitMs": 1500 },
+    { "name": "builder", "path": "/", "waitFor": "text=Website Redesign Agreement", "waitMs": 1000,
+      "steps": [
+        { "click": "a:has-text(\"Website Redesign Agreement\")" },
+        { "click": "a:has-text(\"Edit\")" },
+        { "waitForSelector": "text=Client signature", "timeout": 30000 },
+        { "sleep": 2000 }
+      ] }
+  ],
+  "notes": "The 3 stills in services/docuseal were taken with the run's shots.mjs (builder scrolled to the signing block, the signer form with a typed signature, a completed submission) after seeding Northwind Studio demo documents; this spec reproduces the templates list and the builder."
+}

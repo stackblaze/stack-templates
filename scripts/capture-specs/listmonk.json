@@ -1,0 +1,26 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/admin/login",
+    "steps": [
+      { "waitForSelector": "input[name=username]", "timeout": 60000 },
+      { "fill": { "input[name=username]": "admin" } },
+      { "fill": { "input[name=password]": "${LISTMONK_ADMIN_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForURL": "**/admin**", "timeout": 30000 }
+    ],
+    "waitAfterMs": 2000
+  },
+  "pages": [
+    { "name": "dashboard", "path": "/admin", "waitFor": "text=Campaign views", "waitMs": 3000 },
+    { "name": "campaigns", "path": "/admin/campaigns", "waitFor": "text=Weekly Digest", "waitMs": 2500 },
+    { "name": "editor", "path": "/admin/campaigns", "waitFor": "text=Weekly Digest", "waitMs": 1500,
+      "steps": [
+        { "click": "a:has-text(\"spring meetup tour\")" },
+        { "waitForSelector": "text=Start campaign", "timeout": 30000 },
+        { "click": "text=Content" },
+        { "sleep": 3000 }
+      ] }
+  ]
+}

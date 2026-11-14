@@ -4,18 +4,12 @@ metadata:
   name: baserow
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: "Open-source no-code database and Airtable alternative\
-      \ \u2014 build relational databases, forms, and automations with a spreadsheet-like\
-      \ UI."
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/baserow/icon.png
-    kubero.dev/template.installation: Change SECRET_KEY to a random string. The all-in-one
-      image bundles the API, web frontend, and background workers. On first visit,
-      register an admin account. Add a persistent volume at /baserow/data for uploads
-      and Caddy state. For larger deployments, switch to the distributed architecture
-      (separate backend/frontend/worker images).
-    kubero.dev/template.links: '["https://baserow.io/docs/index"]'
-    kubero.dev/template.screenshots: '["https://baserow.io/img/baserow_open_graph.png"]'
-    kubero.dev/template.source: https://gitlab.com/bramw/baserow
+    kubero.dev/template.description: "Open-source no-code database: build relational tables in a spreadsheet-like grid, with forms, gallery views, a REST API and real-time collaboration, backed by Postgres."
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7096de1af6a18d2d03866242bb6d2705fbdec057/services/baserow/icon.png
+    kubero.dev/template.installation: "First start creates the instance admin before the app is reachable, so nobody can claim a fresh instance. Sign in with admin@example.com (BASEROW_ADMIN_EMAIL) and the generated password in BASEROW_ADMIN_PASSWORD (both under Variables), then change the email and password under My settings. Public sign-up is off: invite people to a workspace (invited people can still create their account), or allow sign-up under Admin > Settings. Uploaded files are stored on the data volume. With a custom domain, set BASEROW_PUBLIC_URL to it and redeploy: Baserow serves its API only on that address. Emails (workspace invites, password resets, notifications) go through the StackBlaze Email add-on. This is the free self-hosted edition: Premium and Enterprise features (for example Kanban and Calendar views, the AI assistant) stay locked until you add a Baserow licence under Admin > Licenses; the Enterprise code step for automations is switched off by BASEROW_ENTERPRISE_CODE_RUNNER_DEFAULT_TYPE."
+    kubero.dev/template.links: '["https://baserow.io/docs/index", "https://baserow.io/docs/installation/configuration", "https://baserow.io/api-docs"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7096de1af6a18d2d03866242bb6d2705fbdec057/services/baserow/screenshot-grid.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7096de1af6a18d2d03866242bb6d2705fbdec057/services/baserow/screenshot-gallery.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7096de1af6a18d2d03866242bb6d2705fbdec057/services/baserow/screenshot-record.png"]'
+    kubero.dev/template.source: https://github.com/baserow/baserow
     kubero.dev/template.categories: '["data", "productivity", "work"]'
     kubero.dev/template.title: Baserow
     kubero.dev/template.website: https://baserow.io
@@ -71,7 +65,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: baserow
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -80,7 +74,10 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: baserow
-          password: baserow
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Celery broker and results, the cache and Django Channels (real-time
+  # collaboration). The injected REDIS_URL is the name Baserow reads
+  # (settings/base.py), so the add-on needs no mapping.
   - displayName: Valkey
     env: []
     icon: /img/addons/redis.svg
@@ -91,7 +88,7 @@ spec:
         apiVersion: rds.valkey.buf.red/v1alpha1
         kind: Valkey
         metadata:
-          name: '{{STACKBLAZE_APP_NAME}}-cache'
+          name: '{{STACKBLAZE_APP_NAME}}-valkey'
         spec:
           version: '8.0'
           arch: replica
@@ -110,6 +107,32 @@ spec:
             limits:
               cpu: 500m
               memory: 256Mi
+  # Platform email (README "Email contract"): workspace invitations, password
+  # resets, email verification and notification digests. Baserow sends mail
+  # from its Celery worker (djcelery_email); EMAIL_SMTP switches the worker
+  # from logging mails to sending them. SMTP_FROM may carry a display name,
+  # which Django accepts as is.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: EMAIL_SMTP
+      value: 'true'
+    - name: EMAIL_SMTP_HOST
+      value: '$(SMTP_HOST)'
+    - name: EMAIL_SMTP_PORT
+      value: '$(SMTP_PORT)'
+    - name: EMAIL_SMTP_USER
+      value: '$(SMTP_USER)'
+    - name: EMAIL_SMTP_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: EMAIL_SMTP_USE_TLS
+      value: 'true'
+    - name: FROM_EMAIL
+      value: '$(SMTP_FROM)'
+    resourceDefinitions: {}
+  cronjobs: []
   envVars:
   - name: DATABASE_HOST
     value: '$(PGHOST)'
@@ -121,32 +144,68 @@ spec:
     value: '$(PGUSER)'
   - name: DATABASE_PASSWORD
     value: '$(PGPASSWORD)'
+  # Links in emails, CORS and the allowed host for the bundled Caddy.
   - name: BASEROW_PUBLIC_URL
     value: '{{STACKBLAZE_APP_URL}}'
+  # Django signing (password reset links, sessions) and the JWT signing key.
+  # Set here so they never fall back to files generated on the volume.
   - name: SECRET_KEY
-    value: change-me-to-random-string
-  - name: DISABLE_VOLUME_CHECK
-    value: '1'
-  - name: BASEROW_CELERY_BEAT_STARTUP_DELAY
-    value: '300'
-  - name: BASEROW_TRIGGER_SYNC_TEMPLATES_AFTER_MIGRATION
+    value: '{{STACKBLAZE_GEN_ALNUM:50}}'
+  - name: BASEROW_JWT_SIGNING_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:50}}'
+  # The instance admin, created by the start command before Baserow listens
+  # (Baserow makes the first account to sign up its admin). Used once: change
+  # the email and password in the app afterwards.
+  - name: BASEROW_ADMIN_EMAIL
+    value: admin@example.com
+  - name: BASEROW_ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # The start command migrates before anything listens; gunicorn needn't.
+  - name: MIGRATE_ON_STARTUP
     value: 'false'
-  - name: WEB_FRONTEND_PORT
-    value: '3000'
-  - name: PORT
-    value: '3000'
-  cronjobs: []
+  # Seconds the database wait allows (2 s per attempt) for a late add-on.
+  - name: BASEROW_POSTGRES_STARTUP_CHECK_ATTEMPTS
+    value: '150'
+  # Server-side JavaScript (the Enterprise "code" automation node and builder
+  # action, run in wasmtime) stays off even if a licence is added later.
+  - name: BASEROW_ENTERPRISE_CODE_RUNNER_DEFAULT_TYPE
+    value: ''
+  # SSRF protection for data syncs (iCal, GitLab, Jira, PostgreSQL ...) and
+  # SSO endpoints: no private or cluster-internal addresses (upstream
+  # recommends this; the default stays open for backwards compatibility).
+  - name: BASEROW_DATA_SYNC_ALLOW_PRIVATE_ADDRESS
+    value: 'false'
+  - name: BASEROW_SSO_ALLOW_PRIVATE_ADDRESS
+    value: 'false'
+  # Two API workers (upstream's all-in-one default is three). Celery keeps
+  # one process per queue: on the first start the export worker spends about
+  # 15 minutes importing Baserow's template gallery, while mail and
+  # automations run on the other one.
+  - name: BASEROW_AMOUNT_OF_GUNICORN_WORKERS
+    value: '2'
+  # The image defaults to /dev/shm, which is 64 MiB in a pod; imports and
+  # exports spool through it.
+  - name: TMPDIR
+    value: /tmp
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /baserow/data
+    name: '{{STACKBLAZE_APP_NAME}}-data'
+    size: 10Gi
+    storageClass: shared
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
   resources:
     requests:
-      cpu: 500m
-      memory: 2Gi
+      cpu: 250m
+      memory: 1536Mi
     limits:
       cpu: '2'
-      memory: 4Gi
+      memory: 3Gi
   healthcheck:
     enabled: true
     path: /api/_health/
@@ -155,10 +214,88 @@ spec:
     periodSeconds: 10
   image:
     containerPort: '80'
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     repository: docker.io/baserow/baserow
-    tag: 2.2.2
+    tag: 2.4.2
+    # The all-in-one image: Caddy on :80 in front of the API (gunicorn), the
+    # web frontend (Nuxt) and the Celery worker and beat, under supervisord.
+    # It starts as root and runs every process except Caddy as uid 9999.
+    # Postgres and Valkey are the add-ons, so the embedded ones stay off.
+    command:
+    - /bin/bash
+    - -c
+    - |
+      set -euo pipefail
+      mkdir -p /tmp/stackblaze
+      cat > /tmp/stackblaze/setup.py <<'PY'
+      # Runs as Baserow's own user before any process listens: wait for the
+      # add-ons, migrate, then create the instance admin once.
+      import os, sys, time
+      import redis
+      try:
+          import psycopg
+      except ImportError:
+          import psycopg2 as psycopg
+
+      def log(msg):
+          print(f"[stackblaze] {msg}", flush=True)
+
+      deadline = time.time() + 600
+      while True:
+          try:
+              psycopg.connect(dbname=os.environ["DATABASE_NAME"], user=os.environ["DATABASE_USER"],
+                              password=os.environ["DATABASE_PASSWORD"], host=os.environ["DATABASE_HOST"],
+                              port=os.environ["DATABASE_PORT"], connect_timeout=5).close()
+              redis.Redis.from_url(os.environ["REDIS_URL"], socket_timeout=5).ping()
+              break
+          except Exception as e:
+              if time.time() > deadline:
+                  log(f"Postgres or Valkey not reachable: {type(e).__name__}; stopping")
+                  sys.exit(1)
+              log("waiting for Postgres and Valkey")
+              time.sleep(3)
+
+      import django
+      from django.core.management import call_command
+      django.setup()
+      call_command("locked_migrate")
+
+      from django.contrib.auth import get_user_model
+      from django.db import transaction
+      from baserow.core.models import Settings
+      from baserow.core.user.handler import UserHandler
+
+      User = get_user_model()
+      if User.objects.exists():
+          log("an account exists; admin bootstrap skipped")
+          sys.exit(0)
+      email = os.environ.get("BASEROW_ADMIN_EMAIL", "").strip().lower()
+      password = os.environ.get("BASEROW_ADMIN_PASSWORD", "")
+      if len(password) < 12 or "@" not in email:
+          log("BASEROW_ADMIN_EMAIL / BASEROW_ADMIN_PASSWORD missing or invalid; refusing to start unclaimed")
+          sys.exit(1)
+      with transaction.atomic():
+          UserHandler().create_user(name="Admin", email=email, password=password)
+          # Close public sign-up once; afterwards it is the admin's setting.
+          # Saved on a fresh row (its post_save clears the settings cache).
+          settings_row = Settings.objects.get()
+          settings_row.allow_new_signups = False
+          settings_row.show_admin_signup_page = False
+          settings_row.show_baserow_help_request = False
+          settings_row.save()
+      user = User.objects.get(email=email)
+      row = Settings.objects.get()
+      if not (user.is_staff and user.check_password(password) and not row.allow_new_signups and not row.show_admin_signup_page):
+          log("admin bootstrap did not take effect; stopping")
+          sys.exit(1)
+      log("created the instance admin from BASEROW_ADMIN_EMAIL; public sign-up is off")
+      PY
+      chmod 755 /tmp/stackblaze; chmod 644 /tmp/stackblaze/setup.py
+      /baserow.sh backend-cmd python /tmp/stackblaze/setup.py
+      # The platform sets PORT to the container port (80, Caddy's). Nuxt
+      # would read it too and collide with Caddy; it belongs on 3000.
+      unset PORT
+      exec /baserow.sh start
     run:
       securityContext:
         readOnlyRootFilesystem: false
-  extraVolumes: []

@@ -4,56 +4,48 @@ metadata:
   name: documenso
   annotations:
     kubero.dev/template.architecture: '["linux/amd64", "linux/arm64/v8"]'
-    kubero.dev/template.description: The Open Source DocuSign Alternative.
-    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/127681099
-    kubero.dev/template.installation: Configure NEXT_PRIVATE_SMTP_* for production
-      email delivery.
-    kubero.dev/template.links: '["https://docs.documenso.com/"]'
-    kubero.dev/template.screenshots: '["https://framerusercontent.com/images/x66EcGbzu3IQEriNXuRmOBonGyo.png"]'
+    kubero.dev/template.description: Send documents for e-signature, sign them in
+      the browser and keep a digitally signed PDF with a full audit trail. Open source
+      alternative to DocuSign.
+    kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/icon.png
+    kubero.dev/template.installation: 'Sign in at your app URL with the email in
+      ADMIN_EMAIL and the password generated in ADMIN_PASSWORD (both under
+      Variables). Set ADMIN_EMAIL to your own address before you deploy: copies of
+      completed documents go there. The template creates this account (a Documenso
+      admin, email already verified) on the first start only, so later changes to
+      the two variables have no effect; change the password in Settings > Security.
+      Sign-up is closed (NEXT_PUBLIC_DISABLE_SIGNUP=true): add people from your
+      organisation''s member settings or from the Admin panel. Signing requests,
+      reminders and completed copies are sent through the Email add-on. Documents are
+      stored in the S3 bucket add-on (upstream''s recommendation for production).
+      Every signed PDF is sealed with a digital signature: on the first start the
+      template creates a self-signed certificate (10 years) on the volume at
+      /opt/documenso/cert.p12, protected by the generated
+      NEXT_PRIVATE_SIGNING_PASSPHRASE; keep that variable unchanged. PDF readers
+      show the seal as valid but from an unknown signer; for a trusted signer, put a
+      .p12 from a certificate authority in NEXT_PRIVATE_SIGNING_LOCAL_FILE_CONTENTS
+      (base64) with its passphrase in NEXT_PRIVATE_SIGNING_PASSPHRASE. Telemetry is
+      off (DOCUMENSO_DISABLE_TELEMETRY). Licence: AGPL-3.0 (Enterprise features need
+      a Documenso licence). Documenso 2.22.0.'
+    kubero.dev/template.links: '["https://docs.documenso.com/docs/self-hosting"]'
+    kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-documents.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-signing.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/screenshot-completed.png"]'
     kubero.dev/template.source: https://github.com/documenso/documenso
-    kubero.dev/template.categories: '["security", "work", "productivity"]'
+    kubero.dev/template.categories: '["work", "productivity", "security"]'
     kubero.dev/template.title: Documenso
-    kubero.dev/template.website: https://www.documenso.com/
+    kubero.dev/template.website: https://documenso.com/
   labels:
     manager: kubero
 spec:
   name: documenso
   deploymentstrategy: docker
-  envVars:
-  - name: NEXTAUTH_URL
-    value: '{{STACKBLAZE_APP_URL}}'
-  - name: NEXTAUTH_SECRET
-    value: random64
-  - name: NEXT_PRIVATE_ENCRYPTION_KEY
-    value: DYKf6hj9+o9hrcnpl/ELUaRjwg13VKPhReE7sjv08rGLy1SZGLpXBLkvjNWy8UK90E4le1+k9rRQNFGGuB83USHXJU45llBBpjqZctDXHAU=
-  - name: NEXT_PRIVATE_ENCRYPTION_SECONDARY_KEY
-    value: xFtITgOSSvu/bTTJ11G/czyXlvhF8txPhr2GwSTQUm/+m6YLIfrC/LTgHq2yFi9l+KBWN+Wx5YgRFoWOvdkePs5N31/1RBhx3/qApQ2lIbY=
-  - name: NEXT_PUBLIC_WEBAPP_URL
-    value: '{{STACKBLAZE_APP_URL}}'
-  - name: NEXT_PRIVATE_INTERNAL_WEBAPP_URL
-    value: '{{STACKBLAZE_APP_URL}}'
-  - name: NEXT_PRIVATE_DATABASE_URL
-    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
-  - name: NEXT_PRIVATE_DIRECT_DATABASE_URL
-    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
-  - name: NEXT_PRIVATE_SMTP_TRANSPORT
-    value: smtp-auth
-  - name: NEXT_PRIVATE_SMTP_HOST
-    value: smtp.example.com
-  - name: NEXT_PRIVATE_SMTP_PORT
-    value: '587'
-  - name: NEXT_PRIVATE_SMTP_USERNAME
-    value: noreply@example.com
-  - name: NEXT_PRIVATE_SMTP_PASSWORD
-    value: replace-me
-  - name: NEXT_PRIVATE_SMTP_FROM_NAME
-    value: Documenso
-  - name: NEXT_PRIVATE_SMTP_FROM_ADDRESS
-    value: noreply@example.com
-  - name: DOCUMENSO_DISABLE_TELEMETRY
-    value: 'true'
-  extraVolumes: []
-  cronjobs: []
+  # Dependencies (Documenso v2.22.0):
+  # - Postgres: required (Prisma, NEXT_PRIVATE_DATABASE_URL).
+  # - S3: documents and signed PDFs (NEXT_PUBLIC_UPLOAD_TRANSPORT=s3; upstream's
+  #   storage docs recommend S3 for production and starting with it, since
+  #   moving database-stored files later needs custom scripts).
+  # - Volume: the signing certificate only (/opt/documenso).
+  # - Email: signing requests, reminders, completed copies, password resets.
+  # - No Redis: background jobs use the default "local" provider (Postgres).
   addons:
   - displayName: PostgreSQL (CloudNativePG)
     env: []
@@ -101,7 +93,7 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: postgres
-          password: documenso
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
       appUserSecret:
         apiVersion: v1
         kind: Secret
@@ -110,29 +102,283 @@ spec:
         type: kubernetes.io/basic-auth
         stringData:
           username: documenso
-          password: documenso
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Documents, uploaded images and sealed PDFs. The start command maps the
+  # injected S3_* / AWS_* names onto NEXT_PRIVATE_UPLOAD_*.
+  - displayName: S3 bucket
+    env: []
+    icon: /img/addons/rustfs.svg
+    id: kubero-operator
+    kind: Tenant
+    resourceDefinitions:
+      Tenant:
+        apiVersion: rustfs.com/v1alpha1
+        kind: Tenant
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs'
+          annotations:
+            operator.rustfs.com/runtime-default-image-ack: docker.io/rustfs/rustfs:1.0.0-beta.10
+        spec:
+          image: docker.io/rustfs/rustfs:1.0.0-beta.10
+          credsSecret:
+            name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
+          pools:
+          - name: pool-0
+            servers: 1
+            persistence:
+              volumesPerServer: 4
+              volumeClaimTemplate:
+                accessModes:
+                - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 2Gi
+                storageClassName: slow
+      credsSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-rustfs-credentials'
+        type: Opaque
+        stringData:
+          accesskey: documenso
+          secretkey: '{{STACKBLAZE_GEN_HEX:32}}'
+  # Platform email (README "Email contract"): 587 with STARTTLS, so
+  # NEXT_PRIVATE_SMTP_SECURE stays false. SMTP_FROM may carry a display name;
+  # the start command keeps only the address (Documenso takes the name from
+  # NEXT_PRIVATE_SMTP_FROM_NAME).
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: NEXT_PRIVATE_SMTP_TRANSPORT
+      value: smtp-auth
+    - name: NEXT_PRIVATE_SMTP_HOST
+      value: '$(SMTP_HOST)'
+    - name: NEXT_PRIVATE_SMTP_PORT
+      value: '$(SMTP_PORT)'
+    - name: NEXT_PRIVATE_SMTP_USERNAME
+      value: '$(SMTP_USER)'
+    - name: NEXT_PRIVATE_SMTP_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: NEXT_PRIVATE_SMTP_SECURE
+      value: 'false'
+    - name: NEXT_PRIVATE_SMTP_FROM_ADDRESS
+      value: '$(SMTP_FROM)'
+    - name: NEXT_PRIVATE_SMTP_FROM_NAME
+      value: Documenso
+    resourceDefinitions: {}
+  envVars:
+  # Public URL: links in emails, CSRF origin check. Empty until the platform
+  # fills the app URL after the first deploy; the start command then leaves
+  # it unset (Documenso falls back to localhost).
+  - name: NEXT_PUBLIC_WEBAPP_URL
+    value: '{{STACKBLAZE_APP_URL}}'
+  # Background jobs are HTTP calls to the server itself.
+  - name: NEXT_PRIVATE_INTERNAL_WEBAPP_URL
+    value: http://localhost:3000
+  - name: NEXT_PRIVATE_DATABASE_URL
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  - name: NEXT_PRIVATE_DIRECT_DATABASE_URL
+    value: 'postgresql://$(PGUSER):$(PGPASSWORD)@$(PGHOST):$(PGPORT)/$(PGDATABASE)'
+  # Session cookie signing. Any string; the two encryption keys are hashed
+  # with SHA-256 into XChaCha20 keys (2FA secrets, OIDC client secrets, ...),
+  # so they must stay the same for the life of the database.
+  - name: NEXTAUTH_SECRET
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
+  - name: NEXT_PRIVATE_ENCRYPTION_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
+  - name: NEXT_PRIVATE_ENCRYPTION_SECONDARY_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:64}}'
+  # Owner account, created on the first start only (see the start command).
+  # Over 25 characters, so Documenso's character-class rules do not apply.
+  - name: ADMIN_EMAIL
+    value: admin@example.com
+  - name: ADMIN_PASSWORD
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  - name: ADMIN_NAME
+    value: Admin
+  # No first-visitor claim on a public URL: every sign-up method is closed.
+  - name: NEXT_PUBLIC_DISABLE_SIGNUP
+    value: 'true'
+  - name: NEXT_PUBLIC_UPLOAD_TRANSPORT
+    value: s3
+  - name: NEXT_PRIVATE_UPLOAD_FORCE_PATH_STYLE
+    value: 'true'
+  # Local .p12 signing. The start command creates a self-signed certificate
+  # here on the first start, encrypted with this passphrase, unless
+  # NEXT_PRIVATE_SIGNING_LOCAL_FILE_CONTENTS (base64 .p12) is set.
+  - name: NEXT_PRIVATE_SIGNING_TRANSPORT
+    value: local
+  - name: NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH
+    value: /opt/documenso/cert.p12
+  - name: NEXT_PRIVATE_SIGNING_PASSPHRASE
+    value: '{{STACKBLAZE_GEN_ALNUM:32}}'
+  - name: DOCUMENSO_DISABLE_TELEMETRY
+    value: 'true'
+  - name: PORT
+    value: '3000'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /opt/documenso
+    name: '{{STACKBLAZE_APP_NAME}}-signing'
+    size: 1Gi
+    storageClass: shared
+  cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
   resources:
     requests:
-      cpu: 500m
-      memory: 1Gi
+      cpu: 250m
+      memory: 512Mi
     limits:
       cpu: '1'
       memory: 2Gi
   healthcheck:
     enabled: true
-    path: /
+    # Checks the database and the signing certificate.
+    path: /api/health
     startupSeconds: 600
     timeoutSeconds: 5
     periodSeconds: 10
   image:
     containerPort: '3000'
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     repository: docker.io/documenso/documenso
-    tag: latest
+    tag: v2.22.0
+    # Replaces the image's start.sh (migrate, then start) and adds: S3 and
+    # sender mapping, the signing certificate, a wait for a real database
+    # login, and the owner account on an empty database.
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -eu
+      cd /app/apps/remix
+      case "${NEXT_PUBLIC_WEBAPP_URL:-}" in
+        http://*|https://*) ;;
+        *) unset NEXT_PUBLIC_WEBAPP_URL ;;
+      esac
+      # Sender: a bare address (the relay's SMTP_FROM may be `Name <addr>`).
+      case "${NEXT_PRIVATE_SMTP_FROM_ADDRESS:-}" in
+        *"<"*">"*)
+          NEXT_PRIVATE_SMTP_FROM_ADDRESS=`printf '%s' "$NEXT_PRIVATE_SMTP_FROM_ADDRESS" | sed 's/.*<//; s/>.*//'`
+          export NEXT_PRIVATE_SMTP_FROM_ADDRESS
+          ;;
+      esac
+      # S3 bucket add-on. The public endpoint, when the cluster has one, so
+      # presigned links handed to API clients work outside the cluster.
+      if [ "${NEXT_PUBLIC_UPLOAD_TRANSPORT:-}" = s3 ]; then
+        : "${NEXT_PRIVATE_UPLOAD_ENDPOINT:=${S3_PUBLIC_ENDPOINT:-${S3_ENDPOINT:-}}}"
+        : "${NEXT_PRIVATE_UPLOAD_BUCKET:=${S3_BUCKET:-}}"
+        : "${NEXT_PRIVATE_UPLOAD_REGION:=${AWS_REGION:-us-east-1}}"
+        : "${NEXT_PRIVATE_UPLOAD_ACCESS_KEY_ID:=${AWS_ACCESS_KEY_ID:-}}"
+        : "${NEXT_PRIVATE_UPLOAD_SECRET_ACCESS_KEY:=${AWS_SECRET_ACCESS_KEY:-}}"
+        export NEXT_PRIVATE_UPLOAD_ENDPOINT NEXT_PRIVATE_UPLOAD_BUCKET NEXT_PRIVATE_UPLOAD_REGION \
+          NEXT_PRIVATE_UPLOAD_ACCESS_KEY_ID NEXT_PRIVATE_UPLOAD_SECRET_ACCESS_KEY
+        if [ -z "$NEXT_PRIVATE_UPLOAD_BUCKET" ] || [ -z "$NEXT_PRIVATE_UPLOAD_ENDPOINT" ]; then
+          echo "S3 storage selected but no bucket or endpoint: connect the S3 bucket add-on" >&2
+          exit 1
+        fi
+      fi
+      # Signing certificate: self-signed on the first start, on the volume.
+      cert="${NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH:-/opt/documenso/cert.p12}"
+      if [ -z "${NEXT_PRIVATE_SIGNING_LOCAL_FILE_CONTENTS:-}" ] && [ ! -s "$cert" ]; then
+        if [ -z "${NEXT_PRIVATE_SIGNING_PASSPHRASE:-}" ]; then
+          echo "NEXT_PRIVATE_SIGNING_PASSPHRASE is empty: cannot create the signing certificate" >&2
+          exit 1
+        fi
+        work=`mktemp -d`
+        (
+          umask 077
+          openssl req -x509 -newkey rsa:3072 -sha256 -nodes -days 3650 \
+            -keyout "$work/key.pem" -out "$work/cert.pem" \
+            -subj "/CN=Documenso self-hosted signing" \
+            -addext "keyUsage=critical,digitalSignature,nonRepudiation" 2>/dev/null
+          openssl pkcs12 -export -name "Documenso signing" -inkey "$work/key.pem" -in "$work/cert.pem" \
+            -out "$work/cert.p12" -passout env:NEXT_PRIVATE_SIGNING_PASSPHRASE
+          openssl pkcs12 -in "$work/cert.p12" -noout -passin env:NEXT_PRIVATE_SIGNING_PASSPHRASE
+          mkdir -p "`dirname "$cert"`"
+          cp "$work/cert.p12" "$cert.tmp" && mv "$cert.tmp" "$cert"
+        )
+        rm -rf "$work"
+        echo "signing certificate: created a self-signed certificate at $cert"
+      fi
+      export NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH="$cert"
+      export NEXT_PRIVATE_DIRECT_DATABASE_URL="${NEXT_PRIVATE_DIRECT_DATABASE_URL:-$NEXT_PRIVATE_DATABASE_URL}"
+      # Helper: db.cjs wait | users | owner <email> (Prisma client from the image)
+      export NODE_PATH=/app/node_modules
+      cat > /tmp/db.cjs <<'EOF'
+      const { PrismaClient } = require('@prisma/client');
+      const p = new PrismaClient();
+      const [cmd, email] = process.argv.slice(2);
+      (async () => {
+        if (cmd === 'wait') { await p.$queryRawUnsafe('SELECT 1'); return 0; }
+        // People who can sign in. Migrations add two password-less service
+        // accounts, so an empty table is not the test.
+        if (cmd === 'users') { console.log(await p.user.count({ where: { OR: [{ password: { not: null } }, { roles: { has: 'ADMIN' } }] } })); return 0; }
+        if (cmd === 'owner') {
+          const u = await p.user.update({ where: { email: email.toLowerCase() },
+            data: { emailVerified: new Date(), roles: ['ADMIN', 'USER'] } });
+          await p.backgroundJob.deleteMany({ where: { jobId: 'send.signup.confirmation.email', status: 'PENDING' } });
+          const orgs = await p.organisationMember.count({ where: { userId: u.id } });
+          if (orgs < 1) throw new Error('owner has no organisation');
+          return 0;
+        }
+        return 2;
+      })().then((c) => p.$disconnect().then(() => process.exit(c)),
+        (e) => { console.error(e.message); p.$disconnect().finally(() => process.exit(1)); });
+      EOF
+      n=0
+      until node /tmp/db.cjs wait 2>/dev/null; do
+        n=$((n+1)); [ "$n" -gt 100 ] && { node /tmp/db.cjs wait; echo "database not reachable" >&2; exit 1; }
+        echo "waiting for the database"; sleep 3
+      done
+      npx prisma migrate deploy --schema ../../packages/prisma/schema.prisma
+      # Owner account while nobody can sign in: Documenso's own sign-up, on a
+      # loopback-only server, then verified and made admin. Jobs point at a
+      # closed port so no confirmation email goes out. The server keeps the
+      # real NEXT_PUBLIC_WEBAPP_URL (service-account emails derive from it),
+      # so the request sends that origin for the CSRF check.
+      if [ "`node /tmp/db.cjs users`" = 0 ] && [ -n "${ADMIN_EMAIL:-}" ] && [ -n "${ADMIN_PASSWORD:-}" ]; then
+        echo "creating the owner account $ADMIN_EMAIL"
+        env -u NEXT_PUBLIC_DISABLE_SIGNUP HOSTNAME=127.0.0.1 PORT=3999 \
+          NEXT_PRIVATE_INTERNAL_WEBAPP_URL=http://127.0.0.1:9 \
+          node build/server/main.js > /tmp/bootstrap.log 2>&1 &
+        pid=$!
+        cat > /tmp/signup.cjs <<'EOF'
+      const body = JSON.stringify({ name: process.env.ADMIN_NAME || 'Admin',
+        email: process.env.ADMIN_EMAIL, password: process.env.ADMIN_PASSWORD });
+      (async () => {
+        for (let i = 0; i < 120; i++) {
+          try { const h = await fetch('http://127.0.0.1:3999/api/health'); if (h.status < 500) break; } catch {}
+          await new Promise((r) => setTimeout(r, 1000));
+        }
+        const r = await fetch('http://127.0.0.1:3999/api/auth/email-password/signup', { method: 'POST', body,
+          headers: { 'content-type': 'application/json',
+            origin: new URL(process.env.NEXT_PUBLIC_WEBAPP_URL || 'http://localhost:3000').origin } });
+        if (r.status !== 201) { console.error('sign-up failed', r.status, (await r.text()).slice(0, 300)); process.exit(1); }
+      })();
+      EOF
+        ok=0
+        node /tmp/signup.cjs && node /tmp/db.cjs owner "$ADMIN_EMAIL" && ok=1
+        kill "$pid" 2>/dev/null || true
+        wait "$pid" 2>/dev/null || true
+        if [ "$ok" != 1 ]; then
+          tail -n 40 /tmp/bootstrap.log >&2
+          echo "owner account could not be created" >&2
+          exit 1
+        fi
+        echo "owner account ready"
+      fi
+      HOSTNAME=0.0.0.0 exec node build/server/main.js
     run:
       securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
         readOnlyRootFilesystem: false
