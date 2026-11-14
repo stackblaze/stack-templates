@@ -1253,11 +1253,11 @@
   },
   {
    "name": "stirling-pdf",
-   "description": "Stirling PDF is a hosted web application that allows you to perform various operations on PDF files, such as splitting and adding images.",
-   "source": "https://github.com/Frooodle/Stirling-PDF",
-   "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/icon.png",
-   "website": "https://docs.stirlingpdf.com/",
-   "installation": "First boot may take several minutes while Java starts and optional assets download.",
+   "description": "Edit, convert, sign and secure PDFs in your browser. Merge, split, compress, OCR, redact and 50+ more tools, with every file processed on your own server.",
+   "source": "https://github.com/Stirling-Tools/Stirling-PDF",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/icon.png",
+   "website": "https://www.stirlingpdf.com",
+   "installation": "Sign in as admin with the password in SECURITY_INITIALLOGIN_PASSWORD (Variables). Login is on from the first start. The free self-hosted tier allows up to 5 users; more users, SSO and an external database need a Stirling PDF licence.",
    "architecture": [
     "linux/amd64",
     "linux/arm64"
@@ -1268,21 +1268,24 @@
     "work"
    ],
    "screenshots": [
-    "https://media.stackblaze.cloud/templates/stirling-pdf/demo.mp4",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/dashboard.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/screenshot-login.png",
-    "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0522dea0f303d9707196108356d351e1ebde3b59/services/stirling-pdf/screenshot-watermark.png"
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/screenshot-files.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/screenshot-merge.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/screenshot-watermark.png"
    ],
-   "links": [],
-   "addons": [],
-   "stars": 78556,
-   "forks": 6876,
-   "watchers": 78556,
-   "issues": 394,
-   "last_updated": "2026-05-11T12:36:12Z",
-   "last_pushed": "2026-05-11T11:10:23Z",
+   "links": [
+    "https://docs.stirlingpdf.com/"
+   ],
+   "addons": [
+    "Smtp"
+   ],
+   "stars": 96533,
+   "forks": 9347,
+   "watchers": 96533,
+   "issues": 538,
+   "last_updated": "2026-11-14T04:14:12Z",
+   "last_pushed": "2026-11-13T17:06:02Z",
    "created_at": "2023-01-27T18:22:42Z",
-   "size": 276295,
+   "size": 695361,
    "language": "TypeScript",
    "gitops": false,
    "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stirling-pdf/app.yaml",
