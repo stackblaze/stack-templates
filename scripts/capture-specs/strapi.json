@@ -1,0 +1,40 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/admin/auth/login",
+    "steps": [
+      { "waitForSelector": "input[name=email]", "timeout": 60000 },
+      { "fill": { "input[name=email]": "${STRAPI_ADMIN_EMAIL}" } },
+      { "fill": { "input[name=password]": "${STRAPI_ADMIN_PASSWORD}" } },
+      { "click": "button[type=submit]" },
+      { "waitForURL": "**/admin", "timeout": 60000 }
+    ],
+    "waitAfterMs": 3000
+  },
+  "pages": [
+    {
+      "name": "articles",
+      "path": "/admin/content-manager/collection-types/api::article.article?page=1&pageSize=10&sort=title:ASC",
+      "waitFor": "text=How we roast a light espresso",
+      "waitMs": 1500
+    },
+    {
+      "name": "entry",
+      "path": "/admin/content-manager/collection-types/api::article.article?page=1&pageSize=10&sort=title:ASC",
+      "waitFor": "text=How we roast a light espresso",
+      "waitMs": 1500,
+      "steps": [
+        { "click": "text=How we roast a light espresso" },
+        { "waitForSelector": "text=Rich text", "timeout": 30000 },
+        { "sleep": 1500 }
+      ]
+    },
+    {
+      "name": "media",
+      "path": "/admin/plugins/upload",
+      "waitFor": "text=latte-art-in-five-steps.jpg",
+      "waitMs": 1500
+    }
+  ]
+}
