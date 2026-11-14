@@ -1,0 +1,9 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "pages": [
+    { "name": "results", "path": "/search?q=kubernetes&language=en-US", "waitFor": "#urls article.result", "waitMs": 2500 },
+    { "name": "images", "path": "/search?q=aurora+borealis&categories=images&language=en-US", "waitFor": "#urls article.result-images", "waitMs": 4000 },
+    { "name": "preferences", "path": "/preferences", "waitFor": "text=Default categories", "waitMs": 1500 }
+  ]
+}

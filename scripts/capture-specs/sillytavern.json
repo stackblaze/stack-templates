@@ -1,0 +1,57 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      { "waitForSelector": "#userHandle", "timeout": 60000 },
+      { "fill": { "#userHandle": "default-user" } },
+      { "fill": { "#userPassword": "${ST_ADMIN_PASSWORD}" } },
+      { "click": "#loginButton" },
+      { "waitForURL": "**/", "timeout": 30000 },
+      { "waitForNavigation": true }
+    ],
+    "waitAfterMs": 3000
+  },
+  "pages": [
+    {
+      "name": "chat",
+      "path": "/",
+      "waitFor": "#send_textarea",
+      "waitForTimeout": 90000,
+      "waitMs": 5000,
+      "steps": [
+        { "click": "#rightNavDrawerIcon" },
+        { "sleep": 800 },
+        { "click": ".character_select:has-text(\"Seraphina\")" },
+        { "waitForSelector": "#chat .mes", "timeout": 30000 },
+        { "sleep": 2500 }
+      ]
+    },
+    {
+      "name": "connections",
+      "path": "/",
+      "waitFor": "#send_textarea",
+      "waitForTimeout": 90000,
+      "waitMs": 5000,
+      "steps": [
+        { "click": "#API-status-top" },
+        { "sleep": 1200 }
+      ]
+    },
+    {
+      "name": "users",
+      "path": "/",
+      "waitFor": "#send_textarea",
+      "waitForTimeout": 90000,
+      "waitMs": 5000,
+      "steps": [
+        { "click": "#user-settings-button .drawer-toggle" },
+        { "sleep": 800 },
+        { "click": "#admin_button" },
+        { "waitForSelector": "dialog[open]" },
+        { "sleep": 2000 }
+      ]
+    }
+  ]
+}
