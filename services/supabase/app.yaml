@@ -23,8 +23,13 @@ spec:
   # over it, the group starts again. Everyone else (dashboard, API) keeps the
   # platform's restore-into-a-new-database. Read from the catalog only
   # (kubero-server #2356).
+  # A dashboard restore copy of the database mirrors this one (image, database,
+  # owner, the role/schema init SQL, fresh passwords) and keeps the dump's
+  # owners and grants, so the group still works after a cutover onto it
+  # (kubero-server #2398). Read from the catalog only.
   backups:
     restore: in-place
+    copy: mirror-source
   deploymentstrategy: docker
   ingress:
     annotations:
