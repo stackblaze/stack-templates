@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: "The open-source Postgres development platform: database, Auth, instant APIs, Realtime, Storage and Edge Functions, managed from Studio."
     kubero.dev/template.icon: https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@268692363407166c1de7320910eee41a92ca474e/services/supabase/icon.png
     kubero.dev/template.installation: |
-      Deploys Supabase as one group of services: the Kong gateway (the public URL), Studio, Auth, PostgREST (plus a read-replica twin), Realtime, Storage, postgres-meta, Edge Functions, imgproxy and RustFS, with its own PostgreSQL, a private RustFS S3 server for Storage's files (on a 20 GiB app volume, cluster internal) and the Email add-on. Open the gateway URL and sign in to Studio as DASHBOARD_USERNAME (supabase) with DASHBOARD_PASSWORD, generated per deploy (on the gateway and Studio cards). Every secret is generated per deploy: JWT_SECRET (on every card), the database passwords, the sb_publishable_ / sb_secret_ API keys and the Realtime and pg-meta keys. The legacy anon and service_role keys are signed from JWT_SECRET when the services start; Studio shows them under Project Settings > API Keys. Keep the secret and service_role keys server-side: they bypass Row Level Security. Edge Functions run in a Kata micro-VM. Data API reads (GET/HEAD on /rest/v1) are served from the Postgres replicas; set KONG_REST_READ_REPLICAS=off on the gateway to keep every read on the primary. New users confirm their email through the Email add-on (GOTRUE_MAILER_AUTOCONFIRM=false on the Auth card).
+      Deploys Supabase as one group of services: the Kong gateway (the public URL), Studio, Auth, PostgREST (plus a read-replica twin), Realtime, Storage, postgres-meta, Edge Functions, imgproxy and RustFS, with its own PostgreSQL (plus a PgBouncer connection pooler in transaction mode, CloudNativePG's own: PGHOST_POOLER / PGPORT_POOLER, shown in Studio's Connect dialog), a private RustFS S3 server for Storage's files (on a 20 GiB app volume, cluster internal) and the Email add-on. Open the gateway URL and sign in to Studio as DASHBOARD_USERNAME (supabase) with DASHBOARD_PASSWORD, generated per deploy (on the gateway and Studio cards). Every secret is generated per deploy: JWT_SECRET (on every card), the database passwords, the sb_publishable_ / sb_secret_ API keys and the Realtime and pg-meta keys. The legacy anon and service_role keys are signed from JWT_SECRET when the services start; Studio shows them under Project Settings > API Keys. Keep the secret and service_role keys server-side: they bypass Row Level Security. Edge Functions run in a Kata micro-VM. Data API reads (GET/HEAD on /rest/v1) are served from the Postgres replicas; set KONG_REST_READ_REPLICAS=off on the gateway to keep every read on the primary. New users confirm their email through the Email add-on (GOTRUE_MAILER_AUTOCONFIRM=false on the Auth card).
     kubero.dev/template.links: '["https://supabase.com/docs/guides/self-hosting/docker"]'
     kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@268692363407166c1de7320910eee41a92ca474e/services/supabase/screenshot-table.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@268692363407166c1de7320910eee41a92ca474e/services/supabase/screenshot-auth.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@268692363407166c1de7320910eee41a92ca474e/services/supabase/screenshot-storage.png"]'
     kubero.dev/template.source: https://github.com/supabase/supabase
@@ -278,6 +278,42 @@ spec:
           username: supabase
           # The same generated value as the superuser and the per-tenant users.
           password: '{{STACKBLAZE_GEN_SHARED:SB_DB_PASSWORD:ALNUM:32}}'
+      # The connection pooler: CloudNativePG's own PgBouncer, in transaction
+      # mode (Supabase's port 6543). The platform names it
+      # <database>-pooler, points it at this deployment's own cluster (a
+      # branch gets its own) and hands every service PGHOST_POOLER /
+      # PGPORT_POOLER next to PGHOST. Same users and passwords as the direct
+      # connection. The Supabase services themselves stay on the direct
+      # connection, as upstream's do; the pooler is for your clients.
+      Pooler:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Pooler
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-postgresql-pooler'
+        spec:
+          cluster:
+            name: '{{STACKBLAZE_APP_NAME}}-postgresql'
+          instances: 1
+          type: rw
+          pgbouncer:
+            poolMode: transaction
+            parameters:
+              max_client_conn: '200'
+              default_pool_size: '15'
+              # Prepared statements through transaction pooling (PgBouncer 1.21+),
+              # as Supavisor allows them.
+              max_prepared_statements: '100'
+          template:
+            spec:
+              containers:
+              - name: pgbouncer
+                resources:
+                  requests:
+                    cpu: 10m
+                    memory: 32Mi
+                  limits:
+                    cpu: 250m
+                    memory: 128Mi
   - displayName: Email
     icon: /img/addons/email.svg
     id: kubero-smtp
