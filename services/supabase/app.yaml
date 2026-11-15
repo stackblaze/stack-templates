@@ -1069,10 +1069,10 @@ spec:
       # sign-in page, Edge Function deploy/delete from the UI, and the screens
       # backed by the hosting platform (backups, branching, GitHub, merge
       # requests, members, Auth settings, function secrets, service versions).
-      # sha-5b337e2: test tag of stackblaze/supabase#31 (fork synced with
-      # upstream, sign-in redirect fix); re-pin to its master build once merged.
+      # sha-01545c3: master build of stackblaze/supabase#34 (the platform's
+      # PgBouncer pooler in Connect and Database Settings), on top of #31-#33.
       repository: ghcr.io/stackblaze/supabase-studio
-      tag: sha-5b337e2
+      tag: sha-01545c3
       containerPort: '3000'
       command:
       - /bin/sh
