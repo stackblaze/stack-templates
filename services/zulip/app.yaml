@@ -192,7 +192,7 @@ spec:
   - name: TRUST_GATEWAY_IP
     value: 'True'
   - name: SECRETS_postgres_password
-    value: zulip
+    value: '$(PGPASSWORD)'
   - name: SECRETS_rabbitmq_password
     value: zulip
   - name: SECRETS_redis_password

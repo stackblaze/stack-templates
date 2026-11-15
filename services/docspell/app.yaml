@@ -100,12 +100,15 @@ spec:
     value: replace-with-openssl-rand-hex-32
   - name: DOCSPELL_SERVER_ADMIN__ENDPOINT_SECRET
     value: replace-with-openssl-rand-hex-32
+  # Database name and login follow the injected Postgres contract (never
+  # literals), so they stay right after a backup restore-copy + cutover,
+  # whose copy has its own database and roles (kubero-server #2401).
   - name: DOCSPELL_SERVER_BACKEND_JDBC_URL
     value: 'jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: DOCSPELL_SERVER_BACKEND_JDBC_USER
-    value: docspell
+    value: '$(PGUSER)'
   - name: DOCSPELL_SERVER_BACKEND_JDBC_PASSWORD
-    value: docspell
+    value: '$(PGPASSWORD)'
   - name: DOCSPELL_SERVER_BACKEND_FILES_DEFAULT__STORE
     value: database
   - name: DOCSPELL_SERVER_FULL__TEXT__SEARCH_ENABLED
