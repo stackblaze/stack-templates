@@ -3,6 +3,7 @@
   {
    "name": "metabase",
    "description": "Open source business intelligence. Connect a database, ask questions without SQL or with it, and share dashboards, alerts and email subscriptions with your team.",
+   "summary": "Dashboards and questions over your data",
    "source": "https://github.com/metabase/metabase",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f3ef854e5c2c2e94bccc18227bf5c644e6fc2a7e/services/metabase/icon.png",
    "website": "https://www.metabase.com/",
@@ -54,6 +55,7 @@
   {
    "name": "tandoor",
    "description": "Self-hosted Django recipe manager for organizing recipes, meal plans, and shopping lists.",
+   "summary": "Recipes, meal plans and shopping lists",
    "source": "https://github.com/TandoorRecipes/recipes",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tandoor/icon.svg",
    "website": "https://tandoor.dev/",
@@ -106,6 +108,7 @@
   {
    "name": "Twenty CRM",
    "description": "Close more deals with a modern CRM for contacts, pipelines, tasks, and opportunities.\nA flexible alternative to Salesforce and HubSpot.",
+   "summary": "Modern open-source CRM",
    "source": "https://github.com/twentyhq/twenty",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@54dbcb3cf1eb0643ab8ec7b9297ceabcd652f694/services/twenty/icon.png",
    "website": "https://twenty.com/",
@@ -158,6 +161,7 @@
   {
    "name": "n8n Automation",
    "description": "Automate repetitive work and connect your apps, APIs, and data with visual workflows.\nA powerful alternative to Zapier and Make.",
+   "summary": "Visual workflow automation",
    "source": "https://github.com/n8n-io/n8n",
    "icon": "https://avatars.githubusercontent.com/u/45487711?s=200&v=4",
    "website": "https://n8n.io",
@@ -205,6 +209,7 @@
   {
    "name": "navidrome",
    "description": "Navidrome is a self-hosted music streaming server with Subsonic-compatible API, multi-user support, and transcoding.",
+   "summary": "Music streaming server",
    "source": "https://github.com/navidrome/navidrome",
    "icon": "https://avatars.githubusercontent.com/u/66823122?s=200&v=4",
    "website": "https://www.navidrome.org/",
@@ -251,6 +256,7 @@
   {
    "name": "WordPress CMS",
    "description": "Build and manage websites, blogs, and content experiences with the world's most popular CMS.\nA flexible alternative to Wix and Squarespace.",
+   "summary": "Websites and blogs",
    "source": "https://github.com/WordPress/WordPress",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress/icon.png",
    "website": "https://wordpress.org",
@@ -299,6 +305,7 @@
   {
    "name": "unleash",
    "description": "Unleash is an open source feature management solution.",
+   "summary": "Feature flags",
    "source": "https://github.com/Unleash/unleash",
    "icon": "https://avatars.githubusercontent.com/u/23053233?s=200&v=4",
    "website": "https://getunleash.io/",
@@ -343,6 +350,7 @@
   {
    "name": "ghost",
    "description": "Ghost is a powerful app for new-media creators to publish, share, and grow a business around their content.",
+   "summary": "Publishing and newsletters",
    "source": "https://github.com/TryGhost/Ghost",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@560f0107df61bbb5dfb820054ba2688eac8d1697/services/ghost/icon.png",
    "website": "https://ghost.org/",
@@ -389,6 +397,7 @@
   {
    "name": "changedetection",
    "description": "A self-hosted free open source website change detection, monitor and notification service.",
+   "summary": "Get alerts when web pages change",
    "source": "https://github.com/dgtlmoon/changedetection.io",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/changedetection/icon.png",
    "website": "https://changedetection.io/",
@@ -429,6 +438,7 @@
   {
    "name": "uptime-kuma",
    "description": "Self-hosted uptime monitoring. Check websites, APIs, ports, DNS and more on your own schedule, get alerts in 90+ notification services, and publish public status pages.",
+   "summary": "Uptime monitoring and status pages",
    "source": "https://github.com/louislam/uptime-kuma",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uptime-kuma/icon.png",
    "website": "https://uptime.kuma.pet",
@@ -476,6 +486,7 @@
   {
    "name": "tolgee",
    "description": "Developer & translator friendly web-based localization platform",
+   "summary": "App localization and translation",
    "source": "https://github.com/tolgee/tolgee-platform",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tolgee/icon.png",
    "website": "https://tolgee.io/",
@@ -520,6 +531,7 @@
   {
    "name": "rocketchat",
    "description": "Rocket.Chat is an open-source fully customizable communications platform developed in JavaScript for organizations with high standards of data protection.",
+   "summary": "Team chat",
    "source": "https://github.com/RocketChat/Rocket.Chat",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rocketchat/icon.png",
    "website": "https://rocket.chat/",
@@ -566,6 +578,7 @@
   {
    "name": "directus",
    "description": "The flexible backend for all your projects. Turn your database into a headless CMS, admin panels, or apps with a custom UI, instant REST and GraphQL APIs, auth and more.",
+   "summary": "Headless CMS and instant APIs",
    "source": "https://github.com/directus/directus",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/directus/icon.png",
    "website": "https://directus.com/",
@@ -620,6 +633,7 @@
   {
    "name": "activepieces",
    "description": "Open-source automation platform: build flows and AI agents from hundreds of pieces (integrations), webhooks, schedules and your own code steps. Runs in a Kata micro-VM.",
+   "summary": "Automation flows and AI agents",
    "source": "https://github.com/activepieces/activepieces",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/d72b995aa9233cfff1e4dad49d3be77c5bbf7800/services/activepieces/icon.png",
    "website": "https://www.activepieces.com/",
@@ -671,6 +685,7 @@
   {
    "name": "airflow",
    "description": "Apache Airflow is an open-source platform to programmatically author, schedule, and monitor workflows.",
+   "summary": "Schedule and monitor data workflows",
    "source": "https://github.com/apache/airflow",
    "icon": "https://airflow.apache.org/images/airflow-logo-padded.svg",
    "website": "https://airflow.apache.org/",
@@ -718,6 +733,7 @@
   {
    "name": "gitea",
    "description": "Painless self-hosted all-in-one software development service, includes Git hosting, code review, team collaboration, package registry and CI/CD",
+   "summary": "Git hosting, code review and CI",
    "source": "https://github.com/go-gitea/gitea",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e1e91781144b4f96bf330019f945a0db1b06534a/services/gitea/icon.png",
    "website": "https://gitea.io/",
@@ -766,6 +782,7 @@
   {
    "name": "forgejo",
    "description": "Beyond coding. Forgejo is a self-hosted lightweight software forge with Git hosting, code review, team collaboration, package registry and CI/CD.",
+   "summary": "Git hosting, code review and CI",
    "source": "https://codeberg.org/forgejo/Forgejo",
    "icon": "https://codeberg.org/forgejo/Forgejo/raw/branch/forgejo/public/assets/img/logo.svg",
    "website": "https://forgejo.org/",
@@ -813,6 +830,7 @@
   {
    "name": "nocodb",
    "description": "Build databases as spreadsheets: tables with typed fields, grid, kanban, gallery, form and calendar views, and a REST API for every table. An open source Airtable alternative on your own Postgres.",
+   "summary": "Spreadsheet-style database",
    "source": "https://github.com/nocodb/nocodb",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocodb/icon.png",
    "website": "https://www.nocodb.com",
@@ -863,6 +881,7 @@
   {
    "name": "limesurvey",
    "description": "LimeSurvey is the simple, quick and anonymous online survey tool that's bursting with juicy insights.",
+   "summary": "Online surveys",
    "source": "https://github.com/LimeSurvey/LimeSurvey",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/limesurvey/icon.png",
    "website": "https://www.limesurvey.org",
@@ -907,6 +926,7 @@
   {
    "name": "etherpad",
    "description": "Etherpad is a real-time collaborative editor scalable to thousands of simultaneous real time users.",
+   "summary": "Real-time collaborative editor",
    "source": "https://github.com/ether/etherpad-lite",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/etherpad/icon.png",
    "website": "https://etherpad.org/",
@@ -953,6 +973,7 @@
   {
    "name": "DocuSeal eSign",
    "description": "Create, send, complete, and sign business documents from one streamlined workspace.\nA cost-effective alternative to DocuSign and Dropbox Sign.",
+   "summary": "Document e-signing",
    "source": "https://github.com/docusealco/docuseal",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docuseal/icon.png",
    "website": "https://www.docuseal.com/",
@@ -1001,6 +1022,7 @@
   {
    "name": "dolibarr",
    "description": "Dolibarr ERP CRM is a modern software package to manage your company or foundation's activity (contacts, suppliers, invoices, orders, stocks, agenda, accounting, ...). it's an open source Web application (written in PHP) designed for businesses of any sizes, foundations and freelancers.",
+   "summary": "ERP and CRM for small businesses",
    "source": "https://github.com/Dolibarr/dolibarr",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dolibarr/icon.png",
    "website": "https://www.dolibarr.org/",
@@ -1047,6 +1069,7 @@
   {
    "name": "rallly",
    "description": "Rallly is an open-source scheduling and collaboration tool designed to make organizing events and meetings easier.",
+   "summary": "Meeting and event scheduling polls",
    "source": "https://github.com/lukevella/rallly",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rallly/icon.png",
    "website": "https://rallly.co",
@@ -1093,6 +1116,7 @@
   {
    "name": "filebrowser",
    "description": "Web file manager \u2014 browse, upload, and share files from the browser.",
+   "summary": "Web file manager",
    "source": "https://github.com/filebrowser/filebrowser",
    "icon": "https://avatars.githubusercontent.com/u/35781395?v=4",
    "website": "https://filebrowser.org/",
@@ -1137,6 +1161,7 @@
   {
    "name": "filestash",
    "description": "A file manager / web client for SFTP, S3, FTP, WebDAV, Git, Minio, LDAP, CalDAV, CardDAV, Mysql, Backblaze, ...",
+   "summary": "Web client for SFTP, S3 and more",
    "source": "https://github.com/mickael-kerjean/filestash",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/filestash/icon.png",
    "website": "https://www.filestash.app/",
@@ -1179,6 +1204,7 @@
   {
    "name": "logto",
    "description": "Logto is an open-source Identity and Access Management (IAM) platform designed to streamline Customer Identity and Access Management (CIAM) and Workforce Identity Management. ",
+   "summary": "Auth and identity for your apps",
    "source": "https://github.com/logto-io/logto",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/logto/icon.png",
    "website": "https://logto.io/",
@@ -1225,6 +1251,7 @@
   {
    "name": "grav",
    "description": "Modern, fast and easy Flat-File CMS powered by PHP, Markdown, Twig, and Symfony",
+   "summary": "Flat-file CMS",
    "source": "https://github.com/getgrav/grav",
    "icon": "https://avatars.githubusercontent.com/u/8237355",
    "website": "https://getgrav.org/",
@@ -1263,6 +1290,7 @@
   {
    "name": "stirling-pdf",
    "description": "Edit, convert, sign and secure PDFs in your browser. Merge, split, compress, OCR, redact and 50+ more tools, with every file processed on your own server.",
+   "summary": "Edit, convert and sign PDFs",
    "source": "https://github.com/Stirling-Tools/Stirling-PDF",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7db1514b2a0ade65ece2463a4d20d45d884bd0b7/services/stirling-pdf/icon.png",
    "website": "https://www.stirlingpdf.com",
@@ -1314,6 +1342,7 @@
   {
    "name": "sterlingpdf",
    "description": "Stirling PDF is a hosted web application that allows you to perform various operations on PDF files, such as splitting and adding images.",
+   "summary": "PDF tools in the browser",
    "source": "https://github.com/Frooodle/Stirling-PDF",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7db1514b2a0ade65ece2463a4d20d45d884bd0b7/services/stirling-pdf/icon.png",
    "website": "https://docs.stirlingpdf.com/",
@@ -1359,6 +1388,7 @@
   {
    "name": "documenso",
    "description": "Send documents for e-signature, sign them in the browser and keep a digitally signed PDF with a full audit trail. Open source alternative to DocuSign.",
+   "summary": "Document e-signing",
    "source": "https://github.com/documenso/documenso",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2c7b3c0938b7eb0b1a96994d3cc34905a632c662/services/documenso/icon.png",
    "website": "https://documenso.com/",
@@ -1412,6 +1442,7 @@
   {
    "name": "rsshub",
    "description": "RSSHub is an open source, easy to use, and extensible RSS feed generator. It is capable of generating RSS feeds from pretty much everything.",
+   "summary": "RSS feeds for any website",
    "source": "https://github.com/DIYgod/RSSHub",
    "icon": "https://raw.githubusercontent.com/DIYgod/RSSHub/master/lib/assets/logo.png",
    "website": "https://docs.rsshub.app/",
@@ -1452,6 +1483,7 @@
   {
    "name": "affine",
    "description": "AFFiNE is a next-gen knowledge base that brings planning, sorting and creating all together",
+   "summary": "Docs, whiteboards and planning",
    "source": "https://github.com/toeverything/AFFiNE",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/affine/icon.png",
    "website": "https://affine.pro/",
@@ -1498,6 +1530,7 @@
   {
    "name": "postiz",
    "description": "Schedule social media posts on a calendar, preview them per network, and publish to Bluesky, Mastodon, LinkedIn, X and 30 more from one place.",
+   "summary": "Schedule social media posts",
    "source": "https://github.com/gitroomhq/postiz-app",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/postiz/icon.png",
    "website": "https://postiz.com/",
@@ -1546,6 +1579,7 @@
   {
    "name": "trilium",
    "description": "Trilium Notes is a hierarchical note taking application with focus on building large personal knowledge bases. ",
+   "summary": "Personal knowledge base",
    "source": "https://github.com/zadam/trilium",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/trilium/icon.png",
    "website": "https://github.com/zadam/trilium",
@@ -1588,6 +1622,7 @@
   {
    "name": "appsmith",
    "description": "Low code project to build admin panels, internal tools, and dashboards. Integrates with 15+ databases and any API.",
+   "summary": "Build internal tools and admin panels",
    "source": "https://github.com/appsmithorg/appsmith",
    "icon": "https://avatars.githubusercontent.com/u/67620218?s=200&v=4",
    "website": "https://www.appsmith.com",
@@ -1629,6 +1664,7 @@
   {
    "name": "languagetool",
    "description": "LanguageTool is an Open Source proofreading software for English, Spanish, French, German, Portuguese, Polish, Dutch, and more than 20 other languages.",
+   "summary": "Grammar and spell checking",
    "source": "https://github.com/languagetool-org/languagetool",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/languagetool/icon.png",
    "website": "https://languagetool.org/",
@@ -1672,6 +1708,7 @@
   {
    "name": "excalidraw",
    "description": "Virtual whiteboard for sketching hand-drawn style diagrams, with live collaboration and shareable links that are end-to-end encrypted and stored on your own instance.",
+   "summary": "Hand-drawn style whiteboard",
    "source": "https://github.com/excalidraw/excalidraw",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e425b1bcd4aa3e76eef3ff2ece32e38fd1ade9f5/services/excalidraw/icon.png",
    "website": "https://excalidraw.com/",
@@ -1719,6 +1756,7 @@
   {
    "name": "joomla",
    "description": "Joomla is a free and open-source content management system for publishing web content on websites.",
+   "summary": "Content management system",
    "source": "https://github.com/joomla/joomla-cms",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/joomla/icon.png",
    "website": "https://joomla.org",
@@ -1761,6 +1799,7 @@
   {
    "name": "bookstack",
    "description": "BookStack is an opinionated documentation platform that provides a pleasant and simple out-of-the-box experience.",
+   "summary": "Documentation wiki",
    "source": "https://github.com/BookStackApp/BookStack",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bookstack/icon.png",
    "website": "https://www.bookstackapp.com/",
@@ -1807,6 +1846,7 @@
   {
    "name": "silverbullet",
    "description": "SilverBullet is a note-taking application optimized for people with a hacker mindset.",
+   "summary": "Markdown notes for hackers",
    "source": "https://github.com/silverbulletmd/silverbullet",
    "icon": "https://avatars.githubusercontent.com/u/108344757",
    "website": "https://silverbullet.md/",
@@ -1845,6 +1885,7 @@
   {
    "name": "outline",
    "description": "Team knowledge base and wiki: fast, real-time collaborative Markdown documents organized in collections, with search, comments, sharing and passkey or email sign-in, backed by Postgres.",
+   "summary": "Team knowledge base and wiki",
    "source": "https://github.com/outline/outline",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b0536b10e8144903a70f0269e6da255d9f6409e/services/outline/icon.png",
    "website": "https://www.getoutline.com",
@@ -1900,6 +1941,7 @@
   {
    "name": "ryot",
    "description": "A self hosted platform for tracking various facets of your life - media, fitness etc.",
+   "summary": "Track media, fitness and habits",
    "source": "https://github.com/ignisda/ryot",
    "icon": "https://avatars.githubusercontent.com/u/60938164?v=4",
    "website": "https://github.com/ignisda/ryot",
@@ -1942,6 +1984,7 @@
   {
    "name": "paperless-ngx-postgresql",
    "description": "A community-supported supercharged version of paperless: scan, index and archive all your physical documents",
+   "summary": "Scan, index and archive documents",
    "source": "https://github.com/paperless-ngx/paperless-ngx",
    "icon": "https://avatars.githubusercontent.com/u/99562962",
    "website": "https://docs.paperless-ngx.com/",
@@ -1990,6 +2033,7 @@
   {
    "name": "homebox",
    "description": "Homebox is the inventory and organization system built for the Home User",
+   "summary": "Home inventory",
    "source": "https://github.com/sysadminsmedia/homebox",
    "icon": "https://homebox.software/lilbox.svg",
    "website": "https://homebox.software",
@@ -2033,6 +2077,7 @@
   {
    "name": "docmost",
    "description": "Docmost is an open-source collaborative wiki and documentation software. It is an open-source alternative to Confluence and Notion.",
+   "summary": "Wiki and docs, Confluence alternative",
    "source": "https://github.com/stackblaze/docmost",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docmost/icon.png",
    "website": "https://docmost.com/",
@@ -2079,6 +2124,7 @@
   {
    "name": "gotify",
    "description": "Gotify is a simple server for sending and receiving messages (in real time per WebSocket)",
+   "summary": "Push notification server",
    "source": "https://github.com/gotify/server",
    "icon": "https://raw.githubusercontent.com/gotify/logo/master/gotify-logo.png",
    "website": "https://gotify-net",
@@ -2122,6 +2168,7 @@
   {
    "name": "Cal.com",
    "description": "Open-source scheduling: share booking pages, set your availability once, and let people pick a time. Bookings, reschedules and cancellations send email confirmations, with webhooks and embeds for your site.",
+   "summary": "Booking pages and scheduling",
    "source": "https://github.com/calcom/cal.diy",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@2a01bb6598e650610b50543dfa421f6051452408/services/calcom/icon.png",
    "website": "https://cal.com/",
@@ -2172,6 +2219,7 @@
   {
    "name": "calibre-web",
    "description": "Calibre-Web is a web app for browsing, reading, and downloading eBooks using an existing Calibre database.",
+   "summary": "Read and manage eBooks",
    "source": "https://github.com/janeczku/calibre-web",
    "icon": "https://avatars.githubusercontent.com/u/18373368?s=200&v=4",
    "website": "https://github.com/janeczku/calibre-web",
@@ -2218,6 +2266,7 @@
   {
    "name": "wekan",
    "description": "The Open Source kanban board",
+   "summary": "Kanban boards",
    "source": "https://github.com/wekan/wekan",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wekan/icon.png",
    "website": "https://wekan.github.io/",
@@ -2263,6 +2312,7 @@
   {
    "name": "zipline",
    "description": "A ShareX/file upload server that is easy to use, packed with features, and with an easy setup!",
+   "summary": "File and screenshot uploads",
    "source": "https://github.com/diced/zipline",
    "icon": "https://avatars.githubusercontent.com/u/1396645",
    "website": "https://zipline.diced.sh/",
@@ -2306,6 +2356,7 @@
   {
    "name": "guitos",
    "description": "A personal budgeting app that helps you figure out where your money went, plan your budget ahead of time and analyze past expenditures.",
+   "summary": "Personal budgeting",
    "source": "https://github.com/rare-magma/guitos",
    "icon": "https://avatars.githubusercontent.com/u/5001560",
    "website": "https://guitos.app/",
@@ -2346,6 +2397,7 @@
   {
    "name": "opengist",
    "description": "Self-hosted pastebin powered by Git, open-source alternative to Github Gist.",
+   "summary": "Git-backed code snippets",
    "source": "https://github.com/thomiceli/opengist",
    "icon": "https://raw.githubusercontent.com/thomiceli/opengist/master/public/opengist.svg",
    "website": "https://github.com/thomiceli/opengist",
@@ -2387,6 +2439,7 @@
   {
    "name": "ntfy",
    "description": "ntfy (pronounced \"notify\") is a simple HTTP-based pub-sub notification service. With ntfy, you can send notifications to your phone or desktop via scripts from any computer, without having to sign up or pay any fees",
+   "summary": "Push notifications over HTTP",
    "source": "https://github.com/binwiederhier/ntfy",
    "icon": "https://ntfy.sh/_next/static/media/logo.077f6a13.svg",
    "website": "https://ntfy.sh/",
@@ -2431,6 +2484,7 @@
   {
    "name": "planka",
    "description": "Free open source kanban board for workgroups.",
+   "summary": "Kanban boards for teams",
    "source": "https://github.com/plankanban/planka",
    "icon": "https://avatars.githubusercontent.com/u/64215741?s=200&v=4",
    "website": "https://planka.app/",
@@ -2475,6 +2529,7 @@
   {
    "name": "whiteboard",
    "description": "Lightweight collaborative Whiteboard / Sketchboard",
+   "summary": "Collaborative whiteboard",
    "source": "https://github.com/cracker0dks/whiteboard",
    "icon": "https://static-00.iconduck.com/assets.00/whiteboard-icon-512x416-i0xojg3v.png",
    "website": "https://github.com/cracker0dks/whiteboard",
@@ -2517,6 +2572,7 @@
   {
    "name": "leantime",
    "description": "Leantime is a goals focused project management system for non-project managers. Building with ADHD, Autism, and dyslexia in mind.",
+   "summary": "Goal-focused project management",
    "source": "https://github.com/Leantime/leantime",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/leantime/icon.png",
    "website": "https://leantime.io/",
@@ -2564,6 +2620,7 @@
   {
    "name": "memos",
    "description": "Open-source, self-hosted note taking: a private timeline of quick Markdown notes with tags, tasks, attachments and sharing, backed by Postgres.",
+   "summary": "Quick Markdown notes",
    "source": "https://github.com/usememos/memos",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@fcadd80dae23dff51d36b128e5c0bd14391a7cb3/services/memos/icon.png",
    "website": "https://usememos.com",
@@ -2615,6 +2672,7 @@
   {
    "name": "fider",
    "description": "Open platform to collect and prioritize feedback",
+   "summary": "Collect and rank feedback",
    "source": "https://github.com/getfider/fider",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/fider/icon.png",
    "website": "https://fider.io",
@@ -2661,6 +2719,7 @@
   {
    "name": "flowise",
    "description": "Drag & drop UI to build your customized LLM flow",
+   "summary": "Drag-and-drop LLM flows",
    "source": "https://github.com/FlowiseAI/Flowise",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@83ba43b1da8347f3a7af802fb213a0e2ca9a37bb/services/flowise/icon.png",
    "website": "https://flowiseai.com",
@@ -2706,6 +2765,7 @@
   {
    "name": "dokuwiki",
    "description": "The DokuWiki Open Source Wiki Engine",
+   "summary": "Simple wiki",
    "source": "https://github.com/dokuwiki/dokuwiki",
    "icon": "https://avatars.githubusercontent.com/u/111377700",
    "website": "https://www.dokuwiki.org/",
@@ -2745,6 +2805,7 @@
   {
    "name": "Umami Analytics",
    "description": "Understand traffic, campaigns, and visitor behavior through fast, privacy-friendly analytics.\nA lightweight alternative to Google Analytics and Plausible.",
+   "summary": "Privacy-friendly web analytics",
    "source": "https://github.com/umami-software/umami",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/umami/icon.png",
    "website": "https://umami.is/",
@@ -2792,6 +2853,7 @@
   {
    "name": "casdoor",
    "description": "An Identity and Access Management (IAM) / Single-Sign-On (SSO) platform with beautiful web UI and the official client SDKs",
+   "summary": "Single sign-on and user management",
    "source": "https://github.com/casdoor/casdoor",
    "icon": "https://avatars.githubusercontent.com/u/72992104?s=200&v=4",
    "website": "https://casdoor.org",
@@ -2837,6 +2899,7 @@
   {
    "name": "concrete5",
    "description": "Concrete CMS is an open source CMS built by people from around the world.",
+   "summary": "Content management system",
    "source": "https://github.com/concretecms/concretecms",
    "icon": "https://avatars.githubusercontent.com/u/657929",
    "website": "https://www.concretecms.org/",
@@ -2877,6 +2940,7 @@
   {
    "name": "claper",
    "description": "Claper turns your presentations into an interactive, engaging and exciting experience.",
+   "summary": "Interactive presentations",
    "source": "https://github.com/ClaperCo/Claper",
    "icon": "https://avatars.githubusercontent.com/u/109804388?s=48&v=4",
    "website": "https://claper.co/",
@@ -2920,6 +2984,7 @@
   {
    "name": "metube",
    "description": "Self-hosted YouTube downloader (web UI for youtube-dl / yt-dlp)",
+   "summary": "YouTube downloader",
    "source": "https://github.com/alexta69/metube",
    "icon": "https://raw.githubusercontent.com/alexta69/metube/master/ui/src/assets/icons/android-chrome-192x192.png",
    "website": "hhttps://github.com/alexta69/metube",
@@ -2960,6 +3025,7 @@
   {
    "name": "keila",
    "description": "Open Source Newsletter Tool.",
+   "summary": "Newsletters",
    "source": "https://github.com/pentacent/keila",
    "icon": "https://raw.githubusercontent.com/pentacent/keila/main/.github/assets/logo.svg",
    "website": "https://keila.io/",
@@ -3003,6 +3069,7 @@
   {
    "name": "corteza",
    "description": "The Corteza low-code platform lets you build and iterate CRM, business process and other structured data apps fast, create intelligent business process workflows and connect with almost any data source.",
+   "summary": "Low-code business apps",
    "source": "https://github.com/cortezaproject/corteza",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/corteza/icon.png",
    "website": "https://cortezaproject.org/",
@@ -3046,6 +3113,7 @@
   {
    "name": "kimai",
    "description": "Kimai is a web-based multi-user time-tracking application. Works great for everyone: freelancers, companies, organizations",
+   "summary": "Time tracking",
    "source": "https://github.com/kimai/kimai",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kimai/icon.png",
    "website": "https://www.kimai.org",
@@ -3092,6 +3160,7 @@
   {
    "name": "presentator",
    "description": "Design feedback and presentation platform",
+   "summary": "Design feedback and presentations",
    "source": "https://github.com/presentator/presentator",
    "icon": "https://avatars.githubusercontent.com/u/53578609",
    "website": "https://presentator.io/",
@@ -3133,6 +3202,7 @@
   {
    "name": "Passbolt for Teams",
    "description": "Protect company credentials and share access securely across teams and roles.\nA business-focused alternative to 1Password and LastPass.",
+   "summary": "Team password manager",
    "source": "https://github.com/passbolt/passbolt_api",
    "icon": "https://avatars.githubusercontent.com/u/4386228?s=200&v=4",
    "website": "https://www.passbolt.com",
@@ -3179,6 +3249,7 @@
   {
    "name": "mirotalk-p2p",
    "description": "WebRTC - P2P - Simple, Secure, Fast, Real-Time Video Conferences Up to 4k and 60fps, compatible with all browsers and platforms.",
+   "summary": "Peer-to-peer video calls",
    "source": "https://github.com/miroslavpejic85/mirotalk",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mirotalk-p2p/icon.png",
    "website": "https://p2p.mirotalk.com",
@@ -3220,6 +3291,7 @@
   {
    "name": "twofauth",
    "description": "2FAuth is a web based self-hosted alternative to One Time Passcode (OTP) generators like Google Authenticator, designed for both mobile and desktop.",
+   "summary": "2FA code manager",
    "source": "https://github.com/Bubka/2FAuth",
    "icon": "https://docs.2fauth.app/static/2fauth_dark.png",
    "website": "https://docs.2fauth.app/",
@@ -3263,6 +3335,7 @@
   {
    "name": "piwigo",
    "description": "Manage your photos with Piwigo, a full featured open source photo gallery application for the web.",
+   "summary": "Photo gallery",
    "source": "https://github.com/Piwigo/Piwigo",
    "icon": "https://avatars.githubusercontent.com/u/9326886",
    "website": "https://piwigo.org/",
@@ -3308,6 +3381,7 @@
   {
    "name": "libtranslate",
    "description": "Free and Open Source Machine Translation API. Self-hosted, offline capable and easy to setup.",
+   "summary": "Machine translation API",
    "source": "https://github.com/LibreTranslate/LibreTranslate",
    "icon": "https://avatars.githubusercontent.com/u/77352747",
    "website": "https://libretranslate.com",
@@ -3349,6 +3423,7 @@
   {
    "name": "lychee",
    "description": "An easy-to-use photo-management-system to manage and share photos.",
+   "summary": "Photo management and sharing",
    "source": "https://github.com/LycheeOrg/Lychee",
    "icon": "https://avatars.githubusercontent.com/u/37916028?s=200&v=4",
    "website": "https://lycheeorg.github.io/",
@@ -3391,6 +3466,7 @@
   {
    "name": "authorizer",
    "description": "Authorizer is an open-source authentication and authorization solution for your applications.",
+   "summary": "Auth for your apps",
    "source": "https://github.com/authorizerdev/authorizer",
    "icon": "https://authorizer.dev/images/favicon_io/android-chrome-192x192.png",
    "website": "https://authorizer.dev/",
@@ -3434,6 +3510,7 @@
   {
    "name": "cockpit",
    "description": "Cockpit is a headless CMS that gives you the flexibility to build content-driven applications your way",
+   "summary": "Headless CMS",
    "source": "https://github.com/Cockpit-HQ/Cockpit",
    "icon": "https://avatars.githubusercontent.com/u/78603032",
    "website": "https://getcockpit.com/",
@@ -3479,6 +3556,7 @@
   {
    "name": "Vaultwarden Passwords",
    "description": "Keep passwords, secure notes, and logins organized across all your devices.\nA lightweight alternative to 1Password and LastPass.",
+   "summary": "Password manager",
    "source": "https://github.com/dani-garcia/vaultwarden",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@d8123f94fb779ed065b5274ba5edfd8e8890c391/services/vaultwarden/icon.png",
    "website": "https://github.com/dani-garcia/vaultwarden",
@@ -3527,6 +3605,7 @@
   {
    "name": "monica",
    "description": "Personal CRM. Remember everything about your friends, family and business relationships.",
+   "summary": "Personal relationship manager",
    "source": "https://github.com/monicahq/monica",
    "icon": "https://avatars.githubusercontent.com/u/25832602?s=200&v=4",
    "website": "https://monicahq.com/",
@@ -3570,6 +3649,7 @@
   {
    "name": "photoview",
    "description": "Photoview is a simple and user-friendly photo gallery that is made for photographers and aims to provide an easy and fast way to navigate directories.",
+   "summary": "Photo gallery",
    "source": "https://github.com/photoview/photoview",
    "icon": "https://avatars.githubusercontent.com/u/75802894?s=200&v=4",
    "website": "https://photoview.github.io/",
@@ -3612,6 +3692,7 @@
   {
    "name": "wikijs",
    "description": "Wiki.js is a modern, lightweight and powerful wiki app built on Node.js, Git and Markdown.",
+   "summary": "Modern wiki",
    "source": "https://github.com/Requarks/wiki",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wikijs/icon.png",
    "website": "https://js.wiki/",
@@ -3657,6 +3738,7 @@
   {
    "name": "illa",
    "description": "ILLA is a robust open source low-code platform for developers to build internal tools.",
+   "summary": "Low-code internal tools",
    "source": "https://github.com/illacloud/illa-builder",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/illa/icon.png",
    "website": "https://illacloud.com",
@@ -3699,6 +3781,7 @@
   {
    "name": "homarr",
    "description": "Homarr is a simple and lightweight homepage for your server, that helps you easily access all of your services in one place.",
+   "summary": "Dashboard for your services",
    "source": "https://github.com/ajnart/homarr",
    "icon": "https://github.com/ajnart/homarr/raw/dev/public/imgs/logo/logo-color.svg",
    "website": "https://homarr.dev",
@@ -3741,6 +3824,7 @@
   {
    "name": "azimutt",
    "description": "Azimutt is a full-stack database exploration tool. It allows you to explore your database, run queries, and visualize the results.",
+   "summary": "Explore and document databases",
    "source": "https://github.com/azimuttapp/azimutt",
    "icon": "https://avatars.githubusercontent.com/u/89384563",
    "website": "https://azimutt.app/",
@@ -3785,6 +3869,7 @@
   {
    "name": "convertx",
    "description": "Self-hosted online file converter. Supports 1000+ formats",
+   "summary": "Convert files between 1000+ formats",
    "source": "https://github.com/C4illin/ConvertX",
    "icon": "https://avatars.githubusercontent.com/u/18604702",
    "website": "https://github.com/C4illin/ConvertX",
@@ -3826,6 +3911,7 @@
   {
    "name": "archivebox",
    "description": "ArchiveBox is a powerful, self-hosted internet archiving solution to collect, save, and view websites offline.",
+   "summary": "Archive websites offline",
    "source": "https://github.com/ArchiveBox/ArchiveBox",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/archivebox/icon.png",
    "website": "https://archivebox.io/",
@@ -3867,6 +3953,7 @@
   {
    "name": "atuin",
    "description": "Self-hosted Atuin sync server for encrypted shell history backup and sync across machines.",
+   "summary": "Shell history sync server",
    "source": "https://github.com/atuinsh/atuin",
    "icon": "https://avatars.githubusercontent.com/u/122059230?s=200&v=4",
    "website": "https://atuin.sh/",
@@ -3913,6 +4000,7 @@
   {
    "name": "audiobookshelf",
    "description": "Self-hosted audiobook and podcast server with multi-user support, progress sync, and OPDS.",
+   "summary": "Audiobooks and podcasts",
    "source": "https://github.com/advplyr/audiobookshelf",
    "icon": "https://avatars.githubusercontent.com/u/88282323?s=200&v=4",
    "website": "https://www.audiobookshelf.org/",
@@ -3959,6 +4047,7 @@
   {
    "name": "kanboard",
    "description": "Kanboard is a free and open source project management software focused on the Kanban methodology.",
+   "summary": "Kanban project management",
    "source": "https://github.com/kanboard/kanboard",
    "icon": "https://avatars.githubusercontent.com/u/13722943?s=200&v=4",
    "website": "https://kanboard.org",
@@ -4003,6 +4092,7 @@
   {
    "name": "kavita",
    "description": "Kavita is a fast, feature-rich cross-platform reading server for manga, comics, and books with OPDS support.",
+   "summary": "Manga, comics and books reader",
    "source": "https://github.com/Kareadita/Kavita",
    "icon": "https://avatars.githubusercontent.com/u/75163075?s=200&v=4",
    "website": "https://www.kavitareader.com/",
@@ -4049,6 +4139,7 @@
   {
    "name": "pairdrop",
    "description": "PairDrop: Transfer Files Cross-Platform. No Setup, No Signup.",
+   "summary": "Send files between devices",
    "source": "https://github.com/schlagmichdoch/PairDrop",
    "icon": "https://avatars.githubusercontent.com/u/52242352",
    "website": "https://pairdrop.net/",
@@ -4093,6 +4184,7 @@
   {
    "name": "homepage",
    "description": "A highly customizable homepage (or startpage / application dashboard) with Docker and service API integrations.",
+   "summary": "Start page for your services",
    "source": "https://github.com/gethomepage/homepage",
    "icon": "https://raw.githubusercontent.com/gethomepage/homepage/dev/public/homepage.png",
    "website": "https://gethomepage.dev",
@@ -4136,6 +4228,7 @@
   {
    "name": "databag",
    "description": "A tiny selfhosted federated messenger for the decentralized web.",
+   "summary": "Federated messenger",
    "source": "https://github.com/balzack/databag",
    "icon": "https://raw.githubusercontent.com/balzack/databag/main/doc/icon_v2.png",
    "website": "https://github.com/balzack/databag",
@@ -4178,6 +4271,7 @@
   {
    "name": "evershop",
    "description": "Ecommerce platform with essential commerce features Built with React, modular and fully customizable",
+   "summary": "E-commerce store",
    "source": "https://github.com/evershopcommerce/evershop",
    "icon": "https://avatars.githubusercontent.com/u/83757778?s=200&v=4",
    "website": "https://evershop.io/",
@@ -4220,6 +4314,7 @@
   {
    "name": "doccano",
    "description": "Open source annotation tool for machine learning practitioners.",
+   "summary": "Text annotation for machine learning",
    "source": "https://github.com/doccano/doccano",
    "icon": "https://avatars.githubusercontent.com/u/58067660",
    "website": "https://doccano.github.io/doccano/",
@@ -4265,6 +4360,7 @@
   {
    "name": "timetagger",
    "description": "TimeTagger is a simple time tracking tool for your terminal.",
+   "summary": "Time tracking",
    "source": "https://github.com/almarklein/timetagger",
    "icon": "https://timetagger.app/timetagger_sl.svg",
    "website": "https://timetagger.app/",
@@ -4308,6 +4404,7 @@
   {
    "name": "textbee",
    "description": "textbee.dev is an opensource and free sms-gatway for sending SMS messages through API or dashboard web interface.",
+   "summary": "Send SMS from an API",
    "source": "https://github.com/vernu/textbee",
    "icon": "https://avatars.githubusercontent.com/u/38871878",
    "website": "https://textbee.dev/",
@@ -4353,6 +4450,7 @@
   {
    "name": "serpbear",
    "description": "SerpBear is a Search Engine Position Tracking App. It allows you to track your website's keyword positions in Google and get notified of their positions.",
+   "summary": "Track search rankings",
    "source": "https://github.com/towfiqi/serpbear",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/serpbear/icon.png",
    "website": "https://docs.serpbear.com/",
@@ -4396,6 +4494,7 @@
   {
    "name": "microbin",
    "description": "A tiny, self-contained, configurable paste bin and URL shortener written in Rust.",
+   "summary": "Pastebin and URL shortener",
    "source": "https://github.com/szabodanika/microbin",
    "icon": "https://raw.githubusercontent.com/szabodanika/microbin/refs/heads/master/templates/assets/logo-square.png",
    "website": "https://microbin.eu/",
@@ -4442,6 +4541,7 @@
   {
    "name": "raneto",
    "description": "Raneto - is an open source Knowledgebase platform that uses static Markdown files to power your Knowledgebase.",
+   "summary": "Markdown knowledge base",
    "source": "https://github.com/ryanlelek/Raneto",
    "icon": "https://raw.githubusercontent.com/gilbitron/Raneto/master/logo/logo_readme.png",
    "website": "http://raneto.com/",
@@ -4485,6 +4585,7 @@
   {
    "name": "tasksmd",
    "description": "A self-hosted, file based task management board that supports Markdown syntax.",
+   "summary": "Markdown task board",
    "source": "https://github.com/BaldissaraMatheus/Tasks.md",
    "icon": "https://raw.githubusercontent.com/BaldissaraMatheus/Tasks.md/main/frontend/public/favicon/android-chrome-192x192.png",
    "website": "https://hub.docker.com/r/baldissaramatheus/tasks.md",
@@ -4527,6 +4628,7 @@
   {
    "name": "traggo",
    "description": "Traggo is a self-hosted time tracking tool. It is designed to be easy to use and to be self-hosted. It is written in Go and uses Vue.js for the frontend. ",
+   "summary": "Tag-based time tracking",
    "source": "https://github.com/traggo/server",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/traggo/icon.png",
    "website": "https://traggo.net",
@@ -4571,6 +4673,7 @@
   {
    "name": "shiori",
    "description": "Shiori is a simple bookmark manager. ",
+   "summary": "Bookmark manager",
    "source": "https://github.com/go-shiori/shiori",
    "icon": "https://raw.githubusercontent.com/go-shiori/shiori/master/internal/view/assets/res/apple-touch-icon-152x152.png",
    "website": "https://github.com/go-shiori/shiori",
@@ -4616,6 +4719,7 @@
   {
    "name": "shlink",
    "description": "The definitive self-hosted URL shortener with REST API and visit tracking.",
+   "summary": "URL shortener with stats",
    "source": "https://github.com/shlinkio/shlink",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/shlink/icon.png",
    "website": "https://shlink.io/",
@@ -4661,6 +4765,7 @@
   {
    "name": "chibisafe",
    "description": "Blazing fast file uploader and awesome bunker written in node!",
+   "summary": "File uploads and sharing",
    "source": "https://github.com/chibisafe/chibisafe",
    "icon": "https://avatars.githubusercontent.com/u/115422728?s=200&v=4",
    "website": "https://chibisafe.moe",
@@ -4704,6 +4809,7 @@
   {
    "name": "fief",
    "description": "Users and authentication management",
+   "summary": "User and auth management",
    "source": "https://github.com/fief-dev/fief",
    "icon": "https://avatars.githubusercontent.com/u/97037414?s=200&v=4",
    "website": "https://www.fief.dev",
@@ -4747,6 +4853,7 @@
   {
    "name": "serge",
    "description": "A web interface for chatting with Alpaca through llama.cpp. Fully dockerized, with an easy to use API.",
+   "summary": "Chat with local LLMs",
    "source": "https://github.com/serge-chat/serge",
    "icon": "https://avatars.githubusercontent.com/u/135821135?s=200&v=4",
    "website": "https://serge.chat",
@@ -4787,6 +4894,7 @@
   {
    "name": "peppermint",
    "description": "Ticket Management System in order to help helpdesks & service desks manage internal staff & customer requests",
+   "summary": "Helpdesk tickets",
    "source": "https://github.com/Peppermint-Lab/peppermint",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/peppermint/icon.png",
    "website": "https://peppermint.sh/",
@@ -4830,6 +4938,7 @@
   {
    "name": "dotcms",
    "description": "Hybrid headless content management system for building modern websites, apps and digital experiences with a Java-based, API-first platform.",
+   "summary": "Headless CMS",
    "source": "https://github.com/dotCMS/core",
    "icon": "https://avatars.githubusercontent.com/u/1005263?s=200&v=4",
    "website": "https://www.dotcms.com/",
@@ -4881,6 +4990,7 @@
   {
    "name": "Mattermost Collaboration",
    "description": "Bring team messaging, file sharing, and operational workflows into one secure workspace.\nA customizable alternative to Slack and Microsoft Teams.",
+   "summary": "Team messaging",
    "source": "https://github.com/mattermost/mattermost",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mattermost/icon.png",
    "website": "https://mattermost.com/",
@@ -4937,6 +5047,7 @@
   {
    "name": "psono",
    "description": "Psono is an open-source, self-hosted password manager for teams - end-to-end encrypted secret storage with sharing, an admin portal and a REST API.",
+   "summary": "Team password manager",
    "source": "https://gitlab.com/psono/psono-combo",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/psono/icon.png",
    "website": "https://psono.com/",
@@ -4985,6 +5096,7 @@
   {
    "name": "nextcloud",
    "description": "Self-hosted file sync and sharing: upload, organise and share files and photos from the browser, desktop and phone apps, with Calendar and Contacts, backed by Postgres and Valkey.",
+   "summary": "Files, calendar and contacts",
    "source": "https://github.com/nextcloud/server",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@f68651e75a07f3ca2a779d821cbc24188889e404/services/nextcloud/icon.png",
    "website": "https://nextcloud.com/",
@@ -5037,6 +5149,7 @@
   {
    "name": "immich",
    "description": "Self-hosted photo and video backup solution with a mobile-first focus.",
+   "summary": "Photo and video backup",
    "source": "https://github.com/immich-app/immich",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7b68b21d85234eb2a734d361d16b2b939c2cf10b/services/immich/icon.png",
    "website": "https://immich.app/",
@@ -5085,6 +5198,7 @@
   {
    "name": "chatpad",
    "description": "Chatpad sets itself apart with a broader vision - to become the ultimate interface for ChatGPT users.",
+   "summary": "ChatGPT interface",
    "source": "https://github.com/deiucanta/chatpad",
    "icon": "https://raw.githubusercontent.com/deiucanta/chatpad/refs/heads/main/src/assets/favicon.png",
    "website": "https://chatpad.ai",
@@ -5125,6 +5239,7 @@
   {
    "name": "stackblaze-workspace",
    "description": "Stackblaze Workspace \u2014 browser VS Code with a persistent project volume. A clean dev environment; add a database, auth and APIs anytime via the Supabase add-on.",
+   "summary": "VS Code in the browser",
    "source": "https://github.com/stackblaze/stack-templates",
    "icon": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/vscode.png",
    "website": "https://stackblaze.cloud",
@@ -5170,6 +5285,7 @@
   {
    "name": "chatwoot",
    "description": "Open-source customer engagement platform with live chat, a shared team inbox, and a help center. A self-hosted alternative to Intercom and Zendesk.",
+   "summary": "Live chat and shared inbox",
    "source": "https://github.com/chatwoot/chatwoot",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@59942969b534f4de6df6313e53a02b7222202457/services/chatwoot/icon.png",
    "website": "https://www.chatwoot.com/",
@@ -5224,6 +5340,7 @@
   {
    "name": "typebot",
    "description": "Build chatbots and conversational forms in a visual editor, then publish them as a link, an embed or a chat bubble. Results, file uploads and email sign-in included.",
+   "summary": "Chatbots and conversational forms",
    "source": "https://github.com/baptisteArno/typebot.io",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/e5a34d2192c34ebbc42dac44c5d29acb56535f9b/services/typebot/icon.png",
    "website": "https://typebot.io/",
@@ -5278,6 +5395,7 @@
   {
    "name": "plausible",
    "description": "Privacy-friendly alternative to Google Analytics \u00e2\u20ac\u201d lightweight and open source.",
+   "summary": "Privacy-friendly web analytics",
    "source": "https://github.com/plausible/analytics",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@1b034abb844fe2bb6ce82bbf34bb651285f059a6/services/plausible/icon.png",
    "website": "https://plausible.io/",
@@ -5326,6 +5444,7 @@
   {
    "name": "Plane Project Management",
    "description": "Plan projects, track issues and ship work through cycles, modules and pages. Open source project management with LDAP, OIDC and SAML sign-in, time tracking and workflows included.",
+   "summary": "Projects, issues and cycles",
    "source": "https://github.com/stackblaze/plane",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/af050105511720bddc3c0b909b1725cd93411ce5/services/plane/icon.png",
    "website": "https://plane.so/",
@@ -5379,6 +5498,7 @@
   {
    "name": "discourse",
    "description": "Open-source community discussion platform \u00e2\u20ac\u201d modern forum software.",
+   "summary": "Community forum",
    "source": "https://github.com/discourse/discourse",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e63cc2a96db49c9abb60cb62e0a6b20b6ad3346f/services/discourse/icon.png",
    "website": "https://www.discourse.org/",
@@ -5430,6 +5550,7 @@
   {
    "name": "infisical",
    "description": "Open-source secrets manager: store, version and sync app secrets across projects and environments, with machine identities for CI and servers, an internal PKI and audit logs.",
+   "summary": "Secrets manager",
    "source": "https://github.com/Infisical/infisical",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@a4698436bdbd1e6fd4a83f478818a5dfc49a5890/services/infisical/icon.png",
    "website": "https://infisical.com/",
@@ -5482,6 +5603,7 @@
   {
    "name": "linkding",
    "description": "Self-hosted bookmark manager that is minimal, fast, and easy to set up.",
+   "summary": "Bookmark manager",
    "source": "https://github.com/sissbruecker/linkding",
    "icon": "https://avatars.githubusercontent.com/u/34423368?s=200&v=4",
    "website": "https://linkding.link/",
@@ -5528,6 +5650,7 @@
   {
    "name": "linkwarden",
    "description": "Self-hosted collaborative bookmark manager to collect and organize links.",
+   "summary": "Collaborative bookmarks",
    "source": "https://github.com/linkwarden/linkwarden",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/linkwarden/icon.png",
    "website": "https://linkwarden.app/",
@@ -5574,6 +5697,7 @@
   {
    "name": "it-tools",
    "description": "Collection of handy online tools for developers, with great UX.",
+   "summary": "Handy tools for developers",
    "source": "https://github.com/CorentinTh/it-tools",
    "icon": "https://raw.githubusercontent.com/CorentinTh/it-tools/main/public/favicon-32x32.png",
    "website": "https://it-tools.tech",
@@ -5615,6 +5739,7 @@
   {
    "name": "jellyfin",
    "description": "Free software media system that puts you in control of managing and streaming your movies, TV, and music.",
+   "summary": "Stream movies, TV and music",
    "source": "https://github.com/jellyfin/jellyfin",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jellyfin/icon.png",
    "website": "https://jellyfin.org/",
@@ -5658,6 +5783,7 @@
   {
    "name": "focalboard",
    "description": "Open source, self-hosted alternative to Trello, Notion, and Asana.",
+   "summary": "Boards for projects and tasks",
    "source": "https://github.com/mattermost/focalboard",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/focalboard/icon.png",
    "website": "https://www.focalboard.com/",
@@ -5703,6 +5829,7 @@
   {
    "name": "formbricks",
    "description": "Open-source Qualtrics alternative for in-product micro-surveys and experience management.",
+   "summary": "In-product surveys",
    "source": "https://github.com/formbricks/formbricks",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/formbricks/icon.png",
    "website": "https://formbricks.com/",
@@ -5750,6 +5877,7 @@
   {
    "name": "openproject",
    "description": "Web-based project management system for location-independent team collaboration.",
+   "summary": "Project management",
    "source": "https://github.com/opf/openproject",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openproject/icon.png",
    "website": "https://www.openproject.org/",
@@ -5796,6 +5924,7 @@
   {
    "name": "matomo",
    "description": "Full-featured PHP analytics platform \u2014 privacy-focused alternative to Google Analytics.",
+   "summary": "Web analytics",
    "source": "https://github.com/matomo-org/matomo",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/matomo/icon.png",
    "website": "https://matomo.org/",
@@ -5842,6 +5971,7 @@
   {
    "name": "mealie",
    "description": "Self-hosted recipe manager and meal planner with a clean, modern interface.",
+   "summary": "Recipes and meal planning",
    "source": "https://github.com/mealie-recipes/mealie",
    "icon": "https://avatars.githubusercontent.com/u/92342333?s=200&v=4",
    "website": "https://mealie.io/",
@@ -5887,6 +6017,7 @@
   {
    "name": "nodebb",
    "description": "Next-generation forum software \u2014 powerful, mobile-ready, and fully customizable.",
+   "summary": "Community forum",
    "source": "https://github.com/NodeBB/NodeBB",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nodebb/icon.png",
    "website": "https://nodebb.org/",
@@ -5933,6 +6064,7 @@
   {
    "name": "syncthing",
    "description": "Continuous file synchronization \u2014 decentralized alternative to proprietary sync services.",
+   "summary": "Continuous file sync",
    "source": "https://github.com/syncthing/syncthing",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/syncthing/icon.png",
    "website": "https://syncthing.net/",
@@ -5976,6 +6108,7 @@
   {
    "name": "hedgedoc",
    "description": "Collaborative markdown editor for real-time notes, docs, and knowledge sharing.",
+   "summary": "Collaborative Markdown notes",
    "source": "https://github.com/hedgedoc/hedgedoc",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hedgedoc/icon.png",
    "website": "https://hedgedoc.org/",
@@ -6022,6 +6155,7 @@
   {
    "name": "freshrss",
    "description": "Self-hosted RSS feed aggregator \u2014 lightweight and extensible.",
+   "summary": "RSS reader",
    "source": "https://github.com/FreshRSS/FreshRSS",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freshrss/icon.png",
    "website": "https://freshrss.org/",
@@ -6067,6 +6201,7 @@
   {
    "name": "miniflux",
    "description": "Miniflux is a minimalist and opinionated RSS reader written in Go.",
+   "summary": "Minimalist RSS reader",
    "source": "https://github.com/miniflux/v2",
    "icon": "https://avatars.githubusercontent.com/u/9411421?s=200&v=4",
    "website": "https://miniflux.app/",
@@ -6112,6 +6247,7 @@
   {
    "name": "wallabag",
    "description": "Self-hostable read-it-later app for saving and classifying web pages to read later.",
+   "summary": "Save pages to read later",
    "source": "https://github.com/wallabag/wallabag",
    "icon": "https://avatars.githubusercontent.com/u/4573139?s=200&v=4",
    "website": "https://www.wallabag.org/",
@@ -6160,6 +6296,7 @@
   {
    "name": "vikunja",
    "description": "The open-source to-do app \u2014 organize tasks, projects, and teams on all platforms.",
+   "summary": "To-do lists and projects",
    "source": "https://github.com/go-vikunja/vikunja",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vikunja/icon.png",
    "website": "https://vikunja.io/",
@@ -6206,6 +6343,7 @@
   {
    "name": "netbox",
    "description": "NetBox is the leading open-source DCIM and IP address management platform for network infrastructure.",
+   "summary": "Network and IP address management",
    "source": "https://github.com/netbox-community/netbox",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/netbox/icon.png",
    "website": "https://netbox.dev/",
@@ -6253,6 +6391,7 @@
   {
    "name": "superset",
    "description": "Modern data exploration and visualization platform \u2014 enterprise-ready business intelligence.",
+   "summary": "Data exploration and dashboards",
    "source": "https://github.com/apache/superset",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/superset/icon.png",
    "website": "https://superset.apache.org/",
@@ -6300,6 +6439,7 @@
   {
    "name": "appflowy",
    "description": "Open-source Notion alternative \u2014 self-hosted workspace for notes, docs, and collaboration.",
+   "summary": "Notes and docs, Notion alternative",
    "source": "https://github.com/AppFlowy-IO/AppFlowy-Cloud",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/appflowy/icon.png",
    "website": "https://appflowy.io/",
@@ -6348,6 +6488,7 @@
   {
    "name": "cryptpad",
    "description": "Collaborative office suite \u2014 end-to-end encrypted docs, sheets, and kanban boards.",
+   "summary": "Encrypted docs and sheets",
    "source": "https://github.com/cryptpad/cryptpad",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cryptpad/icon.png",
    "website": "https://cryptpad.org/",
@@ -6392,6 +6533,7 @@
   {
    "name": "glpi",
    "description": "IT service management and asset tracking \u2014 helpdesk, inventory, and CMDB in one platform.",
+   "summary": "IT helpdesk and asset tracking",
    "source": "https://github.com/glpi-project/glpi",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/glpi/icon.png",
    "website": "https://glpi-project.org/",
@@ -6438,6 +6580,7 @@
   {
    "name": "humhub",
    "description": "Flexible open-source social network kit for private communities and team collaboration.",
+   "summary": "Private social network",
    "source": "https://github.com/humhub/humhub",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/humhub/icon.png",
    "website": "https://www.humhub.com/",
@@ -6484,6 +6627,7 @@
   {
    "name": "easyappointments",
    "description": "Open-source appointment scheduler for service providers \u2014 booking pages, calendars, and notifications.",
+   "summary": "Appointment booking",
    "source": "https://github.com/alextselegidis/easyappointments",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/easyappointments/icon.png",
    "website": "https://easyappointments.org/",
@@ -6530,6 +6674,7 @@
   {
    "name": "password-pusher",
    "description": "Securely share passwords and files with expiring links \u2014 open-source alternative to one-time secret services.",
+   "summary": "Share passwords with expiring links",
    "source": "https://github.com/pglombardo/PasswordPusher",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/password-pusher/icon.png",
    "website": "https://pwpush.com/",
@@ -6575,6 +6720,7 @@
   {
    "name": "zulip",
    "description": "Powerful open-source team chat organized into topic-based threads \u2014 an alternative to Slack.",
+   "summary": "Threaded team chat",
    "source": "https://github.com/zulip/zulip",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zulip/icon.png",
    "website": "https://zulip.com/",
@@ -6624,6 +6770,7 @@
   {
    "name": "Akaunting Finance",
    "description": "Manage invoices, expenses, customers, and financial reporting from one approachable dashboard.\nA practical alternative to QuickBooks and FreshBooks.",
+   "summary": "Invoices, expenses and accounting",
    "source": "https://github.com/akaunting/akaunting",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/akaunting/icon.png",
    "website": "https://akaunting.com",
@@ -6671,6 +6818,7 @@
   {
    "name": "attendize",
    "description": "Open-source ticket selling and event management platform (Laravel) for organizing events and selling tickets online.",
+   "summary": "Event ticketing",
    "source": "https://github.com/Attendize/Attendize",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/attendize/icon.png",
    "website": "https://www.attendize.com/",
@@ -6720,6 +6868,7 @@
   {
    "name": "authelia",
    "description": "Open-source authentication and authorization server providing SSO and multi-factor auth as a companion to reverse proxies via a login portal.",
+   "summary": "SSO and 2FA for your apps",
    "source": "https://github.com/authelia/authelia",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/authelia/icon.png",
    "website": "https://www.authelia.com",
@@ -6768,6 +6917,7 @@
   {
    "name": "automatisch",
    "description": "Open-source business automation tool (a self-hostable Zapier alternative) for connecting apps and building no-code integration workflows.",
+   "summary": "No-code automation",
    "source": "https://github.com/automatisch/automatisch",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/automatisch/icon.png",
    "website": "https://automatisch.io/",
@@ -6816,6 +6966,7 @@
   {
    "name": "azuracast",
    "description": "Self-hosted, all-in-one web radio management suite for running internet radio stations, with streaming, automation, and live DJ support.",
+   "summary": "Internet radio station",
    "source": "https://github.com/AzuraCast/AzuraCast",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/azuracast/icon.png",
    "website": "https://www.azuracast.com",
@@ -6864,6 +7015,7 @@
   {
    "name": "bigcapital",
    "description": "Open-source double-entry accounting and financial reporting platform, a self-hosted alternative to QuickBooks, Xero and Wave.",
+   "summary": "Accounting and financial reports",
    "source": "https://github.com/bigcapitalhq/bigcapital",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/bigcapital/icon.png",
    "website": "https://bigcapital.app",
@@ -6912,6 +7064,7 @@
   {
    "name": "btcpay",
    "description": "Self-hosted, open-source Bitcoin and Lightning payment processor with no fees, no third party and full store/POS/invoicing tooling.",
+   "summary": "Bitcoin payments",
    "source": "https://github.com/btcpayserver/btcpayserver",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/btcpay/icon.png",
    "website": "https://btcpayserver.org",
@@ -6959,6 +7112,7 @@
   {
    "name": "castopod",
    "description": "Open-source, self-hosted podcast hosting platform with built-in analytics and ActivityPub federation for the Fediverse (Podcasting 2.0).",
+   "summary": "Podcast hosting",
    "source": "https://github.com/ad-aures/castopod",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/castopod/icon.png",
    "website": "https://castopod.org",
@@ -7007,6 +7161,7 @@
   {
    "name": "chiefonboarding",
    "description": "Open-source employee onboarding and preboarding platform with to-do items, intro sequences, courses and Slack-driven workflows.",
+   "summary": "Employee onboarding",
    "source": "https://github.com/chiefonboarding/ChiefOnboarding",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/chiefonboarding/icon.png",
    "website": "https://chiefonboarding.com",
@@ -7054,6 +7209,7 @@
   {
    "name": "civicrm",
    "description": "Open-source constituent relationship management for nonprofits and civic groups, handling contacts, contributions, events, memberships and email.",
+   "summary": "CRM for nonprofits",
    "source": "https://github.com/civicrm/civicrm-core",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/civicrm/icon.png",
    "website": "https://civicrm.org",
@@ -7101,6 +7257,7 @@
   {
    "name": "convex",
    "description": "Open-source reactive backend-as-a-service with a TypeScript database, server functions, file storage, and real-time sync.",
+   "summary": "Reactive backend with realtime sync",
    "source": "https://github.com/get-convex/convex-backend",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/convex/icon.png",
    "website": "https://www.convex.dev",
@@ -7148,6 +7305,7 @@
   {
    "name": "countly",
    "description": "Open-source, privacy-focused product analytics platform for tracking web, mobile and desktop apps with funnels, retention, crashes and push.",
+   "summary": "Product analytics",
    "source": "https://github.com/Countly/countly-server",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/countly/icon.png",
    "website": "https://countly.com",
@@ -7195,6 +7353,7 @@
   {
    "name": "crater",
    "description": "Open-source, self-hosted web and mobile app to track expenses, payments and create professional invoices and estimates.",
+   "summary": "Invoices and expenses",
    "source": "https://github.com/crater-invoice-inc/crater",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/crater/icon.png",
    "website": "https://craterapp.com",
@@ -7242,6 +7401,7 @@
   {
    "name": "cryptgeon",
    "description": "Secure, open-source service for sharing self-destructing, end-to-end-encrypted notes and files, inspired by PrivNote.",
+   "summary": "Self-destructing encrypted notes",
    "source": "https://github.com/cupcakearmy/cryptgeon",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cryptgeon/icon.png",
    "website": "https://cryptgeon.org",
@@ -7289,6 +7449,7 @@
   {
    "name": "cryptomator",
    "description": "Self-hosted key management and access control server for sharing Cryptomator-encrypted vaults across teams.",
+   "summary": "Team access to encrypted vaults",
    "source": "https://github.com/cryptomator/hub",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cryptomator/icon.png",
    "website": "https://cryptomator.org/hub/",
@@ -7334,6 +7495,7 @@
   {
    "name": "dittofeed",
    "description": "Open-source customer engagement and marketing automation platform for building messaging campaigns and user journeys across email, SMS, and push.",
+   "summary": "Customer messaging automation",
    "source": "https://github.com/dittofeed/dittofeed",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dittofeed/icon.png",
    "website": "https://www.dittofeed.com/",
@@ -7382,6 +7544,7 @@
   {
    "name": "docassemble",
    "description": "Open-source expert system for guided interviews and document assembly, widely used to build legal-aid and law-firm self-help applications.",
+   "summary": "Guided interviews and documents",
    "source": "https://github.com/jhpyle/docassemble",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docassemble/icon.png",
    "website": "https://docassemble.org",
@@ -7430,6 +7593,7 @@
   {
    "name": "docspell",
    "description": "Self-hosted document organizer (DMS) that auto-tags, OCRs and full-text-searches your scanned PDFs, emails and uploads.",
+   "summary": "Organize and search documents",
    "source": "https://github.com/eikek/docspell",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/docspell/icon.png",
    "website": "https://docspell.org",
@@ -7477,6 +7641,7 @@
   {
    "name": "documize",
    "description": "Open-source modern document and knowledge management platform combining wiki, docs and structured templates for teams.",
+   "summary": "Team docs and knowledge base",
    "source": "https://github.com/documize/community",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/documize/icon.png",
    "website": "https://www.documize.com/",
@@ -7524,6 +7689,7 @@
   {
    "name": "drawio",
    "description": "Self-hosted draw.io (diagrams.net), a client-side editor for flowcharts, UML, ER, network and other diagrams.",
+   "summary": "Diagram editor",
    "source": "https://github.com/jgraph/docker-drawio",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/drawio/icon.png",
    "website": "https://www.drawio.com",
@@ -7567,6 +7733,7 @@
   {
    "name": "dremio",
    "description": "Open lakehouse platform with a SQL query engine and self-service semantic layer over data lakes, databases, and object storage.",
+   "summary": "SQL lakehouse engine",
    "source": "https://github.com/dremio/dremio-oss",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/dremio/icon.png",
    "website": "https://www.dremio.com",
@@ -7612,6 +7779,7 @@
   {
    "name": "drupal",
    "description": "Drupal is an open-source content management framework for building websites, intranets and digital experiences.",
+   "summary": "Content management framework",
    "source": "https://github.com/drupal/drupal",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/drupal/icon.png",
    "website": "https://www.drupal.org/",
@@ -7659,6 +7827,7 @@
   {
    "name": "element",
    "description": "Glossy, feature-rich Matrix web client for secure, decentralized chat, voice and video collaboration.",
+   "summary": "Matrix chat client",
    "source": "https://github.com/element-hq/element-web",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/element/icon.png",
    "website": "https://element.io",
@@ -7704,6 +7873,7 @@
   {
    "name": "emqx",
    "description": "Massively scalable open-source MQTT broker for IoT, connecting millions of devices with a built-in dashboard, rules engine and data bridges.",
+   "summary": "MQTT broker for IoT",
    "source": "https://github.com/emqx/emqx",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/emqx/icon.png",
    "website": "https://www.emqx.io",
@@ -7749,6 +7919,7 @@
   {
    "name": "eneo",
    "description": "Open-source, multi-tenant AI platform for the public sector: build chat assistants, RAG knowledge bases and AI workflows on your own models.",
+   "summary": "AI assistants for the public sector",
    "source": "https://github.com/eneo-ai/eneo",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/eneo/icon.png",
    "website": "https://eneo.ai",
@@ -7797,6 +7968,7 @@
   {
    "name": "erpnext",
    "description": "Open-source ERP suite (accounting, inventory, HR, CRM, manufacturing, projects) built on the Frappe framework.",
+   "summary": "Full ERP suite",
    "source": "https://github.com/frappe/erpnext",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/erpnext/icon.png",
    "website": "https://erpnext.com",
@@ -7845,6 +8017,7 @@
   {
    "name": "erugo",
    "description": "Self-hosted, WeTransfer-style file-sharing platform with secure links, passwords, and download limits, built on Laravel and Vue.",
+   "summary": "File transfers with secure links",
    "source": "https://github.com/ErugoOSS/Erugo",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/erugo/icon.png",
    "website": "https://erugo.app",
@@ -7891,6 +8064,7 @@
   {
    "name": "espocrm",
    "description": "Open-source CRM for sales and customer management: contacts, accounts, leads, opportunities, activities, workflows, reporting and email.",
+   "summary": "Sales CRM",
    "source": "https://github.com/espocrm/espocrm",
    "icon": "https://avatars.githubusercontent.com/u/8108711?s=200&v=4",
    "website": "https://www.espocrm.com",
@@ -7939,6 +8113,7 @@
   {
    "name": "flarum",
    "description": "Flarum is a simple, fast, free and open-source forum software for building modern community discussion platforms.",
+   "summary": "Community forum",
    "source": "https://github.com/flarum/flarum",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flarum/icon.png",
    "website": "https://flarum.org/",
@@ -7986,6 +8161,7 @@
   {
    "name": "flatnotes",
    "description": "Self-hosted, database-less note-taking web app that stores everything as a flat folder of portable Markdown files with full-text search.",
+   "summary": "Markdown notes as plain files",
    "source": "https://github.com/dullage/flatnotes",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/flatnotes/icon.png",
    "website": "https://flatnotes.io",
@@ -8031,6 +8207,7 @@
   {
    "name": "frappehr",
    "description": "Open-source HR and payroll suite (employees, leave, attendance, expenses, payroll) built on the Frappe framework and ERPNext.",
+   "summary": "HR and payroll",
    "source": "https://github.com/frappe/hrms",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/frappehr/icon.png",
    "website": "https://frappe.io/hr",
@@ -8079,6 +8256,7 @@
   {
    "name": "FreeScout Help Desk",
    "description": "Deliver faster customer support with shared inboxes, assignments, conversations, and team collaboration.\nAn affordable alternative to Zendesk and Help Scout.",
+   "summary": "Shared inbox help desk",
    "source": "https://github.com/freescout-help-desk/freescout",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/freescout/icon.png",
    "website": "https://freescout.net",
@@ -8127,6 +8305,7 @@
   {
    "name": "LibreDesk",
    "description": "Modern, open-source omnichannel customer support desk with live chat, email, a help center, and automations.\nA self-hosted alternative to Zendesk and Help Scout.",
+   "summary": "Omnichannel support desk",
    "source": "https://github.com/stackblaze/libredesk",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/libredesk/icon.png",
    "website": "https://libredesk.io",
@@ -8177,6 +8356,7 @@
   {
    "name": "librechat",
    "description": "Self-hosted AI chat for your team: OpenAI, Anthropic, Google and any OpenAI-compatible model in one interface, with agents, artifacts and conversation history. Bring your own API keys.",
+   "summary": "AI chat for your team",
    "source": "https://github.com/LibreChat-AI/LibreChat",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@369ac79e270d49ff0bfd1bc710584d2e2cf4531a/services/librechat/icon.png",
    "website": "https://www.librechat.ai",
@@ -8225,6 +8405,7 @@
   {
    "name": "evolution-api",
    "description": "Connect WhatsApp numbers by QR code and send and receive messages over a REST API, with webhooks for incoming events and a built-in manager to run your instances.",
+   "summary": "WhatsApp messaging API",
    "source": "https://github.com/evolution-foundation/evolution-api",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/24d96ff6516797eca037fffa01aa15467033ac4b/services/evolution-api/icon.png",
    "website": "https://evolutionfoundation.com.br",
@@ -8277,6 +8458,7 @@
   {
    "name": "fugu",
    "description": "Free, privacy-friendly, simple, open-source and self-hostable product analytics.",
+   "summary": "Simple product analytics",
    "source": "https://github.com/shafy/fugu",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/fugu/icon.png",
    "website": "https://fugu.lol",
@@ -8323,6 +8505,7 @@
   {
    "name": "funkwhale",
    "description": "Free, federated (ActivityPub) music server and sharing platform - a self-hosted alternative to streaming services for the Fediverse.",
+   "summary": "Federated music server",
    "source": "https://dev.funkwhale.audio/funkwhale/funkwhale",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/funkwhale/icon.png",
    "website": "https://funkwhale.audio",
@@ -8371,6 +8554,7 @@
   {
    "name": "garage",
    "description": "Lightweight, self-hosted, S3-compatible distributed object storage built for geo-redundant clusters on commodity hardware.",
+   "summary": "S3-compatible object storage",
    "source": "https://github.com/deuxfleurs-org/garage",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/garage/icon.png",
    "website": "https://garagehq.deuxfleurs.fr",
@@ -8414,6 +8598,7 @@
   {
    "name": "ghostfolio",
    "description": "Open-source wealth management software to track stocks, ETFs, crypto and other assets across accounts in one privacy-focused dashboard.",
+   "summary": "Track your investments",
    "source": "https://github.com/ghostfolio/ghostfolio",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ghostfolio/icon.png",
    "website": "https://ghostfol.io",
@@ -8461,6 +8646,7 @@
   {
    "name": "glean",
    "description": "Self-hosted RSS reader and personal knowledge management tool with AI-powered semantic search over your saved reading.",
+   "summary": "RSS reader with AI search",
    "source": "https://github.com/LeslieLeung/glean",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/glean/icon.png",
    "website": "https://github.com/LeslieLeung/glean",
@@ -8508,6 +8694,7 @@
   {
    "name": "grist",
    "description": "Open-source modern relational spreadsheet that combines the flexibility of a spreadsheet with the robustness of a database.",
+   "summary": "Relational spreadsheet",
    "source": "https://github.com/gristlabs/grist-core",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/grist/icon.png",
    "website": "https://www.getgrist.com",
@@ -8555,6 +8742,7 @@
   {
    "name": "hermes",
    "description": "Open-source document management system from HashiCorp Labs for scaling an organization's writing, review and approval workflows.",
+   "summary": "Document writing and approvals",
    "source": "https://github.com/hashicorp-forge/hermes",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hermes/icon.png",
    "website": "https://github.com/hashicorp-forge/hermes",
@@ -8600,6 +8788,7 @@
   {
    "name": "hi-events",
    "description": "Open-source event management and ticket-selling platform (Laravel + React) for creating events, selling tickets, and managing attendees.",
+   "summary": "Events and ticket sales",
    "source": "https://github.com/HiEventsDev/hi.events",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hi-events/icon.png",
    "website": "https://hi.events/",
@@ -8648,6 +8837,7 @@
   {
    "name": "hop",
    "description": "Open-source data orchestration and integration platform (ETL) for designing and running visual data pipelines and workflows in the browser.",
+   "summary": "Visual data pipelines (ETL)",
    "source": "https://github.com/apache/hop",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hop/icon.png",
    "website": "https://hop.apache.org",
@@ -8693,6 +8883,7 @@
   {
    "name": "hortusfox",
    "description": "Self-hosted collaborative plant management system for tracking, organizing and caring for your indoor and outdoor plants.",
+   "summary": "Plant care tracker",
    "source": "https://github.com/danielbrendel/hortusfox-web",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hortusfox/icon.png",
    "website": "https://www.hortusfox.com",
@@ -8739,6 +8930,7 @@
   {
    "name": "hyperswitch",
    "description": "Open-source, Rust-based payment switch and orchestration platform for routing, retrying and reconciling payments across 100+ processors.",
+   "summary": "Payment orchestration",
    "source": "https://github.com/juspay/hyperswitch",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/hyperswitch/icon.png",
    "website": "https://hyperswitch.io",
@@ -8787,6 +8979,7 @@
   {
    "name": "inventree",
    "description": "Open-source inventory management and stock-control system for parts, suppliers, builds and orders, with a REST API and barcode support.",
+   "summary": "Inventory and parts management",
    "source": "https://github.com/inventree/InvenTree",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/inventree/icon.png",
    "website": "https://inventree.org",
@@ -8835,6 +9028,7 @@
   {
    "name": "invoiceninja",
    "description": "Open-source invoicing, billing, payments and expense-tracking platform for freelancers and businesses.",
+   "summary": "Invoicing and payments",
    "source": "https://github.com/invoiceninja/invoiceninja",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/invoiceninja/icon.png",
    "website": "https://invoiceninja.com",
@@ -8883,6 +9077,7 @@
   {
    "name": "iomad",
    "description": "IOMAD is a multi-tenant Moodle distribution that turns Moodle into a SaaS e-learning platform for managing multiple companies, departments and clients.",
+   "summary": "Multi-tenant Moodle e-learning",
    "source": "https://github.com/iomad/iomad",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/iomad/icon.png",
    "website": "https://www.iomad.org/",
@@ -8930,6 +9125,7 @@
   {
    "name": "iris",
    "description": "Open-source collaborative incident response platform for DFIR analysts to share investigation evidence, tasks, and timelines.",
+   "summary": "Incident response cases",
    "source": "https://github.com/dfir-iris/iris-web",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/iris/icon.png",
    "website": "https://dfir-iris.org",
@@ -8978,6 +9174,7 @@
   {
    "name": "itop",
    "description": "Combodo iTop: open-source ITSM and CMDB platform for incident, problem, change, service management and a configuration database.",
+   "summary": "IT service management and CMDB",
    "source": "https://github.com/Combodo/iTop",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/itop/icon.png",
    "website": "https://www.combodo.com/itop",
@@ -9025,6 +9222,7 @@
   {
    "name": "jitsi",
    "description": "Self-hosted, end-to-end-encrypted video conferencing platform - a privacy-focused, fully featured alternative to Zoom and Google Meet.",
+   "summary": "Video conferencing",
    "source": "https://github.com/jitsi/docker-jitsi-meet",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/jitsi/icon.png",
    "website": "https://jitsi.org",
@@ -9070,6 +9268,7 @@
   {
    "name": "joplin",
    "description": "Self-hosted sync server for the Joplin open-source note-taking and to-do app, with end-to-end-encrypted multi-device sync and sharing.",
+   "summary": "Joplin notes sync server",
    "source": "https://github.com/laurent22/joplin",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/joplin/icon.png",
    "website": "https://joplinapp.org",
@@ -9117,6 +9316,7 @@
   {
    "name": "keeweb",
    "description": "Free, cross-platform web password manager compatible with KeePass; opens and edits .kdbx files entirely in the browser.",
+   "summary": "KeePass password manager",
    "source": "https://github.com/keeweb/keeweb",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/keeweb/icon.png",
    "website": "https://keeweb.info",
@@ -9162,6 +9362,7 @@
   {
    "name": "kener",
    "description": "Stunning, open-source status pages with incident management, multi-language support, monitors and customizable themes.",
+   "summary": "Status pages",
    "source": "https://github.com/rajnandan1/kener",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kener/icon.png",
    "website": "https://kener.ing",
@@ -9210,6 +9411,7 @@
   {
    "name": "kroki",
    "description": "Unified API that turns textual descriptions into diagrams (PlantUML, Mermaid, GraphViz, BPMN, C4, and many more).",
+   "summary": "Text to diagrams API",
    "source": "https://github.com/yuzutech/kroki",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kroki/icon.png",
    "website": "https://kroki.io",
@@ -9252,6 +9454,7 @@
   {
    "name": "lago",
    "description": "Open-source metering and usage-based billing platform for invoicing, subscriptions, and pay-as-you-go pricing.",
+   "summary": "Usage-based billing",
    "source": "https://github.com/getlago/lago",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lago/icon.png",
    "website": "https://www.getlago.com/",
@@ -9300,6 +9503,7 @@
   {
    "name": "lemmy",
    "description": "Self-hosted, federated (ActivityPub) link aggregator and discussion forum - a Reddit-style alternative for the Fediverse.",
+   "summary": "Federated link aggregator",
    "source": "https://github.com/LemmyNet/lemmy",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lemmy/icon.png",
    "website": "https://join-lemmy.org",
@@ -9347,6 +9551,7 @@
   {
    "name": "lightdash",
    "description": "Open-source BI platform that turns your dbt project into a self-serve analytics tool with explores, charts, and dashboards.",
+   "summary": "BI on top of dbt",
    "source": "https://github.com/lightdash/lightdash",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lightdash/icon.png",
    "website": "https://www.lightdash.com",
@@ -9395,6 +9600,7 @@
   {
    "name": "lightldap",
    "description": "Lightweight authentication server providing a simplified, opinionated LDAP interface with a clean web UI for user and group management.",
+   "summary": "Simple LDAP user directory",
    "source": "https://github.com/lldap/lldap",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/lightldap/icon.png",
    "website": "https://github.com/lldap/lldap",
@@ -9439,6 +9645,7 @@
   {
    "name": "magento",
    "description": "Open-source PHP e-commerce platform with a flexible catalog, checkout, promotions and a powerful admin for building online stores.",
+   "summary": "E-commerce platform",
    "source": "https://github.com/magento/magento2",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/magento/icon.png",
    "website": "https://business.adobe.com/products/magento/open-source.html",
@@ -9487,6 +9694,7 @@
   {
    "name": "mantisbt",
    "description": "MantisBT is an open source web-based bug and issue tracker that balances simplicity with powerful project and workflow management.",
+   "summary": "Bug tracker",
    "source": "https://github.com/mantisbt/mantisbt",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mantisbt/icon.png",
    "website": "https://www.mantisbt.org/",
@@ -9534,6 +9742,7 @@
   {
    "name": "mastodon",
    "description": "Free, open-source decentralized social network server based on ActivityPub - self-hosted microblogging for the Fediverse.",
+   "summary": "Federated social network",
    "source": "https://github.com/mastodon/mastodon",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mastodon/icon.png",
    "website": "https://joinmastodon.org",
@@ -9582,6 +9791,7 @@
   {
    "name": "mautic",
    "description": "Open-source marketing automation platform for email campaigns, lead management, landing pages, and multichannel customer journeys.",
+   "summary": "Marketing automation",
    "source": "https://github.com/mautic/mautic",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mautic/icon.png",
    "website": "https://www.mautic.org",
@@ -9629,6 +9839,7 @@
   {
    "name": "maybe",
    "description": "Open-source personal finance and wealth management app to track accounts, budgets, investments and net worth.",
+   "summary": "Personal finance",
    "source": "https://github.com/maybe-finance/maybe",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/maybe/icon.png",
    "website": "https://maybefinance.com",
@@ -9676,6 +9887,7 @@
   {
    "name": "mediacms",
    "description": "Modern, fully featured open-source video and media content management system for building self-hosted media portals and streaming sites.",
+   "summary": "Video and media portal",
    "source": "https://github.com/mediacms-io/mediacms",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/mediacms/icon.png",
    "website": "https://mediacms.io",
@@ -9724,6 +9936,7 @@
   {
    "name": "metabase-postgres",
    "description": "Open-source business intelligence and analytics tool to query, visualize, and share dashboards from your databases without writing SQL.",
+   "summary": "Dashboards and questions over your data",
    "source": "https://github.com/metabase/metabase",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/metabase-postgres/icon.png",
    "website": "https://www.metabase.com",
@@ -9771,6 +9984,7 @@
   {
    "name": "minthcm",
    "description": "Open-source, AI-native Human Capital Management (HCM) platform for HR processes, built on the SuiteCRM core with full data ownership.",
+   "summary": "HR management",
    "source": "https://github.com/minthcm/minthcm",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/minthcm/icon.png",
    "website": "https://minthcm.org",
@@ -9818,6 +10032,7 @@
   {
    "name": "misskey",
    "description": "Decentralized, ActivityPub-federated microblogging platform with reactions, Drive file storage and a customizable UI.",
+   "summary": "Federated microblogging",
    "source": "https://github.com/misskey-dev/misskey",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/misskey/icon.png",
    "website": "https://misskey-hub.net/",
@@ -9866,6 +10081,7 @@
   {
    "name": "moodle",
    "description": "Moodle is the world's most popular open-source learning management system (LMS) for building online courses, classrooms and e-learning.",
+   "summary": "Online courses (LMS)",
    "source": "https://github.com/moodle/moodle",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/moodle/icon.png",
    "website": "https://moodle.org/",
@@ -9913,6 +10129,7 @@
   {
    "name": "neko-rooms",
    "description": "Self-hosted room management system for n.eko virtual browsers, a rabb.it alternative for collaborative co-browsing and watch-together sessions.",
+   "summary": "Shared virtual browsers",
    "source": "https://github.com/m1k1o/neko-rooms",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/neko-rooms/icon.png",
    "website": "https://github.com/m1k1o/neko-rooms",
@@ -9956,6 +10173,7 @@
   {
    "name": "nopcommerce",
    "description": "Open-source ASP.NET Core e-commerce platform and shopping cart for building online stores.",
+   "summary": "ASP.NET online store",
    "source": "https://github.com/nopSolutions/nopCommerce",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nopcommerce/icon.png",
    "website": "https://www.nopcommerce.com",
@@ -10003,6 +10221,7 @@
   {
    "name": "odoo",
    "description": "Open-source suite of business apps: CRM, e-commerce, accounting, inventory, project management, HR and more.",
+   "summary": "Business apps suite",
    "source": "https://github.com/odoo/odoo",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/odoo/icon.png",
    "website": "https://www.odoo.com",
@@ -10050,6 +10269,7 @@
   {
    "name": "onlyoffice",
    "description": "OnlyOffice document collaboration on Nextcloud: file sync and sharing with users and an admin portal, plus real-time editing of documents, spreadsheets and presentations via a pre-wired OnlyOffice connector.",
+   "summary": "Nextcloud with office editing",
    "source": "https://github.com/ONLYOFFICE/Docker-DocumentServer",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/onlyoffice/icon.png",
    "website": "https://www.onlyoffice.com/",
@@ -10098,6 +10318,7 @@
   {
    "name": "onlyoffice-docs",
    "description": "OnlyOffice Docs (Document Server) - the editor engine for real-time collaborative editing of documents, spreadsheets and presentations. A backend host apps (Nextcloud, custom integrations) connect to; it has no UI of its own.",
+   "summary": "Office document editing engine",
    "source": "https://github.com/ONLYOFFICE/Docker-DocumentServer",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/onlyoffice/icon.png",
    "website": "https://www.onlyoffice.com/",
@@ -10147,6 +10368,7 @@
   {
    "name": "openobserve",
    "description": "Rust-based, petabyte-scale observability platform for logs, metrics, traces and real user monitoring; a lightweight Elasticsearch/Datadog alternative.",
+   "summary": "Logs, metrics and traces",
    "source": "https://github.com/openobserve/openobserve",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openobserve/icon.png",
    "website": "https://openobserve.ai",
@@ -10194,6 +10416,7 @@
   {
    "name": "OpenBooks Financial ERP",
    "description": "Run accounting, projects, job costing, inventory, payroll, and month-end close on one audit-ready ledger.\nA modern alternative to NetSuite, Sage Intacct, Acumatica, and Odoo \u2014 currently in alpha.",
+   "summary": "Financial ERP",
    "source": "https://github.com/braedonsaunders/openbooks",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/openbooks/icon.png",
    "website": "https://openbooks-site.vercel.app",
@@ -10246,6 +10469,7 @@
   {
    "name": "OpenBooks Accounting",
    "description": "Keep a double-entry ledger, invoices, bills, and reports for a small business.\nOpenBooks on Postgres. This is the bookkeeping app, separate from the OpenBooks Financial ERP template.",
+   "summary": "Small business bookkeeping",
    "source": "https://github.com/stackblaze-adam/open-accounting",
    "icon": "https://github.com/stackblaze-adam.png",
    "website": "https://github.com/stackblaze-adam/open-accounting",
@@ -10289,6 +10513,7 @@
   {
    "name": "CloverHR",
    "description": "Keep everything about your people in one place: profiles, time off, timesheets, hiring, onboarding, benefits, performance, and reports.\nOpen-source HR for small and mid-sized teams in the United States and Canada. A self-hosted alternative to BambooHR, without payroll: it exports what your payroll or accounting software needs.",
+   "summary": "HR for small teams",
    "source": "https://github.com/stackblaze-adam/cloverhr",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/cloverhr/icon.png",
    "website": "https://cloverhr.net",
@@ -10345,6 +10570,7 @@
   {
    "name": "opnform",
    "description": "Beautiful open-source form builder to create and share forms, surveys and quizzes with no code, a self-hosted alternative to Typeform and Google Forms.",
+   "summary": "Forms and surveys",
    "source": "https://github.com/JhumanJ/OpnForm",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/opnform/icon.png",
    "website": "https://opnform.com",
@@ -10393,6 +10619,7 @@
   {
    "name": "owncast",
    "description": "Self-hosted live video streaming and chat server, a free and open-source alternative to services like Twitch.",
+   "summary": "Live streaming and chat",
    "source": "https://github.com/owncast/owncast",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/owncast/icon.png",
    "website": "https://owncast.online",
@@ -10438,6 +10665,7 @@
   {
    "name": "owncloud",
    "description": "ownCloud is a self-hosted file sync and share platform for storing, accessing and collaborating on your files across devices.",
+   "summary": "File sync and sharing",
    "source": "https://github.com/owncloud/core",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/owncloud/icon.png",
    "website": "https://owncloud.com/",
@@ -10486,6 +10714,7 @@
   {
    "name": "papercups",
    "description": "Open-source live chat and customer messaging platform (Intercom alternative) for support, onboarding, and team inboxes.",
+   "summary": "Live chat for support",
    "source": "https://github.com/papercups-io/papercups",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/papercups/icon.png",
    "website": "https://papercups.io",
@@ -10533,6 +10762,7 @@
   {
    "name": "papermerge",
    "description": "Self-hosted document management system (DMS) for digital archives: scan, OCR, organize, tag and full-text-search PDFs and scanned documents.",
+   "summary": "Scan, OCR and archive documents",
    "source": "https://github.com/ciur/papermerge",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/papermerge/icon.png",
    "website": "https://papermerge.com",
@@ -10581,6 +10811,7 @@
   {
    "name": "parseable",
    "description": "Rust-based, S3-native log analytics and observability platform with a built-in web console; a lightweight Elasticsearch/Splunk alternative.",
+   "summary": "Log analytics on S3",
    "source": "https://github.com/parseablehq/parseable",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/parseable/icon.png",
    "website": "https://www.parseable.com",
@@ -10626,6 +10857,7 @@
   {
    "name": "passit",
    "description": "Open-source, self-hosted password manager with end-to-end encryption and team sharing, plus browser extensions and a REST API.",
+   "summary": "Team password manager",
    "source": "https://gitlab.com/passit/passit",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/passit/icon.png",
    "website": "https://passit.io",
@@ -10674,6 +10906,7 @@
   {
    "name": "peertube",
    "description": "Free, federated (ActivityPub) video hosting and live-streaming platform - a self-hosted, decentralized alternative to YouTube.",
+   "summary": "Federated video hosting",
    "source": "https://github.com/Chocobozzz/PeerTube",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/peertube/icon.png",
    "website": "https://joinpeertube.org",
@@ -10722,6 +10955,7 @@
   {
    "name": "penpot",
    "description": "Open-source design and prototyping platform for product teams; the design tool for design and code collaboration.",
+   "summary": "Design and prototyping",
    "source": "https://github.com/penpot/penpot",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/penpot/icon.png",
    "website": "https://penpot.app",
@@ -10770,6 +11004,7 @@
   {
    "name": "photon",
    "description": "Open-source geocoder for OpenStreetMap data with search-as-you-type and reverse geocoding, powered by an embedded OpenSearch index.",
+   "summary": "OpenStreetMap geocoder",
    "source": "https://github.com/komoot/photon",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/photon/icon.png",
    "website": "https://photon.komoot.io",
@@ -10813,6 +11048,7 @@
   {
    "name": "photoprism",
    "description": "AI-powered, self-hosted photo and video management app that organizes your library with automatic tagging, face recognition, and search.",
+   "summary": "AI photo library",
    "source": "https://github.com/photoprism/photoprism",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/photoprism/icon.png",
    "website": "https://www.photoprism.app",
@@ -10860,6 +11096,7 @@
   {
    "name": "phpbb",
    "description": "phpBB is a free, open-source flat-forum bulletin board software for building and running an online community discussion board.",
+   "summary": "Bulletin board forum",
    "source": "https://github.com/phpbb/phpbb",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/phpbb/icon.png",
    "website": "https://www.phpbb.com/",
@@ -10905,6 +11142,7 @@
   {
    "name": "picoshare",
    "description": "Minimalist self-hosted file-sharing service for generating shareable download links to files of any size.",
+   "summary": "Share files with links",
    "source": "https://github.com/mtlynch/picoshare",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/picoshare/icon.png",
    "website": "https://pico.rocks",
@@ -10949,6 +11187,7 @@
   {
    "name": "pixelfed",
    "description": "Free, federated (ActivityPub) photo-sharing platform - a self-hosted, ethical alternative to Instagram for the Fediverse.",
+   "summary": "Federated photo sharing",
    "source": "https://github.com/pixelfed/pixelfed",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pixelfed/icon.png",
    "website": "https://pixelfed.org",
@@ -10997,6 +11236,7 @@
   {
    "name": "pleroma",
    "description": "Lightweight, federated (ActivityPub) social networking server - a self-hosted, resource-friendly microblogging alternative for the Fediverse.",
+   "summary": "Lightweight federated social server",
    "source": "https://git.pleroma.social/pleroma/pleroma",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pleroma/icon.png",
    "website": "https://pleroma.social",
@@ -11044,6 +11284,7 @@
   {
    "name": "posthog",
    "description": "Open-source product analytics, session replay, feature flags, A/B testing and surveys platform built on PostgreSQL, ClickHouse and Kafka.",
+   "summary": "Product analytics and session replay",
    "source": "https://github.com/PostHog/posthog",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/posthog/icon.png",
    "website": "https://posthog.com",
@@ -11093,6 +11334,7 @@
   {
    "name": "prestashop",
    "description": "Open-source e-commerce platform for building and managing online stores, with a built-in admin back office and a marketplace of modules and themes.",
+   "summary": "Online store",
    "source": "https://github.com/PrestaShop/PrestaShop",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/prestashop/icon.png",
    "website": "https://www.prestashop-project.org/",
@@ -11141,6 +11383,7 @@
   {
    "name": "pretix",
    "description": "Open-source event ticketing and registration platform for selling tickets to conferences, festivals and exhibitions (Eventbrite alternative).",
+   "summary": "Event ticketing",
    "source": "https://github.com/pretix/pretix",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pretix/icon.png",
    "website": "https://pretix.eu/",
@@ -11189,6 +11432,7 @@
   {
    "name": "pydio",
    "description": "Self-hosted document sharing and collaboration platform: a file-sync, sharing and content-management server for organizations.",
+   "summary": "Document sharing and collaboration",
    "source": "https://github.com/pydio/cells",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pydio/icon.png",
    "website": "https://pydio.com",
@@ -11235,6 +11479,7 @@
   {
    "name": "redash",
    "description": "Open-source data visualization and dashboarding tool to query, explore, and share insights from 30+ SQL/NoSQL/API data sources.",
+   "summary": "Query and visualize your data",
    "source": "https://github.com/getredash/redash",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/redash/icon.png",
    "website": "https://redash.io",
@@ -11283,6 +11528,7 @@
   {
    "name": "revolt",
    "description": "Open-source, self-hostable Discord alternative: a real-time chat platform with servers, channels, DMs, voice and file sharing (now branded Stoat).",
+   "summary": "Chat with servers and channels",
    "source": "https://github.com/revoltchat/self-hosted",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/revolt/icon.png",
    "website": "https://revolt.chat",
@@ -11332,6 +11578,7 @@
   {
    "name": "rustdesk",
    "description": "Self-hosted RustDesk relay/rendezvous server (hbbs + hbbr) for running your own private, open-source remote desktop infrastructure.",
+   "summary": "Remote desktop relay server",
    "source": "https://github.com/rustdesk/rustdesk-server",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rustdesk/icon.png",
    "website": "https://rustdesk.com",
@@ -11376,6 +11623,7 @@
   {
    "name": "rustfs",
    "description": "High-performance, S3-compatible distributed object storage written in Rust, with a built-in web console; a drop-in MinIO/Ceph alternative.",
+   "summary": "S3-compatible object storage",
    "source": "https://github.com/rustfs/rustfs",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/rustfs/icon.png",
    "website": "https://rustfs.com",
@@ -11419,6 +11667,7 @@
   {
    "name": "saleor",
    "description": "GraphQL-first, headless open-source e-commerce platform for building scalable storefronts, marketplaces and digital commerce.",
+   "summary": "Headless GraphQL e-commerce",
    "source": "https://github.com/saleor/saleor",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/saleor/icon.png",
    "website": "https://saleor.io",
@@ -11467,6 +11716,7 @@
   {
    "name": "saltcorn",
    "description": "Free and open-source no-code application builder for creating database-backed web apps without writing code.",
+   "summary": "No-code app builder",
    "source": "https://github.com/saltcorn/saltcorn",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/saltcorn/icon.png",
    "website": "https://saltcorn.com",
@@ -11514,6 +11764,7 @@
   {
    "name": "searxng",
    "description": "Privacy-respecting, hackable open-source metasearch engine that aggregates results from 70+ search services without tracking or profiling users.",
+   "summary": "Private metasearch engine",
    "source": "https://github.com/searxng/searxng",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/searxng/icon.png",
    "website": "https://docs.searxng.org",
@@ -11564,6 +11815,7 @@
   {
    "name": "seaweedfs",
    "description": "Fast distributed storage system for blobs, objects, files and a data lake, with an S3-compatible API and a filer web UI.",
+   "summary": "Distributed file and object storage",
    "source": "https://github.com/seaweedfs/seaweedfs",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seaweedfs/icon.png",
    "website": "https://seaweedfs.com",
@@ -11609,6 +11861,7 @@
   {
    "name": "sharkey",
    "description": "Feature-rich, ActivityPub-federated microblogging server - a Misskey fork for the Fediverse with post editing and the Mastodon API.",
+   "summary": "Federated microblogging",
    "source": "https://activitypub.software/TransFem-org/Sharkey",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sharkey/icon.png",
    "website": "https://joinsharkey.org/",
@@ -11657,6 +11910,7 @@
   {
    "name": "shopware",
    "description": "Open-source headless commerce platform for building online stores, marketplaces, and B2B/D2C experiences with Symfony and Vue.",
+   "summary": "Headless commerce",
    "source": "https://github.com/shopware/shopware",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/shopware/icon.png",
    "website": "https://www.shopware.com",
@@ -11705,6 +11959,7 @@
   {
    "name": "snipe-it",
    "description": "Free, open-source IT asset and license management system for tracking hardware, software licenses, accessories, and consumables.",
+   "summary": "IT asset management",
    "source": "https://github.com/snipe/snipe-it",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/snipe-it/icon.png",
    "website": "https://snipeitapp.com",
@@ -11753,6 +12008,7 @@
   {
    "name": "suitecrm",
    "description": "Open-source customer relationship management for sales, marketing and service teams: accounts, contacts, leads, opportunities, cases and workflows.",
+   "summary": "Sales, marketing and service CRM",
    "source": "https://github.com/salesagility/SuiteCRM",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/suitecrm/icon.png",
    "website": "https://suitecrm.com",
@@ -11799,6 +12055,7 @@
   {
    "name": "taiga",
    "description": "Open-source agile project management platform with Scrum and Kanban boards, backlogs, sprints, and issue tracking.",
+   "summary": "Agile project management",
    "source": "https://github.com/taigaio/taiga-back",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/taiga/icon.png",
    "website": "https://www.taiga.io",
@@ -11845,6 +12102,7 @@
   {
    "name": "temporal",
    "description": "Durable execution platform that runs reliable, fault-tolerant workflows and activities as code at scale.",
+   "summary": "Durable workflows as code",
    "source": "https://github.com/temporalio/temporal",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/temporal/icon.png",
    "website": "https://temporal.io",
@@ -11892,6 +12150,7 @@
   {
    "name": "totaljs-flow",
    "description": "Open-source visual flow-based programming editor for building real-time data-processing and integration pipelines with drag-and-drop components.",
+   "summary": "Visual flow programming",
    "source": "https://github.com/totaljs/flow",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/totaljs-flow/icon.png",
    "website": "https://www.totaljs.com/flow/",
@@ -11937,6 +12196,7 @@
   {
    "name": "tracardi",
    "description": "Open-source API-first Customer Data Platform (CDP) for collecting events, building profiles and segments, and orchestrating real-time customer journeys.",
+   "summary": "Customer data platform",
    "source": "https://github.com/Tracardi/tracardi",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/tracardi/icon.png",
    "website": "https://tracardi.com",
@@ -11986,6 +12246,7 @@
   {
    "name": "traduora",
    "description": "Open-source translation management platform (TMS) for teams to collaboratively manage app localization, with a REST API, CLI, and import/export.",
+   "summary": "Translation management",
    "source": "https://github.com/ever-co/ever-traduora",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/traduora/icon.png",
    "website": "https://traduora.co",
@@ -12033,6 +12294,7 @@
   {
    "name": "trudesk",
    "description": "Open-source helpdesk and ticketing system with email piping, knowledge base, live notifications, and per-team agent workflows.",
+   "summary": "Helpdesk ticketing",
    "source": "https://github.com/polonel/trudesk",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/trudesk/icon.png",
    "website": "https://trudesk.io",
@@ -12080,6 +12342,7 @@
   {
    "name": "unibee",
    "description": "Open-source, gateway-agnostic subscription billing and invoicing platform for SaaS businesses.",
+   "summary": "Subscription billing",
    "source": "https://github.com/UniBee-Billing/unibee",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/unibee/icon.png",
    "website": "https://unibee.dev/",
@@ -12126,6 +12389,7 @@
   {
    "name": "unomi",
    "description": "Open-source Java/OSGi Customer Data Platform that manages profiles, segments and events with a privacy-first context server and standards-based API.",
+   "summary": "Customer data platform",
    "source": "https://github.com/apache/unomi",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/unomi/icon.png",
    "website": "https://unomi.apache.org",
@@ -12171,6 +12435,7 @@
   {
    "name": "uvdesk",
    "description": "Open-source PHP/Symfony helpdesk and support ticketing system with email piping, knowledgebase, and multi-channel agent workflows.",
+   "summary": "Helpdesk ticketing",
    "source": "https://github.com/uvdesk/community-skeleton",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/uvdesk/icon.png",
    "website": "https://www.uvdesk.com",
@@ -12218,6 +12483,7 @@
   {
    "name": "wger",
    "description": "Self-hosted FLOSS fitness and workout manager that lets you track workouts, nutrition, body weight, and exercises.",
+   "summary": "Workouts and nutrition tracker",
    "source": "https://github.com/wger-project/wger",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wger/icon.png",
    "website": "https://wger.de",
@@ -12265,6 +12531,7 @@
   {
    "name": "WooCommerce Store",
    "description": "Turn any WordPress site into a complete online store with products, payments, carts, and checkout.\nA highly customizable alternative to Shopify and BigCommerce.",
+   "summary": "Online store on WordPress",
    "source": "https://github.com/woocommerce/woocommerce",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/woocommerce/icon.png",
    "website": "https://woocommerce.com/",
@@ -12313,6 +12580,7 @@
   {
    "name": "wordpress-multisite",
    "description": "The world's most popular open-source CMS, preconfigured for Multisite to run a network of sites from a single WordPress install.",
+   "summary": "Network of WordPress sites",
    "source": "https://github.com/WordPress/WordPress",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wordpress-multisite/icon.png",
    "website": "https://wordpress.org/",
@@ -12360,6 +12628,7 @@
   {
    "name": "xwiki",
    "description": "Open-source advanced enterprise wiki platform for building collaborative web applications, knowledge bases and intranets.",
+   "summary": "Enterprise wiki",
    "source": "https://github.com/xwiki/xwiki-platform",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/xwiki/icon.png",
    "website": "https://www.xwiki.org/",
@@ -12407,6 +12676,7 @@
   {
    "name": "yopass",
    "description": "Self-hosted web service for securely sharing one-time secrets, passwords and files with client-side encryption and automatic expiry.",
+   "summary": "Share one-time secrets",
    "source": "https://github.com/jhaals/yopass",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/yopass/icon.png",
    "website": "https://yopass.se",
@@ -12452,6 +12722,7 @@
   {
    "name": "yourls",
    "description": "Your Own URL Shortener: a small, self-hosted PHP service to run your own short-link service with stats, plugins, and a developer API.",
+   "summary": "Your own URL shortener",
    "source": "https://github.com/YOURLS/YOURLS",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/yourls/icon.png",
    "website": "https://yourls.org/",
@@ -12499,6 +12770,7 @@
   {
    "name": "zammad",
    "description": "Open-source web-based help desk and customer support / ticketing system with email, chat, social and a knowledge base.",
+   "summary": "Help desk and ticketing",
    "source": "https://github.com/zammad/zammad",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zammad/icon.png",
    "website": "https://zammad.org",
@@ -12547,6 +12819,7 @@
   {
    "name": "ollama",
    "description": "Run open models like Llama, Qwen, Gemma and Mistral on your own server, with Ollama's REST API and an OpenAI-compatible endpoint. Private to your project, for your other apps to use.",
+   "summary": "Run open AI models",
    "source": "https://github.com/ollama/ollama",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/76f697806c6548f32b1a865832cbe1bb95ae0394/services/ollama/icon.png",
    "website": "https://ollama.com",
@@ -12595,6 +12868,7 @@
   {
    "name": "open-webui",
    "description": "Self-hosted ChatGPT-style AI chat for Ollama and OpenAI-compatible APIs, with chat over your documents (RAG), multi-model chats and MCP tool servers. Locked down and run in a Kata micro-VM.",
+   "summary": "ChatGPT-style AI chat",
    "source": "https://github.com/open-webui/open-webui",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/0f041325c384fa2e69637f16f09678492358586b/services/open-webui/icon.png",
    "website": "https://openwebui.com",
@@ -12643,6 +12917,7 @@
   {
    "name": "litellm",
    "description": "LLM gateway with one OpenAI-compatible API for 100+ model providers. Virtual keys, budgets, rate limits, spend tracking and an admin UI.",
+   "summary": "One API for 100+ LLM providers",
    "source": "https://github.com/BerriAI/litellm",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/icon.png",
    "website": "https://www.litellm.ai/",
@@ -12692,6 +12967,7 @@
   {
    "name": "langfuse",
    "description": "Open-source LLM observability platform \u2014 traces, evals, prompt management, datasets, and cost analytics for AI applications.",
+   "summary": "LLM tracing and evals",
    "source": "https://github.com/langfuse/langfuse",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/langfuse/icon.png",
    "website": "https://langfuse.com",
@@ -12740,6 +13016,7 @@
   {
    "name": "localai",
    "description": "Self-hosted, OpenAI-compatible REST API for running LLMs, image generation, audio transcription, and embeddings locally \u2014 no GPU required.",
+   "summary": "OpenAI-compatible local AI API",
    "source": "https://github.com/mudler/LocalAI",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/localai/icon.png",
    "website": "https://localai.io",
@@ -12783,6 +13060,7 @@
   {
    "name": "anythingllm",
    "description": "Private AI workspace: chat with your documents (RAG), AI agents that browse and scrape the web, and any LLM (Ollama, OpenAI-compatible and more). Postgres with pgvector, locked down and run in a Kata micro-VM.",
+   "summary": "Chat with your documents",
    "source": "https://github.com/Mintplex-Labs/anything-llm",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/09123758091ae0c152cbd0c5ccaa28c5feaec9ae/services/anythingllm/icon.png",
    "website": "https://anythingllm.com",
@@ -12832,6 +13110,7 @@
   {
    "name": "authentik",
    "description": "Open-source identity provider \u2014 SSO, OAuth2, SAML, LDAP, MFA, and social login. Self-hosted alternative to Okta and Auth0.",
+   "summary": "Identity provider and SSO",
    "source": "https://github.com/goauthentik/authentik",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/authentik/icon.png",
    "website": "https://goauthentik.io",
@@ -12879,6 +13158,7 @@
   {
    "name": "keycloak",
    "description": "Open source identity and access management. Single sign-on for your apps over OpenID Connect and SAML, user federation with LDAP and Active Directory, social login, multi-factor authentication and an admin console for realms, clients and users.",
+   "summary": "Identity and single sign-on",
    "source": "https://github.com/keycloak/keycloak",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@0d35748992e600e15f5cee58191a665473b7afba/services/keycloak/icon.png",
    "website": "https://www.keycloak.org",
@@ -12928,6 +13208,7 @@
   {
    "name": "zitadel",
    "description": "Cloud-native identity platform \u2014 OIDC, OAuth2, SAML, passkeys, MFA, and multi-tenancy out of the box. Self-hosted alternative to Auth0.",
+   "summary": "Identity platform and SSO",
    "source": "https://github.com/zitadel/zitadel",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/zitadel/icon.png",
    "website": "https://zitadel.com",
@@ -12974,6 +13255,7 @@
   {
    "name": "baserow",
    "description": "Open-source no-code database: build relational tables in a spreadsheet-like grid, with forms, gallery views, a REST API and real-time collaboration, backed by Postgres.",
+   "summary": "No-code database",
    "source": "https://github.com/baserow/baserow",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@7096de1af6a18d2d03866242bb6d2705fbdec057/services/baserow/icon.png",
    "website": "https://baserow.io",
@@ -13026,6 +13308,7 @@
   {
    "name": "teable",
    "description": "Open-source Airtable alternative built on native Postgres \u2014 spreadsheet UI over real SQL tables with automations, views, and API.",
+   "summary": "Spreadsheet on Postgres",
    "source": "https://github.com/teableio/teable",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/teable/icon.png",
    "website": "https://teable.io",
@@ -13073,6 +13356,7 @@
   {
    "name": "nocobase",
    "description": "Open-source no-code/low-code platform for building CRMs, ERPs, and internal tools with a plugin-based extensible architecture.",
+   "summary": "No-code business apps",
    "source": "https://github.com/nocobase/nocobase",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/nocobase/icon.png",
    "website": "https://www.nocobase.com",
@@ -13119,6 +13403,7 @@
   {
    "name": "pocketbase",
    "description": "Open-source Firebase alternative \u2014 realtime subscriptions, auth, file storage, and admin UI, all in a single Go binary backed by SQLite.",
+   "summary": "Backend in one binary",
    "source": "https://github.com/pocketbase/pocketbase",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pocketbase/icon.png",
    "website": "https://pocketbase.io",
@@ -13163,6 +13448,7 @@
   {
    "name": "strapi",
    "description": "Open-source headless CMS. Edit content in a clean admin panel and serve it to any frontend over REST and GraphQL, with a media library and role-based access.",
+   "summary": "Headless CMS",
    "source": "https://github.com/strapi/strapi",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/strapi/icon.png",
    "website": "https://strapi.io",
@@ -13212,6 +13498,7 @@
   {
    "name": "clickhouse",
    "description": "Column-oriented OLAP database for real-time analytics \u2014 processes billions of rows per second with sub-second query latency.",
+   "summary": "Real-time analytics database",
    "source": "https://github.com/ClickHouse/ClickHouse",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/clickhouse/icon.png",
    "website": "https://clickhouse.com",
@@ -13256,6 +13543,7 @@
   {
    "name": "questdb",
    "description": "High-performance time-series database with SQL \u2014 optimised for IoT, financial, and observability data with a built-in web console.",
+   "summary": "Time-series database",
    "source": "https://github.com/questdb/questdb",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/questdb/icon.png",
    "website": "https://questdb.io",
@@ -13300,6 +13588,7 @@
   {
    "name": "timescaledb",
    "description": "Time-series database built on Postgres \u2014 hypertables, compression, continuous aggregates, and full SQL compatibility for metrics and events.",
+   "summary": "Time-series on Postgres",
    "source": "https://github.com/timescale/timescaledb",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/timescaledb/icon.png",
    "website": "https://www.timescale.com",
@@ -13344,6 +13633,7 @@
   {
    "name": "adminer",
    "description": "Lightweight single-file database manager for MySQL, PostgreSQL, SQLite, MongoDB, and more \u2014 simpler alternative to phpMyAdmin.",
+   "summary": "Database manager",
    "source": "https://github.com/vrana/adminer",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/adminer/icon.png",
    "website": "https://www.adminer.org",
@@ -13388,6 +13678,7 @@
   {
    "name": "pgadmin",
    "description": "The most popular open-source administration and management platform for PostgreSQL databases, with a full-featured web UI.",
+   "summary": "PostgreSQL admin",
    "source": "https://github.com/pgadmin-org/pgadmin4",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/pgadmin/icon.png",
    "website": "https://www.pgadmin.org",
@@ -13430,6 +13721,7 @@
   {
    "name": "headscale",
    "description": "Self-hosted Tailscale control server \u2014 manage your own WireGuard mesh VPN with the full Tailscale client ecosystem but zero vendor lock-in.",
+   "summary": "Self-hosted Tailscale control server",
    "source": "https://github.com/juanfont/headscale",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/headscale/icon.png",
    "website": "https://headscale.net",
@@ -13476,6 +13768,7 @@
   {
    "name": "Listmonk Email Marketing",
    "description": "Self-hosted newsletter and mailing list manager: subscriber lists, campaigns, templates, analytics and a transactional mail API, backed by Postgres.",
+   "summary": "Newsletters and mailing lists",
    "source": "https://github.com/knadh/listmonk",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/listmonk/icon.png",
    "website": "https://listmonk.app",
@@ -13526,6 +13819,7 @@
   {
    "name": "stalwart-mail",
    "description": "All-in-one mail server with SMTP, IMAP, JMAP, and ManageSieve \u2014 modern Rust implementation with built-in anti-spam, DKIM, and web admin.",
+   "summary": "Mail server",
    "source": "https://github.com/stalwartlabs/mail-server",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/stalwart-mail/icon.png",
    "website": "https://stalw.art",
@@ -13568,6 +13862,7 @@
   {
    "name": "actual-budget",
    "description": "Local-first personal finance app with envelope budgeting, bank sync, and end-to-end encryption. Self-hosted YNAB alternative.",
+   "summary": "Envelope budgeting",
    "source": "https://github.com/actualbudget/actual",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/actual-budget/icon.png",
    "website": "https://actualbudget.org",
@@ -13612,6 +13907,7 @@
   {
    "name": "firefly-iii",
    "description": "Self-hosted personal finance manager \u2014 transactions, budgets, bills, piggy banks, reports, and recurring transactions. Full-featured money management.",
+   "summary": "Personal finance manager",
    "source": "https://github.com/firefly-iii/firefly-iii",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/firefly-iii/icon.png",
    "website": "https://www.firefly-iii.org",
@@ -13660,6 +13956,7 @@
   {
    "name": "verdaccio",
    "description": "Lightweight private npm/yarn/pnpm registry \u2014 proxy public packages and publish private ones with simple auth and no external database.",
+   "summary": "Private npm registry",
    "source": "https://github.com/verdaccio/verdaccio",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/verdaccio/icon.png",
    "website": "https://verdaccio.org",
@@ -13706,6 +14003,7 @@
   {
    "name": "seafile",
    "description": "High-performance self-hosted file sync and share \u2014 encrypted libraries, version history, team collaboration, and Office online editing.",
+   "summary": "File sync and sharing",
    "source": "https://github.com/haiwen/seafile",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/seafile/icon.png",
    "website": "https://www.seafile.com",
@@ -13750,6 +14048,7 @@
   {
    "name": "payload",
    "description": "Open-source TypeScript headless CMS and website builder on Next.js. Edit pages and posts in the Payload admin with live preview, drafts and scheduled publishing, and serve them on the built-in website or over REST and GraphQL.",
+   "summary": "TypeScript headless CMS",
    "source": "https://github.com/payloadcms/payload",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/payload/icon.png",
    "website": "https://payloadcms.com",
@@ -13799,6 +14098,7 @@
   {
    "name": "wagtail",
    "description": "Wagtail is a popular open-source CMS built on Django \u2014 a refined editing experience, rich page modelling, a powerful image library and full content control. This template runs the official Wagtail \"bakerydemo\" sample site.",
+   "summary": "Django CMS",
    "source": "https://github.com/wagtail/wagtail",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/wagtail/icon.png",
    "website": "https://wagtail.org",
@@ -13846,6 +14146,7 @@
   {
    "name": "Medusa Commerce",
    "description": "Build custom shopping experiences with modular commerce APIs, product management, carts, and checkout.\nA developer-first alternative to Shopify Plus and commercetools.",
+   "summary": "Headless commerce",
    "source": "https://github.com/medusajs/medusa",
    "icon": "https://avatars.githubusercontent.com/u/62591822?s=200&v=4",
    "website": "https://medusajs.com",
@@ -13895,6 +14196,7 @@
   {
    "name": "Supabase",
    "description": "The open-source Postgres development platform: database, Auth, instant APIs, Realtime, Storage and Edge Functions, managed from Studio.",
+   "summary": "Postgres, auth, APIs and storage",
    "source": "https://github.com/supabase/supabase",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@268692363407166c1de7320910eee41a92ca474e/services/supabase/icon.png",
    "website": "https://supabase.com/",
@@ -13943,6 +14245,7 @@
   {
    "name": "Langflow",
    "description": "Visual builder for AI agents and RAG workflows. Drag components onto a canvas, connect any LLM or vector store, and serve each flow as an API.",
+   "summary": "Visual AI agent builder",
    "source": "https://github.com/langflow-ai/langflow",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/icon.png",
    "website": "https://www.langflow.org/",
@@ -13991,6 +14294,7 @@
   {
    "name": "Instatic",
    "description": "Self-hosted visual CMS and website builder. Design pages on a canvas, manage content, media, users and forms, and publish clean static HTML and CSS without editor code.",
+   "summary": "Visual website builder",
    "source": "https://github.com/CoreBunch/Instatic",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/instatic/icon.png",
    "website": "https://instatic.com/",
@@ -14041,6 +14345,7 @@
   {
    "name": "SillyTavern",
    "description": "Self-hosted chat and roleplay front end for LLMs. Bring your own model (OpenAI, Claude, OpenRouter, Ollama and more), with characters, group chats, lorebooks and per-user accounts.",
+   "summary": "AI character chat",
    "source": "https://github.com/SillyTavern/SillyTavern",
    "icon": "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4b2d220f3534513405516259977cff88e36dc955/services/sillytavern/icon.png",
    "website": "https://sillytavern.app",
