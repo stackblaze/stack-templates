@@ -59,7 +59,7 @@ tasks:
     type: io.kestra.plugin.core.output.OutputValues
     values:
       decision: "{{ outputs.triage.body | jq('.choices[0].message.content') | first }}"
-      reasoning: "{{ outputs.triage.body | jq('.choices[0].message.reasoning_content // \\"\\"') | first }}"
+      reasoning: "{{ outputs.triage.body | jq('.choices[0].message.reasoning // .choices[0].message.reasoning_content // \\"\\"') | first }}"
       tokens: "{{ outputs.triage.body | jq('.usage.total_tokens') | first }}"
 `;
 
