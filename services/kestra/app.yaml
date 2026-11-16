@@ -1,0 +1,183 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: kestra
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open source orchestration for data, AI and
+      business workflows. Write flows in YAML, run them on schedules, webhooks or
+      events, and follow every execution, log and output in the web UI.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/icon.png
+    kubero.dev/template.installation: 'Sign in with ADMIN_EMAIL and the password
+      generated in ADMIN_PASSWORD (both under Variables). Kestra reads both from
+      its configuration, so the account exists before the app is reachable and
+      the setup page never opens. Flows, executions, logs and the KV store live
+      in PostgreSQL; files produced by tasks are kept on the shared volume at
+      /app/storage. Email: while the platform Email add-on is live, flows can
+      send mail with the io.kestra.plugin.email.MailSend task using
+      {{ envs.smtp_host }}, {{ envs.smtp_port }}, {{ envs.smtp_user }},
+      {{ envs.smtp_password }} and {{ envs.smtp_from }}. Script tasks must use
+      the Process task runner: there is no Docker inside the container.'
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/kestra-io/kestra
+    kubero.dev/template.categories: '["development", "productivity", "work"]'
+    kubero.dev/template.title: Kestra
+    kubero.dev/template.website: https://kestra.io/
+  labels:
+    manager: kubero
+spec:
+  addons:
+  # Kestra keeps flows, executions, logs, the KV store and its queue in
+  # PostgreSQL (repository.type and queue.type = postgres below).
+  - displayName: PostgreSQL (CloudNativePG)
+    env: []
+    icon: /img/addons/pgsql.svg
+    id: kubero-operator
+    kind: Cluster
+    resourceDefinitions:
+      Cluster:
+        apiVersion: postgresql.cnpg.io/v1
+        kind: Cluster
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-postgres'
+        spec:
+          instances: 1
+          imageName: ghcr.io/cloudnative-pg/postgresql:16
+          primaryUpdateStrategy: unsupervised
+          storage:
+            storageClass: smart
+            size: 5Gi
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi
+          bootstrap:
+            initdb:
+              database: kestra
+              owner: kestra
+              secret:
+                name: '{{STACKBLAZE_APP_NAME}}-postgres-app'
+          enableSuperuserAccess: true
+          superuserSecret:
+            name: '{{STACKBLAZE_APP_NAME}}-postgres-superuser'
+      superuserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-postgres-superuser'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: postgres
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+      appUserSecret:
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: '{{STACKBLAZE_APP_NAME}}-postgres-app'
+        type: kubernetes.io/basic-auth
+        stringData:
+          username: kestra
+          password: '{{STACKBLAZE_GEN_ALNUM:24}}'
+  # Platform email (README "Email contract"). Kestra has no SMTP server
+  # setting of its own: mail is sent by the MailSend task inside a flow.
+  # Kestra exposes ENV_* variables to flows as {{ envs.* }}, so the injected
+  # SMTP_* contract is mapped onto ENV_SMTP_* while the add-on is live.
+  - displayName: Email
+    icon: /img/addons/email.svg
+    id: kubero-smtp
+    kind: Smtp
+    env:
+    - name: ENV_SMTP_HOST
+      value: '$(SMTP_HOST)'
+    - name: ENV_SMTP_PORT
+      value: '$(SMTP_PORT)'
+    - name: ENV_SMTP_USER
+      value: '$(SMTP_USER)'
+    - name: ENV_SMTP_PASSWORD
+      value: '$(SMTP_PASSWORD)'
+    - name: ENV_SMTP_FROM
+      value: '$(SMTP_FROM)'
+    resourceDefinitions: {}
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  # Basic auth is mandatory in Kestra 2. The username must be an email and the
+  # password needs 8+ characters with an upper-case letter, a lower-case
+  # letter and a digit: the "Sb1" prefix guarantees all three.
+  - name: ADMIN_EMAIL
+    value: admin@stackblaze.app
+  - name: ADMIN_PASSWORD
+    value: 'Sb1{{STACKBLAZE_GEN_ALNUM:21}}'
+  - name: KESTRA_CONFIGURATION
+    value: |
+      datasources:
+        postgres:
+          url: jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE)
+          driver-class-name: org.postgresql.Driver
+          username: $(PGUSER)
+          password: $(PGPASSWORD)
+      kestra:
+        server:
+          basic-auth:
+            username: $(ADMIN_EMAIL)
+            password: $(ADMIN_PASSWORD)
+        repository:
+          type: postgres
+        queue:
+          type: postgres
+        storage:
+          type: local
+          local:
+            base-path: /app/storage
+        tasks:
+          tmp-dir:
+            path: /tmp/kestra-wd/tmp
+        url: {{STACKBLAZE_APP_URL}}/
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /app/storage
+    name: '{{STACKBLAZE_APP_NAME}}-storage'
+    size: 5Gi
+    storageClass: shared
+  healthcheck:
+    enabled: true
+    # Unauthenticated liveness endpoint on the application port (/health is
+    # on the management port 8081, which is not exposed).
+    path: /ping
+    startupSeconds: 300
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8080'
+    pullPolicy: IfNotPresent
+    # Pinned release, not :latest.
+    repository: docker.io/kestra/kestra
+    tag: v2.0.8
+    # The image's own entrypoint; its default command is --help, so the
+    # server mode is given here. Standalone = webserver, executor, scheduler
+    # and worker in one process.
+    command:
+    - docker-entrypoint.sh
+    - server
+    - standalone
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  name: kestra
+  resources:
+    requests:
+      cpu: 250m
+      memory: 1Gi
+    limits:
+      cpu: '2'
+      memory: 2Gi
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
