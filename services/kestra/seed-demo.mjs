@@ -50,7 +50,7 @@ tasks:
         "model": "{{ kv('AI_MODEL') }}",
         "response_format": { "type": "json_object" },
         "messages": [
-          { "role": "system", "content": "You triage support tickets. Reply with JSON only: {\\"priority\\": \\"low|medium|high\\", \\"team\\": string, \\"reason\\": string}." },
+          { "role": "system", "content": "You triage support tickets. Reply with one JSON object and nothing else, with the keys priority (low, medium or high), team (the team that should handle it) and reason (one sentence)." },
           { "role": "user", "content": {{ inputs.ticket | toJson }} }
         ]
       }
@@ -121,7 +121,10 @@ async function main() {
   if (who.status === 401) throw new Error('sign-in refused: check --email / --password');
 
   for (const [key, value] of [['AI_URL', aiUrl], ['AI_KEY', aiKey], ['AI_MODEL', aiModel]]) {
-    const r = await call('PUT', `/namespaces/${NAMESPACE}/kv/${key}`, JSON.stringify(value));
+    // The KV API takes text/plain (application/json is 415) and parses the
+    // value: unquoted "qwen3-14b" is stored as "qwen3". A JSON-quoted string
+    // is stored exactly (verified on Kestra v2.0.8).
+    const r = await call('PUT', `/namespaces/${NAMESPACE}/kv/${key}`, JSON.stringify(value), 'text/plain');
     if (!r.ok) throw new Error(`KV ${key}: HTTP ${r.status} ${r.text.slice(0, 200)}`);
   }
   console.log(`[kestra-seed] KV AI_URL, AI_KEY, AI_MODEL set in ${NAMESPACE}`);

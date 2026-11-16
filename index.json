@@ -13,7 +13,7 @@
     "productivity",
     "work"
    ],
-   "screenshots": [],
+   "screenshots": ["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/screenshot-flow-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/screenshot-flows.png"],
    "links": [],
    "addons": [
     "Cluster",

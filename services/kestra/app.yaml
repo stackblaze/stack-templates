@@ -19,7 +19,7 @@ metadata:
       {{ envs.smtp_password }} and {{ envs.smtp_from }}. Script tasks must use
       the Process task runner: there is no Docker inside the container.'
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/screenshot-flow-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/screenshot-flows.png"]'
     kubero.dev/template.source: https://github.com/kestra-io/kestra
     kubero.dev/template.categories: '["development", "productivity", "work"]'
     kubero.dev/template.title: Kestra
