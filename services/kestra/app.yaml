@@ -23,11 +23,11 @@ metadata:
       Stackblaze AI model; URLs end in /v1): ENV_AI_URL, ENV_AI_KEY and
       ENV_AI_MODEL are the model for flows, read in an AI task as
       {{ envs.ai_url }}, {{ envs.ai_key }} and {{ envs.ai_model }}.
-      COPILOT_AI_URL, COPILOT_AI_KEY and COPILOT_AI_MODEL are the model for
-      the built-in AI Copilot (empty = Copilot off). Copilot sends Kestra''s
-      whole plugin catalog with each request, so give it a model with a large
-      context (128k tokens or more); a 16k-context model answers flows well
-      but Copilot fails with "I can only assist with creating Kestra flows".
+      The built-in AI Copilot uses Google Gemini (the only provider in
+      Kestra''s open-source edition): set GEMINI_API_KEY and
+      COPILOT_ENABLED=true; GEMINI_MODEL picks the model. Copilot sends
+      Kestra''s whole plugin catalog with each request, which a small
+      self-hosted model cannot take, so the ENV_AI_* model is for flows only.
       Saving a variable restarts the app.'
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/c39a1bf9a64314c81a7940741d5ba45c1d661c5b/services/kestra/screenshot-flow-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/c39a1bf9a64314c81a7940741d5ba45c1d661c5b/services/kestra/screenshot-flows.png"]'
@@ -141,6 +141,18 @@ spec:
           tmp-dir:
             path: /tmp/kestra-wd/tmp
         url: {{STACKBLAZE_APP_URL}}/
+        # AI Copilot: off until COPILOT_ENABLED is true. Micronaut fills
+        # ${...} from the variables below (not a Kubernetes $(...) reference).
+        ai:
+          enabled: ${COPILOT_ENABLED:false}
+          providers:
+            - id: gemini
+              display-name: Gemini
+              type: gemini
+              is-default: true
+              configuration:
+                api-key: ${GEMINI_API_KEY:}
+                model-name: ${GEMINI_MODEL:gemini-3.5-flash-lite}
   # AI model for FLOWS (optional). Kestra exposes every ENV_* variable to
   # flows as {{ envs.* }}: an io.kestra.plugin.ai task sets its OpenAI
   # provider to baseUrl {{ envs.ai_url }}, apiKey {{ envs.ai_key }} and
@@ -151,22 +163,14 @@ spec:
     value: ''
   - name: ENV_AI_MODEL
     value: ''
-  # AI model for the built-in AI COPILOT (optional; empty = Copilot off).
-  # Read by the Stackblaze Kestra build (image below), not by stock Kestra,
-  # whose open-source edition only offers Gemini. Kept apart from the flow
-  # model on purpose: Copilot sends the whole plugin catalog (about 2,000
-  # plugin types, tens of thousands of tokens) with each request and needs
-  # a large-context model, and without the ENV_ prefix its key is never
-  # visible to flows. COPILOT_AI_TIMEOUT (ISO-8601) covers a sleeping model
-  # waking up.
-  - name: COPILOT_AI_URL
+  # AI COPILOT (optional): Google Gemini, the provider Kestra's open-source
+  # edition supports. Set the key, then COPILOT_ENABLED to true.
+  - name: COPILOT_ENABLED
+    value: 'false'
+  - name: GEMINI_API_KEY
     value: ''
-  - name: COPILOT_AI_KEY
-    value: ''
-  - name: COPILOT_AI_MODEL
-    value: ''
-  - name: COPILOT_AI_TIMEOUT
-    value: PT5M
+  - name: GEMINI_MODEL
+    value: gemini-3.5-flash-lite
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -186,12 +190,9 @@ spec:
   image:
     containerPort: '8080'
     pullPolicy: IfNotPresent
-    # Kestra v2.0.8 (the official image, plugins included) with one change:
-    # AI Copilot can use any OpenAI-compatible model, configured by the
-    # COPILOT_AI_* variables above (stackblaze/kestra, branch
-    # stackblaze/openai-copilot). Pinned, not :latest.
-    repository: ghcr.io/stackblaze/kestra
-    tag: v2.0.8-openai-2f139bb
+    # Pinned release, not :latest.
+    repository: docker.io/kestra/kestra
+    tag: v2.0.8
     # The image's own entrypoint; its default command is --help, so the
     # server mode is given here. Standalone = webserver, executor, scheduler
     # and worker in one process.
