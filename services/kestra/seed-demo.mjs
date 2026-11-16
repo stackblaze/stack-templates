@@ -10,7 +10,7 @@
  *
  *   node services/kestra/seed-demo.mjs \
  *     --url https://kestra-xxxx.stackblaze.app \
- *     --email admin@stackblaze.app --password "$ADMIN_PASSWORD" \
+ *     --email you@company.com --password "$KESTRA_PASSWORD" \
  *     --ai-url https://api.stackblaze.cloud/api/inference/<id>/v1 \
  *     --ai-key "$AI_MODEL_KEY" --ai-model qwen3-14b
  *
@@ -50,7 +50,7 @@ tasks:
         "model": "{{ kv('AI_MODEL') }}",
         "response_format": { "type": "json_object" },
         "messages": [
-          { "role": "system", "content": "You triage support tickets. Reply with JSON only: {\\"priority\\": \\"low|medium|high\\", \\"team\\": string, \\"reason\\": string}." },
+          { "role": "system", "content": "You triage support tickets. Reply with one JSON object and nothing else, with the keys priority (low, medium or high), team (the team that should handle it) and reason (one sentence)." },
           { "role": "user", "content": {{ inputs.ticket | toJson }} }
         ]
       }
@@ -76,13 +76,13 @@ function args() {
 
 const opt = args();
 const base = String(opt.url || '').replace(/\/+$/, '');
-const email = opt.email || 'admin@stackblaze.app';
+const email = opt.email; // the admin chosen on Kestra's Setup page
 const password = opt.password || process.env.KESTRA_PASSWORD;
 const aiUrl = String(opt['ai-url'] || '').replace(/\/+$/, '');
 const aiKey = opt['ai-key'] || process.env.AI_MODEL_KEY;
 const aiModel = opt['ai-model'];
 
-for (const [name, v] of Object.entries({ '--url': base, '--password': password, '--ai-url': aiUrl, '--ai-key': aiKey, '--ai-model': aiModel })) {
+for (const [name, v] of Object.entries({ '--url': base, '--email': email, '--password': password, '--ai-url': aiUrl, '--ai-key': aiKey, '--ai-model': aiModel })) {
   if (!v) {
     console.error(`[kestra-seed] missing ${name}`);
     process.exit(2);
@@ -121,7 +121,10 @@ async function main() {
   if (who.status === 401) throw new Error('sign-in refused: check --email / --password');
 
   for (const [key, value] of [['AI_URL', aiUrl], ['AI_KEY', aiKey], ['AI_MODEL', aiModel]]) {
-    const r = await call('PUT', `/namespaces/${NAMESPACE}/kv/${key}`, JSON.stringify(value));
+    // The KV API takes text/plain (application/json is 415) and parses the
+    // value: unquoted "qwen3-14b" is stored as "qwen3". A JSON-quoted string
+    // is stored exactly (verified on Kestra v2.0.8).
+    const r = await call('PUT', `/namespaces/${NAMESPACE}/kv/${key}`, JSON.stringify(value), 'text/plain');
     if (!r.ok) throw new Error(`KV ${key}: HTTP ${r.status} ${r.text.slice(0, 200)}`);
   }
   console.log(`[kestra-seed] KV AI_URL, AI_KEY, AI_MODEL set in ${NAMESPACE}`);

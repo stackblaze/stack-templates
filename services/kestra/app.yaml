@@ -8,10 +8,11 @@ metadata:
       business workflows. Write flows in YAML, run them on schedules, webhooks or
       events, and follow every execution, log and output in the web UI.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/icon.png
-    kubero.dev/template.installation: 'Sign in with ADMIN_EMAIL and the password
-      generated in ADMIN_PASSWORD (both under Variables). Kestra reads both from
-      its configuration, so the account exists before the app is reachable and
-      the setup page never opens. Flows, executions, logs and the KV store live
+    kubero.dev/template.installation: 'Open the app once it is running: Kestra
+      shows its Setup page, where you choose the admin email and password (8+
+      characters with an upper-case letter, a lower-case letter and a digit).
+      Do this right after deploying: until the account exists, anyone with the
+      app URL could create it. Flows, executions, logs and the KV store live
       in PostgreSQL; files produced by tasks are kept on the shared volume at
       /app/storage. Email: while the platform Email add-on is live, flows can
       send mail with the io.kestra.plugin.email.MailSend task using
@@ -19,7 +20,7 @@ metadata:
       {{ envs.smtp_password }} and {{ envs.smtp_from }}. Script tasks must use
       the Process task runner: there is no Docker inside the container.'
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/screenshot-flow-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/screenshot-flows.png"]'
     kubero.dev/template.source: https://github.com/kestra-io/kestra
     kubero.dev/template.categories: '["development", "productivity", "work"]'
     kubero.dev/template.title: Kestra
@@ -105,13 +106,10 @@ spec:
   cronjobs: []
   deploymentstrategy: docker
   envVars:
-  # Basic auth is mandatory in Kestra 2. The username must be an email and the
-  # password needs 8+ characters with an upper-case letter, a lower-case
-  # letter and a digit: the "Sb1" prefix guarantees all three.
-  - name: ADMIN_EMAIL
-    value: admin@stackblaze.app
-  - name: ADMIN_PASSWORD
-    value: 'Sb1{{STACKBLAZE_GEN_ALNUM:21}}'
+  # No basic-auth here on purpose: Kestra 2 then opens its own Setup page on
+  # the first visit, where the user picks the admin email and password; they
+  # are stored in PostgreSQL (Settings, kestra.server.basic-auth). Setting
+  # kestra.server.basic-auth later in this configuration would override them.
   - name: KESTRA_CONFIGURATION
     value: |
       datasources:
@@ -121,10 +119,6 @@ spec:
           username: $(PGUSER)
           password: $(PGPASSWORD)
       kestra:
-        server:
-          basic-auth:
-            username: $(ADMIN_EMAIL)
-            password: $(ADMIN_PASSWORD)
         repository:
           type: postgres
         queue:

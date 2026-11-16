@@ -6,14 +6,14 @@
    "source": "https://github.com/kestra-io/kestra",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/icon.png",
    "website": "https://kestra.io/",
-   "installation": "Sign in with ADMIN_EMAIL and the password generated in ADMIN_PASSWORD (both under Variables). The account exists before the app is reachable, so the setup page never opens. With the Email add-on live, flows send mail with the MailSend task using {{ envs.smtp_host }} and the other envs.smtp_* values. Script tasks use the Process task runner (no Docker inside the container).",
+   "installation": "Open the app once it is running: Kestra shows its Setup page, where you choose the admin email and password. Do this right after deploying: until the account exists, anyone with the app URL could create it. With the Email add-on live, flows send mail with the MailSend task using {{ envs.smtp_host }} and the other envs.smtp_* values. Script tasks use the Process task runner (no Docker inside the container).",
    "architecture": [],
    "categories": [
     "development",
     "productivity",
     "work"
    ],
-   "screenshots": [],
+   "screenshots": ["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/screenshot-flow-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/screenshot-flows.png"],
    "links": [],
    "addons": [
     "Cluster",
