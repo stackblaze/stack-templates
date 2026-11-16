@@ -7,7 +7,7 @@ metadata:
     kubero.dev/template.description: Open source orchestration for data, AI and
       business workflows. Write flows in YAML, run them on schedules, webhooks or
       events, and follow every execution, log and output in the web UI.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/icon.png
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/c39a1bf9a64314c81a7940741d5ba45c1d661c5b/services/kestra/icon.png
     kubero.dev/template.installation: 'Open the app once it is running: Kestra
       shows its Setup page, where you choose the admin email and password (8+
       characters with an upper-case letter, a lower-case letter and a digit).
@@ -20,7 +20,7 @@ metadata:
       {{ envs.smtp_password }} and {{ envs.smtp_from }}. Script tasks must use
       the Process task runner: there is no Docker inside the container.'
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/screenshot-flow-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/screenshot-flows.png"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/c39a1bf9a64314c81a7940741d5ba45c1d661c5b/services/kestra/screenshot-flow-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/c39a1bf9a64314c81a7940741d5ba45c1d661c5b/services/kestra/screenshot-flows.png"]'
     kubero.dev/template.source: https://github.com/kestra-io/kestra
     kubero.dev/template.categories: '["development", "productivity", "work"]'
     kubero.dev/template.title: Kestra
