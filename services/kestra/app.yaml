@@ -20,13 +20,14 @@ metadata:
       the Process task runner: there is no Docker inside the container. AI
       models (both optional, any OpenAI-compatible endpoint such as a
       Stackblaze AI model or your own model server; URLs end in /v1):
-      ENV_AI_URL, ENV_AI_KEY and ENV_AI_MODEL are the model for flows, read in an AI task as
-      {{ envs.ai_url }}, {{ envs.ai_key }} and {{ envs.ai_model }}.
+      MODEL_URL, MODEL_API_KEY and MODEL_NAME are the model for flows, read
+      in an AI task as {{ envs.model_url }}, {{ envs.model_api_key }} and
+      {{ envs.model_name }}.
       The built-in AI Copilot uses Google Gemini (the only provider in
       Kestra''s open-source edition): set GEMINI_API_KEY and
       COPILOT_ENABLED=true; GEMINI_MODEL picks the model. Copilot sends
       Kestra''s whole plugin catalog with each request, which a small
-      self-hosted model cannot take, so the ENV_AI_* model is for flows only.
+      self-hosted model cannot take, so the MODEL_* model is for flows only.
       Saving a variable restarts the app.'
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/c39a1bf9a64314c81a7940741d5ba45c1d661c5b/services/kestra/screenshot-flow-editor.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/c39a1bf9a64314c81a7940741d5ba45c1d661c5b/services/kestra/screenshot-flows.png"]'
@@ -160,16 +161,24 @@ spec:
               configuration:
                 api-key: ${GEMINI_API_KEY:}
                 model-name: ${GEMINI_MODEL:gemini-3.5-flash-lite}
-  # AI model for FLOWS (optional). Kestra exposes every ENV_* variable to
-  # flows as {{ envs.* }}: an io.kestra.plugin.ai task sets its OpenAI
-  # provider to baseUrl {{ envs.ai_url }}, apiKey {{ envs.ai_key }} and
-  # modelName {{ envs.ai_model }}. Any OpenAI-compatible base URL (/v1).
-  - name: ENV_AI_URL
+  # AI model for FLOWS (optional): any OpenAI-compatible base URL ending in
+  # /v1, its API key or password, and the model name. The same three names
+  # as the LiteLLM template.
+  - name: MODEL_URL
     value: ''
-  - name: ENV_AI_KEY
+  - name: MODEL_API_KEY
     value: ''
-  - name: ENV_AI_MODEL
+  - name: MODEL_NAME
     value: ''
+  # Kestra hands flows only ENV_* variables (as {{ envs.* }}), so the three
+  # above are copied here: flows read {{ envs.model_url }},
+  # {{ envs.model_api_key }} and {{ envs.model_name }}. Do not edit these.
+  - name: ENV_MODEL_URL
+    value: '$(MODEL_URL)'
+  - name: ENV_MODEL_API_KEY
+    value: '$(MODEL_API_KEY)'
+  - name: ENV_MODEL_NAME
+    value: '$(MODEL_NAME)'
   # AI COPILOT (optional): Google Gemini, the provider Kestra's open-source
   # edition supports. Set the key, then COPILOT_ENABLED to true.
   - name: COPILOT_ENABLED
