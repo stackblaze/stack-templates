@@ -4,28 +4,25 @@ metadata:
   name: vllm
   annotations:
     kubero.dev/template.architecture: '[]'
-    kubero.dev/template.description: Serve an open model from Hugging Face on
-      your own GPU with an OpenAI-compatible API. Streaming, JSON output, tool
-      calling and reasoning returned apart from the answer.
+    kubero.dev/template.description: Connect a vLLM model server running on a
+      GPU and use it from your project through one OpenAI-compatible API with
+      its own key. Streaming, JSON output, tool calling and reasoning pass
+      through unchanged.
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vllm/icon.png
-    kubero.dev/template.installation: 'Needs a GPU: the app asks for one NVIDIA
-      GPU and stays Pending on a zone without GPU nodes. The image needs NVIDIA
-      driver 580 or newer. The OpenAI-compatible API is at <app URL>/v1 (for
-      example /v1/chat/completions); send the key generated in VLLM_API_KEY as
-      "Authorization: Bearer <key>". Ask for the model by the name in
-      SERVED_MODEL_NAME. The first start downloads the model to the /models
-      volume and can take 5 to 20 minutes; later starts read it from the
-      volume. MODEL is a Hugging Face id (default Qwen/Qwen3-4B, fits a 16 GB
-      GPU). For a gated model (Llama, Gemma, MedGemma) accept its licence on
-      Hugging Face and set HF_TOKEN. MAX_MODEL_LEN is the context window; lower
-      it if the logs say the KV cache does not fit. EXTRA_ARGS is passed to
-      "vllm serve" as is: keep "--reasoning-parser qwen3" for Qwen3 so the
-      thinking comes back in reasoning_content, and clear it for a model that
-      is not Qwen3. Prompts and answers are not logged. /health and /metrics
-      answer without the key. Saving a variable restarts the app and reloads
-      the model.'
+    kubero.dev/template.installation: 'This app does not run the model: it
+      connects to a vLLM server on a GPU machine. Fill in three variables from
+      that machine (under Variables), then save: VLLM_URL is its HTTP address
+      (with or without /v1 at the end), VLLM_API_KEY its password and
+      VLLM_MODEL the model name it serves. Your apps then call
+      {{STACKBLAZE_APP_URL}}/v1 (or http://vllm/v1 from inside the project)
+      with the key generated in API_KEY as "Authorization: Bearer <key>", and
+      ask for the model by the name in MODEL_ALIAS. Keep MODEL_ALIAS when the
+      GPU machine changes: only VLLM_URL and VLLM_API_KEY need updating, and
+      no app has to change. Prompts and answers are not logged. When VLLM_URL
+      starts with http:// the traffic to the GPU machine is not encrypted.
+      Saving a variable restarts the app.'
     kubero.dev/template.links: '["https://docs.vllm.ai/", "https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html",
-      "https://huggingface.co/models?pipeline_tag=text-generation"]'
+      "https://docs.litellm.ai/docs/providers/vllm"]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/vllm-project/vllm
     kubero.dev/template.categories: '["ai", "development", "utilities"]'
@@ -38,93 +35,90 @@ spec:
   deploymentstrategy: docker
   addons: []
   envVars:
-  # Hugging Face id of the model to serve.
-  - name: MODEL
-    value: Qwen/Qwen3-4B
-  # The name clients send in "model". Kept short and stable so a client does
-  # not change when MODEL moves to another revision of the same model.
-  - name: SERVED_MODEL_NAME
-    value: qwen3-4b
-  # Required on every /v1 request (Authorization: Bearer). Without it the
-  # public URL would be an open GPU anyone could use.
-  - name: VLLM_API_KEY
-    value: '{{STACKBLAZE_GEN_ALNUM:40}}'
-  # Only for gated models; empty is fine for public ones.
-  - name: HF_TOKEN
+  # From the GPU machine. Its HTTP address, with or without /v1 (the start
+  # script adds it), its password and the model name it serves.
+  - name: VLLM_URL
     value: ''
-  # vLLM otherwise reserves memory for the model's full context (40,960 for
-  # Qwen3) and refuses to start on a 16 GB GPU. 16,384 is the window the
-  # platform's own AI model feature serves with (kubero-server
-  # ai-model-presets.ts AI_MODEL_CONTEXT_TOKENS).
-  - name: MAX_MODEL_LEN
-    value: '16384'
-  # Passed to vllm serve unchanged. Reasoning parser and tool calling for
-  # the default Qwen3 model.
-  - name: EXTRA_ARGS
-    value: --reasoning-parser qwen3 --enable-auto-tool-choice --tool-call-parser hermes
-  # Weights and the Hugging Face cache on the volume, so a restart does not
-  # download the model again.
-  - name: HF_HOME
-    value: /models/hf
-  - name: HF_HUB_DISABLE_TELEMETRY
-    value: '1'
-  - name: VLLM_NO_USAGE_STATS
-    value: '1'
+  - name: VLLM_API_KEY
+    value: ''
+  - name: VLLM_MODEL
+    value: ''
+  # The model name clients send. Stable on purpose: replacing the GPU
+  # machine changes VLLM_URL / VLLM_API_KEY, never the clients.
+  - name: MODEL_ALIAS
+    value: model
+  # The key clients use. Generated, never the GPU machine's password, so that
+  # password stays in this one app. LiteLLM requires the sk- prefix.
+  - name: API_KEY
+    value: 'sk-{{STACKBLAZE_GEN_ALNUM:40}}'
+  # Long answers from a reasoning model can take minutes.
+  - name: REQUEST_TIMEOUT
+    value: '600'
+  # No database: no spend or request logs are kept anywhere.
+  - name: LITELLM_MODE
+    value: PRODUCTION
+  - name: LITELLM_TELEMETRY
+    value: 'False'
   - name: DO_NOT_TRACK
-    value: '1'
-  extraVolumes:
-  - accessModes:
-    - ReadWriteMany
-    emptyDir: false
-    mountPath: /models
-    name: '{{STACKBLAZE_APP_NAME}}-models'
-    size: 60Gi
-    storageClass: shared
+    value: 'true'
+  extraVolumes: []
   cronjobs: []
   web:
     replicaCount: 1
   worker:
     replicaCount: 0
-  # One NVIDIA GPU. The scheduler only places the pod on a node that offers
-  # nvidia.com/gpu (NVIDIA device plugin). App specs cannot set tolerations
-  # or a nodeSelector (kubero-server app.ts resets both), so GPU nodes must
-  # not carry a NoSchedule taint for this to schedule.
   resources:
     requests:
-      cpu: '2'
-      memory: 12Gi
-      nvidia.com/gpu: '1'
+      cpu: 100m
+      memory: 512Mi
     limits:
-      cpu: '8'
-      memory: 32Gi
-      nvidia.com/gpu: '1'
+      cpu: '1'
+      memory: 1Gi
   healthcheck:
     enabled: true
-    path: /health
-    # First start downloads the weights before /health answers.
-    startupSeconds: 1800
+    # Answers without a key and without reaching the GPU machine, so the app
+    # stays up while the machine is asleep or being replaced.
+    path: /health/liveliness
+    startupSeconds: 180
     timeoutSeconds: 5
     periodSeconds: 10
   image:
-    containerPort: '8000'
+    containerPort: '4000'
     pullPolicy: IfNotPresent
-    # Pinned release, not :latest. Built on CUDA 13 (driver 580+).
-    repository: docker.io/vllm/vllm-openai
-    tag: v0.33.0
-    # The image's entrypoint is "vllm serve"; a shell is used only so the
-    # optional EXTRA_ARGS can be empty. The image is Ubuntu based and has sh.
+    # Same pinned gateway image as services/litellm. Wolfi based, has sh and
+    # bash; its own entrypoint is docker/prod_entrypoint.sh.
+    repository: docker.io/litellm/litellm
+    tag: v1.108.8
+    # The config is written at start so the model list comes from the
+    # variables above. Secrets stay in the environment: the file only names
+    # them (os.environ/...), it never holds their values.
     command:
     - /bin/sh
     - -c
     - |
-      exec vllm serve "$MODEL" \
-        --host 0.0.0.0 \
-        --port 8000 \
-        --served-model-name "$SERVED_MODEL_NAME" \
-        --api-key "$VLLM_API_KEY" \
-        --max-model-len "$MAX_MODEL_LEN" \
-        --download-dir /models/weights \
-        $EXTRA_ARGS
+      set -e
+      base="${VLLM_URL%/}"
+      case "$base" in */v1) ;; *) base="$base/v1" ;; esac
+      export VLLM_BASE_URL="$base"
+      if [ -z "$VLLM_URL" ] || [ -z "$VLLM_MODEL" ]; then
+        echo "VLLM_URL and VLLM_MODEL are not set yet: fill them in under Variables." >&2
+      fi
+      cat > /tmp/vllm-config.yaml <<EOF
+      model_list:
+        - model_name: "${MODEL_ALIAS}"
+          litellm_params:
+            model: "hosted_vllm/${VLLM_MODEL}"
+            api_base: os.environ/VLLM_BASE_URL
+            api_key: os.environ/VLLM_API_KEY
+            timeout: ${REQUEST_TIMEOUT}
+      litellm_settings:
+        turn_off_message_logging: true
+        telemetry: false
+        drop_params: false
+      general_settings:
+        master_key: os.environ/API_KEY
+      EOF
+      exec docker/prod_entrypoint.sh --port 4000 --config /tmp/vllm-config.yaml
     run:
       securityContext:
         readOnlyRootFilesystem: false
