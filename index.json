@@ -203,6 +203,52 @@
    ]
   },
   {
+   "name": "kestra",
+   "description": "Open source orchestration for data, AI and business workflows. Write flows in YAML, run them on schedules, webhooks or events, and follow every execution, log and output in the web UI.",
+   "source": "https://github.com/kestra-io/kestra",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/c39a1bf9a64314c81a7940741d5ba45c1d661c5b/services/kestra/icon.png",
+   "website": "https://kestra.io/",
+   "installation": "Sign in with ADMIN_EMAIL and the password generated in ADMIN_PASSWORD (both under Variables). The account exists before the app is reachable, so the setup page never opens. With the Email add-on live, flows send mail with the MailSend task using {{ envs.smtp_host }} and the other envs.smtp_* values. Script tasks use the Process task runner (no Docker inside the container).",
+   "architecture": [],
+   "categories": [
+    "development",
+    "productivity",
+    "work"
+   ],
+   "screenshots": [
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/c39a1bf9a64314c81a7940741d5ba45c1d661c5b/services/kestra/screenshot-flow-editor.png",
+    "https://raw.githubusercontent.com/stackblaze/stack-templates/c39a1bf9a64314c81a7940741d5ba45c1d661c5b/services/kestra/screenshot-flows.png"
+   ],
+   "links": [],
+   "addons": [
+    "Cluster",
+    "Smtp"
+   ],
+   "stars": 30243,
+   "forks": 3533,
+   "watchers": 30243,
+   "issues": 685,
+   "last_updated": "2026-11-16T14:53:43Z",
+   "last_pushed": "2026-11-16T15:40:46Z",
+   "created_at": "2019-08-24T13:56:15Z",
+   "size": 160178,
+   "language": "Java",
+   "gitops": false,
+   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/app.yaml",
+   "status": "active",
+   "license": "Apache License 2.0",
+   "spdx_id": "Apache-2.0",
+   "dirname": "kestra",
+   "deploymentTypes": [
+    {
+     "id": "standard",
+     "label": "Standard",
+     "default": true,
+     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/kestra/app.yaml"
+    }
+   ]
+  },
+  {
    "name": "navidrome",
    "description": "Navidrome is a self-hosted music streaming server with Subsonic-compatible API, multi-user support, and transcoding.",
    "source": "https://github.com/navidrome/navidrome",
@@ -14043,7 +14089,7 @@
   "finance": 13
  },
  "stats": {
-  "total": 297,
+  "total": 298,
   "categories": 40,
   "gitops": 2,
   "stars": 4468002
