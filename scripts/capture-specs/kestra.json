@@ -5,7 +5,7 @@
     "path": "/ui/login",
     "steps": [
       { "waitForSelector": "#input-username", "timeout": 60000 },
-      { "fill": { "#input-username": "${KESTRA_ADMIN_EMAIL}" } },
+      { "fill": { "#input-username": "admin@stackblaze.app" } },
       { "fill": { "#input-password": "${KESTRA_ADMIN_PASSWORD}" } },
       { "click": "button:has-text(\"Login\")" },
       { "waitForURL": "**/ui/main/**", "timeout": 30000 }
