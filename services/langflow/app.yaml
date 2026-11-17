@@ -13,7 +13,11 @@ metadata:
       The first start runs database migrations and can take 2-3 minutes. Add your
       model provider keys (OpenAI, Anthropic, ...) in Settings > Global Variables;
       they are stored encrypted with LANGFLOW_SECRET_KEY, so do not change that
-      key after first use.'
+      key after first use. Your own model (optional, any OpenAI-compatible
+      server): set MODEL_URL (base URL ending in /v1), MODEL_API_KEY and
+      MODEL_NAME under Variables. After the restart they are Global Variables
+      of the same names, picked with the globe icon of a field (for
+      example the base URL and API key of an OpenAI component).'
     kubero.dev/template.links: '["https://docs.langflow.org/"]'
     kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-agent-flow.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-rag-flow.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-flows.png"]'
     kubero.dev/template.source: https://github.com/langflow-ai/langflow
@@ -104,6 +108,21 @@ spec:
     value: info
   - name: DO_NOT_TRACK
     value: 'true'
+  # YOUR OWN MODEL (optional): an OpenAI-compatible server, such as vLLM on
+  # a rented GPU or the LiteLLM app. Its base URL (ending in /v1), its API
+  # key or password, and the model name. Same names as the Kestra, LiteLLM
+  # and vLLM templates.
+  - name: MODEL_URL
+    value: ''
+  - name: MODEL_API_KEY
+    value: ''
+  - name: MODEL_NAME
+    value: ''
+  # Langflow turns these into Global Variables (Settings > Global Variables)
+  # at start, so a flow picks them from the globe icon of a field. Empty ones
+  # are skipped; a changed value updates the variable on restart.
+  - name: LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT
+    value: MODEL_URL,MODEL_API_KEY,MODEL_NAME
   extraVolumes:
   - accessModes:
     - ReadWriteMany
