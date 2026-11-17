@@ -1,0 +1,124 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: vllm
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Connect a vLLM model server running on a
+      GPU and use it from your project through one OpenAI-compatible API with
+      its own key. Streaming, JSON output, tool calling and reasoning pass
+      through unchanged.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vllm/icon.png
+    kubero.dev/template.installation: 'This app does not run the model: it
+      connects to a vLLM server on a GPU machine. Fill in three variables from
+      that machine (under Variables), then save: VLLM_URL is its HTTP address
+      (with or without /v1 at the end), VLLM_API_KEY its password and
+      VLLM_MODEL the model name it serves. Your apps then call
+      {{STACKBLAZE_APP_URL}}/v1 (or http://vllm/v1 from inside the project)
+      with the key generated in API_KEY as "Authorization: Bearer <key>", and
+      ask for the model by the name in MODEL_ALIAS. Keep MODEL_ALIAS when the
+      GPU machine changes: only VLLM_URL and VLLM_API_KEY need updating, and
+      no app has to change. Prompts and answers are not logged. When VLLM_URL
+      starts with http:// the traffic to the GPU machine is not encrypted.
+      Saving a variable restarts the app.'
+    kubero.dev/template.links: '["https://docs.vllm.ai/", "https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html",
+      "https://docs.litellm.ai/docs/providers/vllm"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/vllm-project/vllm
+    kubero.dev/template.categories: '["ai", "development", "utilities"]'
+    kubero.dev/template.title: vLLM
+    kubero.dev/template.website: https://vllm.ai/
+  labels:
+    manager: kubero
+spec:
+  name: vllm
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  # From the GPU machine. Its HTTP address, with or without /v1 (the start
+  # script adds it), its password and the model name it serves.
+  - name: VLLM_URL
+    value: ''
+  - name: VLLM_API_KEY
+    value: ''
+  - name: VLLM_MODEL
+    value: ''
+  # The model name clients send. Stable on purpose: replacing the GPU
+  # machine changes VLLM_URL / VLLM_API_KEY, never the clients.
+  - name: MODEL_ALIAS
+    value: model
+  # The key clients use. Generated, never the GPU machine's password, so that
+  # password stays in this one app. LiteLLM requires the sk- prefix.
+  - name: API_KEY
+    value: 'sk-{{STACKBLAZE_GEN_ALNUM:40}}'
+  # Long answers from a reasoning model can take minutes.
+  - name: REQUEST_TIMEOUT
+    value: '600'
+  # No database: no spend or request logs are kept anywhere.
+  - name: LITELLM_MODE
+    value: PRODUCTION
+  - name: LITELLM_TELEMETRY
+    value: 'False'
+  - name: DO_NOT_TRACK
+    value: 'true'
+  extraVolumes: []
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+    limits:
+      cpu: '1'
+      memory: 1Gi
+  healthcheck:
+    enabled: true
+    # Answers without a key and without reaching the GPU machine, so the app
+    # stays up while the machine is asleep or being replaced.
+    path: /health/liveliness
+    startupSeconds: 180
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '4000'
+    pullPolicy: IfNotPresent
+    # Same pinned gateway image as services/litellm. Wolfi based, has sh and
+    # bash; its own entrypoint is docker/prod_entrypoint.sh.
+    repository: docker.io/litellm/litellm
+    tag: v1.108.8
+    # The config is written at start so the model list comes from the
+    # variables above. Secrets stay in the environment: the file only names
+    # them (os.environ/...), it never holds their values.
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      base="${VLLM_URL%/}"
+      case "$base" in */v1) ;; *) base="$base/v1" ;; esac
+      export VLLM_BASE_URL="$base"
+      if [ -z "$VLLM_URL" ] || [ -z "$VLLM_MODEL" ]; then
+        echo "VLLM_URL and VLLM_MODEL are not set yet: fill them in under Variables." >&2
+      fi
+      cat > /tmp/vllm-config.yaml <<EOF
+      model_list:
+        - model_name: "${MODEL_ALIAS}"
+          litellm_params:
+            model: "hosted_vllm/${VLLM_MODEL}"
+            api_base: os.environ/VLLM_BASE_URL
+            api_key: os.environ/VLLM_API_KEY
+            timeout: ${REQUEST_TIMEOUT}
+      litellm_settings:
+        turn_off_message_logging: true
+        telemetry: false
+        drop_params: false
+      general_settings:
+        master_key: os.environ/API_KEY
+      EOF
+      exec docker/prod_entrypoint.sh --port 4000 --config /tmp/vllm-config.yaml
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
