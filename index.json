@@ -12523,7 +12523,7 @@
    "name": "vllm",
    "description": "Connect a vLLM model server running on a GPU and use it from your project through one OpenAI-compatible API with its own key. Streaming, JSON output, tool calling and reasoning pass through unchanged.",
    "source": "https://github.com/vllm-project/vllm",
-   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vllm/icon.png",
+   "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/2e2772df82119f9e85df533674b462acb8387f03/services/vllm/icon.png",
    "website": "https://vllm.ai/",
    "installation": "",
    "architecture": [],
@@ -12532,7 +12532,7 @@
     "development",
     "utilities"
    ],
-   "screenshots": [],
+   "screenshots": ["https://raw.githubusercontent.com/stackblaze/stack-templates/2e2772df82119f9e85df533674b462acb8387f03/services/vllm/screenshot-models.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/2e2772df82119f9e85df533674b462acb8387f03/services/vllm/screenshot-chat-api.png"],
    "links": [
     "https://docs.vllm.ai/",
     "https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html",

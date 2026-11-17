@@ -8,7 +8,7 @@ metadata:
       GPU and use it from your project through one OpenAI-compatible API with
       its own key. Streaming, JSON output, tool calling and reasoning pass
       through unchanged.
-    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vllm/icon.png
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/2e2772df82119f9e85df533674b462acb8387f03/services/vllm/icon.png
     kubero.dev/template.installation: 'This app does not run the model: it
       connects to a vLLM server on a GPU machine. Fill in three variables from
       that machine (under Variables), then save: VLLM_URL is its HTTP address
@@ -23,7 +23,7 @@ metadata:
       Saving a variable restarts the app.'
     kubero.dev/template.links: '["https://docs.vllm.ai/", "https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html",
       "https://docs.litellm.ai/docs/providers/vllm"]'
-    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/stackblaze/stack-templates/2e2772df82119f9e85df533674b462acb8387f03/services/vllm/screenshot-models.png", "https://raw.githubusercontent.com/stackblaze/stack-templates/2e2772df82119f9e85df533674b462acb8387f03/services/vllm/screenshot-chat-api.png"]'
     kubero.dev/template.source: https://github.com/vllm-project/vllm
     kubero.dev/template.categories: '["ai", "development", "utilities"]'
     kubero.dev/template.title: vLLM
