@@ -1,0 +1,130 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: vllm
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Serve an open model from Hugging Face on
+      your own GPU with an OpenAI-compatible API. Streaming, JSON output, tool
+      calling and reasoning returned apart from the answer.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/vllm/icon.png
+    kubero.dev/template.installation: 'Needs a GPU: the app asks for one NVIDIA
+      GPU and stays Pending on a zone without GPU nodes. The image needs NVIDIA
+      driver 580 or newer. The OpenAI-compatible API is at <app URL>/v1 (for
+      example /v1/chat/completions); send the key generated in VLLM_API_KEY as
+      "Authorization: Bearer <key>". Ask for the model by the name in
+      SERVED_MODEL_NAME. The first start downloads the model to the /models
+      volume and can take 5 to 20 minutes; later starts read it from the
+      volume. MODEL is a Hugging Face id (default Qwen/Qwen3-4B, fits a 16 GB
+      GPU). For a gated model (Llama, Gemma, MedGemma) accept its licence on
+      Hugging Face and set HF_TOKEN. MAX_MODEL_LEN is the context window; lower
+      it if the logs say the KV cache does not fit. EXTRA_ARGS is passed to
+      "vllm serve" as is: keep "--reasoning-parser qwen3" for Qwen3 so the
+      thinking comes back in reasoning_content, and clear it for a model that
+      is not Qwen3. Prompts and answers are not logged. /health and /metrics
+      answer without the key. Saving a variable restarts the app and reloads
+      the model.'
+    kubero.dev/template.links: '["https://docs.vllm.ai/", "https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html",
+      "https://huggingface.co/models?pipeline_tag=text-generation"]'
+    kubero.dev/template.screenshots: '[]'
+    kubero.dev/template.source: https://github.com/vllm-project/vllm
+    kubero.dev/template.categories: '["ai", "development", "utilities"]'
+    kubero.dev/template.title: vLLM
+    kubero.dev/template.website: https://vllm.ai/
+  labels:
+    manager: kubero
+spec:
+  name: vllm
+  deploymentstrategy: docker
+  addons: []
+  envVars:
+  # Hugging Face id of the model to serve.
+  - name: MODEL
+    value: Qwen/Qwen3-4B
+  # The name clients send in "model". Kept short and stable so a client does
+  # not change when MODEL moves to another revision of the same model.
+  - name: SERVED_MODEL_NAME
+    value: qwen3-4b
+  # Required on every /v1 request (Authorization: Bearer). Without it the
+  # public URL would be an open GPU anyone could use.
+  - name: VLLM_API_KEY
+    value: '{{STACKBLAZE_GEN_ALNUM:40}}'
+  # Only for gated models; empty is fine for public ones.
+  - name: HF_TOKEN
+    value: ''
+  # vLLM otherwise reserves memory for the model's full context (40,960 for
+  # Qwen3) and refuses to start on a 16 GB GPU. 16,384 is the window the
+  # platform's own AI model feature serves with (kubero-server
+  # ai-model-presets.ts AI_MODEL_CONTEXT_TOKENS).
+  - name: MAX_MODEL_LEN
+    value: '16384'
+  # Passed to vllm serve unchanged. Reasoning parser and tool calling for
+  # the default Qwen3 model.
+  - name: EXTRA_ARGS
+    value: --reasoning-parser qwen3 --enable-auto-tool-choice --tool-call-parser hermes
+  # Weights and the Hugging Face cache on the volume, so a restart does not
+  # download the model again.
+  - name: HF_HOME
+    value: /models/hf
+  - name: HF_HUB_DISABLE_TELEMETRY
+    value: '1'
+  - name: VLLM_NO_USAGE_STATS
+    value: '1'
+  - name: DO_NOT_TRACK
+    value: '1'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /models
+    name: '{{STACKBLAZE_APP_NAME}}-models'
+    size: 60Gi
+    storageClass: shared
+  cronjobs: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  # One NVIDIA GPU. The scheduler only places the pod on a node that offers
+  # nvidia.com/gpu (NVIDIA device plugin). App specs cannot set tolerations
+  # or a nodeSelector (kubero-server app.ts resets both), so GPU nodes must
+  # not carry a NoSchedule taint for this to schedule.
+  resources:
+    requests:
+      cpu: '2'
+      memory: 12Gi
+      nvidia.com/gpu: '1'
+    limits:
+      cpu: '8'
+      memory: 32Gi
+      nvidia.com/gpu: '1'
+  healthcheck:
+    enabled: true
+    path: /health
+    # First start downloads the weights before /health answers.
+    startupSeconds: 1800
+    timeoutSeconds: 5
+    periodSeconds: 10
+  image:
+    containerPort: '8000'
+    pullPolicy: IfNotPresent
+    # Pinned release, not :latest. Built on CUDA 13 (driver 580+).
+    repository: docker.io/vllm/vllm-openai
+    tag: v0.33.0
+    # The image's entrypoint is "vllm serve"; a shell is used only so the
+    # optional EXTRA_ARGS can be empty. The image is Ubuntu based and has sh.
+    command:
+    - /bin/sh
+    - -c
+    - |
+      exec vllm serve "$MODEL" \
+        --host 0.0.0.0 \
+        --port 8000 \
+        --served-model-name "$SERVED_MODEL_NAME" \
+        --api-key "$VLLM_API_KEY" \
+        --max-model-len "$MAX_MODEL_LEN" \
+        --download-dir /models/weights \
+        $EXTRA_ARGS
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
