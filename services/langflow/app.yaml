@@ -16,8 +16,12 @@ metadata:
       key after first use. Your own model (optional, any OpenAI-compatible
       server): set MODEL_URL (base URL ending in /v1), MODEL_API_KEY and
       MODEL_NAME under Variables. After the restart they are Global Variables
-      of the same names, picked with the globe icon of a field (for
-      example the base URL and API key of an OpenAI component).'
+      of the same names. In an OpenAI component, type the base URL
+      (MODEL_URL''s value) into OpenAI API Base, pick MODEL_API_KEY with the
+      globe icon of the API Key field, and type the model name: Langflow
+      does not allow environment variables in non-secret fields. MODEL_URL''s
+      host is allowlisted for MODEL_API_KEY automatically
+      (LANGFLOW_PROVIDER_CREDENTIAL_ALLOWED_HOSTS).'
     kubero.dev/template.links: '["https://docs.langflow.org/"]'
     kubero.dev/template.screenshots: '["https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-agent-flow.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-rag-flow.png", "https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@4101676552dfd463e36f50331fd559f403368be8/services/langflow/screenshot-flows.png"]'
     kubero.dev/template.source: https://github.com/langflow-ai/langflow
@@ -123,6 +127,12 @@ spec:
   # are skipped; a changed value updates the variable on restart.
   - name: LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT
     value: MODEL_URL,MODEL_API_KEY,MODEL_NAME
+  # Langflow only sends a key that comes from the server environment (such as
+  # MODEL_API_KEY) to a provider's own endpoint or to hosts listed here. The
+  # start command adds MODEL_URL's host automatically; list any other hosts
+  # (comma-separated) yourself.
+  - name: LANGFLOW_PROVIDER_CREDENTIAL_ALLOWED_HOSTS
+    value: ''
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -141,6 +151,21 @@ spec:
     pullPolicy: IfNotPresent
     repository: docker.io/langflowai/langflow
     tag: '1.13.2'
+    # The image's own command is `langflow run` (no entrypoint; Debian-based
+    # Python image, so /bin/sh exists). It is kept; the wrapper only adds
+    # MODEL_URL's host to LANGFLOW_PROVIDER_CREDENTIAL_ALLOWED_HOSTS first.
+    command:
+    - /bin/sh
+    - -c
+    - |
+      if [ -n "$MODEL_URL" ]; then
+        h="${MODEL_URL#*://}"; h="${h%%/*}"; h="${h%%:*}"
+        case ",$LANGFLOW_PROVIDER_CREDENTIAL_ALLOWED_HOSTS," in
+          *",$h,"*) ;;
+          *) export LANGFLOW_PROVIDER_CREDENTIAL_ALLOWED_HOSTS="${LANGFLOW_PROVIDER_CREDENTIAL_ALLOWED_HOSTS:+$LANGFLOW_PROVIDER_CREDENTIAL_ALLOWED_HOSTS,}$h" ;;
+        esac
+      fi
+      exec langflow run
     run:
       securityContext:
         readOnlyRootFilesystem: false
