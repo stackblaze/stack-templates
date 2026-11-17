@@ -10,7 +10,7 @@
  *
  *   node services/kestra/seed-demo.mjs \
  *     --url https://kestra-xxxx.stackblaze.app \
- *     --email you@company.com --password "$KESTRA_PASSWORD" \
+ *     --email admin@stackblaze.app --password "$ADMIN_PASSWORD" \
  *     --ai-url https://api.stackblaze.cloud/api/inference/<id>/v1 \
  *     --ai-key "$AI_MODEL_KEY" --ai-model qwen3-14b
  *
@@ -76,13 +76,13 @@ function args() {
 
 const opt = args();
 const base = String(opt.url || '').replace(/\/+$/, '');
-const email = opt.email; // the admin chosen on Kestra's Setup page
+const email = opt.email || 'admin@stackblaze.app';
 const password = opt.password || process.env.KESTRA_PASSWORD;
 const aiUrl = String(opt['ai-url'] || '').replace(/\/+$/, '');
 const aiKey = opt['ai-key'] || process.env.AI_MODEL_KEY;
 const aiModel = opt['ai-model'];
 
-for (const [name, v] of Object.entries({ '--url': base, '--email': email, '--password': password, '--ai-url': aiUrl, '--ai-key': aiKey, '--ai-model': aiModel })) {
+for (const [name, v] of Object.entries({ '--url': base, '--password': password, '--ai-url': aiUrl, '--ai-key': aiKey, '--ai-model': aiModel })) {
   if (!v) {
     console.error(`[kestra-seed] missing ${name}`);
     process.exit(2);
