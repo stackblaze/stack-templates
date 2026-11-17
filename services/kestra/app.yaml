@@ -19,9 +19,8 @@ metadata:
       {{ envs.smtp_password }} and {{ envs.smtp_from }}. Script tasks must use
       the Process task runner: there is no Docker inside the container. AI
       models (both optional, any OpenAI-compatible endpoint such as a
-      Stackblaze AI model, or http://vllm/v1 for the vLLM app in the same
-      project with its API_KEY and MODEL_ALIAS; URLs end in /v1): ENV_AI_URL, ENV_AI_KEY and
-      ENV_AI_MODEL are the model for flows, read in an AI task as
+      Stackblaze AI model or your own model server; URLs end in /v1):
+      ENV_AI_URL, ENV_AI_KEY and ENV_AI_MODEL are the model for flows, read in an AI task as
       {{ envs.ai_url }}, {{ envs.ai_key }} and {{ envs.ai_model }}.
       The built-in AI Copilot uses Google Gemini (the only provider in
       Kestra''s open-source edition): set GEMINI_API_KEY and
