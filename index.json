@@ -203,7 +203,7 @@
    ]
   },
   {
-   "name": "kestra",
+   "name": "Kestra",
    "description": "Open source orchestration for data, AI and business workflows. Write flows in YAML, run them on schedules, webhooks or events, and follow every execution, log and output in the web UI.",
    "source": "https://github.com/kestra-io/kestra",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/c39a1bf9a64314c81a7940741d5ba45c1d661c5b/services/kestra/icon.png",
@@ -12520,7 +12520,7 @@
    ]
   },
   {
-   "name": "vllm",
+   "name": "vLLM",
    "description": "Connect a vLLM model server running on a GPU and use it from your project through one OpenAI-compatible API with its own key. Streaming, JSON output, tool calling and reasoning pass through unchanged.",
    "source": "https://github.com/vllm-project/vllm",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/2e2772df82119f9e85df533674b462acb8387f03/services/vllm/icon.png",
@@ -12603,7 +12603,7 @@
    ]
   },
   {
-   "name": "litellm",
+   "name": "LiteLLM",
    "description": "LLM gateway with one OpenAI-compatible API for 100+ model providers. Virtual keys, budgets, rate limits, spend tracking and an admin UI.",
    "source": "https://github.com/BerriAI/litellm",
    "icon": "https://raw.githubusercontent.com/stackblaze/stack-templates/422a54a9d47fa6734d5d2072f3cc341cd680dc49/services/litellm/icon.png",
