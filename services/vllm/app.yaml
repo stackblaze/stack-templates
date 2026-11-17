@@ -11,14 +11,14 @@ metadata:
     kubero.dev/template.icon: https://raw.githubusercontent.com/stackblaze/stack-templates/2e2772df82119f9e85df533674b462acb8387f03/services/vllm/icon.png
     kubero.dev/template.installation: 'This app does not run the model: it
       connects to a vLLM server on a GPU machine. Fill in three variables from
-      that machine (under Variables), then save: VLLM_URL is its HTTP address
-      (with or without /v1 at the end), VLLM_API_KEY its password and
-      VLLM_MODEL the model name it serves. Your apps then call
+      that machine (under Variables), then save: MODEL_URL is its HTTP address
+      (with or without /v1 at the end), MODEL_API_KEY its password and
+      MODEL_NAME the model name it serves. Your apps then call
       {{STACKBLAZE_APP_URL}}/v1 (or http://vllm/v1 from inside the project)
       with the key generated in API_KEY as "Authorization: Bearer <key>", and
       ask for the model by the name in MODEL_ALIAS. Keep MODEL_ALIAS when the
-      GPU machine changes: only VLLM_URL and VLLM_API_KEY need updating, and
-      no app has to change. Prompts and answers are not logged. When VLLM_URL
+      GPU machine changes: only MODEL_URL and MODEL_API_KEY need updating, and
+      no app has to change. Prompts and answers are not logged. When MODEL_URL
       starts with http:// the traffic to the GPU machine is not encrypted.
       Saving a variable restarts the app.'
     kubero.dev/template.links: '["https://docs.vllm.ai/", "https://docs.vllm.ai/en/latest/serving/openai_compatible_server.html",
@@ -37,14 +37,14 @@ spec:
   envVars:
   # From the GPU machine. Its HTTP address, with or without /v1 (the start
   # script adds it), its password and the model name it serves.
-  - name: VLLM_URL
+  - name: MODEL_URL
     value: ''
-  - name: VLLM_API_KEY
+  - name: MODEL_API_KEY
     value: ''
-  - name: VLLM_MODEL
+  - name: MODEL_NAME
     value: ''
   # The model name clients send. Stable on purpose: replacing the GPU
-  # machine changes VLLM_URL / VLLM_API_KEY, never the clients.
+  # machine changes MODEL_URL / MODEL_API_KEY, never the clients.
   - name: MODEL_ALIAS
     value: model
   # The key clients use. Generated, never the GPU machine's password, so that
@@ -97,19 +97,19 @@ spec:
     - -c
     - |
       set -e
-      base="${VLLM_URL%/}"
+      base="${MODEL_URL%/}"
       case "$base" in */v1) ;; *) base="$base/v1" ;; esac
-      export VLLM_BASE_URL="$base"
-      if [ -z "$VLLM_URL" ] || [ -z "$VLLM_MODEL" ]; then
-        echo "VLLM_URL and VLLM_MODEL are not set yet: fill them in under Variables." >&2
+      export MODEL_BASE_URL="$base"
+      if [ -z "$MODEL_URL" ] || [ -z "$MODEL_NAME" ]; then
+        echo "MODEL_URL and MODEL_NAME are not set yet: fill them in under Variables." >&2
       fi
       cat > /tmp/vllm-config.yaml <<EOF
       model_list:
         - model_name: "${MODEL_ALIAS}"
           litellm_params:
-            model: "hosted_vllm/${VLLM_MODEL}"
-            api_base: os.environ/VLLM_BASE_URL
-            api_key: os.environ/VLLM_API_KEY
+            model: "hosted_vllm/${MODEL_NAME}"
+            api_base: os.environ/MODEL_BASE_URL
+            api_key: os.environ/MODEL_API_KEY
             timeout: ${REQUEST_TIMEOUT}
       litellm_settings:
         turn_off_message_logging: true
