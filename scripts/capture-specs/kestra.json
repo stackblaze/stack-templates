@@ -1,0 +1,19 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/ui/login",
+    "steps": [
+      { "waitForSelector": "#input-username", "timeout": 60000 },
+      { "fill": { "#input-username": "admin@stackblaze.app" } },
+      { "fill": { "#input-password": "${KESTRA_ADMIN_PASSWORD}" } },
+      { "click": "button:has-text(\"Login\")" },
+      { "waitForURL": "**/ui/main/**", "timeout": 30000 }
+    ],
+    "waitAfterMs": 3000
+  },
+  "pages": [
+    { "name": "flow-editor", "path": "/ui/main/flows/edit/stackblaze.demo/triage-ticket/edit", "waitMs": 7000 },
+    { "name": "flows", "path": "/ui/main/flows", "waitMs": 5000 }
+  ]
+}
