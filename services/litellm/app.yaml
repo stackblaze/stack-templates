@@ -18,7 +18,10 @@ metadata:
       disable_env_credential_login true). Add models
       and their provider keys under Models; provider keys are stored encrypted with
       LITELLM_SALT_KEY, so never change that value after adding a model. Then call
-      {{STACKBLAZE_APP_URL}}/v1 with any OpenAI SDK. The API reference is at /docs.
+      {{STACKBLAZE_APP_URL}}/v1 with any OpenAI SDK. Your own model (for
+      example vLLM on a rented GPU): set MODEL_URL, MODEL_API_KEY and
+      MODEL_NAME under Variables and it appears under Models after the
+      restart, named MODEL_ALIAS (or MODEL_NAME when that is empty). The API reference is at /docs.
       Email (invites, key and budget alerts) goes through the Email add-on once you
       turn on email alerting in Settings. Enterprise features (SSO for more than
       5 users, audit logs, guardrail add-ons) need a LiteLLM licence.'
@@ -132,6 +135,23 @@ spec:
   # DEV mode would also load a .env file from the working directory.
   - name: LITELLM_MODE
     value: PRODUCTION
+  # YOUR OWN MODEL (optional): an OpenAI-compatible server you run, such as
+  # vLLM on a rented GPU. Fill in its address (with or without /v1), its API
+  # key or password and the model name it serves; the app restarts and the
+  # model is in the list under Models. More models are added in the UI.
+  - name: MODEL_URL
+    value: ''
+  - name: MODEL_API_KEY
+    value: ''
+  - name: MODEL_NAME
+    value: ''
+  # The name clients send. Empty = MODEL_NAME. Set it (for example to
+  # "model") to keep one name when the server or its model changes.
+  - name: MODEL_ALIAS
+    value: ''
+  # Long answers from a reasoning model can take minutes.
+  - name: MODEL_TIMEOUT
+    value: '600'
   extraVolumes: []
   cronjobs: []
   web:
@@ -156,6 +176,32 @@ spec:
     pullPolicy: IfNotPresent
     repository: docker.io/litellm/litellm
     tag: v1.108.8
+    # Without MODEL_URL and MODEL_NAME this is the image's own start. With
+    # them, a config naming that one model is written first. The file only
+    # points at the variables (os.environ/...): no secret is written to it.
+    command:
+    - /bin/sh
+    - -c
+    - |
+      set -e
+      if [ -z "$MODEL_URL" ] || [ -z "$MODEL_NAME" ]; then
+        exec docker/prod_entrypoint.sh --port 4000
+      fi
+      base="${MODEL_URL%/}"
+      case "$base" in */v1) ;; *) base="$base/v1" ;; esac
+      export MODEL_BASE_URL="$base"
+      [ -n "$MODEL_API_KEY" ] || export MODEL_API_KEY=none
+      alias="${MODEL_ALIAS:-$MODEL_NAME}"
+      cat > /tmp/own-model.yaml <<EOF
+      model_list:
+        - model_name: "${alias}"
+          litellm_params:
+            model: "hosted_vllm/${MODEL_NAME}"
+            api_base: os.environ/MODEL_BASE_URL
+            api_key: os.environ/MODEL_API_KEY
+            timeout: ${MODEL_TIMEOUT:-600}
+      EOF
+      exec docker/prod_entrypoint.sh --port 4000 --config /tmp/own-model.yaml
     run:
       securityContext:
         readOnlyRootFilesystem: false
