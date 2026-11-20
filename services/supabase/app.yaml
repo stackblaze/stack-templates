@@ -1975,18 +1975,34 @@ spec:
           }
         }
 
-        Deno.serve({ onError }, async (req: Request) => {
-          if (req.method !== 'OPTIONS' && VERIFY_JWT) {
-            const token = getAuthToken(req)
-            if (typeof token !== 'string') {
-              return getAuthErrorResponse(token)
-            }
-            const authFailure = await isValidHybridJWT(token)
-            if (authFailure) {
-              return getAuthErrorResponse(authFailure)
+        // StackBlaze: a function's own JWT setting, `<function>/.verify_jwt`
+        // ("true" / "false"), written by the Supabase CLI deploy route
+        // (kubero-server supabase-api). Without the file: VERIFY_JWT.
+        async function verifyJwtFor(servicePath: string): Promise<boolean> {
+          try {
+            const v = (await Deno.readTextFile(`${servicePath}/.verify_jwt`)).trim()
+            if (v === 'true') return true
+            if (v === 'false') return false
+          } catch (_e) {
+            // No setting of its own.
+          }
+          return VERIFY_JWT
+        }
+
+        // StackBlaze: a function's own import map (`supabase functions new`
+        // writes `<function>/deno.json`), else the shared one.
+        async function importMapFor(servicePath: string): Promise<string> {
+          for (const name of ['deno.json', 'deno.jsonc']) {
+            try {
+              if ((await Deno.stat(`${servicePath}/${name}`)).isFile) return `${servicePath}/${name}`
+            } catch (_e) {
+              // Not there.
             }
           }
+          return '/home/deno/functions/deno.jsonc'
+        }
 
+        Deno.serve({ onError }, async (req: Request) => {
           const url = new URL(req.url)
           const { pathname } = url
           const path_parts = pathname.split('/')
@@ -2035,14 +2051,24 @@ spec:
             })
           }
 
+          // After the lookup: each function may have its own setting.
+          if (req.method !== 'OPTIONS' && (await verifyJwtFor(servicePath))) {
+            const token = getAuthToken(req)
+            if (typeof token !== 'string') {
+              return getAuthErrorResponse(token)
+            }
+            const authFailure = await isValidHybridJWT(token)
+            if (authFailure) {
+              return getAuthErrorResponse(authFailure)
+            }
+          }
+
           const memoryLimitMb = 256
           // Keep the wall clock above the 150s request idle timeout configured in Compose.
           const workerTimeoutMs = 400_000
           const requestAbsentTimeoutMs = 60_000
           const noModuleCache = false
-          // Using a common Import Map for all functions 
-          // to use a scope 'deno.json' it must be dinamically resolved base on the 'service_name'
-          const importMapPath = `/home/deno/functions/deno.jsonc`
+          const importMapPath = await importMapFor(servicePath)
           // SUPABASE_FUNCTION_SLUG is listed after the container env snapshot so
           // nothing in it can shadow the value, and it is per-request because only this
           // worker knows which function the request resolved to.
@@ -2116,6 +2142,10 @@ spec:
     # Off: each function checks its caller itself (upstream's default).
     - name: VERIFY_JWT
       value: 'false'
+    # The router reads each function's own `.verify_jwt` (functions deployed
+    # with the Supabase CLI); kubero-server's deploy route checks for this.
+    - name: STACKBLAZE_FUNCTION_JWT_FILES
+      value: 'true'
     - name: SUPABASE_URL
       value: http://supabase-api-{{STACKBLAZE_NAME_SUFFIX}}-kuberoapp
     - name: SUPABASE_PUBLIC_URL
