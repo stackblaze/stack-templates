@@ -134,15 +134,6 @@
     "ingressOk": true,
     "durationMs": 52020
   },
-  "gitea": {
-    "name": "gitea",
-    "status": "pass",
-    "validatedAt": "2026-06-13T00:10:12.189Z",
-    "error": null,
-    "url": "https://qa-gitea-e158.stackblaze.app",
-    "ingressOk": true,
-    "durationMs": 34757
-  },
   "logto": {
     "name": "logto",
     "status": "fail",
@@ -1024,15 +1015,6 @@
     "url": "https://qa-metube-1a56.stackblaze.app",
     "ingressOk": true,
     "durationMs": 34261
-  },
-  "forgejo": {
-    "name": "forgejo",
-    "status": "pass",
-    "validatedAt": "2026-06-13T18:47:56.77Z",
-    "error": null,
-    "url": "https://qa-forgejo-9894.stackblaze.app",
-    "ingressOk": true,
-    "durationMs": 50585
   },
   "lychee": {
     "name": "lychee",

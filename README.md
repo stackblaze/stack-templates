@@ -825,14 +825,6 @@ To record a QA pass, edit `qa-status.json` and re-run
       <td align="center">—</td>
     </tr>
     <tr>
-      <td><img src="https://codeberg.org/forgejo/Forgejo/raw/branch/forgejo/public/assets/img/logo.svg" width="32" height="32" alt="forgejo" title="forgejo" style="vertical-align:middle;border-radius:4px;" /></td>
-      <td><strong>forgejo</strong></td>
-      <td align="center"><code>11</code></td>
-      <td>PostgreSQL (CloudNativePG)</td>
-      <td align="center">No</td>
-      <td align="center">—</td>
-    </tr>
-    <tr>
       <td><img src="https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/formbricks/icon.png" width="32" height="32" alt="formbricks" title="formbricks" style="vertical-align:middle;border-radius:4px;" /></td>
       <td><strong>formbricks</strong></td>
       <td align="center"><code>4.8.6</code></td>
@@ -901,14 +893,6 @@ To record a QA pass, edit `qa-status.json` and re-run
       <td><strong>ghostfolio</strong></td>
       <td align="center"><code>latest</code></td>
       <td>PostgreSQL (CloudNativePG), Valkey</td>
-      <td align="center">No</td>
-      <td align="center">—</td>
-    </tr>
-    <tr>
-      <td><img src="https://cdn.jsdelivr.net/gh/stackblaze/stack-templates@e1e91781144b4f96bf330019f945a0db1b06534a/services/gitea/icon.png" width="32" height="32" alt="gitea" title="gitea" style="vertical-align:middle;border-radius:4px;" /></td>
-      <td><strong>gitea</strong></td>
-      <td align="center"><code>latest</code></td>
-      <td>PostgreSQL (CloudNativePG)</td>
       <td align="center">No</td>
       <td align="center">—</td>
     </tr>
