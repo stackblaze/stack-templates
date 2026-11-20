@@ -14044,35 +14044,6 @@
      "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/sillytavern/app.yaml"
     }
    ]
-  },
-  {
-   "name": "AI agent",
-   "description": "An AI agent with your instructions, a team chat page and an HTTP API, behind its own AI Gateway that holds the provider key. Agent and gateway share one PostgreSQL.",
-   "source": "https://github.com/stackblaze/omp-agent",
-   "icon": "",
-   "website": "",
-   "installation": "Deployed from the dashboard's AI agent panel, not from this catalog: the panel asks for the provider key, deploys the AI Gateway with it, then creates the agent behind it.",
-   "architecture": [],
-   "categories": [
-    "ai"
-   ],
-   "screenshots": [],
-   "links": [],
-   "addons": [
-    "Cluster"
-   ],
-   "gitops": false,
-   "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ai-agent/app.yaml",
-   "status": "unsupported",
-   "dirname": "ai-agent",
-   "deploymentTypes": [
-    {
-     "id": "standard",
-     "label": "Standard",
-     "default": true,
-     "template": "https://raw.githubusercontent.com/stackblaze/stack-templates/main/services/ai-agent/app.yaml"
-    }
-   ]
   }
  ],
  "categories": {
