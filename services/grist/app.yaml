@@ -98,6 +98,9 @@ spec:
     value: admin@example.com
   - name: GRIST_SANDBOX_FLAVOR
     value: gvisor
+  # Database name and login follow the injected Postgres contract (never
+  # literals), so they stay right after a backup restore-copy + cutover,
+  # whose copy has its own database and roles (kubero-server #2401).
   - name: TYPEORM_TYPE
     value: postgres
   - name: TYPEORM_HOST
@@ -107,9 +110,9 @@ spec:
   - name: TYPEORM_DATABASE
     value: '$(PGDATABASE)'
   - name: TYPEORM_USERNAME
-    value: grist
+    value: '$(PGUSER)'
   - name: TYPEORM_PASSWORD
-    value: grist
+    value: '$(PGPASSWORD)'
   extraVolumes:
   - accessModes:
     - ReadWriteMany

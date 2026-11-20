@@ -94,18 +94,31 @@ spec:
     value: 'true'
   - name: FORGEJO__server__DOMAIN
     value: '{{STACKBLAZE_APP_HOST}}'
+  # Database name and login follow the injected Postgres contract (never
+  # literals), so they stay right after a backup restore-copy + cutover,
+  # whose copy has its own database and roles (kubero-server #2401).
   - name: FORGEJO__database__DB_TYPE
     value: postgres
   - name: FORGEJO__database__HOST
     value: '$(PGHOST)'
   - name: FORGEJO__database__PORT
-    value: '5432'
+    value: '$(PGPORT)'
   - name: FORGEJO__database__NAME
-    value: forgejo
+    value: '$(PGDATABASE)'
   - name: FORGEJO__database__USER
-    value: forgejo
+    value: '$(PGUSER)'
   - name: FORGEJO__database__PASSWD
-    value: forgejo
+    value: '$(PGPASSWORD)'
+  # /data is a shared RWX volume, so the pod a rollout starts sees the old
+  # pod's files. The default LevelDB queue and bleve issue indexer under
+  # /data take file locks the new pod cannot get, and it crash-loops until
+  # the old pod is gone, which a rolling update never does (seen after an
+  # env change on dev). Keep the queue in memory and index issues in the
+  # database instead; nothing else under /data is locked.
+  - name: FORGEJO__queue__TYPE
+    value: channel
+  - name: FORGEJO__indexer__ISSUE_INDEXER_TYPE
+    value: db
   # Built-in SSH server (in-process, runs as the git user — no root sshd).
   # Listens on SSH_LISTEN_PORT inside the pod; SSH_PORT/SSH_DOMAIN are what
   # Forgejo advertises in the ssh:// clone URL. Reached off-cluster through the

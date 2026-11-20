@@ -32,12 +32,15 @@ spec:
     value: e106753fee68e054223a008638516ac00df6af5a651e74d1e003791e403292b14ae5d6afa76a3589baa62d57fa89384edcf81ddf0f0f824854ddd09d1f0dbbfb688f48f50f49f9d0277f856ff3b56fcd5cc216c96e654afbe1eefa4fb1aa2163a0e694a4683759d9ae48973ba30bbe493a67f6a328186aeb3564075785306fec7cae7166f8d7cd0267a1c49304ac23924d49a5c67fcdb3c7a8c091f713d366f6bcf0fd811990b3f96db59227c5af7782643a3aa30dc8989d378fa68f65dbac5a2c425539e1c989defe72a33a0f0b194b2aca03e693cd98af23adb4a10be34941bad0e71634021450b8a503f1353911b42fd0732cf811adb4e65d83a0894feb67
   - name: TOLGEE_POSTGRES_AUTOSTART_ENABLED
     value: 'false'
+  # Database name and login follow the injected Postgres contract (never
+  # literals), so they stay right after a backup restore-copy + cutover,
+  # whose copy has its own database and roles (kubero-server #2401).
   - name: SPRING_DATASOURCE_URL
     value: 'jdbc:postgresql://$(PGHOST):$(PGPORT)/$(PGDATABASE)'
   - name: SPRING_DATASOURCE_USERNAME
-    value: tolgee
+    value: '$(PGUSER)'
   - name: SPRING_DATASOURCE_PASSWORD
-    value: tolgee
+    value: '$(PGPASSWORD)'
   - name: TOLGEE_FRONTEND_URL
     value: '{{STACKBLAZE_APP_URL}}'
   extraVolumes:
