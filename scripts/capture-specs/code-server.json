@@ -1,0 +1,17 @@
+{
+  "viewport": { "width": 1920, "height": 1080 },
+  "deviceScaleFactor": 2,
+  "login": {
+    "path": "/login",
+    "steps": [
+      { "waitForSelector": "input[type=password]", "timeout": 60000 },
+      { "fill": { "input[type=password]": "${CODE_SERVER_PASSWORD}" } },
+      { "press": { "selector": "input[type=password]", "key": "Enter" } },
+      { "waitForSelector": ".monaco-workbench", "timeout": 90000 }
+    ],
+    "waitAfterMs": 4000
+  },
+  "pages": [
+    { "name": "workbench", "path": "/", "waitFor": ".monaco-workbench", "waitMs": 5000 }
+  ]
+}
