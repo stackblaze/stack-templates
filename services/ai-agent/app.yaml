@@ -1,0 +1,61 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: ai-agent
+  annotations:
+    kubero.dev/template.description: An AI agent with your instructions, a team
+      chat page and an HTTP API, behind its own AI Gateway that holds the
+      provider key. Agent and gateway share one PostgreSQL.
+    kubero.dev/template.source: https://github.com/stackblaze/omp-agent
+spec:
+  name: ai-agent
+  deploymentstrategy: docker
+  buildstrategy: plain
+  buildpack: ''
+  branch: ''
+  autodeploy: false
+  image:
+    repository: ghcr.io/stackblaze/omp-agent
+    tag: 17.2.12-9
+    pullPolicy: IfNotPresent
+    containerPort: 8080
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
+  # One replica on a ReadWriteOnce volume: a rolling update would wait
+  # forever for the old pod to let go of it.
+  rolloutStrategy: Recreate
+  # Chat page and API. Replies stream as server-sent events for up to a turn
+  # timeout.
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-read-timeout: '300'
+      nginx.ingress.kubernetes.io/proxy-buffering: 'off'
+    hosts:
+    - host: ''
+      paths:
+      - path: /
+        pathType: Prefix
+    tls: []
+  # OMP sessions and the knowledge folder.
+  extraVolumes:
+  - name: '{{STACKBLAZE_APP_NAME}}-agent-data'
+    mountPath: /data
+    emptyDir: false
+    size: 1Gi
+    storageClass: ''
+    accessModes:
+    - ReadWriteOnce
+  addons: []
+  cronjobs: []
+  vulnerabilityscan:
+    enabled: false
+  # The agent's own AI Gateway: the catalog template deployed with it. Its
+  # PostgreSQL gets a second database for the agent's chat history.
+  templateServices:
+  - id: gateway
+    template: litellm
+    nameHint: ai-gateway
+    agentDatabase: agent
